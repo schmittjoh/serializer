@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="jms_serializer_extra.camel_case_naming_strategy.class">JMS\SerializerExtraBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
+        <parameter key="jms_serializer_extra.annotated_naming_strategy.class">JMS\SerializerExtraBundle\Serializer\Naming\AnnotatedNamingStrategy</parameter>
+        
+        <parameter key="jms_serializer_extra.serializer_factory.class">JMS\SerializerExtraBundle\Serializer\SerializerFactory</parameter>
+        
+        <parameter key="jms_serializer_extra.annotation_reader.class">Doctrine\Common\Annotations\AnnotationReader</parameter>
+        
+        <parameter key="jms_serializer_extra.xml_encoder.class">Symfony\Component\Serializer\Encoder\XmlEncoder</parameter>
+        <parameter key="jms_serializer_extra.json_encoder.class">Symfony\Component\Serializer\Encoder\JsonEncoder</parameter>
+    </parameters>
+
+    <services>
+        <service id="jms_serializer_extra.camel_case_naming_strategy" class="%jms_serializer_extra.camel_case_naming_strategy.class%" public="false" />
+        <service id="jms_serializer_extra.annotated_naming_strategy" class="%jms_serializer_extra.annotated_naming_strategy.class%" public="false">
+            <argument type="service" id="jms_serializer_extra.annotation_reader" />
+            <argument type="service" id="jms_serializer_extra.camel_case_naming_strategy" />
+        </service>
+    
+        <service id="jms_serializer_extra.serializer_factory" class="%jms_serializer_extra.serializer_factory.class%" public="false">
+            <argument type="service" id="jms_serializer_extra.annotation_reader" />
+            <argument type="service" id="jms_serializer_extra.annotated_naming_strategy" />
+        </service>
+        <service id="serializer_factory" alias="jms_serializer_extra.serializer_factory" />
+        
+        <service id="jms_serializer_extra.serializer" class="Symfony\Component\Serializer\Serializer" public="false" factory-service="jms_serializer_extra.serializer_factory" factory-method="getSerializer" />
+        <service id="serializer" alias="jms_serializer_extra.serializer" />
+        
+        <service id="jms_serializer_extra.annotation_reader" class="%jms_serializer_extra.annotation_reader.class%" public="false">
+            <call method="setDefaultAnnotationNamespace">
+                <argument>JMS\SerializerExtraBundle\Annotation\</argument>
+            </call>
+            <call method="setAutoloadAnnotations">
+                <argument>true</argument>
+            </call>
+        </service>
+        
+        <service id="jms_serializer_extra.xml_encoder" class="%jms_serializer_extra.xml_encoder.class%" public="false" />
+        <service id="jms_serializer_extra.json_encoder" class="%jms_serializer_extra.json_encoder.class%" public="false" />
+    </services>
+
+</container>
