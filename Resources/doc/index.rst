@@ -24,14 +24,14 @@ Installation
 ------------
 Checkout a copy of the code::
 
-    git submodule add https://github.com/schmittjoh/SerializerExtraBundle.git src/JMS/SerializerExtraBundle
+    git submodule add https://github.com/schmittjoh/SerializerBundle.git src/JMS/SerializerBundle
     
 Then register the bundle with your kernel::
 
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\SerializerExtraBundle\SerializerExtraBundle(),
+        new JMS\SerializerBundle\JMSSerializerBundle(),
         // ...
     );
 
