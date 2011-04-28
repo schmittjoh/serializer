@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer;
+namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerExtraBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
-use JMS\SerializerExtraBundle\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
+use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use JMS\SerializerExtraBundle\Annotation\ExclusionPolicy;
+use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 

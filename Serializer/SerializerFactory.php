@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer;
+namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerExtraBundle\Serializer\Exclusion\ExclusionStrategyFactory;
-use JMS\SerializerExtraBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\NoneExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\AllExclusionStrategy;
+use Symfony\Component\Serializer\SerializerInterface;
+
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
+use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Serializer;
 
@@ -40,7 +42,7 @@ class SerializerFactory
         $this->encoders = $encoders;
     }
 
-    public function getSerializer($version = null)
+    public function configureSerializer(SerializerInterface $serializer, $version = null)
     {
         if (null === $version) {
             $strategies = array(
@@ -59,11 +61,16 @@ class SerializerFactory
             );
         }
 
-        $serializer = new Serializer();
         $serializer->addNormalizer(new AnnotatedNormalizer($this->reader, $this->propertyNamingStrategy, new ExclusionStrategyFactory($strategies)));
         foreach ($this->encoders as $format => $encoder) {
             $serializer->setEncoder($format, $encoder);
         }
+    }
+
+    public function getSerializer($version = null)
+    {
+        $serializer = new Serializer();
+        $this->configureSerializer($serializer, $version);
 
         return $serializer;
     }

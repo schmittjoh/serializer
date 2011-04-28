@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\SerializerExtraBundle\Tests\Fixtures;
+namespace JMS\SerializerBundle\Tests\Fixtures;
 
 class CircularReferenceChild
 {

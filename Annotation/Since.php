@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Annotation;
+namespace JMS\SerializerBundle\Annotation;
 
 class Since extends Version
 {

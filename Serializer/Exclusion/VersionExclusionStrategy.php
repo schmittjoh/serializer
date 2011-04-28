@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer\Exclusion;
+namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use JMS\SerializerExtraBundle\Annotation\Until;
-use JMS\SerializerExtraBundle\Annotation\Since;
+use JMS\SerializerBundle\Annotation\Until;
+use JMS\SerializerBundle\Annotation\Since;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 class VersionExclusionStrategy

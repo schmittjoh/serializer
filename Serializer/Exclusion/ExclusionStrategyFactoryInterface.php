@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer\Exclusion;
+namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 interface ExclusionStrategyFactoryInterface
 {

@@ -40,7 +40,7 @@ Configuration
 Below is the default configuration, you don't need to change it unless it doesn't
 suit your needs::
 
-    jms_serializer_extra:
+    jms_serializer:
         naming_strategy:
             separator:  _
             lower_case: true

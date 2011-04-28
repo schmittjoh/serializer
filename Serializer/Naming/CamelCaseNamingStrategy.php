@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer\Naming;
+namespace JMS\SerializerBundle\Serializer\Naming;
 
 class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {

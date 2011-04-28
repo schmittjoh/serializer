@@ -1,17 +1,17 @@
 <?php
 
-namespace JMS\SerializerExtraBundle\Tests\DependencyInjection;
+namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-use JMS\SerializerExtraBundle\Tests\Fixtures\VersionedObject;
+use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use JMS\SerializerExtraBundle\DependencyInjection\JMSSerializerExtraExtension;
+use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 
-class JMSSerializerExtraExtensionTest extends \PHPUnit_Framework_TestCase
+class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
     public function testLoad()
     {
-        $extension = new JMSSerializerExtraExtension();
+        $extension = new JMSSerializerExtension();
         $container = new ContainerBuilder();
         $extension->load(array(array()), $container);
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\DependencyInjection;
+namespace JMS\SerializerBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -26,7 +26,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class JMSSerializerExtraExtension extends Extension
+class JMSSerializerExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {

@@ -1,22 +1,22 @@
 <?php
 
-namespace JMS\SerializerExtraBundle\Tests\Serializer;
+namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerExtraBundle\Tests\Fixtures\AllExcludedObject;
+use JMS\SerializerBundle\Tests\Fixtures\AllExcludedObject;
 
-use JMS\SerializerExtraBundle\Tests\Fixtures\VersionedObject;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\NoneExclusionStrategy;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\AllExclusionStrategy;
+use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
+use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use Symfony\Component\Serializer\Serializer;
-use JMS\SerializerExtraBundle\Tests\Fixtures\CircularReferenceParent;
-use JMS\SerializerExtraBundle\Tests\Fixtures\SimpleObject;
-use JMS\SerializerExtraBundle\Serializer\Exclusion\ExclusionStrategyFactory;
-use JMS\SerializerExtraBundle\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\SerializerExtraBundle\Serializer\Naming\AnnotatedNamingStrategy;
+use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
+use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\SerializerBundle\Serializer\Naming\AnnotatedNamingStrategy;
 use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\SerializerExtraBundle\Serializer\AnnotatedNormalizer;
+use JMS\SerializerBundle\Serializer\AnnotatedNormalizer;
 
 class AnnotatedNormalizerTest extends \PHPUnit_Framework_TestCase
 {
@@ -70,7 +70,7 @@ class AnnotatedNormalizerTest extends \PHPUnit_Framework_TestCase
     protected function getNormalizer($version = null)
     {
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('JMS\SerializerExtraBundle\Annotation\\');
+        $reader->setDefaultAnnotationNamespace('JMS\SerializerBundle\Annotation\\');
         $reader->setAutoloadAnnotations(true);
 
         $propertyNamingStrategy = new AnnotatedNamingStrategy($reader, new CamelCaseNamingStrategy('_'));

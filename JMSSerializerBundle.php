@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle;
+namespace JMS\SerializerBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class JMSSerializerExtraBundle extends Bundle
+class JMSSerializerBundle extends Bundle
 {
 }

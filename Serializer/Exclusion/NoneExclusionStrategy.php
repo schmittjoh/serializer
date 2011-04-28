@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer\Exclusion;
+namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use JMS\SerializerExtraBundle\Annotation\Exclude;
+use JMS\SerializerBundle\Annotation\Exclude;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 class NoneExclusionStrategy implements ExclusionStrategyInterface

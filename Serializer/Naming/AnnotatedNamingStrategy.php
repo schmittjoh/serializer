@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerExtraBundle\Serializer\Naming;
+namespace JMS\SerializerBundle\Serializer\Naming;
 
-use JMS\SerializerExtraBundle\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\SerializedName;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 
