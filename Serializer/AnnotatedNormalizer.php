@@ -65,7 +65,13 @@ class AnnotatedNormalizer extends AbstractNormalizer
 
                 $serializedName = $this->propertyNamingStrategy->translateName($property);
                 $property->setAccessible(true);
-                $normalized[$serializedName] = $this->normalizeValue($property->getValue($object), $format);
+                $value = $this->normalizeValue($property->getValue($object), $format);
+
+                if (null === $value) {
+                    continue;
+                }
+
+                $normalized[$serializedName] = $value;
             }
         }
 
