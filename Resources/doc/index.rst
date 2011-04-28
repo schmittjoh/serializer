@@ -16,8 +16,9 @@ You need to have control over the objects that you want to serialize/unserialize
 This bundle does not work for objects provided by a third-party.
 
 TODO:
+
 - the unserialization process is not yet completely implemented (I currently 
-  don't need it, but if you want to work on it feel free)
+  don't need it, but contributations are welcome)
 
 Installation
 ------------
@@ -37,7 +38,7 @@ Then register the bundle with your kernel::
 Configuration
 -------------
 Below is the default configuration, you don't need to change it unless it doesn't
-suit your needs:
+suit your needs::
 
     jms_serializer_extra:
         naming_strategy:
@@ -53,12 +54,12 @@ Usage
 The bundle configures a factory, and a default serializer for you that you can
 use in your application code.
 
-The default serializer is used if you do not care about versioning:
+The default serializer is used if you do not care about versioning::
 
     $serializer = $container->get('serializer');
 
 The serializer factory can be used if you want to display a specific version of
-an object:
+an object::
 
     $factory = $container->get('serializer_factory');
     $serializer = $factory->getSerializer('1.0.0');
@@ -71,6 +72,8 @@ Annotations
 This annotation can be defined on a class to indicate the exclusion strategy
 that should be used for the class. Available strategies: all, or none
 
+::
+
     <?php
     /**
      * @ExclusionPolicy("NONE")
@@ -79,10 +82,13 @@ that should be used for the class. Available strategies: all, or none
     {
     }
 
-all:  all properties are excluded by default; only properties marked with @Expose
+----- ----------
+all   all properties are excluded by default; only properties marked with @Expose
       will be serialized/unserialized
-none: no properties are excluded by default; all properties except those marked
+----- ----------
+none  no properties are excluded by default; all properties except those marked
       with @Exclude will be serialized/unserialized
+----- ----------
 
 @Exclude
 ~~~~~~~~
@@ -99,6 +105,8 @@ be serialized/unserialized. Works only in combination with AllExclusionPolicy.
 This annotation can be defined on a property to define the serialized name for a
 property. If this is not defined, the property will be translated from camel-case
 to a lower-cased underscored name, e.g. camelCase -> camel_case.
+
+::
 
     <?php
     class MyObject
