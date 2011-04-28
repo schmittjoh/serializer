@@ -51,6 +51,10 @@ suit your needs::
 
 Usage
 -----
+
+Factory vs. Default Instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The bundle configures a factory, and a default serializer for you that you can
 use in your application code.
 
@@ -64,6 +68,58 @@ an object::
     $factory = $container->get('serializer_factory');
     $serializer = $factory->getSerializer('1.0.0');
 
+Versioning
+~~~~~~~~~~
+
+The bundle allows you to have different versions of your objects. This can be
+achieved by using the @Since, and @Until annotation which both accept a 
+standardized PHP version number.
+
+::
+
+    <?php
+    
+    class VersionedObject
+    {
+        /**
+         * @Until("1.0.x")
+         */
+        private $name;
+        
+        /**
+         * @Since("1.1")
+         * @SerializedName("name")
+         */
+        private $name2;
+    }
+
+Changing the Exclusion Policy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The default exclusion policy is to exclude nothing, that is all properties of the
+object will be included in the normalized representation. If you only want to
+expose a few of the properties, then it is easier to change the exclusion policy,
+and only mark these few properties::
+
+    <?php
+
+    /**
+     * @ExclusionPolicy("all")
+     */
+    class MyObject
+    {
+        private $foo;
+        private $bar;
+
+        /**
+         * @Expose
+         */
+        private $name;
+    }
+
+In the above example, only the "name" property will be included in the normalized
+representation.
+
 Annotations
 -----------
 
@@ -71,16 +127,6 @@ Annotations
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a class to indicate the exclusion strategy
 that should be used for the class.
-
-::
-
-    <?php
-    /**
-     * @ExclusionPolicy("NONE")
-     */
-    class MyObject
-    {
-    }
 
 +----------+----------------------------------------------------------------+
 | Policy   | Description                                                    |
@@ -108,25 +154,16 @@ This annotation can be defined on a property to define the serialized name for a
 property. If this is not defined, the property will be translated from camel-case
 to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
-::
-
-    <?php
-    class MyObject
-    {
-        /**
-         * @SerializedName("some_other_name")
-         */
-        private $camelCase;
-    }
-
 @Since
 ~~~~~~
 This annotation can be defined on a property to specify starting from which
 version this property is available. If an earlier version is serialized, then
-this property is excluded automatically.
+this property is excluded automatically. The version must be in a format that is
+understood by PHP's ``version_compare`` function.
 
 @Until
 ~~~~~~
 This annotation can be defined on a property to specify until which version this
 property was available. If a later version is serialized, then this property is
-excluded automatically.
+excluded automatically. The version must be in a format that is understood by 
+PHP's ``version_compare`` function.
