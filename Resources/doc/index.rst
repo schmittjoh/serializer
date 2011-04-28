@@ -18,7 +18,7 @@ This bundle does not work for objects provided by a third-party.
 TODO:
 
 - the unserialization process is not yet completely implemented (I currently 
-  don't need it, but contributations are welcome)
+  don't need it, but contributions are welcome)
 
 Installation
 ------------
