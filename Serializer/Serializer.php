@@ -3,7 +3,6 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use Symfony\Component\Serializer\SerializerAwareInterface;
-
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 

@@ -26,7 +26,7 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
         $object = new AllExcludedObject();
         $normalizer = $this->getNormalizer();
 
-        $this->assertEquals(array('bar' => 'bar'), $normalizer->normalize($object, null));
+        $this->assertEquals(array('bar' => 'bar'), $normalizer->normalize($object));
     }
 
     public function testNormalizeVersionedObject()

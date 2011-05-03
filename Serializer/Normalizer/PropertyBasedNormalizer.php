@@ -18,18 +18,17 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
-use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
-
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
-use JMS\SerializerBundle\Annotation\Type;
-use JMS\SerializerBundle\Exception\UnsupportedException;
 use Annotations\ReaderInterface;
+use JMS\SerializerBundle\Annotation\Type;
+use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use JMS\SerializerBundle\Exception\UnsupportedException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 class PropertyBasedNormalizer extends SerializerAwareNormalizer
 {
@@ -40,6 +39,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
     private $reflectionData = array();
     private $translatedNames = array();
     private $excludedProperties = array();
+    private $propertyTypes = array();
 
     public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
@@ -72,7 +72,6 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                     continue;
                 }
 
-                $serializedName = $this->translateName($property);
                 $property->setAccessible(true);
                 $value = $this->serializer->normalize($property->getValue($object), $format);
 
@@ -80,9 +79,8 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                     continue;
                 }
 
-                $normalized[$serializedName] = $value;
+                $normalized[$this->translateName($property)] = $value;
             }
-
         }
 
         return $normalized;
@@ -117,7 +115,6 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                 }
                 $processed[$name] = true;
 
-
                 if ($this->shouldSkipProperty($exclusionStrategy, $property)) {
                     continue;
                 }
@@ -127,18 +124,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                     continue;
                 }
 
-                $type = null;
-                foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-                    if ($annot instanceof Type) {
-                        $type = $annot->getName();
-                        break;
-                    }
-                }
-                if (null === $type) {
-                    throw new RuntimeException(sprintf('You need to add a "@Type" annotation for property "%s" in class "%s".', $property->getName(), $property->getDeclaringClass()->getName()));
-                }
-
-                $value = $this->serializer->denormalize($data[$serializedName], $type, $format);
+                $value = $this->serializer->denormalize($data[$serializedName], $this->getType($property), $format);
                 $property->setAccessible(true);
                 $property->setValue($object, $value);
             }
@@ -147,11 +133,22 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         return $object;
     }
 
+    private function getType(\ReflectionProperty $property)
+    {
+        foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
+            if ($annot instanceof Type) {
+                return $annot->getName();
+            }
+        }
+
+        throw new RuntimeException(sprintf('You need to add a "@Type" annotation for property "%s" in class "%s".', $property->getName(), $property->getDeclaringClass()->getName()));
+    }
+
     private function translateName(\ReflectionProperty $property)
     {
         $key = $property->getDeclaringClass()->getName().'$'.$property->getName();
         if (isset($this->translatedNames[$key])) {
-            return $this->translatednames[$key];
+            return $this->translatedNames[$key];
         }
 
         return $this->translatedNames[$key] = $this->propertyNamingStrategy->translateName($property);
@@ -164,7 +161,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
             return $this->excludedProperties[$key];
         }
 
-        $this->excludedProperties[$key] = $exclusionStrategy->shouldSkipProperty($property);
+        return $this->excludedProperties[$key] = $exclusionStrategy->shouldSkipProperty($property);
     }
 
     private function getExclusionStrategy(\ReflectionClass $class)
@@ -176,7 +173,8 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         $annotations = $this->reader->getClassAnnotations($class);
         foreach ($annotations as $annotation) {
             if ($annotation instanceof ExclusionPolicy) {
-                return $this->exclusionStrategyFactory->getStrategy($annotation->getStrategy());
+                return $this->exclusionStrategies[$name] =
+                    $this->exclusionStrategyFactory->getStrategy($annotation->getStrategy());
             }
         }
 
