@@ -62,7 +62,7 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
         } else if ('string' === $type) {
             return (string) $data;
         } else if ('DateTime' === $type) {
-            if (!is_array($data) && isset($data['time'], $data['timezone'])) {
+            if (!is_array($data) || !isset($data['time'], $data['timezone'])) {
                 throw new \RuntimeException('Invalid input data for type "DateTime".');
             }
 
