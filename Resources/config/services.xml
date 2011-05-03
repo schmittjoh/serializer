@@ -5,44 +5,114 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="jms_serializer_extra.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
-        <parameter key="jms_serializer_extra.annotated_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\AnnotatedNamingStrategy</parameter>
-        
-        <parameter key="jms_serializer_extra.serializer_factory.class">JMS\SerializerBundle\Serializer\SerializerFactory</parameter>
-        
-        <parameter key="jms_serializer_extra.annotation_reader.class">Doctrine\Common\Annotations\AnnotationReader</parameter>
-        
-        <parameter key="jms_serializer_extra.xml_encoder.class">Symfony\Component\Serializer\Encoder\XmlEncoder</parameter>
-        <parameter key="jms_serializer_extra.json_encoder.class">Symfony\Component\Serializer\Encoder\JsonEncoder</parameter>
+        <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
+        <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
+
+        <parameter key="jms_serializer.xml_encoder.class">Symfony\Component\Serializer\Encoder\XmlEncoder</parameter>
+        <parameter key="jms_serializer.json_encoder.class">Symfony\Component\Serializer\Encoder\JsonEncoder</parameter>
+
+        <parameter key="jms_serializer.native_php_type_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer</parameter>
+        <parameter key="jms_serializer.property_based_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer</parameter>
+        <parameter key="jms_serializer.array_collection_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\ArrayCollectionNormalizer</parameter>
+
+        <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
+        <parameter key="jms_serializer.all_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy</parameter>
+        <parameter key="jms_serializer.none_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy</parameter>
+        <parameter key="jms_serializer.disjunct_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy</parameter>
+
+        <parameter key="jms_serializer.exclusion_strategy_factory.class">JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory</parameter>
+
+        <parameter key="jms_serializer.serializer_factory.class">JMS\SerializerBundle\Serializer\SerializerFactory</parameter>
+        <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
     </parameters>
 
     <services>
-        <service id="jms_serializer_extra.camel_case_naming_strategy" class="%jms_serializer_extra.camel_case_naming_strategy.class%" public="false" />
-        <service id="jms_serializer_extra.annotated_naming_strategy" class="%jms_serializer_extra.annotated_naming_strategy.class%" public="false">
-            <argument type="service" id="jms_serializer_extra.annotation_reader" />
-            <argument type="service" id="jms_serializer_extra.camel_case_naming_strategy" />
+        <!-- Exclusion Strategies -->
+        <service id="jms_serializer.version_exclusion_strategy"
+                 class="%jms_serializer.version_exclusion_strategy.class%"
+                 public="false"
+                 abstract="true" />
+        <service id="jms_serializer.disjunct_exclusion_strategy"
+                 class="%jms_serializer.disjunct_exclusion_strategy.class%"
+                 public="false"
+                 abstract="true" />
+        <service id="jms_serializer.all_exclusion_strategy" 
+                 class="%jms_serializer.all_exclusion_strategy.class%"
+                 public="false">
+            <argument type="service" id="annotation_reader" />
         </service>
-    
-        <service id="jms_serializer_extra.serializer_factory" class="%jms_serializer_extra.serializer_factory.class%" public="false">
-            <argument type="service" id="jms_serializer_extra.annotation_reader" />
-            <argument type="service" id="jms_serializer_extra.annotated_naming_strategy" />
+        <service id="jms_serializer.none_exclusion_strategy"
+                 class="%jms_serializer.none_exclusion_strategy.class%"
+                 public="false">
+            <argument type="service" id="annotation_reader" />
         </service>
-        <service id="serializer_factory" alias="jms_serializer_extra.serializer_factory" />
-        
-        <service id="jms_serializer_extra.serializer" class="Symfony\Component\Serializer\Serializer" public="false" factory-service="jms_serializer_extra.serializer_factory" factory-method="getSerializer" />
-        <service id="serializer" alias="jms_serializer_extra.serializer" />
-        
-        <service id="jms_serializer_extra.annotation_reader" class="%jms_serializer_extra.annotation_reader.class%" public="false">
-            <call method="setDefaultAnnotationNamespace">
-                <argument>JMS\SerializerBundle\Annotation\</argument>
-            </call>
-            <call method="setAutoloadAnnotations">
-                <argument>true</argument>
-            </call>
-        </service>
-        
-        <service id="jms_serializer_extra.xml_encoder" class="%jms_serializer_extra.xml_encoder.class%" public="false" />
-        <service id="jms_serializer_extra.json_encoder" class="%jms_serializer_extra.json_encoder.class%" public="false" />
-    </services>
 
+        <!-- Exclusion Strategy Factories -->
+        <service id="jms_serializer.exclusion_strategy_factory"
+                 class="%jms_serializer.exclusion_strategy_factory.class%"
+                 public="false"
+                 abstract="true" />
+        <service id="jms_serializer.default_exclusion_strategy_factory"
+                 parent="jms_serializer.exclusion_strategy_factory">
+            <argument type="collection">
+                <argument key="ALL" type="service" id="jms_serializer.all_exclusion_strategy" />
+                <argument key="NONE" type="service" id="jms_serializer.none_exclusion_strategy" />
+            </argument>
+        </service>
+
+        <!-- Naming Strategies -->
+        <service id="jms_serializer.camel_case_naming_strategy" class="%jms_serializer.camel_case_naming_strategy.class%" public="false" />
+        <service id="jms_serializer.serialized_name_annotation_strategy" class="%jms_serializer.serialized_name_annotation_strategy.class%" public="false">
+            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="jms_serializer.camel_case_naming_strategy" />
+        </service>
+        <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
+
+        <!-- Normalizers -->
+        <service id="jms_serializer.native_php_type_normalizer"
+                 class="%jms_serializer.native_php_type_normalizer.class%"
+                 scope="prototype"
+                 public="false" />
+        <service id="jms_serializer.property_based_normalizer"
+                 class="%jms_serializer.property_based_normalizer.class%"
+                 public="false">
+            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="jms_serializer.naming_strategy" />
+        </service>
+        <service id="jms_serializer.array_collection_normalizer"
+                 class="%jms_serializer.array_collection_normalizer.class%"
+                 scope="prototype"
+                 public="false" />
+        <service id="jms_serializer.default_normalizer"
+                 parent="jms_serializer.property_based_normalizer">
+            <argument type="service" id="jms_serializer.default_exclusion_strategy_factory" />
+        </service>
+
+        <!-- Encoders -->
+        <service id="jms_serializer.xml_encoder" class="%jms_serializer.xml_encoder.class%">
+            <tag name="jms_serializer.encoder" format="xml" />
+        </service>
+        <service id="jms_serializer.json_encoder" class="%jms_serializer.json_encoder.class%">
+            <tag name="jms_serializer.encoder" format="json" />
+        </service>
+
+        <!-- Serializers -->
+        <service id="jms_serializer.serializer" 
+                 class="%jms_serializer.serializer.class%" 
+                 abstract="true">
+            <argument type="service" id="jms_serializer.native_php_type_normalizer" strict="false" />
+        </service>
+        <service id="serializer" parent="jms_serializer.serializer">
+            <argument type="service" id="jms_serializer.default_normalizer" />
+            <tag name="jms_serializer.serializer" />
+        </service>
+        
+        <!-- Serializer Factory -->
+        <service id="jms_serializer.serializer_factory" 
+                 class="%jms_serializer.serializer_factory.class%"
+                 public="false">
+            <argument type="service" id="service_container" />
+        </service>
+        <service id="serializer_factory" alias="jms_serializer.serializer_factory" />
+    </services>
 </container>

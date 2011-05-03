@@ -2,6 +2,10 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
+use JMS\SerializerBundle\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\Since;
+use JMS\SerializerBundle\Annotation\Until;
+
 class VersionedObject
 {
     /**

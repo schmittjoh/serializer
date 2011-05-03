@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
+
 abstract class Version
 {
     private $version;
@@ -25,7 +27,7 @@ abstract class Version
     protected function setVersion($version)
     {
         if (!is_scalar($version)) {
-            throw new \RuntimeException('$version must be a scalar.');
+            throw new RuntimeException('$version must be a scalar.');
         }
 
         $this->version = $version;

@@ -18,27 +18,20 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use Annotations\ReaderInterface;
 use JMS\SerializerBundle\Annotation\Exclude;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 class NoneExclusionStrategy implements ExclusionStrategyInterface
 {
     private $reader;
 
-    public function __construct(AnnotationReader $reader)
+    public function __construct(ReaderInterface $reader)
     {
         $this->reader = $reader;
     }
 
     public function shouldSkipProperty(\ReflectionProperty $property)
     {
-        $annotations = $this->reader->getPropertyAnnotations($property);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Exclude) {
-                return true;
-            }
-        }
-
-        return false;
+        return null !== $this->reader->getPropertyAnnotation($property, 'JMS\SerializerBundle\Annotation\Exclude');
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace JMS\SerializerBundle\Tests\Serializer;
+namespace JMS\SerializerBundle\Tests\Serializer\Normalizer;
+
+use Annotations\Reader;
 
 use JMS\SerializerBundle\Tests\Fixtures\AllExcludedObject;
-
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
 use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
@@ -14,11 +15,11 @@ use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\SerializerBundle\Serializer\Naming\AnnotatedNamingStrategy;
+use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\SerializerBundle\Serializer\AnnotatedNormalizer;
+use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
 
-class AnnotatedNormalizerTest extends \PHPUnit_Framework_TestCase
+class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
 {
     public function testNormalizeAllExcludedObject()
     {
@@ -69,11 +70,9 @@ class AnnotatedNormalizerTest extends \PHPUnit_Framework_TestCase
 
     protected function getNormalizer($version = null)
     {
-        $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('JMS\SerializerBundle\Annotation\\');
-        $reader->setAutoloadAnnotations(true);
+        $reader = new Reader();
 
-        $propertyNamingStrategy = new AnnotatedNamingStrategy($reader, new CamelCaseNamingStrategy('_'));
+        $propertyNamingStrategy = new SerializedNameAnnotationStrategy($reader, new CamelCaseNamingStrategy('_'));
 
         if (null === $version) {
             $strategies = array(
@@ -93,7 +92,7 @@ class AnnotatedNormalizerTest extends \PHPUnit_Framework_TestCase
         }
         $exclusionStrategyFactory = new ExclusionStrategyFactory($strategies);
 
-        $normalizer = new AnnotatedNormalizer($reader, $propertyNamingStrategy, $exclusionStrategyFactory);
+        $normalizer = new PropertyBasedNormalizer($reader, $propertyNamingStrategy, $exclusionStrategyFactory);
 
         $serializer = new Serializer();
         $serializer->addNormalizer($normalizer);

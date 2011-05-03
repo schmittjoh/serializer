@@ -2,6 +2,8 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
+use JMS\SerializerBundle\Annotation\Exclude;
+
 class CircularReferenceChild
 {
     private $name;

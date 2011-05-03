@@ -12,20 +12,17 @@ include:
 - easily customizable as most logic is implemented using clearly defined
   interfaces
 
-You need to have control over the objects that you want to serialize/unserialize.
-This bundle does not work for objects provided by a third-party.
-
-TODO:
-
-- the unserialization process is not yet completely implemented (I currently 
-  don't need it, but contributions are welcome)
+This bundle works best when you have full control over the objects that you want
+to serialize/unserialize as you can leverage the full power of annotations then.
+If you want to serialize/deserialize objects provided by third parties, then you
+need to write a custom normalizer for these objects.
 
 Installation
 ------------
 Checkout a copy of the code::
 
     git submodule add https://github.com/schmittjoh/SerializerBundle.git src/JMS/SerializerBundle
-    
+
 Then register the bundle with your kernel::
 
     // in AppKernel::registerBundles()
@@ -41,13 +38,15 @@ Below is the default configuration, you don't need to change it unless it doesn'
 suit your needs::
 
     jms_serializer:
-        naming_strategy:
-            separator:  _
-            lower_case: true
-
-        encoders:
-            xml:  true
-            json: true
+        normalization:
+            date_format: Y-m-d\TH:i:sO
+            naming:
+                separator:  _
+                lower_case: true
+            doctrine_support: true
+            
+            # An array of version numbers: [1.0.0, 1.0.1, ...]
+            versions: []
 
 Usage
 -----
@@ -167,3 +166,75 @@ This annotation can be defined on a property to specify until which version this
 property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by 
 PHP's ``version_compare`` function.
+
+@Type
+~~~~~
+This annotation can be defined on a property to specify the type of that property.
+This annotation must only be defined when you want to be able to deserialize an
+object.
+
+Available Types:
+
++---------------------------+--------------------------------------------------+
+| Type                      | Description                                      |
++===========================+==================================================+
+| boolean                   | Primitive boolean                                |
++---------------------------+--------------------------------------------------+
+| integer                   | Primitive integer                                |
++---------------------------+--------------------------------------------------+
+| string                    | Primitive string                                 |
++---------------------------+--------------------------------------------------+
+| array                     | An array with arbitrary keys, and values.        |
++---------------------------+--------------------------------------------------+
+| array<T>                  | A list of type T (T can be any available type).  |
+|                           | Examples:                                        |
+|                           | array<string>, array<MyNamespace\MyObject>, etc. |
++---------------------------+--------------------------------------------------+
+| array<K, V>               | A map of keys of type K to values of type V.     |
+|                           | Examples: array<string, string>,                 |
+|                           | array<string, MyNamespace\MyObject>, etc.        |
++---------------------------+--------------------------------------------------+
+| T                         | Where T is a fully qualified class name.         |
++---------------------------+--------------------------------------------------+
+| ArrayCollection<T>        | Similar to array<T>, but will be deserialized    |
+|                           | into Doctrine's ArrayCollection class.           |
++---------------------------+--------------------------------------------------+
+| ArrayCollection<K, V>     | Similar to array<K, V>, but will be deserialized |
+|                           | into Doctrine's ArrayCollection class.           |
++---------------------------+--------------------------------------------------+
+
+Examples::
+
+    <?php
+
+    namespace MyNamespace;
+    
+    use JMS\SerializerBundle\Annotation\Type;
+
+    class BlogPost
+    {
+        /**
+         * @Type("ArrayCollection<MyNamespace\Comment>")
+         */
+        private $comments;
+
+        /**
+         * @Type("string")
+         */
+        private $title;
+
+        /**
+         * @Type("MyNamespace\Author")
+         */
+        private $author;
+
+        /**
+         * @Type("boolean")
+         */
+        private $published;
+
+        /**
+         * @Type("array<string, string>")
+         */
+        private $keyValueStore;
+    }

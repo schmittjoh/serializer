@@ -16,25 +16,13 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Serializer\Exclusion;
+namespace JMS\SerializerBundle\Exception;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
-
-class ExclusionStrategyFactory implements ExclusionStrategyFactoryInterface
+/**
+ * InvalidArgumentException for the SerializerBundle.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {
-    private $strategies;
-
-    public function __construct(array $strategies)
-    {
-        $this->strategies = $strategies;
-    }
-
-    public function getStrategy($name)
-    {
-        if (isset($this->strategies[$name])) {
-            return $this->strategies[$name];
-        }
-
-        throw new RuntimeException(sprintf('Unknown exclusion strategy "%s".', $name));
-    }
 }

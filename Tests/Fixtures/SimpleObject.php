@@ -2,6 +2,8 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
+use JMS\SerializerBundle\Annotation\SerializedName;
+
 class SimpleObject
 {
     private $foo;

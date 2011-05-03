@@ -18,16 +18,16 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use Annotations\ReaderInterface;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\Since;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 class VersionExclusionStrategy
 {
     private $reader;
     private $version;
 
-    public function __construct(AnnotationReader $reader, $version)
+    public function __construct(ReaderInterface $reader, $version)
     {
         $this->reader = $reader;
         $this->version = $version;

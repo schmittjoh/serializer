@@ -2,6 +2,9 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
+use JMS\SerializerBundle\Annotation\Expose;
+use JMS\SerializerBundle\Annotation\ExclusionPolicy;
+
 /**
  * @ExclusionPolicy("all")
  *

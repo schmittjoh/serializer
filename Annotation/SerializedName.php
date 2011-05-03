@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
+
 class SerializedName
 {
     private $name;
@@ -25,7 +27,7 @@ class SerializedName
     public function __construct(array $values)
     {
         if (!is_string($values['value'])) {
-            throw new \RuntimeException(sprintf('"value" must be a string.'));
+            throw new RuntimeException(sprintf('"value" must be a string.'));
         }
 
         $this->name = $values['value'];

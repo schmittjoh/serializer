@@ -18,60 +18,29 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
-use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SerializerFactory
 {
-    private $reader;
-    private $propertyNamingStrategy;
-    private $encoders;
+    private $container;
+    private $serializerMap = array();
 
-    public function __construct(AnnotationReader $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, array $encoders)
+    public function __construct(ContainerInterface $container, $serializerMap = array())
     {
-        $this->reader = $reader;
-        $this->propertyNamingStrategy = $propertyNamingStrategy;
-        $this->encoders = $encoders;
-    }
-
-    public function configureSerializer(SerializerInterface $serializer, $version = null)
-    {
-        if (null === $version) {
-            $strategies = array(
-                'ALL'  => new AllExclusionStrategy($this->reader),
-                'NONE' => new NoneExclusionStrategy($this->reader),
-            );
-        } else {
-            $versionStrategy = new VersionExclusionStrategy($this->reader, $version);
-            $strategies = array(
-                'ALL'  => new DisjunctExclusionStrategy(array(
-                    $versionStrategy, new AllExclusionStrategy($this->reader)
-                )),
-                'NONE' => new DisjunctExclusionStrategy(array(
-                    $versionStrategy, new NoneExclusionStrategy($this->reader),
-                )),
-            );
-        }
-
-        $serializer->addNormalizer(new AnnotatedNormalizer($this->reader, $this->propertyNamingStrategy, new ExclusionStrategyFactory($strategies)));
-        foreach ($this->encoders as $format => $encoder) {
-            $serializer->setEncoder($format, $encoder);
-        }
+        $this->container = $container;
+        $this->serializerMap = array();
     }
 
     public function getSerializer($version = null)
     {
-        $serializer = new Serializer();
-        $this->configureSerializer($serializer, $version);
+        if (null === $version) {
+            return $this->container->get('serializer');
+        }
 
-        return $serializer;
+        if (!isset($this->serializerMap[$version])) {
+            throw new \RuntimeException(sprintf('There was no serializer for version "%s" configured.', $version));
+        }
+
+        return $this->container->get($this->serializerMap[$version]);
     }
 }

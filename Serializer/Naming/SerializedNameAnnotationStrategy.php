@@ -18,16 +18,15 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
+use Annotations\ReaderInterface;
 use JMS\SerializerBundle\Annotation\SerializedName;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-
-class AnnotatedNamingStrategy implements PropertyNamingStrategyInterface
+class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterface
 {
     private $reader;
     private $delegate;
 
-    public function __construct(AnnotationReader $reader, PropertyNamingStrategyInterface $namingStrategy)
+    public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $namingStrategy)
     {
         $this->reader = $reader;
         $this->delegate = $namingStrategy;
@@ -35,12 +34,8 @@ class AnnotatedNamingStrategy implements PropertyNamingStrategyInterface
 
     public function translateName(\ReflectionProperty $property)
     {
-        $annotations = $this->reader->getPropertyAnnotations($property);
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SerializedName) {
-                return $annotation->getName();
-            }
+        if (null !== $annot = $this->reader->getPropertyAnnotation($property, 'JMS\SerializerBundle\Annotation\SerializedName')) {
+            return $annot->getName();
         }
 
         return $this->delegate->translateName($property);

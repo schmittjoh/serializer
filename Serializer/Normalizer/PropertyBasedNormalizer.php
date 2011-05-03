@@ -16,32 +16,36 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Serializer;
+namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
+use JMS\SerializerBundle\Annotation\Type;
+use JMS\SerializerBundle\Exception\UnsupportedException;
+use Annotations\ReaderInterface;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class AnnotatedNormalizer extends AbstractNormalizer
+class PropertyBasedNormalizer extends SerializerAwareNormalizer
 {
     private $reader;
     private $propertyNamingStrategy;
     private $exclusionStrategyFactory;
 
-    public function __construct(AnnotationReader $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
+    public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
         $this->reader = $reader;
         $this->propertyNamingStrategy = $propertyNamingStrategy;
         $this->exclusionStrategyFactory = $exclusionStrategyFactory;
     }
 
-    public function normalize($object, $format, $properties = null)
+    public function normalize($object, $format = null)
     {
-        if (null !== $properties) {
-            throw new \InvalidArgumentException('$properties must be declared via annotations.');
+        if (!is_object($object)) {
+            throw new UnsupportedException(sprintf('Type "%s" is not supported.', gettype($object)));
         }
 
         // collect class hierarchy
@@ -65,7 +69,7 @@ class AnnotatedNormalizer extends AbstractNormalizer
 
                 $serializedName = $this->propertyNamingStrategy->translateName($property);
                 $property->setAccessible(true);
-                $value = $this->normalizeValue($property->getValue($object), $format);
+                $value = $this->serializer->normalize($property->getValue($object), $format);
 
                 if (null === $value) {
                     continue;
@@ -78,16 +82,26 @@ class AnnotatedNormalizer extends AbstractNormalizer
         return $normalized;
     }
 
-    public function denormalize($data, $class, $format = null)
+    public function supportsNormalization($data, $format = null)
     {
-        if (!is_array($data)) {
-            throw new \InvalidArgumentException('$data must be an array.');
+        return is_object($data);
+    }
+
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return class_exists($type);
+    }
+
+    public function denormalize($data, $type, $format = null)
+    {
+        if (!class_exists($type)) {
+            throw new UnsupportedException(sprintf('Unsupported type; "%s" is not a valid class.', $type));
         }
 
-        $class = new \ReflectionClass($class);
+        $class = new \ReflectionClass($type);
         $classes = $this->getClassHierarchy($class);
 
-        $object = unserialize(sprintf('O:%d:"%s":0:{}', strlen($class->getName()), $class->getName()));
+        $object = unserialize(sprintf('O:%d:"%s":0:{}', strlen($type), $type));
         $processed = array();
         foreach ($classes as $class) {
             $exclusionStrategy = $this->getExclusionStrategy($class);
@@ -107,48 +121,24 @@ class AnnotatedNormalizer extends AbstractNormalizer
                     continue;
                 }
 
-                // FIXME: We need to let the user specify the type of this key
-                throw new RuntimeException('This is not yet implemented.');
-            }
-        }
-    }
-
-    public function supports(\ReflectionClass $class, $format = null)
-    {
-        return true;
-    }
-
-    private function normalizeValue($value, $format)
-    {
-        if (is_array($value) || $value instanceof \Traversable) {
-            $array = array();
-            $isList = $this->isList($value);
-
-            foreach ($value as $k => $v) {
-                if ($isList) {
-                    $array[] = $this->normalizeValue($v, $format);
-                } else {
-                    $array[$k] = $this->normalizeValue($v, $format);
+                $type = null;
+                foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
+                    if ($annot instanceof Type) {
+                        $type = $annot->getName();
+                        break;
+                    }
                 }
-            }
+                if (null === $type) {
+                    throw new RuntimeException(sprintf('You need to add a "@Type" annotation for property "%s" in class "%s".', $property->getName(), $property->getDeclaringClass()->getName()));
+                }
 
-            $value = $array;
-        } else if (is_object($value)) {
-            $value = $this->normalize($value, $format);
-        }
-
-        return $value;
-    }
-
-    private function isList($traversable)
-    {
-        foreach ($traversable as $k => $v) {
-            if (!is_int($k)) {
-                return false;
+                $value = $this->serializer->denormalize($data[$serializedName], $type, $format);
+                $property->setAccessible(true);
+                $property->setValue($object, $value);
             }
         }
 
-        return true;
+        return $object;
     }
 
     private function getExclusionStrategy(\ReflectionClass $class)
