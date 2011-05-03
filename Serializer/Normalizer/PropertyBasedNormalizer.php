@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Exception\UnsupportedException;
@@ -34,6 +36,10 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
     private $reader;
     private $propertyNamingStrategy;
     private $exclusionStrategyFactory;
+    private $exclusionStrategies = array();
+    private $reflectionData = array();
+    private $translatedNames = array();
+    private $excludedProperties = array();
 
     public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
@@ -49,8 +55,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         }
 
         // collect class hierarchy
-        $class = new \ReflectionClass($object);
-        $classes = $this->getClassHierarchy($class);
+        list($class, $classes) = $this->getReflectionData(get_class($object));
 
         // go through properties and collect values
         $normalized = $processed = array();
@@ -63,11 +68,11 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                 }
                 $processed[$name] = true;
 
-                if ($exclusionStrategy->shouldSkipProperty($property)) {
+                if ($this->shouldSkipProperty($exclusionStrategy, $property)) {
                     continue;
                 }
 
-                $serializedName = $this->propertyNamingStrategy->translateName($property);
+                $serializedName = $this->translateName($property);
                 $property->setAccessible(true);
                 $value = $this->serializer->normalize($property->getValue($object), $format);
 
@@ -77,6 +82,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
 
                 $normalized[$serializedName] = $value;
             }
+
         }
 
         return $normalized;
@@ -98,8 +104,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
             throw new UnsupportedException(sprintf('Unsupported type; "%s" is not a valid class.', $type));
         }
 
-        $class = new \ReflectionClass($type);
-        $classes = $this->getClassHierarchy($class);
+        list($class, $classes) = $this->getReflectionData($type);
 
         $object = unserialize(sprintf('O:%d:"%s":0:{}', strlen($type), $type));
         $processed = array();
@@ -112,11 +117,12 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                 }
                 $processed[$name] = true;
 
-                if ($exclusionStrategy->shouldSkipProperty($property)) {
+
+                if ($this->shouldSkipProperty($exclusionStrategy, $property)) {
                     continue;
                 }
 
-                $serializedName = $this->propertyNamingStrategy->translateName($property);
+                $serializedName = $this->translateName($property);
                 if (!array_key_exists($serializedName, $data)) {
                     continue;
                 }
@@ -141,8 +147,32 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         return $object;
     }
 
+    private function translateName(\ReflectionProperty $property)
+    {
+        $key = $property->getDeclaringClass()->getName().'$'.$property->getName();
+        if (isset($this->translatedNames[$key])) {
+            return $this->translatednames[$key];
+        }
+
+        return $this->translatedNames[$key] = $this->propertyNamingStrategy->translateName($property);
+    }
+
+    private function shouldSkipProperty(ExclusionStrategyInterface $exclusionStrategy, \ReflectionProperty $property)
+    {
+        $key = $property->getDeclaringClass()->getName().'$'.$property->getName();
+        if (isset($this->excludedProperties[$key])) {
+            return $this->excludedProperties[$key];
+        }
+
+        $this->excludedProperties[$key] = $exclusionStrategy->shouldSkipProperty($property);
+    }
+
     private function getExclusionStrategy(\ReflectionClass $class)
     {
+        if (isset($this->exclusionStrategies[$name = $class->getName()])) {
+            return $this->exclusionStrategies[$name];
+        }
+
         $annotations = $this->reader->getClassAnnotations($class);
         foreach ($annotations as $annotation) {
             if ($annotation instanceof ExclusionPolicy) {
@@ -150,11 +180,16 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
             }
         }
 
-        return $this->exclusionStrategyFactory->getStrategy('NONE');
+        return $this->exclusionStrategies[$name] = $this->exclusionStrategyFactory->getStrategy('NONE');
     }
 
-    private function getClassHierarchy(\ReflectionClass $class)
+    private function getReflectionData($fqcn)
     {
+        if (isset($this->reflectionData[$fqcn])) {
+            return $this->reflectionData[$fqcn];
+        }
+
+        $class = new \ReflectionClass($fqcn);
         $classes = array();
         do {
             if (!$class->isUserDefined()) {
@@ -163,7 +198,8 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
 
             $classes[] = $class;
         } while (false !== $class = $class->getParentClass());
+        $classes = array_reverse($classes, false);
 
-        return array_reverse($classes, false);
+        return $this->reflectionData[$fqcn] = array($class, $classes);
     }
 }
