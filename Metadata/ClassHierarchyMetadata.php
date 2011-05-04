@@ -21,7 +21,7 @@ class ClassHierarchyMetadata
         $time = 0;
 
         foreach ($this->classes as $class) {
-            if (false !== $filename = $class->getReflection()->getFilename()) {
+            if (false === $filename = $class->getReflection()->getFilename()) {
                 continue;
             }
 

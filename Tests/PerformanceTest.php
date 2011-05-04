@@ -2,6 +2,14 @@
 
 namespace JMS\SerializerBundle\Tests;
 
+use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+
+use JMS\SerializerBundle\JMSSerializerBundle;
+
+use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 
 use JMS\SerializerBundle\Tests\Fixtures\Author;
@@ -61,33 +69,21 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
 
     private function getSerializer()
     {
-        $reader = new Reader();
+        $container = new ContainerBuilder();
+        $container->set('annotation_reader', new Reader());
+        $extension = new JMSSerializerExtension();
+        $extension->load(array(array()), $container);
 
-        $propertyNamingStrategy = new SerializedNameAnnotationStrategy(
-            $reader,
-            new CamelCaseNamingStrategy()
-        );
+        $bundle = new JMSSerializerBundle();
+        $bundle->build($container);
 
-        $encoders = array(
-            'xml'  => new XmlEncoder(),
-            'json' => new JsonEncoder(),
-        );
-
-        $customNormalizers = array(
-            new ArrayCollectionNormalizer(),
-        );
-
-        $exclusionStrategyFactory = new ExclusionStrategyFactory(array(
-            'ALL'  => new AllExclusionStrategy($reader),
-            'NONE' => new NoneExclusionStrategy($reader),
+        $container->getCompilerPassConfig()->setOptimizationPasses(array(
+            new ResolveDefinitionTemplatesPass(),
         ));
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
 
-        return new Serializer(
-            new NativePhpTypeNormalizer(),
-            new PropertyBasedNormalizer($reader, $propertyNamingStrategy, $exclusionStrategyFactory),
-            $customNormalizers,
-            $encoders
-        );
+        return $container->get('serializer');
     }
 
     private function printResults($test, $time, $iterations)
