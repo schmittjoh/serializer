@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
+
 class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {
     private $separator;
@@ -29,7 +31,7 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
         $this->lowerCase = $lowerCase;
     }
 
-    public function translateName(\ReflectionProperty $property)
+    public function translateName(PropertyMetadata $property)
     {
         $separator = &$this->separator;
 

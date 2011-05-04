@@ -18,30 +18,25 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use Annotations\ReaderInterface;
-use JMS\SerializerBundle\Annotation\Until;
-use JMS\SerializerBundle\Annotation\Since;
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
 
 class VersionExclusionStrategy
 {
-    private $reader;
     private $version;
 
-    public function __construct(ReaderInterface $reader, $version)
+    public function __construct($version)
     {
-        $this->reader = $reader;
         $this->version = $version;
     }
 
-    public function shouldSkipProperty(\ReflectionProperty $property)
+    public function shouldSkipProperty(PropertyMetadata $property)
     {
-        $annotations = $this->reader->getPropertyAnnotations($property);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Since && version_compare($this->version, $annotation->getVersion(), '<')) {
-                return true;
-            } else if ($annotation instanceof Until && version_compare($this->version, $annotation->getVersion(), '>')) {
-                return true;
-            }
+        if ((null !== $version = $property->getSinceVersion()) && version_compare($this->version, $version, '<')) {
+            return true;
+        }
+
+        if ((null !== $version = $property->getUntilVersion()) && version_compare($this->version, $version, '>')) {
+            return true;
         }
 
         return false;

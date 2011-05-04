@@ -5,6 +5,10 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Mapping\Driver\AnnotationDriver</parameter>
+        
+        <parameter key="jms_serializer.metadata.metadata_factory.class">JMS\SerializerBundle\Metadata\MetadataFactory</parameter>
+    
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
 
@@ -27,6 +31,17 @@
     </parameters>
 
     <services>
+        <!-- Metadata Drivers -->
+        <service id="jms_serializer.metadata.driver.annotation_driver" class="%jms_serializer.metadata.driver.annotation_driver.class%" public="false">
+            <argument type="service" id="annotation_driver" />
+        </service>
+        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.driver.annotation_driver" public="false" />
+
+        <!-- Metadata Factory -->
+        <service id="jms_serializer.metadata.metadata_factory" class="%jms_serializer.metadata.metadata_factory.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata_driver" />
+        </service>
+
         <!-- Exclusion Strategies -->
         <service id="jms_serializer.version_exclusion_strategy"
                  class="%jms_serializer.version_exclusion_strategy.class%"
@@ -39,12 +54,10 @@
         <service id="jms_serializer.all_exclusion_strategy" 
                  class="%jms_serializer.all_exclusion_strategy.class%"
                  public="false">
-            <argument type="service" id="annotation_reader" />
         </service>
         <service id="jms_serializer.none_exclusion_strategy"
                  class="%jms_serializer.none_exclusion_strategy.class%"
                  public="false">
-            <argument type="service" id="annotation_reader" />
         </service>
 
         <!-- Exclusion Strategy Factories -->
@@ -63,7 +76,6 @@
         <!-- Naming Strategies -->
         <service id="jms_serializer.camel_case_naming_strategy" class="%jms_serializer.camel_case_naming_strategy.class%" public="false" />
         <service id="jms_serializer.serialized_name_annotation_strategy" class="%jms_serializer.serialized_name_annotation_strategy.class%" public="false">
-            <argument type="service" id="annotation_reader" />
             <argument type="service" id="jms_serializer.camel_case_naming_strategy" />
         </service>
         <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
@@ -76,7 +88,7 @@
         <service id="jms_serializer.property_based_normalizer"
                  class="%jms_serializer.property_based_normalizer.class%"
                  public="false">
-            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="jms_serializer.metadata.metadata_factory" />
             <argument type="service" id="jms_serializer.naming_strategy" />
         </service>
         <service id="jms_serializer.array_collection_normalizer"
@@ -100,6 +112,7 @@
         <service id="jms_serializer.serializer" 
                  class="%jms_serializer.serializer.class%" 
                  abstract="true">
+            <property name="container" type="service" id="service_container" />
             <argument type="service" id="jms_serializer.native_php_type_normalizer" strict="false" />
         </service>
         <service id="serializer" parent="jms_serializer.serializer">

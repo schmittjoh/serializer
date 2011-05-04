@@ -13,7 +13,7 @@ class LazyLoadingSerializer extends Serializer
         $encoder = parent::getEncoder($format);
 
         if (is_string($encoder)) {
-            $encoder = $container->get($encoder);
+            $encoder = $this->container->get($encoder);
 
             if ($encoder instanceof SerializerAwareInterface) {
                 $encoder->setSerializer($this);

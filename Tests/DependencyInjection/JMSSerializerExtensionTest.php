@@ -17,10 +17,10 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
     public function testLoad()
     {
-        return;
         $extension = new JMSSerializerExtension();
         $container = new ContainerBuilder();
         $container->set('annotation_reader', new Reader());
+        $container->set('service_container', $container);
         $extension->load(array(array(
             'versions' => array('0.0.1', '1.1.1'),
         )), $container);

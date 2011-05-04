@@ -18,24 +18,22 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
-use Annotations\ReaderInterface;
 use JMS\SerializerBundle\Annotation\SerializedName;
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
 
 class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterface
 {
-    private $reader;
     private $delegate;
 
-    public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $namingStrategy)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy)
     {
-        $this->reader = $reader;
         $this->delegate = $namingStrategy;
     }
 
-    public function translateName(\ReflectionProperty $property)
+    public function translateName(PropertyMetadata $property)
     {
-        if (null !== $annot = $this->reader->getPropertyAnnotation($property, 'JMS\SerializerBundle\Annotation\SerializedName')) {
-            return $annot->getName();
+        if (null !== $name = $property->getSerializedName()) {
+            return $name;
         }
 
         return $this->delegate->translateName($property);

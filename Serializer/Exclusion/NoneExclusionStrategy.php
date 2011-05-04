@@ -18,20 +18,12 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use Annotations\ReaderInterface;
-use JMS\SerializerBundle\Annotation\Exclude;
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
 
 class NoneExclusionStrategy implements ExclusionStrategyInterface
 {
-    private $reader;
-
-    public function __construct(ReaderInterface $reader)
+    public function shouldSkipProperty(PropertyMetadata $property)
     {
-        $this->reader = $reader;
-    }
-
-    public function shouldSkipProperty(\ReflectionProperty $property)
-    {
-        return null !== $this->reader->getPropertyAnnotation($property, 'JMS\SerializerBundle\Annotation\Exclude');
+        return $property->isExcluded();
     }
 }

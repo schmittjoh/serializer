@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
+
 class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
     private $strategies;
@@ -27,7 +29,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->strategies = $strategies;
     }
 
-    public function shouldSkipProperty(\ReflectionProperty $property)
+    public function shouldSkipProperty(PropertyMetadata $property)
     {
         foreach ($this->strategies as $strategy) {
             if ($strategy->shouldSkipProperty($property)) {

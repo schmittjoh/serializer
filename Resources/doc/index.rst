@@ -194,6 +194,8 @@ Available Types:
 |                           | Examples: array<string, string>,                 |
 |                           | array<string, MyNamespace\MyObject>, etc.        |
 +---------------------------+--------------------------------------------------+
+| DateTime                  | PHP's DateTime object                            |
++---------------------------+--------------------------------------------------+
 | T                         | Where T is a fully qualified class name.         |
 +---------------------------+--------------------------------------------------+
 | ArrayCollection<T>        | Similar to array<T>, but will be deserialized    |
@@ -227,6 +229,11 @@ Examples::
          * @Type("MyNamespace\Author")
          */
         private $author;
+
+        /**
+         * @Type("DateTime")
+         */
+        private $createdAt;
 
         /**
          * @Type("boolean")

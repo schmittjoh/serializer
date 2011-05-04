@@ -18,11 +18,11 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
-use Annotations\ReaderInterface;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
+use JMS\SerializerBundle\Metadata\MetadataFactory;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -32,18 +32,13 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 class PropertyBasedNormalizer extends SerializerAwareNormalizer
 {
-    private $reader;
+    private $metadataFactory;
     private $propertyNamingStrategy;
     private $exclusionStrategyFactory;
-    private $exclusionStrategies = array();
-    private $reflectionData = array();
-    private $translatedNames = array();
-    private $excludedProperties = array();
-    private $propertyTypes = array();
 
-    public function __construct(ReaderInterface $reader, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
+    public function __construct(MetadataFactory $metadataFactory, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
-        $this->reader = $reader;
+        $this->metadataFactory = $metadataFactory;
         $this->propertyNamingStrategy = $propertyNamingStrategy;
         $this->exclusionStrategyFactory = $exclusionStrategyFactory;
     }
@@ -54,32 +49,24 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
             throw new UnsupportedException(sprintf('Type "%s" is not supported.', gettype($object)));
         }
 
-        // collect class hierarchy
-        list($class, $classes) = $this->getReflectionData(get_class($object));
+        $normalized = array();
+        $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
-        // go through properties and collect values
-        $normalized = $processed = array();
-        foreach ($classes as $class) {
-            $exclusionStrategy = $this->getExclusionStrategy($class);
-
-            foreach ($class->getProperties() as $property) {
-                if (isset($processed[$name = $property->getName()])) {
-                    continue;
-                }
-                $processed[$name] = true;
-
-                if ($this->shouldSkipProperty($exclusionStrategy, $property)) {
+        foreach ($metadata->getClasses() as $classMetadata) {
+            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->getExclusionPolicy());
+            foreach ($classMetadata->getProperties() as $propertyMetadata) {
+                if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }
 
-                $property->setAccessible(true);
-                $value = $this->serializer->normalize($property->getValue($object), $format);
+                $value = $this->serializer->normalize($propertyMetadata->getReflection()->getValue($object), $format);
 
+                // skip null-value properties
                 if (null === $value) {
                     continue;
                 }
 
-                $normalized[$this->translateName($property)] = $value;
+                $normalized[$this->propertyNamingStrategy->translateName($propertyMetadata)] = $value;
             }
         }
 
@@ -102,102 +89,31 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
             throw new UnsupportedException(sprintf('Unsupported type; "%s" is not a valid class.', $type));
         }
 
-        list($class, $classes) = $this->getReflectionData($type);
-
+        $metadata = $this->metadataFactory->getMetadataForClass($type);
         $object = unserialize(sprintf('O:%d:"%s":0:{}', strlen($type), $type));
-        $processed = array();
-        foreach ($classes as $class) {
-            $exclusionStrategy = $this->getExclusionStrategy($class);
 
-            foreach ($class->getProperties() as $property) {
-                if (isset($processed[$name = $property->getName()])) {
-                    continue;
-                }
-                $processed[$name] = true;
+        foreach ($metadata->getClasses() as $classMetadata) {
+            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->getExclusionPolicy());
 
-                if ($this->shouldSkipProperty($exclusionStrategy, $property)) {
+            foreach ($classMetadata->getProperties() as $propertyMetadata) {
+                if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }
 
-                $serializedName = $this->translateName($property);
-                if (!array_key_exists($serializedName, $data)) {
+                $serializedName = $this->propertyNamingStrategy->translateName($propertyMetadata);
+                if(!array_key_exists($serializedName, $data)) {
                     continue;
                 }
 
-                $value = $this->serializer->denormalize($data[$serializedName], $this->getType($property), $format);
-                $property->setAccessible(true);
-                $property->setValue($object, $value);
+                if (null === $type = $propertyMetadata->getType()) {
+                    throw new \RuntimeException(sprintf('You must define the type for %s::$%s.', $propertyMetadata->getClass(), $propertyMetadata->getName()));
+                }
+
+                $value = $this->serializer->denormalize($data[$serializedName], $type, $format);
+                $propertyMetadata->getReflection()->setValue($object, $value);
             }
         }
 
         return $object;
-    }
-
-    private function getType(\ReflectionProperty $property)
-    {
-        foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-            if ($annot instanceof Type) {
-                return $annot->getName();
-            }
-        }
-
-        throw new RuntimeException(sprintf('You need to add a "@Type" annotation for property "%s" in class "%s".', $property->getName(), $property->getDeclaringClass()->getName()));
-    }
-
-    private function translateName(\ReflectionProperty $property)
-    {
-        $key = $property->getDeclaringClass()->getName().'$'.$property->getName();
-        if (isset($this->translatedNames[$key])) {
-            return $this->translatedNames[$key];
-        }
-
-        return $this->translatedNames[$key] = $this->propertyNamingStrategy->translateName($property);
-    }
-
-    private function shouldSkipProperty(ExclusionStrategyInterface $exclusionStrategy, \ReflectionProperty $property)
-    {
-        $key = $property->getDeclaringClass()->getName().'$'.$property->getName();
-        if (isset($this->excludedProperties[$key])) {
-            return $this->excludedProperties[$key];
-        }
-
-        return $this->excludedProperties[$key] = $exclusionStrategy->shouldSkipProperty($property);
-    }
-
-    private function getExclusionStrategy(\ReflectionClass $class)
-    {
-        if (isset($this->exclusionStrategies[$name = $class->getName()])) {
-            return $this->exclusionStrategies[$name];
-        }
-
-        $annotations = $this->reader->getClassAnnotations($class);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof ExclusionPolicy) {
-                return $this->exclusionStrategies[$name] =
-                    $this->exclusionStrategyFactory->getStrategy($annotation->getStrategy());
-            }
-        }
-
-        return $this->exclusionStrategies[$name] = $this->exclusionStrategyFactory->getStrategy('NONE');
-    }
-
-    private function getReflectionData($fqcn)
-    {
-        if (isset($this->reflectionData[$fqcn])) {
-            return $this->reflectionData[$fqcn];
-        }
-
-        $class = new \ReflectionClass($fqcn);
-        $classes = array();
-        do {
-            if (!$class->isUserDefined()) {
-                break;
-            }
-
-            $classes[] = $class;
-        } while (false !== $class = $class->getParentClass());
-        $classes = array_reverse($classes, false);
-
-        return $this->reflectionData[$fqcn] = array($class, $classes);
     }
 }

@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
+
 /**
  * Interface for property naming strategies.
  *
@@ -28,5 +30,5 @@ namespace JMS\SerializerBundle\Serializer\Naming;
  */
 interface PropertyNamingStrategyInterface
 {
-    function translateName(\ReflectionProperty $property);
+    function translateName(PropertyMetadata $property);
 }

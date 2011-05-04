@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use JMS\SerializerBundle\Mapping\PropertyMetadata;
+
 /**
  * Interface for exclusion strategies.
  *
@@ -28,5 +30,5 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
  */
 interface ExclusionStrategyInterface
 {
-    function shouldSkipProperty(\ReflectionProperty $property);
+    function shouldSkipProperty(PropertyMetadata $property);
 }
