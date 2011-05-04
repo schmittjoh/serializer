@@ -2,6 +2,10 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
+
+use JMS\SerializerBundle\Metadata\MetadataFactory;
+
 use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
@@ -74,13 +78,8 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
     private function getSerializer($propertyNamingStrategy = null, $encoders = null, $customNormalizers = null)
     {
-        $reader = new Reader();
-
         if (null === $propertyNamingStrategy) {
-            $propertyNamingStrategy = new SerializedNameAnnotationStrategy(
-                $reader,
-                new CamelCaseNamingStrategy()
-            );
+            $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         }
 
         if (null === $encoders) {
@@ -97,13 +96,13 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
         }
 
         $exclusionStrategyFactory = new ExclusionStrategyFactory(array(
-            'ALL'  => new AllExclusionStrategy($reader),
-            'NONE' => new NoneExclusionStrategy($reader),
+            'ALL'  => new AllExclusionStrategy(),
+            'NONE' => new NoneExclusionStrategy(),
         ));
 
         return new Serializer(
             new NativePhpTypeNormalizer(),
-            new PropertyBasedNormalizer($reader, $propertyNamingStrategy, $exclusionStrategyFactory),
+            new PropertyBasedNormalizer(new MetadataFactory(new AnnotationDriver(new Reader())), $propertyNamingStrategy, $exclusionStrategyFactory),
             $customNormalizers,
             $encoders
         );

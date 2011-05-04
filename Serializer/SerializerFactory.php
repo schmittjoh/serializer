@@ -28,7 +28,7 @@ class SerializerFactory
     public function __construct(ContainerInterface $container, $serializerMap = array())
     {
         $this->container = $container;
-        $this->serializerMap = array();
+        $this->serializerMap = $serializerMap;
     }
 
     public function getSerializer($version = null)
@@ -38,7 +38,7 @@ class SerializerFactory
         }
 
         if (!isset($this->serializerMap[$version])) {
-            throw new \RuntimeException(sprintf('There was no serializer for version "%s" configured.', $version));
+            throw new \RuntimeException(sprintf('There was no serializer configured for version "%s".', $version));
         }
 
         return $this->container->get($this->serializerMap[$version]);

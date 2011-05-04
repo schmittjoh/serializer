@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Mapping\Driver\AnnotationDriver</parameter>
+        <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
         
         <parameter key="jms_serializer.metadata.metadata_factory.class">JMS\SerializerBundle\Metadata\MetadataFactory</parameter>
     
@@ -33,7 +33,7 @@
     <services>
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.driver.annotation_driver" class="%jms_serializer.metadata.driver.annotation_driver.class%" public="false">
-            <argument type="service" id="annotation_driver" />
+            <argument type="service" id="annotation_reader" />
         </service>
         <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.driver.annotation_driver" public="false" />
 

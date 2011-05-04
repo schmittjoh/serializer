@@ -2,8 +2,9 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Metadata\MetadataFactory;
+use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Annotations\Reader;
-
 use JMS\SerializerBundle\Tests\Fixtures\AllExcludedObject;
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
 use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
@@ -70,9 +71,8 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
 
     protected function getNormalizer($version = null)
     {
-        $reader = new Reader();
-
-        $propertyNamingStrategy = new SerializedNameAnnotationStrategy($reader, new CamelCaseNamingStrategy('_'));
+        $driver = new AnnotationDriver(new Reader());
+        $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy('_'));
 
         if (null === $version) {
             $strategies = array(
@@ -80,7 +80,7 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
                 'NONE' => new NoneExclusionStrategy($reader),
             );
         } else {
-            $versionStrategy = new VersionExclusionStrategy($reader, $version);
+            $versionStrategy = new VersionExclusionStrategy($version);
             $strategies = array(
                 'ALL'  => new DisjunctExclusionStrategy(array(
                     $versionStrategy, new AllExclusionStrategy($reader)
@@ -92,7 +92,7 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
         }
         $exclusionStrategyFactory = new ExclusionStrategyFactory($strategies);
 
-        $normalizer = new PropertyBasedNormalizer($reader, $propertyNamingStrategy, $exclusionStrategyFactory);
+        $normalizer = new PropertyBasedNormalizer(new MetadataFactory($driver), $propertyNamingStrategy, $exclusionStrategyFactory);
 
         $serializer = new Serializer();
         $serializer->addNormalizer($normalizer);

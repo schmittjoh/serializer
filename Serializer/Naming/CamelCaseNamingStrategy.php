@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
-use JMS\SerializerBundle\Mapping\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {

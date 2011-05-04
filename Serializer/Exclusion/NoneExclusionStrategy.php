@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use JMS\SerializerBundle\Mapping\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class NoneExclusionStrategy implements ExclusionStrategyInterface
 {

@@ -19,7 +19,7 @@
 namespace JMS\SerializerBundle\Serializer\Naming;
 
 use JMS\SerializerBundle\Annotation\SerializedName;
-use JMS\SerializerBundle\Mapping\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterface
 {

@@ -9,9 +9,9 @@ use JMS\SerializerBundle\Annotation\Expose;
 use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\Since;
-use JMS\SerializerBundle\Mapping\PropertyMetadata;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
-use JMS\SerializerBundle\Mapping\ClassMetadata;
+use JMS\SerializerBundle\Metadata\ClassMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class AnnotationDriver implements DriverInterface
 {

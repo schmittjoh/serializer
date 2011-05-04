@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
-use JMS\SerializerBundle\Mapping\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 /**
  * Interface for property naming strategies.
