@@ -32,6 +32,11 @@ class ClassHierarchyMetadata
         return $this->classes;
     }
 
+    public function getOutsideClass()
+    {
+        return end($this->classes);
+    }
+
     public function getLastModified()
     {
         $time = 0;

@@ -43,6 +43,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->booleanNode('doctrine_support')->defaultTrue()->end()
+                            ->booleanNode('normalizable_support')->defaultTrue()->end()
                         ->end()
                     ->end()
                 ->end()

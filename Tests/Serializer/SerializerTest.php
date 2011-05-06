@@ -2,6 +2,8 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
+
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 
 use JMS\SerializerBundle\Metadata\MetadataFactory;
@@ -102,7 +104,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
         return new Serializer(
             new NativePhpTypeNormalizer(),
-            new PropertyBasedNormalizer(new MetadataFactory(new AnnotationDriver(new Reader())), $propertyNamingStrategy, $exclusionStrategyFactory),
+            new PropertyBasedNormalizer(new MetadataFactory(new AnnotationDriver(new Reader())), $propertyNamingStrategy, new UnserializeInstanceCreator(), $exclusionStrategyFactory),
             $customNormalizers,
             $encoders
         );

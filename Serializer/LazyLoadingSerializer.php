@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use Symfony\Component\Serializer\SerializerAwareInterface;
+use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 
 /**
  * Serializer that supports lazy-loading encoders.

@@ -2,6 +2,11 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer;
+
+use JMS\SerializerBundle\Serializer\Serializer;
+
+use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
 use JMS\SerializerBundle\Metadata\MetadataFactory;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Annotations\Reader;
@@ -11,7 +16,6 @@ use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
-use Symfony\Component\Serializer\Serializer;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
@@ -92,10 +96,14 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
         }
         $exclusionStrategyFactory = new ExclusionStrategyFactory($strategies);
 
-        $normalizer = new PropertyBasedNormalizer(new MetadataFactory($driver), $propertyNamingStrategy, $exclusionStrategyFactory);
+        $normalizer = new PropertyBasedNormalizer(new MetadataFactory($driver), $propertyNamingStrategy, new UnserializeInstanceCreator(), $exclusionStrategyFactory);
 
-        $serializer = new Serializer();
-        $serializer->addNormalizer($normalizer);
+        $serializer = new Serializer(
+            new NativePhpTypeNormalizer(),
+            $normalizer,
+            array(),
+            array()
+        );
 
         return $normalizer;
     }

@@ -18,6 +18,9 @@
         <parameter key="jms_serializer.native_php_type_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer</parameter>
         <parameter key="jms_serializer.property_based_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer</parameter>
         <parameter key="jms_serializer.array_collection_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\ArrayCollectionNormalizer</parameter>
+        <parameter key="jms_serializer.normalizable_object_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\NormalizableObjectNormalizer</parameter>
+
+        <parameter key="jms_serializer.unserialize_instance_creator.class">JMS\SerializerBundle\Serializer\UnserializeInstanceCreator</parameter>
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
         <parameter key="jms_serializer.all_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy</parameter>
@@ -80,6 +83,10 @@
         </service>
         <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
 
+        <!-- Instance Creators -->
+        <service id="jms_serializer.unserialize_instance_creator" class="%jms_serializer.unserialize_instance_creator.class%" public="false" />
+        <service id="jms_serializer.instance_creator" alias="jms_serializer.unserialize_instance_creator" public="false" />
+
         <!-- Normalizers -->
         <service id="jms_serializer.native_php_type_normalizer"
                  class="%jms_serializer.native_php_type_normalizer.class%"
@@ -90,11 +97,18 @@
                  public="false">
             <argument type="service" id="jms_serializer.metadata.metadata_factory" />
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.instance_creator" />
         </service>
         <service id="jms_serializer.array_collection_normalizer"
                  class="%jms_serializer.array_collection_normalizer.class%"
                  scope="prototype"
                  public="false" />
+        <service id="jms_serializer.normalizable_object_normalizer"
+                 class="%jms_serializer.normalizable_object_normalizer.class%"
+                 public="false"
+                 scope="prototype">
+             <argument type="service" id="jms_serializer.instance_creator" />
+        </service>
         <service id="jms_serializer.default_normalizer"
                  parent="jms_serializer.property_based_normalizer">
             <argument type="service" id="jms_serializer.default_exclusion_strategy_factory" />

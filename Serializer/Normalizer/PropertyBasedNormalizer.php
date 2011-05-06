@@ -18,18 +18,19 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
 use JMS\SerializerBundle\Metadata\MetadataFactory;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+use JMS\SerializerBundle\Serializer\InstanceCreatorInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
+use JMS\SerializerBundle\Serializer\Normalizer\AbstractNormalizer;
+use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
+use JMS\SerializerBundle\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Generic normalizer based on class properties.
@@ -41,12 +42,14 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
     private $metadataFactory;
     private $propertyNamingStrategy;
     private $exclusionStrategyFactory;
+    private $instanceCreator;
 
-    public function __construct(MetadataFactory $metadataFactory, PropertyNamingStrategyInterface $propertyNamingStrategy, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
+    public function __construct(MetadataFactory $metadataFactory, PropertyNamingStrategyInterface $propertyNamingStrategy, InstanceCreatorInterface $instanceCreator, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
         $this->metadataFactory = $metadataFactory;
         $this->propertyNamingStrategy = $propertyNamingStrategy;
         $this->exclusionStrategyFactory = $exclusionStrategyFactory;
+        $this->instanceCreator = $instanceCreator;
     }
 
     /**
@@ -92,7 +95,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         }
 
         $metadata = $this->metadataFactory->getMetadataForClass($type);
-        $object = unserialize(sprintf('O:%d:"%s":0:{}', strlen($type), $type));
+        $object = $this->instanceCreator->createInstance($metadata->getOutsideClass()->getReflection());
 
         foreach ($metadata->getClasses() as $classMetadata) {
             $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->getExclusionPolicy());

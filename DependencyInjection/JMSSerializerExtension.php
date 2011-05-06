@@ -51,6 +51,12 @@ class JMSSerializerExtension extends Extension
                 ->addTag('jms_serializer.normalizer')
             ;
         }
+        if ($config['normalization']['normalizable_support']) {
+            $container
+                ->getDefinition('jms_serializer.normalizable_object_normalizer')
+                ->addTag('jms_serializer.normalizer')
+            ;
+        }
 
         // versions
         if ($config['versions']) {

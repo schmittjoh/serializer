@@ -18,12 +18,20 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Serializer\Normalizer\NormalizableInterface;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
+use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
+ * Serializer implementation.
+ *
+ * This serializer distinuishes three different types of normalizers, one
+ * normalizer for native php types, one default normalizer for objects, and an
+ * arbitrary amount of specialized normalizers for specific object classes.
+ *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 class Serializer implements SerializerInterface
