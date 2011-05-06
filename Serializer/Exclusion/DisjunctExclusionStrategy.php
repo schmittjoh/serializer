@@ -20,6 +20,13 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
+/**
+ * A short circuiting implementation of the ExclusionStrategyInterface.
+ *
+ * This strategy is used to wrap several different exclusion strategies.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
     private $strategies;
@@ -29,6 +36,9 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->strategies = $strategies;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
         foreach ($this->strategies as $strategy) {

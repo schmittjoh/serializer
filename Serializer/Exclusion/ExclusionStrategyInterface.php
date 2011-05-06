@@ -30,5 +30,12 @@ use JMS\SerializerBundle\Metadata\PropertyMetadata;
  */
 interface ExclusionStrategyInterface
 {
+    /**
+     * Whether the property should be skipped during the normalization process.
+     *
+     * @param PropertyMetadata $property
+     *
+     * @return boolean
+     */
     function shouldSkipProperty(PropertyMetadata $property);
 }

@@ -20,7 +20,7 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
-class VersionExclusionStrategy
+class VersionExclusionStrategy implements ExclusionStrategyInterface
 {
     private $version;
 
@@ -29,6 +29,9 @@ class VersionExclusionStrategy
         $this->version = $version;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
         if ((null !== $version = $property->getSinceVersion()) && version_compare($this->version, $version, '<')) {

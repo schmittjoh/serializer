@@ -30,6 +30,11 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
+/**
+ * Generic normalizer based on class properties.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class PropertyBasedNormalizer extends SerializerAwareNormalizer
 {
     private $metadataFactory;
@@ -43,6 +48,9 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         $this->exclusionStrategyFactory = $exclusionStrategyFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function normalize($object, $format = null)
     {
         if (!is_object($object)) {
@@ -73,16 +81,9 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         return $normalized;
     }
 
-    public function supportsNormalization($data, $format = null)
-    {
-        return is_object($data);
-    }
-
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        return class_exists($type);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function denormalize($data, $type, $format = null)
     {
         if (!class_exists($type)) {
@@ -115,5 +116,21 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         }
 
         return $object;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsNormalization($data, $format = null)
+    {
+        return is_object($data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return class_exists($type);
     }
 }

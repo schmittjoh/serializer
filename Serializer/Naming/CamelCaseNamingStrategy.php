@@ -20,6 +20,11 @@ namespace JMS\SerializerBundle\Serializer\Naming;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
+/**
+ * Generic naming strategy which translates a camel-cased property name.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {
     private $separator;
@@ -31,6 +36,9 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
         $this->lowerCase = $lowerCase;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function translateName(PropertyMetadata $property)
     {
         $separator = &$this->separator;
@@ -38,9 +46,9 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
         $name = preg_replace('/[A-Z]/', $separator.'\\0', $property->getName());
 
         if ($this->lowerCase) {
-            $name = strtolower($name);
+            return strtolower($name);
         }
 
-        return $name;
+        return ucfirst($name);
     }
 }

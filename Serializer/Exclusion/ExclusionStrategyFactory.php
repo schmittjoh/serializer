@@ -20,6 +20,11 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
+/**
+ * ExclusionStrategyFactory implementation.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class ExclusionStrategyFactory implements ExclusionStrategyFactoryInterface
 {
     private $strategies;
@@ -29,6 +34,9 @@ class ExclusionStrategyFactory implements ExclusionStrategyFactoryInterface
         $this->strategies = $strategies;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getStrategy($name)
     {
         if (isset($this->strategies[$name])) {

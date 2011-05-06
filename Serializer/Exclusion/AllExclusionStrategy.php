@@ -20,8 +20,16 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
+/**
+ * ExclusionStrategy implementation that skips all properties by default.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class AllExclusionStrategy implements ExclusionStrategyInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
         return !$property->isExposed();

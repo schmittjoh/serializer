@@ -18,7 +18,22 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+/**
+ * Exclusion Strategy Factory interface.
+ *
+ * This interface allows different classes to have different exclusion
+ * strategies.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 interface ExclusionStrategyFactoryInterface
 {
+    /**
+     * Returns the exclusion strategy factory to use.
+     *
+     * @param string $name
+     *
+     * @return ExclusionStrategyInterface
+     */
     function getStrategy($name);
 }

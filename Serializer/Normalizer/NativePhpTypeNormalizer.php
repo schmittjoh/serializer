@@ -1,10 +1,31 @@
 <?php
 
+/*
+ * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
 use JMS\SerializerBundle\Exception\UnsupportedException;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
+/**
+ * Normalizer for native PHP types.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class NativePhpTypeNormalizer extends SerializerAwareNormalizer
 {
     private $dateTimeFormat;
@@ -14,6 +35,9 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
         $this->dateTimeFormat = $dateTimeFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function normalize($data, $format = null)
     {
         if (null === $data || is_scalar($data)) {
@@ -35,24 +59,9 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
         throw new UnsupportedException(sprintf('"%s" is not supported.', gettype($data)));
     }
 
-    public function supportsNormalization($data, $format = null)
-    {
-        return null === $data
-               || is_scalar($data)
-               || is_array($data)
-               || $data instanceof \DateTime
-               || $data instanceof \Traversable;
-    }
-
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        return 'boolean' === $type
-               || 'integer' === $type
-               || 'string' === $type
-               || 'DateTime' === $type
-               || 0 === strpos($type, 'array');
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function denormalize($data, $type, $format = null)
     {
         if ('boolean' === $type) {
@@ -104,5 +113,29 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
         }
 
         throw new UnsupportedException(sprintf('Unsupported type "%s".', $type));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsNormalization($data, $format = null)
+    {
+        return null === $data
+               || is_scalar($data)
+               || is_array($data)
+               || $data instanceof \DateTime
+               || $data instanceof \Traversable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return 'boolean' === $type
+               || 'integer' === $type
+               || 'string' === $type
+               || 'DateTime' === $type
+               || 0 === strpos($type, 'array');
     }
 }
