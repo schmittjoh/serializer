@@ -32,6 +32,21 @@ Then register the bundle with your kernel::
         // ...
     );
 
+This bundle also requires the Metadata library::
+
+    git submodule add https://github.com/schmittjoh/metadata.git vendor/metadata
+
+Make sure that you also register the namespaces with the autoloader::
+
+    // app/autoload.php
+    $loader->registerNamespaces(array(
+        // ...
+        'JMS'              => __DIR__.'/../vendor/bundles',
+        'Metadata'         => __DIR__.'/../vendor/metadata/src',
+        // ...
+    ));    
+
+
 Configuration
 -------------
 Below is the default configuration, you don't need to change it unless it doesn't
