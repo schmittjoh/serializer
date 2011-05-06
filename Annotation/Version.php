@@ -20,21 +20,16 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
-abstract class Version
+class Version
 {
-    private $version;
+    public $version;
 
-    protected function setVersion($version)
+    public function __construct(array $values)
     {
-        if (!is_scalar($version)) {
+        if (!isset($values['value']) || !is_scalar($values['value'])) {
             throw new RuntimeException('$version must be a scalar.');
         }
 
-        $this->version = $version;
-    }
-
-    public function getVersion()
-    {
-        return $this->version;
+        $this->version = $values['value'];
     }
 }

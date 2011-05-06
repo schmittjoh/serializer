@@ -18,57 +18,42 @@
 
 namespace JMS\SerializerBundle\Metadata;
 
-class PropertyMetadata implements \Serializable
+use Metadata\PropertyMetadata as BasePropertyMetadata;
+
+class PropertyMetadata extends BasePropertyMetadata
 {
-    public $class;
-    public $name;
-    public $reflection;
     public $sinceVersion;
     public $untilVersion;
     public $serializedName;
-    public $exposed;
-    public $excluded;
+    public $exposed = false;
+    public $excluded = false;
     public $type;
-
-    public function __construct($class, $name)
-    {
-        $this->class    = $class;
-        $this->name     = $name;
-        $this->exposed  = false;
-        $this->excluded = false;
-
-        $this->reflection = new \ReflectionProperty($class, $name);
-        $this->reflection->setAccessible(true);
-    }
 
     public function serialize()
     {
         return serialize(array(
-            $this->class,
-            $this->name,
             $this->sinceVersion,
             $this->untilVersion,
             $this->serializedName,
             $this->exposed,
             $this->excluded,
             $this->type,
+            parent::serialize(),
         ));
     }
 
     public function unserialize($str)
     {
         list(
-            $this->class,
-            $this->name,
             $this->sinceVersion,
             $this->untilVersion,
             $this->serializedName,
             $this->exposed,
             $this->excluded,
-            $this->type
+            $this->type,
+            $parentStr
         ) = unserialize($str);
 
-        $this->reflection = new \ReflectionProperty($this->class, $this->name);
-        $this->reflection->setAccessible(true);
+        parent::unserialize($parentStr);
     }
 }

@@ -7,7 +7,7 @@
     <parameters>
         <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
         
-        <parameter key="jms_serializer.metadata.metadata_factory.class">JMS\SerializerBundle\Metadata\MetadataFactory</parameter>
+        <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
     
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>

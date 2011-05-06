@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use Annotations\ReaderInterface;
+use Metadata\Driver\DriverInterface;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\Exclude;
 use JMS\SerializerBundle\Annotation\Expose;
@@ -43,7 +44,7 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new ClassMetadata($name = $class->getName());
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
-                $classMetadata->exclusionPolicy = $annot->getStrategy();
+                $classMetadata->exclusionPolicy = $annot->policy;
             }
         }
 
@@ -55,17 +56,17 @@ class AnnotationDriver implements DriverInterface
             $propertyMetadata = new PropertyMetadata($name, $property->getName());
             foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
                 if ($annot instanceof Since) {
-                    $propertyMetadata->sinceVersion = $annot->getVersion();
+                    $propertyMetadata->sinceVersion = $annot->version;
                 } else if ($annot instanceof Until) {
-                    $propertyMetadata->untilVersion = $annot->getVersion();
+                    $propertyMetadata->untilVersion = $annot->version;
                 } else if ($annot instanceof SerializedName) {
-                    $propertyMetadata->serializedName = $annot->getName();
+                    $propertyMetadata->serializedName = $annot->name;
                 } else if ($annot instanceof Expose) {
                     $propertyMetadata->exposed = true;
                 } else if ($annot instanceof Exclude) {
                     $propertyMetadata->excluded = true;
                 } else if ($annot instanceof Type) {
-                    $propertyMetadata->type = $annot->getName();
+                    $propertyMetadata->type = $annot->name;
                 }
             }
             $classMetadata->addPropertyMetadata($propertyMetadata);

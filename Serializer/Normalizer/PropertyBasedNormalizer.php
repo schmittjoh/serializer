@@ -18,12 +18,12 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
-use JMS\SerializerBundle\Metadata\MetadataFactory;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\InstanceCreatorInterface;
@@ -44,7 +44,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
     private $exclusionStrategyFactory;
     private $instanceCreator;
 
-    public function __construct(MetadataFactory $metadataFactory, PropertyNamingStrategyInterface $propertyNamingStrategy, InstanceCreatorInterface $instanceCreator, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory, PropertyNamingStrategyInterface $propertyNamingStrategy, InstanceCreatorInterface $instanceCreator, ExclusionStrategyFactoryInterface $exclusionStrategyFactory)
     {
         $this->metadataFactory = $metadataFactory;
         $this->propertyNamingStrategy = $propertyNamingStrategy;

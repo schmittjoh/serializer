@@ -22,7 +22,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 
 class SerializedName
 {
-    private $name;
+    public $name;
 
     public function __construct(array $values)
     {
@@ -31,10 +31,5 @@ class SerializedName
         }
 
         $this->name = $values['value'];
-    }
-
-    public function getName()
-    {
-        return $this->name;
     }
 }

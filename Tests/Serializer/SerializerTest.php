@@ -2,29 +2,26 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use Annotations\Reader;
+use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
-
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
-
-use JMS\SerializerBundle\Metadata\MetadataFactory;
-
 use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
 use JMS\SerializerBundle\Serializer\Normalizer\ArrayCollectionNormalizer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\SerializerFactory;
 use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\AnnotatedNamingStrategy;
-use Annotations\Reader;
 use JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer;
 use JMS\SerializerBundle\Serializer\Serializer;
+use JMS\SerializerBundle\Serializer\Encoder\JsonEncoder;
+use JMS\SerializerBundle\Serializer\Encoder\XmlEncoder;
 
 class SerializerTest extends \PHPUnit_Framework_TestCase
 {

@@ -22,7 +22,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 
 class ExclusionPolicy
 {
-    private $strategy;
+    public $policy;
 
     public function __construct(array $values)
     {
@@ -30,11 +30,6 @@ class ExclusionPolicy
             throw new RuntimeException('"value" must be a string.');
         }
 
-        $this->strategy = strtoupper($values['value']);
-    }
-
-    public function getStrategy()
-    {
-        return $this->strategy;
+        $this->policy = strtoupper($values['value']);
     }
 }

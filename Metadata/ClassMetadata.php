@@ -18,41 +18,27 @@
 
 namespace JMS\SerializerBundle\Metadata;
 
-class ClassMetadata implements \Serializable
+use Metadata\ClassMetadata as BaseClassMetadata;
+
+class ClassMetadata extends BaseClassMetadata
 {
-    public $name;
-    public $reflection;
-    public $properties = array();
     public $exclusionPolicy = 'NONE';
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-        $this->reflection = new \ReflectionClass($name);
-    }
-
-    public function addPropertyMetadata(PropertyMetadata $metadata)
-    {
-        $this->properties[$metadata->name] = $metadata;
-    }
 
     public function serialize()
     {
         return serialize(array(
-            $this->name,
-            $this->properties,
             $this->exclusionPolicy,
+            parent::serialize(),
         ));
     }
 
     public function unserialize($str)
     {
         list(
-            $this->name,
-            $this->properties,
-            $this->exclusionPolicy
+            $this->exclusionPolicy,
+            $parentStr
         ) = unserialize($str);
 
-        $this->reflection = new \ReflectionClass($this->name);
+        parent::unserialize($parentStr);
     }
 }

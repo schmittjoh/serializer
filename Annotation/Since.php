@@ -20,8 +20,4 @@ namespace JMS\SerializerBundle\Annotation;
 
 class Since extends Version
 {
-    public function __construct(array $values)
-    {
-        $this->setVersion($values['value']);
-    }
 }
