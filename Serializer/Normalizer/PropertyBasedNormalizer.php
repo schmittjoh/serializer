@@ -64,14 +64,14 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         $normalized = array();
         $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
-        foreach ($metadata->getClasses() as $classMetadata) {
-            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->getExclusionPolicy());
-            foreach ($classMetadata->getProperties() as $propertyMetadata) {
+        foreach ($metadata->classes as $classMetadata) {
+            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->exclusionPolicy);
+            foreach ($classMetadata->properties as $propertyMetadata) {
                 if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }
 
-                $value = $this->serializer->normalize($propertyMetadata->getReflection()->getValue($object), $format);
+                $value = $this->serializer->normalize($propertyMetadata->reflection->getValue($object), $format);
 
                 // skip null-value properties
                 if (null === $value) {
@@ -95,12 +95,12 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         }
 
         $metadata = $this->metadataFactory->getMetadataForClass($type);
-        $object = $this->instanceCreator->createInstance($metadata->getOutsideClass()->getReflection());
+        $object = $this->instanceCreator->createInstance(end($metadata->classes)->reflection);
 
-        foreach ($metadata->getClasses() as $classMetadata) {
-            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->getExclusionPolicy());
+        foreach ($metadata->classes as $classMetadata) {
+            $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->exclusionPolicy);
 
-            foreach ($classMetadata->getProperties() as $propertyMetadata) {
+            foreach ($classMetadata->properties as $propertyMetadata) {
                 if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }
@@ -110,12 +110,12 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                     continue;
                 }
 
-                if (null === $type = $propertyMetadata->getType()) {
-                    throw new RuntimeException(sprintf('You must define the type for %s::$%s.', $propertyMetadata->getClass(), $propertyMetadata->getName()));
+                if (null === $type = $propertyMetadata->type) {
+                    throw new RuntimeException(sprintf('You must define the type for %s::$%s.', $propertyMetadata->class, $propertyMetadata->name));
                 }
 
                 $value = $this->serializer->denormalize($data[$serializedName], $type, $format);
-                $propertyMetadata->getReflection()->setValue($object, $value);
+                $propertyMetadata->reflection->setValue($object, $value);
             }
         }
 

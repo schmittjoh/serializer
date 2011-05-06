@@ -43,7 +43,7 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
     {
         $separator = &$this->separator;
 
-        $name = preg_replace('/[A-Z]/', $separator.'\\0', $property->getName());
+        $name = preg_replace('/[A-Z]/', $separator.'\\0', $property->name);
 
         if ($this->lowerCase) {
             return strtolower($name);

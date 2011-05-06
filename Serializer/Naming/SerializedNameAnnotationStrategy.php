@@ -40,7 +40,7 @@ class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterfac
      */
     public function translateName(PropertyMetadata $property)
     {
-        if (null !== $name = $property->getSerializedName()) {
+        if (null !== $name = $property->serializedName) {
             return $name;
         }
 

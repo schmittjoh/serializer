@@ -32,6 +32,6 @@ class AllExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
-        return !$property->isExposed();
+        return !$property->exposed;
     }
 }

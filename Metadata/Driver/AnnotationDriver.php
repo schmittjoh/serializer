@@ -43,7 +43,7 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new ClassMetadata($name = $class->getName());
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
-                $classMetadata->setExclusionPolicy($annot->getStrategy());
+                $classMetadata->exclusionPolicy = $annot->getStrategy();
             }
         }
 
@@ -55,17 +55,17 @@ class AnnotationDriver implements DriverInterface
             $propertyMetadata = new PropertyMetadata($name, $property->getName());
             foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
                 if ($annot instanceof Since) {
-                    $propertyMetadata->setSinceVersion($annot->getVersion());
+                    $propertyMetadata->sinceVersion = $annot->getVersion();
                 } else if ($annot instanceof Until) {
-                    $propertyMetadata->setUntilVersion($annot->getVersion());
+                    $propertyMetadata->untilVersion = $annot->getVersion();
                 } else if ($annot instanceof SerializedName) {
-                    $propertyMetadata->setSerializedName($annot->getName());
+                    $propertyMetadata->serializedName = $annot->getName();
                 } else if ($annot instanceof Expose) {
-                    $propertyMetadata->setExposed(true);
+                    $propertyMetadata->exposed = true;
                 } else if ($annot instanceof Exclude) {
-                    $propertyMetadata->setExcluded(true);
+                    $propertyMetadata->excluded = true;
                 } else if ($annot instanceof Type) {
-                    $propertyMetadata->setType($annot->getName());
+                    $propertyMetadata->type = $annot->getName();
                 }
             }
             $classMetadata->addPropertyMetadata($propertyMetadata);

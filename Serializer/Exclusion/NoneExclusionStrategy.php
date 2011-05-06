@@ -32,6 +32,6 @@ class NoneExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
-        return $property->isExcluded();
+        return $property->excluded;
     }
 }

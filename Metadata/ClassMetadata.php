@@ -20,10 +20,10 @@ namespace JMS\SerializerBundle\Metadata;
 
 class ClassMetadata implements \Serializable
 {
-    private $name;
-    private $reflection;
-    private $properties = array();
-    private $exclusionPolicy = 'NONE';
+    public $name;
+    public $reflection;
+    public $properties = array();
+    public $exclusionPolicy = 'NONE';
 
     public function __construct($name)
     {
@@ -31,34 +31,9 @@ class ClassMetadata implements \Serializable
         $this->reflection = new \ReflectionClass($name);
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getReflection()
-    {
-        return $this->reflection;
-    }
-
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
     public function addPropertyMetadata(PropertyMetadata $metadata)
     {
-        $this->properties[$metadata->getName()] = $metadata;
-    }
-
-    public function getExclusionPolicy()
-    {
-        return $this->exclusionPolicy;
-    }
-
-    public function setExclusionPolicy($policy)
-    {
-        $this->exclusionPolicy = $policy;
+        $this->properties[$metadata->name] = $metadata;
     }
 
     public function serialize()

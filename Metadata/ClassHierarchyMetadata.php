@@ -20,21 +20,11 @@ namespace JMS\SerializerBundle\Metadata;
 
 class ClassHierarchyMetadata
 {
-    private $classes = array();
+    public $classes = array();
 
     public function addClass(ClassMetadata $class)
     {
-        $this->classes[$class->getName()] = $class;
-    }
-
-    public function getClasses()
-    {
-        return $this->classes;
-    }
-
-    public function getOutsideClass()
-    {
-        return end($this->classes);
+        $this->classes[$class->name] = $class;
     }
 
     public function getLastModified()
