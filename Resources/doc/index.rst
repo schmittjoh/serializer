@@ -60,12 +60,14 @@ use in your application code.
 The default serializer is used if you do not care about versioning::
 
     $serializer = $container->get('serializer');
+    $serializer->serialize(new MyObject(), 'json');
 
 The serializer factory can be used if you want to display a specific version of
 an object::
 
     $factory = $container->get('serializer_factory');
     $serializer = $factory->getSerializer('1.0.0');
+    $serializer->serialize(new MyVersionedObject(), 'json');
 
 Versioning
 ~~~~~~~~~~
@@ -118,6 +120,15 @@ and only mark these few properties::
 
 In the above example, only the "name" property will be included in the normalized
 representation.
+
+Customizing the Serialization Process
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are several ways how you can customize the serialization process:
+
+    1. Using annotations (see below)
+    2. Implementing NormalizableInterface
+    3. Adding a Custom Normalizer
 
 Annotations
 -----------
