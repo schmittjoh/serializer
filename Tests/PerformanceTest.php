@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle\Tests;
 
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -89,7 +90,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     private function printResults($test, $time, $iterations)
     {
         if (0 == $iterations) {
-            throw new \InvalidArgumentException('$iterations cannot be zero.');
+            throw new InvalidArgumentException('$iterations cannot be zero.');
         }
 
         $title = $test." results:\n";

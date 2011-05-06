@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -138,7 +139,7 @@ class Serializer implements SerializerInterface
     protected function getEncoder($format)
     {
         if (!isset($this->encoderMap[$format])) {
-            throw new \RuntimeException(sprintf('No encoder found for format "%s".', $format));
+            throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
         }
 
         return $this->encoderMap[$format];

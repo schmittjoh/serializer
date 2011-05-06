@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
@@ -72,7 +73,7 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
             return (string) $data;
         } else if ('DateTime' === $type) {
             if (!is_array($data) || !isset($data['time'], $data['timezone'])) {
-                throw new \RuntimeException('Invalid input data for type "DateTime".');
+                throw new RuntimeException('Invalid input data for type "DateTime".');
             }
 
             $date = new \DateTime($data['time']);
@@ -81,7 +82,7 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
             return $date;
         } else if (0 === strpos($type, 'array')) {
             if (!is_array($data)) {
-                throw new \RuntimeException('Invalid input data for type "array".');
+                throw new RuntimeException('Invalid input data for type "array".');
             }
 
             // unspecified array

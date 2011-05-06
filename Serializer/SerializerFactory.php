@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SerializerFactory
@@ -38,7 +39,7 @@ class SerializerFactory
         }
 
         if (!isset($this->serializerMap[$version])) {
-            throw new \RuntimeException(sprintf('There was no serializer configured for version "%s".', $version));
+            throw new RuntimeException(sprintf('There was no serializer configured for version "%s".', $version));
         }
 
         return $this->container->get($this->serializerMap[$version]);

@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
@@ -107,7 +108,7 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
                 }
 
                 if (null === $type = $propertyMetadata->getType()) {
-                    throw new \RuntimeException(sprintf('You must define the type for %s::$%s.', $propertyMetadata->getClass(), $propertyMetadata->getName()));
+                    throw new RuntimeException(sprintf('You must define the type for %s::$%s.', $propertyMetadata->getClass(), $propertyMetadata->getName()));
                 }
 
                 $value = $this->serializer->denormalize($data[$serializedName], $type, $format);

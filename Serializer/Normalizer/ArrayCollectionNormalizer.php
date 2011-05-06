@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
@@ -43,7 +44,7 @@ class ArrayCollectionNormalizer extends SerializerAwareNormalizer
     public function denormalize($data, $type, $format = null)
     {
         if (!is_array($data)) {
-            throw new \InvalidArgumentException('$data must be an array.');
+            throw new InvalidArgumentException('$data must be an array.');
         }
 
         if (!$this->supportsDenormalization($data, $type, $format)) {
