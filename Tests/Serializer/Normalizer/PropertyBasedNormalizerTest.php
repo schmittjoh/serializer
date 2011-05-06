@@ -3,11 +3,9 @@
 namespace JMS\SerializerBundle\Tests\Serializer\Normalizer;
 
 use JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer;
-
 use JMS\SerializerBundle\Serializer\Serializer;
-
 use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
-use JMS\SerializerBundle\Metadata\MetadataFactory;
+use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Annotations\Reader;
 use JMS\SerializerBundle\Tests\Fixtures\AllExcludedObject;

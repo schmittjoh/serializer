@@ -64,9 +64,9 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         $normalized = array();
         $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
-        foreach ($metadata->classes as $classMetadata) {
+        foreach ($metadata->classMetadata as $classMetadata) {
             $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->exclusionPolicy);
-            foreach ($classMetadata->properties as $propertyMetadata) {
+            foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
                 if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }
@@ -95,12 +95,12 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
         }
 
         $metadata = $this->metadataFactory->getMetadataForClass($type);
-        $object = $this->instanceCreator->createInstance(end($metadata->classes)->reflection);
+        $object = $this->instanceCreator->createInstance(end($metadata->classMetadata)->reflection);
 
-        foreach ($metadata->classes as $classMetadata) {
+        foreach ($metadata->classMetadata as $classMetadata) {
             $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->exclusionPolicy);
 
-            foreach ($classMetadata->properties as $propertyMetadata) {
+            foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
                 if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
                 }

@@ -12,8 +12,8 @@
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
 
-        <parameter key="jms_serializer.xml_encoder.class">Symfony\Component\Serializer\Encoder\XmlEncoder</parameter>
-        <parameter key="jms_serializer.json_encoder.class">Symfony\Component\Serializer\Encoder\JsonEncoder</parameter>
+        <parameter key="jms_serializer.xml_encoder.class">JMS\SerializerBundle\Serializer\Encoder\XmlEncoder</parameter>
+        <parameter key="jms_serializer.json_encoder.class">JMS\SerializerBundle\Serializer\Encoder\JsonEncoder</parameter>
 
         <parameter key="jms_serializer.native_php_type_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer</parameter>
         <parameter key="jms_serializer.property_based_normalizer.class">JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer</parameter>
