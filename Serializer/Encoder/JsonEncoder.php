@@ -13,14 +13,4 @@ class JsonEncoder implements EncoderInterface
     {
         return json_decode($data, true);
     }
-
-    public function supportsEncoding($data)
-    {
-        return true;
-    }
-
-    public function supportsDecoding($data)
-    {
-        return false;
-    }
 }

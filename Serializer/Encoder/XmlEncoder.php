@@ -84,16 +84,6 @@ class XmlEncoder implements EncoderInterface
         return $this->parseXml($xml);
     }
 
-    public function supportsEncoding($data)
-    {
-        return true;
-    }
-
-    public function supportsDecoding($data)
-    {
-        return true;
-    }
-
     /**
      * @param DOMNode $node
      * @param string $val

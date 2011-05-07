@@ -6,6 +6,4 @@ interface EncoderInterface
 {
     function encode($data);
     function decode($data);
-    function supportsEncoding($data);
-    function supportsDecoding($data);
 }
