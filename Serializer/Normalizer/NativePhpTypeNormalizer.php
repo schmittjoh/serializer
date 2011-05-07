@@ -71,6 +71,8 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
             return (integer) $data;
         } else if ('string' === $type) {
             return (string) $data;
+        } else if ('double' === $type) {
+            return (double) $data;
         } else if ('DateTime' === $type) {
             if (!is_array($data) || !isset($data['time'], $data['timezone'])) {
                 throw new RuntimeException('Invalid input data for type "DateTime".');
@@ -136,6 +138,7 @@ class NativePhpTypeNormalizer extends SerializerAwareNormalizer
         return 'boolean' === $type
                || 'integer' === $type
                || 'string' === $type
+               || 'double' === $type
                || 'DateTime' === $type
                || 0 === strpos($type, 'array');
     }
