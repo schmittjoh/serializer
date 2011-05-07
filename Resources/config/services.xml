@@ -8,6 +8,7 @@
         <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
         
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
+        <parameter key="jms_serializer.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
     
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
@@ -41,8 +42,17 @@
         <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.driver.annotation_driver" public="false" />
 
         <!-- Metadata Factory -->
+        <service id="jms_serializer.metadata.cache.file_cache" class="%jms_serializer.metadata.cache.file_cache.class%" public="false">
+            <argument /><!-- Directory -->
+        </service>
+        <service id="jms_serializer.metadata.cache" alias="jms_serializer.metadata.cache.file_cache" public="false" />
         <service id="jms_serializer.metadata.metadata_factory" class="%jms_serializer.metadata.metadata_factory.class%" public="false">
             <argument type="service" id="jms_serializer.metadata_driver" />
+            <argument>Metadata\ClassHierarchyMetadata</argument>
+            <argument />
+            <call method="setCache">
+                <argument type="service" id="jms_serializer.metadata.cache" on-invalid="ignore" />
+            </call>
         </service>
 
         <!-- Exclusion Strategies -->

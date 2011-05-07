@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Alias;
+
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -31,7 +33,7 @@ class JMSSerializerExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = $this->mergeConfigs($configs);
+        $config = $this->mergeConfigs($configs, $container->getParameter('kernel.debug'));
         $loader = new XmlFileLoader($container, new FileLocator(array(__DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
@@ -57,6 +59,29 @@ class JMSSerializerExtension extends Extension
                 ->addTag('jms_serializer.normalizer')
             ;
         }
+
+        // metadata
+        if ('none' === $config['metadata']['cache']) {
+            $container->removeAlias('jms_serializer.metadata.cache');
+        } else if ('file' === $config['metadata']['cache']) {
+            $container
+                ->getDefinition('jms_serializer.metadata.cache.file_cache')
+                ->replaceArgument(0, $config['metadata']['file_cache']['dir'])
+            ;
+
+            $dir = $container->getParameterBag()->resolveValue($config['metadata']['file_cache']['dir']);
+            if (!file_exists($dir)) {
+                if (!$rs = @mkdir($dir, 0777, true)) {
+                    throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
+                }
+            }
+        } else {
+            $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
+        }
+        $container
+            ->getDefinition('jms_serializer.metadata.metadata_factory')
+            ->replaceArgument(2, $config['metadata']['debug'])
+        ;
 
         // versions
         if ($config['versions']) {
@@ -124,10 +149,10 @@ class JMSSerializerExtension extends Extension
         }
     }
 
-    private function mergeConfigs(array $configs)
+    private function mergeConfigs(array $configs, $debug)
     {
         $processor = new Processor();
-        $config = new Configuration();
+        $config = new Configuration($debug);
 
         return $processor->process($config->getConfigTreeBuilder()->buildTree(), $configs);
     }

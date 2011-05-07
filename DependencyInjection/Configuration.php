@@ -23,6 +23,13 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    private $debug;
+
+    public function __construct($debug = false)
+    {
+        $this->debug = $debug;
+    }
+
     public function getConfigTreeBuilder()
     {
         $tb = new TreeBuilder();
@@ -44,6 +51,19 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->booleanNode('doctrine_support')->defaultTrue()->end()
                             ->booleanNode('normalizable_support')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('metadata')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('cache')->defaultValue('file')->end()
+                            ->booleanNode('debug')->defaultValue($this->debug)->end()
+                            ->arrayNode('file_cache')
+                                ->addDefaultsIfNotSet()
+                                ->children()
+                                    ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/serializer')
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()

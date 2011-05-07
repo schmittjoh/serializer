@@ -15,10 +15,30 @@ use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 
 class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
+    protected function tearDown()
+    {
+        // clear temporary directory
+        $dir = sys_get_temp_dir().'/serializer';
+        if (is_dir($dir)) {
+            foreach (new \RecursiveDirectoryIterator($dir) as $file) {
+                $filename = $file->getFileName();
+                if ('.' === $filename || '..' === $filename) {
+                    continue;
+                }
+
+                @unlink($file->getPathName());
+            }
+
+            @rmdir($dir);
+        }
+    }
+
     public function testLoad()
     {
         $extension = new JMSSerializerExtension();
         $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
         $container->set('annotation_reader', new Reader());
         $container->set('service_container', $container);
         $extension->load(array(array(
