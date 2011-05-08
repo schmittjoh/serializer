@@ -141,9 +141,9 @@ Customizing the Serialization Process
 
 There are several ways how you can customize the serialization process:
 
-    1. Using annotations (see below)
-    2. Implementing NormalizableInterface
-    3. Adding a Custom Normalizer
+1. Using annotations (see below)
+2. Implementing NormalizableInterface
+3. Adding a Custom Normalizer
 
 Wiring Custom Normalizers/Encoders
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,13 +152,13 @@ If you want to add custom normalizers, or encoders, you simply have to implement
 either the ``JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface`` or
 the ``JMS\SerializerBundle\Serializer\Encoder\EncoderInterface`` interface.
 
-For normalizers, you can then use the following tag:
+For normalizers, you can then use the following tag::
 
     <service id="my.custom.normalizer">
         <tag name="jms_serializer.normalizer" />
     </service>
 
-For encoders, you also have to pass the format:
+For encoders, you also have to pass the format::
 
     <service id="my.custom.xml.encoder">
         <tag name="jms_serializer.encoder" format="xml" />
