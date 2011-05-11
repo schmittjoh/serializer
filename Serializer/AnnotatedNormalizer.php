@@ -20,12 +20,12 @@ namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class AnnotatedNormalizer extends AbstractNormalizer
+class AnnotatedNormalizer extends SerializerAwareNormalizer
 {
     private $reader;
     private $propertyNamingStrategy;
@@ -38,12 +38,8 @@ class AnnotatedNormalizer extends AbstractNormalizer
         $this->exclusionStrategyFactory = $exclusionStrategyFactory;
     }
 
-    public function normalize($object, $format, $properties = null)
+    public function normalize($object, $format = null)
     {
-        if (null !== $properties) {
-            throw new \InvalidArgumentException('$properties must be declared via annotations.');
-        }
-
         // collect class hierarchy
         $class = new \ReflectionClass($object);
         $classes = $this->getClassHierarchy($class);
@@ -107,7 +103,12 @@ class AnnotatedNormalizer extends AbstractNormalizer
         }
     }
 
-    public function supports(\ReflectionClass $class, $format = null)
+    public function supportsNormalization($data, $format = null)
+    {
+        return true;
+    }
+
+    public function supportsDenormalization($data, $type, $format = null)
     {
         return true;
     }
