@@ -2,12 +2,12 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer\Normalizer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer;
 use JMS\SerializerBundle\Serializer\Serializer;
 use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
 use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
-use Annotations\Reader;
 use JMS\SerializerBundle\Tests\Fixtures\AllExcludedObject;
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
 use JMS\SerializerBundle\Serializer\Exclusion\DisjunctExclusionStrategy;
@@ -19,7 +19,6 @@ use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
-use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
 
 class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
@@ -73,7 +72,7 @@ class PropertyBasedNormalizerTest extends \PHPUnit_Framework_TestCase
 
     protected function getNormalizer($version = null)
     {
-        $driver = new AnnotationDriver(new Reader());
+        $driver = new AnnotationDriver(new AnnotationReader());
         $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy('_'));
 
         if (null === $version) {

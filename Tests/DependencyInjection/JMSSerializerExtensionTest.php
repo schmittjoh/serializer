@@ -2,11 +2,12 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Doctrine\Common\Annotations\AnnotationReader;
 
+use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use JMS\SerializerBundle\JMSSerializerBundle;
 
-use Annotations\Reader;
+use Doctrine\Common\Annotations\Reader;
 
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
 
@@ -39,7 +40,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
-        $container->set('annotation_reader', new Reader());
+        $container->set('annotation_reader', new AnnotationReader());
         $container->set('service_container', $container);
         $extension->load(array(array(
             'versions' => array('0.0.1', '1.1.1'),

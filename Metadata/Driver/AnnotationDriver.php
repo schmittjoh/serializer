@@ -18,8 +18,7 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
-use Annotations\ReaderInterface;
-use Metadata\Driver\DriverInterface;
+use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\Exclude;
 use JMS\SerializerBundle\Annotation\Expose;
@@ -29,12 +28,13 @@ use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    public function __construct(ReaderInterface $reader)
+    public function __construct(Reader $reader)
     {
         $this->reader = $reader;
     }

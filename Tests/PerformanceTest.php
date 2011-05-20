@@ -2,21 +2,15 @@
 
 namespace JMS\SerializerBundle\Tests;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
-
 use JMS\SerializerBundle\JMSSerializerBundle;
-
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
-
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
-
 use JMS\SerializerBundle\Tests\Fixtures\Author;
-
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
-use Annotations\Reader;
 use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
@@ -71,7 +65,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     private function getSerializer()
     {
         $container = new ContainerBuilder();
-        $container->set('annotation_reader', new Reader());
+        $container->set('annotation_reader', new AnnotationReader());
         $extension = new JMSSerializerExtension();
         $extension->load(array(array()), $container);
 
