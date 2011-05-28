@@ -32,8 +32,13 @@ class RegisterNormalizersPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('jms_serializer.normalizer') as $id => $attributes) {
             $def = $container->findDefinition($id);
             $strict = ContainerInterface::SCOPE_PROTOTYPE !== $def->getScope();
-            $normalizers[] = new Reference($id, ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $strict);
+            $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
+            $normalizers[$priority][] = new Reference($id, ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $strict);
         }
+
+        // sort by priority and flatten
+        krsort($normalizers);
+        $normalizers = call_user_func_array('array_merge', $normalizers);
 
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.serializer')) as $id) {
             $container
