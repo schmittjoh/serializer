@@ -51,9 +51,12 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
         $list = new AuthorList();
         $list->add(new Author('Bar'));
-        $normalized = $serializer->normalize($list);
 
+        $normalized = $serializer->normalize($list);
         $this->assertEquals(array(), $normalized);
+
+        $normalized = $serializer->normalize(array('foo'));
+        $this->assertEquals(array('foo'), $normalized);
     }
 
     public function testDenormalize()
