@@ -10,7 +10,9 @@ use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
+use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
+use JMS\SerializerBundle\Tests\Fixtures\NoopNormalizer;
 use JMS\SerializerBundle\Serializer\Normalizer\ArrayCollectionNormalizer;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\SerializerFactory;
@@ -43,6 +45,15 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
             ),
             'comments' => array(),
         ), $normalized);
+
+        $noop = new NoopNormalizer();
+        $serializer = $this->getSerializer(null, null, array($noop));
+
+        $list = new AuthorList();
+        $list->add(new Author('Bar'));
+        $normalized = $serializer->normalize($list);
+
+        $this->assertEquals(array(), $normalized);
     }
 
     public function testDenormalize()

@@ -73,16 +73,16 @@ class Serializer implements SerializerInterface
      */
     public final function normalize($data, $format = null)
     {
-        if ($this->nativePhpTypeNormalizer->supportsNormalization($data, $format)) {
-            return $this->nativePhpTypeNormalizer->normalize($data, $format);
-        }
-
         if ($this->customObjectNormalizers) {
             foreach ($this->customObjectNormalizers as $normalizer) {
                 if ($normalizer->supportsNormalization($data, $format)) {
                     return $normalizer->normalize($data, $format);
                 }
             }
+        }
+
+        if ($this->nativePhpTypeNormalizer->supportsNormalization($data, $format)) {
+            return $this->nativePhpTypeNormalizer->normalize($data, $format);
         }
 
         return $this->defaultObjectNormalizer->normalize($data, $format);
