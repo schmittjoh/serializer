@@ -73,7 +73,9 @@ class Serializer implements SerializerInterface
      */
     public final function normalize($data, $format = null)
     {
-        if (is_object($data) && $this->customObjectNormalizers) {
+        // needs to run first so that users can override the behavior for built-in
+        // interface like \Traversable, see #10
+        if ($this->customObjectNormalizers && is_object($data)) {
             foreach ($this->customObjectNormalizers as $normalizer) {
                 if ($normalizer->supportsNormalization($data, $format)) {
                     return $normalizer->normalize($data, $format);
