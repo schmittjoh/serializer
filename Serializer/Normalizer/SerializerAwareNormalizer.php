@@ -2,8 +2,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
+use JMS\SerializerBundle\Serializer\SerializerInterface;
 use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * SerializerAwareNormalizer base class.

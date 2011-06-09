@@ -19,11 +19,9 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Serializer\Normalizer\NormalizableInterface;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Serializer implementation.

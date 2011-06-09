@@ -2,7 +2,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\SerializerBundle\Serializer\SerializerInterface;
 
 /**
  * This interface can be implemented by domain objects if they contain the
