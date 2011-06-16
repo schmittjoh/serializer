@@ -42,6 +42,8 @@ class AnnotationDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $classMetadata = new ClassMetadata($name = $class->getName());
+        $classMetadata->fileResources[] = $class->getFilename();
+
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $classMetadata->exclusionPolicy = $annot->policy;
