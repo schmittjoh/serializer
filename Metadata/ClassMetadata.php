@@ -18,16 +18,31 @@
 
 namespace JMS\SerializerBundle\Metadata;
 
+use Metadata\MethodMetadata;
 use Metadata\ClassMetadata as BaseClassMetadata;
 
 class ClassMetadata extends BaseClassMetadata
 {
     public $exclusionPolicy = 'NONE';
+    public $preSerializeMethods = array();
+    public $postDeserializeMethods = array();
+
+    public function addPreSerializeMethod(MethodMetadata $method)
+    {
+        $this->preSerializeMethods[] = $method;
+    }
+
+    public function addPostDeserializeMethod(MethodMetadata $method)
+    {
+        $this->postDeserializeMethods[] = $method;
+    }
 
     public function serialize()
     {
         return serialize(array(
             $this->exclusionPolicy,
+            $this->preSerializeMethods,
+            $this->postDeserializeMethods,
             parent::serialize(),
         ));
     }
@@ -36,6 +51,8 @@ class ClassMetadata extends BaseClassMetadata
     {
         list(
             $this->exclusionPolicy,
+            $this->preSerializeMethods,
+            $this->postDeserializeMethods,
             $parentStr
         ) = unserialize($str);
 

@@ -66,6 +66,11 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
 
         foreach ($metadata->classMetadata as $classMetadata) {
             $exclusionStrategy = $this->exclusionStrategyFactory->getStrategy($classMetadata->exclusionPolicy);
+
+            foreach ($classMetadata->preSerializeMethods as $method) {
+                $method->invoke($object);
+            }
+
             foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
                 if ($exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
@@ -116,6 +121,10 @@ class PropertyBasedNormalizer extends SerializerAwareNormalizer
 
                 $value = $this->serializer->denormalize($data[$serializedName], $type, $format);
                 $propertyMetadata->reflection->setValue($object, $value);
+            }
+
+            foreach ($classMetadata->postDeserializeMethods as $method) {
+                $method->invoke($object);
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Serializer\UnserializeInstanceCreator;
@@ -87,6 +88,18 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
         $serialized = $serializer->serialize($post, 'json');
         $post2 = $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\BlogPost', 'json');
         $this->assertEquals($post, $post2);
+    }
+
+    public function testLifecycleCallbacks()
+    {
+        $serializer = $this->getSerializer();
+
+        $object = new ObjectWithLifecycleCallbacks();
+        $this->assertEquals(json_encode(array(
+            'name' => 'Foo Bar',
+        )), $serialized = $serializer->serialize($object, 'json'));
+
+        $this->assertEquals($object, $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks', 'json'));
     }
 
     private function getSerializer($propertyNamingStrategy = null, $encoders = null, $customNormalizers = null)
