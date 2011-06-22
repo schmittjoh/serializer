@@ -145,6 +145,12 @@ There are several ways how you can customize the serialization process:
 2. Implementing NormalizableInterface
 3. Adding a Custom Normalizer
 
+Lifecycle Callbacks
+~~~~~~~~~~~~~~~~~~~
+If you need to perform some clean-up of the object during serialization/deserialization,
+you may take advantage of two built-in lifecycle callbacks, see @PreSerialize and @PostDeserialize
+below.
+
 Wiring Custom Normalizers/Encoders
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -211,6 +217,16 @@ This annotation can be defined on a property to specify until which version this
 property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by 
 PHP's ``version_compare`` function.
+
+@PreSerialize
+~~~~~~~~~~~~~
+This annotation can be defined on a method which is supposed to be called before
+the serialization of the object starts.
+
+@PostDeserialize
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a method which is supposed to be called after
+the object has been deserialized.
 
 @Type
 ~~~~~
