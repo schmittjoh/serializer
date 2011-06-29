@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 
 /**
@@ -28,6 +29,11 @@ use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 class LazyLoadingSerializer extends Serializer
 {
     private $container;
+
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
     protected function getEncoder($format)
     {
