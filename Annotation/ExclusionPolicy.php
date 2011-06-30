@@ -20,7 +20,8 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
-class ExclusionPolicy
+/** @Annotation */
+final class ExclusionPolicy
 {
     public $policy;
 

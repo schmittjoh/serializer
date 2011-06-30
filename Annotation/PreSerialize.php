@@ -9,8 +9,9 @@ namespace JMS\SerializerBundle\Annotation;
  * These methods do not need to be public, and should do any clean-up, or
  * preparation of the object that is necessary.
  *
+ * @Annotation
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PreSerialize
+final class PreSerialize
 {
 }

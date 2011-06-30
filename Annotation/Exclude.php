@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-class Exclude
+/** @Annotation */
+final class Exclude
 {
 }

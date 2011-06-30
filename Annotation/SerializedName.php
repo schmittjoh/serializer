@@ -20,7 +20,8 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
-class SerializedName
+/** @Annotation */
+final class SerializedName
 {
     public $name;
 

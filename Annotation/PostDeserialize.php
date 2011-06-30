@@ -8,8 +8,9 @@ namespace JMS\SerializerBundle\Annotation;
  *
  * These methods do not necessarily have to be public.
  *
+ * @Annotation
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PostDeserialize
+final class PostDeserialize
 {
 }

@@ -20,7 +20,7 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
-class Version
+abstract class Version
 {
     public $version;
 

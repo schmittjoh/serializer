@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-class Until extends Version
+/** @Annotation */
+final class Until extends Version
 {
 }

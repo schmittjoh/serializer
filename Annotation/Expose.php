@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-class Expose
+/** @Annotation */
+final class Expose
 {
 }
