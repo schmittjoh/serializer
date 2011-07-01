@@ -18,12 +18,11 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Annotation\PostSerialize;
 use JMS\SerializerBundle\Annotation\PostDeserialize;
-
 use JMS\SerializerBundle\Annotation\PreSerialize;
-
+use JMS\SerializerBundle\Annotation\PreDeserialize;
 use Metadata\MethodMetadata;
-
 use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\Exclude;
@@ -91,6 +90,12 @@ class AnnotationDriver implements DriverInterface
                     continue 2;
                 } else if ($annot instanceof PostDeserialize) {
                     $classMetadata->addPostDeserializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof PostSerialize) {
+                    $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof PreDeserialize) {
+                    $classMetadata->addPreDeserializeMethod(new MethodMetadata($name, $method->getName()));
                     continue 2;
                 }
             }

@@ -98,8 +98,12 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode(array(
             'name' => 'Foo Bar',
         )), $serialized = $serializer->serialize($object, 'json'));
+        $this->assertAttributeEquals(null, 'name', $object);
 
-        $this->assertEquals($object, $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks', 'json'));
+        $deserializedObject = $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks', 'json');
+        $this->assertAttributeEquals('Foo', 'firstname', $deserializedObject);
+        $this->assertAttributeEquals('Bar', 'lastname', $deserializedObject);
+        $this->assertTrue($deserializedObject->preDeserializeCalled);
     }
 
     private function getSerializer($propertyNamingStrategy = null, $encoders = null, $customNormalizers = null)

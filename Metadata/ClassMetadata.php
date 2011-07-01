@@ -25,11 +25,23 @@ class ClassMetadata extends BaseClassMetadata
 {
     public $exclusionPolicy = 'NONE';
     public $preSerializeMethods = array();
+    public $postSerializeMethods = array();
+    public $preDeserializeMethods = array();
     public $postDeserializeMethods = array();
 
     public function addPreSerializeMethod(MethodMetadata $method)
     {
         $this->preSerializeMethods[] = $method;
+    }
+
+    public function addPostSerializeMethod(MethodMetadata $method)
+    {
+        $this->postSerializeMethods[] = $method;
+    }
+
+    public function addPreDeserializeMethod(MethodMetadata $method)
+    {
+        $this->preDeserializeMethods[] = $method;
     }
 
     public function addPostDeserializeMethod(MethodMetadata $method)
@@ -42,6 +54,8 @@ class ClassMetadata extends BaseClassMetadata
         return serialize(array(
             $this->exclusionPolicy,
             $this->preSerializeMethods,
+            $this->postSerializeMethods,
+            $this->preDeserializeMethods,
             $this->postDeserializeMethods,
             parent::serialize(),
         ));
@@ -52,6 +66,8 @@ class ClassMetadata extends BaseClassMetadata
         list(
             $this->exclusionPolicy,
             $this->preSerializeMethods,
+            $this->postSerializeMethods,
+            $this->preDeserializeMethods,
             $this->postDeserializeMethods,
             $parentStr
         ) = unserialize($str);
