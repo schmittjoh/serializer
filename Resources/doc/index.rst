@@ -71,6 +71,8 @@ Usage
 De-/Serializing Objects
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+::
+
     $serializer = $container->get('serializer');
     $serializer->serialize(new MyObject(), 'json');
     $serializer->serialize(new MyObject(), 'xml');
