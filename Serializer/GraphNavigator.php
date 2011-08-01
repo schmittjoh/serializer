@@ -78,9 +78,6 @@ final class GraphNavigator
             }
 
             $metadata = $this->metadataFactory->getMetadataForClass($type);
-            if (0 === strpos($type, 'ArrayCollection<')) {
-                die ('foo');
-            }
             if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
                 if ($isSerialization) {
                     $this->visiting->detach($data);
