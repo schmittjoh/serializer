@@ -37,27 +37,27 @@ class JMSSerializerExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(array(__DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
-        // normalization
+        // property naming
         $container
             ->getDefinition('jms_serializer.camel_case_naming_strategy')
-            ->addArgument($config['normalization']['naming']['separator'])
-            ->addArgument($config['normalization']['naming']['lower_case'])
+            ->addArgument($config['property_naming']['separator'])
+            ->addArgument($config['property_naming']['lower_case'])
         ;
-        $container
-            ->getDefinition('jms_serializer.native_php_type_normalizer')
-            ->addArgument($config['normalization']['date_format'])
-        ;
-        if ($config['normalization']['doctrine_support']) {
+
+        // datetime handler
+        if (isset($config['handlers']['datetime'])) {
             $container
-                ->getDefinition('jms_serializer.array_collection_normalizer')
-                ->addTag('jms_serializer.normalizer')
+                ->getDefinition('jms_serializer.datetime_handler')
+                ->addArgument($config['handlers']['datetime']['format'])
+                ->addArgument($config['handlers']['datetime']['default_timezone'])
             ;
+        } else {
+            $container->removeDefinition('jms_serializer.datetime_handler');
         }
-        if ($config['normalization']['normalizable_support']) {
-            $container
-                ->getDefinition('jms_serializer.normalizable_object_normalizer')
-                ->addTag('jms_serializer.normalizer')
-            ;
+
+        // array collection handler
+        if (!$config['handlers']['array_collection']) {
+            $container->removeDefinition('jms_serializer.array_collection_handler');
         }
 
         // metadata
@@ -72,81 +72,16 @@ class JMSSerializerExtension extends Extension
             $dir = $container->getParameterBag()->resolveValue($config['metadata']['file_cache']['dir']);
             if (!file_exists($dir)) {
                 if (!$rs = @mkdir($dir, 0777, true)) {
-                    throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
+                    throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
                 }
             }
         } else {
             $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
         }
         $container
-            ->getDefinition('jms_serializer.metadata.metadata_factory')
+            ->getDefinition('jms_serializer.metadata_factory')
             ->replaceArgument(2, $config['metadata']['debug'])
         ;
-
-        // versions
-        if ($config['versions']) {
-            $serializers = array();
-            foreach ($config['versions'] as $version) {
-                $id = md5($version).sha1($version);
-
-                $container
-                    ->setDefinition(
-                        $allDefId = 'jms_serializer.disjunct_exclusion_strategy.all.'.$id,
-                        $allDef = new DefinitionDecorator('jms_serializer.disjunct_exclusion_strategy')
-                    )
-                ;
-                $container
-                    ->setDefinition(
-                        $noneDefId = 'jms_serializer.disjunct_exclusion_strategy.none.'.$id,
-                        $noneDef = new DefinitionDecorator('jms_serializer.disjunct_exclusion_strategy')
-                    )
-                ;
-
-                $versionExDef = new DefinitionDecorator('jms_serializer.version_exclusion_strategy');
-                $versionExDef->addArgument($version);
-                $container->setDefinition($versionExDefId = 'jms_serializer.version_exclusion_strategy.'.$id, $versionExDef);
-
-                $allDef->addArgument(array(
-                    new Reference($versionExDefId),
-                    new Reference('jms_serializer.all_exclusion_strategy'),
-                ));
-                $noneDef->addArgument(array(
-                    new Reference($versionExDefId),
-                    new Reference('jms_serializer.none_exclusion_strategy'),
-                ));
-
-                $strategies = array(
-                    'ALL' => new Reference($allDefId),
-                    'NONE' => new Reference($noneDefId),
-                );
-
-                $container->setDefinition(
-                    $factoryDefId = 'jms_serializer.exclusion_strategy_factory.'.$id,
-                    $factoryDef = new DefinitionDecorator('jms_serializer.exclusion_strategy_factory')
-                );
-                $factoryDef->addArgument($strategies);
-
-                $container->setDefinition(
-                    $propertyBasedDefId = 'jms_serializer.property_based_normalizer.'.$id,
-                    $propertyBasedDef = new DefinitionDecorator('jms_serializer.property_based_normalizer')
-                );
-                $propertyBasedDef->addArgument(new Reference($factoryDefId));
-
-                $container->setDefinition(
-                    $serDefId = 'jms_serializer.serializer.'.$id,
-                    $serDef = new DefinitionDecorator('jms_serializer.serializer')
-                );
-                $serDef->addTag('jms_serializer.serializer');
-                $serDef->addArgument(new Reference($propertyBasedDefId));
-
-                $serializers[$version] = $serDefId;
-            }
-
-            $container
-                ->getDefinition('jms_serializer.serializer_factory')
-                ->addArgument($serializers)
-            ;
-        }
     }
 
     private function mergeConfigs(array $configs, $debug)

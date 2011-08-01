@@ -46,6 +46,8 @@ Make sure that you also register the namespaces with the autoloader::
         // ...
     ));    
 
+Note: You need to use the master branch of the metadata library.
+
 
 Configuration
 -------------
@@ -53,36 +55,28 @@ Below is the default configuration, you don't need to change it unless it doesn'
 suit your needs::
 
     jms_serializer:
-        normalization:
-            date_format: Y-m-d\TH:i:sO
-            naming:
-                separator:  _
-                lower_case: true
-            doctrine_support: true
+        handlers:
+            datetime:
+                format: Y-m-dTH:i:s
+                default_timezone: UTC
+            array_collection: true
             
-            # An array of version numbers: [1.0.0, 1.0.1, ...]
-            versions: []
+        property_naming:
+            separator:  _
+            lower_case: true
 
 Usage
 -----
 
-Factory vs. Default Instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The bundle configures a factory, and a default serializer for you that you can
-use in your application code.
-
-The default serializer is used if you do not care about versioning::
+De-/Serializing Objects
+~~~~~~~~~~~~~~~~~~~~~~~
 
     $serializer = $container->get('serializer');
     $serializer->serialize(new MyObject(), 'json');
+    $serializer->serialize(new MyObject(), 'xml');
 
-The serializer factory can be used if you want to display a specific version of
-an object::
-
-    $factory = $container->get('serializer_factory');
-    $serializer = $factory->getSerializer('1.0.0');
-    $serializer->serialize(new MyVersionedObject(), 'json');
+The serializer supports JSON, and XML out-of-the-box, and can also handle
+many custom XML features (see below).
 
 Versioning
 ~~~~~~~~~~
@@ -109,17 +103,31 @@ standardized PHP version number.
         private $name2;
     }
 
-Changing the Exclusion Policy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you have annotated your objects like above, you can serializing different 
+versions like this::
+
+    <?php
+    
+    $serializer->setVersion('1.0');
+    $serializer->serialize(new VersionObject(), 'json');
+
+
+Defining which properties should be serialized
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default exclusion policy is to exclude nothing, that is all properties of the
-object will be included in the normalized representation. If you only want to
-expose a few of the properties, then it is easier to change the exclusion policy,
-and only mark these few properties::
+object will be serialized. If you only want to expose a few of the properties, 
+then it is easier to change the exclusion policy, and only mark these few properties::
 
     <?php
 
+    use JMS\SerializerBundle\Annotation\ExclusionPolicy;
+    use JMS\SerializerBundle\Annotation\Expose;
+
     /**
+     * The following annotations tells the serializer to skip all properties which
+     * have not marked with @Expose.
+     *
      * @ExclusionPolicy("all")
      */
     class MyObject
@@ -133,42 +141,10 @@ and only mark these few properties::
         private $name;
     }
 
-In the above example, only the "name" property will be included in the normalized
-representation.
-
-Customizing the Serialization Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-There are several ways how you can customize the serialization process:
-
-1. Using annotations (see below)
-2. Implementing NormalizableInterface
-3. Adding a Custom Normalizer
-
 Lifecycle Callbacks
 ~~~~~~~~~~~~~~~~~~~
-If you need to perform some clean-up of the object during serialization/deserialization,
-you may take advantage of two built-in lifecycle callbacks, see @PreSerialize and @PostDeserialize
-below.
-
-Wiring Custom Normalizers/Encoders
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you want to add custom normalizers, or encoders, you simply have to implement
-either the ``JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface`` or
-the ``JMS\SerializerBundle\Serializer\Encoder\EncoderInterface`` interface.
-
-For normalizers, you can then use the following tag::
-
-    <service id="my.custom.normalizer">
-        <tag name="jms_serializer.normalizer" />
-    </service>
-
-For encoders, you also have to pass the format::
-
-    <service id="my.custom.xml.encoder">
-        <tag name="jms_serializer.encoder" format="xml" />
-    </service>
+If you need to run some custom logic during the serialization process, you can use
+one of these lifecycle callbacks: @PerSerialize, @PostSerialize, or @PostDeserialize
 
 Annotations
 -----------
@@ -222,6 +198,11 @@ PHP's ``version_compare`` function.
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
 the serialization of the object starts.
+
+@PostSerialize
+~~~~~~~~~~~~~~
+This annotation can be defined on a method which is then called directly after the
+object has been serialized.
 
 @PostDeserialize
 ~~~~~~~~~~~~~~~~
@@ -308,3 +289,94 @@ Examples::
          */
         private $keyValueStore;
     }
+
+@XmlRoot
+~~~~~~~~
+This allows you to specify the name of the top-level element.
+
+    <?php
+    
+    use JMS\SerializerBundle\Annotation\XmlRoot;
+    
+    /** @XmlRoot("user") */
+    class User
+    {
+        private $name = 'Johannes';
+    }
+    
+Resulting XML:
+
+    <user>
+        <name><![CDATA[Johannes]]></name>
+    </user>
+
+@XmlAttribute
+~~~~~~~~~~~~~
+This allows you to mark properties which should be set as attributes,
+and not as child elements.
+
+    <?php
+    
+    use JMS\SerializerBundle\Annotation\XmlAttribute;
+    
+    class User
+    {
+        /** @XmlAttribute */
+        private $id = 1;
+        private $name = 'Johannes';
+    }
+    
+Resulting XML:
+
+    <result id="1">
+        <name><![CDATA[Johannes]]></name>
+    </result>
+
+@XmlList
+~~~~~~~~
+This allows you to define several properties of how arrays should be
+serialized. This is very similar to @XmlMap, and should be used if the
+keys of the array are not important.
+
+    <?php
+    
+    use JMS\SerializerBundle\Annotation\XmlList;
+    use JMS\SerializerBundle\Annotation\XmlRoot;
+    
+    /** @XmlRoot("post") */
+    class Post
+    {
+        /**
+         * @XmlList(inline = true, entry = "comment")
+         */
+        private $comments = array(
+            new Comment('Foo'),
+            new Comment('Bar'),
+        );
+    }
+    
+    class Comment
+    {
+        private $text;
+        
+        public function __construct($text)
+        {
+            $this->text = $text;
+        }
+    }
+
+Resulting XML:
+
+    <post>
+        <comment>
+            <text><![CDATA[Foo]]></text>
+        </comment>
+        <comment>
+            <text><![CDATA[Bar]]></text>
+        </comment>
+    </post>
+
+@XmlMap
+~~~~~~~
+Similar to @XmlList, but the keys of the array are meaningful.    
+    

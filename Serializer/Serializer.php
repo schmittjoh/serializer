@@ -18,138 +18,78 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Serializer\Normalizer\NormalizableInterface;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * Serializer implementation.
- *
- * This serializer distinuishes three different types of normalizers, one
- * normalizer for native php types, one default normalizer for objects, and an
- * arbitrary amount of specialized normalizers for specific object classes.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- */
 class Serializer implements SerializerInterface
 {
-    private $nativePhpTypeNormalizer;
-    private $customObjectNormalizers;
-    private $defaultObjectNormalizer;
-    private $encoderMap;
+    private $factory;
+    private $serializationVisitors;
+    private $deserializationVisitors;
+    private $exclusionStrategy;
 
-    public function __construct(NormalizerInterface $nativePhpNormalizer, NormalizerInterface $defaultObjectNormalizer, array $customObjectNormalizers = array(), array $encoderMap = array())
+    public function __construct(MetadataFactoryInterface $factory, array $serializationVisitors = array(), array $deserializationVisitors = array())
     {
-        if ($nativePhpNormalizer instanceof SerializerAwareInterface) {
-            $nativePhpNormalizer->setSerializer($this);
-        }
-        $this->nativePhpTypeNormalizer = $nativePhpNormalizer;
-
-        if ($defaultObjectNormalizer instanceof SerializerAwareInterface) {
-            $defaultObjectNormalizer->setSerializer($this);
-        }
-        $this->defaultObjectNormalizer = $defaultObjectNormalizer;
-
-        foreach ($customObjectNormalizers as $normalizer) {
-            if ($normalizer instanceof SerializerAwareInterface) {
-                $normalizer->setSerializer($this);
-            }
-        }
-        $this->customObjectNormalizers = $customObjectNormalizers;
-
-        foreach ($encoderMap as $encoder) {
-            if ($encoder instanceof SerializerAwareInterface) {
-                $encoder->setSerializer($this);
-            }
-        }
-        $this->encoderMap = $encoderMap;
+        $this->factory = $factory;
+        $this->serializationVisitors = $serializationVisitors;
+        $this->deserializationVisitors = $deserializationVisitors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public final function normalize($data, $format = null)
+    public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
     {
-        // needs to run first so that users can override the behavior for built-in
-        // interface like \Traversable, see #10
-        if ($this->customObjectNormalizers && is_object($data)) {
-            foreach ($this->customObjectNormalizers as $normalizer) {
-                if ($normalizer->supportsNormalization($data, $format)) {
-                    return $normalizer->normalize($data, $format);
-                }
-            }
+        $this->exclusionStrategy = $exclusionStrategy;
+    }
+
+    public function setVersion($version)
+    {
+        if (null === $version) {
+            $this->exclusionStrategy = null;
+
+            return;
         }
 
-        if ($this->nativePhpTypeNormalizer->supportsNormalization($data, $format)) {
-            return $this->nativePhpTypeNormalizer->normalize($data, $format);
+        $this->exclusionStrategy = new VersionExclusionStrategy($version);
+    }
+
+    public function serialize($data, $format)
+    {
+        $visitor = $this->getSerializationVisitor($format);
+        $visitor->setNavigator($navigator = new GraphNavigator($this->factory, $this->exclusionStrategy));
+        $navigator->accept($visitor->preProcess($data), null, $visitor);
+
+        return $visitor->getResult();
+    }
+
+    public function deserialize($data, $type, $format)
+    {
+        $visitor = $this->getDeserializationVisitor($format);
+        $visitor->setNavigator($navigator = new GraphNavigator($this->factory, $this->exclusionStrategy));
+        $navigator->accept($visitor->preProcess($data), $type, $visitor);
+
+        return $visitor->getResult();
+    }
+
+    protected function getDeserializationVisitor($format)
+    {
+        if (!isset($this->deserializationVisitors[$format])) {
+            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $format));
         }
 
-        return $this->defaultObjectNormalizer->normalize($data, $format);
+        return $this->deserializationVisitors[$format];
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public final function denormalize($data, $type, $format = null)
+    protected function getSerializationVisitor($format)
     {
-        if ($this->nativePhpTypeNormalizer->supportsDenormalization($data, $type, $format)) {
-            return $this->nativePhpTypeNormalizer->denormalize($data, $type, $format);
+        if (!isset($this->serializationVisitors[$format])) {
+            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $format));
         }
 
-        if ($this->customObjectNormalizers) {
-            foreach ($this->customObjectNormalizers as $normalizer) {
-                if ($normalizer->supportsDenormalization($data, $type, $format)) {
-                    return $normalizer->denormalize($data, $type, $format);
-                }
-            }
-        }
-
-        return $this->defaultObjectNormalizer->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function serialize($data, $format)
-    {
-        $data = $this->normalize($data, $format);
-
-        return $this->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function deserialize($data, $type, $format)
-    {
-        $data = $this->decode($data, $format);
-
-        return $this->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function encode($data, $format)
-    {
-        return $this->getEncoder($format)->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function decode($data, $format)
-    {
-        return $this->getEncoder($format)->decode($data, $format);
-    }
-
-    protected function getEncoder($format)
-    {
-        if (!isset($this->encoderMap[$format])) {
-            throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
-        }
-
-        return $this->encoderMap[$format];
+        return $this->serializationVisitors[$format];
     }
 }

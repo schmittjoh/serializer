@@ -18,20 +18,26 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 /**
  * Interface for exclusion strategies.
- *
- * The implementation should be skipped in the serialization/unserialization
- * process.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 interface ExclusionStrategyInterface
 {
     /**
-     * Whether the property should be skipped during the normalization process.
+     * Whether the class should be skipped.
+     *
+     * @param ClassMetadata $metadata
+     * @return boolean
+     */
+    function shouldSkipClass(ClassMetadata $metadata);
+
+    /**
+     * Whether the property should be skipped.
      *
      * @param PropertyMetadata $property
      *

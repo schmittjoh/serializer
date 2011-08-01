@@ -25,9 +25,12 @@ class PropertyMetadata extends BasePropertyMetadata
     public $sinceVersion;
     public $untilVersion;
     public $serializedName;
-    public $exposed = false;
-    public $excluded = false;
     public $type;
+    public $xmlCollection = false;
+    public $xmlCollectionInline;
+    public $xmlEntryName;
+    public $xmlKeyAttribute;
+    public $xmlAttribute = false;
 
     public function serialize()
     {
@@ -35,9 +38,12 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->sinceVersion,
             $this->untilVersion,
             $this->serializedName,
-            $this->exposed,
-            $this->excluded,
             $this->type,
+            $this->xmlCollection,
+            $this->xmlCollectionInline,
+            $this->xmlEntryName,
+            $this->xmlKeyAttribute,
+            $this->xmlAttribute,
             parent::serialize(),
         ));
     }
@@ -48,9 +54,12 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->sinceVersion,
             $this->untilVersion,
             $this->serializedName,
-            $this->exposed,
-            $this->excluded,
             $this->type,
+            $this->xmlCollection,
+            $this->xmlCollectionInline,
+            $this->xmlEntryName,
+            $this->xmlKeyAttribute,
+            $this->xmlAttribute,
             $parentStr
         ) = unserialize($str);
 

@@ -19,13 +19,7 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
 
-/**
- * Serializer that supports lazy-loading encoders.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- */
 class LazyLoadingSerializer extends Serializer
 {
     private $container;
@@ -35,18 +29,25 @@ class LazyLoadingSerializer extends Serializer
         $this->container = $container;
     }
 
-    protected function getEncoder($format)
+    protected function getDeserializationVisitor($format)
     {
-        $encoder = parent::getEncoder($format);
+        $visitor = parent::getDeserializationVisitor($format);
 
-        if (is_string($encoder)) {
-            $encoder = $this->container->get($encoder);
-
-            if ($encoder instanceof SerializerAwareInterface) {
-                $encoder->setSerializer($this);
-            }
+        if ($visitor instanceof VisitorInterface) {
+            return $visitor;
         }
 
-        return $encoder;
+        return $this->container->get($visitor);
+    }
+
+    protected function getSerializationVisitor($format)
+    {
+        $visitor = parent::getSerializationVisitor($format);
+
+        if ($visitor instanceof VisitorInterface) {
+            return $visitor;
+        }
+
+        return $this->container->get($visitor);
     }
 }

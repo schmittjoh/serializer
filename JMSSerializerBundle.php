@@ -18,8 +18,8 @@
 
 namespace JMS\SerializerBundle;
 
-use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterNormalizersPass;
-use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEncodersPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\SetCustomHandlersPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,7 +27,7 @@ class JMSSerializerBundle extends Bundle
 {
     public function build(ContainerBuilder $builder)
     {
-        $builder->addCompilerPass(new RegisterNormalizersPass());
-        $builder->addCompilerPass(new RegisterEncodersPass());
+        $builder->addCompilerPass(new SetVisitorsPass());
+        $builder->addCompilerPass(new SetCustomHandlersPass());
     }
 }

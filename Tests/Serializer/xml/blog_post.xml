@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blog-post created_at="2011-07-30T00:00:00+0000" is_published="false">
+  <title><![CDATA[This is a nice title.]]></title>
+  <comment>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[foo]]></text>
+  </comment>
+  <author>
+    <full_name><![CDATA[Foo Bar]]></full_name>
+  </author>
+</blog-post>

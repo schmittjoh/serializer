@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
+use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class VersionExclusionStrategy implements ExclusionStrategyInterface
@@ -27,6 +28,11 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
     public function __construct($version)
     {
         $this->version = $version;
+    }
+
+    public function shouldSkipClass(ClassMetadata $metadata)
+    {
+        return false;
     }
 
     /**

@@ -18,16 +18,17 @@
 
 namespace JMS\SerializerBundle\Metadata;
 
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
-use Metadata\ClassMetadata as BaseClassMetadata;
+use Metadata\MergeableClassMetadata;
 
-class ClassMetadata extends BaseClassMetadata
+class ClassMetadata extends MergeableClassMetadata
 {
-    public $exclusionPolicy = 'NONE';
     public $preSerializeMethods = array();
     public $postSerializeMethods = array();
-    public $preDeserializeMethods = array();
     public $postDeserializeMethods = array();
+    public $xmlRootName;
 
     public function addPreSerializeMethod(MethodMetadata $method)
     {
@@ -39,24 +40,31 @@ class ClassMetadata extends BaseClassMetadata
         $this->postSerializeMethods[] = $method;
     }
 
-    public function addPreDeserializeMethod(MethodMetadata $method)
-    {
-        $this->preDeserializeMethods[] = $method;
-    }
-
     public function addPostDeserializeMethod(MethodMetadata $method)
     {
         $this->postDeserializeMethods[] = $method;
     }
 
+    public function merge(MergeableInterface $object)
+    {
+        if (!$object instanceof ClassMetadata) {
+            throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
+        }
+        parent::merge($object);
+
+        $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
+        $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
+        $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
+        $this->xmlRootName = $object->xmlRootName;
+    }
+
     public function serialize()
     {
         return serialize(array(
-            $this->exclusionPolicy,
             $this->preSerializeMethods,
             $this->postSerializeMethods,
-            $this->preDeserializeMethods,
             $this->postDeserializeMethods,
+            $this->xmlRootName,
             parent::serialize(),
         ));
     }
@@ -64,11 +72,10 @@ class ClassMetadata extends BaseClassMetadata
     public function unserialize($str)
     {
         list(
-            $this->exclusionPolicy,
             $this->preSerializeMethods,
             $this->postSerializeMethods,
-            $this->preDeserializeMethods,
             $this->postDeserializeMethods,
+            $this->xmlRootName,
             $parentStr
         ) = unserialize($str);
 

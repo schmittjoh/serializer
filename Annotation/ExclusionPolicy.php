@@ -23,6 +23,9 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 /** @Annotation */
 final class ExclusionPolicy
 {
+    const NONE = 'NONE';
+    const ALL  = 'ALL';
+
     public $policy;
 
     public function __construct(array $values)
@@ -32,5 +35,9 @@ final class ExclusionPolicy
         }
 
         $this->policy = strtoupper($values['value']);
+
+        if (self::NONE !== $this->policy && self::ALL !== $this->policy) {
+            throw new RuntimeException('Exclusion policy must either be "ALL", or "NONE".');
+        }
     }
 }

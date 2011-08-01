@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <entry><![CDATA[foo]]></entry>
+  <entry>1</entry>
+  <entry>true</entry>
+  <entry>
+    <foo><![CDATA[foo]]></foo>
+    <moo><![CDATA[bar]]></moo>
+    <camel_case><![CDATA[boo]]></camel_case>
+  </entry>
+  <entry>
+    <entry>1</entry>
+    <entry>3</entry>
+    <entry>true</entry>
+  </entry>
+</result>
