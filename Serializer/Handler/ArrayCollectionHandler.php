@@ -30,7 +30,7 @@ class ArrayCollectionHandler implements DeserializationHandlerInterface
         }
 
         $visited = true;
-        $elements = $visitor->getNavigator()->accept($data, 'array'.substr($type, 15), $visitor);
+        $elements = $visitor->visitArray($data, 'array'.substr($type, 15));
 
         return new ArrayCollection($elements);
     }
