@@ -294,6 +294,8 @@ Examples::
 ~~~~~~~~
 This allows you to specify the name of the top-level element.
 
+::
+
     <?php
     
     use JMS\SerializerBundle\Annotation\XmlRoot;
@@ -304,7 +306,7 @@ This allows you to specify the name of the top-level element.
         private $name = 'Johannes';
     }
     
-Resulting XML:
+Resulting XML::
 
     <user>
         <name><![CDATA[Johannes]]></name>
@@ -314,6 +316,8 @@ Resulting XML:
 ~~~~~~~~~~~~~
 This allows you to mark properties which should be set as attributes,
 and not as child elements.
+
+::
 
     <?php
     
@@ -326,7 +330,7 @@ and not as child elements.
         private $name = 'Johannes';
     }
     
-Resulting XML:
+Resulting XML::
 
     <result id="1">
         <name><![CDATA[Johannes]]></name>
@@ -337,6 +341,8 @@ Resulting XML:
 This allows you to define several properties of how arrays should be
 serialized. This is very similar to @XmlMap, and should be used if the
 keys of the array are not important.
+
+::
 
     <?php
     
@@ -365,7 +371,7 @@ keys of the array are not important.
         }
     }
 
-Resulting XML:
+Resulting XML::
 
     <post>
         <comment>
