@@ -119,12 +119,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             $listType = substr($type, 6, -1);
 
             $result = array();
-            foreach ($data as $v) {
-                $result[] = $this->navigator->accept($v, $listType, $this);
+            if (null === $this->result) {
+                $this->result = &$result;
             }
 
-            if (null === $this->result) {
-                $this->result = $result;
+            foreach ($data as $v) {
+                $result[] = $this->navigator->accept($v, $listType, $this);
             }
 
             return $result;
@@ -135,12 +135,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         $entryType = trim(substr($type, $pos+1, -1));
 
         $result = array();
-        foreach ($data as $k => $v) {
-            $result[$this->navigator->accept($k, $keyType, $this)] = $this->navigator->accept($v, $entryType, $this);
+        if (null === $this->result) {
+            $this->result = &$result;
         }
 
-        if (null === $this->result) {
-            $this->result = $result;
+        foreach ($data as $k => $v) {
+            $result[$this->navigator->accept($k, $keyType, $this)] = $this->navigator->accept($v, $entryType, $this);
         }
 
         return $result;

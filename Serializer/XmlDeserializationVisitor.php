@@ -80,7 +80,15 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, $type)
     {
-        $data = (Boolean) $data;
+        $data = (string) $data;
+
+        if ('true' === $data) {
+            $data = true;
+        } else if ('false' === $data) {
+            $data = false;
+        } else {
+            throw new \RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
+        }
 
         if (null === $this->result) {
             $this->result = $data;
@@ -131,12 +139,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $listType = substr($type, 6, -1);
 
             $result = array();
-            foreach ($data->$entryName as $v) {
-                $result[] = $this->navigator->accept($v, $listType, $this);
+            if (null === $this->result) {
+                $this->result = &$result;
             }
 
-            if (null === $this->result) {
-                $this->result = $result;
+            foreach ($data->$entryName as $v) {
+                $result[] = $this->navigator->accept($v, $listType, $this);
             }
 
             return $result;
@@ -149,6 +157,10 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $keyType = trim(substr($type, 6, $pos - 6));
         $entryType = trim(substr($type, $pos+1, -1));
         $result = array();
+        if (null === $this->result) {
+            $this->result = &$result;
+        }
+
         foreach ($data->$entryName as $v) {
             if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
                 throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $metadata->xmlKeyAttribute));
@@ -156,10 +168,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
             $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this);
             $result[$k] = $this->navigator->accept($v, $entryType, $this);
-        }
-
-        if (null === $this->result) {
-            $this->result = $result;
         }
 
         return $result;

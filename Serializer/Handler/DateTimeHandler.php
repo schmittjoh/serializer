@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
+
+use JMS\SerializerBundle\Serializer\GenericDeserializationVisitor;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
@@ -57,11 +61,11 @@ class DateTimeHandler implements SerializationHandlerInterface, DeserializationH
 
     public function deserialize(VisitorInterface $visitor, $data, $type, &$visited)
     {
-        if ('datetime' !== $type) {
+        if ('DateTime' !== $type) {
             return;
         }
 
-        if ($visitor instanceof GenericSerializationVisitor) {
+        if ($visitor instanceof GenericDeserializationVisitor || $visitor instanceof XmlDeserializationVisitor) {
             $datetime = \DateTime::createFromFormat($this->format, (string) $data, $this->defaultTimezone);
             if (false === $datetime) {
                 throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $this->format));

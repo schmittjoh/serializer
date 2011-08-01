@@ -19,16 +19,20 @@
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
 use JMS\SerializerBundle\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\Type;
 
 class SimpleObject
 {
+    /** @Type("string") */
     private $foo;
 
     /**
      * @SerializedName("moo")
+     * @Type("string")
      */
     private $bar;
 
+    /** @Type("string") */
     protected $camelCase = 'boo';
 
     public function __construct($foo, $bar)

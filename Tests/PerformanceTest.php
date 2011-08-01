@@ -39,23 +39,31 @@ use JMS\SerializerBundle\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
+/**
+ * @group performance
+ */
 class PerformanceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @group performance
+     * @dataProvider getFormats
      */
-    public function testNormalizationPerformance()
+    public function testSerializationPerformance($format)
     {
         $serializer = $this->getSerializer();
         $testData   = $this->getTestCollection();
 
         $time = microtime(true);
         for ($i=0,$c=10; $i<$c; $i++) {
-            $serializer->normalize($testData);
+            $serializer->serialize($testData, $format);
         }
         $time = microtime(true) - $time;
 
-        $this->printResults('normalization', $time, $c);
+        $this->printResults("serialization ($format)", $time, $c);
+    }
+
+    public function getFormats()
+    {
+        return array(array('json'), array('xml'));
     }
 
     private function getTestCollection()
@@ -70,7 +78,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
 
     private function getTestObject()
     {
-        $post = new BlogPost('FooooooooooooooooooooooBAR', new Author('Foo'));
+        $post = new BlogPost('FooooooooooooooooooooooBAR', new Author('Foo'), new \DateTime);
         for ($i=0; $i<10; $i++) {
             $post->addComment(new Comment(new Author('foo'), 'foobar'));
         }
@@ -82,6 +90,8 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $container->set('annotation_reader', new AnnotationReader());
+        $container->setParameter('kernel.debug', true);
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
         $extension = new JMSSerializerExtension();
         $extension->load(array(array()), $container);
 
