@@ -54,7 +54,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
-    public function preProcess($data)
+    public function prepare($data)
     {
         $previous = libxml_use_internal_errors(true);
         $doc = simplexml_load_string($data);

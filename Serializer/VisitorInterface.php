@@ -23,7 +23,7 @@ use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 interface VisitorInterface
 {
-    function preProcess($data);
+    function prepare($data);
     function visitString($data, $type);
     function visitBoolean($data, $type);
     function visitDouble($data, $type);

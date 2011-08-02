@@ -36,7 +36,7 @@ abstract class AbstractVisitor implements VisitorInterface
         return $this->namingStrategy;
     }
 
-    public function preProcess($data)
+    public function prepare($data)
     {
         return $data;
     }

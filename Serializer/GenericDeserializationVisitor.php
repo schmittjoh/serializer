@@ -50,7 +50,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
-    public function preProcess($data)
+    public function prepare($data)
     {
         return $this->decode($data);
     }

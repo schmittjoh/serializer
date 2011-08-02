@@ -61,7 +61,7 @@ class Serializer implements SerializerInterface
     {
         $visitor = $this->getSerializationVisitor($format);
         $visitor->setNavigator($navigator = new GraphNavigator($this->factory, $this->exclusionStrategy));
-        $navigator->accept($visitor->preProcess($data), null, $visitor);
+        $navigator->accept($visitor->prepare($data), null, $visitor);
 
         return $visitor->getResult();
     }
@@ -70,7 +70,7 @@ class Serializer implements SerializerInterface
     {
         $visitor = $this->getDeserializationVisitor($format);
         $visitor->setNavigator($navigator = new GraphNavigator($this->factory, $this->exclusionStrategy));
-        $navigator->accept($visitor->preProcess($data), $type, $visitor);
+        $navigator->accept($visitor->prepare($data), $type, $visitor);
 
         return $visitor->getResult();
     }
