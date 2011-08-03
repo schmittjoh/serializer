@@ -18,8 +18,8 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Alias;
-
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -82,6 +82,28 @@ class JMSSerializerExtension extends Extension
             ->getDefinition('jms_serializer.metadata_factory')
             ->replaceArgument(2, $config['metadata']['debug'])
         ;
+
+        // directories
+        $directories = array();
+        if ($config['metadata']['auto_detection']) {
+            foreach ($container->getParameter('kernel.bundles') as $name => $class) {
+                $ref = new \ReflectionClass($class);
+
+                $directories[$ref->getNamespaceName()] = dirname($ref->getFileName()).'/Resources/config/serializer';
+            }
+        }
+        foreach ($config['metadata']['directories'] as $directory) {
+            $directories[rtrim($directory['namespace_prefix'], '\\')] = rtrim($directory['path'], '\\/');
+        }
+        $container
+            ->getDefinition('jms_serializer.metadata.file_locator')
+            ->replaceArgument(0, $directories)
+        ;
+
+        // annotation driver
+        if (!$config['metadata']['enable_annotations']) {
+            $container->remove('jms_serializer.metadata.annotation_driver');
+        }
     }
 
     private function mergeConfigs(array $configs, $debug)

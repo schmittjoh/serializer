@@ -27,7 +27,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $serializedName;
     public $type;
     public $xmlCollection = false;
-    public $xmlCollectionInline;
+    public $xmlCollectionInline = false;
     public $xmlEntryName;
     public $xmlKeyAttribute;
     public $xmlAttribute = false;

@@ -1,0 +1,19 @@
+JMS\SerializerBundle\Tests\Fixtures\BlogPost:
+    xml_root_name: blog-post
+    properties:
+        title:
+            type: string
+        createdAt:
+            type: DateTime
+            xml_attribute: true
+        published:
+            type: boolean
+            serialized_name: is_published
+            xml_attribute: true
+        comments:
+            type: ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Comment>
+            xml_list:
+                inline: true
+                entry_name: comment
+        author:
+            type: JMS\SerializerBundle\Tests\Fixtures\Author

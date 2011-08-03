@@ -1,0 +1,151 @@
+<?php
+
+namespace JMS\SerializerBundle\Metadata\Driver;
+
+use JMS\SerializerBundle\Annotation\ExclusionPolicy;
+use Metadata\MethodMetadata;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\ClassMetadata;
+use Symfony\Component\Yaml\Yaml;
+use Metadata\Driver\AbstractFileDriver;
+
+class YamlDriver extends AbstractFileDriver
+{
+    protected function loadMetadataFromFile(\ReflectionClass $class, $file)
+    {
+        $config = Yaml::parse(file_get_contents($file));
+
+        if (!isset($config[$name = $class->getName()])) {
+            throw new \RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $class->getName(), $file));
+        }
+
+        $config = $config[$name];
+        $metadata = new ClassMetadata($name);
+        $metadata->fileResources[] = $file;
+        $metadata->fileResources[] = $class->getFileName();
+        $exclusionPolicy = isset($config['exclusion_policy']) ? $config['exclusion_policy'] : 'NONE';
+        $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
+
+        if (isset($config['xml_root_name'])) {
+            $metadata->xmlRootName = (string) $config['xml_root_name'];
+        }
+
+        if (!$excludeAll) {
+            foreach ($class->getProperties() as $property) {
+                if ($name !== $property->getDeclaringClass()->getName()) {
+                    continue;
+                }
+
+                $pMetadata = new PropertyMetadata($name, $pName = $property->getName());
+                $isExclude = $isExpose = false;
+                if (isset($config['properties'][$pName])) {
+                    $pConfig = $config['properties'][$pName];
+
+                    if (isset($pConfig['exclude'])) {
+                        $isExclude = (Boolean) $pConfig['exclude'];
+                    }
+
+                    if (isset($pConfig['expose'])) {
+                        $isExpose = (Boolean) $pConfig['expose'];
+                    }
+
+                    if (isset($pConfig['since_version'])) {
+                        $pMetadata->sinceVersion = (string) $pConfig['since_version'];
+                    }
+
+                    if (isset($pConfig['until_version'])) {
+                        $pMetadata->untilVersion = (string) $pConfig['until_version'];
+                    }
+
+                    if (isset($pConfig['serialized_name'])) {
+                        $pMetadata->serializedName = (string) $pConfig['serialized_name'];
+                    }
+
+                    if (isset($pConfig['type'])) {
+                        $pMetadata->type = (string) $pConfig['type'];
+                    }
+
+                    if (isset($pConfig['xml_list'])) {
+                        $pMetadata->xmlCollection = true;
+
+                        $colConfig = $pConfig['xml_list'];
+                        if (isset($colConfig['inline'])) {
+                            $pMetadata->xmlCollectionInline = (Boolean) $colConfig['inline'];
+                        }
+
+                        if (isset($colConfig['entry_name'])) {
+                            $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
+                        }
+                    }
+
+                    if (isset($pConfig['xml_map'])) {
+                        $pMetadata->xmlCollection = true;
+
+                        $colConfig = $pConfig['xml_map'];
+                        if (isset($colConfig['inline'])) {
+                            $pMetadata->xmlCollectionInline = (Boolean) $colConfig['inline'];
+                        }
+
+                        if (isset($colConfig['entry_name'])) {
+                            $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
+                        }
+
+                        if (isset($colConfig['key_attribute_name'])) {
+                            $pMetadata->xmlKeyAttribute = $colConfig['key_attribute_name'];
+                        }
+                    }
+
+                    if (isset($pConfig['xml_attribute'])) {
+                        $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
+                    }
+
+                    if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                        $metadata->addPropertyMetadata($pMetadata);
+                    }
+                }
+            }
+        }
+
+        if (isset($config['callback_methods'])) {
+            $cConfig = $config['callback_methods'];
+
+            if (isset($cConfig['pre_serialize'])) {
+                $metadata->preSerializeMethods = $this->getCallbackMetadata($class, $cConfig['pre_serialize']);
+            }
+            if (isset($cConfig['post_serialize'])) {
+                $metadata->postSerializeMethods = $this->getCallbackMetadata($class, $cConfig['post_serialize']);
+            }
+            if (isset($cConfig['post_deserialize'])) {
+                $metadata->postDeserializeMethods = $this->getCallbackMetadata($class, $cConfig['post_deserialize']);
+            }
+        }
+
+        return $metadata;
+    }
+
+    protected function getExtension()
+    {
+        return 'yml';
+    }
+
+    private function getCallbackMetadata(\ReflectionClass $class, $config)
+    {
+        if (is_string($config)) {
+            $config = array($config);
+        } else if (!is_array($config)) {
+            throw new \RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($cConfig['pre_serialize'])));
+        }
+
+        $methods = array();
+        foreach ($config as $name) {
+            if (!$class->hasMethod($name)) {
+                throw new \RuntimeException(sprintf('The method %s does not exist in class %s.', $mName, $name));
+            }
+
+            $methods[] = new MethodMetadata($class->getName(), $name);
+        }
+
+        return $methods;
+    }
+}

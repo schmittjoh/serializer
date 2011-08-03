@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle;
 
+use JMS\SerializerBundle\DependencyInjection\Compiler\SetMetadataDriversPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\SetCustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,5 +30,6 @@ class JMSSerializerBundle extends Bundle
     {
         $builder->addCompilerPass(new SetVisitorsPass());
         $builder->addCompilerPass(new SetCustomHandlersPass());
+        $builder->addCompilerPass(new SetMetadataDriversPass());
     }
 }

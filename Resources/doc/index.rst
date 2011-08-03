@@ -11,6 +11,7 @@ include:
 - supports versioning out of the box
 - easily customizable as most logic is implemented using clearly defined
   interfaces
+- can be configured via annotations, YAML, XML, or PHP
 
 This bundle works best when you have full control over the objects that you want
 to serialize/unserialize as you can leverage the full power of annotations then.
@@ -64,7 +65,33 @@ suit your needs::
         property_naming:
             separator:  _
             lower_case: true
-
+            
+        metadata:
+            cache: file
+            debug: %kernel.debug%
+            file_cache:
+                dir: %kernel.cache_dir%/serializer
+            
+            enable_annotations: true
+            
+            # Using auto-detection, the mapping files for each bundle will be 
+            # expected in the Resources/config/serializer directory.
+            # 
+            # Example:
+            # class: My\FooBundle\Entity\User
+            # expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
+            auto_detection: true
+            
+            # if you don't want to use auto-detection, you can also define the 
+            # namespace prefix and the corresponding directory explicitly
+            directories:
+                any-name:
+                    namespace_prefix: My\FooBundle
+                    path: @MyFooBundle/Resources/config/serializer
+                another-name:
+                    namespace_prefix: My\BarBundle
+                    path: @MyBarBundle/Resources/config/serializer
+            
 Usage
 -----
 
@@ -387,4 +414,64 @@ Resulting XML::
 @XmlMap
 ~~~~~~~
 Similar to @XmlList, but the keys of the array are meaningful.    
-    
+
+XML Reference
+-------------
+::
+
+    <!-- MyBundle\Resources\config\serializer\ClassName.xml -->
+    <?xml version="1.0" encoding="UTF-8">
+    <serializer>
+        <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true">
+            <property name="some-property" 
+                      exclude="true" 
+                      expose="true" 
+                      type="string" 
+                      serialized-name="foo" 
+                      since-version="1.0" 
+                      until-version="1.1"
+                      xml-attribute="true"
+            >
+                <!-- You can also specify the type as element which is necessary if
+                     your type contains "<" or ">" characters. -->
+                <type><![CDATA[]]></type>
+                <xml-list inline="true" entry-name="foobar" />
+                <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
+            </property>
+            <callback-method name="foo" event="pre-serialize" />
+            <callback-method name="bar" event="post-serialize" />
+            <callback-method name="baz" event="post-deserialize" />
+        </class>
+    </serializer>
+
+YAML Reference
+--------------
+::
+
+    # MyBundle\Resources\config\serializer\ClassName.xml
+    Fully\Qualified\ClassName:
+        exclusion_policy: ALL
+        xml_root_name: foobar
+        exclude: true
+        properties:
+            some-property:
+                exclude: true
+                expose: true
+                type: string
+                serialized_name: foo
+                since_version: 1.0
+                until_version: 1.1
+                xml_attribute: true
+                xml_list:
+                    inline: true
+                    entry_name: foo
+                xml_map:
+                    inline: true
+                    key_attribute_name: foo
+                    entry_name: bar
+        callback_methods:
+            pre_serialize: [foo, bar]
+            post_serialize: [foo, bar]
+            post_deserialize: [foo, bar]
+
+

@@ -5,7 +5,13 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="jms_serializer.metadata.driver.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="jms_serializer.metadata.file_locator.class">Metadata\Driver\FileLocator</parameter>
+        <parameter key="jms_serializer.metadata.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="jms_serializer.metadata.chain_driver.class">Metadata\Driver\DriverChain</parameter>
+        <parameter key="jms_serializer.metadata.yaml_driver.class">JMS\SerializerBundle\Metadata\Driver\YamlDriver</parameter>
+        <parameter key="jms_serializer.metadata.xml_driver.class">JMS\SerializerBundle\Metadata\Driver\XmlDriver</parameter>
+        <parameter key="jms_serializer.metadata.php_driver.class">JMS\SerializerBundle\Metadata\Driver\PhpDriver</parameter>
+        <parameter key="jms_serializer.metadata.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
         
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_serializer.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
@@ -30,10 +36,31 @@
 
     <services>
         <!-- Metadata Drivers -->
-        <service id="jms_serializer.metadata.driver.annotation_driver" class="%jms_serializer.metadata.driver.annotation_driver.class%" public="false">
-            <argument type="service" id="annotation_reader" />
+        <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
+            <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
         </service>
-        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.driver.annotation_driver" public="false" />
+        <service id="jms_serializer.metadata.yaml_driver" class="%jms_serializer.metadata.yaml_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.file_locator" />
+            <tag name="jms_serializer.metadata_driver" />
+        </service>
+        <service id="jms_serializer.metadata.xml_driver" class="%jms_serializer.metadata.xml_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.file_locator" />
+            <tag name="jms_serializer.metadata_driver" />
+        </service>
+        <service id="jms_serializer.metadata.php_driver" class="%jms_serializer.metadata.php_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.file_locator" />
+            <tag name="jms_serializer.metadata_driver" />
+        </service>
+        <service id="jms_serializer.metadata.annotation_driver" class="%jms_serializer.metadata.annotation_driver.class%" public="false">
+            <argument type="service" id="annotation_reader" />
+            <tag name="jms_serializer.metadata_driver" />
+        </service>
+        <service id="jms_serializer.metadata.chain_driver" class="%jms_serializer.metadata.chain_driver.class%" public="false" />
+        <service id="jms_serializer.metadata.lazy_loading_driver" class="%jms_serializer.metadata.lazy_loading_driver.class%">
+            <argument type="service" id="service_container" />
+            <argument>jms_serializer.metadata_driver</argument>
+        </service>
+        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.chain_driver" />
 
         <!-- Metadata Factory -->
         <service id="jms_serializer.metadata.cache.file_cache" class="%jms_serializer.metadata.cache.file_cache.class%" public="false">
@@ -41,7 +68,7 @@
         </service>
         <service id="jms_serializer.metadata.cache" alias="jms_serializer.metadata.cache.file_cache" public="false" />
         <service id="jms_serializer.metadata_factory" class="%jms_serializer.metadata.metadata_factory.class%" public="false">
-            <argument type="service" id="jms_serializer.metadata_driver" />
+            <argument type="service" id="jms_serializer.metadata.lazy_loading_driver" />
             <argument>Metadata\ClassHierarchyMetadata</argument>
             <argument />
             <call method="setCache">

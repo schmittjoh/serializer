@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use JMS\SerializerBundle\Annotation\XmlMap;
-
 use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\XmlAttribute;
 use JMS\SerializerBundle\Annotation\XmlList;
