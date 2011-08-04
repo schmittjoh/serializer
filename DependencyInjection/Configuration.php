@@ -71,7 +71,6 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/serializer')->end()
                                 ->end()
                             ->end()
-                            ->booleanNode('enable_annotations')->defaultTrue()->end()
                             ->booleanNode('auto_detection')->defaultTrue()->end()
                             ->arrayNode('directories')
                                 ->prototype('array')

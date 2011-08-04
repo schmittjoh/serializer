@@ -72,8 +72,6 @@ suit your needs::
             file_cache:
                 dir: %kernel.cache_dir%/serializer
             
-            enable_annotations: true
-            
             # Using auto-detection, the mapping files for each bundle will be 
             # expected in the Resources/config/serializer directory.
             # 

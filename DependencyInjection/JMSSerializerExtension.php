@@ -99,11 +99,6 @@ class JMSSerializerExtension extends Extension
             ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories)
         ;
-
-        // annotation driver
-        if (!$config['metadata']['enable_annotations']) {
-            $container->removeDefinition('jms_serializer.metadata.annotation_driver');
-        }
     }
 
     private function mergeConfigs(array $configs, $debug)
