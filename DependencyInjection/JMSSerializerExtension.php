@@ -102,7 +102,7 @@ class JMSSerializerExtension extends Extension
 
         // annotation driver
         if (!$config['metadata']['enable_annotations']) {
-            $container->remove('jms_serializer.metadata.annotation_driver');
+            $container->removeDefinition('jms_serializer.metadata.annotation_driver');
         }
     }
 
