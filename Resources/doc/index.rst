@@ -13,10 +13,6 @@ include:
   interfaces
 - can be configured via annotations, YAML, XML, or PHP
 
-This bundle works best when you have full control over the objects that you want
-to serialize/unserialize as you can leverage the full power of annotations then.
-If you want to serialize/deserialize objects provided by third parties, then you
-need to write a custom normalizer for these objects.
 
 Installation
 ------------
