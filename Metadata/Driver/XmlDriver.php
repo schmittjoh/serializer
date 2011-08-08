@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use Metadata\MethodMetadata;
@@ -17,8 +18,7 @@ class XmlDriver extends AbstractFileDriver
         libxml_use_internal_errors($previous);
 
         if (false === $elem) {
-            $error = libxml_get_last_error();
-            throw new \RuntimeException(sprintf('%d: Could not parse XML: %s in %s (line: %d, column: %d)', $error->level, $error->message, $error->file, $error->line, $error->column));
+            throw new XmlErrorException(libxml_get_last_error());
         }
 
         $metadata = new ClassMetadata($name = $class->getName());

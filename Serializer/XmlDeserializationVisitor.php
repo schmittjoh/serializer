@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Exception\XmlErrorException;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
@@ -61,7 +63,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         libxml_use_internal_errors($previous);
 
         if (false === $doc) {
-            throw new RuntimeException(sprintf('Could not parse XML: %s', implode("\n", libxml_get_errors())));
+            throw new XmlErrorException(libxml_get_last_error());
         }
 
         return $doc;
