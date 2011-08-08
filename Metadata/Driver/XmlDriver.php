@@ -17,7 +17,8 @@ class XmlDriver extends AbstractFileDriver
         libxml_use_internal_errors($previous);
 
         if (false === $elem) {
-            throw new \RuntimeException('Could not parse XML: '.libxml_get_last_error());
+            $error = libxml_get_last_error();
+            throw new \RuntimeException(sprintf('%d: Could not parse XML: %s in %s (line: %d, column: %d)', $error->level, $error->message, $error->file, $error->line, $error->column));
         }
 
         $metadata = new ClassMetadata($name = $class->getName());
