@@ -8,7 +8,24 @@ class XmlErrorException extends RuntimeException
 
     public function __construct(\LibXMLError $error)
     {
-        parent::__construct(sprintf('%d: Could not parse XML: %s in %s (line: %d, column: %d)', $error->level, $error->message, $error->file, $error->line, $error->column));
+        switch ($error->level) {
+            case LIBXML_ERR_WARNING:
+                $level = 'WARNING';
+                break;
+
+            case LIBXML_ERR_FATAL:
+                $level = 'FATAL';
+                break;
+
+            case LIBXML_ERR_ERROR:
+                $level = 'ERROR';
+                break;
+
+            default:
+                $level = 'UNKNOWN';
+        }
+
+        parent::__construct(sprintf('[%s] %s in %s (line: %d, column: %d)', $level, $error->message, $error->file, $error->line, $error->column));
 
         $this->xmlError = $error;
     }
