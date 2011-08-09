@@ -18,7 +18,10 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("METHOD")
+ */
 final class PostSerialize
 {
 }

@@ -20,7 +20,10 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("PROPERTY")
+ */
 final class XmlMap extends XmlCollection
 {
     public $keyAttribute = '_key';

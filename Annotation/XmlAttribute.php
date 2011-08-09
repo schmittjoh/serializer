@@ -18,7 +18,10 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("PROPERTY")
+ */
 final class XmlAttribute
 {
 }

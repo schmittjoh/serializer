@@ -20,7 +20,10 @@ namespace JMS\SerializerBundle\Annotation;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("CLASS")
+ */
 final class ExclusionPolicy
 {
     const NONE = 'NONE';

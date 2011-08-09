@@ -26,6 +26,7 @@ namespace JMS\SerializerBundle\Annotation;
  * preparation of the object that is necessary.
  *
  * @Annotation
+ * @Target("METHOD")
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class PreSerialize

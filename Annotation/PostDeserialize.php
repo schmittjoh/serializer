@@ -25,6 +25,7 @@ namespace JMS\SerializerBundle\Annotation;
  * These methods do not necessarily have to be public.
  *
  * @Annotation
+ * @Target("METHOD")
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class PostDeserialize
