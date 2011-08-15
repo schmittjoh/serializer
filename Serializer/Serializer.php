@@ -18,14 +18,11 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
-use Metadata\MetadataFactoryInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizableInterface;
 use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
 
 class Serializer implements SerializerInterface
 {
