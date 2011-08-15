@@ -19,7 +19,7 @@
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
 
-        <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\UnserializeInstanceCreator</parameter>
+        <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor</parameter>
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
 
