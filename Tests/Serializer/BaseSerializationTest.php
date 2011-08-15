@@ -203,20 +203,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     protected function getSerializer()
     {
-        $customHandlers = array();
-        $customHandlers[] = new DateTimeHandler();
-
-        $customDeserializationHandlers = $customHandlers;
-        $customDeserializationHandlers[] = new ArrayCollectionHandler();
-        $customDeserializationHandlers[] = new AuthorListDeserializationHandler();
+        $customSerializationHandlers = $this->getSerializationHandlers();
+        $customDeserializationHandlers = $this->getDeserializationHandlers();
 
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
 
         $serializationVisitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy, $customHandlers),
-            'xml'  => new XmlSerializationVisitor($namingStrategy, $customHandlers),
+            'json' => new JsonSerializationVisitor($namingStrategy, $customSerializationHandlers),
+            'xml'  => new XmlSerializationVisitor($namingStrategy, $customSerializationHandlers),
         );
         $deserializationVisitors = array(
             'json' => new JsonDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
@@ -224,6 +220,26 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         return new Serializer($factory, $serializationVisitors, $deserializationVisitors);
+    }
+
+    protected function getSerializationHandlers()
+    {
+        $handlers = array(
+            new DateTimeHandler()
+        );
+
+        return $handlers;
+    }
+
+    protected function getDeserializationHandlers()
+    {
+        $handlers = array(
+            new DateTimeHandler(),
+            new ArrayCollectionHandler(),
+            new AuthorListDeserializationHandler(),
+        );
+
+        return $handlers;
     }
 
     private function getField($obj, $name)
