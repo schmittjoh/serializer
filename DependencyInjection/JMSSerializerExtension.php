@@ -60,6 +60,11 @@ class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.array_collection_handler');
         }
 
+        // form error handler
+        if (!$config['handlers']['form_error']) {
+            $container->removeDefinition('jms_serializer.form_error_handler');
+        }
+
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
