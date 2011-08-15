@@ -19,7 +19,7 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Symfony\Component\Form\FormError;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
@@ -29,6 +29,7 @@ use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
+use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
@@ -188,6 +189,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($object, $deserialized);
     }
 
+    public function testFormErrors()
+    {
+        $errors = array(
+            new FormError('This is the form error'),
+            new FormError('Another error')
+        );
+
+        $this->assertEquals($this->getContent('form_errors'), $this->serialize($errors));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -203,12 +214,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     protected function getSerializer()
     {
-        $customSerializationHandlers = $this->getSerializationHandlers();
-        $customDeserializationHandlers = $this->getDeserializationHandlers();
-
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
+
+        $customSerializationHandlers = $this->getSerializationHandlers();
+        $customDeserializationHandlers = $this->getDeserializationHandlers();
 
         $serializationVisitors = array(
             'json' => new JsonSerializationVisitor($namingStrategy, $customSerializationHandlers),
@@ -224,8 +235,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     protected function getSerializationHandlers()
     {
+        $translatorMock = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
+        $translatorMock
+            ->expects($this->any())
+            ->method('trans')
+            ->will($this->returnArgument(0));
+
         $handlers = array(
-            new DateTimeHandler()
+            new DateTimeHandler(),
+            new FormErrorHandler($translatorMock),
         );
 
         return $handlers;
