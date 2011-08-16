@@ -3,11 +3,9 @@
   <errors>
     <entry><![CDATA[This is the form error]]></entry>
   </errors>
-  <children>
-    <form name="bar">
-      <errors>
-        <entry><![CDATA[Error of the child form]]></entry>
-      </errors>
-    </form>
-  </children>
+  <form name="bar">
+    <errors>
+      <entry><![CDATA[Error of the child form]]></entry>
+    </errors>
+  </form>
 </form>

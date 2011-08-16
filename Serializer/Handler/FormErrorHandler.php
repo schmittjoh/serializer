@@ -60,10 +60,8 @@ class FormErrorHandler implements SerializationHandlerInterface
                 $visitor->visitArray($data->getErrors(), $type);
                 $visitor->revertCurrentNode();
 
-                // if has nested form, append children node
                 if ($data->hasChildren()) {
-                    $formNode->appendChild($childrenNode = $visitor->document->createElement('children'));
-                    $visitor->setCurrentNode($childrenNode);
+                    $visitor->setCurrentNode($formNode);
 
                     foreach ($data->getChildren() as $child) {
                         $this->serialize($visitor, $child, $type, $visited);
