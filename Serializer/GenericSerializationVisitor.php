@@ -160,4 +160,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     {
         return $this->root;
     }
+
+    public function setRoot($data)
+    {
+        $this->root = $data;
+    }
 }
