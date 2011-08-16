@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
@@ -197,6 +198,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($this->getContent('form_errors'), $this->serialize($errors));
+    }
+
+    public function testNestedFormErrors()
+    {
+        $dispather = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+
+        $form = new Form('foo', $dispather);
+        $form->addError(new FormError('This is the form error'));
+
+        $child = new Form('bar', $dispather);
+        $child->addError(new FormError('Error of the child form'));
+        $form->add($child);
+
+        $this->assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
     }
 
     abstract protected function getContent($key);
