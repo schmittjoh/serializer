@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
@@ -35,21 +36,68 @@ class FormErrorHandler implements SerializationHandlerInterface
 
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (!$data instanceof FormError) {
-            return;
+        if ($data instanceof Form) {
+            $handled = true;
+
+            if ($visitor instanceof XmlSerializationVisitor) {
+                if (null === $visitor->document) {
+                    $visitor->document = $visitor->createDocument(null, null, false);
+                }
+
+                $formNode = $visitor->document->createElement('form');
+                $formNode->setAttribute('name', $data->getName());
+
+                if (null === $visitor->getCurrentNode()) {
+                    $visitor->document->appendChild($formNode);
+                }
+                else {
+                    $visitor->getCurrentNode()->appendChild($formNode);
+                }
+
+                // append errors node
+                $formNode->appendChild($errorsNode = $visitor->document->createElement('errors'));
+                $visitor->setCurrentNode($errorsNode);
+                $visitor->visitArray($data->getErrors(), $type);
+                $visitor->revertCurrentNode();
+
+                // if has nested form, append children node
+                if ($data->hasChildren()) {
+                    $formNode->appendChild($childrenNode = $visitor->document->createElement('children'));
+                    $visitor->setCurrentNode($childrenNode);
+
+                    foreach ($data->getChildren() as $child) {
+                        $this->serialize($visitor, $child, $type, $visited);
+                    }
+
+                    $visitor->revertCurrentNode();
+                }
+
+                return $formNode;
+            }
+            else {
+                $form = array('errors' => $data->getErrors());
+                if ($data->hasChildren()) {
+                    $form['children'] = $data->getChildren();
+                }
+
+                return $visitor->visitArray($form, $type);
+            }
         }
+        else if ($data instanceof FormError) {
+            $handled = true;
+            $message = $this->translator->trans($data->getMessageTemplate(), $data->getMessageParameters(), 'validators');
 
-        $handled = true;
-        $message = $this->translator->trans($data->getMessageTemplate(), $data->getMessageParameters(), 'validators');
+            if ($visitor instanceof XmlSerializationVisitor) {
+                if (null === $visitor->document) {
+                    $visitor->document = $visitor->createDocument(null, null, true);
+                }
 
-        if ($visitor instanceof XmlSerializationVisitor) {
-            if (null === $visitor->document) {
-                $visitor->document = $visitor->createDocument(null, null, true);
+                return $visitor->document->createCDATASection($message);
             }
 
-            return $visitor->document->createCDATASection($message);
+            return $message;
         }
 
-        return $message;
+        return null;
     }
 }

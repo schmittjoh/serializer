@@ -46,6 +46,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';
             $outputs['form_errors'] = '["This is the form error","Another error"]';
+            $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
         }
 
         if (!isset($outputs[$key])) {
