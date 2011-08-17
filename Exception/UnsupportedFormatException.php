@@ -18,6 +18,6 @@
 
 namespace JMS\SerializerBundle\Exception;
 
-class UnsupportedException extends InvalidArgumentException
+class UnsupportedFormatException extends InvalidArgumentException
 {
 }

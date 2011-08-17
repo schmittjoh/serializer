@@ -18,11 +18,11 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
-use JMS\SerializerBundle\Exception\RuntimeException;
 
 class Serializer implements SerializerInterface
 {
@@ -75,7 +75,7 @@ class Serializer implements SerializerInterface
     protected function getDeserializationVisitor($format)
     {
         if (!isset($this->deserializationVisitors[$format])) {
-            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $format));
+            throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
         }
 
         return $this->deserializationVisitors[$format];
@@ -84,7 +84,7 @@ class Serializer implements SerializerInterface
     protected function getSerializationVisitor($format)
     {
         if (!isset($this->serializationVisitors[$format])) {
-            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $format));
+            throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
         }
 
         return $this->serializationVisitors[$format];
