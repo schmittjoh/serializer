@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Tests;
 
+use Symfony\Component\Translation\MessageSelector;
+
+use Symfony\Component\Translation\IdentityTranslator;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
@@ -90,8 +94,10 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $container->set('annotation_reader', new AnnotationReader());
+        $container->set('translator', new IdentityTranslator(new MessageSelector()));
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
+        $container->setParameter('kernel.bundles', array());
         $extension = new JMSSerializerExtension();
         $extension->load(array(array()), $container);
 

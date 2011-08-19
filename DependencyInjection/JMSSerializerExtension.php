@@ -43,6 +43,13 @@ class JMSSerializerExtension extends Extension
             ->addArgument($config['property_naming']['separator'])
             ->addArgument($config['property_naming']['lower_case'])
         ;
+        if ($config['property_naming']['enable_cache']) {
+            $container
+                ->getDefinition('jms_serializer.cache_naming_strategy')
+                ->addArgument(new Reference((string) $container->getAlias('jms_serializer.naming_strategy')))
+            ;
+            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
+        }
 
         // datetime handler
         if (isset($config['handlers']['datetime'])) {

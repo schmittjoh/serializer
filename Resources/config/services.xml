@@ -18,6 +18,7 @@
     
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
+        <parameter key="jms_serializer.cache_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CacheNamingStrategy</parameter>
 
         <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor</parameter>
 
@@ -91,6 +92,7 @@
         <service id="jms_serializer.serialized_name_annotation_strategy" class="%jms_serializer.serialized_name_annotation_strategy.class%" public="false">
             <argument type="service" id="jms_serializer.camel_case_naming_strategy" />
         </service>
+        <service id="jms_serializer.cache_naming_strategy" class="%jms_serializer.cache_naming_strategy.class%" public="false" />
         <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
 
         <!-- Object Constructors -->
