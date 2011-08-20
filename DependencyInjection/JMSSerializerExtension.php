@@ -72,6 +72,11 @@ class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.form_error_handler');
         }
 
+        // constraint violation handler
+        if (!$config['handlers']['constraint_violation']) {
+            $container->removeDefinition('jms_serializer.constraint_violation_handler');
+        }
+
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');

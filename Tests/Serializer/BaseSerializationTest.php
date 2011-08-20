@@ -21,16 +21,19 @@ namespace JMS\SerializerBundle\Tests\Serializer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
-use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
 use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
+use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
+use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
@@ -214,6 +217,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
     }
 
+    public function testConstraintViolation()
+    {
+        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+
+        $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
+    }
+
+    public function testConstraintViolationList()
+    {
+        $violations = new ConstraintViolationList();
+        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+
+        $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -259,6 +278,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $handlers = array(
             new DateTimeHandler(),
             new FormErrorHandler($translatorMock),
+            new ConstraintViolationHandler(),
         );
 
         return $handlers;

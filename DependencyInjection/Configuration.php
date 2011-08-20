@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->booleanNode('array_collection')->defaultTrue()->end()
                             ->booleanNode('form_error')->defaultTrue()->end()
+                            ->booleanNode('constraint_violation')->defaultTrue()->end()
                         ->end()
                     ->end()
                     ->arrayNode('metadata')
