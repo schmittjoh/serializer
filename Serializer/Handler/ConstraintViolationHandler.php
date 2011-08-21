@@ -49,8 +49,7 @@ class ConstraintViolationHandler implements SerializationHandlerInterface
                     $visitor->document = $visitor->createDocument(null, null, false);
                     $visitor->document->appendChild($violationNode = $visitor->document->createElement('violation'));
                     $visitor->setCurrentNode($violationNode);
-                }
-                else {
+                } else {
                     $visitor->getCurrentNode()->appendChild(
                         $violationNode = $visitor->document->createElement('violation')
                     );
