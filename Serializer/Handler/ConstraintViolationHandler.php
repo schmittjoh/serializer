@@ -27,7 +27,7 @@ use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
 class ConstraintViolationHandler implements SerializationHandlerInterface
 {
-    function serialize(VisitorInterface $visitor, $data, $type, &$handled)
+    public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
         if ($data instanceof ConstraintViolationList) {
             if ($visitor instanceof XmlSerializationVisitor) {
