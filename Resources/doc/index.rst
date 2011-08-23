@@ -57,6 +57,8 @@ suit your needs::
                 format: Y-m-dTH:i:s
                 default_timezone: UTC
             array_collection: true
+            form_error: true
+            constraint_violation: true
             
         property_naming:
             separator:  _
