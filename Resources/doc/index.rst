@@ -57,6 +57,8 @@ suit your needs::
                 format: Y-m-dTH:i:s
                 default_timezone: UTC
             array_collection: true
+            form_error: true
+            constraint_violation: true
             
         property_naming:
             separator:  _
@@ -432,9 +434,9 @@ XML Reference
                 <xml-list inline="true" entry-name="foobar" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
             </property>
-            <callback-method name="foo" event="pre-serialize" />
-            <callback-method name="bar" event="post-serialize" />
-            <callback-method name="baz" event="post-deserialize" />
+            <callback-method name="foo" type="pre-serialize" />
+            <callback-method name="bar" type="post-serialize" />
+            <callback-method name="baz" type="post-deserialize" />
         </class>
     </serializer>
 
