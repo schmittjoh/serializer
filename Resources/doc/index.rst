@@ -169,7 +169,7 @@ then it is easier to change the exclusion policy, and only mark these few proper
 Lifecycle Callbacks
 ~~~~~~~~~~~~~~~~~~~
 If you need to run some custom logic during the serialization process, you can use
-one of these lifecycle callbacks: @PerSerialize, @PostSerialize, or @PostDeserialize
+one of these lifecycle callbacks: @PreSerialize, @PostSerialize, or @PostDeserialize
 
 Annotations
 -----------
