@@ -18,7 +18,7 @@ Installation
 ------------
 Checkout a copy of the code::
 
-    git submodule add https://github.com/schmittjoh/SerializerBundle.git src/JMS/SerializerBundle
+    git submodule add https://github.com/schmittjoh/JMSSerializerBundle.git src/JMS/SerializerBundle
 
 Then register the bundle with your kernel::
 
