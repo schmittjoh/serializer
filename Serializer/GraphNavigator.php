@@ -22,7 +22,6 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
-use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 
 final class GraphNavigator
 {
@@ -80,17 +79,15 @@ final class GraphNavigator
                 $rs = $handler->deserialize($visitor, $data, $type, $handled);
             }
 
-            if ($handled) {
-                return $rs;
+            if (!$handled) {
+                 // try custom handler
+                $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             }
 
-             // try custom handler
-            $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
                 if ($isSerialization) {
                     $this->visiting->detach($data);
                 }
-
                 return $rs;
             }
 
