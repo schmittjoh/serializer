@@ -88,6 +88,7 @@ final class GraphNavigator
                 if ($isSerialization) {
                     $this->visiting->detach($data);
                 }
+
                 return $rs;
             }
 
