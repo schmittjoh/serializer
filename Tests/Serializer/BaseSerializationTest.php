@@ -154,8 +154,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testArticle()
     {
         $article = new Article();
+        $article->element = 'custom';
+        $article->value = 'serialized';
 
-        $this->assertEquals($this->getContent('article'), $this->serialize($article));
+        $result = $this->serialize($article);
+        $this->assertEquals($this->getContent('article'), $result);
+        $this->assertEquals('', $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Article'));
     }
 
     /**
@@ -338,8 +342,11 @@ class AuthorListDeserializationHandler implements DeserializationHandlerInterfac
     }
 }
 
-class Article implements SerializationHandlerInterface
+class Article implements SerializationHandlerInterface, DeserializationHandlerInterface
 {
+    public $element;
+    public $value;
+
     public function serialize(VisitorInterface $visitor, $data, $type, &$visited)
     {
         if (!$data instanceof Article) {
@@ -353,11 +360,25 @@ class Article implements SerializationHandlerInterface
                 $visitor->document = $visitor->createDocument(null, null, false);
             }
 
-            $visitor->document->appendChild($visitor->document->createElement('custom', 'serialized'));
+            $visitor->document->appendChild($visitor->document->createElement($this->element, $this->value));
         } elseif ($visitor instanceof JsonSerializationVisitor) {
             $visited = true;
 
-            $visitor->setRoot(array('custom' => 'serialized'));
+            $visitor->setRoot(array($this->element => $this->value));
         }
+    }
+
+    public function deserialize(VisitorInterface $visitor, $data, $type, &$visited)
+    {
+        if ('JMS\SerializerBundle\Tests\Serializer\Article' !== $type) {
+            return;
+        }
+
+        $visited = true;
+
+        $this->element = key($data);
+        $this->value = reset($data);
+
+        return $this;
     }
 }
