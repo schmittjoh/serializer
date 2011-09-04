@@ -24,6 +24,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
+use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
@@ -148,6 +149,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeSame(false, 'published', $deserialized);
         $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
         $this->assertAttributeEquals($author, 'author', $deserialized);
+    }
+
+    public function testArticle()
+    {
+        $article = new Article();
+
+        $this->assertEquals($this->getContent('article'), $this->serialize($article));
     }
 
     /**
@@ -327,5 +335,29 @@ class AuthorListDeserializationHandler implements DeserializationHandlerInterfac
         }
 
         return $list;
+    }
+}
+
+class Article implements SerializationHandlerInterface
+{
+    public function serialize(VisitorInterface $visitor, $data, $type, &$visited)
+    {
+        if (!$data instanceof Article) {
+            return;
+        }
+
+        if ($visitor instanceof XmlSerializationVisitor) {
+            $visited = true;
+
+            if (null === $visitor->document) {
+                $visitor->document = $visitor->createDocument(null, null, false);
+            }
+
+            $visitor->document->appendChild($visitor->document->createElement('custom', 'serialized'));
+        } elseif ($visitor instanceof JsonSerializationVisitor) {
+            $visited = true;
+
+            $visitor->setRoot(array('custom' => 'serialized'));
+        }
     }
 }
