@@ -190,7 +190,6 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitUsingCustomHandler($data, $type, &$visited)
     {
-        $visited = false;
         foreach ($this->customHandlers as $handler) {
             $rs = $handler->deserialize($this, $data, $type, $visited);
             if ($visited) {
