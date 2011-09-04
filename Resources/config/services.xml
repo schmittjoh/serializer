@@ -31,6 +31,7 @@
         <parameter key="jms_serializer.xml_serialization_visitor.class">JMS\SerializerBundle\Serializer\XmlSerializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         
+        <parameter key="jms_serializer.object_based_custom_handler.class">JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler</parameter>
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
@@ -137,6 +138,12 @@
         </service>
         
         <!-- Custom Handlers -->
+        <service id="jms_serializer.object_based_custom_handler" class="%jms_serializer.object_based_custom_handler.class%" public="false">
+            <argument type="service" id="jms_serializer.unserialize_object_constructor" />
+            <argument type="service" id="jms_serializer.metadata_factory" />
+            <tag name="jms_serializer.serialization_handler" />
+            <tag name="jms_serializer.deserialization_handler" />
+        </service>
         <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="false">
             <tag name="jms_serializer.serialization_handler" />
             <tag name="jms_serializer.deserialization_handler" />

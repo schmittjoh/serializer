@@ -12,7 +12,7 @@ class ObjectBasedCustomHandler implements SerializationHandlerInterface, Deseria
     private $objectConstructor;
     private $metadataFactory;
 
-    public function __construct(ObjectConstructorInterface $constructor, MetadataFactoryInterface $metadata)
+    public function __construct(ObjectConstructorInterface $objectConstructor, MetadataFactoryInterface $metadataFactory)
     {
         $this->objectConstructor = $objectConstructor;
         $this->metadataFactory = $metadataFactory;
@@ -29,13 +29,14 @@ class ObjectBasedCustomHandler implements SerializationHandlerInterface, Deseria
 
     public function deserialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (!is_a($type, 'JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface')) {
+        if (!in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))) {
             return;
         }
 
         $metadata = $this->metadataFactory->getMetadataForClass($type);
 
-        $instance = $this->objectConstructor->construct($visitor, $metadata, $data, $type);
+        $visitor->startVisitingObject($metadata, $data, $type);
+        $instance = $visitor->getResult();
         $instance->deserialize($visitor, $data, $type, $handled);
 
         return $instance;

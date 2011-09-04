@@ -32,6 +32,7 @@ use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
 use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
+use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
@@ -288,7 +289,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             ->method('trans')
             ->will($this->returnArgument(0));
 
+        $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $objectConstructor = new UnserializeObjectConstructor();
+
         $handlers = array(
+            new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
@@ -299,7 +304,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     protected function getDeserializationHandlers()
     {
+        $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $objectConstructor = new UnserializeObjectConstructor();
+
         $handlers = array(
+            new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new ArrayCollectionHandler(),
             new AuthorListDeserializationHandler(),
@@ -375,10 +384,17 @@ class Article implements SerializationHandlerInterface, DeserializationHandlerIn
             return;
         }
 
-        $visited = true;
+        if ($visitor instanceof XmlDeserializationVisitor) {
+            $visited = true;
 
-        $this->element = key($data);
-        $this->value = reset($data);
+            $this->element = $data->getName();
+            $this->value = (string)$data;
+        } elseif ($visitor instanceof JsonDeserializationVisitor) {
+            $visited = true;
+
+            $this->element = key($data);
+            $this->value = reset($data);
+        }
 
         return $this;
     }
