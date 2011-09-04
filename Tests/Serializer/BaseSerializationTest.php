@@ -159,7 +159,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->serialize($article);
         $this->assertEquals($this->getContent('article'), $result);
-        $this->assertEquals('', $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Article'));
+
+        $this->assertEquals($article, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Article'));
     }
 
     /**
