@@ -68,22 +68,9 @@ final class GraphNavigator
                 $this->visiting->attach($data);
             }
 
+            // try custom handler
             $handled = false;
-
-            if ($isSerialization) {
-                if ($data instanceof SerializationHandlerInterface) {
-                    $rs = $data->serialize($visitor, $data, $type, $handled);
-                }
-            } elseif (in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))) {
-                $handler = new $type;
-                $rs = $handler->deserialize($visitor, $data, $type, $handled);
-            }
-
-            if (!$handled) {
-                 // try custom handler
-                $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
-            }
-
+            $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
                 if ($isSerialization) {
                     $this->visiting->detach($data);
