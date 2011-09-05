@@ -141,8 +141,6 @@
         <service id="jms_serializer.object_based_custom_handler" class="%jms_serializer.object_based_custom_handler.class%" public="false">
             <argument type="service" id="jms_serializer.unserialize_object_constructor" />
             <argument type="service" id="jms_serializer.metadata_factory" />
-            <tag name="jms_serializer.serialization_handler" />
-            <tag name="jms_serializer.deserialization_handler" />
         </service>
         <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="false">
             <tag name="jms_serializer.serialization_handler" />

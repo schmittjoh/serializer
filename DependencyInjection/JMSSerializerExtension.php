@@ -52,8 +52,11 @@ class JMSSerializerExtension extends Extension
         }
 
         // object based custom handler
-        if (!$config['handlers']['object_based_custom']) {
-            $container->removeDefinition('jms_serializer.object_based_custom_handler');
+        if ($config['handlers']['object_based']['serialization']) {
+            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serialization.serialization_handler');
+        }
+        if ($config['handlers']['object_based']['deserialization']) {
+            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serialization.deserialization_handler');
         }
 
         // datetime handler
