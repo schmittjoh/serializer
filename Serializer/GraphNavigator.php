@@ -67,7 +67,8 @@ final class GraphNavigator
                 $this->visiting->attach($data);
             }
 
-             // try custom handler
+            // try custom handler
+            $handled = false;
             $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
                 if ($isSerialization) {

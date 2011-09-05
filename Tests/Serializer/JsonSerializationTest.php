@@ -49,6 +49,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
             $outputs['constraint_violation_list'] = '[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]';
+            $outputs['article'] = '{"custom":"serialized"}';
         }
 
         if (!isset($outputs[$key])) {

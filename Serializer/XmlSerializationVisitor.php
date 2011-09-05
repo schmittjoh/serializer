@@ -136,7 +136,6 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function visitUsingCustomHandler($data, $type, &$visited)
     {
-        $visited = false;
         foreach ($this->customHandlers as $handler) {
             $rs = $handler->serialize($this, $data, $type, $visited);
             if ($visited) {

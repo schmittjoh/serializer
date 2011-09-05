@@ -24,6 +24,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
+use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
@@ -31,6 +32,7 @@ use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
 use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
+use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
@@ -148,6 +150,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeSame(false, 'published', $deserialized);
         $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
         $this->assertAttributeEquals($author, 'author', $deserialized);
+    }
+
+    public function testArticle()
+    {
+        $article = new Article();
+        $article->element = 'custom';
+        $article->value = 'serialized';
+
+        $result = $this->serialize($article);
+        $this->assertEquals($this->getContent('article'), $result);
+
+        $this->assertEquals($article, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Article'));
     }
 
     /**
@@ -275,7 +289,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             ->method('trans')
             ->will($this->returnArgument(0));
 
+        $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $objectConstructor = new UnserializeObjectConstructor();
+
         $handlers = array(
+            new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
@@ -286,7 +304,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     protected function getDeserializationHandlers()
     {
+        $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $objectConstructor = new UnserializeObjectConstructor();
+
         $handlers = array(
+            new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new ArrayCollectionHandler(),
             new AuthorListDeserializationHandler(),
@@ -327,5 +349,53 @@ class AuthorListDeserializationHandler implements DeserializationHandlerInterfac
         }
 
         return $list;
+    }
+}
+
+class Article implements SerializationHandlerInterface, DeserializationHandlerInterface
+{
+    public $element;
+    public $value;
+
+    public function serialize(VisitorInterface $visitor, $data, $type, &$visited)
+    {
+        if (!$data instanceof Article) {
+            return;
+        }
+
+        if ($visitor instanceof XmlSerializationVisitor) {
+            $visited = true;
+
+            if (null === $visitor->document) {
+                $visitor->document = $visitor->createDocument(null, null, false);
+            }
+
+            $visitor->document->appendChild($visitor->document->createElement($this->element, $this->value));
+        } elseif ($visitor instanceof JsonSerializationVisitor) {
+            $visited = true;
+
+            $visitor->setRoot(array($this->element => $this->value));
+        }
+    }
+
+    public function deserialize(VisitorInterface $visitor, $data, $type, &$visited)
+    {
+        if ('JMS\SerializerBundle\Tests\Serializer\Article' !== $type) {
+            return;
+        }
+
+        if ($visitor instanceof XmlDeserializationVisitor) {
+            $visited = true;
+
+            $this->element = $data->getName();
+            $this->value = (string)$data;
+        } elseif ($visitor instanceof JsonDeserializationVisitor) {
+            $visited = true;
+
+            $this->element = key($data);
+            $this->value = reset($data);
+        }
+
+        return $this;
     }
 }

@@ -18,17 +18,20 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
+
+use Symfony\Component\DependencyInjection\Compiler\RepeatedPass;
+
+use Symfony\Component\DependencyInjection\Compiler\AnalyzeServiceReferencesPass;
+
+use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
+
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
-
 use Doctrine\Common\Annotations\AnnotationReader;
-
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use JMS\SerializerBundle\JMSSerializerBundle;
-
 use Doctrine\Common\Annotations\Reader;
-
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
-
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 
@@ -54,24 +57,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoad()
     {
-        $extension = new JMSSerializerExtension();
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.debug', true);
-        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
-        $container->setParameter('kernel.bundles', array());
-        $container->set('annotation_reader', new AnnotationReader());
-        $container->set('service_container', $container);
-        $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
-        $extension->load(array(array()), $container);
-
-        $bundle = new JMSSerializerBundle();
-        $bundle->build($container);
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(
-            new ResolveDefinitionTemplatesPass(),
-        ));
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
+        $container = $this->getContainerForConfig(array(array()));
 
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject  = new VersionedObject('foo', 'bar');
@@ -87,5 +73,29 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $serializer->setVersion('1.1.1');
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
+    }
+
+    private function getContainerForConfig(array $configs)
+    {
+        $extension = new JMSSerializerExtension();
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
+        $container->setParameter('kernel.bundles', array());
+        $container->set('annotation_reader', new AnnotationReader());
+        $container->set('service_container', $container);
+        $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
+        $extension->load($configs, $container);
+
+        $bundle = new JMSSerializerBundle();
+        $bundle->build($container);
+
+        $container->getCompilerPassConfig()->setOptimizationPasses(array(
+            new ResolveDefinitionTemplatesPass(),
+        ));
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
+
+        return $container;
     }
 }

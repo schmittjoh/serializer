@@ -51,6 +51,14 @@ class JMSSerializerExtension extends Extension
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
         }
 
+        // object based custom handler
+        if ($config['handlers']['object_based']['serialization']) {
+            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serialization.serialization_handler');
+        }
+        if ($config['handlers']['object_based']['deserialization']) {
+            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serialization.deserialization_handler');
+        }
+
         // datetime handler
         if (isset($config['handlers']['datetime'])) {
             $container
