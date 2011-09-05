@@ -29,13 +29,15 @@ class ObjectBasedCustomHandler implements SerializationHandlerInterface, Deseria
 
     public function deserialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (!class_exists($type) || !in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))) {
+        if (!class_exists($type)
+            || !in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))
+        ) {
             return;
         }
 
         $metadata = $this->metadataFactory->getMetadataForClass($type);
-
         $visitor->startVisitingObject($metadata, $data, $type);
+
         $instance = $visitor->getResult();
         $instance->deserialize($visitor, $data, $type, $handled);
 

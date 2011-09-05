@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
-use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 
 final class GraphNavigator
 {
