@@ -49,6 +49,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('handlers')
                         ->addDefaultsIfNotSet()
                         ->children()
+                            ->booleanNode('object_based_custom')->defaultTrue()->end()
                             ->arrayNode('datetime')
                                 ->addDefaultsIfNotSet()
                                 ->canBeUnset()
