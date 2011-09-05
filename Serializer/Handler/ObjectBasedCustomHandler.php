@@ -29,7 +29,7 @@ class ObjectBasedCustomHandler implements SerializationHandlerInterface, Deseria
 
     public function deserialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (!in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))) {
+        if (!class_exists($type) || !in_array('JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface', class_implements($type))) {
             return;
         }
 
