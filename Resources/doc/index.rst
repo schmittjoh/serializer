@@ -53,7 +53,7 @@ suit your needs::
 
     jms_serializer:
         handlers:
-            object_based_custom: true
+            object_based: false
             datetime:
                 format: Y-m-dTH:i:s
                 default_timezone: UTC
