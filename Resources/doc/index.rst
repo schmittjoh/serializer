@@ -29,7 +29,8 @@ Then register the bundle with your kernel::
         // ...
     );
 
-This bundle also requires the Metadata library::
+This bundle also requires the Metadata library (**you need the master branch, not the 1.0
+version** which ships with the Symfony Standard Edition)::
 
     git submodule add https://github.com/schmittjoh/metadata.git vendor/metadata
 
@@ -42,8 +43,6 @@ Make sure that you also register the namespaces with the autoloader::
         'Metadata'         => __DIR__.'/../vendor/metadata/src',
         // ...
     ));    
-
-Note: You need to use the master branch of the metadata library.
 
 
 Configuration
