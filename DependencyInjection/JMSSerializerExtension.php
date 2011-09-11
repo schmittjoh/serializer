@@ -110,14 +110,28 @@ class JMSSerializerExtension extends Extension
 
         // directories
         $directories = array();
+        $bundles = $container->getParameter('kernel.bundles');
         if ($config['metadata']['auto_detection']) {
-            foreach ($container->getParameter('kernel.bundles') as $name => $class) {
+            foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
 
                 $directories[$ref->getNamespaceName()] = dirname($ref->getFileName()).'/Resources/config/serializer';
             }
         }
         foreach ($config['metadata']['directories'] as $directory) {
+            $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
+
+            if ('@' === $directory['path']) {
+                $bundleName = substr($directory['path'], 1, strpos($directory['path'], '/') - 1);
+
+                if (!isset($bundles[$bundleName])) {
+                    throw new \RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
+                }
+
+                $ref = new \ReflectionClass($bundles[$bundleName]);
+                $directory['path'] = dirname($ref->getFileName()).substr($directory['path'], strlen('@'.$bundleName));
+            }
+
             $directories[rtrim($directory['namespace_prefix'], '\\')] = rtrim($directory['path'], '\\/');
         }
         $container
