@@ -121,7 +121,7 @@ class JMSSerializerExtension extends Extension
         foreach ($config['metadata']['directories'] as $directory) {
             $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
 
-            if ('@' === $directory['path']) {
+            if ('@' === $directory['path'][0]) {
                 $bundleName = substr($directory['path'], 1, strpos($directory['path'], '/') - 1);
 
                 if (!isset($bundles[$bundleName])) {
