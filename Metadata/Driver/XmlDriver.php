@@ -46,6 +46,7 @@ class XmlDriver extends AbstractFileDriver
                 $isExclude = $isExpose = false;
 
                 $pElems = $elem->xpath("./property[@name = '".$pName."']");
+
                 if ($pElems) {
                     $pElem = reset($pElems);
 
@@ -109,8 +110,9 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute'};
                     }
 
-                    if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
-                        || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                    if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
+                        || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)) {
+
                         $metadata->addPropertyMetadata($pMetadata);
                     }
                 }
