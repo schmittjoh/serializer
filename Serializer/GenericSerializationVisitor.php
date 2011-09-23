@@ -23,7 +23,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
-abstract class GenericSerializationVisitor extends AbstractVisitor
+abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 {
     private $navigator;
     private $root;
@@ -137,16 +137,6 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $k = $this->namingStrategy->translateName($metadata);
 
         $this->data[$k] = $v;
-    }
-
-    public function visitUsingCustomHandler($data, $type, &$visited)
-    {
-        foreach ($this->customHandlers as $handler) {
-            $rs = $handler->serialize($this, $data, $type, $visited);
-            if ($visited) {
-                return $rs;
-            }
-        }
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)

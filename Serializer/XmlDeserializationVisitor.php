@@ -26,7 +26,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
-class XmlDeserializationVisitor extends AbstractVisitor
+class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 {
     private $objectConstructor;
     private $objectStack;
@@ -89,7 +89,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         } else if ('false' === $data) {
             $data = false;
         } else {
-            throw new \RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
+            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
         }
 
         if (null === $this->result) {
@@ -234,17 +234,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->revertCurrentObject();
 
         return $rs;
-    }
-
-    public function visitUsingCustomHandler($data, $type, &$visited)
-    {
-        $visited = false;
-        foreach ($this->customHandlers as $handler) {
-            $rs = $handler->deserialize($this, $data, $type, $visited);
-            if ($visited) {
-                return $rs;
-            }
-        }
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
