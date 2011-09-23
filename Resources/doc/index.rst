@@ -444,7 +444,7 @@ YAML Reference
 --------------
 ::
 
-    # MyBundle\Resources\config\serializer\ClassName.xml
+    # MyBundle\Resources\config\serializer\ClassName.yml
     Fully\Qualified\ClassName:
         exclusion_policy: ALL
         xml_root_name: foobar
