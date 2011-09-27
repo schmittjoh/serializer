@@ -43,6 +43,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
             $outputs['blog_post'] = '{"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"author":{"full_name":"Foo Bar"}}';
+            $outputs['price'] = '"3"';
             $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';
             $outputs['form_errors'] = '["This is the form error","Another error"]';

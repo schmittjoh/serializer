@@ -48,6 +48,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
@@ -180,6 +181,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+        }
+    }
+    
+    public function testPrice()
+    {
+        $price = new Price(3);
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('price'), get_class($price));
+            $this->assertEquals(3, $this->getField($deserialized, 'price'));
         }
     }
 
