@@ -20,7 +20,11 @@ namespace JMS\SerializerBundle\Tests\Fixtures;
 
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\XmlValue;
+use JMS\SerializerBundle\Annotation\XmlRoot;
 
+/**
+ * @XmlRoot("price")
+ */
 class Price
 {
     /**
@@ -28,7 +32,7 @@ class Price
      * @XmlValue
      */
     private $price;
-    
+
     function __construct($price)
     {
         $this->price = $price;

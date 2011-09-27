@@ -360,6 +360,34 @@ Resulting XML::
     <result id="1">
         <name><![CDATA[Johannes]]></name>
     </result>
+    
+@XmlValue
+~~~~~~~~~
+This allows you to mark properties which should be set as the value of the
+current element. Note that this has the limitation that any additional 
+properties of that object must have the @XmlAttribute annotation.
+
+::
+
+    <?php
+    
+    use JMS\SerializerBundle\Annotation\XmlAttribute;
+    use JMS\SerializerBundle\Annotation\XmlValue;
+    use JMS\SerializerBundle\Annotation\XmlRoot;
+    
+    /** @XmlRoot("price") */
+    class Price
+    {
+        /** @XmlAttribute */
+        private $currency = 'EUR';
+        
+        /** @XmlValue */
+        private $amount = 1.23;
+    }
+    
+Resulting XML::
+
+    <price currency="EUR">1.23</price>
 
 @XmlList
 ~~~~~~~~

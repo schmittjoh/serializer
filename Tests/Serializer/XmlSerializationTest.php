@@ -18,10 +18,20 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testInvalidUsageOfXmlValue()
+    {
+        $obj = new InvalidUsageOfXmlValue();
+        $this->serialize($obj);
+    }
+
     protected function getContent($key)
     {
         if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {

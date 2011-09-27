@@ -40,6 +40,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
     private $metadataStack;
     private $currentNode;
     private $currentMetadata;
+    private $hasValue;
 
     public function setDefaultRootName($name)
     {
@@ -140,6 +141,8 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             $this->document = $this->createDocument(null, null, false);
             $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
         }
+
+        $this->hasValue = false;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $object)
@@ -155,6 +158,24 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             }
 
             $this->currentNode->setAttribute($this->namingStrategy->translateName($metadata), $node->nodeValue);
+
+            return;
+        }
+
+        if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
+            || (!$metadata->xmlValue && $this->hasValue)) {
+            throw new \RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->reflection->class));
+        }
+
+        if ($metadata->xmlValue) {
+            $this->hasValue = true;
+
+            $node = $this->navigator->accept($v, null, $this);
+            if (!$node instanceof \DOMCharacterData) {
+                throw new RuntimeException('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node));
+            }
+
+            $this->currentNode->appendChild($node);
 
             return;
         }
