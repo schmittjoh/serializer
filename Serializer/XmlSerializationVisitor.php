@@ -28,7 +28,7 @@ use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class XmlSerializationVisitor extends AbstractVisitor
+class XmlSerializationVisitor extends AbstractSerializationVisitor
 {
     public $document;
 
@@ -132,16 +132,6 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function visitTraversable($data, $type)
     {
         return $this->visitArray($data, $type);
-    }
-
-    public function visitUsingCustomHandler($data, $type, &$visited)
-    {
-        foreach ($this->customHandlers as $handler) {
-            $rs = $handler->serialize($this, $data, $type, $visited);
-            if ($visited) {
-                return $rs;
-            }
-        }
     }
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)

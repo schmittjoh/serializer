@@ -16,17 +16,22 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Tests\Metadata\Driver;
+namespace JMS\SerializerBundle\Serializer;
 
-use Metadata\Driver\FileLocator;
-use JMS\SerializerBundle\Metadata\Driver\YamlDriver;
-
-class YamlDriverTest extends BaseDriverTest
+/**
+ * Abstract Serialization Visitor.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+abstract class AbstractSerializationVisitor extends AbstractVisitor
 {
-    protected function getDriver()
+    public function visitUsingCustomHandler($data, $type, &$visited)
     {
-        return new YamlDriver(new FileLocator(array(
-            'JMS\SerializerBundle\Tests\Fixtures' => __DIR__.'/yml',
-        )));
+        foreach ($this->customHandlers as $handler) {
+            $rs = $handler->serialize($this, $data, $type, $visited);
+            if ($visited) {
+                return $rs;
+            }
+        }
     }
 }

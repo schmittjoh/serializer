@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use Symfony\Component\Yaml\Inline;
+
+use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
+
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
 
 use JMS\SerializerBundle\Serializer\GenericDeserializationVisitor;
@@ -56,6 +60,10 @@ class DateTimeHandler implements SerializationHandlerInterface, DeserializationH
             $visited = true;
 
             return $data->format($this->format);
+        } else if ($visitor instanceof YamlSerializationVisitor) {
+            $visited = true;
+
+            return Inline::dump($data->format($this->format));
         }
     }
 

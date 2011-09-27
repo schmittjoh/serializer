@@ -24,7 +24,12 @@ use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 
-abstract class GenericDeserializationVisitor extends AbstractVisitor
+/**
+ * Generic Deserialization Visitor.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+abstract class GenericDeserializationVisitor extends AbstractDeserializationVisitor
 {
     private $navigator;
     private $result;
@@ -186,16 +191,6 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         $this->revertCurrentObject();
 
         return $obj;
-    }
-
-    public function visitUsingCustomHandler($data, $type, &$visited)
-    {
-        foreach ($this->customHandlers as $handler) {
-            $rs = $handler->deserialize($this, $data, $type, $visited);
-            if ($visited) {
-                return $rs;
-            }
-        }
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)

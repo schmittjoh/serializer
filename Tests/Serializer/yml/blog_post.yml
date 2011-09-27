@@ -1,0 +1,10 @@
+title: 'This is a nice title.'
+created_at: '2011-07-30T00:00:00+0000'
+is_published: false
+comments:
+    -
+        author:
+            full_name: 'Foo Bar'
+        text: foo
+author:
+    full_name: 'Foo Bar'

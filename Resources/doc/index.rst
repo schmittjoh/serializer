@@ -42,7 +42,7 @@ Make sure that you also register the namespaces with the autoloader::
         'JMS'              => __DIR__.'/../vendor/bundles',
         'Metadata'         => __DIR__.'/../vendor/metadata/src',
         // ...
-    ));    
+    ));
 
 
 Configuration
@@ -59,26 +59,26 @@ suit your needs::
             array_collection: true
             form_error: true
             constraint_violation: true
-            
+
         property_naming:
             separator:  _
             lower_case: true
-            
+
         metadata:
             cache: file
             debug: %kernel.debug%
             file_cache:
                 dir: %kernel.cache_dir%/serializer
-            
-            # Using auto-detection, the mapping files for each bundle will be 
+
+            # Using auto-detection, the mapping files for each bundle will be
             # expected in the Resources/config/serializer directory.
-            # 
+            #
             # Example:
             # class: My\FooBundle\Entity\User
             # expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
             auto_detection: true
-            
-            # if you don't want to use auto-detection, you can also define the 
+
+            # if you don't want to use auto-detection, you can also define the
             # namespace prefix and the corresponding directory explicitly
             directories:
                 any-name:
@@ -87,7 +87,7 @@ suit your needs::
                 another-name:
                     namespace_prefix: My\BarBundle
                     path: @MyBarBundle/Resources/config/serializer
-            
+
 Usage
 -----
 
@@ -107,20 +107,20 @@ Versioning
 ~~~~~~~~~~
 
 The bundle allows you to have different versions of your objects. This can be
-achieved by using the @Since, and @Until annotation which both accept a 
+achieved by using the @Since, and @Until annotation which both accept a
 standardized PHP version number.
 
 ::
 
     <?php
-    
+
     class VersionedObject
     {
         /**
          * @Until("1.0.x")
          */
         private $name;
-        
+
         /**
          * @Since("1.1")
          * @SerializedName("name")
@@ -128,11 +128,11 @@ standardized PHP version number.
         private $name2;
     }
 
-If you have annotated your objects like above, you can serializing different 
+If you have annotated your objects like above, you can serializing different
 versions like this::
 
     <?php
-    
+
     $serializer->setVersion('1.0');
     $serializer->serialize(new VersionObject(), 'json');
 
@@ -141,7 +141,7 @@ Defining which properties should be serialized
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default exclusion policy is to exclude nothing, that is all properties of the
-object will be serialized. If you only want to expose a few of the properties, 
+object will be serialized. If you only want to expose a few of the properties,
 then it is easier to change the exclusion policy, and only mark these few properties::
 
     <?php
@@ -216,7 +216,7 @@ understood by PHP's ``version_compare`` function.
 ~~~~~~
 This annotation can be defined on a property to specify until which version this
 property was available. If a later version is serialized, then this property is
-excluded automatically. The version must be in a format that is understood by 
+excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
 @PreSerialize
@@ -279,7 +279,7 @@ Examples::
     <?php
 
     namespace MyNamespace;
-    
+
     use JMS\SerializerBundle\Annotation\Type;
 
     class BlogPost
@@ -322,15 +322,15 @@ This allows you to specify the name of the top-level element.
 ::
 
     <?php
-    
+
     use JMS\SerializerBundle\Annotation\XmlRoot;
-    
+
     /** @XmlRoot("user") */
     class User
     {
         private $name = 'Johannes';
     }
-    
+
 Resulting XML::
 
     <user>
@@ -345,16 +345,16 @@ and not as child elements.
 ::
 
     <?php
-    
+
     use JMS\SerializerBundle\Annotation\XmlAttribute;
-    
+
     class User
     {
         /** @XmlAttribute */
         private $id = 1;
         private $name = 'Johannes';
     }
-    
+
 Resulting XML::
 
     <result id="1">
@@ -370,10 +370,10 @@ keys of the array are not important.
 ::
 
     <?php
-    
+
     use JMS\SerializerBundle\Annotation\XmlList;
     use JMS\SerializerBundle\Annotation\XmlRoot;
-    
+
     /** @XmlRoot("post") */
     class Post
     {
@@ -385,11 +385,11 @@ keys of the array are not important.
             new Comment('Bar'),
         );
     }
-    
+
     class Comment
     {
         private $text;
-        
+
         public function __construct($text)
         {
             $this->text = $text;
@@ -409,7 +409,7 @@ Resulting XML::
 
 @XmlMap
 ~~~~~~~
-Similar to @XmlList, but the keys of the array are meaningful.    
+Similar to @XmlList, but the keys of the array are meaningful.
 
 XML Reference
 -------------
@@ -419,12 +419,12 @@ XML Reference
     <?xml version="1.0" encoding="UTF-8">
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true">
-            <property name="some-property" 
-                      exclude="true" 
-                      expose="true" 
-                      type="string" 
-                      serialized-name="foo" 
-                      since-version="1.0" 
+            <property name="some-property"
+                      exclude="true"
+                      expose="true"
+                      type="string"
+                      serialized-name="foo"
+                      since-version="1.0"
                       until-version="1.1"
                       xml-attribute="true"
             >
@@ -444,7 +444,7 @@ YAML Reference
 --------------
 ::
 
-    # MyBundle\Resources\config\serializer\ClassName.xml
+    # MyBundle\Resources\config\serializer\ClassName.yml
     Fully\Qualified\ClassName:
         exclusion_policy: ALL
         xml_root_name: foobar
