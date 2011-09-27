@@ -126,6 +126,10 @@ class XmlDriver extends AbstractFileDriver
                     if (isset($pElem->attributes()->{'xml-attribute'})) {
                         $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute'};
                     }
+                    
+                    if (isset($pElem->attributes()->{'xml-value'})) {
+                        $pMetadata->xmlValue = 'true' === (string) $pElem->attributes()->{'xml-value'};
+                    }
 
                     if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
                         || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)) {

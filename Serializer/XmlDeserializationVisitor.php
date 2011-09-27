@@ -205,6 +205,13 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
             return;
         }
+        
+        if ($metadata->xmlValue) {
+            $v = $this->navigator->accept($data, $metadata->type, $this);
+            $metadata->reflection->setValue($this->currentObject, $v);
+
+            return;
+        }
 
         if ($metadata->xmlCollection) {
             $enclosingElem = $data;

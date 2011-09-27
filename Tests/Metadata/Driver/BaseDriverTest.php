@@ -55,6 +55,14 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p = new PropertyMetadata($m->name, 'author');
         $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
         $this->assertEquals($p, $m->propertyMetadata['author']);
+        
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
+        $this->assertNotNull($m);
+        
+        $p = new PropertyMetadata($m->name, 'price');
+        $p->type = 'double';
+        $p->xmlValue = true;
+        $this->assertEquals($p, $m->propertyMetadata['price']);
     }
 
     abstract protected function getDriver();

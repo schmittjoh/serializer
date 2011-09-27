@@ -31,6 +31,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlEntryName;
     public $xmlKeyAttribute;
     public $xmlAttribute = false;
+    public $xmlValue = false;
 
     public function serialize()
     {
@@ -44,6 +45,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlEntryName,
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
+            $this->xmlValue,
             parent::serialize(),
         ));
     }
@@ -60,6 +62,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlEntryName,
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
+            $this->xmlValue,
             $parentStr
         ) = unserialize($str);
 

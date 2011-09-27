@@ -18,6 +18,12 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
+
+use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
+
+use JMS\SerializerBundle\Tests\Fixtures\Order;
+
 use Symfony\Component\Yaml\Inline;
 use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -48,6 +54,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
@@ -180,6 +187,47 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+        }
+    }
+
+    public function testPrice()
+    {
+        $price = new Price(3);
+        $this->assertEquals($this->getContent('price'), $this->serialize($price));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('price'), get_class($price));
+            $this->assertEquals(3, $this->getField($deserialized, 'price'));
+        }
+    }
+
+    public function testOrder()
+    {
+        $order = new Order(new Price(12.34));
+        $this->assertEquals($this->getContent('order'), $this->serialize($order));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($order, $this->deserialize($this->getContent('order'), get_class($order)));
+        }
+    }
+
+    public function testCurrencyAwarePrice()
+    {
+        $price = new CurrencyAwarePrice(2.34);
+        $this->assertEquals($this->getContent('currency_aware_price'), $this->serialize($price));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($price, $this->deserialize($this->getContent('currency_aware_price'), get_class($price)));
+        }
+    }
+
+    public function testOrderWithCurrencyAwarePrice()
+    {
+        $order = new CurrencyAwareOrder(new CurrencyAwarePrice(1.23));
+        $this->assertEquals($this->getContent('order_with_currency_aware_price'), $this->serialize($order));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($order, $this->deserialize($this->getContent('order_with_currency_aware_price'), get_class($order)));
         }
     }
 

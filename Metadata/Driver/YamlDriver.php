@@ -115,6 +115,10 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['xml_attribute'])) {
                         $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
                     }
+                    
+                    if (isset($pConfig['xml_value'])) {
+                        $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
+                    }
 
                     if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
