@@ -32,7 +32,7 @@ class SetCustomHandlersPass implements CompilerPassInterface
         }
 
         $deserializationHandlers = array();
-        foreach ($container->findTaggedServiceIds('jms_serializer.deserialization_handlers') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('jms_serializer.deserialization_handler') as $id => $attributes) {
             $deserializationHandlers[] = new Reference($id);
         }
 
