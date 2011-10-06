@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use Symfony\Component\HttpKernel\KernelInterface;
+
 use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
 
 use Symfony\Component\DependencyInjection\Compiler\RepeatedPass;
@@ -75,9 +77,20 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
     }
 
-    private function getContainerForConfig(array $configs)
+    private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
-        $extension = new JMSSerializerExtension();
+        if (null === $kernel) {
+            $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
+            $kernel
+                ->expects($this->any())
+                ->method('getBundles')
+                ->will($this->returnValue(array()))
+            ;
+        }
+
+        $bundle = new JMSSerializerBundle($kernel);
+        $extension = $bundle->getContainerExtension();
+
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
@@ -87,7 +100,6 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
         $extension->load($configs, $container);
 
-        $bundle = new JMSSerializerBundle();
         $bundle->build($container);
 
         $container->getCompilerPassConfig()->setOptimizationPasses(array(

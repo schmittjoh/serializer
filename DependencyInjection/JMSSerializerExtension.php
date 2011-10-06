@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
+use JMS\SerializerBundle\SerializerBundleAwareInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -31,10 +32,26 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JMSSerializerExtension extends Extension
 {
+    private $kernel;
+    private $factories = array();
+
+    public function __construct(KernelInterface $kernel)
+    {
+        $this->kernel = $kernel;
+    }
+
+    public function addHandlerDefinitionFactory(HandlerDefinitionFactoryInterface $factory)
+    {
+        $this->factories[$factory->getConfigKey()] = $factory;
+    }
+
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = $this->mergeConfigs($configs, $container->getParameter('kernel.debug'));
-        $loader = new XmlFileLoader($container, new FileLocator(array(__DIR__.'/../Resources/config/')));
+        $config = $this->processConfiguration($this->buildConfiguration(),
+                      $configs);
+
+        $loader = new XmlFileLoader($container, new FileLocator(array(
+                        __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
         // property naming
@@ -51,38 +68,32 @@ class JMSSerializerExtension extends Extension
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
         }
 
-        // object based custom handler
-        if ($config['handlers']['object_based']['serialization']) {
-            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serializer.serialization_handler');
-        }
-        if ($config['handlers']['object_based']['deserialization']) {
-            $container->getDefinition('jms_serializer.object_based_custom_handler')->addTag('jms_serializer.deserialization_handler');
+        // gather handlers
+        $serializationHandlers = $deserializationHandlers = array();
+        foreach ($config['handlers'] as $k => $handlerConfig) {
+            $id = $this->factories[$k]->getHandlerId($container, $handlerConfig);
+            $type = $this->factories[$k]->getType($handlerConfig);
+
+            if (0 !== $type & HandlerDefinitionFactoryInterface::TYPE_SERIALIZATION) {
+                $serializationHandlers[] = new Reference($id);
+            }
+
+            if (0 !== $type & HandlerDefinitionFactoryInterface::TYPE_DESERIALIZATION) {
+                $deserializationHandlers[] = new Reference($id);
+            }
         }
 
-        // datetime handler
-        if (isset($config['handlers']['datetime'])) {
+        foreach (array('json', 'xml', 'yaml') as $format) {
             $container
-                ->getDefinition('jms_serializer.datetime_handler')
-                ->addArgument($config['handlers']['datetime']['format'])
-                ->addArgument($config['handlers']['datetime']['default_timezone'])
+                ->getDefinition('jms_serializer.'.$format.'_serialization_visitor')
+                ->replaceArgument(1, $serializationHandlers)
             ;
-        } else {
-            $container->removeDefinition('jms_serializer.datetime_handler');
         }
-
-        // array collection handler
-        if (!$config['handlers']['array_collection']) {
-            $container->removeDefinition('jms_serializer.array_collection_handler');
-        }
-
-        // form error handler
-        if (!$config['handlers']['form_error']) {
-            $container->removeDefinition('jms_serializer.form_error_handler');
-        }
-
-        // constraint violation handler
-        if (!$config['handlers']['constraint_violation']) {
-            $container->removeDefinition('jms_serializer.constraint_violation_handler');
+        foreach (array('json', 'xml') as $format) {
+            $container
+                ->getDefinition('jms_serializer.'.$format.'_deserialization_visitor')
+                ->replaceArgument(1, $deserializationHandlers)
+            ;
         }
 
         // metadata
@@ -140,11 +151,16 @@ class JMSSerializerExtension extends Extension
         ;
     }
 
-    private function mergeConfigs(array $configs, $debug)
+    private function buildConfiguration()
     {
-        $processor = new Processor();
-        $config = new Configuration($debug);
+        foreach ($this->kernel->getBundles() as $bundle) {
+            if (!method_exists($bundle, 'configureSerializerExtension')) {
+                continue;
+            }
 
-        return $processor->process($config->getConfigTreeBuilder()->buildTree(), $configs);
+            $bundle->configureSerializerExtension($this);
+        }
+
+        return new Configuration($this->kernel->isDebug(), $this->factories);
     }
 }

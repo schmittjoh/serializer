@@ -18,87 +18,88 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
     private $debug;
+    private $factories;
 
-    public function __construct($debug = false)
+    public function __construct($debug = false, array $factories = array())
     {
         $this->debug = $debug;
+        $this->factories = $factories;
     }
 
     public function getConfigTreeBuilder()
     {
         $tb = new TreeBuilder();
 
-        $tb
+        $root = $tb
             ->root('jms_serializer', 'array')
                 ->children()
-                    ->arrayNode('property_naming')
+        ;
+
+        $this->addSerializersSection($root);
+        $this->addMetadataSection($root);
+
+        return $tb;
+    }
+
+    private function addSerializersSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('property_naming')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('id')->cannotBeEmpty()->end()
+                    ->scalarNode('separator')->defaultValue('_')->end()
+                    ->booleanNode('lower_case')->defaultTrue()->end()
+                    ->booleanNode('enable_cache')->defaultTrue()->end()
+                ->end()
+            ->end()
+        ;
+
+        $handlerNode = $builder
+            ->arrayNode('handlers')
+                ->addDefaultsIfNotSet()
+                ->children()
+        ;
+
+        foreach ($this->factories as $factory) {
+            $factory->addConfiguration(
+                $handlerNode->arrayNode($factory->getConfigKey())->canBeUnset());
+        }
+    }
+
+    private function addMetadataSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('metadata')
+                ->addDefaultsIfNotSet()
+                ->fixXmlConfig('directory', 'directories')
+                ->children()
+                    ->scalarNode('cache')->defaultValue('file')->end()
+                    ->booleanNode('debug')->defaultValue($this->debug)->end()
+                    ->arrayNode('file_cache')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('id')->cannotBeEmpty()->end()
-                            ->scalarNode('separator')->defaultValue('_')->end()
-                            ->booleanNode('lower_case')->defaultTrue()->end()
-                            ->booleanNode('enable_cache')->defaultTrue()->end()
+                            ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/serializer')->end()
                         ->end()
                     ->end()
-                    ->arrayNode('handlers')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->arrayNode('object_based')
-                                ->treatTrueLike(array('serialization' => true, 'deserialization' => true))
-                                ->treatNullLike(array('serialization' => true, 'deserialization' => true))
-                                ->treatFalseLike(array('serialization' => false, 'deserialization' => false))
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->booleanNode('serialization')->defaultFalse()->end()
-                                    ->booleanNode('deserialization')->defaultFalse()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('datetime')
-                                ->addDefaultsIfNotSet()
-                                ->canBeUnset()
-                                ->children()
-                                    ->scalarNode('format')->defaultValue(\DateTime::ISO8601)->end()
-                                    ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
-                                ->end()
-                            ->end()
-                            ->booleanNode('array_collection')->defaultTrue()->end()
-                            ->booleanNode('form_error')->defaultTrue()->end()
-                            ->booleanNode('constraint_violation')->defaultTrue()->end()
-                        ->end()
-                    ->end()
-                    ->arrayNode('metadata')
-                        ->addDefaultsIfNotSet()
-                        ->fixXmlConfig('directory', 'directories')
-                        ->children()
-                            ->scalarNode('cache')->defaultValue('file')->end()
-                            ->booleanNode('debug')->defaultValue($this->debug)->end()
-                            ->arrayNode('file_cache')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/serializer')->end()
-                                ->end()
-                            ->end()
-                            ->booleanNode('auto_detection')->defaultTrue()->end()
-                            ->arrayNode('directories')
-                                ->prototype('array')
-                                    ->children()
-                                        ->scalarNode('path')->isRequired()->end()
-                                        ->scalarNode('namespace_prefix')->defaultValue('')->end()
-                                    ->end()
-                                ->end()
+                    ->booleanNode('auto_detection')->defaultTrue()->end()
+                    ->arrayNode('directories')
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('path')->isRequired()->end()
+                                ->scalarNode('namespace_prefix')->defaultValue('')->end()
                             ->end()
                         ->end()
                     ->end()
                 ->end()
             ->end()
         ;
-
-        return $tb;
     }
 }
