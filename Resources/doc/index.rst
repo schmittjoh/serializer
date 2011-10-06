@@ -33,7 +33,7 @@ Then register the bundle with your kernel::
     );
 
 This bundle also requires the Metadata library (**you need the 1.1 version, not the 1.0
-version** which ships with the Symfony Standard Edition.)
+version** which ships with the Symfony Standard Edition.)::
 
     [metadata]
         git=http://github.com/schmittjoh/metadata.git
