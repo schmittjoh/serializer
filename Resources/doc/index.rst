@@ -16,9 +16,12 @@ include:
 
 Installation
 ------------
-Checkout a copy of the code::
+First, checkout a copy of the code. Just add the following to the ``deps`` 
+file of your Symfony Standard Distribution::
 
-    git submodule add https://github.com/schmittjoh/JMSSerializerBundle.git src/JMS/SerializerBundle
+    [JMSSerializerBundle]
+        git=git://github.com/schmittjoh/JMSSerializerBundle.git
+        target=bundles/JMS/SerializerBundle
 
 Then register the bundle with your kernel::
 
@@ -30,9 +33,11 @@ Then register the bundle with your kernel::
     );
 
 This bundle also requires the Metadata library (**you need the 1.1 version, not the 1.0
-version** which ships with the Symfony Standard Edition)::
+version** which ships with the Symfony Standard Edition.)
 
-    git submodule add https://github.com/schmittjoh/metadata.git vendor/metadata
+    [metadata]
+        git=http://github.com/schmittjoh/metadata.git
+        version=1.1.0
 
 Make sure that you also register the namespaces with the autoloader::
 
@@ -44,6 +49,10 @@ Make sure that you also register the namespaces with the autoloader::
         // ...
     ));
 
+Now use the ``vendors`` script to clone the newly added repositories 
+into your project::
+
+    php bin/vendors install --reinstall
 
 Configuration
 -------------
@@ -497,5 +506,6 @@ YAML Reference
             pre_serialize: [foo, bar]
             post_serialize: [foo, bar]
             post_deserialize: [foo, bar]
+
 
 
