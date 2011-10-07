@@ -52,7 +52,7 @@ Make sure that you also register the namespaces with the autoloader::
 Now use the ``vendors`` script to clone the newly added repositories 
 into your project::
 
-    php bin/vendors install --reinstall
+    php bin/vendors install
 
 Configuration
 -------------
