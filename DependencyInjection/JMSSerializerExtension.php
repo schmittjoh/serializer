@@ -54,6 +54,11 @@ class JMSSerializerExtension extends Extension
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
+        // add factories as resource
+        foreach ($this->factories as $factory) {
+            $container->addObjectResource($factory);
+        }
+
         // property naming
         $container
             ->getDefinition('jms_serializer.camel_case_naming_strategy')
@@ -74,11 +79,11 @@ class JMSSerializerExtension extends Extension
             $id = $this->factories[$k]->getHandlerId($container, $handlerConfig);
             $type = $this->factories[$k]->getType($handlerConfig);
 
-            if (0 !== $type & HandlerDefinitionFactoryInterface::TYPE_SERIALIZATION) {
+            if (0 !== ($type & HandlerDefinitionFactoryInterface::TYPE_SERIALIZATION)) {
                 $serializationHandlers[] = new Reference($id);
             }
 
-            if (0 !== $type & HandlerDefinitionFactoryInterface::TYPE_DESERIALIZATION) {
+            if (0 !== ($type & HandlerDefinitionFactoryInterface::TYPE_DESERIALIZATION)) {
                 $deserializationHandlers[] = new Reference($id);
             }
         }
