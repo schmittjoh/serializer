@@ -22,43 +22,50 @@ as the following::
     <service id="acme_foo.serializer.my_handler"
              class="Acme\FooBundle\Serializer\MyHandler"
              public="false"
-             abstract="true" />
+             />
              
-Note that we have declared this definition abstract, we will later see
-why. At the moment, do not worry too much about this. 
-
 What is left to do is to publish our new handler to this bundle. So it gets
-picked up, and wired with the correct serializer. In order to do this, this
-bundle uses a configuration system similar to that of the SecurityBundle. Each
-handler needs a corresponding factory::
+picked up, and wired correctly. In order to do this, this bundle uses a 
+configuration system similar to that of the SecurityBundle. Each handler needs 
+a corresponding definition factory::
 
     <?php
     
     namespace Acme\FooBundle\DependencyInjection\Factory;
     
-    use JMS\SerializerBundle\DependencyInjection\SerializerFactoryInterface;
+    use JMS\SerializerBundle\DependencyInjection\HandlerDefinitionFactoryInterface;
     
-    class MyHandlerFactory implements SerializerFactoryInterface
+    class MyHandlerFactory implements HandlerDefinitionFactoryInterface
     {
-        public function getKey()
+        public function getConfigKey()
         {
             return 'acme_foo_my';
         }
         
-        public function addConfiguration(ArrayNodeDefinition $builder)
+        public function getType(array $config)
         {
-        
+            return self::TYPE_SERIALIZATION | self::TYPE_DESERIALIZATION;
         }
         
-        public function process(ContainerBuilder $container, array $config, $id)
+        public function addConfiguration(ArrayNodeDefinition $builder)
         {
+            $builder
+                ->children()
+                    ->scalarNode('foo')->end()
+                    ->scalarNode('bar')->end()
+                ->end()
+            ;
+        }
         
+        public function getHandlerId(ContainerBuilder $container, array $config)
+        {
+            return 'acme_foo.serializer.my_handler';
         }
     }
     
 This factory is responsible for setting up the configuration for your handler
 in the ``addConfiguration`` method, and then process that configuration in the
-``process`` method. 
+``getHandlerId`` method. 
 
 The last thing left to do, is to add this factory to this bundle. This is
 done by adding a ``configureSerializerExtension`` to your bundle class::
@@ -75,6 +82,6 @@ done by adding a ``configureSerializerExtension`` to your bundle class::
     {
         public function configureSerializerExtension(JMSSerializerExtension $ext)
         {
-            $ext->addFactory(new FooFactory());
+            $ext->addHandlerDefinitionFactory(new FooFactory());
         }
     }
