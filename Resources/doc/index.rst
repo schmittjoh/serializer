@@ -97,6 +97,10 @@ suit your needs::
                     namespace_prefix: My\BarBundle
                     path: @MyBarBundle/Resources/config/serializer
 
+Note the order in which the handlers are listed in the "handlers" section defines
+in which they are called while processing. See "extending.rst" for details for how
+to define custom handlers, which then also need to be configured as shown here.
+
 Usage
 -----
 
