@@ -65,6 +65,7 @@ class Configuration implements ConfigurationInterface
         $handlerNode = $builder
             ->arrayNode('handlers')
                 ->addDefaultsIfNotSet()
+                ->disallowNewKeysInSubsequentConfigs()
                 ->children()
         ;
 
