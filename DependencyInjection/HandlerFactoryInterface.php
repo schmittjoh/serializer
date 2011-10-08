@@ -5,7 +5,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
-interface HandlerDefinitionFactoryInterface
+interface HandlerFactoryInterface
 {
     const TYPE_SERIALIZATION   = 1;
     const TYPE_DESERIALIZATION = 2;

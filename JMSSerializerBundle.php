@@ -45,11 +45,11 @@ class JMSSerializerBundle extends Bundle
 
     public function configureSerializerExtension(JMSSerializerExtension $ext)
     {
-        $ext->addHandlerDefinitionFactory(new ObjectBasedFactory());
-        $ext->addHandlerDefinitionFactory(new ArrayCollectionFactory());
-        $ext->addHandlerDefinitionFactory(new ConstraintViolationFactory());
-        $ext->addHandlerDefinitionFactory(new DateTimeFactory());
-        $ext->addHandlerDefinitionFactory(new FormErrorFactory());
+        $ext->addHandlerFactory(new ObjectBasedFactory());
+        $ext->addHandlerFactory(new ArrayCollectionFactory());
+        $ext->addHandlerFactory(new ConstraintViolationFactory());
+        $ext->addHandlerFactory(new DateTimeFactory());
+        $ext->addHandlerFactory(new FormErrorFactory());
     }
 
     public function build(ContainerBuilder $builder)

@@ -33,9 +33,9 @@ a corresponding definition factory::
     
     namespace Acme\FooBundle\DependencyInjection\Factory;
     
-    use JMS\SerializerBundle\DependencyInjection\HandlerDefinitionFactoryInterface;
+    use JMS\SerializerBundle\DependencyInjection\HandlerFactoryInterface;
     
-    class MyHandlerFactory implements HandlerDefinitionFactoryInterface
+    class MyHandlerFactory implements HandlerFactoryInterface
     {
         public function getConfigKey()
         {
@@ -82,6 +82,6 @@ done by adding a ``configureSerializerExtension`` to your bundle class::
     {
         public function configureSerializerExtension(JMSSerializerExtension $ext)
         {
-            $ext->addHandlerDefinitionFactory(new FooFactory());
+            $ext->addHandlerFactory(new FooFactory());
         }
     }

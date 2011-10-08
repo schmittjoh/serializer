@@ -2,11 +2,11 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Factory;
 
-use JMS\SerializerBundle\DependencyInjection\HandlerDefinitionFactoryInterface;
+use JMS\SerializerBundle\DependencyInjection\HandlerFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class DateTimeFactory implements HandlerDefinitionFactoryInterface
+class DateTimeFactory implements HandlerFactoryInterface
 {
     public function getConfigKey()
     {

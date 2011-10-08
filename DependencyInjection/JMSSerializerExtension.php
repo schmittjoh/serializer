@@ -40,7 +40,7 @@ class JMSSerializerExtension extends Extension
         $this->kernel = $kernel;
     }
 
-    public function addHandlerDefinitionFactory(HandlerDefinitionFactoryInterface $factory)
+    public function addHandlerFactory(HandlerFactoryInterface $factory)
     {
         $this->factories[$factory->getConfigKey()] = $factory;
     }
@@ -79,11 +79,11 @@ class JMSSerializerExtension extends Extension
             $id = $this->factories[$k]->getHandlerId($container, $handlerConfig);
             $type = $this->factories[$k]->getType($handlerConfig);
 
-            if (0 !== ($type & HandlerDefinitionFactoryInterface::TYPE_SERIALIZATION)) {
+            if (0 !== ($type & HandlerFactoryInterface::TYPE_SERIALIZATION)) {
                 $serializationHandlers[] = new Reference($id);
             }
 
-            if (0 !== ($type & HandlerDefinitionFactoryInterface::TYPE_DESERIALIZATION)) {
+            if (0 !== ($type & HandlerFactoryInterface::TYPE_DESERIALIZATION)) {
                 $deserializationHandlers[] = new Reference($id);
             }
         }
