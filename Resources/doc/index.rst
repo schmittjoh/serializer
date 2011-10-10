@@ -28,7 +28,7 @@ Then register the bundle with your kernel::
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\SerializerBundle\JMSSerializerBundle(),
+        new JMS\SerializerBundle\JMSSerializerBundle($this),
         // ...
     );
 
