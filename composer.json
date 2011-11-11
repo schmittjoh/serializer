@@ -1,0 +1,25 @@
+{
+    "name": "jms/serializer-bundle",
+    "type": "symfony-bundle",
+    "description": "Allows you to easily serialize, and deserialize object graphs of any complexity",
+    "keywords": ["serialization"],
+    "homepage": "http://friendsofsymfony.github.com",
+    "license": "Apache",
+    "authors": [
+        {
+            "name": "Johannes M. Schmitt",
+            "email": "schmittjoh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "metadata/metadata": ">=1.1.0"
+    },
+    "suggest": {
+        "symfony/framework-bundle": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "JMS\\SerializerBundle": "" }
+    },
+    "target-dir": "JMS/SerializerBundle"
+}
