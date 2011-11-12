@@ -2,8 +2,7 @@
     "name": "jms/serializer-bundle",
     "type": "symfony-bundle",
     "description": "Allows you to easily serialize, and deserialize object graphs of any complexity",
-    "keywords": ["serialization"],
-    "homepage": "http://friendsofsymfony.github.com",
+    "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
     "license": "Apache",
     "authors": [
         {
