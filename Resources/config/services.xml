@@ -37,6 +37,7 @@
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
+        <parameter key="jms_serializer.doctrine_orm_handler.class">JMS\SerializerBundle\Serializer\Handler\DoctrineOrmProxyHandler</parameter>
     </parameters>
 
     <services>
@@ -154,5 +155,6 @@
             <argument type="service" id="translator" />
         </service>
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
+        <service id="jms_serializer.doctrine_orm_handler" class="%jms_serializer.doctrine_orm_handler.class%" public="false" />
     </services>
 </container>

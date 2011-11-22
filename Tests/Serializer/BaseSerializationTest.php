@@ -44,6 +44,7 @@ use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
+use JMS\SerializerBundle\Serializer\Handler\DoctrineOrmProxyHandler;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
@@ -54,6 +55,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use Metadata\MetadataFactory;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -334,6 +336,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
 
+    public function testDoctrineOrmProxy()
+    {
+        if (!class_exists('Doctrine\ORM\Version')) {
+            $this->markTestSkipped('Doctrine is not available.');
+        }
+
+        $object = new SimpleObjectProxy('foo', 'bar');
+
+        $this->assertEquals($this->getContent('orm_proxy'), $this->serialize($object));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -390,6 +403,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             new DateTimeHandler(),
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
+            new DoctrineOrmProxyHandler(),
         );
 
         return $handlers;
