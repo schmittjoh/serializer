@@ -22,8 +22,15 @@ use Doctrine\ORM\Proxy\Proxy;
 
 class SimpleObjectProxy extends SimpleObject implements Proxy
 {
+    public $__isInitialized__ = false;
+
+    private $baz = 'baz';
+
     public function __load()
     {
-        $this->camelCase = 'proxy-boo';
+        if (!$this->__isInitialized__) {
+            $this->camelCase = 'proxy-boo';
+            $this->__isInitialized__ = true;
+        }
     }
 }

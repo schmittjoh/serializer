@@ -26,19 +26,12 @@ class DoctrineOrmProxyHandler implements SerializationHandlerInterface
 {
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if ($data instanceof Proxy && get_class($data) === $type) {
+        if ($data instanceof Proxy && !$data->__isInitialized__) {
             $handled = true;
-            $parents = class_parents($data);
 
-            if (false === $parents || count($parents) == 0) {
-                throw new \LogicException(sprintf('The proxy "%s" must extend any other class.', get_class($data)));
-            }
+            $data->__load();
 
-            if (method_exists($data, '__load')) {
-                $data->__load();
-            }
-
-            return $visitor->getNavigator()->accept($data, array_pop($parents), $visitor);
+            return $visitor->getNavigator()->accept($data, get_parent_class($data), $visitor);
         }
 
         return null;
