@@ -30,7 +30,9 @@ class DoctrineOrmProxyHandler implements SerializationHandlerInterface
             $handled = true;
 
             $data->__load();
+            $visitor->getNavigator()->detachObject($data);
 
+            // pass the parent class not to load the metadata for the proxy class
             return $visitor->getNavigator()->accept($data, get_parent_class($data), $visitor);
         }
 

@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
 final class GraphNavigator
@@ -124,6 +125,17 @@ final class GraphNavigator
 
             return $rs;
         }
+    }
+
+    public function detachObject($object)
+    {
+        if (null === $object) {
+            throw new InvalidArgumentException('$object cannot be null');
+        } else if (!is_object($object)) {
+            throw new InvalidArgumentException(sprintf('Expected an object to detach, given "%s".', gettype($object)));
+        }
+
+        $this->visiting->detach($object);
     }
 
     private function afterVisitingObject(ClassMetadata $metadata, $object)
