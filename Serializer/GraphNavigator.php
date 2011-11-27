@@ -62,7 +62,7 @@ final class GraphNavigator
             return $visitor->visitBoolean($data, $type);
         } else if ('double' === $type) {
             return $visitor->visitDouble($data, $type);
-        } else if ('array' === $type || 0 === strpos($type, 'array<')) {
+        } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
             return $visitor->visitArray($data, $type);
         } else {
             if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
