@@ -24,12 +24,17 @@ use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
 final class GraphNavigator
 {
+    const DIRECTION_SERIALIZATION = 1;
+    const DIRECTION_DESERIALIZATION = 2;
+
+    private $direction;
     private $exclusionStrategy;
     private $metadataFactory;
     private $visiting;
 
-    public function __construct(MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
     {
+        $this->direction = $direction;
         $this->metadataFactory = $metadataFactory;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
@@ -38,7 +43,7 @@ final class GraphNavigator
     public function accept($data, $type, VisitorInterface $visitor)
     {
         // determine type if not given
-        if ($isSerialization = (null === $type)) {
+        if (null === $type) {
             if (null === $data) {
                 return null;
             }
@@ -60,7 +65,7 @@ final class GraphNavigator
         } else if ('array' === $type || 0 === strpos($type, 'array<')) {
             return $visitor->visitArray($data, $type);
         } else {
-            if ($isSerialization && null !== $data) {
+            if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
                 if ($this->visiting->contains($data)) {
                     return null;
                 }
@@ -71,7 +76,7 @@ final class GraphNavigator
             $handled = false;
             $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
-                if ($isSerialization) {
+                if (self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
 
@@ -80,7 +85,7 @@ final class GraphNavigator
 
             $metadata = $this->metadataFactory->getMetadataForClass($type);
             if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
-                if ($isSerialization) {
+                if (self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
 
@@ -88,16 +93,16 @@ final class GraphNavigator
             }
 
             // pre-serialization callbacks
-            if ($isSerialization) {
+            if (self::DIRECTION_SERIALIZATION === $this->direction) {
                 foreach ($metadata->preSerializeMethods as $method) {
                     $method->invoke($data);
                 }
             }
 
             // check if traversable
-            if ($isSerialization && $data instanceof \Traversable) {
+            if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
                 $rs = $visitor->visitTraversable($data, $type);
-                $this->afterVisitingObject($metadata, $data, $isSerialization);
+                $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
 
                 return $rs;
             }
@@ -115,26 +120,26 @@ final class GraphNavigator
             }
 
             $rs = $visitor->endVisitingObject($metadata, $data, $type);
-            $this->afterVisitingObject($metadata, $isSerialization ? $data : $rs, $isSerialization);
+            $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
 
             return $rs;
         }
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, $isSerialization)
+    private function afterVisitingObject(ClassMetadata $metadata, $object)
     {
-        if ($isSerialization) {
+        if (self::DIRECTION_SERIALIZATION === $this->direction) {
             $this->visiting->detach($object);
-        }
 
-        if ($isSerialization) {
             foreach ($metadata->postSerializeMethods as $method) {
                 $method->invoke($object);
             }
-        } else {
-            foreach ($metadata->postDeserializeMethods as $method) {
-                $method->invoke($object);
-            }
+
+            return;
+        }
+
+        foreach ($metadata->postDeserializeMethods as $method) {
+            $method->invoke($object);
         }
     }
 }
