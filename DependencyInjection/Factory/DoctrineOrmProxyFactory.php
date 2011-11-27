@@ -10,7 +10,7 @@ class DoctrineOrmProxyFactory implements HandlerFactoryInterface
 {
     public function getConfigKey()
     {
-        return 'doctrine_orm';
+        return 'doctrine_orm_proxy';
     }
 
     public function getType(array $config)
