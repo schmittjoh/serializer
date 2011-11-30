@@ -19,11 +19,8 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
-
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
-
 use JMS\SerializerBundle\Tests\Fixtures\Order;
-
 use Symfony\Component\Yaml\Inline;
 use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -343,6 +340,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
 
         $object = new SimpleObjectProxy('foo', 'bar');
+
+        $this->assertEquals($this->getContent('orm_proxy'), $this->serialize($object));
+    }
+
+    public function testInitializedDoctrineProxy()
+    {
+        if (!class_exists('Doctrine\ORM\Version')) {
+            $this->markTestSkipped('Doctrine is not available.');
+        }
+
+        $object = new SimpleObjectProxy('foo', 'bar');
+        $object->__load();
 
         $this->assertEquals($this->getContent('orm_proxy'), $this->serialize($object));
     }

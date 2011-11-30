@@ -26,14 +26,18 @@ class DoctrineOrmProxyHandler implements SerializationHandlerInterface
 {
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if ($data instanceof Proxy && !$data->__isInitialized__) {
+        if ($data instanceof Proxy && (!$data->__isInitialized__ || get_class($data) === $type)) {
             $handled = true;
 
-            $data->__load();
-            $visitor->getNavigator()->detachObject($data);
+            if (!$data->__isInitialized__) {
+                $data->__load();
+            }
+
+            $navigator = $visitor->getNavigator();
+            $navigator->detachObject($data);
 
             // pass the parent class not to load the metadata for the proxy class
-            return $visitor->getNavigator()->accept($data, get_parent_class($data), $visitor);
+            return $navigator->accept($data, get_parent_class($data), $visitor);
         }
 
         return null;
