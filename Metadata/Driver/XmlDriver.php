@@ -111,7 +111,7 @@ class XmlDriver extends AbstractFileDriver
 
                         $colConfig = $pElem->{'xml-map'};
                         if (isset($colConfig->attributes()->inline)) {
-                            $pMetadata->xmlCollectionInline = 'true' === $colConfig->attributes()->inline;
+                            $pMetadata->xmlCollectionInline = 'true' === (string) $colConfig->attributes()->inline;
                         }
 
                         if (isset($colConfig->attributes()->{'entry-name'})) {
@@ -119,7 +119,7 @@ class XmlDriver extends AbstractFileDriver
                         }
 
                         if (isset($colConfig->attributes()->{'key-attribute-name'})) {
-                            $pMetadata->xmlKeyAttribute = $colConfig->attributes()->{'key-attribute-name'};
+                            $pMetadata->xmlKeyAttribute = (string) $colConfig->attributes()->{'key-attribute-name'};
                         }
                     }
 
