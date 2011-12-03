@@ -165,7 +165,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
         foreach ($data->$entryName as $v) {
             if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
-                throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $metadata->xmlKeyAttribute));
+                throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
             }
 
             $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this);
