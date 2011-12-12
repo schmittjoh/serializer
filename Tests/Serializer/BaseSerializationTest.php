@@ -41,7 +41,7 @@ use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
-use JMS\SerializerBundle\Serializer\Handler\DoctrineOrmProxyHandler;
+use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
@@ -333,7 +333,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
 
-    public function testDoctrineOrmProxy()
+    public function testDoctrineProxy()
     {
         if (!class_exists('Doctrine\ORM\Version')) {
             $this->markTestSkipped('Doctrine is not available.');
@@ -412,7 +412,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             new DateTimeHandler(),
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
-            new DoctrineOrmProxyHandler(),
+            new DoctrineProxyHandler(),
         );
 
         return $handlers;

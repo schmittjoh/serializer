@@ -6,11 +6,11 @@ use JMS\SerializerBundle\DependencyInjection\HandlerFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
-class DoctrineOrmProxyFactory implements HandlerFactoryInterface
+class DoctrineProxyFactory implements HandlerFactoryInterface
 {
     public function getConfigKey()
     {
-        return 'doctrine_orm_proxy';
+        return 'doctrine_proxy';
     }
 
     public function getType(array $config)
@@ -28,6 +28,6 @@ class DoctrineOrmProxyFactory implements HandlerFactoryInterface
 
     public function getHandlerId(ContainerBuilder $container, array $config)
     {
-        return 'jms_serializer.doctrine_orm_handler';
+        return 'jms_serializer.doctrine_handler';
     }
 }
