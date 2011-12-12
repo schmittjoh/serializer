@@ -18,15 +18,16 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Common\Persistence\Proxy;
+use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 
-class DoctrineOrmProxyHandler implements SerializationHandlerInterface
+class DoctrineProxyHandler implements SerializationHandlerInterface
 {
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if ($data instanceof Proxy && (!$data->__isInitialized__ || get_class($data) === $type)) {
+        if (($data instanceof Proxy || $data instanceof ORMProxy) && (!$data->__isInitialized__ || get_class($data) === $type)) {
             $handled = true;
 
             if (!$data->__isInitialized__) {
