@@ -232,6 +232,52 @@ property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
+@AccessType
+~~~~~~~~~~~
+This annotation can be defined on a property, or a class to specify in which way
+the properties should be accessed. By default, the serializer will retrieve, or
+set the value via reflection, but you may change this to use a public method instead::
+
+    /** @AccessType("public_method") */
+    class User
+    {
+        private $name;
+        
+        public function getName()
+        {
+            return $this->name;
+        }
+        
+        public function setName($name)
+        {
+            $this->name = trim($name);
+        }
+    }
+
+@Accessor
+~~~~~~~~~
+This annotation can be defined on a property to specify which public method should
+be called to retrieve, or set the value of the given property::
+
+    class User
+    {
+        private $id;
+        
+        /** @Accessor(getter="getTrimmedName") */
+        private $name;
+        
+        // ...
+        public function getTrimmedName()
+        {
+            return trim($this->name);
+        }
+        
+        public function setName($name)
+        {
+            $this->name = $name;
+        }
+    }
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
@@ -490,10 +536,12 @@ YAML Reference
         exclusion_policy: ALL
         xml_root_name: foobar
         exclude: true
+        access_type: public_method # defaults to property
         properties:
             some-property:
                 exclude: true
                 expose: true
+                access_type: public_method # defaults to property
                 type: string
                 serialized_name: foo
                 since_version: 1.0

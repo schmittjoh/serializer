@@ -22,6 +22,9 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
 {
+    const ACCESS_TYPE_PROPERTY        = 'property';
+    const ACCESS_TYPE_PUBLIC_METHOD   = 'public_method';
+
     public $sinceVersion;
     public $untilVersion;
     public $serializedName;
@@ -32,6 +35,36 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlKeyAttribute;
     public $xmlAttribute = false;
     public $xmlValue = false;
+    public $getter;
+    public $setter;
+
+    public function setAccessor($type, $getter = null, $setter = null)
+    {
+        if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
+            $class = $this->reflection->getDeclaringClass();
+
+            if (empty($getter)) {
+                if ($class->hasMethod('get'.$this->name) && $class->getMethod('get'.$this->name)->isPublic()) {
+                    $getter = 'get'.$this->name;
+                } else if ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
+                    $getter = 'is'.$this->name;
+                } else {
+                    throw new \RuntimeException(sprintf('There is neither a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), $this->class, $this->name));
+                }
+            }
+
+            if (empty($setter)) {
+                if ($class->hasMethod('set'.$this->name) && $class->getMethod('set'.$this->name)->isPublic()) {
+                    $setter = 'set'.$this->name;
+                } else {
+                    throw new \RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set'.ucfirst($this->name), $this->class, $this->name));
+                }
+            }
+        }
+
+        $this->getter = $getter;
+        $this->setter = $setter;
+    }
 
     public function serialize()
     {
@@ -46,6 +79,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
+            $this->getter,
+            $this->setter,
             parent::serialize(),
         ));
     }
@@ -63,6 +98,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
+            $this->getter,
+            $this->setter,
             $parentStr
         ) = unserialize($str);
 

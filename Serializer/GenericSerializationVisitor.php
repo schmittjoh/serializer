@@ -129,7 +129,10 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $data)
     {
-        $v = $this->navigator->accept($metadata->reflection->getValue($data), null, $this);
+        $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
+                : $data->{$metadata->getter}());
+
+        $v = $this->navigator->accept($v, null, $this);
         if (null === $v) {
             return;
         }

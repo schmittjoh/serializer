@@ -147,7 +147,10 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $object)
     {
-        if (null === $v = $metadata->reflection->getValue($object)) {
+        $v = (null === $metadata->getter ? $metadata->reflection->getValue($object)
+            : $object->{$metadata->getter}());
+
+        if (null === $v) {
             return;
         }
 

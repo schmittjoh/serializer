@@ -205,7 +205,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
             return;
         }
-        
+
         if ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $this);
             $metadata->reflection->setValue($this->currentObject, $v);
@@ -232,7 +232,14 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         }
 
         $v = $this->navigator->accept($data->$name, $metadata->type, $this);
-        $metadata->reflection->setValue($this->currentObject, $v);
+
+        if (null === $metadata->setter) {
+            $metadata->reflection->setValue($this->currentObject, $v);
+
+            return;
+        }
+
+        $this->currentObject->{$metadata->setter}($v);
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)

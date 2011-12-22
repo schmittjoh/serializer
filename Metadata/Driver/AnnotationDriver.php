@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Annotation\Accessor;
+
+use JMS\SerializerBundle\Annotation\AccessType;
+
 use JMS\SerializerBundle\Annotation\XmlMap;
 use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\XmlAttribute;
@@ -55,6 +59,7 @@ class AnnotationDriver implements DriverInterface
 
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
+        $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
@@ -62,6 +67,8 @@ class AnnotationDriver implements DriverInterface
                 $classMetadata->xmlRootName = $annot->name;
             } else if ($annot instanceof Exclude) {
                 $excludeAll = true;
+            } else if ($annot instanceof AccessType) {
+                $classAccessType = $annot->type;
             }
         }
 
@@ -73,6 +80,8 @@ class AnnotationDriver implements DriverInterface
 
                 $propertyMetadata = new PropertyMetadata($name, $property->getName());
                 $isExclude = $isExpose = false;
+                $AccessType = $classAccessType;
+                $accessor = array(null, null);
                 foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
@@ -99,8 +108,14 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlAttribute = true;
                     } else if ($annot instanceof XmlValue) {
                         $propertyMetadata->xmlValue = true;
+                    } else if ($annot instanceof AccessType) {
+                        $AccessType = $annot->type;
+                    } else if ($annot instanceof Accessor) {
+                        $accessor = array($annot->getter, $annot->setter);
                     }
                 }
+
+                $propertyMetadata->setAccessor($AccessType, $accessor[0], $accessor[1]);
 
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

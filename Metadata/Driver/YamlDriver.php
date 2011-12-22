@@ -42,6 +42,7 @@ class YamlDriver extends AbstractFileDriver
         $metadata->fileResources[] = $class->getFileName();
         $exclusionPolicy = isset($config['exclusion_policy']) ? $config['exclusion_policy'] : 'NONE';
         $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
+        $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
 
         if (isset($config['xml_root_name'])) {
             $metadata->xmlRootName = (string) $config['xml_root_name'];
@@ -115,10 +116,15 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['xml_attribute'])) {
                         $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
                     }
-                    
+
                     if (isset($pConfig['xml_value'])) {
                         $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
                     }
+
+                    $pMetadata->setAccessor(
+                        isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
+                        isset($pConfig['accessor']) ? $pConfig['accessor'] : null
+                    );
 
                     if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

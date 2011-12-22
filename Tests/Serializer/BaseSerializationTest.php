@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
+
+use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
+
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
@@ -354,6 +358,26 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $object->__load();
 
         $this->assertEquals($this->getContent('orm_proxy'), $this->serialize($object));
+    }
+
+    public function testCustomAccessor()
+    {
+        $post = new IndexedCommentsBlogPost();
+
+        $this->assertEquals($this->getContent('custom_accessor'), $this->serialize($post));
+    }
+
+    public function testMixedAccessTypes()
+    {
+        $object = new GetSetObject();
+
+        $this->assertEquals($this->getContent('mixed_access_types'), $this->serialize($object));
+
+        if ($this->hasDeserializer()) {
+            $object = $this->deserialize($this->getContent('mixed_access_types'), 'JMS\SerializerBundle\Tests\Fixtures\GetSetObject');
+            $this->assertAttributeEquals(1, 'id', $object);
+            $this->assertAttributeEquals('Johannes', 'name', $object);
+        }
     }
 
     abstract protected function getContent($key);
