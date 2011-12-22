@@ -26,7 +26,7 @@
 
         <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
 
-        <parameter key="jms_serializer.twig.class">JMS\SerializerBundle\Twig\Serializer</parameter>
+        <parameter key="jms_serializer.twig_extension.class">JMS\SerializerBundle\Twig\SerializerExtension</parameter>
         
         <parameter key="jms_serializer.json_serialization_visitor.class">JMS\SerializerBundle\Serializer\JsonSerializationVisitor</parameter>
         <parameter key="jms_serializer.json_deserialization_visitor.class">JMS\SerializerBundle\Serializer\JsonDeserializationVisitor</parameter>
@@ -118,7 +118,7 @@
         <service id="serializer" alias="jms_serializer.serializer" />
 
         <!-- Twig Extension -->
-        <service id="jms_serializer.twig.serializer" class="%jms_serializer.twig.class%" public="false">
+        <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">
             <argument type="service" id="serializer" />
             <tag name="twig.extension" />
         </service>

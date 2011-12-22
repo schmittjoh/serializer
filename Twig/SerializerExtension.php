@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -16,25 +15,35 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Tests\Twig;
+namespace JMS\SerializerBundle\Twig;
 
 use JMS\SerializerBundle\Serializer\SerializerInterface;
-use JMS\SerializerBundle\Twig\Serializer as TwigSerializer;
 
-class SerializerTest extends \PHPUnit_Framework_TestCase
-{
-    public function setUp()
-    {
-        $this->mockSerializer = $this->getMock('JMS\SerializerBundle\Serializer\SerializerInterface');
-    }
-    public function testSerialize()
-    {
-      $obj = new \stdClass();
-      $this->mockSerializer
-        ->expects($this->once())
-        ->method('serialize')
-        ->with($this->equalTo($obj), $this->equalTo('json'));
-      $twigSerializer = new TwigSerializer($this->mockSerializer);
-      $twigSerializer->serialize($obj);
-    }
+
+/**
+ * Serializer helper twig extension
+ * 
+ * Basically provides access to JMSSerializer from Twig
+ */
+class SerializerExtension extends \Twig_Extension {
+  protected $serializer;
+
+  public function getName() {
+    return 'Serializer';
+  }
+
+  public function __construct(SerializerInterface $serializer)
+  {
+    $this->serializer = $serializer;
+  }
+
+  public function getFilters() {
+    return array(
+      'serialize'      => new \Twig_Filter_Method($this, 'serialize'),
+    );
+  }
+
+  public function serialize($object, $type = 'json') {
+    return $this->serializer->serialize($object, $type);
+  }
 }
