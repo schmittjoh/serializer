@@ -117,9 +117,8 @@ The serializer supports JSON, and XML out-of-the-box, and can also handle
 many custom XML features (see below).
 
 The serializer can also be accessed via a Twig filter and will default to
-"json".
+"json"::
 
-::
     {{ myObject | serialize | raw }}
     {{ myObject | serialize('xml') | raw }}
 
