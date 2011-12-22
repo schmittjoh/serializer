@@ -25,6 +25,8 @@
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
 
         <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
+
+        <parameter key="jms_serializer.twig_extension.class">JMS\SerializerBundle\Twig\SerializerExtension</parameter>
         
         <parameter key="jms_serializer.json_serialization_visitor.class">JMS\SerializerBundle\Serializer\JsonSerializationVisitor</parameter>
         <parameter key="jms_serializer.json_deserialization_visitor.class">JMS\SerializerBundle\Serializer\JsonDeserializationVisitor</parameter>
@@ -114,7 +116,13 @@
             <tag name="jms_serializer.serializer" />
         </service>
         <service id="serializer" alias="jms_serializer.serializer" />
-        
+
+        <!-- Twig Extension -->
+        <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">
+            <argument type="service" id="serializer" />
+            <tag name="twig.extension" />
+        </service>
+
         <!-- Visitors -->
         <service id="jms_serializer.json_serialization_visitor" class="%jms_serializer.json_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
