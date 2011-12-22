@@ -25,25 +25,29 @@ use JMS\SerializerBundle\Serializer\SerializerInterface;
  * 
  * Basically provides access to JMSSerializer from Twig
  */
-class SerializerExtension extends \Twig_Extension {
-  protected $serializer;
+class SerializerExtension extends \Twig_Extension 
+{
+    protected $serializer;
 
-  public function getName() {
-    return 'Serializer';
-  }
+    public function getName() 
+    {
+        return 'jms_serializer';
+    }
 
-  public function __construct(SerializerInterface $serializer)
-  {
-    $this->serializer = $serializer;
-  }
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
 
-  public function getFilters() {
-    return array(
-      'serialize'      => new \Twig_Filter_Method($this, 'serialize'),
-    );
-  }
+    public function getFilters() 
+    {
+        return array(
+            'serialize'      => new \Twig_Filter_Method($this, 'serialize'),
+        );
+    }
 
-  public function serialize($object, $type = 'json') {
-    return $this->serializer->serialize($object, $type);
-  }
+    public function serialize($object, $type = 'json') 
+    {
+        return $this->serializer->serialize($object, $type);
+    }
 }
