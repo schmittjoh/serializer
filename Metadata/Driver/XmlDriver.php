@@ -48,6 +48,7 @@ class XmlDriver extends AbstractFileDriver
         $metadata->fileResources[] = $class->getFileName();
         $exclusionPolicy = $elem->attributes()->{'exclusion-policy'} ?: 'NONE';
         $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === (string) $exclude : false;
+        $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
         if (null !== $xmlRootName = $elem->attributes()->{'xml-root-name'}) {
             $metadata->xmlRootName = (string) $xmlRootName;
@@ -126,10 +127,16 @@ class XmlDriver extends AbstractFileDriver
                     if (isset($pElem->attributes()->{'xml-attribute'})) {
                         $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute'};
                     }
-                    
+
                     if (isset($pElem->attributes()->{'xml-value'})) {
                         $pMetadata->xmlValue = 'true' === (string) $pElem->attributes()->{'xml-value'};
                     }
+
+                    $accessor = $pElem->attributes()->{'accessor'};
+                    $pMetadata->setAccessor(
+                        (string) ($pElem->attributes()->{'access-type'} ?: $classAccessType),
+                        $accessor ? (string) $accessor : null
+                    );
 
                     if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
                         || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)) {

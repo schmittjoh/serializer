@@ -55,6 +55,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['constraint_violation_list'] = '[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]';
             $outputs['article'] = '{"custom":"serialized"}';
             $outputs['orm_proxy'] = '{"foo":"foo","moo":"bar","camel_case":"proxy-boo"}';
+            $outputs['custom_accessor'] = '{"comments":{"Foo":{"comments":[{"author":{"full_name":"Foo"},"text":"foo"},{"author":{"full_name":"Foo"},"text":"bar"}],"count":2}}}';
+            $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes"}';
         }
 
         if (!isset($outputs[$key])) {

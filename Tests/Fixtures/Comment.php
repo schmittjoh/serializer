@@ -37,4 +37,9 @@ class Comment
         $this->author = $author;
         $this->text = $text;
     }
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
 }
