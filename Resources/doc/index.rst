@@ -284,6 +284,34 @@ be called to retrieve, or set the value of the given property::
         }
     }
 
+@AccessorOrder
+~~~~~~~~~~~~~~
+This annotation can be defined on a class to control the order of properties. By 
+default the order is undefined, but you may change it to either "alphabetical", or
+"custom".
+
+    /** 
+     * @AccessorOrder("alphabetical") 
+     * 
+     * Resulting Property Order: id, name
+     */
+    class User
+    {
+        private $id;
+        private $name;
+    }
+    
+    /**
+     * @AccessorOrder("custom", custom = {"name", "id"})
+     *
+     * Resulting Property Order: name, id
+     */
+    class User
+    {
+        private $id;
+        private $name;
+    }
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
@@ -511,7 +539,8 @@ XML Reference
     <!-- MyBundle\Resources\config\serializer\ClassName.xml -->
     <?xml version="1.0" encoding="UTF-8">
     <serializer>
-        <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true">
+        <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
+            accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN">
             <property name="some-property"
                       exclude="true"
                       expose="true"
@@ -543,6 +572,8 @@ YAML Reference
         xml_root_name: foobar
         exclude: true
         access_type: public_method # defaults to property
+        accessor_order: custom
+        custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
         properties:
             some-property:
                 exclude: true

@@ -23,12 +23,52 @@ use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
 use Metadata\MergeableClassMetadata;
 
+/**
+ * Class Metadata used to customize the serialization process.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class ClassMetadata extends MergeableClassMetadata
 {
+	const ACCESSOR_ORDER_UNDEFINED = 'undefined';
+	const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
+	const ACCESSOR_ORDER_CUSTOM = 'custom';
+
     public $preSerializeMethods = array();
     public $postSerializeMethods = array();
     public $postDeserializeMethods = array();
     public $xmlRootName;
+    public $accessorOrder;
+    public $customOrder;
+
+    /**
+     * Sets the order of properties in the class.
+     *
+     * @param string $order
+     * @param array $customOrder
+     */
+    public function setAccessorOrder($order, array $customOrder = array())
+    {
+    	if (!in_array($order, array(self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM), true)) {
+    		throw new \InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
+    	}
+
+    	foreach ($customOrder as $name) {
+    		if (!is_string($name)) {
+    			throw new \InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
+    		}
+    	}
+
+    	$this->accessorOrder = $order;
+    	$this->customOrder = array_flip($customOrder);
+    	$this->sortProperties();
+    }
+
+    public function addPropertyMetadata(PropertyMetadata $metadata)
+    {
+    	parent::addPropertyMetadata($metadata);
+    	$this->sortProperties();
+    }
 
     public function addPreSerializeMethod(MethodMetadata $method)
     {
@@ -56,15 +96,26 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
+
+        if ($object->accessorOrder) {
+        	$this->accessorOrder = $object->accessorOrder;
+        	$this->customOrder = $object->customOrder;
+        }
+
+        $this->sortProperties();
     }
 
     public function serialize()
     {
+    	$this->sortProperties();
+
         return serialize(array(
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+        	$this->accessorOrder,
+        	$this->customOrder,
             parent::serialize(),
         ));
     }
@@ -76,9 +127,42 @@ class ClassMetadata extends MergeableClassMetadata
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+        	$this->accessorOrder,
+        	$this->customOrder,
             $parentStr
         ) = unserialize($str);
 
         parent::unserialize($parentStr);
+    }
+
+    private function sortProperties()
+    {
+    	switch ($this->accessorOrder) {
+    		case self::ACCESSOR_ORDER_ALPHABETICAL:
+    			ksort($this->propertyMetadata);
+    			break;
+
+    		case self::ACCESSOR_ORDER_CUSTOM:
+    			$order = $this->customOrder;
+    			uksort($this->propertyMetadata, function($a, $b) use ($order) {
+    				$existsA = isset($order[$a]);
+    				$existsB = isset($order[$b]);
+
+    				if (!$existsA && !$existsB) {
+    					return 0;
+    				}
+
+    				if (!$existsA) {
+    					return 1;
+    				}
+
+    				if (!$existsB) {
+    					return -1;
+    				}
+
+    				return $order[$a] < $order[$b] ? -1 : 1;
+    			});
+    			break;
+    	}
     }
 }

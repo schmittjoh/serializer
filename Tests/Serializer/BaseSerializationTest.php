@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
+
+use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderChild;
+
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
 
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
@@ -378,6 +382,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals(1, 'id', $object);
             $this->assertAttributeEquals('Johannes', 'name', $object);
         }
+    }
+
+    public function testAccessorOrder()
+    {
+    	$this->assertEquals($this->getContent('accessor_order_child'), $this->serialize(new AccessorOrderChild()));
+    	$this->assertEquals($this->getContent('accessor_order_parent'), $this->serialize(new AccessorOrderParent()));
     }
 
     abstract protected function getContent($key);

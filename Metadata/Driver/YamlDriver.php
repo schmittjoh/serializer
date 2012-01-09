@@ -44,6 +44,10 @@ class YamlDriver extends AbstractFileDriver
         $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
         $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
 
+        if (isset($config['accessor_order'])) {
+        	$metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
+        }
+
         if (isset($config['xml_root_name'])) {
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }

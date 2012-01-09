@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Annotation\AccessorOrder;
+
+use JMS\SerializerBundle\Annotation\Groups;
+
 use JMS\SerializerBundle\Annotation\Accessor;
 
 use JMS\SerializerBundle\Annotation\AccessType;
@@ -69,6 +73,8 @@ class AnnotationDriver implements DriverInterface
                 $excludeAll = true;
             } else if ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
+            } else if ($annot instanceof AccessorOrder) {
+            	$classMetadata->setAccessorOrder($annot->order, $annot->custom);
             }
         }
 
@@ -112,6 +118,8 @@ class AnnotationDriver implements DriverInterface
                         $AccessType = $annot->type;
                     } else if ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
+                    } else if ($annot instanceof Groups) {
+                    	$propertyMetadata->setGroups($annot->names);
                     }
                 }
 
