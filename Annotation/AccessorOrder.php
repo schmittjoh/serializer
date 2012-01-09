@@ -11,14 +11,14 @@ namespace JMS\SerializerBundle\Annotation;
  */
 final class AccessorOrder
 {
-	/**
-	 * @Required
-	 * @var string
-	 */
-	public $order;
+    /**
+     * @Required
+     * @var string
+     */
+    public $order;
 
-	/**
-	 * @var array<string>
-	 */
-	public $custom = array();
+    /**
+     * @var array<string>
+     */
+    public $custom = array();
 }

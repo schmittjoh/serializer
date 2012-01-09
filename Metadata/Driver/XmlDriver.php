@@ -51,7 +51,7 @@ class XmlDriver extends AbstractFileDriver
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
         if (null !== $accessorOrder = $elem->attributes()->{'accessor-order'}) {
-        	$metadata->setAccessorOrder((string) $accessorOrder, preg_split('/\s*,\s*/', (string) $elem->attributes()->{'custom-accessor-order'}));
+            $metadata->setAccessorOrder((string) $accessorOrder, preg_split('/\s*,\s*/', (string) $elem->attributes()->{'custom-accessor-order'}));
         }
 
         if (null !== $xmlRootName = $elem->attributes()->{'xml-root-name'}) {

@@ -7,5 +7,5 @@ use JMS\SerializerBundle\Annotation as Serializer;
 /** @Serializer\AccessorOrder("alphabetical") */
 class AccessorOrderParent
 {
-	private $b = 'b', $a = 'a';
+    private $b = 'b', $a = 'a';
 }

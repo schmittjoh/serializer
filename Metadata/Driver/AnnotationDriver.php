@@ -74,7 +74,7 @@ class AnnotationDriver implements DriverInterface
             } else if ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
             } else if ($annot instanceof AccessorOrder) {
-            	$classMetadata->setAccessorOrder($annot->order, $annot->custom);
+                $classMetadata->setAccessorOrder($annot->order, $annot->custom);
             }
         }
 
@@ -119,7 +119,7 @@ class AnnotationDriver implements DriverInterface
                     } else if ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } else if ($annot instanceof Groups) {
-                    	$propertyMetadata->setGroups($annot->names);
+                        $propertyMetadata->setGroups($annot->names);
                     }
                 }
 

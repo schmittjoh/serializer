@@ -386,8 +386,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testAccessorOrder()
     {
-    	$this->assertEquals($this->getContent('accessor_order_child'), $this->serialize(new AccessorOrderChild()));
-    	$this->assertEquals($this->getContent('accessor_order_parent'), $this->serialize(new AccessorOrderParent()));
+        $this->assertEquals($this->getContent('accessor_order_child'), $this->serialize(new AccessorOrderChild()));
+        $this->assertEquals($this->getContent('accessor_order_parent'), $this->serialize(new AccessorOrderParent()));
     }
 
     abstract protected function getContent($key);
