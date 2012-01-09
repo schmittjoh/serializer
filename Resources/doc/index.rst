@@ -63,8 +63,8 @@ suit your needs::
         handlers:
             object_based: false
             datetime:
-                format: Y-m-dTH:i:s
-                default_timezone: UTC
+                format: <ISO8601 (Y-m-dTH:i:s)>
+                default_timezone: <timezone set in php.ini or via date_default_timezone_set>
             array_collection: true
             form_error: true
             constraint_violation: true
