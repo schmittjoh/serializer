@@ -290,6 +290,8 @@ This annotation can be defined on a class to control the order of properties. By
 default the order is undefined, but you may change it to either "alphabetical", or
 "custom".
 
+::
+
     /** 
      * @AccessorOrder("alphabetical") 
      * 
