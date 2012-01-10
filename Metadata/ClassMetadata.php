@@ -22,6 +22,7 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
 use Metadata\MergeableClassMetadata;
+use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 /**
  * Class Metadata used to customize the serialization process.
@@ -64,7 +65,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    public function addPropertyMetadata(PropertyMetadata $metadata)
+    public function addPropertyMetadata(BasePropertyMetadata $metadata)
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
