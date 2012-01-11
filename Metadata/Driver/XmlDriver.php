@@ -141,12 +141,12 @@ class XmlDriver extends AbstractFileDriver
                         (string) ($pElem->attributes()->{'access-type'} ?: $classAccessType),
                         $accessor ? (string) $accessor : null
                     );
+                }
 
-                    if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
-                        || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)) {
+                if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
+                    || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)) {
 
-                        $metadata->addPropertyMetadata($pMetadata);
-                    }
+                    $metadata->addPropertyMetadata($pMetadata);
                 }
             }
         }
