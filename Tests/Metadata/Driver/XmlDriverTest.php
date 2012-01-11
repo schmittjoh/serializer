@@ -61,6 +61,15 @@ class XmlDriverTest extends BaseDriverTest
         }
     }
 
+    public function testBlogPostCaseInsensitive()
+    {
+        $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
+
+        $p = new PropertyMetadata($m->name, 'title');
+        $p->type = 'string';
+        $this->assertEquals($p, $m->propertyMetadata['title']);
+    }
+
     protected function getDriver()
     {
         $append = '';

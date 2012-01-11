@@ -46,8 +46,8 @@ class XmlDriver extends AbstractFileDriver
 
         $metadata->fileResources[] = $path;
         $metadata->fileResources[] = $class->getFileName();
-        $exclusionPolicy = $elem->attributes()->{'exclusion-policy'} ?: 'NONE';
-        $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === (string) $exclude : false;
+        $exclusionPolicy = strtoupper($elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
+        $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower($exclude) : false;
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
         if (null !== $accessorOrder = $elem->attributes()->{'accessor-order'}) {
@@ -73,11 +73,11 @@ class XmlDriver extends AbstractFileDriver
                     $pElem = reset($pElems);
 
                     if (null !== $exclude = $pElem->attributes()->exclude) {
-                        $isExclude = 'true' === (string) $exclude;
+                        $isExclude = 'true' === strtolower($exclude);
                     }
 
                     if (null !== $expose = $pElem->attributes()->expose) {
-                        $isExpose = 'true' === (string) $expose;
+                        $isExpose = 'true' === strtolower($expose);
                     }
 
                     if (null !== $version = $pElem->attributes()->{'since-version'}) {

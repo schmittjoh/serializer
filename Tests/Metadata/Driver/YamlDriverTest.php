@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use Metadata\Driver\FileLocator;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
@@ -45,6 +46,15 @@ class YamlDriverTest extends BaseDriverTest
         foreach ($excluded as $key) {
             $this->assertArrayHasKey($key, $m->propertyMetadata);
         }
+    }
+
+    public function testBlogPostCaseInsensitive()
+    {
+        $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
+
+        $p = new PropertyMetadata($m->name, 'title');
+        $p->type = 'string';
+        $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
     protected function getDriver()
