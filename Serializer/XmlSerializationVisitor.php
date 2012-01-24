@@ -157,7 +157,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         if ($metadata->xmlAttribute) {
             $node = $this->navigator->accept($v, null, $this);
             if (!$node instanceof \DOMCharacterData) {
-                throw new RuntimeException('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v));
+                throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
 
             $this->currentNode->setAttribute($this->namingStrategy->translateName($metadata), $node->nodeValue);
@@ -175,7 +175,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
             $node = $this->navigator->accept($v, null, $this);
             if (!$node instanceof \DOMCharacterData) {
-                throw new RuntimeException('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node));
+                throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node)));
             }
 
             $this->currentNode->appendChild($node);
