@@ -139,7 +139,11 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 
         $k = $this->namingStrategy->translateName($metadata);
 
-        $this->data[$k] = $v;
+        if ($metadata->inline && is_array($v)) {
+            $this->data = array_merge($this->data, $v);
+        } else {
+            $this->data[$k] = $v;
+        }
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)

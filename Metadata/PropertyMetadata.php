@@ -37,6 +37,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlValue = false;
     public $getter;
     public $setter;
+    public $inline = false;
 
     public function setAccessor($type, $getter = null, $setter = null)
     {
@@ -81,6 +82,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlValue,
             $this->getter,
             $this->setter,
+            $this->inline,
             parent::serialize(),
         ));
     }
@@ -100,6 +102,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlValue,
             $this->getter,
             $this->setter,
+            $this->inline,
             $parentStr
         ) = unserialize($str);
 

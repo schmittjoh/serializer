@@ -59,6 +59,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes"}';
             $outputs['accessor_order_child'] = '{"c":"c","d":"d","a":"a","b":"b"}';
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
+            $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
         }
 
         if (!isset($outputs[$key])) {

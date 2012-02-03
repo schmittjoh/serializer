@@ -332,6 +332,12 @@ default the order is undefined, but you may change it to either "alphabetical", 
         private $name;
     }
 
+@Inline
+~~~~~~~~
+This annotation can be defined on a property to indicate that the property should
+be serialized inline. AccessorOrder doesn't work when using inline annotation.
+NOTE: If the property contains properties with the same name, properties in parent will be overriden.
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
@@ -573,6 +579,7 @@ XML Reference
                       access-type="public_method"
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
+                      inline="true"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
@@ -608,6 +615,7 @@ YAML Reference
                 since_version: 1.0
                 until_version: 1.1
                 xml_attribute: true
+                inline: true
                 xml_list:
                     inline: true
                     entry_name: foo
