@@ -123,11 +123,12 @@ The serializer can also be accessed via a Twig filter and will default to
     {{ myObject | serialize('xml') | raw }}
 
 Overriding Metadata
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
-Sometimes you need to override the metadata for a namespace which doesn't have 
-any or one is provided but it doesn't suit your needs. 
-If that is the case then you need to define a different metadata location in a config.
+Sometimes you want to serialize objects which are shipped by a third-party bundle. 
+Such a third-party bundle might not ship with metadata that suits your needs, or 
+possibly none, at all. In such a case, you can override the default location that
+is searched for metadata with a path that is under your control.
 
 ::
 
@@ -137,6 +138,7 @@ If that is the case then you need to define a different metadata location in a c
                 FOSUB:
                     namespace_prefix: FOS\UserBundle
                     path: %kernel.root_dir%/serializer/FOSUB
+
 
 Versioning
 ~~~~~~~~~~
