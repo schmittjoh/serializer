@@ -122,6 +122,22 @@ The serializer can also be accessed via a Twig filter and will default to
     {{ myObject | serialize | raw }}
     {{ myObject | serialize('xml') | raw }}
 
+Overriding Metadata
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes you need to override the metadata for a namespace which doesn't have 
+any or one is provided but it doesn't suit your needs. 
+If that is the case then you need to define a different metadata location in a config.
+
+::
+
+    jms_serializer:
+        metadata:
+            directories:
+                FOSUB:
+                    namespace_prefix: FOS\UserBundle
+                    path: %kernel.root_dir%/serializer/FOSUB
+
 Versioning
 ~~~~~~~~~~
 
