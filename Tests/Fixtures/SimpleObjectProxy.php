@@ -33,4 +33,9 @@ class SimpleObjectProxy extends SimpleObject implements Proxy
             $this->__isInitialized__ = true;
         }
     }
+
+    public function __isInitialized()
+    {
+        return $this->__isInitialized__;
+    }
 }
