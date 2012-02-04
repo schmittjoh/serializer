@@ -136,10 +136,12 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->xmlValue = 'true' === (string) $pElem->attributes()->{'xml-value'};
                     }
 
-                    $accessor = $pElem->attributes()->{'accessor'};
+                    $getter = $pElem->attributes()->{'accessor-getter'};
+                    $setter = $pElem->attributes()->{'accessor-setter'};
                     $pMetadata->setAccessor(
                         (string) ($pElem->attributes()->{'access-type'} ?: $classAccessType),
-                        $accessor ? (string) $accessor : null
+                        $getter ? (string) $getter : null,
+                        $setter ? (string) $setter : null
                     );
                 }
 
