@@ -70,6 +70,18 @@ class XmlDriverTest extends BaseDriverTest
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
+    public function testAccessorAttributes()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\GetSetObject'));
+
+        $p = new PropertyMetadata($m->name, 'name');
+        $p->type = 'string';
+        $p->getter = 'getTrimmedName';
+        $p->setter = 'setCapitalizedName';
+
+        $this->assertEquals($p, $m->propertyMetadata['name']);
+    }
+
     protected function getDriver()
     {
         $append = '';

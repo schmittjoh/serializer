@@ -560,7 +560,8 @@ XML Reference
     <?xml version="1.0" encoding="UTF-8">
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
-            accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN">
+            accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
+            access-type="public_method">
             <property name="some-property"
                       exclude="true"
                       expose="true"
@@ -569,6 +570,9 @@ XML Reference
                       since-version="1.0"
                       until-version="1.1"
                       xml-attribute="true"
+                      access-type="public_method"
+                      accessor-getter="getSomeProperty"
+                      accessor-setter="setSomeProperty"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
