@@ -87,7 +87,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('file_cache')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/serializer')->end()
+                            ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/jms_serializer')->end()
                         ->end()
                     ->end()
                     ->booleanNode('auto_detection')->defaultTrue()->end()
