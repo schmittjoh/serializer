@@ -22,7 +22,6 @@ class ArrayCollectionFactory implements HandlerFactoryInterface
     {
         $builder
             ->addDefaultsIfNotSet()
-            ->defaultValue(array())
         ;
     }
 
