@@ -22,7 +22,6 @@ class ConstraintViolationFactory implements HandlerFactoryInterface
     {
         $builder
             ->addDefaultsIfNotSet()
-            ->defaultValue(array())
         ;
     }
 

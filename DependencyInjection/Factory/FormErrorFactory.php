@@ -22,7 +22,6 @@ class FormErrorFactory implements HandlerFactoryInterface
     {
         $builder
             ->addDefaultsIfNotSet()
-            ->defaultValue(array())
         ;
     }
 

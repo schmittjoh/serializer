@@ -22,7 +22,6 @@ class DoctrineProxyFactory implements HandlerFactoryInterface
     {
         $builder
             ->addDefaultsIfNotSet()
-            ->defaultValue(array())
         ;
     }
 
