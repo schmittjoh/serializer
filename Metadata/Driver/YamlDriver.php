@@ -129,6 +129,10 @@ class YamlDriver extends AbstractFileDriver
                         isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
                         isset($pConfig['accessor']) ? $pConfig['accessor'] : null
                     );
+
+                    if (isset($pConfig['inline'])) {
+                        $pMetadata->inline = (Boolean) $pConfig['inline'];
+                    }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

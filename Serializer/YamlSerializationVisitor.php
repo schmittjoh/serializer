@@ -156,10 +156,12 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
         $name = $this->namingStrategy->translateName($metadata);
 
-        $this->writer
-            ->writeln(Inline::dump($name).':')
-            ->indent()
-        ;
+        if (!$metadata->inline) {
+            $this->writer
+                 ->writeln(Inline::dump($name).':')
+                 ->indent();
+        }
+
         $this->setCurrentMetadata($metadata);
 
         $count = $this->writer->changeCount;
@@ -173,7 +175,9 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
             $this->writer->revert();
         }
 
-        $this->writer->outdent();
+        if (!$metadata->inline) {
+            $this->writer->outdent();
+        }
         $this->revertCurrentMetadata();
     }
 

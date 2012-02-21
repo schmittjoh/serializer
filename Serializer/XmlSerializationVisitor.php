@@ -183,7 +183,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             return;
         }
 
-        if ($addEnclosingElement = !$metadata->xmlCollection || !$metadata->xmlCollectionInline) {
+        if ($addEnclosingElement = (!$metadata->xmlCollection || !$metadata->xmlCollectionInline) && !$metadata->inline) {
             $element = $this->document->createElement($this->namingStrategy->translateName($metadata));
             $this->setCurrentNode($element);
         }

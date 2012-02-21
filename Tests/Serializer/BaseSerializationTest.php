@@ -55,6 +55,7 @@ use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
+use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -250,6 +251,19 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $this->assertEquals($article, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Article'));
         }
+    }
+
+    public function testInline()
+    {
+        $inline = new InlineParent();
+
+        $result = $this->serialize($inline);
+        $this->assertEquals($this->getContent('inline'), $result);
+
+        //no deserialization support
+        /*if ($this->hasDeserializer()) {
+            $this->assertEquals($inline, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\InlineParent'));
+        }*/
     }
 
     /**

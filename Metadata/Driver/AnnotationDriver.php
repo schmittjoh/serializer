@@ -43,6 +43,7 @@ use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
+use JMS\SerializerBundle\Annotation\Inline;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use Metadata\Driver\DriverInterface;
@@ -120,6 +121,8 @@ class AnnotationDriver implements DriverInterface
                         $accessor = array($annot->getter, $annot->setter);
                     } else if ($annot instanceof Groups) {
                         $propertyMetadata->setGroups($annot->names);
+                    } else if ($annot instanceof Inline) {
+                        $propertyMetadata->inline = true;
                     }
                 }
 
