@@ -334,9 +334,12 @@ default the order is undefined, but you may change it to either "alphabetical", 
 
 @Inline
 ~~~~~~~~
-This annotation can be defined on a property to indicate that the property should
-be serialized inline. AccessorOrder doesn't work when using inline annotation.
-NOTE: If the property contains properties with the same name, properties in parent will be overriden.
+This annotation can be defined on a property to indicate that the data of the property
+should be inlined. 
+
+**Note**: This only works for serialization, the serializer will not be able to deserialize
+objects with this annotation. Also, AccessorOrder will be using the name of the property
+to determine the order.
 
 @PreSerialize
 ~~~~~~~~~~~~~
