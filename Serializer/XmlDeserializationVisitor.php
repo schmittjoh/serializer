@@ -35,12 +35,14 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     private $currentMetadata;
     private $result;
     private $navigator;
+    private $disableExternalEntities;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
     {
         parent::__construct($namingStrategy, $customHandlers);
 
         $this->objectConstructor = $objectConstructor;
+        $this->disableExternalEntities = $disableExternalEntities;
     }
 
     public function setNavigator(GraphNavigator $navigator)
@@ -59,8 +61,10 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     public function prepare($data)
     {
         $previous = libxml_use_internal_errors(true);
+        $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
         $doc = simplexml_load_string($data);
         libxml_use_internal_errors($previous);
+        libxml_disable_entity_loader($previousEntityLoaderState);
 
         if (false === $doc) {
             throw new XmlErrorException(libxml_get_last_error());

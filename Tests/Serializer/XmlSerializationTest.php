@@ -20,6 +20,8 @@ namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use JMS\SerializerBundle\Annotation\Type;
+use JMS\SerializerBundle\Annotation\XmlValue;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -30,6 +32,22 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $obj = new InvalidUsageOfXmlValue();
         $this->serialize($obj);
+    }
+
+    public function testExternalEntitiesAreDisabledByDefault()
+    {
+        $currentDir = getcwd();
+        chdir(__DIR__);
+        $entity = $this->deserialize('<?xml version="1.0"?>
+            <!DOCTYPE author [
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+            ]>
+            <result>
+                &foo;
+            </result>', 'JMS\SerializerBundle\Tests\Serializer\ExternalEntityTest');
+        chdir($currentDir);
+
+        $this->assertEquals('', trim($entity->foo));
     }
 
     protected function getContent($key)
@@ -46,3 +64,10 @@ class XmlSerializationTest extends BaseSerializationTest
         return 'xml';
     }
 }
+
+class ExternalEntityTest
+{
+    /** @Type("string") @XmlValue */
+    public $foo;
+}
+
