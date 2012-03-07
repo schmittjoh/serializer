@@ -47,8 +47,7 @@ class JMSSerializerExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = $this->processConfiguration($this->buildConfiguration(),
-                      $configs);
+        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(array(
                         __DIR__.'/../Resources/config/')));
@@ -156,7 +155,7 @@ class JMSSerializerExtension extends Extension
         ;
     }
 
-    private function buildConfiguration()
+    public function getConfiguration(array $config, ContainerBuilder $container)
     {
         foreach ($this->kernel->getBundles() as $bundle) {
             if (!method_exists($bundle, 'configureSerializerExtension')) {
