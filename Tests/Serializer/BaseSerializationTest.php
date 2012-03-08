@@ -199,7 +199,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-	public function testReadOnly()
+    public function testReadOnly()
     {
         $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
         $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
