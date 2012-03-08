@@ -196,11 +196,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     public function visitProperty(PropertyMetadata $metadata, $data)
     {
         $name = $this->namingStrategy->translateName($metadata);
-        
-        if ($metadata->readOnly) {
-	        return;
-	    }
-	
+
         if (!$metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
         }

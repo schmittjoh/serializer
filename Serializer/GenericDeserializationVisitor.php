@@ -173,10 +173,6 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
             return;
         }
 
-        if ($metadata->readOnly) {
-	        return;
-	    }
-
         if (!$metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
         }
