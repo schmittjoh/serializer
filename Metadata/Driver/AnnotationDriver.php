@@ -124,7 +124,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->setGroups($annot->names);
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
-                   	} else if ($annot instanceof ReadOnly) {
+                    } else if ($annot instanceof ReadOnly) {
                         $propertyMetadata->readOnly = true;
                     }
                 }

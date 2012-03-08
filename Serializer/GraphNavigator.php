@@ -114,9 +114,9 @@ final class GraphNavigator
                     continue;
                 }
 
-		        if (self::DIRECTION_DESERIALIZATION === $this->direction && $propertyMetadata->readOnly) {
-			        continue;
-			    }
+                if (self::DIRECTION_DESERIALIZATION === $this->direction && $propertyMetadata->readOnly) {
+                    continue;
+                }
 
                 // try custom handler
                 if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data)) {

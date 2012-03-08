@@ -44,7 +44,7 @@ class AuthorReadOnly
         $this->name = $name;
     }
 
-	public function getId()
+    public function getId()
     {
         return $this->id;
     }
