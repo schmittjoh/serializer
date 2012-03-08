@@ -52,6 +52,7 @@ use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
 use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
+use JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
@@ -195,6 +196,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+        }
+    }
+
+	public function testReadOnly()
+    {
+        $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
+        $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            $this->assertEquals(null, $this->getField($deserialized, 'id'));
+            $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }
     }
 

@@ -341,6 +341,11 @@ should be inlined.
 objects with this annotation. Also, AccessorOrder will be using the name of the property
 to determine the order.
 
+@ReadOnly
+~~~~~~~~
+This annotation can be defined on a property to indicate that the data of the property
+is read only and cannot be set during deserialization.
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
@@ -583,6 +588,7 @@ XML Reference
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
                       inline="true"
+                      read-only="true"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
@@ -619,6 +625,7 @@ YAML Reference
                 until_version: 1.1
                 xml_attribute: true
                 inline: true
+                read_only: true
                 xml_list:
                     inline: true
                     entry_name: foo

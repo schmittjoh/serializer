@@ -133,6 +133,10 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['inline'])) {
                         $pMetadata->inline = (Boolean) $pConfig['inline'];
                     }
+
+                    if (isset($pConfig['read_only'])) {
+                        $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
+                    }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

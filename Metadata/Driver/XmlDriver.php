@@ -147,6 +147,10 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $inline = $pElem->attributes()->inline) {
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
+
+                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
+                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
+                    }
                 }
 
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)

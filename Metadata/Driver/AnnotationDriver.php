@@ -44,6 +44,7 @@ use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Annotation\Inline;
+use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use Metadata\Driver\DriverInterface;
@@ -123,6 +124,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->setGroups($annot->names);
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
+                   	} else if ($annot instanceof ReadOnly) {
+                        $propertyMetadata->readOnly = true;
                     }
                 }
 
