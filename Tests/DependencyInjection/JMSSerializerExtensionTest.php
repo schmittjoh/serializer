@@ -39,7 +39,17 @@ use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 
 class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        $this->clearTempDir();
+    }
+
     protected function tearDown()
+    {
+        $this->clearTempDir();
+    }
+
+    private function clearTempDir()
     {
         // clear temporary directory
         $dir = sys_get_temp_dir().'/serializer';
