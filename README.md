@@ -1,8 +1,9 @@
-For documentation, see:
+JMSSerializerBundle
+===================
 
-    [Resources/doc](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/doc/index.rst)
+Documentation: 
+[Resources/doc](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/doc/index.rst)
     
 
-For license, see:
-
-    [Resources/meta/LICENSE](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/meta/LICENSE)
+License:
+[Resources/meta/LICENSE](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/meta/LICENSE)
