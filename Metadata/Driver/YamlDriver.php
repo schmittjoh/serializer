@@ -178,7 +178,7 @@ class YamlDriver extends AbstractFileDriver
         $methods = array();
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
-                throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $mName, $name));
+                throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $name, $class->getName()));
             }
 
             $methods[] = new MethodMetadata($class->getName(), $name);
