@@ -2,7 +2,7 @@ JMSSerializerBundle
 ===================
 
 Documentation: 
-[Resources/doc](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/doc/index.rst)
+[Resources/doc](http://jmsyst.com/bundles/JMSSerializerBundle)
     
 
 Code License:
