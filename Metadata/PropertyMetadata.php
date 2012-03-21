@@ -27,6 +27,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public $sinceVersion;
     public $untilVersion;
+    public $group;
     public $serializedName;
     public $type;
     public $xmlCollection = false;
@@ -73,6 +74,7 @@ class PropertyMetadata extends BasePropertyMetadata
         return serialize(array(
             $this->sinceVersion,
             $this->untilVersion,
+            $this->group,
             $this->serializedName,
             $this->type,
             $this->xmlCollection,
@@ -94,6 +96,7 @@ class PropertyMetadata extends BasePropertyMetadata
         list(
             $this->sinceVersion,
             $this->untilVersion,
+            $this->group,
             $this->serializedName,
             $this->type,
             $this->xmlCollection,

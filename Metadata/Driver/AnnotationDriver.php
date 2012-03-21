@@ -38,6 +38,7 @@ use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\Exclude;
+use JMS\SerializerBundle\Annotation\Group;
 use JMS\SerializerBundle\Annotation\Expose;
 use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Annotation\Until;
@@ -91,7 +92,6 @@ class AnnotationDriver implements DriverInterface
                 $AccessType = $classAccessType;
                 $accessor = array(null, null);
                 foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-                    if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
                     } else if ($annot instanceof Until) {
                         $propertyMetadata->untilVersion = $annot->version;
@@ -99,6 +99,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->serializedName = $annot->name;
                     } else if ($annot instanceof Expose) {
                         $isExpose = true;
+                    } else if ($annot instanceof Group) {
+                        $propertyMetadata->group = $annot->group;
                     } else if ($annot instanceof Exclude) {
                         $isExclude = true;
                     } else if ($annot instanceof Type) {
