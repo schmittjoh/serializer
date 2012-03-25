@@ -4,7 +4,7 @@ JMSSerializerBundle comes by default with a very neat feature which allows
 you to add versioning support to your objects, e.g. if you want to
 expose them via an API that is consumed by a third-party:
 
-::
+.. code-block :: php
 
     <?php
 
@@ -27,7 +27,9 @@ expose them via an API that is consumed by a third-party:
     ``@Until``, and ``@Since`` both accept a standardized PHP version number.
 
 If you have annotated your objects like above, you can serializing different
-versions like this::
+versions like this:
+
+.. code-block :: php
 
     <?php
 

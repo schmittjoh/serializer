@@ -50,7 +50,11 @@ PHP's ``version_compare`` function.
 ~~~~~~~~~~~
 This annotation can be defined on a property, or a class to specify in which way
 the properties should be accessed. By default, the serializer will retrieve, or
-set the value via reflection, but you may change this to use a public method instead::
+set the value via reflection, but you may change this to use a public method instead:
+
+.. code-block :: php
+
+    <?php
 
     /** @AccessType("public_method") */
     class User
@@ -71,7 +75,11 @@ set the value via reflection, but you may change this to use a public method ins
 @Accessor
 ~~~~~~~~~
 This annotation can be defined on a property to specify which public method should
-be called to retrieve, or set the value of the given property::
+be called to retrieve, or set the value of the given property:
+
+.. code-block :: php
+
+    <?php
 
     class User
     {
@@ -98,7 +106,9 @@ This annotation can be defined on a class to control the order of properties. By
 default the order is undefined, but you may change it to either "alphabetical", or
 "custom".
 
-::
+.. code-block :: php
+    
+    <?php
 
     /** 
      * @AccessorOrder("alphabetical") 
@@ -191,7 +201,9 @@ Available Types:
 |                           | into Doctrine's ArrayCollection class.           |
 +---------------------------+--------------------------------------------------+
 
-Examples::
+Examples:
+
+.. code-block :: php
 
     <?php
 
@@ -236,7 +248,7 @@ Examples::
 ~~~~~~~~
 This allows you to specify the name of the top-level element.
 
-::
+.. code-block :: php
 
     <?php
 
@@ -248,7 +260,9 @@ This allows you to specify the name of the top-level element.
         private $name = 'Johannes';
     }
 
-Resulting XML::
+Resulting XML:
+
+.. code-block :: xml
 
     <user>
         <name><![CDATA[Johannes]]></name>
@@ -259,7 +273,7 @@ Resulting XML::
 This allows you to mark properties which should be set as attributes,
 and not as child elements.
 
-::
+.. code-block :: php
 
     <?php
 
@@ -272,7 +286,9 @@ and not as child elements.
         private $name = 'Johannes';
     }
 
-Resulting XML::
+Resulting XML:
+
+.. code-block :: xml
 
     <result id="1">
         <name><![CDATA[Johannes]]></name>
@@ -284,7 +300,7 @@ This allows you to mark properties which should be set as the value of the
 current element. Note that this has the limitation that any additional 
 properties of that object must have the @XmlAttribute annotation.
 
-::
+.. code-block :: php
 
     <?php
     
@@ -302,7 +318,9 @@ properties of that object must have the @XmlAttribute annotation.
         private $amount = 1.23;
     }
     
-Resulting XML::
+Resulting XML:
+
+.. code-block :: xml
 
     <price currency="EUR">1.23</price>
 
@@ -312,7 +330,7 @@ This allows you to define several properties of how arrays should be
 serialized. This is very similar to @XmlMap, and should be used if the
 keys of the array are not important.
 
-::
+.. code-block :: php
 
     <?php
 
@@ -341,7 +359,9 @@ keys of the array are not important.
         }
     }
 
-Resulting XML::
+Resulting XML:
+
+.. code-block :: xml
 
     <post>
         <comment>
