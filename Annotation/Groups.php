@@ -24,15 +24,15 @@ use JMS\SerializerBundle\Exception\RuntimeException;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Group
+final class Groups
 {
-    public $group;
+    public $groups;
 
     public function __construct(array $values)
     {
         if (!isset($values['value']) || !is_array($values['value'])) {
-            throw new RuntimeException('$group must be a array.');
+            throw new RuntimeException('$groups must be a array.');
         }
-        $this->group = $values['value'];
+        $this->groups = $values['value'];
     }
 }
