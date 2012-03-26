@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
 /**
  * @Annotation
@@ -31,7 +31,7 @@ final class Groups
     public function __construct(array $values)
     {
         if (!isset($values['value']) || !is_array($values['value'])) {
-            throw new RuntimeException('$groups must be a array.');
+            throw new InvalidArgumentException('$groups must be a array.');
         }
         $this->groups = $values['value'];
     }
