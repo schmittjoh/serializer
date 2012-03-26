@@ -57,7 +57,7 @@ class Serializer implements SerializerInterface
     
     public function setGroups($groups)
     {
-        if (null === $groups) {
+        if (!$groups) {
             $this->exclusionStrategy = null;
 
             return;
