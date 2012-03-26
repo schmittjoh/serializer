@@ -42,13 +42,17 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
-        if ($this->groups && $property->groups) {
-            foreach ($property->groups as $group) {
-                if (isset($this->groups[$group])) {
-                    return false;
-                }
+        
+        if (!$property->groups) {
+            return true;
+        }
+
+        foreach ($property->groups as $group) {
+            if (isset($this->groups[$group])) {
+                return false;
             }
         }
+
         return true;
     }
 }
