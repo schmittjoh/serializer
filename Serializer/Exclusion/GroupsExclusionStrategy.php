@@ -25,14 +25,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
     private $groups = array();
 
-    public function __construct($groups)
+    public function __construct(array $groups)
     {
-        if (!is_array($groups)) {
-            $this->groups[$groups] = true;
-        } else {
-            foreach ($groups as $group) {
-                $this->groups[$group] = true;
-            }
+        foreach ($groups as $group) {
+            $this->groups[$group] = true;
         }
     }
 
