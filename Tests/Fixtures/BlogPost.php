@@ -23,6 +23,7 @@ use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\XmlAttribute;
 use JMS\SerializerBundle\Annotation\XmlList;
+use JMS\SerializerBundle\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /** @XmlRoot("blog-post") */
@@ -30,6 +31,7 @@ class BlogPost
 {
     /**
      * @Type("string")
+     * @Groups({"comments","post"})
      */
     private $title;
 
@@ -43,17 +45,20 @@ class BlogPost
      * @Type("boolean")
      * @SerializedName("is_published")
      * @XmlAttribute
+     * @Groups({"post"})
      */
     private $published;
 
     /**
      * @Type("ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Comment>")
      * @XmlList(inline=true, entry="comment")
+     * @Groups({"comments"})
      */
     private $comments;
 
     /**
      * @Type("JMS\SerializerBundle\Tests\Fixtures\Author")
+     * @Groups({"post"})
      */
     private $author;
 

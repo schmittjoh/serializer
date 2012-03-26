@@ -86,6 +86,9 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['type'])) {
                         $pMetadata->type = (string) $pConfig['type'];
                     }
+                    if (isset($pConfig['groups'])) {
+                        $pMetadata->groups = $pConfig['groups'];
+                    } 
 
                     if (isset($pConfig['xml_list'])) {
                         $pMetadata->xmlCollection = true;
