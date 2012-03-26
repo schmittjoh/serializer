@@ -34,7 +34,6 @@ use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPas
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
-use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 
@@ -75,7 +74,6 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject  = new VersionedObject('foo', 'bar');
         $serializer = $container->get('serializer');
-        $groupsObject = new GroupsObject();
 
         // test that all components have been wired correctly
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
@@ -87,21 +85,6 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $serializer->setVersion('1.1.1');
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
-        
-        $this->assertEquals(json_encode(array('foo' => 'foo', 'foobar' => 'foobar', 'bar' => 'bar', 'none' => 'none')),$serializer->serialize($groupsObject, 'json'));
-        $serializer->setGroups("foo");
-        
-        $this->assertEquals(json_encode(array('foo' => 'foo', 'foobar' => 'foobar')),$serializer->serialize($groupsObject, 'json'));
-        
-        $serializer->setGroups(array("foo", "bar"));
-        $this->assertEquals(json_encode(array('foo' => 'foo', 'foobar' => 'foobar', 'bar' => 'bar')),$serializer->serialize($groupsObject, 'json'));
-        
-        $serializer->setGroups(array("bar"));
-        $this->assertEquals(json_encode(array('foobar' => 'foobar', 'bar' => 'bar')),$serializer->serialize($groupsObject, 'json'));
-        
-        $serializer->setGroups(null);
-        $this->assertEquals(json_encode(array('foo' => 'foo', 'foobar' => 'foobar', 'bar' => 'bar', 'none' => 'none')),$serializer->serialize($groupsObject, 'json'));
-        
     }
 
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
