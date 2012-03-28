@@ -14,13 +14,13 @@ To install JMSSerializerBundle with Composer just add the following to your
         // ...
         require: {
             // ...
-            "jms/serializer-bundle": "master-dev"
+            "jms/serializer-bundle": "dev-master"
         }
     }
     
 .. note ::
 
-    Please replace `master-dev` in the snippet above with the latest stable
+    Please replace `dev-master` in the snippet above with the latest stable
     branch, for example ``1.0.*``.
     
 Then, you can install the new dependencies by running Composer's ``update``
