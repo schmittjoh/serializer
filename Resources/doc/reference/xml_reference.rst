@@ -21,6 +21,7 @@ XML Reference
                       accessor-setter="setSomeProperty"
                       inline="true"
                       read-only="true"
+                      groups="foo,bar"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
