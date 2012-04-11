@@ -64,7 +64,6 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
-            
         }
 
         if (!isset($outputs[$key])) {

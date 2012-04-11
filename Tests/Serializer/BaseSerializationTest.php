@@ -422,7 +422,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $serializer =  $this->getSerializer();
 
-                
         $groupsObject = new GroupsObject();
         
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
@@ -438,7 +437,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $serializer->setGroups(array());
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
-
     }
 
     abstract protected function getContent($key);
