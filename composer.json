@@ -3,7 +3,8 @@
     "type": "symfony-bundle",
     "description": "Allows you to easily serialize, and deserialize object graphs of any complexity",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
-    "license": "Apache",
+    "homepage": "http://jmsyst.com/bundles/JMSSerializerBundle",
+    "license": "Apache2",
     "authors": [
         {
             "name": "Johannes M. Schmitt",

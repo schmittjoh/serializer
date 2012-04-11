@@ -63,7 +63,7 @@ class Serializer implements SerializerInterface
             return;
         }
 
-        $this->exclusionStrategy = new GroupsExclusionStrategy($groups);
+        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
     }
 
     public function serialize($data, $format)

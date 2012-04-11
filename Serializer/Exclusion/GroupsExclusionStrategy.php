@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Exception\RuntimeException;
 
 class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
@@ -27,6 +28,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
     public function __construct(array $groups)
     {
+        if (empty($groups)) {
+            throw new RuntimeException('Empty group array may not be configured for GroupsExclusionStrategy');
+        }
+
         foreach ($groups as $group) {
             $this->groups[$group] = true;
         }
@@ -42,7 +47,6 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property)
     {
-        
         if (!$property->groups) {
             return true;
         }
