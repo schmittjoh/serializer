@@ -21,6 +21,7 @@ namespace JMS\SerializerBundle\Tests\Fixtures;
 use JMS\SerializerBundle\Annotation\Groups;
 use JMS\SerializerBundle\Annotation\Type;
 
+/** blablub */
 class GroupsObject
 {
     /**
