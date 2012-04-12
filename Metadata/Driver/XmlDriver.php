@@ -98,6 +98,10 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->type = (string) $pElem->type;
                     }
 
+                    if (null !== $groups = $pElem->attributes()->groups) {
+                        $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
+                    } 
+
                     if (isset($pElem->{'xml-list'})) {
                         $pMetadata->xmlCollection = true;
 

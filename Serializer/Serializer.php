@@ -22,6 +22,7 @@ use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
 class Serializer implements SerializerInterface
@@ -52,6 +53,17 @@ class Serializer implements SerializerInterface
         }
 
         $this->exclusionStrategy = new VersionExclusionStrategy($version);
+    }
+    
+    public function setGroups($groups)
+    {
+        if (!$groups) {
+            $this->exclusionStrategy = null;
+
+            return;
+        }
+
+        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
     }
 
     public function serialize($data, $format)

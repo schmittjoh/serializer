@@ -46,6 +46,12 @@ property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
+@Groups
+~~~~~~~
+This annotation can be defined on a property to specifiy to if the property 
+should be serialized when only serializing specific groups (see 
+:doc:`../cookbook/exclusion_strategies`).
+
 @AccessType
 ~~~~~~~~~~~
 This annotation can be defined on a property, or a class to specify in which way

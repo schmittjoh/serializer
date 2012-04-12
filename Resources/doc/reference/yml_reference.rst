@@ -19,6 +19,7 @@ YAML Reference
                 serialized_name: foo
                 since_version: 1.0
                 until_version: 1.1
+                groups: [foo, bar]
                 xml_attribute: true
                 inline: true
                 read_only: true

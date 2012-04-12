@@ -32,6 +32,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = 'string';
+        $p->groups = array("comments","post");
         $this->assertEquals($p, $m->propertyMetadata['title']);
 
         $p = new PropertyMetadata($m->name, 'createdAt');
@@ -43,6 +44,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->type = 'boolean';
         $p->serializedName = 'is_published';
         $p->xmlAttribute = true;
+        $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['published']);
 
         $p = new PropertyMetadata($m->name, 'comments');
@@ -50,10 +52,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlCollection = true;
         $p->xmlCollectionInline = true;
         $p->xmlEntryName = 'comment';
+        $p->groups = array("comments");
         $this->assertEquals($p, $m->propertyMetadata['comments']);
 
         $p = new PropertyMetadata($m->name, 'author');
         $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
+        $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
         
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
