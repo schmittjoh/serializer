@@ -26,13 +26,19 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
  */
 final class Groups
 {
+    /** @var array<string> @Required */
     public $groups;
 
-    public function __construct(array $values)
+    public function __construct()
     {
-        if (!isset($values['value']) || !is_array($values['value'])) {
-            throw new InvalidArgumentException('$groups must be a array.');
+        if (0 === func_num_args()) {
+            return;
         }
-        $this->groups = $values['value'];
+        $values = func_get_arg(0);
+
+        if (!isset($values['value'])) {
+            throw new InvalidArgumentException('The "groups" attribute must be set.');
+        }
+        $this->groups = (array) $values['value'];
     }
 }

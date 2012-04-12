@@ -1,5 +1,5 @@
-Overriding Metadata
-~~~~~~~~~~~~~~~~~~~
+Overriding Metadata Provided by Third-Parties
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sometimes you want to serialize objects which are shipped by a third-party bundle. 
 Such a third-party bundle might not ship with metadata that suits your needs, or 

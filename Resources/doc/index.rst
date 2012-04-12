@@ -35,6 +35,7 @@ Documentation
 - Recipies
     * :doc:`Custom Handlers </cookbook/custom_handlers>`
     * :doc:`/cookbook/exclusion_strategies`
+    * :doc:`/cookbook/metadata_for_third_party`
 - Reference
     * :doc:`Annotations </reference/annotations>`
     * :doc:`XML Reference </reference/xml_reference>`

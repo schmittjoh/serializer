@@ -47,16 +47,10 @@ excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
 @Groups
--------
-
-This annotation can be defined on a property to specifiy if this porperty should 
-be serialized, if any group is specified with the 
-``$serializer->setGroups(array("Foo"))`` method. Both values always have to be 
-an array.
-
-.. code-block :: php
-
-  /** @Groups({"Foo","Bar"}) */
+~~~~~~~
+This annotation can be defined on a property to specifiy to if the property 
+should be serialized when only serializing specific groups (see 
+:doc:`../cookbook/exclusion_strategies`).
 
 @AccessType
 ~~~~~~~~~~~
