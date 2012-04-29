@@ -32,6 +32,7 @@ use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Annotation\PostSerialize;
 use JMS\SerializerBundle\Annotation\PostDeserialize;
 use JMS\SerializerBundle\Annotation\PreSerialize;
+use JMS\SerializerBundle\Annotation\Virtual;
 use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Annotation\Type;
@@ -151,6 +152,9 @@ class AnnotationDriver implements DriverInterface
                     continue 2;
                 } else if ($annot instanceof PostSerialize) {
                     $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof Virtual) {
+                    $classMetadata->addVirtualPropertyMethod( new MethodMetadata($name, $method->getName()), $annot->field);
                     continue 2;
                 }
             }

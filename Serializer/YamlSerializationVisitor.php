@@ -143,6 +143,10 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)
     {
+        foreach( $metadata->virtualPropertyMethods as $field => $method ) {
+            $this->writer
+                ->writeln(Inline::dump($field).': ' . $method->invoke($data));
+        }
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)

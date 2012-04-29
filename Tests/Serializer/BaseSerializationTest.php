@@ -58,6 +58,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperty;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -437,6 +438,10 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $serializer->setGroups(array());
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
+    }
+	
+    public function testVirtualProperty() {
+        $this->assertEquals($this->getContent('virtual_property'), $this->serialize(new ObjectWithVirtualProperty()));
     }
 
     abstract protected function getContent($key);
