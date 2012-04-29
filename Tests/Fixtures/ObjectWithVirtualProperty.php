@@ -18,12 +18,15 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
-use JMS\SerializerBundle\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\Virtual;
 
 class ObjectWithVirtualProperty
 {
 
+	/**
+	 * @Type("string")
+	 */
 	protected $existField = 'value';
     
 	/**

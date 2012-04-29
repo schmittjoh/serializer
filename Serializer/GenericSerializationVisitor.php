@@ -113,10 +113,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 
         $this->dataStack->push($this->data);
         $this->data = array();
-		
-        foreach( $metadata->virtualPropertyMethods as $field => $method ) {
-            $this->data[$field] = $method->invoke($data);
-        }
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)

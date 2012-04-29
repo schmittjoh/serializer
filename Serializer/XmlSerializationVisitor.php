@@ -143,12 +143,6 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
 
         $this->hasValue = false;
-
-        foreach( $metadata->virtualPropertyMethods as $field => $method ) {
-            $element = $this->getDocument()->createElement($field);
-            $element->appendChild($this->getDocument()->createCDATASection( (string) $method->invoke($data)));
-            $this->getCurrentNode()->appendChild($element);
-        }
     }
 
     public function visitProperty(PropertyMetadata $metadata, $object)

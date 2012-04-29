@@ -47,6 +47,7 @@ use JMS\SerializerBundle\Annotation\Inline;
 use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -154,7 +155,9 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
                     continue 2;
                 } else if ($annot instanceof Virtual) {
-                    $classMetadata->addVirtualPropertyMethod( new MethodMetadata($name, $method->getName()), $annot->field);
+                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $annot->field);
+                    $virtualPropertyMetadata->getter = $method->getName();
+                    $classMetadata->addPropertyMetadata( $virtualPropertyMetadata );
                     continue 2;
                 }
             }

@@ -38,7 +38,6 @@ class ClassMetadata extends MergeableClassMetadata
     public $preSerializeMethods = array();
     public $postSerializeMethods = array();
     public $postDeserializeMethods = array();
-    public $virtualPropertyMethods = array();
     public $xmlRootName;
     public $accessorOrder;
     public $customOrder;
@@ -87,11 +86,6 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods[] = $method;
     }
 
-    public function addVirtualPropertyMethod(MethodMetadata $method, $field)
-    {
-        $this->virtualPropertyMethods[$field] = $method;
-    }
-	
     public function merge(MergeableInterface $object)
     {
         if (!$object instanceof ClassMetadata) {
@@ -120,7 +114,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
-            $this->virtualPropertyMethods,
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
@@ -134,7 +127,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
-            $this->virtualPropertyMethods,
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
