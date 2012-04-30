@@ -22,7 +22,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 
 /**
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"PROPERTY","METHOD"})
  */
 final class SerializedName
 {

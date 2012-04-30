@@ -18,22 +18,33 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
-use JMS\SerializerBundle\Annotation\Type;
-use JMS\SerializerBundle\Annotation\Virtual;
+use JMS\SerializerBundle\Annotation\Groups;
+use JMS\SerializerBundle\Annotation\XmlValue;
+use JMS\SerializerBundle\Annotation\XmlAttribute;
+use JMS\SerializerBundle\Annotation\VirtualProperty;
 
-class ObjectWithVirtualProperty
+class ObjectWithVirtualXmlProperties
 {
 
-	/**
-	 * @Type("string")
-	 */
-	protected $existField = 'value';
-    
-	/**
+    /**
      *
-     * @Virtual(field="foo")
+     * @VirtualProperty("foo")
+     * @Groups({"attributes"})
+     * @XmlAttribute
      */
-    public function getValue() {
+    public function getVirualXmlAttributeValue()
+    {
         return 'bar';
+    }
+
+    /**
+     *
+     * @Groups({"values"})
+     * @VirtualProperty("xml-value")
+     * @XmlValue
+     */
+    public function getVirualXmlValue()
+    {
+        return 'xml-value';
     }
 }

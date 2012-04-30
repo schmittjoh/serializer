@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
+  <test><![CDATA[other-name]]></test>
   <exist_field><![CDATA[value]]></exist_field>
-  <foo><![CDATA[bar]]></foo>
+  <foo><![CDATA[value]]></foo>
 </result>

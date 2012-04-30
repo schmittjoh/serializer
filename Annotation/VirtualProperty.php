@@ -8,7 +8,7 @@ namespace JMS\SerializerBundle\Annotation;
  *
  * @author Alexander Klimenkov <alx.devel@gmail.com>
  */
-final class Virtual
+final class VirtualProperty
 {
     /**
      * @Required

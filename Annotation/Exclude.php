@@ -20,7 +20,7 @@ namespace JMS\SerializerBundle\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY", "CLASS"})
+ * @Target({"PROPERTY", "METHOD", "CLASS"})
  */
 final class Exclude
 {

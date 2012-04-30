@@ -22,19 +22,24 @@ namespace JMS\SerializerBundle\Metadata;
 class VirtualPropertyMetadata extends PropertyMetadata
 {
 
-	public function __construct($class, $name)
+    public function __construct($class, $name)
     {
         $this->class = $class;
         $this->name = $name;
-		$this->readOnly = true;
+        $this->readOnly = true;
     }
 
     public function getValue($obj)
     {
         return $obj->{$this->getter}();
     }
-	
+
     public function setValue($obj, $value)
+    {
+        return false;
+    }
+
+    public function setAccessor($type, $getter = null, $setter = null)
     {
         return false;
     }
@@ -42,15 +47,46 @@ class VirtualPropertyMetadata extends PropertyMetadata
     public function serialize()
     {
         return serialize(array(
+            $this->sinceVersion,
+            $this->untilVersion,
+            $this->groups,
+            $this->serializedName,
+            $this->type,
+            $this->xmlCollection,
+            $this->xmlCollectionInline,
+            $this->xmlEntryName,
+            $this->xmlKeyAttribute,
+            $this->xmlAttribute,
+            $this->xmlValue,
+            $this->getter,
+            $this->setter,
+            $this->inline,
+            $this->readOnly,
             $this->class,
-            $this->name,
-			$this->getter
+            $this->name
         ));
     }
 
     public function unserialize($str)
     {
-        list($this->class, $this->name, $this->getter) = unserialize($str);
-		$this->readOnly = true;
-    }	
+        list(
+            $this->sinceVersion,
+            $this->untilVersion,
+            $this->groups,
+            $this->serializedName,
+            $this->type,
+            $this->xmlCollection,
+            $this->xmlCollectionInline,
+            $this->xmlEntryName,
+            $this->xmlKeyAttribute,
+            $this->xmlAttribute,
+            $this->xmlValue,
+            $this->getter,
+            $this->setter,
+            $this->inline,
+            $this->readOnly,
+            $this->class,
+            $this->name
+        ) = unserialize($str);
+    }
 }
