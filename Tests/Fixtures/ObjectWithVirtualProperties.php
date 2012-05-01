@@ -39,7 +39,7 @@ class ObjectWithVirtualProperties
      * 
      * @VirtualProperty("foo")
      */
-    public function getVirualValue()
+    public function getVirtualValue()
     {
         return 'value';
     }
@@ -48,17 +48,8 @@ class ObjectWithVirtualProperties
      * @VirtualProperty("prop_name")
      * @SerializedName("test")
      */
-    public function getVirualSerializedValue()
+    public function getVirtualSerializedValue()
     {
         return 'other-name';
-    }
-    
-    /**
-     * @VirtualProperty("excluded")
-     * @Exclude
-     */
-    public function getVirualExcudedValue()
-    {
-        return 'excluded';
     }
 }
