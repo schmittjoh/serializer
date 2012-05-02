@@ -95,9 +95,6 @@ class XmlDriver extends AbstractFileDriver
             }
             
             foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
-                if ($name !== $property->getDeclaringClass()->getName()) {
-                    continue;
-                }
 
                 $isExclude = $isExpose = false;
 

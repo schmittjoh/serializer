@@ -3,6 +3,6 @@
     <class name="JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties">
         <property name="existField" type="string"/>
         <virtual-property name="foo" method="getVirtualValue"/>
-        <virtual-property name="prop_name" method="getVirtualSerializedValue"/>
+        <virtual-property name="prop_name" method="getVirtualSerializedValue" serialized-name="test"/>
     </class>
 </serializer>

@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,6 +68,22 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->type = 'double';
         $p->xmlValue = true;
         $this->assertEquals($p, $m->propertyMetadata['price']);
+    }
+
+    public function testVirtualProperty()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties'));
+
+        $this->assertArrayHasKey('existField', $m->propertyMetadata);
+        $this->assertArrayHasKey('foo', $m->propertyMetadata);
+        $this->assertArrayHasKey('prop_name', $m->propertyMetadata);
+
+        $this->assertEquals($m->propertyMetadata['prop_name']->serializedName, 'test', 'Serialized name is missing' );
+
+        $p = new VirtualPropertyMetadata($m->name, 'foo');
+        $p->getter = 'getVirtualValue';
+
+        $this->assertEquals($p, $m->propertyMetadata['foo']);
     }
 
     abstract protected function getDriver();
