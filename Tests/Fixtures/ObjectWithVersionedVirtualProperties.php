@@ -27,56 +27,9 @@ use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\VirtualProperty;
 
-class ObjectWithVirtualXmlProperties
+class ObjectWithVersionedVirtualProperties
 {
 
-    /**
-     *
-     * @VirtualProperty("foo")
-     * @Groups({"attributes"})
-     * @XmlAttribute
-     */
-    public function getVirualXmlAttributeValue()
-    {
-        return 'bar';
-    }
-
-    /**
-     *
-     * @Groups({"values"})
-     * @VirtualProperty("xml-value")
-     * @XmlValue
-     */
-    public function getVirualXmlValue()
-    {
-        return 'xml-value';
-    }
-    
-    /**
-     *
-     * @Groups({"list"})
-     * @VirtualProperty("list")
-     * @XmlList(inline = true, entry = "val")
-     */
-    public function getVirualXmlList()
-    {
-        return array('One','Two');
-    }
-
-    /**
-     *
-     * @Groups({"map"})
-     * @VirtualProperty("map")
-     * @XmlMap(keyAttribute = "key")
-     */
-    public function getVirualXmlMap()
-    {
-        return array(
-            'key-one'   => 'One',
-            'key-two'   => 'Two'
-        );
-    }
-    
     /**
      *
      * @Groups({"versions"})
@@ -91,8 +44,8 @@ class ObjectWithVirtualXmlProperties
     /**
      *
      * @Groups({"versions"})
-     * @VirtualProperty("hight")
-     * @Since("8")
+     * @VirtualProperty("high")
+     * @Since("6")
      */
     public function getVirualHighValue()
     {

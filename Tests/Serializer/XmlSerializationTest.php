@@ -62,7 +62,19 @@ class XmlSerializationTest extends BaseSerializationTest
         $serializer->setGroups(array('values'));
         $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
+    
+    public function testVirtualXmlList() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('list'));
+        $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
 
+    public function testVirtualXmlMap() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('map'));
+        $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+    
     protected function getContent($key)
     {
         if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {

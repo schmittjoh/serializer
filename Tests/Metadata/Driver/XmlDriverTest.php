@@ -20,6 +20,8 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use Metadata\Driver\FileLocator;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+
 use JMS\SerializerBundle\Metadata\Driver\XmlDriver;
 
 class XmlDriverTest extends BaseDriverTest
@@ -81,6 +83,21 @@ class XmlDriverTest extends BaseDriverTest
 
         $this->assertEquals($p, $m->propertyMetadata['name']);
     }
+    
+    public function testVirtualProperty()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties'));
+
+        $this->assertArrayHasKey('existField', $m->propertyMetadata);
+        $this->assertArrayHasKey('foo', $m->propertyMetadata);
+        $this->assertArrayHasKey('prop_name', $m->propertyMetadata);
+        
+        $p = new VirtualPropertyMetadata($m->name, 'foo');
+        $p->getter = 'getVirtualValue';
+
+        $this->assertEquals($p, $m->propertyMetadata['foo']);
+    }
+    
 
     protected function getDriver()
     {
