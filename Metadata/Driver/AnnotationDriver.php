@@ -102,8 +102,16 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
                     continue 2;
                 } else if ($annot instanceof VirtualProperty) {
-                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $annot->field);
-                    $virtualPropertyMetadata->getter = $method->getName();
+
+                    $methodName = $method->getName();
+                    if ('get' === substr($methodName, 0, 3)) {
+                        $fieldName = lcfirst(substr($methodName, 3));
+                    } else {
+                        $fieldName = $method->getName();
+                    }
+
+                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $fieldName);
+                    $virtualPropertyMetadata->getter = $methodName;
                     $propertiesMetadata[] = $virtualPropertyMetadata;
                     $propertiesAnnotations[] = $methodAnnotations;
                     continue 2;

@@ -10,9 +10,4 @@ namespace JMS\SerializerBundle\Annotation;
  */
 final class VirtualProperty
 {
-    /**
-     * @Required
-     * @var string
-     */
-    public $field;
 }

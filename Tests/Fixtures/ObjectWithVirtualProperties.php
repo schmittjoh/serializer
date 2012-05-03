@@ -37,7 +37,7 @@ class ObjectWithVirtualProperties
    
     /**
      * 
-     * @VirtualProperty("foo")
+     * @VirtualProperty
      */
     public function getVirtualValue()
     {
@@ -45,7 +45,7 @@ class ObjectWithVirtualProperties
     }
 
     /**
-     * @VirtualProperty("prop_name")
+     * @VirtualProperty
      * @SerializedName("test")
      */
     public function getVirtualSerializedValue()

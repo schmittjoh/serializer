@@ -11,12 +11,12 @@ $metadata = new ClassMetadata( $className );
 $pMetadata = new PropertyMetadata($className, 'existField');
 $metadata->addPropertyMetadata($pMetadata);
 
-$pMetadata = new VirtualPropertyMetadata($className, 'foo');
+$pMetadata = new VirtualPropertyMetadata($className, 'virtualValue');
 $pMetadata->getter = 'getVirtualValue';
 $metadata->addPropertyMetadata($pMetadata);
 
 
-$pMetadata = new VirtualPropertyMetadata($className, 'prop_name');
+$pMetadata = new VirtualPropertyMetadata($className, 'virtualSerializedValue');
 $pMetadata->getter = 'getVirtualSerializedValue';
 $pMetadata->serializedName = 'test';
 $metadata->addPropertyMetadata($pMetadata);

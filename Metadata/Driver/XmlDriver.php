@@ -66,15 +66,15 @@ class XmlDriver extends AbstractFileDriver
             if (!isset($method->attributes()->method)) {
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
             }
-            if (!isset($method->attributes()->name)) {
-                throw new RuntimeException('The name attribute must be set for all virtual-property elements.');
+
+            $methodName = (string) $method->attributes()->method;
+            if ('get' === substr($methodName, 0, 3)) {
+                $fieldName = lcfirst(substr($methodName, 3));
+            } else {
+                $fieldName = $method->getName();
             }
-            
-            if ( !$class->hasMethod( $method->attributes()->method ) ) {
-                throw new RuntimeException('The method '.$method->attributes()->method.' not found in class ' . $class->name);
-            }
-            
-            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string)$method->attributes()->name );
+
+            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $fieldName );
             $virtualPropertyMetadata->getter = (string) $method->attributes()->method;
             
             $propertiesMetadata[] = $virtualPropertyMetadata;

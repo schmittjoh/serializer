@@ -26,6 +26,7 @@ use JMS\SerializerBundle\Annotation\XmlMap;
 use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\VirtualProperty;
+use JMS\SerializerBundle\Annotation\SerializedName;
 
 class ObjectWithVersionedVirtualProperties
 {
@@ -33,7 +34,8 @@ class ObjectWithVersionedVirtualProperties
     /**
      *
      * @Groups({"versions"})
-     * @VirtualProperty("low")
+     * @VirtualProperty
+     * @SerializedName("low")
      * @Until("8")
      */
     public function getVirualLowValue()
@@ -44,7 +46,8 @@ class ObjectWithVersionedVirtualProperties
     /**
      *
      * @Groups({"versions"})
-     * @VirtualProperty("high")
+     * @VirtualProperty
+     * @SerializedName("high")
      * @Since("6")
      */
     public function getVirualHighValue()

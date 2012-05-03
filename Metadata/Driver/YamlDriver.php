@@ -57,21 +57,23 @@ class YamlDriver extends AbstractFileDriver
 
         if (array_key_exists('virtual_properties', $config) ) {
 
-            foreach ( $config['virtual_properties'] as $propertyName => $propertySettings ) {
+            foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {
 
-                if (!array_key_exists('method', $propertySettings)) {
-                    throw new RuntimeException('The method must be set for all virtual_property elements');
+                if ( !$class->hasMethod( $methodName ) ) {
+                    throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
                 }
 
-                if ( !$class->hasMethod( $propertySettings['method'] ) ) {
-                    throw new RuntimeException('The method '.$propertySettings['method'].' not found in class ' . $class->name);
+                if ('get' === substr($methodName, 0, 3)) {
+                    $fieldName = lcfirst(substr($methodName, 3));
+                } else {
+                    $fieldName = $method->getName();
                 }
 
-                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $propertyName );
-                $virtualPropertyMetadata->getter = (string) $propertySettings['method'];
+                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $fieldName );
+                $virtualPropertyMetadata->getter = $methodName;
 
-                $propertiesMetadata[$propertyName] = $virtualPropertyMetadata;
-                $config['properties'][$propertyName] = $propertySettings;
+                $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
+                $config['properties'][$methodName] = $propertySettings;
             }
         }
 

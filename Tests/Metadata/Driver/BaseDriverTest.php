@@ -75,15 +75,15 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties'));
 
         $this->assertArrayHasKey('existField', $m->propertyMetadata);
-        $this->assertArrayHasKey('foo', $m->propertyMetadata);
-        $this->assertArrayHasKey('prop_name', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
 
-        $this->assertEquals($m->propertyMetadata['prop_name']->serializedName, 'test', 'Serialized name is missing' );
+        $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing' );
 
-        $p = new VirtualPropertyMetadata($m->name, 'foo');
+        $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
         $p->getter = 'getVirtualValue';
 
-        $this->assertEquals($p, $m->propertyMetadata['foo']);
+        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
     }
 
     abstract protected function getDriver();

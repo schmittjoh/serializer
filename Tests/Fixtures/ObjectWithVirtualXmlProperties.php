@@ -26,13 +26,16 @@ use JMS\SerializerBundle\Annotation\XmlMap;
 use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\Until;
 use JMS\SerializerBundle\Annotation\VirtualProperty;
+use JMS\SerializerBundle\Annotation\SerializedName;
+
 
 class ObjectWithVirtualXmlProperties
 {
 
     /**
      *
-     * @VirtualProperty("foo")
+     * @VirtualProperty
+     * @SerializedName("foo")
      * @Groups({"attributes"})
      * @XmlAttribute
      */
@@ -43,8 +46,9 @@ class ObjectWithVirtualXmlProperties
 
     /**
      *
+     * @VirtualProperty
+     * @SerializedName("xml-value")
      * @Groups({"values"})
-     * @VirtualProperty("xml-value")
      * @XmlValue
      */
     public function getVirualXmlValue()
@@ -54,8 +58,9 @@ class ObjectWithVirtualXmlProperties
     
     /**
      *
+     * @VirtualProperty
+     * @SerializedName("list")
      * @Groups({"list"})
-     * @VirtualProperty("list")
      * @XmlList(inline = true, entry = "val")
      */
     public function getVirualXmlList()
@@ -65,8 +70,9 @@ class ObjectWithVirtualXmlProperties
 
     /**
      *
+     * @VirtualProperty
+     * @SerializedName("map")
      * @Groups({"map"})
-     * @VirtualProperty("map")
      * @XmlMap(keyAttribute = "key")
      */
     public function getVirualXmlMap()
@@ -79,8 +85,9 @@ class ObjectWithVirtualXmlProperties
     
     /**
      *
+     * @VirtualProperty
+     * @SerializedName("low")
      * @Groups({"versions"})
-     * @VirtualProperty("low")
      * @Until("8")
      */
     public function getVirualLowValue()
@@ -89,9 +96,9 @@ class ObjectWithVirtualXmlProperties
     }
     
     /**
-     *
+     * @VirtualProperty
+     * @SerializedName("hight")
      * @Groups({"versions"})
-     * @VirtualProperty("hight")
      * @Since("8")
      */
     public function getVirualHighValue()
