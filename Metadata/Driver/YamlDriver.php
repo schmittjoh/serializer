@@ -63,14 +63,7 @@ class YamlDriver extends AbstractFileDriver
                     throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
                 }
 
-                if ('get' === substr($methodName, 0, 3)) {
-                    $fieldName = lcfirst(substr($methodName, 3));
-                } else {
-                    $fieldName = $method->getName();
-                }
-
-                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $fieldName );
-                $virtualPropertyMetadata->getter = $methodName;
+                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $methodName );
 
                 $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
                 $config['properties'][$methodName] = $propertySettings;
