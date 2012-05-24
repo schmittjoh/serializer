@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-$loader = include_once dirname(__DIR__).'/vendor/autoload.php';
+include_once dirname(__DIR__).'/vendor/autoload.php';
 
-Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function($class) use ($loader) {
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function($class) {
     if (0 === strpos(ltrim($class, '/'), 'JMS\SerializerBundle\Annotation')) {
-        if (file_exists($file = dirname(__DIR__).'/'.substr(str_replace('\\', '/', $class), strlen('JMS\SerializerBundle')).'.php')) {
+        if (file_exists($file = dirname(__DIR__).'/'.substr(str_replace('\\', '/', $class), strlen('JMS\SerializerBundle\\')).'.php')) {
             require_once $file;
         }
     }
