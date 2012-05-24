@@ -16,7 +16,11 @@
         "jms/metadata": ">=1.1.0"
     },
     "require-dev": {
-        "symfony/framework-bundle": "2.*"
+        "symfony/framework-bundle": "2.*",
+        "symfony/yaml": "2.*",
+        "symfony/form": "2.*",
+        "symfony/validator": "2.*",
+        "twig/twig": "dev-master"
     },
     "autoload": {
         "psr-0": { "JMS\\SerializerBundle": "" }
