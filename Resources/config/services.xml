@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="jms_serializer.metadata.file_locator.class">Metadata\Driver\FileLocator</parameter>
         <parameter key="jms_serializer.metadata.annotation_driver.class">JMS\SerializerBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="jms_serializer.metadata.doctrine_type_driver.class">JMS\SerializerBundle\Metadata\Driver\DoctrineTypeDriver</parameter>
         <parameter key="jms_serializer.metadata.chain_driver.class">Metadata\Driver\DriverChain</parameter>
         <parameter key="jms_serializer.metadata.yaml_driver.class">JMS\SerializerBundle\Metadata\Driver\YamlDriver</parameter>
         <parameter key="jms_serializer.metadata.xml_driver.class">JMS\SerializerBundle\Metadata\Driver\XmlDriver</parameter>
@@ -59,8 +60,13 @@
         <service id="jms_serializer.metadata.annotation_driver" class="%jms_serializer.metadata.annotation_driver.class%" public="false">
             <argument type="service" id="annotation_reader" />
         </service>
+        <service id="jms_serializer.metadata.doctrine_type_driver" class="%jms_serializer.metadata.doctrine_type_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.annotation_driver" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
         <service id="jms_serializer.metadata.chain_driver" class="%jms_serializer.metadata.chain_driver.class%" public="false">
             <argument type="collection">
+                <argument type="service" id="jms_serializer.metadata.doctrine_type_driver" />
                 <argument type="service" id="jms_serializer.metadata.yaml_driver" />
                 <argument type="service" id="jms_serializer.metadata.xml_driver" />
                 <argument type="service" id="jms_serializer.metadata.php_driver" />
