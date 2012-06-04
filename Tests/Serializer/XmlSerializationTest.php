@@ -22,6 +22,9 @@ use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\XmlValue;
+use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
+use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
+use JMS\SerializerBundle\Tests\Fixtures\Person;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -32,6 +35,30 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $obj = new InvalidUsageOfXmlValue();
         $this->serialize($obj);
+    }
+
+    public function testPropertyIsObjectWithAttributeAndValue()
+    {
+        $personCollection = new PersonLocation;
+        $person = new Person;
+        $person->name = 'Matthias Noback';
+        $person->age = 28;
+        $personCollection->person = $person;
+        $personCollection->location = 'The Netherlands';
+
+        $this->assertEquals($this->getContent('person_location'), $this->serialize($personCollection));
+    }
+
+    public function testPropertyIsCollectionOfObjectsWithAttributeAndValue()
+    {
+        $personCollection = new PersonCollection;
+        $person = new Person;
+        $person->name = 'Matthias Noback';
+        $person->age = 28;
+        $personCollection->persons->add($person);
+        $personCollection->location = 'The Netherlands';
+
+        $this->assertEquals($this->getContent('person_collection'), $this->serialize($personCollection));
     }
 
     public function testExternalEntitiesAreDisabledByDefault()

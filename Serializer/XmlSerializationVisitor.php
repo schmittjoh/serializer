@@ -203,6 +203,8 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
                 $this->currentNode->appendChild($element);
             }
         }
+
+        $this->hasValue = false;
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
