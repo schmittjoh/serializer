@@ -25,6 +25,7 @@ use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
 use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -75,6 +76,30 @@ class XmlSerializationTest extends BaseSerializationTest
         chdir($currentDir);
 
         $this->assertEquals('', trim($entity->foo));
+    }
+
+    public function testVirtualAttributes() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('attributes'));
+        $this->assertEquals($this->getContent('virtual_attributes'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualValues() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('values'));
+        $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualXmlList() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('list'));
+        $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualXmlMap() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('map'));
+        $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
     protected function getContent($key)

@@ -20,7 +20,7 @@ namespace JMS\SerializerBundle\Annotation;
 
 /**
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"PROPERTY", "METHOD"})
  */
 final class XmlAttribute
 {

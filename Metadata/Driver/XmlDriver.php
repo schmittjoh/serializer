@@ -22,6 +22,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use Metadata\MethodMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
@@ -50,6 +51,9 @@ class XmlDriver extends AbstractFileDriver
         $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower($exclude) : false;
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
+        $propertiesMetadata = array();
+        $propertiesNodes = array();
+        
         if (null !== $accessorOrder = $elem->attributes()->{'accessor-order'}) {
             $metadata->setAccessorOrder((string) $accessorOrder, preg_split('/\s*,\s*/', (string) $elem->attributes()->{'custom-accessor-order'}));
         }
@@ -58,19 +62,36 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $xmlRootName;
         }
 
+        foreach ($elem->xpath('./virtual-property') as $method) {
+            if (!isset($method->attributes()->method)) {
+                throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
+            }
+
+            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string) $method->attributes()->method );
+            
+            $propertiesMetadata[] = $virtualPropertyMetadata;
+            $propertiesNodes[] = $method;
+        }
+        
         if (!$excludeAll) {
+            
             foreach ($class->getProperties() as $property) {
                 if ($name !== $property->getDeclaringClass()->getName()) {
                     continue;
                 }
+                
+                $propertiesMetadata[] = new PropertyMetadata($name, $pName = $property->getName());
+                $pElems = $elem->xpath("./property[@name = '".$pName."']");
+                
+                $propertiesNodes[] = $pElems ? reset( $pElems ) : null;
+            }
+            
+            foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
 
-                $pMetadata = new PropertyMetadata($name, $pName = $property->getName());
                 $isExclude = $isExpose = false;
 
-                $pElems = $elem->xpath("./property[@name = '".$pName."']");
-
-                if ($pElems) {
-                    $pElem = reset($pElems);
+                $pElem = $propertiesNodes[$propertyKey];
+                if (!empty( $pElem )) {
 
                     if (null !== $exclude = $pElem->attributes()->exclude) {
                         $isExclude = 'true' === strtolower($exclude);

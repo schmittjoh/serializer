@@ -32,6 +32,7 @@ use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Annotation\PostSerialize;
 use JMS\SerializerBundle\Annotation\PostDeserialize;
 use JMS\SerializerBundle\Annotation\PreSerialize;
+use JMS\SerializerBundle\Annotation\VirtualProperty;
 use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\SerializerBundle\Annotation\Type;
@@ -46,6 +47,7 @@ use JMS\SerializerBundle\Annotation\Inline;
 use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -61,6 +63,9 @@ class AnnotationDriver implements DriverInterface
     {
         $classMetadata = new ClassMetadata($name = $class->getName());
         $classMetadata->fileResources[] = $class->getFilename();
+
+        $propertiesMetadata = array();
+        $propertiesAnnotations = array();
 
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
@@ -79,17 +84,50 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
+        foreach ($class->getMethods() as $method) {
+            if ($method->getDeclaringClass()->getName() !== $name) {
+                continue;
+            }
+
+            $methodAnnotations = $this->reader->getMethodAnnotations($method);
+
+            foreach ($methodAnnotations as $annot) {
+                if ($annot instanceof PreSerialize) {
+                    $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof PostDeserialize) {
+                    $classMetadata->addPostDeserializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof PostSerialize) {
+                    $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
+                    continue 2;
+                } else if ($annot instanceof VirtualProperty) {
+                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $method->getName());
+                    $propertiesMetadata[] = $virtualPropertyMetadata;
+                    $propertiesAnnotations[] = $methodAnnotations;
+                    continue 2;
+                }
+            }
+        }
+
         if (!$excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($property->getDeclaringClass()->getName() !== $name) {
                     continue;
                 }
+                $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
+                $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
+            }
 
-                $propertyMetadata = new PropertyMetadata($name, $property->getName());
+            foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
+
                 $isExclude = $isExpose = false;
                 $AccessType = $classAccessType;
                 $accessor = array(null, null);
-                foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
+
+                $propertyAnnotations = $propertiesAnnotations[$propertyKey];
+
+                foreach ($propertyAnnotations as $annot) {
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
                     } else if ($annot instanceof Until) {
@@ -133,25 +171,6 @@ class AnnotationDriver implements DriverInterface
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $classMetadata->addPropertyMetadata($propertyMetadata);
-                }
-            }
-        }
-
-        foreach ($class->getMethods() as $method) {
-            if ($method->getDeclaringClass()->getName() !== $name) {
-                continue;
-            }
-
-            foreach ($this->reader->getMethodAnnotations($method) as $annot) {
-                if ($annot instanceof PreSerialize) {
-                    $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->getName()));
-                    continue 2;
-                } else if ($annot instanceof PostDeserialize) {
-                    $classMetadata->addPostDeserializeMethod(new MethodMetadata($name, $method->getName()));
-                    continue 2;
-                } else if ($annot instanceof PostSerialize) {
-                    $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->getName()));
-                    continue 2;
                 }
             }
         }

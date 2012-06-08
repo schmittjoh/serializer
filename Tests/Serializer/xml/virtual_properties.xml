@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <exist_field><![CDATA[value]]></exist_field>
+  <virtual_value><![CDATA[value]]></virtual_value>
+  <test><![CDATA[other-name]]></test>
+</result>
