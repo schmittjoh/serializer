@@ -456,11 +456,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
     }
 
-    public function testVirtualProperty() {
+    public function testVirtualProperty()
+    {
         $this->assertEquals($this->getContent('virtual_properties'), $this->serialize(new ObjectWithVirtualProperties()));
     }
 
-    public function testVirtualVersions() {
+    public function testVirtualVersions()
+    {
         $serializer = $this->getSerializer();
 
         $serializer->setVersion(2);
