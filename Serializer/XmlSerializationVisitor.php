@@ -114,7 +114,9 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         $keyAttributeName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute) ? $this->currentMetadata->xmlKeyAttribute : null;
 
         foreach ($data as $k => $v) {
-            $entryNode = $this->document->createElement($entryName);
+            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
+
+            $entryNode = $this->document->createElement($tagName);
             $this->currentNode->appendChild($entryNode);
             $this->setCurrentNode($entryNode);
 
@@ -283,4 +285,19 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
         return $this->document->createTextNode((string) $data);
     }
+
+    /**
+     * Checks the name is a valid xml element name
+     *
+     * @param string $name
+     *
+     * @return Boolean
+     */
+    private function isElementNameValid($name)
+    {
+        return $name &&
+            false === strpos($name, ' ') &&
+            preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+    }
+
 }

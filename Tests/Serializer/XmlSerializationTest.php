@@ -26,6 +26,7 @@ use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
 use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -100,6 +101,12 @@ class XmlSerializationTest extends BaseSerializationTest
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('map'));
         $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testArrayKeyValues()
+    {
+        $serializer = $this->getSerializer();
+        $this->assertEquals($this->getContent('array_key_values'), $serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
     protected function getContent($key)
