@@ -25,5 +25,10 @@
     "autoload": {
         "psr-0": { "JMS\\SerializerBundle": "" }
     },
-    "target-dir": "JMS/SerializerBundle"
+    "target-dir": "JMS/SerializerBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
