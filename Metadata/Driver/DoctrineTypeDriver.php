@@ -18,10 +18,10 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
-use Metadata\Driver\DriverInterface,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Metadata\Driver\DriverInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * This class decorates any other driver. If the inner driver does not provide a
@@ -52,51 +52,37 @@ class DoctrineTypeDriver implements DriverInterface
     );
 
     /**
-     * @var Metadata\Driver\DriverInterface
+     * @var \Metadata\Driver\DriverInterface
      */
-    protected $innerDriver;
+    protected $delegate;
     
     /**
-     * @var Doctrine\Common\Persistence\ObjectManager
+     * @var \Doctrine\Common\Persistence\ObjectManager
      */
     protected $em;
 
-    public function __construct(DriverInterface $innerDriver, ObjectManager $em)
+    public function __construct(DriverInterface $delegate, ObjectManager $em)
     {
-        $this->setInnerDriver($innerDriver);
-        $this->setEntityManager($em);
-    }
-    
-    protected function setInnerDriver(DriverInterface $innerDriver)
-    {
-        $this->innerDriver = $innerDriver;
-    }
+        $this->delegate = $delegate;
 
-    protected function setEntityManager($em)
-    {
         if (!$em instanceof EntityManager) {
             throw new InvalidArgumentException('Only the Doctrine ORM is supported at this time');
         }
-        
-        // Workaround: Doctrine's hasMetadataFor() only checks loaded metadata
-        // so we need to load them all, otherwise we'll raise several errors.
-        $em->getMetadataFactory()->getAllMetadata();        
-        
         $this->em = $em;
     }
-
+    
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        // Abort if the entity manager doesn't know this object
-        $classMetadata = $this->innerDriver->loadMetadataForClass($class);
-        $dbMetadataFactory = $this->em->getMetadataFactory();
-        if (!$dbMetadataFactory->hasMetadataFor($classMetadata->name)) {
+        // Abort if the given class is not a mapped entity
+        if ($this->em->getMetadataFactory()->isTransient($class->name)) {
             return $classMetadata;
         }
 
+        $classMetadata = $this->delegate->loadMetadataForClass($class);
+        $dbMapping = $this->em->getClassMetadata($class->name);
+
         // We base our scan on the internal driver's property list so that we
         // respect any internal white/blacklisting like in the AnnotationDriver
-        $dbMapping = $dbMetadataFactory->getMetadataFor($classMetadata->name);
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
@@ -104,16 +90,14 @@ class DoctrineTypeDriver implements DriverInterface
             }
 
             $propertyName = $propertyMetadata->name;
-            if (isset($dbMapping->fieldMappings[$propertyName])) {
-                $propertyMetadata->type = $this->normalizeFieldType(
-                    $dbMapping->fieldMappings[$propertyName]['type']
-                );
-            } elseif(isset($dbMapping->associationMappings[$propertyName])) {
-                $rel = $dbMapping->associationMappings[$propertyName];
-                if ($rel['type'] === ClassMetadataInfo::MANY_TO_ONE || $rel['type'] === ClassMetadataInfo::ONE_TO_ONE) {
-                    $propertyMetadata->type = $rel['targetEntity'];
+            if ($dbMapping->hasField($propertyName)) {
+                $propertyMetadata->type = $this->normalizeFieldType( $dbMapping->getTypeOfField($propertyName) );
+            } elseif($dbMapping->hasAssociation($propertyName)) {
+                $targetEntity = $dbMapping->getAssociationTargetClass($propertyName);
+                if ($dbMapping->isSingleValuedAssociation($propertyName)) {
+                    $propertyMetadata->type = $targetEntity;
                 } else {
-                    $propertyMetadata->type = 'ArrayCollection<'.$rel['targetEntity'].'>';
+                    $propertyMetadata->type = "ArrayCollection<{$targetEntity}>";
                 }
             }
         }
