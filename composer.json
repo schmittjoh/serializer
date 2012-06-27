@@ -20,7 +20,9 @@
         "symfony/yaml": "2.*",
         "symfony/form": "2.*",
         "symfony/validator": "2.*",
-        "twig/twig": "dev-master"
+        "twig/twig": "dev-master",
+        "doctrine/orm": "2.2.*"
+
     },
     "autoload": {
         "psr-0": { "JMS\\SerializerBundle": "" }
