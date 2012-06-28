@@ -17,10 +17,7 @@
 
 $loader = include_once dirname(__DIR__).'/vendor/autoload.php';
 
-Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function($class) use ($loader) {
-    $loader->loadClass($class);
-    return class_exists($class, false);
-});
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function($class) {
     if (0 === strpos(ltrim($class, '/'), 'JMS\SerializerBundle\Annotation')) {
