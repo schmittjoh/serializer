@@ -57,7 +57,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['article'] = '{"custom":"serialized"}';
             $outputs['orm_proxy'] = '{"foo":"foo","moo":"bar","camel_case":"proxy-boo"}';
             $outputs['custom_accessor'] = '{"comments":{"Foo":{"comments":[{"author":{"full_name":"Foo"},"text":"foo"},{"author":{"full_name":"Foo"},"text":"bar"}],"count":2}}}';
-            $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes"}';
+            $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes","read_only_property":42}';
             $outputs['accessor_order_child'] = '{"c":"c","d":"d","a":"a","b":"b"}';
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';

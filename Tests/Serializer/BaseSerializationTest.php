@@ -426,6 +426,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $object = $this->deserialize($this->getContent('mixed_access_types'), 'JMS\SerializerBundle\Tests\Fixtures\GetSetObject');
             $this->assertAttributeEquals(1, 'id', $object);
             $this->assertAttributeEquals('Johannes', 'name', $object);
+            $this->assertAttributeEquals(42, 'readOnlyProperty', $object);
         }
     }
 
