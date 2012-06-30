@@ -1,4 +1,4 @@
-JMSSerializerBundle
+JMSSerializerBundle [![Build Status](https://secure.travis-ci.org/schmittjoh/JMSSerializerBundle.png?branch=master)](http://travis-ci.org/schmittjoh/JMSSerializerBundle)
 ===================
 
 Documentation: 
