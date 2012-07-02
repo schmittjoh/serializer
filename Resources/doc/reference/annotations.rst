@@ -388,4 +388,4 @@ This allows you to use the keys of an array as xml tags.
 
 .. note ::
 
-   When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
+    When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
