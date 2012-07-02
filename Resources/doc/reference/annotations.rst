@@ -48,8 +48,8 @@ PHP's ``version_compare`` function.
 
 @Groups
 ~~~~~~~
-This annotation can be defined on a property to specifiy to if the property 
-should be serialized when only serializing specific groups (see 
+This annotation can be defined on a property to specifiy to if the property
+should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
 @AccessType
@@ -66,12 +66,12 @@ set the value via reflection, but you may change this to use a public method ins
     class User
     {
         private $name;
-        
+
         public function getName()
         {
             return $this->name;
         }
-        
+
         public function setName($name)
         {
             $this->name = trim($name);
@@ -90,16 +90,16 @@ be called to retrieve, or set the value of the given property:
     class User
     {
         private $id;
-        
+
         /** @Accessor(getter="getTrimmedName") */
         private $name;
-        
+
         // ...
         public function getTrimmedName()
         {
             return trim($this->name);
         }
-        
+
         public function setName($name)
         {
             $this->name = $name;
@@ -108,17 +108,17 @@ be called to retrieve, or set the value of the given property:
 
 @AccessorOrder
 ~~~~~~~~~~~~~~
-This annotation can be defined on a class to control the order of properties. By 
+This annotation can be defined on a class to control the order of properties. By
 default the order is undefined, but you may change it to either "alphabetical", or
 "custom".
 
 .. code-block :: php
-    
+
     <?php
 
-    /** 
-     * @AccessorOrder("alphabetical") 
-     * 
+    /**
+     * @AccessorOrder("alphabetical")
+     *
      * Resulting Property Order: id, name
      */
     class User
@@ -126,7 +126,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
         private $id;
         private $name;
     }
-    
+
     /**
      * @AccessorOrder("custom", custom = {"name", "id"})
      *
@@ -141,7 +141,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
 @Inline
 ~~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
-should be inlined. 
+should be inlined.
 
 **Note**: This only works for serialization, the serializer will not be able to deserialize
 objects with this annotation. Also, AccessorOrder will be using the name of the property
@@ -299,31 +299,31 @@ Resulting XML:
     <result id="1">
         <name><![CDATA[Johannes]]></name>
     </result>
-    
+
 @XmlValue
 ~~~~~~~~~
 This allows you to mark properties which should be set as the value of the
-current element. Note that this has the limitation that any additional 
+current element. Note that this has the limitation that any additional
 properties of that object must have the @XmlAttribute annotation.
 
 .. code-block :: php
 
     <?php
-    
+
     use JMS\SerializerBundle\Annotation\XmlAttribute;
     use JMS\SerializerBundle\Annotation\XmlValue;
     use JMS\SerializerBundle\Annotation\XmlRoot;
-    
+
     /** @XmlRoot("price") */
     class Price
     {
         /** @XmlAttribute */
         private $currency = 'EUR';
-        
+
         /** @XmlValue */
         private $amount = 1.23;
     }
-    
+
 Resulting XML:
 
 .. code-block :: xml
@@ -381,3 +381,11 @@ Resulting XML:
 @XmlMap
 ~~~~~~~
 Similar to @XmlList, but the keys of the array are meaningful.
+
+@XmlKeyValuePairs
+~~~~~~~~~~~~~~~~~
+This allows you to use the keys of an array as xml tags.
+
+.. note ::
+
+   When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.

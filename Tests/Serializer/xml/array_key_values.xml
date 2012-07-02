@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <array>
+    <key-one><![CDATA[foo]]></key-one>
+    <key-two>1</key-two>
+    <nested-array>
+      <bar><![CDATA[foo]]></bar>
+    </nested-array>
+    <without-keys>
+      <entry>1</entry>
+      <entry><![CDATA[test]]></entry>
+    </without-keys>
+    <mixed>
+      <entry><![CDATA[test]]></entry>
+      <foo><![CDATA[bar]]></foo>
+      <entry><![CDATA[bar]]></entry>
+    </mixed>
+    <entry><![CDATA[foo]]></entry>
+  </array>
+</result>

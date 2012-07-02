@@ -29,6 +29,7 @@ use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\XmlAttribute;
 use JMS\SerializerBundle\Annotation\XmlList;
 use JMS\SerializerBundle\Annotation\XmlValue;
+use JMS\SerializerBundle\Annotation\XmlKeyValuePairs;
 use JMS\SerializerBundle\Annotation\PostSerialize;
 use JMS\SerializerBundle\Annotation\PostDeserialize;
 use JMS\SerializerBundle\Annotation\PreSerialize;
@@ -149,6 +150,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
                         $propertyMetadata->xmlEntryName = $annot->entry;
                         $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
+                    } else if ($annot instanceof XmlKeyValuePairs) {
+                        $propertyMetadata->xmlKeyValuePairs = true;
                     } else if ($annot instanceof XmlAttribute) {
                         $propertyMetadata->xmlAttribute = true;
                     } else if ($annot instanceof XmlValue) {
