@@ -110,7 +110,7 @@ class YamlDriver extends AbstractFileDriver
                     }
                     if (isset($pConfig['groups'])) {
                         $pMetadata->groups = $pConfig['groups'];
-                    } 
+                    }
 
                     if (isset($pConfig['xml_list'])) {
                         $pMetadata->xmlCollection = true;
@@ -148,6 +148,10 @@ class YamlDriver extends AbstractFileDriver
 
                     if (isset($pConfig['xml_value'])) {
                         $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
+                    }
+
+                    if (isset($pConfig['xml_key_value_pairs'])) {
+                        $pMetadata->xmlKeyValuePairs = (Boolean) $pConfig['xml_key_value_pairs'];
                     }
 
                     $pMetadata->setAccessor(

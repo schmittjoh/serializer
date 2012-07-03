@@ -60,10 +60,10 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
-        
+
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
         $this->assertNotNull($m);
-        
+
         $p = new PropertyMetadata($m->name, 'price');
         $p->type = 'double';
         $p->xmlValue = true;
@@ -84,6 +84,14 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->getter = 'getVirtualValue';
 
         $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
+    }
+
+    public function testXmlKeyValuePairs()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs'));
+
+        $this->assertArrayHasKey('array', $m->propertyMetadata);
+        $this->assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
     }
 
     abstract protected function getDriver();
