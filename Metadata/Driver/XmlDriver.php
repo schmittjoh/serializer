@@ -53,7 +53,7 @@ class XmlDriver extends AbstractFileDriver
 
         $propertiesMetadata = array();
         $propertiesNodes = array();
-        
+
         if (null !== $accessorOrder = $elem->attributes()->{'accessor-order'}) {
             $metadata->setAccessorOrder((string) $accessorOrder, preg_split('/\s*,\s*/', (string) $elem->attributes()->{'custom-accessor-order'}));
         }
@@ -68,24 +68,24 @@ class XmlDriver extends AbstractFileDriver
             }
 
             $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string) $method->attributes()->method );
-            
+
             $propertiesMetadata[] = $virtualPropertyMetadata;
             $propertiesNodes[] = $method;
         }
-        
+
         if (!$excludeAll) {
-            
+
             foreach ($class->getProperties() as $property) {
                 if ($name !== $property->getDeclaringClass()->getName()) {
                     continue;
                 }
-                
+
                 $propertiesMetadata[] = new PropertyMetadata($name, $pName = $property->getName());
                 $pElems = $elem->xpath("./property[@name = '".$pName."']");
-                
+
                 $propertiesNodes[] = $pElems ? reset( $pElems ) : null;
             }
-            
+
             foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
 
                 $isExclude = $isExpose = false;
@@ -121,7 +121,7 @@ class XmlDriver extends AbstractFileDriver
 
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
-                    } 
+                    }
 
                     if (isset($pElem->{'xml-list'})) {
                         $pMetadata->xmlCollection = true;
@@ -159,6 +159,10 @@ class XmlDriver extends AbstractFileDriver
 
                     if (isset($pElem->attributes()->{'xml-value'})) {
                         $pMetadata->xmlValue = 'true' === (string) $pElem->attributes()->{'xml-value'};
+                    }
+
+                    if (isset($pElem->attributes()->{'xml-key-value-pairs'})) {
+                        $pMetadata->xmlKeyValuePairs = 'true' === (string) $pElem->attributes()->{'xml-key-value-pairs'};
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};
