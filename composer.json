@@ -16,11 +16,12 @@
         "jms/metadata": ">=1.1.0,<1.3-dev"
     },
     "require-dev": {
-        "symfony/framework-bundle": "2.*",
-        "symfony/yaml": "2.*",
-        "symfony/form": "2.*",
-        "symfony/validator": "2.*",
-        "twig/twig": "dev-master"
+        "symfony/framework-bundle": ">=2.0,<2.2-dev",
+        "symfony/yaml": ">=2.0,<2.2-dev",
+        "symfony/form": ">=2.0,<2.2-dev",
+        "symfony/validator": ">=2.0,<2.2-dev",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "doctrine/orm": ">=2.1,<2.4-dev"
     },
     "autoload": {
         "psr-0": { "JMS\\SerializerBundle": "" }

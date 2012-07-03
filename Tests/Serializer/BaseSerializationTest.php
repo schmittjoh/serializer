@@ -19,13 +19,9 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
-
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderChild;
-
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
-
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
-
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
