@@ -73,12 +73,12 @@ class DoctrineTypeDriver implements DriverInterface
     
     public function loadMetadataForClass(\ReflectionClass $class)
     {
+        $classMetadata = $this->delegate->loadMetadataForClass($class);
         // Abort if the given class is not a mapped entity
         if ($this->em->getMetadataFactory()->isTransient($class->name)) {
             return $classMetadata;
         }
 
-        $classMetadata = $this->delegate->loadMetadataForClass($class);
         $dbMapping = $this->em->getClassMetadata($class->name);
 
         // We base our scan on the internal driver's property list so that we
