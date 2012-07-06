@@ -81,7 +81,9 @@ class YamlDriver extends AbstractFileDriver
 
             foreach ($propertiesMetadata as $pName => $pMetadata) {
 
-                $isExclude = $isExpose = false;
+                $isExclude = false;
+                $isExpose = $pMetadata instanceof VirtualPropertyMetadata;
+
                 if (isset($config['properties'][$pName])) {
                     $pConfig = $config['properties'][$pName];
 

@@ -122,7 +122,8 @@ class AnnotationDriver implements DriverInterface
 
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
 
-                $isExclude = $isExpose = false;
+                $isExclude = false;
+                $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
                 $AccessType = $classAccessType;
                 $accessor = array(null, null);
 
