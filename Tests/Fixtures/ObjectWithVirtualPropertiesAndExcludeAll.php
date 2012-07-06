@@ -18,21 +18,15 @@
 
 namespace JMS\SerializerBundle\Tests\Fixtures;
 
-use JMS\SerializerBundle\Annotation\AccessorOrder;
-use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\VirtualProperty;
-use JMS\SerializerBundle\Annotation\SerializedName;
-use JMS\SerializerBundle\Annotation\Exclude;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 
 /**
- * @AccessorOrder("custom", custom = {"prop_name", "existField", "foo" })
  * @ExclusionPolicy("all")
  */
 class ObjectWithVirtualPropertiesAndExcludeAll
 {
     /**
-     * 
      * @VirtualProperty
      */
     public function getVirtualValue()
