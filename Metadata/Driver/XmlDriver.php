@@ -88,7 +88,8 @@ class XmlDriver extends AbstractFileDriver
 
             foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
 
-                $isExclude = $isExpose = false;
+                $isExclude = false;
+                $isExpose = $pMetadata instanceof VirtualPropertyMetadata;
 
                 $pElem = $propertiesNodes[$propertyKey];
                 if (!empty( $pElem )) {

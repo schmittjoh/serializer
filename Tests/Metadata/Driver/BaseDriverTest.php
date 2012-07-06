@@ -94,5 +94,18 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
     }
 
+    public function testVirtualPropertyWithExcludeAll()
+    {
+        $a = new \JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll();
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
+
+        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
+
+        $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
+        $p->getter = 'getVirtualValue';
+
+        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
+    }
+
     abstract protected function getDriver();
 }
