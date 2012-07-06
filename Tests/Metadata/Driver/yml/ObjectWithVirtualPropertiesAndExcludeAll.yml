@@ -1,0 +1,3 @@
+JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll:
+    virtual_properties:
+        getVirtualValue: ~
