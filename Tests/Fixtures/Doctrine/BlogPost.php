@@ -23,6 +23,7 @@ use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\XmlAttribute;
 use JMS\SerializerBundle\Annotation\XmlList;
 use JMS\SerializerBundle\Annotation\Groups;
+use JMS\SerializerBundle\Annotation\Type;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +44,11 @@ class BlogPost
      */
     private $title;
 
+    /** 
+     * @ORM\Column(type="some_custom_type")
+     */
+    protected $slug;
+
     /**
      * @ORM\Column(type="datetime")
      * @XmlAttribute
@@ -51,6 +57,11 @@ class BlogPost
 
     /**
      * @ORM\Column(type="boolean")
+     * @Type("integer")
+     * This boolean to integer conversion is one of the few changes between this
+     * and the standard BlogPost class. It's used to test the override behavior
+     * of the DoctrineTypeDriver so notice it, but please don't change it.
+     *
      * @SerializedName("is_published")
      * @Groups({"post"})
      * @XmlAttribute

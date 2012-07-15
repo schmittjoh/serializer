@@ -25,13 +25,69 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Annotations\AnnotationReader;
 
-class DoctrineDriverTest extends BaseDriverTest
+class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
+    public function getMetadata()
     {
-        $this->setFixtureNamespace("JMS\\SerializerBundle\\Tests\\Fixtures\\Doctrine");
+        $refClass = new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Doctrine\BlogPost');
+        $metadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+
+        return array(array($metadata));
     }
 
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata($metadata)
+    {
+        $this->assertEquals('DateTime', $metadata->propertyMetadata['createdAt']->type);
+    }
+
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testSingleValuedAssociationIsProperlyHinted($metadata)
+    {
+        $this->assertEquals('JMS\SerializerBundle\Tests\Fixtures\Doctrine\Author', $metadata->propertyMetadata['author']->type);
+    }
+
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testMultiValuedAssociationIsProperlyHinted($metadata)
+    {
+        $this->assertEquals('ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Doctrine\Comment>', $metadata->propertyMetadata['comments']->type);
+    }
+    
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testTypeGuessByDoctrineIsOverwrittenByDelegateDriver($metadata)
+    {
+        // This would be guessed as boolean but we've overriden it to integer
+        $this->assertEquals('integer', $metadata->propertyMetadata['published']->type);
+    }
+
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testUnknownDoctrineTypeDoesNotResultInAGuess($metadata)
+    {
+        $this->assertNull($metadata->propertyMetadata['slug']->type);
+    }
+
+    public function testNonDoctrineEntityClassIsNotModified()
+    {
+        // Note: Using regular BlogPost fixture here instead of Doctrine fixture
+        // because it has no Doctrine metadata.
+        $refClass = new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost');
+
+        $plainMetadata = $this->getAnnotationDriver()->loadMetadataForClass($refClass);
+        $doctrineMetadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+
+        $this->assertEquals($plainMetadata, $doctrineMetadata);        
+    }
+    
     protected function getEntityManager()
     {
         $config = new Configuration();
@@ -49,10 +105,15 @@ class DoctrineDriverTest extends BaseDriverTest
         return EntityManager::create($conn, $config);
     }
 
-    protected function getDriver()
+    public function getAnnotationDriver()
+    {
+        return new AnnotationDriver(new AnnotationReader());
+    }
+
+    protected function getDoctrineDriver()
     {
         return new DoctrineTypeDriver(
-            new AnnotationDriver(new AnnotationReader()),
+            $this->getAnnotationDriver(),
             $this->getEntityManager()
         );
     }

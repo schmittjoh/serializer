@@ -23,21 +23,9 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 {
-    protected $namespacePrefix = "JMS\\SerializerBundle\\Tests\\Fixtures";
-
-    protected function setFixtureNamespace($namespacePrefix)
-    {
-        $this->namespacePrefix = $namespacePrefix;
-    }
-    
-    public function getFixtureClassName($shortName)
-    {
-        return $this->namespacePrefix."\\".$shortName;
-    }
-
     public function testLoadBlogPostMetadata()
     {
-        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($this->getFixtureClassName('BlogPost')));
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
 
         $this->assertNotNull($m);
         $this->assertEquals('blog-post', $m->xmlRootName);
@@ -60,7 +48,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['published']);
 
         $p = new PropertyMetadata($m->name, 'comments');
-        $p->type = 'ArrayCollection<'.$this->getFixtureClassName('Comment').'>';
+        $p->type = 'ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Comment>';
         $p->xmlCollection = true;
         $p->xmlCollectionInline = true;
         $p->xmlEntryName = 'comment';
@@ -68,11 +56,11 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['comments']);
 
         $p = new PropertyMetadata($m->name, 'author');
-        $p->type = $this->getFixtureClassName('Author');
+        $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
         
-        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($this->getFixtureClassName('Price')));
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
         $this->assertNotNull($m);
         
         $p = new PropertyMetadata($m->name, 'price');
