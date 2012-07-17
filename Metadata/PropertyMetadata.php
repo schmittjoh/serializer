@@ -36,6 +36,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlKeyAttribute;
     public $xmlAttribute = false;
     public $xmlValue = false;
+    public $xmlKeyValuePairs = false;
     public $getter;
     public $setter;
     public $inline = false;
@@ -56,7 +57,7 @@ class PropertyMetadata extends BasePropertyMetadata
                 }
             }
 
-            if (empty($setter)) {
+            if (empty($setter) && !$this->readOnly) {
                 if ($class->hasMethod('set'.$this->name) && $class->getMethod('set'.$this->name)->isPublic()) {
                     $setter = 'set'.$this->name;
                 } else {
@@ -83,6 +84,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
+            $this->xmlKeyValuePairs,
             $this->getter,
             $this->setter,
             $this->inline,
@@ -105,6 +107,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
+            $this->xmlKeyValuePairs,
             $this->getter,
             $this->setter,
             $this->inline,

@@ -65,6 +65,18 @@ final class GraphNavigator
             return $visitor->visitDouble($data, $type);
         } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
             return $visitor->visitArray($data, $type);
+        } else if ('resource' === $type) {
+            $path = array();
+            foreach ($this->visiting as $obj) {
+                $path[] = get_class($obj);
+            }
+
+            $msg = 'Resources are not supported in serialized data.';
+            if ($path) {
+                $msg .= ' Path: '.implode(' -> ', $path);
+            }
+
+            throw new \RuntimeException($msg);
         } else {
             if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
                 if ($this->visiting->contains($data)) {

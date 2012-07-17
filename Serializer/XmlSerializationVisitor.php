@@ -114,7 +114,9 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         $keyAttributeName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute) ? $this->currentMetadata->xmlKeyAttribute : null;
 
         foreach ($data as $k => $v) {
-            $entryNode = $this->document->createElement($entryName);
+            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
+
+            $entryNode = $this->document->createElement($tagName);
             $this->currentNode->appendChild($entryNode);
             $this->setCurrentNode($entryNode);
 
@@ -167,7 +169,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
         if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
             || (!$metadata->xmlValue && $this->hasValue)) {
-            throw new \RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->reflection->class));
+            throw new \RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->class));
         }
 
         if ($metadata->xmlValue) {
@@ -203,6 +205,8 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
                 $this->currentNode->appendChild($element);
             }
         }
+
+        $this->hasValue = false;
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
@@ -281,4 +285,19 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
         return $this->document->createTextNode((string) $data);
     }
+
+    /**
+     * Checks the name is a valid xml element name
+     *
+     * @param string $name
+     *
+     * @return Boolean
+     */
+    private function isElementNameValid($name)
+    {
+        return $name &&
+            false === strpos($name, ' ') &&
+            preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+    }
+
 }

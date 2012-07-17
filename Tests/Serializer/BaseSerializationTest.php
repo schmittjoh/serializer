@@ -19,13 +19,9 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
-
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderChild;
-
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
-
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
-
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
@@ -58,6 +54,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -69,6 +66,7 @@ use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\Serializer;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -341,12 +339,27 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testNestedFormErrors()
     {
-        $dispather = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $formConfig = $this->getMock('Symfony\Component\Form\FormConfigInterface');
+        $formConfig->expects($this->any())
+            ->method('getEventDispatcher')
+            ->will($this->returnValue($dispatcher));
+        $formConfig->expects($this->any())
+            ->method('getModelTransformers')
+            ->will($this->returnValue(array()));
 
-        $form = new Form('foo', $dispather);
+        $fooConfig = clone $formConfig;
+        $fooConfig->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('foo'));
+        $form = new Form($fooConfig);
         $form->addError(new FormError('This is the form error'));
 
-        $child = new Form('bar', $dispather);
+        $barConfig = clone $formConfig;
+        $barConfig->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('bar'));
+        $child = new Form($barConfig);
         $child->addError(new FormError('Error of the child form'));
         $form->add($child);
 
@@ -409,6 +422,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $object = $this->deserialize($this->getContent('mixed_access_types'), 'JMS\SerializerBundle\Tests\Fixtures\GetSetObject');
             $this->assertAttributeEquals(1, 'id', $object);
             $this->assertAttributeEquals('Johannes', 'name', $object);
+            $this->assertAttributeEquals(42, 'readOnlyProperty', $object);
         }
     }
 
@@ -417,26 +431,45 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('accessor_order_child'), $this->serialize(new AccessorOrderChild()));
         $this->assertEquals($this->getContent('accessor_order_parent'), $this->serialize(new AccessorOrderParent()));
     }
-    
+
     public function testGroups()
     {
         $serializer =  $this->getSerializer();
 
         $groupsObject = new GroupsObject();
-        
+
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
 
         $serializer->setGroups(array("foo"));
         $this->assertEquals($this->getContent('groups_foo'), $serializer->serialize($groupsObject, $this->getFormat()));
-        
+
         $serializer->setGroups(array("foo", "bar"));
         $this->assertEquals($this->getContent('groups_foobar'), $serializer->serialize($groupsObject, $this->getFormat()));
-         
+
         $serializer->setGroups(null);
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
 
         $serializer->setGroups(array());
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
+    }
+
+    public function testVirtualProperty()
+    {
+        $this->assertEquals($this->getContent('virtual_properties'), $this->serialize(new ObjectWithVirtualProperties()));
+    }
+
+    public function testVirtualVersions()
+    {
+        $serializer = $this->getSerializer();
+
+        $serializer->setVersion(2);
+        $this->assertEquals($this->getContent('virtual_properties_low'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+
+        $serializer->setVersion(7);
+        $this->assertEquals($this->getContent('virtual_properties_all'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+
+        $serializer->setVersion(9);
+        $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
     abstract protected function getContent($key);

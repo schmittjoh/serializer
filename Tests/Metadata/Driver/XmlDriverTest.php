@@ -81,7 +81,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $this->assertEquals($p, $m->propertyMetadata['name']);
     }
-
+    
     protected function getDriver()
     {
         $append = '';

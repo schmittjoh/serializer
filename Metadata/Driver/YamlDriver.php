@@ -22,6 +22,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Metadata\MethodMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Symfony\Component\Yaml\Yaml;
 use Metadata\Driver\AbstractFileDriver;
@@ -44,6 +45,8 @@ class YamlDriver extends AbstractFileDriver
         $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
         $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
 
+        $propertiesMetadata = array();
+
         if (isset($config['accessor_order'])) {
             $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
         }
@@ -52,14 +55,35 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
+        if (array_key_exists('virtual_properties', $config) ) {
+
+            foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {
+
+                if ( !$class->hasMethod( $methodName ) ) {
+                    throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
+                }
+
+                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $methodName );
+
+                $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
+                $config['properties'][$methodName] = $propertySettings;
+            }
+        }
+
         if (!$excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($name !== $property->getDeclaringClass()->getName()) {
                     continue;
                 }
+                $pName = $property->getName();
+                $propertiesMetadata[$pName] = new PropertyMetadata($name, $pName);
+            }
 
-                $pMetadata = new PropertyMetadata($name, $pName = $property->getName());
-                $isExclude = $isExpose = false;
+            foreach ($propertiesMetadata as $pName => $pMetadata) {
+
+                $isExclude = false;
+                $isExpose = $pMetadata instanceof VirtualPropertyMetadata;
+
                 if (isset($config['properties'][$pName])) {
                     $pConfig = $config['properties'][$pName];
 
@@ -88,7 +112,7 @@ class YamlDriver extends AbstractFileDriver
                     }
                     if (isset($pConfig['groups'])) {
                         $pMetadata->groups = $pConfig['groups'];
-                    } 
+                    }
 
                     if (isset($pConfig['xml_list'])) {
                         $pMetadata->xmlCollection = true;
@@ -126,6 +150,10 @@ class YamlDriver extends AbstractFileDriver
 
                     if (isset($pConfig['xml_value'])) {
                         $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
+                    }
+
+                    if (isset($pConfig['xml_key_value_pairs'])) {
+                        $pMetadata->xmlKeyValuePairs = (Boolean) $pConfig['xml_key_value_pairs'];
                     }
 
                     $pMetadata->setAccessor(

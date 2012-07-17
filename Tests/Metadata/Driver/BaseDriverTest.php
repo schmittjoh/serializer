@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
+use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -59,14 +60,51 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
-        
+
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
         $this->assertNotNull($m);
-        
+
         $p = new PropertyMetadata($m->name, 'price');
         $p->type = 'double';
         $p->xmlValue = true;
         $this->assertEquals($p, $m->propertyMetadata['price']);
+    }
+
+    public function testVirtualProperty()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties'));
+
+        $this->assertArrayHasKey('existField', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
+
+        $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing' );
+
+        $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
+        $p->getter = 'getVirtualValue';
+
+        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
+    }
+
+    public function testXmlKeyValuePairs()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs'));
+
+        $this->assertArrayHasKey('array', $m->propertyMetadata);
+        $this->assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
+    }
+
+    public function testVirtualPropertyWithExcludeAll()
+    {
+        $a = new \JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll();
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
+
+        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
+
+        $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
+        $p->getter = 'getVirtualValue';
+
+        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
     }
 
     abstract protected function getDriver();

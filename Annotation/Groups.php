@@ -22,7 +22,7 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
 /**
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"PROPERTY","METHOD"})
  */
 final class Groups
 {

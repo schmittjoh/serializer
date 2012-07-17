@@ -3,7 +3,7 @@ XML Reference
 ::
 
     <!-- MyBundle\Resources\config\serializer\ClassName.xml -->
-    <?xml version="1.0" encoding="UTF-8">
+    <?xml version="1.0" encoding="UTF-8" ?>
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
             accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
@@ -22,6 +22,7 @@ XML Reference
                       inline="true"
                       read-only="true"
                       groups="foo,bar"
+                      xml-key-value-pairs="true"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->

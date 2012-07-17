@@ -4,6 +4,7 @@ namespace JMS\SerializerBundle\Tests\Fixtures;
 
 use JMS\SerializerBundle\Annotation\AccessType;
 use JMS\SerializerBundle\Annotation\Type;
+use JMS\SerializerBundle\Annotation\ReadOnly;
 
 /** @AccessType("public_method") */
 class GetSetObject
@@ -13,6 +14,11 @@ class GetSetObject
 
     /** @Type("string") */
     private $name = 'Foo';
+
+    /**
+     * @ReadOnly
+     */
+    private $readOnlyProperty = 42;
 
     public function getId()
     {
@@ -27,5 +33,10 @@ class GetSetObject
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function getReadOnlyProperty()
+    {
+        return $this->readOnlyProperty;
     }
 }

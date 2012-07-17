@@ -23,6 +23,7 @@ YAML Reference
                 xml_attribute: true
                 inline: true
                 read_only: true
+                xml_key_value_pairs: true
                 xml_list:
                     inline: true
                     entry_name: foo

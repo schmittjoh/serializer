@@ -22,6 +22,11 @@ use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\XmlValue;
+use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
+use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
+use JMS\SerializerBundle\Tests\Fixtures\Person;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -32,6 +37,30 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $obj = new InvalidUsageOfXmlValue();
         $this->serialize($obj);
+    }
+
+    public function testPropertyIsObjectWithAttributeAndValue()
+    {
+        $personCollection = new PersonLocation;
+        $person = new Person;
+        $person->name = 'Matthias Noback';
+        $person->age = 28;
+        $personCollection->person = $person;
+        $personCollection->location = 'The Netherlands';
+
+        $this->assertEquals($this->getContent('person_location'), $this->serialize($personCollection));
+    }
+
+    public function testPropertyIsCollectionOfObjectsWithAttributeAndValue()
+    {
+        $personCollection = new PersonCollection;
+        $person = new Person;
+        $person->name = 'Matthias Noback';
+        $person->age = 28;
+        $personCollection->persons->add($person);
+        $personCollection->location = 'The Netherlands';
+
+        $this->assertEquals($this->getContent('person_collection'), $this->serialize($personCollection));
     }
 
     public function testExternalEntitiesAreDisabledByDefault()
@@ -48,6 +77,36 @@ class XmlSerializationTest extends BaseSerializationTest
         chdir($currentDir);
 
         $this->assertEquals('', trim($entity->foo));
+    }
+
+    public function testVirtualAttributes() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('attributes'));
+        $this->assertEquals($this->getContent('virtual_attributes'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualValues() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('values'));
+        $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualXmlList() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('list'));
+        $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testVirtualXmlMap() {
+        $serializer = $this->getSerializer();
+        $serializer->setGroups(array('map'));
+        $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+    }
+
+    public function testArrayKeyValues()
+    {
+        $serializer = $this->getSerializer();
+        $this->assertEquals($this->getContent('array_key_values'), $serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
     protected function getContent($key)
