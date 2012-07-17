@@ -87,6 +87,42 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
     }
 
+    public function testJsonVisitorOptions()
+    {
+        $configs = array(
+            384 => array(array(
+                'visitors' => array(
+                    'json' => array(
+                        'options' => array('JSON_UNESCAPED_UNICODE', 'JSON_PRETTY_PRINT')
+                    )
+                )
+            )),
+            256 => array(array(
+                'visitors' => array(
+                    'json' => array(
+                        'options' => 'JSON_UNESCAPED_UNICODE'
+                    )
+                )
+            )),
+            128 => array(array(
+                'visitors' => array(
+                    'json' => array(
+                        'options' => 128
+                    )
+                )
+            )),
+            0 => array(array())
+        );
+
+        foreach ($configs as $jsonOptions => $config) {
+            $container = $this->getContainerForConfig($config);
+
+            $jsonSerializationVisitor = $container->get('jms_serializer.json_serialization_visitor');
+
+            $this->assertEquals($jsonOptions, $jsonSerializationVisitor->getOptions());
+        }
+    }
+
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
         if (null === $kernel) {

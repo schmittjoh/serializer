@@ -20,8 +20,20 @@ namespace JMS\SerializerBundle\Serializer;
 
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
+    private $options = 0;
+
     public function getResult()
     {
-        return json_encode($this->getRoot());
+        return json_encode($this->getRoot(), $this->getOptions());
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function setOptions($options)
+    {
+        $this->options = $options;
     }
 }

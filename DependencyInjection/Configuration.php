@@ -21,6 +21,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
 class Configuration implements ConfigurationInterface
 {
@@ -44,6 +45,7 @@ class Configuration implements ConfigurationInterface
 
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
+        $this->addVisitorsSection($root);
 
         return $tb;
     }
@@ -96,6 +98,63 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('path')->isRequired()->end()
                                 ->scalarNode('namespace_prefix')->defaultValue('')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addVisitorsSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('visitors')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->arrayNode('json')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('options')
+                                ->defaultValue(0)
+                                ->beforeNormalization()
+                                    ->ifArray()->then(function($v) {
+                                        $options = 0;
+                                        foreach ($v as $option) {
+                                            if (is_numeric($option)) {
+                                                $options |= (int) $option;
+                                            } elseif (defined($option)) {
+                                                $options |= constant($option);
+                                            } else {
+                                                throw new InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                                            }
+                                        }
+
+                                        return $options;
+                                    })
+                                ->end()
+                                ->beforeNormalization()
+                                    ->ifString()->then(function($v) {
+                                        if (is_numeric($v)) {
+                                            $value = (int) $v;
+                                        } elseif (defined($v)) {
+                                            $value = constant($v);
+                                        } else {
+                                            throw new InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                                        }
+
+                                        return $value;
+                                    })
+                                ->end()
+                                ->validate()
+                                    ->always(function($v) {
+                                        if (!is_int($v)) {
+                                            throw new InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
+                                        }
+
+                                        return $v;
+                                    })
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

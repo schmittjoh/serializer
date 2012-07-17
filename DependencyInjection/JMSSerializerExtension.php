@@ -153,6 +153,10 @@ class JMSSerializerExtension extends Extension
             ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories)
         ;
+
+        $container
+            ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
+        ;
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

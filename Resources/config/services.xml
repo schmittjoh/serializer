@@ -12,10 +12,10 @@
         <parameter key="jms_serializer.metadata.xml_driver.class">JMS\SerializerBundle\Metadata\Driver\XmlDriver</parameter>
         <parameter key="jms_serializer.metadata.php_driver.class">JMS\SerializerBundle\Metadata\Driver\PhpDriver</parameter>
         <parameter key="jms_serializer.metadata.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
-        
+
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_serializer.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
-    
+
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
         <parameter key="jms_serializer.cache_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CacheNamingStrategy</parameter>
@@ -27,13 +27,14 @@
         <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
 
         <parameter key="jms_serializer.twig_extension.class">JMS\SerializerBundle\Twig\SerializerExtension</parameter>
-        
+
         <parameter key="jms_serializer.json_serialization_visitor.class">JMS\SerializerBundle\Serializer\JsonSerializationVisitor</parameter>
+        <parameter key="jms_serializer.json_serialization_visitor.options" type="collection"></parameter>
         <parameter key="jms_serializer.json_deserialization_visitor.class">JMS\SerializerBundle\Serializer\JsonDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_serialization_visitor.class">JMS\SerializerBundle\Serializer\XmlSerializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
-        
+
         <parameter key="jms_serializer.object_based_custom_handler.class">JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler</parameter>
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
@@ -127,6 +128,9 @@
         <service id="jms_serializer.json_serialization_visitor" class="%jms_serializer.json_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="collection" /><!-- Custom Handlers -->
+            <call method="setOptions">
+                <argument>%jms_serializer.json_serialization_visitor.options%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="json" />
         </service>
         <service id="jms_serializer.json_deserialization_visitor" class="%jms_serializer.json_deserialization_visitor.class%" public="false">
@@ -151,7 +155,7 @@
             <argument type="collection" /><!-- Custom Handlers -->
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
-        
+
         <!-- Custom Handlers -->
         <service id="jms_serializer.object_based_custom_handler" class="%jms_serializer.object_based_custom_handler.class%" public="false">
             <argument type="service" id="jms_serializer.unserialize_object_constructor" />
