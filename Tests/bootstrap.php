@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -15,14 +16,28 @@
  * limitations under the License.
  */
 
-include_once dirname(__DIR__).'/vendor/autoload.php';
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
-Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function($class) {
-    if (0 === strpos(ltrim($class, '/'), 'JMS\SerializerBundle\Annotation')) {
-        if (file_exists($file = dirname(__DIR__).'/'.substr(str_replace('\\', '/', $class), strlen('JMS\SerializerBundle\\')).'.php')) {
-            require_once $file;
-        }
+call_user_func(function() {
+    if ( ! is_file($autoloadFile = __DIR__.'/../vendor/autoload.php')) {
+        throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
     }
 
-    return class_exists($class, false);
+    require_once $autoloadFile;
+
+    $bundleLoader = function($v) {
+        if (0 !== strpos($v, 'JMS\\SerializerBundle')) {
+            return false;
+        }
+
+        if ( ! is_file($file = __DIR__.'/../'.str_replace('\\', '/', substr($v, 21)).'.php')) {
+            return false;
+        }
+
+        require_once $file;
+
+        return true;
+    };
+    spl_autoload_register($bundleLoader);
+    AnnotationRegistry::registerLoader($bundleLoader);
 });
