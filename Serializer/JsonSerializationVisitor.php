@@ -24,7 +24,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function getResult()
     {
-        return json_encode($this->getRoot(), $this->getOptions());
+        return json_encode($this->getRoot(), $this->options);
     }
 
     public function getOptions()
@@ -34,6 +34,6 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function setOptions($options)
     {
-        $this->options = $options;
+        $this->options = (integer) $options;
     }
 }
