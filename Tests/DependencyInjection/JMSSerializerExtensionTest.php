@@ -87,40 +87,48 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
     }
 
-    public function testJsonVisitorOptions()
+    /**
+     * @dataProvider getJsonVisitorConfigs
+     */
+    public function testJsonVisitorOptions($expectedOptions, $config)
     {
-        $configs = array(
-            384 => array(array(
+        $container = $this->getContainerForConfig(array($config));
+        $this->assertSame($expectedOptions, $container->get('jms_serializer.json_serialization_visitor')->getOptions());
+    }
+
+    public function getJsonVisitorConfigs()
+    {
+        $configs = array();
+
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            $configs[] = array(JSON_UNESCAPE_UNICODE | JSON_PRETTY_PRINT, array(
                 'visitors' => array(
                     'json' => array(
                         'options' => array('JSON_UNESCAPED_UNICODE', 'JSON_PRETTY_PRINT')
                     )
                 )
-            )),
-            256 => array(array(
+            ));
+
+            $configs[] = array(JSON_UNESCAPE_UNICODE, array(
                 'visitors' => array(
                     'json' => array(
                         'options' => 'JSON_UNESCAPED_UNICODE'
                     )
                 )
-            )),
-            128 => array(array(
-                'visitors' => array(
-                    'json' => array(
-                        'options' => 128
-                    )
-                )
-            )),
-            0 => array(array())
-        );
-
-        foreach ($configs as $jsonOptions => $config) {
-            $container = $this->getContainerForConfig($config);
-
-            $jsonSerializationVisitor = $container->get('jms_serializer.json_serialization_visitor');
-
-            $this->assertEquals($jsonOptions, $jsonSerializationVisitor->getOptions());
+            ));
         }
+
+        $configs[] = array(128, array(
+            'visitors' => array(
+                'json' => array(
+                    'options' => 128
+                )
+            )
+        ));
+
+        $configs[] = array(0, array());
+
+        return $configs;
     }
 
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
