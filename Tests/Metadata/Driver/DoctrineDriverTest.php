@@ -87,6 +87,21 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($plainMetadata, $doctrineMetadata);        
     }
+
+    public function testManagerRegistrySupport()
+    {
+        // Create mock of manager registry with our standard entity manager
+        $mockRegistry = $this->getMockBuilder('\Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $mockRegistry->expects($this->any())
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->getEntityManager()));
+
+        // Run a basic test to make sure it all works
+        $refClass = new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Doctrine\BlogPost');
+        $metadata = $this->getDoctrineDriver($mockRegistry)->loadMetadataForClass($refClass);
+
+        $this->testTypelessPropertyIsGivenTypeFromDoctrineMetadata($metadata);
+    }
     
     protected function getEntityManager()
     {
@@ -110,11 +125,11 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         return new AnnotationDriver(new AnnotationReader());
     }
 
-    protected function getDoctrineDriver()
+    protected function getDoctrineDriver($entityManager = null)
     {
         return new DoctrineTypeDriver(
             $this->getAnnotationDriver(),
-            $this->getEntityManager()
+            $entityManager ?: $this->getEntityManager()
         );
     }
 }

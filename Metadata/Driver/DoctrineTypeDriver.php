@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
@@ -60,22 +61,25 @@ class DoctrineTypeDriver implements DriverInterface
      */
     protected $em;
 
-    public function __construct(DriverInterface $delegate, ObjectManager $em)
+    public function __construct(DriverInterface $delegate, $em)
     {
         $this->delegate = $delegate;
 
+        if (!$em instanceof ObjectManager && !$em instanceof ManagerRegistry) {
+            throw new \InvalidArgumentException('Must be given an instance of ObjectManager or ManagerRegistry');
+        }
         $this->em = $em;
     }
     
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
+
         // Abort if the given class is not a mapped entity
-        if ($this->em->getMetadataFactory()->isTransient($class->name)) {
+        $dbMapping = $this->getDoctrineMetadata($class->name);
+        if (!$dbMapping) {
             return $classMetadata;
         }
-
-        $dbMapping = $this->em->getClassMetadata($class->name);
 
         // We base our scan on the internal driver's property list so that we
         // respect any internal white/blacklisting like in the AnnotationDriver
@@ -99,6 +103,20 @@ class DoctrineTypeDriver implements DriverInterface
         }
             
         return $classMetadata;
+    }
+
+    protected function getDoctrineMetadata($className) {
+        // Find the appropriate entity manager
+        $em = null;
+        if ($this->em instanceof ManagerRegistry) {
+            $em = $this->em->getManagerForClass($className);
+        } elseif(!$this->em->getMetadataFactory()->isTransient($className)) {
+            $em = $this->em;
+        }
+
+        if ($em) {
+            return $em->getClassMetadata($className);
+        }
     }
 
     protected function normalizeFieldType($type)
