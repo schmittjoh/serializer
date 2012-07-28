@@ -20,7 +20,6 @@ namespace JMS\SerializerBundle\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
@@ -65,9 +64,6 @@ class DoctrineTypeDriver implements DriverInterface
     {
         $this->delegate = $delegate;
 
-        if (!$em instanceof EntityManager) {
-            throw new InvalidArgumentException('Only the Doctrine ORM is supported at this time');
-        }
         $this->em = $em;
     }
     
