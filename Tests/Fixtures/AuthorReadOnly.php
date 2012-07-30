@@ -22,6 +22,7 @@ use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\XmlRoot;
 use JMS\SerializerBundle\Annotation\ReadOnly;
+use JMS\SerializerBundle\Annotation\Accessor;
 
 /** @XmlRoot("author") */
 class AuthorReadOnly
@@ -35,6 +36,7 @@ class AuthorReadOnly
     /**
      * @Type("string")
      * @SerializedName("full_name")
+     * @Accessor("getName")
      */
     private $name;
 
