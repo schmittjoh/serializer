@@ -18,24 +18,13 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-use Symfony\Component\HttpKernel\KernelInterface;
-
-use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
-
-use Symfony\Component\DependencyInjection\Compiler\RepeatedPass;
-
-use Symfony\Component\DependencyInjection\Compiler\AnalyzeServiceReferencesPass;
-
-use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
-
-use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use JMS\SerializerBundle\JMSSerializerBundle;
-use Doctrine\Common\Annotations\Reader;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\VersionedObject;
+use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -101,7 +90,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $configs = array();
 
         if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $configs[] = array(JSON_UNESCAPE_UNICODE | JSON_PRETTY_PRINT, array(
+            $configs[] = array(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, array(
                 'visitors' => array(
                     'json' => array(
                         'options' => array('JSON_UNESCAPED_UNICODE', 'JSON_PRETTY_PRINT')
@@ -109,7 +98,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
                 )
             ));
 
-            $configs[] = array(JSON_UNESCAPE_UNICODE, array(
+            $configs[] = array(JSON_UNESCAPED_UNICODE, array(
                 'visitors' => array(
                     'json' => array(
                         'options' => 'JSON_UNESCAPED_UNICODE'
