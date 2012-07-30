@@ -18,55 +18,55 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Collections\ArrayCollection;
+use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
+use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
+use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
+use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
+use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
+use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
+use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
+use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
+use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
+use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
+use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\SerializerBundle\Serializer\Serializer;
+use JMS\SerializerBundle\Serializer\VisitorInterface;
+use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
+use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
+use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderChild;
-use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
-use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
+use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
+use JMS\SerializerBundle\Tests\Fixtures\Author;
+use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
+use JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly;
+use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
+use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
+use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
+use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
+use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
+use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
+use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
+use JMS\SerializerBundle\Tests\Fixtures\Log;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
-use Symfony\Component\Yaml\Inline;
-use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
-use Doctrine\Common\Collections\ArrayCollection;
+use JMS\SerializerBundle\Tests\Fixtures\Price;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
+use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
-use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
-use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
-use JMS\SerializerBundle\Serializer\VisitorInterface;
-use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
-use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
-use JMS\SerializerBundle\Tests\Fixtures\Log;
-use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
-use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
-use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
-use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
-use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
-use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
-use JMS\SerializerBundle\Tests\Fixtures\Comment;
-use JMS\SerializerBundle\Tests\Fixtures\Author;
-use JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly;
-use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
-use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
-use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
-use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
-use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
-use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
-use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
-use Metadata\MetadataFactory;
-use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
-use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
-use JMS\SerializerBundle\Tests\Fixtures\Price;
-use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
-use JMS\SerializerBundle\Serializer\Serializer;
-use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
+use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -272,15 +272,9 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $result = $this->serialize($inline);
         $this->assertEquals($this->getContent('inline'), $result);
 
-        //no deserialization support
-        /*if ($this->hasDeserializer()) {
-            $this->assertEquals($inline, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\InlineParent'));
-        }*/
+        // no deserialization support
     }
 
-    /**
-     * @group test
-     */
     public function testLog()
     {
         $this->assertEquals($this->getContent('log'), $this->serialize($log = new Log()));
@@ -340,25 +334,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testNestedFormErrors()
     {
         $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $formConfig = $this->getMock('Symfony\Component\Form\FormConfigInterface');
-        $formConfig->expects($this->any())
-            ->method('getEventDispatcher')
-            ->will($this->returnValue($dispatcher));
-        $formConfig->expects($this->any())
-            ->method('getModelTransformers')
-            ->will($this->returnValue(array()));
 
-        $fooConfig = clone $formConfig;
-        $fooConfig->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('foo'));
+        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
+        $formConfigBuilder->setCompound(true);
+        $formConfigBuilder->setDataMapper($this->getMock('Symfony\Component\Form\DataMapperInterface'));
+        $fooConfig = $formConfigBuilder->getFormConfig();
+
         $form = new Form($fooConfig);
         $form->addError(new FormError('This is the form error'));
 
-        $barConfig = clone $formConfig;
-        $barConfig->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('bar'));
+        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('bar', null, $dispatcher);
+        $barConfig = $formConfigBuilder->getFormConfig();
         $child = new Form($barConfig);
         $child->addError(new FormError('Error of the child form'));
         $form->add($child);
