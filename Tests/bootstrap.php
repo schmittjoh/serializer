@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
-
 call_user_func(function() {
     if ( ! is_file($autoloadFile = __DIR__.'/../vendor/autoload.php')) {
         throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
@@ -25,19 +23,5 @@ call_user_func(function() {
 
     require_once $autoloadFile;
 
-    $bundleLoader = function($v) {
-        if (0 !== strpos($v, 'JMS\\SerializerBundle')) {
-            return false;
-        }
-
-        if ( ! is_file($file = __DIR__.'/../'.str_replace('\\', '/', substr($v, 21)).'.php')) {
-            return false;
-        }
-
-        require_once $file;
-
-        return true;
-    };
-    spl_autoload_register($bundleLoader);
-    AnnotationRegistry::registerLoader($bundleLoader);
+    Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
 });
