@@ -18,10 +18,9 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
-use Metadata\Driver\DriverInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Persistence\ObjectManager;
+use Metadata\Driver\DriverInterface;
 
 /**
  * This class decorates any other driver. If the inner driver does not provide a
@@ -34,50 +33,50 @@ class DoctrineTypeDriver implements DriverInterface
      * @var array
      */
     protected $fieldMapping = array(
-        'string'    => 'string',
-        'text'      => 'string',
-        'blob'      => 'string',
-        
-        'integer'   => 'integer',        
-        'smallint'  => 'integer',
-        'bigint'    => 'integer',
-        
-        'datetime'  => 'DateTime',
-        'datetimetz'=> 'DateTime',
-        'time'      => 'DateTime',
+        'string'       => 'string',
+        'text'         => 'string',
+        'blob'         => 'string',
 
-        'float'     => 'float',
-        'boolean'   => 'boolean',
-        'array'     => 'array<string, string>',
+        'integer'      => 'integer',
+        'smallint'     => 'integer',
+        'bigint'       => 'integer',
+
+        'datetime'     => 'DateTime',
+        'datetimetz'   => 'DateTime',
+        'time'         => 'DateTime',
+
+        'float'        => 'float',
+        'decimal'      => 'float',
+
+        'boolean'      => 'boolean',
+
+        'array'        => 'array',
+        'json_array'   => 'array',
+        'simple_array' => 'array<string>',
     );
 
     /**
-     * @var \Metadata\Driver\DriverInterface
+     * @var DriverInterface
      */
     protected $delegate;
-    
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
-     */
-    protected $em;
 
-    public function __construct(DriverInterface $delegate, $em)
+    /**
+     * @var ManagerRegistry
+     */
+    protected $registry;
+
+    public function __construct(DriverInterface $delegate, ManagerRegistry $registry)
     {
         $this->delegate = $delegate;
-
-        if (!$em instanceof ObjectManager && !$em instanceof ManagerRegistry) {
-            throw new \InvalidArgumentException('Must be given an instance of ObjectManager or ManagerRegistry');
-        }
-        $this->em = $em;
+        $this->registry = $registry;
     }
-    
+
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
-        $dbMapping = $this->getDoctrineMetadata($class->name);
-        if (!$dbMapping) {
+        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class)) {
             return $classMetadata;
         }
 
@@ -90,36 +89,34 @@ class DoctrineTypeDriver implements DriverInterface
             }
 
             $propertyName = $propertyMetadata->name;
-            if ($dbMapping->hasField($propertyName)) {
-                $propertyMetadata->type = $this->normalizeFieldType( $dbMapping->getTypeOfField($propertyName) );
-            } elseif($dbMapping->hasAssociation($propertyName)) {
-                $targetEntity = $dbMapping->getAssociationTargetClass($propertyName);
-                if ($dbMapping->isSingleValuedAssociation($propertyName)) {
+            if ($doctrineMetadata->hasField($propertyName)) {
+                $propertyMetadata->type = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName));
+            } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
+                $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
+                if ($doctrineMetadata->isSingleValuedAssociation($propertyName)) {
                     $propertyMetadata->type = $targetEntity;
                 } else {
                     $propertyMetadata->type = "ArrayCollection<{$targetEntity}>";
                 }
             }
         }
-            
+
         return $classMetadata;
     }
 
-    protected function getDoctrineMetadata($className) {
-        // Find the appropriate entity manager
-        $em = null;
-        if ($this->em instanceof ManagerRegistry) {
-            $em = $this->em->getManagerForClass($className);
-        } elseif(!$this->em->getMetadataFactory()->isTransient($className)) {
-            $em = $this->em;
+    private function tryLoadingDoctrineMetadata($className) {
+        if (!$manager = $this->registry->getManagerForClass($className)) {
+            return null;
         }
 
-        if ($em) {
-            return $em->getClassMetadata($className);
+        if ($manager->getMetadataFactory()->isTransient($className)) {
+            return null;
         }
+
+        return $manager->getClassMetadata($className);
     }
 
-    protected function normalizeFieldType($type)
+    private function normalizeFieldType($type)
     {
         if (!isset($this->fieldMapping[$type])) {
             return;

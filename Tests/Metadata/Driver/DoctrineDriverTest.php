@@ -21,9 +21,10 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use JMS\SerializerBundle\Metadata\Driver\DoctrineTypeDriver;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 
 class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -58,7 +59,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Doctrine\Comment>', $metadata->propertyMetadata['comments']->type);
     }
-    
+
     /**
      * @dataProvider getMetadata
      */
@@ -85,36 +86,21 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $plainMetadata = $this->getAnnotationDriver()->loadMetadataForClass($refClass);
         $doctrineMetadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
 
-        $this->assertEquals($plainMetadata, $doctrineMetadata);        
+        $this->assertEquals($plainMetadata, $doctrineMetadata);
     }
 
-    public function testManagerRegistrySupport()
-    {
-        // Create mock of manager registry with our standard entity manager
-        $mockRegistry = $this->getMockBuilder('\Doctrine\Common\Persistence\ManagerRegistry')->getMock();
-        $mockRegistry->expects($this->any())
-            ->method('getManagerForClass')
-            ->will($this->returnValue($this->getEntityManager()));
-
-        // Run a basic test to make sure it all works
-        $refClass = new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Doctrine\BlogPost');
-        $metadata = $this->getDoctrineDriver($mockRegistry)->loadMetadataForClass($refClass);
-
-        $this->testTypelessPropertyIsGivenTypeFromDoctrineMetadata($metadata);
-    }
-    
     protected function getEntityManager()
     {
         $config = new Configuration();
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
         $config->setMetadataDriverImpl(
-            new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/Doctrine')
+            new DoctrineDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/Doctrine')
         );
 
         $conn = array(
-            'driver'    => 'pdo_sqlite',
-            'path'      => sys_get_temp_dir() . '/jms_test_database.sqlite',
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
         );
 
         return EntityManager::create($conn, $config);
@@ -125,11 +111,16 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         return new AnnotationDriver(new AnnotationReader());
     }
 
-    protected function getDoctrineDriver($entityManager = null)
+    protected function getDoctrineDriver()
     {
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $registry->expects($this->atLeastOnce())
+             ->method('getManagerForClass')
+             ->will($this->returnValue($this->getEntityManager()));
+
         return new DoctrineTypeDriver(
             $this->getAnnotationDriver(),
-            $entityManager ?: $this->getEntityManager()
+            $registry
         );
     }
 }
