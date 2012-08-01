@@ -107,5 +107,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
     }
 
+    public function testReadOnlyDefinedBeforeGetterAndSetter()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly'));
+
+        $this->assertNotNull($m);
+    }
+
     abstract protected function getDriver();
 }
