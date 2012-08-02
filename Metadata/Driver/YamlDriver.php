@@ -158,7 +158,8 @@ class YamlDriver extends AbstractFileDriver
 
                     $pMetadata->setAccessor(
                         isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
-                        isset($pConfig['accessor']) ? $pConfig['accessor'] : null
+                        isset($pConfig['accessor']['getter']) ? $pConfig['accessor']['getter'] : null,
+                        isset($pConfig['accessor']['setter']) ? $pConfig['accessor']['setter'] : null
                     );
 
                     if (isset($pConfig['inline'])) {
