@@ -180,6 +180,23 @@ class XmlSerializationVisitor extends AbstractVisitor
             return;
         }
 
+        if ($metadata->xmlAttributeMap) {
+            if (!is_array($v)) {
+                throw new RuntimeException(sprintf('Unsupported value type for XML attribute map. Expected array but got %s.', gettype($v)));
+            }
+
+            foreach ($v as $key => $value) {
+                $node = $this->navigator->accept($value, null, $this);
+                if (!$node instanceof \DOMCharacterData) {
+                    throw new RuntimeException(sprintf('Unsupported value for a XML attribute map value. Expected character data, but got %s.', json_encode($v)));
+                }
+
+                $this->currentNode->setAttribute($key, $node->nodeValue);
+            }
+
+            return;
+        }
+
         if ($addEnclosingElement = (!$metadata->xmlCollection || !$metadata->xmlCollectionInline) && !$metadata->inline) {
             $element = $this->document->createElement($this->namingStrategy->translateName($metadata));
             $this->setCurrentNode($element);

@@ -55,6 +55,7 @@ use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Annotation\XmlAttributeMap;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -176,6 +177,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->groups = $annot->groups;
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
+                    } else if ($annot instanceof XmlAttributeMap) {
+                        $propertyMetadata->xmlAttributeMap = true;
                     }
                 }
 

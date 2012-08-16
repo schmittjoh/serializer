@@ -80,6 +80,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -130,3 +131,4 @@ class LinkAddingSubscriber implements EventSubscriberInterface
         );
     }
 }
+

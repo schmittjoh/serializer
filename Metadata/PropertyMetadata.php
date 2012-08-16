@@ -43,6 +43,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $setter;
     public $inline = false;
     public $readOnly = false;
+    public $xmlAttributeMap = false;
 
     private static $typeParser;
 
@@ -102,6 +103,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->xmlAttributeMap,
             parent::serialize(),
         ));
     }
@@ -125,6 +127,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->xmlAttributeMap,
             $parentStr
         ) = unserialize($str);
 
