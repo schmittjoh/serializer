@@ -62,6 +62,15 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     {
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
+
+        $dom = new \DOMDocument();
+        $dom->loadXML($data);
+        foreach ($dom->childNodes as $child) {
+            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+                throw new \InvalidArgumentException('Document types are not allowed.');
+            }
+        }
+
         $doc = simplexml_load_string($data);
         libxml_use_internal_errors($previous);
         libxml_disable_entity_loader($previousEntityLoaderState);

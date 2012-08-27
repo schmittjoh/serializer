@@ -63,20 +63,28 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('person_collection'), $this->serialize($personCollection));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Document types are not allowed
+     */
     public function testExternalEntitiesAreDisabledByDefault()
     {
-        $currentDir = getcwd();
-        chdir(__DIR__);
-        $entity = $this->deserialize('<?xml version="1.0"?>
+        $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
             <result>
                 &foo;
-            </result>', 'JMS\SerializerBundle\Tests\Serializer\ExternalEntityTest');
-        chdir($currentDir);
+            </result>', 'stdClass');
+    }
 
-        $this->assertEquals('', trim($entity->foo));
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Document types are not allowed
+     */
+    public function testDocumentTypesAreNotAllowed()
+    {
+        $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 
     public function testVirtualAttributes() {
@@ -123,10 +131,3 @@ class XmlSerializationTest extends BaseSerializationTest
         return 'xml';
     }
 }
-
-class ExternalEntityTest
-{
-    /** @Type("string") @XmlValue */
-    public $foo;
-}
-
