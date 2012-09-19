@@ -277,6 +277,12 @@ Resulting XML:
         <name><![CDATA[Johannes]]></name>
     </user>
 
+.. note ::
+
+    @XmlRoot only applies to the root element, but is for example not taken into
+    account for collections. You can define the entry name for collections using
+    @XmlList, or @XmlMap.
+
 @XmlAttribute
 ~~~~~~~~~~~~~
 This allows you to mark properties which should be set as attributes,
