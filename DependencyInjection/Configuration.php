@@ -115,6 +115,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('json')
                         ->addDefaultsIfNotSet()
                         ->children()
+                            ->booleanNode('serialize_null')->defaultFalse()->end()
                             ->scalarNode('options')
                                 ->defaultValue(0)
                                 ->beforeNormalization()

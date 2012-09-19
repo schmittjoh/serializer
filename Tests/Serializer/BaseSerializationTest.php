@@ -60,6 +60,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
 use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
@@ -70,6 +71,24 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    public function testNullableArray()
+    {
+        if ($this->getFormat() !== 'json') {
+            $this->markTestSkipped('nullable currently only supported by JSON');
+        }
+        $arr = array('foo' => 'bar', 'baz' => null, null);
+        $this->assertEquals($this->getContent('nullable'), $this->getSerializer(true)->serialize($arr, $this->getFormat()));
+    }
+
+    public function testNullableObject()
+    {
+        if ($this->getFormat() !== 'json') {
+            $this->markTestSkipped('nullable currently only supported by JSON');
+        }
+        $obj = new ObjectWithNullProperty('foo', 'bar');
+        $this->assertEquals($this->getContent('simple_object_nullable'), $this->getSerializer(true)->serialize($obj, $this->getFormat()));
+    }
+
     public function testString()
     {
         $this->assertEquals($this->getContent('string'), $this->serialize('foo'));
@@ -476,7 +495,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return $this->getSerializer()->deserialize($content, $type, $this->getFormat());
     }
 
-    protected function getSerializer()
+    protected function getSerializer($serialize_null = false)
     {
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
@@ -490,6 +509,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlSerializationVisitor($namingStrategy, $customSerializationHandlers),
             'yml'  => new YamlSerializationVisitor($namingStrategy, $customSerializationHandlers),
         );
+
+        if ($serialize_null) {
+            $serializationVisitors['json']->setNullable(true);
+        }
+
         $deserializationVisitors = array(
             'json' => new JsonDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
