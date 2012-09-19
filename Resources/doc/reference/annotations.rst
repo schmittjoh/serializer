@@ -61,6 +61,7 @@ set the value via reflection, but you may change this to use a public method ins
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\AccessType;
 
     /** @AccessType("public_method") */
     class User
@@ -86,6 +87,7 @@ be called to retrieve, or set the value of the given property:
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\Accessor;
 
     class User
     {
@@ -115,6 +117,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\AccessorOrder;
 
     /**
      * @AccessorOrder("alphabetical")
