@@ -70,12 +70,21 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         return $v;
     }
 
+    public function visitNull($data, $type)
+    {
+        if ('' === $this->writer->content) {
+            $this->writer->writeln('null');
+        }
+
+        return 'null';
+    }
+
     public function visitArray($data, $type)
     {
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v) {
+            if (null === $v && (!is_string($k) || !$this->isNullable())) {
                 continue;
             }
 
@@ -150,7 +159,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
             : $data->{$metadata->getter}());
 
-        if (null === $v) {
+        if (null === $v && !$this->isNullable()) {
             return;
         }
 

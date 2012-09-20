@@ -159,6 +159,9 @@
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="collection" /><!-- Custom Handlers -->
+            <call method="setNullable">
+                <argument>%jms_serializer.yaml_serialization_visitor.serialize_null%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
 

@@ -157,6 +157,10 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container
             ->setParameter('jms_serializer.xml_serialization_visitor.serialize_null', $config['visitors']['xml']['serialize_null'])
         ;
+
+        $container
+            ->setParameter('jms_serializer.yaml_serialization_visitor.serialize_null', $config['visitors']['yaml']['serialize_null'])
+        ;
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
