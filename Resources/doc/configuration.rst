@@ -52,7 +52,16 @@ values:
                         path: "@MyFooBundle/Resources/config/serializer"
                     another-name:
                         namespace_prefix: "My\\BarBundle"
-                        path: "@MyBarBundle/Resources/config/serializer"    
+                        path: "@MyBarBundle/Resources/config/serializer"
+
+            visitors:
+                json:
+                    options: 0 # json_encode options bitmask
+                    serialize_null: false # whether to preserve keys with null values
+                xml:
+                    serialize_null: false
+                yaml:
+                    serialize_null: false
 
     .. code-block :: xml
     
