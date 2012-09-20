@@ -73,8 +73,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
     public function testNullableArray()
     {
-        if ($this->getFormat() !== 'json') {
-            $this->markTestSkipped('nullable currently only supported by JSON');
+        if (!in_array($this->getFormat(), array('json', 'xml'))) {
+            $this->markTestSkipped('nullable currently only supported by JSON and XML');
         }
         $arr = array('foo' => 'bar', 'baz' => null, null);
         $this->assertEquals($this->getContent('nullable'), $this->getSerializer(true)->serialize($arr, $this->getFormat()));
@@ -82,8 +82,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testNullableObject()
     {
-        if ($this->getFormat() !== 'json') {
-            $this->markTestSkipped('nullable currently only supported by JSON');
+        if (!in_array($this->getFormat(), array('json', 'xml'))) {
+            $this->markTestSkipped('nullable currently only supported by JSON and XML');
         }
         $obj = new ObjectWithNullProperty('foo', 'bar');
         $this->assertEquals($this->getContent('simple_object_nullable'), $this->getSerializer(true)->serialize($obj, $this->getFormat()));
@@ -512,6 +512,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         if ($serialize_null) {
             $serializationVisitors['json']->setNullable(true);
+            $serializationVisitors['xml']->setNullable(true);
         }
 
         $deserializationVisitors = array(

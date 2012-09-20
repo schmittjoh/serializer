@@ -25,6 +25,18 @@ namespace JMS\SerializerBundle\Serializer;
  */
 abstract class AbstractSerializationVisitor extends AbstractVisitor
 {
+    private $nullable = false;
+
+    public function setNullable($serializeNull)
+    {
+        $this->nullable = (bool) $serializeNull;
+    }
+
+    public function isNullable()
+    {
+        return (bool) $this->nullable;
+    }
+
     public function visitUsingCustomHandler($data, $type, &$visited)
     {
         foreach ($this->customHandlers as $handler) {

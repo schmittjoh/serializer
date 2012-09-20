@@ -160,6 +160,14 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->children()
+                    ->arrayNode('xml')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('serialize_null')->defaultFalse()->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
     }

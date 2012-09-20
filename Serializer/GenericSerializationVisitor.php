@@ -78,6 +78,11 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
+    public function visitNull($data, $type)
+    {
+        return null;
+    }
+
     public function visitArray($data, $type)
     {
         if (null === $this->root) {

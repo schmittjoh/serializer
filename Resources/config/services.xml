@@ -145,6 +145,9 @@
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="collection" /><!-- Custom Handlers -->
+            <call method="setNullable">
+                <argument>%jms_serializer.xml_serialization_visitor.serialize_null%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%" public="false">

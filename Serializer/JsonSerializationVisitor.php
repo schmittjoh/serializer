@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\Serializer;
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
     private $options = 0;
-    private $nullable = false;
 
     public function getResult()
     {
@@ -36,15 +35,5 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
     public function setOptions($options)
     {
         $this->options = (integer) $options;
-    }
-
-    public function setNullable($allowNull)
-    {
-        $this->nullable = (bool) $allowNull;
-    }
-
-    public function isNullable()
-    {
-        return (bool) $this->nullable;
     }
 }

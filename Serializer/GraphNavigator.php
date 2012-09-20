@@ -45,9 +45,6 @@ final class GraphNavigator
     {
         // determine type if not given
         if (null === $type) {
-            if (null === $data) {
-                return null;
-            }
 
             $type = gettype($data);
             if ('object' === $type) {
@@ -55,7 +52,9 @@ final class GraphNavigator
             }
         }
 
-        if ('string' === $type) {
+        if ('NULL' === $type) {
+            return $visitor->visitNull($data, $type);
+        } else if ('string' === $type) {
             return $visitor->visitString($data, $type);
         } else if ('integer' === $type) {
             return $visitor->visitInteger($data, $type);
