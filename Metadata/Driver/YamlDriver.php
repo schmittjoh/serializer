@@ -156,6 +156,11 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->xmlKeyValuePairs = (Boolean) $pConfig['xml_key_value_pairs'];
                     }
 
+                    //we need read_only before setter and getter set, because that method depends on flag being set
+                    if (isset($pConfig['read_only'])) {
+                          $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
+                    }
+
                     $pMetadata->setAccessor(
                         isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
                         isset($pConfig['accessor']) ? $pConfig['accessor'] : null
@@ -165,9 +170,6 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->inline = (Boolean) $pConfig['inline'];
                     }
 
-                    if (isset($pConfig['read_only'])) {
-                        $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
-                    }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

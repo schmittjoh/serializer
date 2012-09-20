@@ -159,14 +159,15 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlValue = true;
                     } else if ($annot instanceof AccessType) {
                         $AccessType = $annot->type;
+                    //we need ReadOnly before setter and getter set, because that method depends on flag being set
+                    } else if ($annot instanceof ReadOnly) {
+                       $propertyMetadata->readOnly = true;
                     } else if ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } else if ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
-                    } else if ($annot instanceof ReadOnly) {
-                        $propertyMetadata->readOnly = true;
                     }
                 }
 

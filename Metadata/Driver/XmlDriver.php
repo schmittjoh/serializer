@@ -166,6 +166,11 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->xmlKeyValuePairs = 'true' === (string) $pElem->attributes()->{'xml-key-value-pairs'};
                     }
 
+                    //we need read-only before setter and getter set, because that method depends on flag being set
+                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
+                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
+                    }
+
                     $getter = $pElem->attributes()->{'accessor-getter'};
                     $setter = $pElem->attributes()->{'accessor-setter'};
                     $pMetadata->setAccessor(
@@ -178,9 +183,6 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
 
-                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
-                    }
                 }
 
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
