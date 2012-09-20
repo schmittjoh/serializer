@@ -141,6 +141,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container->set('annotation_reader', new AnnotationReader());
         $container->set('service_container', $container);
         $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
+        $container->registerExtension($extension);
         $extension->load($configs, $container);
 
         $bundle->build($container);

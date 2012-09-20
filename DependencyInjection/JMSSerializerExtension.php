@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
-use JMS\SerializerBundle\SerializerBundleAwareInterface;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -30,25 +30,17 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class JMSSerializerExtension extends Extension
+class JMSSerializerExtension extends ConfigurableExtension
 {
-    private $kernel;
     private $factories = array();
-
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
 
     public function addHandlerFactory(HandlerFactoryInterface $factory)
     {
         $this->factories[$factory->getConfigKey()] = $factory;
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function loadInternal(array $config, ContainerBuilder $container)
     {
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
-
         $loader = new XmlFileLoader($container, new FileLocator(array(
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
@@ -161,14 +153,6 @@ class JMSSerializerExtension extends Extension
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        foreach ($this->kernel->getBundles() as $bundle) {
-            if (!method_exists($bundle, 'configureSerializerExtension')) {
-                continue;
-            }
-
-            $bundle->configureSerializerExtension($this);
-        }
-
-        return new Configuration($this->kernel->isDebug(), $this->factories);
+        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'), $this->factories);
     }
 }

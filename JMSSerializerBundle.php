@@ -32,30 +32,16 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSSerializerBundle extends Bundle
 {
-    private $kernel;
-
-    public function __construct(KernelInterface $kernel)
+    public function build(ContainerBuilder $builder)
     {
-        $this->kernel = $kernel;
-    }
+        $builder->addCompilerPass(new SetVisitorsPass());
 
-    public function getContainerExtension()
-    {
-        return new JMSSerializerExtension($this->kernel);
-    }
-
-    public function configureSerializerExtension(JMSSerializerExtension $ext)
-    {
+        $ext = $builder->getExtension('jms_serializer');
         $ext->addHandlerFactory(new ObjectBasedFactory());
         $ext->addHandlerFactory(new DoctrineProxyFactory());
         $ext->addHandlerFactory(new ArrayCollectionFactory());
         $ext->addHandlerFactory(new ConstraintViolationFactory());
         $ext->addHandlerFactory(new DateTimeFactory());
         $ext->addHandlerFactory(new FormErrorFactory());
-    }
-
-    public function build(ContainerBuilder $builder)
-    {
-        $builder->addCompilerPass(new SetVisitorsPass());
     }
 }
