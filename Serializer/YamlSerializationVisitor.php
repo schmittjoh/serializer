@@ -70,15 +70,6 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         return $v;
     }
 
-    public function visitNull($data, $type)
-    {
-        if ('' === $this->writer->content) {
-            $this->writer->writeln('null');
-        }
-
-        return 'null';
-    }
-
     public function visitArray($data, $type)
     {
         $isList = array_keys($data) === range(0, count($data) - 1);

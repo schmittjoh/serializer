@@ -52,9 +52,7 @@ final class GraphNavigator
             }
         }
 
-        if ('NULL' === $type) {
-            return $visitor->visitNull($data, $type);
-        } else if ('string' === $type) {
+        if ('string' === $type) {
             return $visitor->visitString($data, $type);
         } else if ('integer' === $type) {
             return $visitor->visitInteger($data, $type);
@@ -88,7 +86,7 @@ final class GraphNavigator
             $handled = false;
             $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                if (null !== $data && self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
 

@@ -25,6 +25,7 @@ use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
+use JMS\SerializerBundle\Serializer\Handler\NullHandler;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
@@ -535,6 +536,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
             new DoctrineProxyHandler(),
+            new NullHandler(),
         );
 
         return $handlers;

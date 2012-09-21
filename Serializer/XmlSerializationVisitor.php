@@ -104,21 +104,6 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitNull($data, $type)
-    {
-        $node = $this->document->createAttribute('xsi:nil');
-        $node->value = 'true';
-
-        if (null === $this->document) {
-            $this->document = $this->createDocument(null, null, true);
-            $this->currentNode->appendChild($this->document->appendChild($node));
-
-            return;
-        }
-
-        return $node;
-    }
-
     public function visitArray($data, $type)
     {
         if (null === $this->document) {
