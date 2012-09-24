@@ -490,7 +490,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return $this->getSerializer()->deserialize($content, $type, $this->getFormat());
     }
 
-    protected function getSerializer($serialize_null = false)
+    protected function getSerializer($serializeNull = false)
     {
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
@@ -505,10 +505,10 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'yml'  => new YamlSerializationVisitor($namingStrategy, $customSerializationHandlers),
         );
 
-        if ($serialize_null) {
-            $serializationVisitors['json']->setNullable(true);
-            $serializationVisitors['xml']->setNullable(true);
-            $serializationVisitors['yml']->setNullable(true);
+        if ($serializeNull) {
+            $serializationVisitors['json']->setSerializeNull(true);
+            $serializationVisitors['xml']->setSerializeNull(true);
+            $serializationVisitors['yml']->setSerializeNull(true);
         }
 
         $deserializationVisitors = array(

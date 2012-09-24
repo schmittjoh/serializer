@@ -28,12 +28,14 @@ class NullHandler implements SerializationHandlerInterface
             $attr->value = 'true';
             return $attr;
 
-        } else if ($visitor instanceof GenericSerializationVisitor) {
+        }
+        if ($visitor instanceof GenericSerializationVisitor) {
 
             $handled = true;
             return null;
 
-        } else if ($visitor instanceof YamlSerializationVisitor) {
+        }
+        if ($visitor instanceof YamlSerializationVisitor) {
 
             $handled = true;
             return Inline::dump(null);
