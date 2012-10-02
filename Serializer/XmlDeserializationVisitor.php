@@ -106,7 +106,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
         if ('true' === $data) {
             $data = true;
-        } else if ('false' === $data) {
+        } elseif ('false' === $data) {
             $data = false;
         } else {
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
@@ -214,7 +214,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $name = $this->namingStrategy->translateName($metadata);
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
         if ($metadata->xmlAttribute) {

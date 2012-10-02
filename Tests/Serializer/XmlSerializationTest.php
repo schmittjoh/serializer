@@ -28,8 +28,6 @@ use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use JMS\SerializerBundle\Serializer\Serializer;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
-use JMS\SerializerBundle\Annotation\Type;
-use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
 use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
@@ -119,25 +117,29 @@ class XmlSerializationTest extends BaseSerializationTest
             <foo></foo>', 'stdClass', 'xml');
     }
 
-    public function testVirtualAttributes() {
+    public function testVirtualAttributes()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('attributes'));
         $this->assertEquals($this->getContent('virtual_attributes'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualValues() {
+    public function testVirtualValues()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('values'));
         $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualXmlList() {
+    public function testVirtualXmlList()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('list'));
         $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualXmlMap() {
+    public function testVirtualXmlMap()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('map'));
         $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
@@ -149,6 +151,9 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('array_key_values'), $serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
+    /**
+     * @param string $key
+     */
     protected function getContent($key)
     {
         if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {

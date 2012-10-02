@@ -28,6 +28,9 @@ class Configuration implements ConfigurationInterface
     private $debug;
     private $factories;
 
+    /**
+     * @param boolean $debug
+     */
     public function __construct($debug = false, array $factories = array())
     {
         $this->debug = $debug;
