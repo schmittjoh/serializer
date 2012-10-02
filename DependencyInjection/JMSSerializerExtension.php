@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -148,6 +147,10 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $container
             ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
+        ;
+
+        $container
+            ->setParameter('jms_serializer.xml_deserialization_visitor.document_whitelist', $config['visitors']['xml']['document_whitelist'])
         ;
     }
 

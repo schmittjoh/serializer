@@ -18,7 +18,15 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use Metadata\MetadataFactory;
+use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
+use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
+use JMS\SerializerBundle\Serializer\Serializer;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\XmlValue;
@@ -85,6 +93,30 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDocumentTypesAreNotAllowed()
     {
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
+    }
+
+    public function testWhitelistedDocumentTypesAreAllowed()
+    {
+        $xmlVisitor = new XmlDeserializationVisitor(
+            new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy()),
+            $this->getDeserializationHandlers(),
+            new UnserializeObjectConstructor()
+        );
+        $xmlVisitor->setDocumentWhitelist(array(
+            '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
+
+        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), array(), array('xml' => $xmlVisitor));
+
+        $serializer->deserialize('<?xml version="1.0"?>
+            <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
+            <foo></foo>', 'stdClass', 'xml');
+
+        $serializer->deserialize('<?xml version="1.0"?>
+            <!DOCTYPE author [
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+            ]>
+            <foo></foo>', 'stdClass', 'xml');
     }
 
     public function testVirtualAttributes() {

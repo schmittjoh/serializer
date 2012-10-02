@@ -36,6 +36,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     private $result;
     private $navigator;
     private $disableExternalEntities;
+    private $documentWhitelist = array();
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
     {
@@ -67,7 +68,13 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                throw new \InvalidArgumentException('Document types are not allowed.');
+                $internalSubset = str_replace(PHP_EOL, '', $child->internalSubset);
+                if (!in_array($internalSubset, $this->documentWhitelist)) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                        $internalSubset
+                    ));
+                }
             }
         }
 
@@ -304,5 +311,15 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     public function getResult()
     {
         return $this->result;
+    }
+
+    public function setDocumentWhitelist(array $documentWhitelist)
+    {
+        $this->documentWhitelist = $documentWhitelist;
+    }
+
+    public function getDocumentWhitelist()
+    {
+        return $this->documentWhitelist;
     }
 }
