@@ -36,6 +36,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     private $result;
     private $navigator;
     private $disableExternalEntities;
+    private $doctypeWhitelist = array();
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
     {
@@ -67,7 +68,13 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                throw new \InvalidArgumentException('Document types are not allowed.');
+                $internalSubset = str_replace(PHP_EOL, '', $child->internalSubset);
+                if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                        $internalSubset
+                    ));
+                }
             }
         }
 
@@ -99,7 +106,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
         if ('true' === $data) {
             $data = true;
-        } else if ('false' === $data) {
+        } elseif ('false' === $data) {
             $data = false;
         } else {
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
@@ -207,7 +214,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $name = $this->namingStrategy->translateName($metadata);
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
         if ($metadata->xmlAttribute) {
@@ -304,5 +311,21 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param array<string> $doctypeWhitelist
+     */
+    public function setDoctypeWhitelist(array $doctypeWhitelist)
+    {
+        $this->doctypeWhitelist = $doctypeWhitelist;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getDoctypeWhitelist()
+    {
+        return $this->doctypeWhitelist;
     }
 }

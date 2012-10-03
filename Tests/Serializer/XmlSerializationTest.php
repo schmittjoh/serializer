@@ -18,10 +18,16 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use Metadata\MetadataFactory;
+use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
+use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
+use JMS\SerializerBundle\Serializer\Serializer;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
-use JMS\SerializerBundle\Annotation\Type;
-use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
 use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
@@ -65,7 +71,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Document types are not allowed
+     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
@@ -80,32 +86,60 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Document types are not allowed
+     * @expectedExceptionMessage The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testDocumentTypesAreNotAllowed()
     {
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 
-    public function testVirtualAttributes() {
+    public function testWhitelistedDocumentTypesAreAllowed()
+    {
+        $xmlVisitor = new XmlDeserializationVisitor(
+            new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy()),
+            $this->getDeserializationHandlers(),
+            new UnserializeObjectConstructor()
+        );
+        $xmlVisitor->setDoctypeWhitelist(array(
+            '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
+
+        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), array(), array('xml' => $xmlVisitor));
+
+        $serializer->deserialize('<?xml version="1.0"?>
+            <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
+            <foo></foo>', 'stdClass', 'xml');
+
+        $serializer->deserialize('<?xml version="1.0"?>
+            <!DOCTYPE author [
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+            ]>
+            <foo></foo>', 'stdClass', 'xml');
+    }
+
+    public function testVirtualAttributes()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('attributes'));
         $this->assertEquals($this->getContent('virtual_attributes'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualValues() {
+    public function testVirtualValues()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('values'));
         $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualXmlList() {
+    public function testVirtualXmlList()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('list'));
         $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
-    public function testVirtualXmlMap() {
+    public function testVirtualXmlMap()
+    {
         $serializer = $this->getSerializer();
         $serializer->setGroups(array('map'));
         $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
@@ -117,6 +151,9 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('array_key_values'), $serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
+    /**
+     * @param string $key
+     */
     protected function getContent($key)
     {
         if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {

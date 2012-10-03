@@ -120,6 +120,32 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         return $configs;
     }
 
+    /**
+     * @dataProvider getXmlVisitorWhitelists
+     */
+    public function testXmlVisitorOptions($expectedOptions, $config)
+    {
+        $container = $this->getContainerForConfig(array($config));
+        $this->assertSame($expectedOptions, $container->get('jms_serializer.xml_deserialization_visitor')->getDoctypeWhitelist());
+    }
+
+    public function getXmlVisitorWhitelists()
+    {
+        $configs = array();
+
+        $configs[] = array(array('good document', 'other good document'), array(
+            'visitors' => array(
+                'xml' => array(
+                    'doctype_whitelist' => array('good document', 'other good document'),
+                )
+            )
+        ));
+
+        $configs[] = array(array(), array());
+
+        return $configs;
+    }
+
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
         if (null === $kernel) {

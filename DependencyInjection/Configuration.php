@@ -28,6 +28,9 @@ class Configuration implements ConfigurationInterface
     private $debug;
     private $factories;
 
+    /**
+     * @param boolean $debug
+     */
     public function __construct($debug = false, array $factories = array())
     {
         $this->debug = $debug;
@@ -155,6 +158,15 @@ class Configuration implements ConfigurationInterface
                                         return $v;
                                     })
                                 ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('xml')
+                        ->fixXmlConfig('whitelisted-doctype', 'doctype_whitelist')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('doctype_whitelist')
+                                ->prototype('scalar')->end()
                             ->end()
                         ->end()
                     ->end()

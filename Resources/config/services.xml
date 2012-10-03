@@ -33,6 +33,7 @@
         <parameter key="jms_serializer.json_deserialization_visitor.class">JMS\SerializerBundle\Serializer\JsonDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_serialization_visitor.class">JMS\SerializerBundle\Serializer\XmlSerializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
+        <parameter key="jms_serializer.xml_deserialization_visitor.doctype_whitelist" type="collection"></parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
 
         <parameter key="jms_serializer.object_based_custom_handler.class">JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler</parameter>
@@ -148,6 +149,9 @@
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="collection" /><!-- Custom Handlers -->
             <argument type="service" id="jms_serializer.object_constructor" />
+            <call method="setDoctypeWhitelist">
+                <argument>%jms_serializer.xml_deserialization_visitor.doctype_whitelist%</argument>
+            </call>
             <tag name="jms_serializer.deserialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">

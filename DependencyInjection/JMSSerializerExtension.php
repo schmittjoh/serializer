@@ -19,16 +19,12 @@
 namespace JMS\SerializerBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -95,7 +91,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
-        } else if ('file' === $config['metadata']['cache']) {
+        } elseif ('file' === $config['metadata']['cache']) {
             $container
                 ->getDefinition('jms_serializer.metadata.cache.file_cache')
                 ->replaceArgument(0, $config['metadata']['file_cache']['dir'])
@@ -148,6 +144,10 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $container
             ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
+        ;
+
+        $container
+            ->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist'])
         ;
     }
 
