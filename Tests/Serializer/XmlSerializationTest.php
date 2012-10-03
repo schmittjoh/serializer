@@ -100,7 +100,7 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->getDeserializationHandlers(),
             new UnserializeObjectConstructor()
         );
-        $xmlVisitor->setDocumentWhitelist(array(
+        $xmlVisitor->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 

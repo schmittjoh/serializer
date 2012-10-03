@@ -56,7 +56,7 @@ values:
 
             visitors:
                 xml:
-                    document_whitelist:
+                    doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
 
     .. code-block :: xml
@@ -98,9 +98,8 @@ values:
 
             <visitors>
                 <xml>
-                    <document_whitelist>
-                        <!DOCTYPE authorized SYSTEM "http://some_url">
-                    </document_whitelist>
+                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
+                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
                 </xml>
             </visitors>
         </jms-serializer>
