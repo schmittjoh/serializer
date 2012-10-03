@@ -71,7 +71,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Document types are not allowed
+     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
@@ -86,7 +86,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Document types are not allowed
+     * @expectedExceptionMessage The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testDocumentTypesAreNotAllowed()
     {
