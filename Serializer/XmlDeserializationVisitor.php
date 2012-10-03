@@ -69,7 +69,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
                 $internalSubset = str_replace(PHP_EOL, '', $child->internalSubset);
-                if (!in_array($internalSubset, $this->documentWhitelist)) {
+                if (!in_array($internalSubset, $this->documentWhitelist, true)) {
                     throw new \InvalidArgumentException(sprintf(
                         'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
                         $internalSubset
