@@ -46,18 +46,11 @@ class Configuration implements ConfigurationInterface
                 ->children()
         ;
 
-        $this->addConstructorSection($root);
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
 
         return $tb;
-    }
-
-    private function addConstructorSection(NodeBuilder $builder)
-    {
-        $builder
-            ->scalarNode('constructor')->defaultNull()->end();
     }
 
     private function addSerializersSection(NodeBuilder $builder)
