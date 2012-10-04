@@ -46,11 +46,18 @@ class Configuration implements ConfigurationInterface
                 ->children()
         ;
 
+        $this->addConstructorSection($root);
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
 
         return $tb;
+    }
+
+    private function addConstructorSection(NodeBuilder $builder)
+    {
+        $builder
+            ->scalarNode('constructor')->defaultNull()->end();
     }
 
     private function addSerializersSection(NodeBuilder $builder)
@@ -76,7 +83,8 @@ class Configuration implements ConfigurationInterface
 
         foreach ($this->factories as $factory) {
             $factory->addConfiguration(
-                $handlerNode->arrayNode($factory->getConfigKey())->canBeUnset());
+                $handlerNode->arrayNode($factory->getConfigKey())->canBeUnset()
+            );
         }
     }
 

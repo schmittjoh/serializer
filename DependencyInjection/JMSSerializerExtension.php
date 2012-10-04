@@ -41,6 +41,11 @@ class JMSSerializerExtension extends ConfigurableExtension
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
+        // constructor
+        if ($config['constructor']) {
+            $container->setAlias('jms_serializer.object_constructor', $config['constructor']);
+        }
+
         // add factories as resource
         foreach ($this->factories as $factory) {
             $container->addObjectResource($factory);

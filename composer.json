@@ -19,6 +19,7 @@
         "symfony/framework-bundle": "<2.1-dev"
     },
     "require-dev": {
+        "symfony/doctrine-bridge": ">=2.1,<2.2-dev",
         "symfony/framework-bundle": ">=2.1,<2.2-dev",
         "symfony/yaml": ">=2.1,<2.3-dev",
         "symfony/form": ">=2.1,<2.3-dev",

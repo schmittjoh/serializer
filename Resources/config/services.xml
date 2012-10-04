@@ -20,6 +20,7 @@
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
         <parameter key="jms_serializer.cache_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CacheNamingStrategy</parameter>
 
+        <parameter key="jms_serializer.doctrine_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\DoctrineObjectConstructor</parameter>
         <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor</parameter>
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
@@ -104,6 +105,10 @@
         <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
 
         <!-- Object Constructors -->
+        <service id="jms_serializer.doctrine_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
+        </service>
         <service id="jms_serializer.unserialize_object_constructor" class="%jms_serializer.unserialize_object_constructor.class%" public="false" />
         <service id="jms_serializer.object_constructor" alias="jms_serializer.unserialize_object_constructor" public="false" />
 
