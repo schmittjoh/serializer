@@ -97,7 +97,7 @@ final class GraphNavigator
             }
 
             $metadata = $this->metadataFactory->getMetadataForClass($type);
-            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
+            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                 if (self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
@@ -122,7 +122,7 @@ final class GraphNavigator
 
             $visitor->startVisitingObject($metadata, $data, $type);
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                     continue;
                 }
 

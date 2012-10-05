@@ -22,6 +22,41 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->navigator->accept(STDIN, null, $this->visitor);
     }
 
+    public function testNavigatorPassesInstanceOnSerialization()
+    {
+        $object = new SerializableClass;
+        $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+
+        $exclusionStrategy = $this->getMock('JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface');
+        $exclusionStrategy->expects($this->once())
+            ->method('shouldSkipClass')
+            ->with($metadata, $object);
+        $exclusionStrategy->expects($this->once())
+            ->method('shouldSkipProperty')
+            ->with($metadata->propertyMetadata['foo'], $object);
+
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $exclusionStrategy);
+        $this->navigator->accept($object, null, $this->visitor);
+    }
+
+    public function testNavigatorPassesNullOnDeserialization()
+    {
+        $class = __NAMESPACE__.'\SerializableClass';
+        $metadata = $this->metadataFactory->getMetadataForClass($class);
+
+        $exclusionStrategy = $this->getMock('JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface');
+        $exclusionStrategy->expects($this->once())
+            ->method('shouldSkipClass')
+            ->with($metadata, null);
+
+        $exclusionStrategy->expects($this->once())
+            ->method('shouldSkipProperty')
+            ->with($metadata->propertyMetadata['foo'], null);
+
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, $exclusionStrategy);
+        $this->navigator->accept('random', $class, $this->visitor);
+    }
+
     protected function setUp()
     {
         $this->visitor = $this->getMock('JMS\SerializerBundle\Serializer\VisitorInterface');
@@ -29,4 +64,9 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory);
     }
+}
+
+class SerializableClass
+{
+    public $foo = 'bar';
 }
