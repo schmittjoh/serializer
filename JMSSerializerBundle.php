@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle;
 
+use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
 use JMS\SerializerBundle\DependencyInjection\Factory\FormErrorFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\DateTimeFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\ConstraintViolationFactory;
@@ -35,6 +36,7 @@ class JMSSerializerBundle extends Bundle
     public function build(ContainerBuilder $builder)
     {
         $builder->addCompilerPass(new SetVisitorsPass());
+        $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass());
 
         $ext = $builder->getExtension('jms_serializer');
         $ext->addHandlerFactory(new ObjectBasedFactory());
