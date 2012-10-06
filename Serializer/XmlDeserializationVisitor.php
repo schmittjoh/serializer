@@ -276,6 +276,15 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return false;
     }
 
+    public function visitUsingCustomHandler($data, $type, &$visited)
+    {
+        $rs =  parent::visitUsingCustomHandler($data, $type, $visited);
+        if (null === $this->result && $visited) {
+            $this->result = $rs;
+        }
+        return $rs;
+    }
+
     public function setCurrentObject($object)
     {
         $this->objectStack->push($this->currentObject);

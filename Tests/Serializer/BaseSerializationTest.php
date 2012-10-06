@@ -51,6 +51,7 @@ use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
+use JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject;
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
@@ -462,6 +463,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
+    public function testCustomHandler()
+    {
+        if ($this->hasDeserializer()) {
+            $serializer = $this->getSerializer();
+            $serialized = $serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
+            $object = $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject', $this->getFormat());
+            $this->assertEquals('customly_unserialized_value', $object->someProperty);
+        }
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -535,6 +546,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $objectConstructor = new UnserializeObjectConstructor();
 
         $handlers = array(
+            new CustomHandler(),
             new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new ArrayCollectionHandler(),
@@ -629,4 +641,20 @@ class Article implements SerializationHandlerInterface, DeserializationHandlerIn
 
         return $this;
     }
+}
+
+class CustomHandler implements DeserializationHandlerInterface
+{
+
+    public function deserialize(VisitorInterface $visitor, $data, $type, &$handled)
+    {
+        if ('JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject' !== $type) {
+            return;
+        }
+
+        $handled = true;
+
+        return new CustomDeserializationObject('customly_unserialized_value');
+    }
+
 }
