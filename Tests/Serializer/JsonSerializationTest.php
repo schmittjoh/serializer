@@ -18,6 +18,14 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface;
+
+use JMS\SerializerBundle\EventDispatcher\Event;
+
+use JMS\SerializerBundle\Tests\Fixtures\Author;
+
+use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 
@@ -77,8 +85,39 @@ class JsonSerializationTest extends BaseSerializationTest
         return $outputs[$key];
     }
 
+    public function testAddLinksToOutput()
+    {
+        $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
+    }
+
     protected function getFormat()
     {
         return 'json';
+    }
+}
+
+class LinkAddingSubscriber implements EventSubscriberInterface
+{
+    public function onPostSerialize(Event $event)
+    {
+        $author = $event->getObject();
+
+        $event->getVisitor()->addData('_links', array(
+            'details' => 'http://foo.bar/details/'.$author->getName(),
+            'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
+        ));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\SerializerBundle\Tests\Fixtures\Author'),
+        );
     }
 }

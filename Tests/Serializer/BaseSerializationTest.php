@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -70,6 +72,8 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    protected $dispatcher;
+
     public function testString()
     {
         $this->assertEquals($this->getContent('string'), $this->serialize('foo'));
@@ -476,6 +480,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return $this->getSerializer()->deserialize($content, $type, $this->getFormat());
     }
 
+    protected function setUp()
+    {
+        $this->dispatcher = new EventDispatcher();
+    }
+
     protected function getSerializer()
     {
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
@@ -495,7 +504,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
         );
 
-        return new Serializer($factory, $serializationVisitors, $deserializationVisitors);
+        return new Serializer($factory, $this->dispatcher, $serializationVisitors, $deserializationVisitors);
     }
 
     protected function getSerializationHandlers()

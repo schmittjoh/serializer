@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\EventDispatcher\Event;
+use JMS\SerializerBundle\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
@@ -29,14 +31,18 @@ final class GraphNavigator
     const DIRECTION_DESERIALIZATION = 2;
 
     private $direction;
-    private $exclusionStrategy;
+    private $dispatcher;
     private $metadataFactory;
+    private $format;
+    private $exclusionStrategy;
     private $visiting;
 
-    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, $format, ExclusionStrategyInterface $exclusionStrategy = null, EventDispatcherInterface $dispatcher = null)
     {
         $this->direction = $direction;
+        $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
+        $this->format = $format;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
     }
@@ -66,13 +72,8 @@ final class GraphNavigator
         } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
             return $visitor->visitArray($data, $type);
         } else if ('resource' === $type) {
-            $path = array();
-            foreach ($this->visiting as $obj) {
-                $path[] = get_class($obj);
-            }
-
             $msg = 'Resources are not supported in serialized data.';
-            if ($path) {
+            if (null !== $path = $this->getCurrentPath()) {
                 $msg .= ' Path: '.implode(' -> ', $path);
             }
 
@@ -110,12 +111,16 @@ final class GraphNavigator
                 foreach ($metadata->preSerializeMethods as $method) {
                     $method->invoke($data);
                 }
+
+                if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type, $this->format)) {
+                    $this->dispatcher->dispatch('serializer.pre_serialize', $type, $this->format, new Event($visitor, $data, $metadata));
+                }
             }
 
             // check if traversable
             if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
                 $rs = $visitor->visitTraversable($data, $type);
-                $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
+                $this->afterVisitingObject($visitor, $metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
 
                 return $rs;
             }
@@ -136,8 +141,14 @@ final class GraphNavigator
                 }
             }
 
+            if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                $this->afterVisitingObject($visitor, $metadata, $data);
+
+                return $visitor->endVisitingObject($metadata, $data, $type);
+            }
+
             $rs = $visitor->endVisitingObject($metadata, $data, $type);
-            $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
+            $this->afterVisitingObject($visitor, $metadata, $rs);
 
             return $rs;
         }
@@ -154,7 +165,21 @@ final class GraphNavigator
         $this->visiting->detach($object);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object)
+    private function getCurrentPath()
+    {
+        $path = array();
+        foreach ($this->visiting as $obj) {
+            $path[] = get_class($obj);
+        }
+
+        if ( ! $path) {
+            return null;
+        }
+
+        return implode(' -> ', $path);
+    }
+
+    private function afterVisitingObject(VisitorInterface $visitor, ClassMetadata $metadata, $object)
     {
         if (self::DIRECTION_SERIALIZATION === $this->direction) {
             $this->visiting->detach($object);
@@ -163,11 +188,19 @@ final class GraphNavigator
                 $method->invoke($object);
             }
 
+            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $this->format)) {
+                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $this->format, new Event($visitor, $object, $metadata));
+            }
+
             return;
         }
 
         foreach ($metadata->postDeserializeMethods as $method) {
             $method->invoke($object);
+        }
+
+        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
+            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new Event($visitor, $object, $metadata));
         }
     }
 }

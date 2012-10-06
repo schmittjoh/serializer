@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+
 use Metadata\MetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
@@ -104,7 +106,7 @@ class XmlSerializationTest extends BaseSerializationTest
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 
-        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), array(), array('xml' => $xmlVisitor));
+        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), new EventDispatcher(), array(), array('xml' => $xmlVisitor));
 
         $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">

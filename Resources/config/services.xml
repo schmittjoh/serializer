@@ -16,6 +16,8 @@
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_serializer.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
 
+        <parameter key="jms_serializer.event_dispatcher.class">JMS\SerializerBundle\EventDispatcher\LazyEventDispatcher</parameter>
+
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
         <parameter key="jms_serializer.cache_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CacheNamingStrategy</parameter>
@@ -46,6 +48,10 @@
     </parameters>
 
     <services>
+        <service id="jms_serializer.event_dispatcher" class="%jms_serializer.event_dispatcher.class%" public="false">
+            <argument type="service" id="service_container" />
+        </service>
+    
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
@@ -115,6 +121,7 @@
         <!-- Serializer -->
         <service id="jms_serializer.serializer" class="%jms_serializer.serializer.class%" public="false">
             <argument type="service" id="jms_serializer.metadata_factory" />
+            <argument type="service" id="jms_serializer.event_dispatcher" />
             <argument type="collection" /><!-- Serialization Visitors -->
             <argument type="collection" /><!-- Deserialization Visitors -->
             <call method="setContainer">
