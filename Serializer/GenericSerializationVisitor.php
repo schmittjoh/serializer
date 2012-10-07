@@ -146,6 +146,22 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         }
     }
 
+    /**
+     * Allows you to add additional data to the current object/root element.
+     *
+     * @param string $key
+     * @param scalar|array $value This value must either be a regular scalar, or an array.
+     *                            It must not contain any objects anymore.
+     */
+    public function addData($key, $value)
+    {
+        if (isset($this->data[$key])) {
+            throw new \InvalidArgumentException(sprintf('There is already data for "%s".', $key));
+        }
+
+        $this->data[$key] = $value;
+    }
+
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
     {
         // TODO

@@ -37,7 +37,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 
-    public function shouldSkipClass(ClassMetadata $metadata)
+    public function shouldSkipClass(ClassMetadata $metadata, $object = null)
     {
         return false;
     }
@@ -45,7 +45,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property)
+    public function shouldSkipProperty(PropertyMetadata $property, $object = null)
     {
         if (!$property->groups) {
             return true;

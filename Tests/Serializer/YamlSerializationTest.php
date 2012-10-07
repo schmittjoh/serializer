@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+use JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface;
+
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Exception\RuntimeException;

@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -50,6 +52,7 @@ use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
+use JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject;
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
@@ -72,6 +75,8 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    protected $dispatcher;
+
     public function testNullableArray()
     {
         $arr = array('foo' => 'bar', 'baz' => null, null);
@@ -472,6 +477,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
+    public function testCustomHandler()
+    {
+        if ($this->hasDeserializer()) {
+            $serializer = $this->getSerializer();
+            $serialized = $serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
+            $object = $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject', $this->getFormat());
+            $this->assertEquals('customly_unserialized_value', $object->someProperty);
+        }
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -488,6 +503,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     protected function deserialize($content, $type)
     {
         return $this->getSerializer()->deserialize($content, $type, $this->getFormat());
+    }
+
+    protected function setUp()
+    {
+        $this->dispatcher = new EventDispatcher();
     }
 
     protected function getSerializer($serializeNull = false)
@@ -516,7 +536,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
         );
 
-        return new Serializer($factory, $serializationVisitors, $deserializationVisitors);
+        return new Serializer($factory, $this->dispatcher, $serializationVisitors, $deserializationVisitors);
     }
 
     protected function getSerializationHandlers()
@@ -548,6 +568,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $objectConstructor = new UnserializeObjectConstructor();
 
         $handlers = array(
+            new CustomHandler(),
             new ObjectBasedCustomHandler($objectConstructor, $factory),
             new DateTimeHandler(),
             new ArrayCollectionHandler(),
@@ -642,4 +663,20 @@ class Article implements SerializationHandlerInterface, DeserializationHandlerIn
 
         return $this;
     }
+}
+
+class CustomHandler implements DeserializationHandlerInterface
+{
+
+    public function deserialize(VisitorInterface $visitor, $data, $type, &$handled)
+    {
+        if ('JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject' !== $type) {
+            return;
+        }
+
+        $handled = true;
+
+        return new CustomDeserializationObject('customly_unserialized_value');
+    }
+
 }
