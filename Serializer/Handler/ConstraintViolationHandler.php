@@ -18,65 +18,92 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
+use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
+use JMS\SerializerBundle\Serializer\GraphNavigator;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
-class ConstraintViolationHandler implements SerializationHandlerInterface
+class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
-    public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
+    public static function getSubscribingMethods()
     {
-        if ($data instanceof ConstraintViolationList) {
-            if ($visitor instanceof XmlSerializationVisitor) {
-                $handled = true;
+        $methods = array();
+        $formats = array('xml', 'json', 'yml');
+        $types = array('Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation');
 
-                if (null === $visitor->document) {
-                    $visitor->document = $visitor->createDocument();
-                }
-
-                foreach ($data as $violation) {
-                    $this->serialize($visitor, $violation, null, $visited);
-                }
-            }
-        } else if ($data instanceof ConstraintViolation) {
-            if ($visitor instanceof XmlSerializationVisitor) {
-                $handled = true;
-
-                if (null === $visitor->document) {
-                    $visitor->document = $visitor->createDocument(null, null, false);
-                    $visitor->document->appendChild($violationNode = $visitor->document->createElement('violation'));
-                    $visitor->setCurrentNode($violationNode);
-                } else {
-                    $visitor->getCurrentNode()->appendChild(
-                        $violationNode = $visitor->document->createElement('violation')
-                    );
-                }
-
-                $violationNode->setAttribute('property_path', $data->getPropertyPath());
-                $violationNode->appendChild($messageNode = $visitor->document->createElement('message'));
-
-                $messageNode->appendChild($visitor->document->createCDATASection($data->getMessage()));
-
-                return;
-            } else if ($visitor instanceof GenericSerializationVisitor) {
-                $handled = true;
-
-                $violation = array(
-                    'property_path' => $data->getPropertyPath(),
-                    'message' =>$data->getMessage()
+        foreach ($types as $type => $method) {
+            foreach ($formats as $format) {
+                $methods[] = array(
+                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'type' => $type,
+                    'format' => $format,
+                    'method' => $method.'To'.$format,
                 );
-
-                if (null === $visitor->getRoot()) {
-                    $visitor->setRoot($violation);
-                }
-
-                return $violation;
             }
         }
 
-        return;
+        return $methods;
+    }
+
+    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    {
+        if (null === $visitor->document) {
+            $visitor->document = $visitor->createDocument();
+        }
+
+        foreach ($list as $violation) {
+            $this->serializeViolationToXml($visitor, $violation);
+        }
+    }
+
+    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    {
+        return $visitor->visitArray(iterator_to_array($list), $type);
+    }
+
+    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    {
+        return $visitor->visitArray(iterator_to_array($list), $type);
+    }
+
+    public function serializeViolationToXml(VisitorInterface $visitor, ConstraintViolation $violation, array $type = null)
+    {
+        if (null === $visitor->document) {
+            $visitor->document = $visitor->createDocument(null, null, false);
+            $visitor->document->appendChild($violationNode = $visitor->document->createElement('violation'));
+            $visitor->setCurrentNode($violationNode);
+        } else {
+            $visitor->getCurrentNode()->appendChild(
+                $violationNode = $visitor->document->createElement('violation')
+            );
+        }
+
+        $violationNode->setAttribute('property_path', $violation->getPropertyPath());
+        $violationNode->appendChild($messageNode = $visitor->document->createElement('message'));
+
+        $messageNode->appendChild($visitor->document->createCDATASection($violation->getMessage()));
+    }
+
+    public function serializeViolationToJson(VisitorInterface $visitor, ConstraintViolation $violation, array $type = null)
+    {
+        $data = array(
+            'property_path' => $violation->getPropertyPath(),
+            'message' => $violation->getMessage()
+        );
+
+        if (null === $visitor->getRoot()) {
+            $visitor->setRoot($data);
+        }
+
+        return $data;
+    }
+
+    public function serializeViolationToYml(VisitorInterface $visitor, ConstraintViolation $violaton, array $type = null)
+    {
+        return $this->serializeViolationToJson($visitor, $violation);
     }
 }

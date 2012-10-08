@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle;
 
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+
+use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
 use JMS\SerializerBundle\DependencyInjection\Factory\FormErrorFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\DateTimeFactory;
@@ -27,7 +31,6 @@ use JMS\SerializerBundle\DependencyInjection\Factory\ObjectBasedFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\DoctrineProxyFactory;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use Symfony\Component\HttpKernel\KernelInterface;
-use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -36,14 +39,7 @@ class JMSSerializerBundle extends Bundle
     public function build(ContainerBuilder $builder)
     {
         $builder->addCompilerPass(new SetVisitorsPass());
-        $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass());
-
-        $ext = $builder->getExtension('jms_serializer');
-        $ext->addHandlerFactory(new ObjectBasedFactory());
-        $ext->addHandlerFactory(new DoctrineProxyFactory());
-        $ext->addHandlerFactory(new ArrayCollectionFactory());
-        $ext->addHandlerFactory(new ConstraintViolationFactory());
-        $ext->addHandlerFactory(new DateTimeFactory());
-        $ext->addHandlerFactory(new FormErrorFactory());
+        $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_BEFORE_REMOVING);
+        $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_BEFORE_REMOVING);
     }
 }

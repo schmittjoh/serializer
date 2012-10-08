@@ -18,6 +18,12 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
+use JMS\SerializerBundle\Annotation\HandlerCallback;
+
+use JMS\SerializerBundle\Serializer\TypeParser;
+
 use JMS\SerializerBundle\Annotation\AccessorOrder;
 
 use JMS\SerializerBundle\Annotation\Accessor;
@@ -107,6 +113,9 @@ class AnnotationDriver implements DriverInterface
                     $propertiesMetadata[] = $virtualPropertyMetadata;
                     $propertiesAnnotations[] = $methodAnnotations;
                     continue 2;
+                } else if ($annot instanceof HandlerCallback) {
+                    $classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
+                    continue 2;
                 }
             }
         }
@@ -141,7 +150,7 @@ class AnnotationDriver implements DriverInterface
                     } else if ($annot instanceof Exclude) {
                         $isExclude = true;
                     } else if ($annot instanceof Type) {
-                        $propertyMetadata->type = $annot->name;
+                        $propertyMetadata->setType($annot->name);
                     } else if ($annot instanceof XmlList) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;

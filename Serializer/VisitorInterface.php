@@ -24,17 +24,14 @@ use JMS\SerializerBundle\Metadata\PropertyMetadata;
 interface VisitorInterface
 {
     function prepare($data);
-    function visitString($data, $type);
-    function visitBoolean($data, $type);
-    function visitDouble($data, $type);
-    function visitInteger($data, $type);
-    function visitUsingCustomHandler($data, $type, &$visited);
-    function visitArray($data, $type);
-    function visitTraversable($data, $type);
-    function startVisitingObject(ClassMetadata $metadata, $data, $type);
+    function visitString($data, array $type);
+    function visitBoolean($data, array $type);
+    function visitDouble($data, array $type);
+    function visitInteger($data, array $type);
+    function visitArray($data, array $type);
+    function startVisitingObject(ClassMetadata $metadata, $data, array $type);
     function visitProperty(PropertyMetadata $metadata, $data);
-    function endVisitingObject(ClassMetadata $metadata, $data, $type);
-    function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object);
+    function endVisitingObject(ClassMetadata $metadata, $data, array $type);
     function setNavigator(GraphNavigator $navigator);
     function getNavigator();
     function getResult();

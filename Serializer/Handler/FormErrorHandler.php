@@ -18,8 +18,10 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
+use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
+use JMS\SerializerBundle\Serializer\GraphNavigator;
 use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
-
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -27,90 +29,122 @@ use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
-class FormErrorHandler implements SerializationHandlerInterface
+class FormErrorHandler implements SubscribingHandlerInterface
 {
     private $translator;
+
+    public static function getSubscribingMethods()
+    {
+        $methods = array();
+        foreach (array('xml', 'json', 'yml') as $format) {
+            $methods[] = array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'type' => 'Symfony\Component\Form\Form',
+                'format' => $format,
+            );
+            $methods[] = array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'type' => 'Symfony\Component\Form\FormError',
+                'format' => $format,
+            );
+        }
+
+        return $methods;
+    }
 
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
+    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type)
     {
-        if ($data instanceof Form) {
-            if ($visitor instanceof XmlSerializationVisitor) {
-                $handled = true;
-
-                if (null === $visitor->document) {
-                    $visitor->document = $visitor->createDocument(null, null, false);
-                    $visitor->document->appendChild($formNode = $visitor->document->createElement('form'));
-                    $visitor->setCurrentNode($formNode);
-                } else {
-                    $visitor->getCurrentNode()->appendChild(
-                        $formNode = $visitor->document->createElement('form')
-                    );
-                }
-
-                $formNode->setAttribute('name', $data->getName());
-
-                $formNode->appendChild($errorsNode = $visitor->document->createElement('errors'));
-                foreach ($data->getErrors() as $error) {
-                    $errorNode = $visitor->document->createElement('entry');
-                    $errorNode->appendChild($this->serialize($visitor, $error, null, $visited));
-                    $errorsNode->appendChild($errorNode);
-                }
-
-                foreach ($data->getChildren() as $child) {
-                    if (null !== $node = $this->serialize($visitor, $child, null, $visited)) {
-                        $formNode->appendChild($node);
-                    }
-                }
-
-                return;
-            } else if ($visitor instanceof GenericSerializationVisitor) {
-                $handled = true;
-                $isRoot = null === $visitor->getRoot();
-
-                $form = $errors = array();
-                foreach ($data->getErrors() as $error) {
-                    $errors[] = $this->serialize($visitor, $error, null, $visited);
-                }
-
-                if ($errors) {
-                    $form['errors'] = $errors;
-                }
-
-                $children = array();
-                foreach ($data->getChildren() as $child) {
-                    $children[$child->getName()] = $this->serialize($visitor, $child, null, $visited);
-                }
-
-                if ($children) {
-                    $form['children'] = $children;
-                }
-
-                if ($isRoot) {
-                    $visitor->setRoot($form);
-                }
-
-                return $form;
-            }
-        } else if ($data instanceof FormError) {
-            $handled = true;
-            $message = $this->translator->trans($data->getMessageTemplate(), $data->getMessageParameters(), 'validators');
-
-            if ($visitor instanceof XmlSerializationVisitor) {
-                if (null === $visitor->document) {
-                    $visitor->document = $visitor->createDocument(null, null, true);
-                }
-
-                return $visitor->document->createCDATASection($message);
-            }
-
-            return $message;
+        if (null === $visitor->document) {
+            $visitor->document = $visitor->createDocument(null, null, false);
+            $visitor->document->appendChild($formNode = $visitor->document->createElement('form'));
+            $visitor->setCurrentNode($formNode);
+        } else {
+            $visitor->getCurrentNode()->appendChild(
+                $formNode = $visitor->document->createElement('form')
+            );
         }
 
-        return null;
+        $formNode->setAttribute('name', $form->getName());
+
+        $formNode->appendChild($errorsNode = $visitor->document->createElement('errors'));
+        foreach ($form->getErrors() as $error) {
+            $errorNode = $visitor->document->createElement('entry');
+            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, array()));
+            $errorsNode->appendChild($errorNode);
+        }
+
+        foreach ($form->getChildren() as $child) {
+            if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
+                $formNode->appendChild($node);
+            }
+        }
+    }
+
+    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type)
+    {
+        return $this->convertFormToArray($visitor, $form);
+    }
+
+    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, array $type)
+    {
+        return $this->convertFormToArray($visitor, $form);
+    }
+
+    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type)
+    {
+        if (null === $visitor->document) {
+            $visitor->document = $visitor->createDocument(null, null, true);
+        }
+
+        return $visitor->document->createCDATASection($this->getErrorMessage($formError));
+    }
+
+    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type)
+    {
+        return $this->getErrorMessage($formError);
+    }
+
+    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, array $type)
+    {
+        return $this->getErrorMessage($formError);
+    }
+
+    private function getErrorMessage(FormError $error)
+    {
+        return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
+    }
+
+    private function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
+    {
+        $isRoot = null === $visitor->getRoot();
+
+        $form = $errors = array();
+        foreach ($data->getErrors() as $error) {
+            $errors[] = $this->getErrorMessage($error);
+        }
+
+        if ($errors) {
+            $form['errors'] = $errors;
+        }
+
+        $children = array();
+        foreach ($data->getChildren() as $child) {
+            $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
+        }
+
+        if ($children) {
+            $form['children'] = $children;
+        }
+
+        if ($isRoot) {
+            $visitor->setRoot($form);
+        }
+
+        return $form;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -28,11 +28,11 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
 
         foreach ($container->findTaggedServiceIds('jms_serializer.event_subscriber') as $id => $tags) {
             $subscriberClass = $container->getDefinition($id)->getClass();
-            if ( ! is_subclass_of($subscriberClass, 'JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface')) {
+            if ( ! is_subclass_of($subscriberClass, 'JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface')) {
                 throw new \RuntimeException(sprintf('The service "%s" (class: %s) does not implement the EventSubscriberInterface.', $id, $subscriberClass));
             }
 
-            foreach (call_user_func($subscriberClass, 'getSubscribedEvents') as $eventData) {
+            foreach (call_user_func(array($subscriberClass, 'getSubscribedEvents')) as $eventData) {
                 if ( ! isset($eventData['event'])) {
                     throw new \RuntimeException(sprintf('The service "%s" (class: %s) must return an event for each subscribed event.', $id, $subscriberClass));
                 }

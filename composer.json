@@ -24,6 +24,7 @@
         "symfony/yaml": ">=2.1,<2.3-dev",
         "symfony/form": ">=2.1,<2.3-dev",
         "symfony/validator": ">=2.1,<2.3-dev",
+        "symfony/translation": ">=2.1,<2.3-dev",
         "twig/twig": ">=1.8,<2.0-dev",
         "doctrine/orm": ">=2.1,<2.4-dev"
     },

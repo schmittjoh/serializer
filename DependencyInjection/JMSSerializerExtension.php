@@ -28,23 +28,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
-    private $factories = array();
-
-    public function addHandlerFactory(HandlerFactoryInterface $factory)
-    {
-        $this->factories[$factory->getConfigKey()] = $factory;
-    }
-
     public function loadInternal(array $config, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(array(
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
-
-        // add factories as resource
-        foreach ($this->factories as $factory) {
-            $container->addObjectResource($factory);
-        }
 
         // property naming
         $container
@@ -58,34 +46,6 @@ class JMSSerializerExtension extends ConfigurableExtension
                 ->addArgument(new Reference((string) $container->getAlias('jms_serializer.naming_strategy')))
             ;
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
-        }
-
-        // gather handlers
-        $serializationHandlers = $deserializationHandlers = array();
-        foreach ($config['handlers'] as $k => $handlerConfig) {
-            $id = $this->factories[$k]->getHandlerId($container, $handlerConfig);
-            $type = $this->factories[$k]->getType($handlerConfig);
-
-            if (0 !== ($type & HandlerFactoryInterface::TYPE_SERIALIZATION)) {
-                $serializationHandlers[] = new Reference($id);
-            }
-
-            if (0 !== ($type & HandlerFactoryInterface::TYPE_DESERIALIZATION)) {
-                $deserializationHandlers[] = new Reference($id);
-            }
-        }
-
-        foreach (array('json', 'xml', 'yaml') as $format) {
-            $container
-                ->getDefinition('jms_serializer.'.$format.'_serialization_visitor')
-                ->replaceArgument(1, $serializationHandlers)
-            ;
-        }
-        foreach (array('json', 'xml') as $format) {
-            $container
-                ->getDefinition('jms_serializer.'.$format.'_deserialization_visitor')
-                ->replaceArgument(1, $deserializationHandlers)
-            ;
         }
 
         // metadata
@@ -153,6 +113,6 @@ class JMSSerializerExtension extends ConfigurableExtension
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'), $this->factories);
+        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
     }
 }

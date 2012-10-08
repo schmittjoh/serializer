@@ -1,12 +1,11 @@
 <?php
 
-namespace JMS\SerializerBundle\Tests\EventDispatcher;
-
-use JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface;
+namespace JMS\SerializerBundle\Tests\Serializer\EventDispatcher;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
-use JMS\SerializerBundle\EventDispatcher\Event;
-use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\Serializer\EventDispatcher\Event;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;
 
 class EventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -78,7 +77,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->dispatcher = new EventDispatcher();
-        $this->event = new Event($this->getMock('JMS\SerializerBundle\Serializer\VisitorInterface'), new \stdClass(), new ClassMetadata('stdClass'));
+        $this->event = new Event($this->getMock('JMS\SerializerBundle\Serializer\VisitorInterface'), new \stdClass(), array('name' => 'foo', 'params' => array()));
     }
 
     private function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)

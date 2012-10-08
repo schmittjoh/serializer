@@ -49,7 +49,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * {@inheritdoc}
      */
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, $type)
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type)
     {
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);

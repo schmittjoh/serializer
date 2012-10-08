@@ -18,8 +18,11 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerBundle\EventDispatcher\EventDispatcherInterface;
+use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
 
+use JMS\SerializerBundle\Serializer\Handler\HandlerRegistryInterface;
+
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
@@ -30,15 +33,21 @@ use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 class Serializer implements SerializerInterface
 {
     private $factory;
+    private $handlerRegistry;
+    private $objectConstructor;
     private $dispatcher;
+    private $typeParser;
     private $serializationVisitors;
     private $deserializationVisitors;
     private $exclusionStrategy;
 
-    public function __construct(MetadataFactoryInterface $factory, EventDispatcherInterface $dispatcher = null, array $serializationVisitors = array(), array $deserializationVisitors = array())
+    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, array $serializationVisitors = array(), array $deserializationVisitors = array())
     {
         $this->factory = $factory;
+        $this->handlerRegistry = $handlerRegistry;
+        $this->objectConstructor = $objectConstructor;
         $this->dispatcher = $dispatcher;
+        $this->typeParser = $typeParser ?: new TypeParser();
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
     }
@@ -73,7 +82,7 @@ class Serializer implements SerializerInterface
     public function serialize($data, $format)
     {
         $visitor = $this->getSerializationVisitor($format);
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->exclusionStrategy, $this->dispatcher));
+        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
         $navigator->accept($visitor->prepare($data), null, $visitor);
 
         return $visitor->getResult();
@@ -82,10 +91,15 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format)
     {
         $visitor = $this->getDeserializationVisitor($format);
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $format, $this->exclusionStrategy, $this->dispatcher));
-        $navigator->accept($visitor->prepare($data), $type, $visitor);
+        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
+        $navigatorResult = $navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $visitor);
 
-        return $visitor->getResult();
+        // This is a special case if the root is handled by a callback on the object iself.
+        if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
+            return $navigatorResult;
+        }
+
+        return $visitorResult;
     }
 
     protected function getDeserializationVisitor($format)

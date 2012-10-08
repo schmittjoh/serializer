@@ -23,5 +23,5 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 interface ObjectConstructorInterface
 {
-    function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, $type);
+    function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type);
 }

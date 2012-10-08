@@ -28,7 +28,7 @@ use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class XmlSerializationVisitor extends AbstractSerializationVisitor
+class XmlSerializationVisitor extends AbstractVisitor
 {
     public $document;
 
@@ -70,7 +70,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $this->navigator;
     }
 
-    public function visitString($data, $type)
+    public function visitString($data, array $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -82,7 +82,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $this->document->createCDATASection($data);
     }
 
-    public function visitBoolean($data, $type)
+    public function visitBoolean($data, array $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -94,17 +94,17 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $this->document->createTextNode($data ? 'true' : 'false');
     }
 
-    public function visitInteger($data, $type)
+    public function visitInteger($data, array $type)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitDouble($data, $type)
+    public function visitDouble($data, array $type)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, array $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -124,7 +124,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            if (null !== $node = $this->navigator->accept($v, null, $this)) {
+            if (null !== $node = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $this)) {
                 $this->currentNode->appendChild($node);
             }
 
@@ -132,12 +132,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
     }
 
-    public function visitTraversable($data, $type)
-    {
-        return $this->visitArray($data, $type);
-    }
-
-    public function startVisitingObject(ClassMetadata $metadata, $data, $type)
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
@@ -157,7 +152,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            $node = $this->navigator->accept($v, null, $this);
+            $node = $this->navigator->accept($v, $metadata->type, $this);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
@@ -175,7 +170,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         if ($metadata->xmlValue) {
             $this->hasValue = true;
 
-            $node = $this->navigator->accept($v, null, $this);
+            $node = $this->navigator->accept($v, $metadata->type, $this);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node)));
             }
@@ -192,7 +187,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
         $this->setCurrentMetadata($metadata);
 
-        if (null !== $node = $this->navigator->accept($v, null, $this)) {
+        if (null !== $node = $this->navigator->accept($v, $metadata->type, $this)) {
             $this->currentNode->appendChild($node);
         }
 
@@ -209,14 +204,8 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         $this->hasValue = false;
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
-    }
-
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
-    {
-        // TODO
-        return false;
     }
 
     public function getResult()
@@ -274,7 +263,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $doc;
     }
 
-    private function visitNumeric($data, $type)
+    private function visitNumeric($data, array $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);

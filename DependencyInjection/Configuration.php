@@ -26,15 +26,13 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 class Configuration implements ConfigurationInterface
 {
     private $debug;
-    private $factories;
 
     /**
      * @param boolean $debug
      */
-    public function __construct($debug = false, array $factories = array())
+    public function __construct($debug = false)
     {
         $this->debug = $debug;
-        $this->factories = $factories;
     }
 
     public function getConfigTreeBuilder()
@@ -66,19 +64,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-
-        $handlerNode = $builder
-            ->arrayNode('handlers')
-                ->addDefaultsIfNotSet()
-                ->disallowNewKeysInSubsequentConfigs()
-                ->children()
-        ;
-
-        foreach ($this->factories as $factory) {
-            $factory->addConfiguration(
-                $handlerNode->arrayNode($factory->getConfigKey())->canBeUnset()
-            );
-        }
     }
 
     private function addMetadataSection(NodeBuilder $builder)

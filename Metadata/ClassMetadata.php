@@ -41,6 +41,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlRootName;
     public $accessorOrder;
     public $customOrder;
+    public $handlerCallbacks = array();
 
     /**
      * Sets the order of properties in the class.
@@ -86,6 +87,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods[] = $method;
     }
 
+    public function addHandlerCallback($direction, $format, $methodName)
+    {
+        $this->handlerCallbacks[$direction][$format] = $methodName;
+    }
+
     public function merge(MergeableInterface $object)
     {
         if (!$object instanceof ClassMetadata) {
@@ -97,6 +103,9 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
+
+        // Handler methods are taken from the outer class completely.
+        $this->handlerCallbacks = $object->handlerCallbacks;
 
         if ($object->accessorOrder) {
             $this->accessorOrder = $object->accessorOrder;

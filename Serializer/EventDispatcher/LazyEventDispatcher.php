@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\SerializerBundle\EventDispatcher;
+namespace JMS\SerializerBundle\Serializer\EventDispatcher;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

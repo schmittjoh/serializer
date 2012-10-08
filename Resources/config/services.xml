@@ -16,7 +16,7 @@
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_serializer.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
 
-        <parameter key="jms_serializer.event_dispatcher.class">JMS\SerializerBundle\EventDispatcher\LazyEventDispatcher</parameter>
+        <parameter key="jms_serializer.event_dispatcher.class">JMS\SerializerBundle\Serializer\EventDispatcher\LazyEventDispatcher</parameter>
 
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
@@ -38,19 +38,40 @@
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.doctype_whitelist" type="collection"></parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
+        
+        <parameter key="jms_serializer.handler_registry.class">JMS\SerializerBundle\Serializer\Handler\LazyHandlerRegistry</parameter>
 
-        <parameter key="jms_serializer.object_based_custom_handler.class">JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler</parameter>
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
-        <parameter key="jms_serializer.doctrine_handler.class">JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler</parameter>
+        
+        <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
     </parameters>
 
     <services>
+        <!-- Event Dispatcher -->
         <service id="jms_serializer.event_dispatcher" class="%jms_serializer.event_dispatcher.class%" public="false">
             <argument type="service" id="service_container" />
         </service>
+        <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%" public="false">
+            <tag name="jms_serializer.event_subscriber" />
+        </service>
+        
+        <!-- Handlers -->
+        <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%" public="false">
+            <argument type="service" id="service_container" />
+        </service>
+        <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="false">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+        <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%" public="false">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%" public="false">
+            <argument type="service" id="translator" />
+        </service>
+        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
     
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
@@ -121,7 +142,10 @@
         <!-- Serializer -->
         <service id="jms_serializer.serializer" class="%jms_serializer.serializer.class%" public="false">
             <argument type="service" id="jms_serializer.metadata_factory" />
+            <argument type="service" id="jms_serializer.handler_registry" />
+            <argument type="service" id="jms_serializer.object_constructor" />
             <argument type="service" id="jms_serializer.event_dispatcher" />
+            <argument>null</argument>
             <argument type="collection" /><!-- Serialization Visitors -->
             <argument type="collection" /><!-- Deserialization Visitors -->
             <call method="setContainer">
@@ -140,7 +164,6 @@
         <!-- Visitors -->
         <service id="jms_serializer.json_serialization_visitor" class="%jms_serializer.json_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="collection" /><!-- Custom Handlers -->
             <call method="setOptions">
                 <argument>%jms_serializer.json_serialization_visitor.options%</argument>
             </call>
@@ -148,18 +171,15 @@
         </service>
         <service id="jms_serializer.json_deserialization_visitor" class="%jms_serializer.json_deserialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="collection" /><!-- Custom Handlers -->
             <argument type="service" id="jms_serializer.object_constructor" />
             <tag name="jms_serializer.deserialization_visitor" format="json" />
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="collection" /><!-- Custom Handlers -->
             <tag name="jms_serializer.serialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="collection" /><!-- Custom Handlers -->
             <argument type="service" id="jms_serializer.object_constructor" />
             <call method="setDoctypeWhitelist">
                 <argument>%jms_serializer.xml_deserialization_visitor.doctype_whitelist%</argument>
@@ -168,21 +188,7 @@
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="collection" /><!-- Custom Handlers -->
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
-
-        <!-- Custom Handlers -->
-        <service id="jms_serializer.object_based_custom_handler" class="%jms_serializer.object_based_custom_handler.class%" public="false">
-            <argument type="service" id="jms_serializer.unserialize_object_constructor" />
-            <argument type="service" id="jms_serializer.metadata_factory" />
-        </service>
-        <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="false" />
-        <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%" public="false" />
-        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%" public="false">
-            <argument type="service" id="translator" />
-        </service>
-        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
-        <service id="jms_serializer.doctrine_handler" class="%jms_serializer.doctrine_handler.class%" public="false" />
     </services>
 </container>

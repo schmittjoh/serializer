@@ -2,8 +2,13 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 
+use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
+
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\SerializerBundle\Serializer\Handler\HandlerRegistry;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use JMS\SerializerBundle\Serializer\GraphNavigator;
@@ -12,6 +17,9 @@ use Metadata\MetadataFactory;
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 {
     private $metadataFactory;
+    private $handlerRegistry;
+    private $objectConstructor;
+    private $exclusionStrategy;
     private $dispatcher;
     private $navigator;
     private $visitor;
@@ -38,7 +46,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('shouldSkipProperty')
             ->with($metadata->propertyMetadata['foo'], $object);
 
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $this->dispatcher, $exclusionStrategy);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, $exclusionStrategy, $this->dispatcher);
         $this->navigator->accept($object, null, $this->visitor);
     }
 
@@ -56,17 +64,19 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('shouldSkipProperty')
             ->with($metadata->propertyMetadata['foo'], null);
 
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, $this->dispatcher, $exclusionStrategy);
-        $this->navigator->accept('random', $class, $this->visitor);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, $exclusionStrategy, $this->dispatcher);
+        $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->visitor);
     }
 
     protected function setUp()
     {
         $this->visitor = $this->getMock('JMS\SerializerBundle\Serializer\VisitorInterface');
         $this->dispatcher = new EventDispatcher();
+        $this->handlerRegistry = new HandlerRegistry();
+        $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $this->dispatcher);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, null, $this->dispatcher);
     }
 }
 

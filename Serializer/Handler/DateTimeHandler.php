@@ -18,6 +18,10 @@
 
 namespace JMS\SerializerBundle\Serializer\Handler;
 
+use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
+
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
 use Symfony\Component\Yaml\Inline;
 
 use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
@@ -32,56 +36,72 @@ use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 
-class DateTimeHandler implements SerializationHandlerInterface, DeserializationHandlerInterface
+class DateTimeHandler implements SubscribingHandlerInterface
 {
-    private $format;
+    private $defaultFormat;
     private $defaultTimezone;
 
-    public function __construct($format = \DateTime::ISO8601, $defaultTimezone = 'UTC')
+    public static function getSubscribingMethods()
     {
-        $this->format = $format;
+        $methods = array();
+        foreach (array('json', 'xml', 'yml') as $format) {
+            $methods[] = array(
+                'type' => 'DateTime',
+                'format' => $format,
+            );
+        }
+
+        return $methods;
+    }
+
+    public function __construct($defaultFormat = \DateTime::ISO8601, $defaultTimezone = 'UTC')
+    {
+        $this->defaultFormat = $defaultFormat;
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
     }
 
-    public function serialize(VisitorInterface $visitor, $data, $type, &$visited)
+    public function serializeDateTimeToXml(XmlSerializationVisitor $visitor, \DateTime $date, array $type)
     {
-        if (!$data instanceof \DateTime) {
-            return;
+        if (null === $visitor->document) {
+            $visitor->document = $visitor->createDocument(null, null, true);
         }
 
-        if ($visitor instanceof XmlSerializationVisitor) {
-            if (null === $visitor->document) {
-                $visitor->document = $visitor->createDocument(null, null, true);
-            }
-            $visited = true;
-
-            return $visitor->document->createTextNode($data->format($this->format));
-        } else if ($visitor instanceof GenericSerializationVisitor) {
-            $visited = true;
-
-            return $data->format($this->format);
-        } else if ($visitor instanceof YamlSerializationVisitor) {
-            $visited = true;
-
-            return Inline::dump($data->format($this->format));
-        }
+        return $visitor->document->createTextNode($date->format($this->getFormat($type)));
     }
 
-    public function deserialize(VisitorInterface $visitor, $data, $type, &$visited)
+    public function serializeDateTimeToYml(YamlSerializationVisitor $visitor, \DateTime $date, array $type)
     {
-        if ('DateTime' !== $type) {
-            return;
+        return Inline::dump($date->format($this->getFormat($type)));
+    }
+
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type)
+    {
+        return $date->format($this->getFormat($type));
+    }
+
+    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    {
+        return $this->parseDateTime($data, $type);
+    }
+
+    public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    {
+        return $this->parseDateTime($data, $type);
+    }
+
+    private function parseDateTime($data, array $type)
+    {
+        $timezone = isset($type['params'][1]) ? $type['params'][1] : $this->defaultTimezone;
+        $datetime = \DateTime::createFromFormat($this->getFormat($type), (string) $data, $timezone);
+        if (false === $datetime) {
+            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $this->format));
         }
 
-        if ($visitor instanceof GenericDeserializationVisitor || $visitor instanceof XmlDeserializationVisitor) {
-            $datetime = \DateTime::createFromFormat($this->format, (string) $data, $this->defaultTimezone);
-            if (false === $datetime) {
-                throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $this->format));
-            }
+        return $datetime;
+    }
 
-            $visited = true;
-
-            return $datetime;
-        }
+    private function getFormat(array $type)
+    {
+        return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
     }
 }

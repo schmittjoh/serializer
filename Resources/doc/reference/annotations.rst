@@ -170,6 +170,26 @@ object has been serialized.
 This annotation can be defined on a method which is supposed to be called after
 the object has been deserialized.
 
+@HandlerCallback
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a method if serialization/deserialization is handled
+by the object iself.
+
+.. code-block :: php
+
+    <?php
+    
+    class Article
+    {
+        /**
+         * @HandlerCallack("xml", direction = "serialization")
+         */
+        public function serializeToXml(XmlSerializationVisitor $visitor)
+        {
+            // custom logic here
+        }
+    }
+
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.

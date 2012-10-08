@@ -34,6 +34,14 @@ YAML Reference
                     inline: true
                     key_attribute_name: foo
                     entry_name: bar
+
+        handler_callbacks:
+            serialization:
+                xml: serializeToXml
+                json: serializeToJson
+            deserialization:
+                xml: deserializeFromXml
+
         callback_methods:
             pre_serialize: [foo, bar]
             post_serialize: [foo, bar]
