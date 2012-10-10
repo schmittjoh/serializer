@@ -467,26 +467,31 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testVirtualVersions()
     {
-        $serializer = $this->serializer;
+        $this->serializer->setVersion(2);
+        $this->assertEquals($this->getContent('virtual_properties_low'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
 
-        $serializer->setVersion(2);
-        $this->assertEquals($this->getContent('virtual_properties_low'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $this->serializer->setVersion(7);
+        $this->assertEquals($this->getContent('virtual_properties_all'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
 
-        $serializer->setVersion(7);
-        $this->assertEquals($this->getContent('virtual_properties_all'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
-
-        $serializer->setVersion(9);
-        $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $this->serializer->setVersion(9);
+        $this->assertEquals($this->getContent('virtual_properties_high'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
     public function testCustomHandler()
     {
-        if ($this->hasDeserializer()) {
-            $serializer = $this->getSerializer();
-            $serialized = $serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
-            $object = $serializer->deserialize($serialized, 'JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject', $this->getFormat());
-            $this->assertEquals('customly_unserialized_value', $object->someProperty);
+        if ( ! $this->hasDeserializer()) {
+            return;
         }
+
+        $handler = function() {
+            return new CustomDeserializationObject('customly_unserialized_value');
+        };
+
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'CustomDeserializationObject', $this->getFormat(), $handler);
+
+        $serialized = $this->serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
+        $object = $this->serializer->deserialize($serialized, 'CustomDeserializationObject', $this->getFormat());
+        $this->assertEquals('customly_unserialized_value', $object->someProperty);
     }
 
     abstract protected function getContent($key);
