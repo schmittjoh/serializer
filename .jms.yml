@@ -6,7 +6,7 @@ default_config:
     doc_comment_fixes: true
     fabpot_cs_fixer:
         enabled: true
-        level: all
+        level: PSR-2
     psr0_compliance: true
     checkstyle: true
     loops_must_use_braces: true
