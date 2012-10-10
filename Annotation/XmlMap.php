@@ -26,17 +26,8 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
  */
 final class XmlMap extends XmlCollection
 {
+    /**
+     * @var string
+     */
     public $keyAttribute = '_key';
-
-    public function __construct(array $values)
-    {
-        parent::__construct($values);
-
-        if (isset($values['keyAttribute'])) {
-            if (!is_string($values['keyAttribute'])) {
-                throw new InvalidArgumentException(sprintf('The attribute "keyAttribute" of @XmlMap must be a string, but got %s.', json_encode($values['keyAttribute'])));
-            }
-            $this->keyAttribute = $values['keyAttribute'];
-        }
-    }
 }
