@@ -17,7 +17,7 @@ class LazyHandlerRegistry extends HandlerRegistry
 
     public function registerHandler($direction, $typeName, $format, $handler)
     {
-        parent::registerHandler($directon, $typeName, $format, $handler);
+        parent::registerHandler($direction, $typeName, $format, $handler);
         unset($this->initializedHandlers[$direction][$typeName][$format]);
     }
 

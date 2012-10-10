@@ -83,6 +83,8 @@ class FormErrorHandler implements SubscribingHandlerInterface
                 $formNode->appendChild($node);
             }
         }
+
+        return $formNode;
     }
 
     public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type)

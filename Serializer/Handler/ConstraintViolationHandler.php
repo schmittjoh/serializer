@@ -88,7 +88,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         $messageNode->appendChild($visitor->document->createCDATASection($violation->getMessage()));
     }
 
-    public function serializeViolationToJson(GenericSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
     {
         $data = array(
             'property_path' => $violation->getPropertyPath(),
@@ -102,8 +102,11 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $data;
     }
 
-    public function serializeViolationToYml(YamlSerializationVisitor $visitor, ConstraintViolation $violaton, array $type = null)
+    public function serializeViolationToYml(YamlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
     {
-        return $this->serializeViolationToJson($visitor, $violation);
+        return array(
+            'property_path' => $violation->getPropertyPath(),
+            'message' => $violation->getMessage(),
+        );
     }
 }
