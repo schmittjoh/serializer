@@ -18,13 +18,9 @@ values:
         # config.yml
         jms_serializer:
             handlers:
-                object_based: false
                 datetime:
-                    format: "Y-m-dTH:i:s" # ISO8601
+                    default_format: "c" # ISO8601
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
-                array_collection: true
-                form_error: true
-                constraint_violation: true
 
             property_naming:
                 separator:  _
