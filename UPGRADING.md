@@ -14,3 +14,25 @@ Upgrading From 0.9 to 1.0
 
     Please see the documentation for how to set-uup one of these.
 
+- Configuration
+
+    Most of the configuration under ``jms_serializer.handlers`` is gone. The order is not
+    important anymore as a handler can only be registered for one specific type.
+
+    You can still configure the built-in ``datetime`` handler though:
+
+    ```
+    jms_serializer:
+        handlers:
+            datetime:
+                default_format: DateTime::ISO8601
+                default_timzone: UTC
+    ```
+
+    This is not necessary anymore though as you can now specify the format each time when
+    you use a DateTime by using the @Type annotation:
+
+    ```
+    /** @Type("DateTime<'Y-m-d', 'UTC'>") */
+    private $createdAt;
+    ```

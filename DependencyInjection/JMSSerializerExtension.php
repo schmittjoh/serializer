@@ -34,6 +34,11 @@ class JMSSerializerExtension extends ConfigurableExtension
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
+        // Built-in handlers.
+        $container->getDefinition('jms_serializer.datetime_handler')
+            ->addArgument($config['handlers']['datetime']['default_format'])
+            ->addArgument($config['handlers']['datetime']['default_timezone']);
+
         // property naming
         $container
             ->getDefinition('jms_serializer.camel_case_naming_strategy')

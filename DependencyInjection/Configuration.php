@@ -44,11 +44,30 @@ class Configuration implements ConfigurationInterface
                 ->children()
         ;
 
+        $this->addHandlersSection($root);
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
 
         return $tb;
+    }
+
+    private function addHandlersSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('handlers')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->arrayNode('datetime')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('default_format')->defaultValue(\DateTime::ISO8601)->end()
+                            ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
+                        ->end()
+                   ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     private function addSerializersSection(NodeBuilder $builder)
