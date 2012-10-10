@@ -28,6 +28,14 @@ use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
+/**
+ * Handles traversal along the object graph.
+ *
+ * This class handles traversal along the graph, and calls different methods
+ * on visitors, or custom handlers to process its nodes.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 final class GraphNavigator
 {
     const DIRECTION_SERIALIZATION = 1;
@@ -43,13 +51,25 @@ final class GraphNavigator
     private $customHandlers = array();
     private $visiting;
 
+    /**
+     * Parses a direction string to one of the direction constants.
+     *
+     * @param string $dirStr
+     *
+     * @return integer
+     */
     public static function parseDirection($dirStr)
     {
-        if ( ! defined($constant = 'JMS\SerializerBundle\Serializer\GraphNavigator::DIRECTION_'.strtoupper($dirStr))) {
-            throw new \InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
-        }
+        switch (strtolower($dirStr)) {
+            case 'serialization':
+                return self::DIRECTION_SERIALIZATION;
 
-        return constant($constant);
+            case 'deserialization':
+                return self::DIRECTION_DESERIALIZATION;
+
+            default:
+                throw new \InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
+        }
     }
 
     public function __construct($direction, MetadataFactoryInterface $metadataFactory, $format, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, ExclusionStrategyInterface $exclusionStrategy = null, EventDispatcherInterface $dispatcher = null)
@@ -64,6 +84,15 @@ final class GraphNavigator
         $this->visiting = new \SplObjectStorage();
     }
 
+    /**
+     * Called for each node of the graph that is being traversed.
+     *
+     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param array|null $type array has the format ["name" => string, "params" => array]
+     * @param VisitorInterface $visitor
+     *
+     * @return mixed the return value depends on the direction, and type of visitor
+     */
     public function accept($data, array $type = null, VisitorInterface $visitor)
     {
         // determine type if not given
@@ -189,6 +218,15 @@ final class GraphNavigator
         }
     }
 
+    /**
+     * Detaches an object from the visiting map.
+     *
+     * Use this method if you like to re-visit an object which is already
+     * being visited. Be aware that you might cause an endless loop if you
+     * use this inappropriately.
+     *
+     * @param object $object
+     */
     public function detachObject($object)
     {
         if (null === $object) {

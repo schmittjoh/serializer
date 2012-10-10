@@ -21,6 +21,11 @@ final class TypeParser
     private $next;
     private $pointer = 0;
 
+    /**
+     * @param string $type
+     *
+     * @return array of the format ["name" => string, "params" => array]
+     */
     public function parse($type)
     {
         if (empty($type)) {
@@ -29,7 +34,7 @@ final class TypeParser
 
         $this->tokenize($type);
 
-        $parsedType = $this->Type();
+        $parsedType = $this->parseType();
         if (null !== $this->next) {
             throw new \InvalidArgumentException(sprintf('Expected end of type, but got %s (%s) at position %d.', $this->getTokenName($this->next[0]), json_encode($this->next[2]), $this->next[1]));
         }
@@ -37,7 +42,7 @@ final class TypeParser
         return $parsedType;
     }
 
-    private function Type()
+    private function parseType()
     {
         $this->match(self::T_NAME);
         $typeName = $this->token[0];
@@ -50,7 +55,7 @@ final class TypeParser
         $params = array();
         do {
             if ($this->isNextToken(self::T_NAME)) {
-                $params[] = $this->Type();
+                $params[] = $this->parseType();
             } else if ($this->isNextToken(self::T_STRING)) {
                 $this->moveNext();
                 $params[] = $this->token[0];

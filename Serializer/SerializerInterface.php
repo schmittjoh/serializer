@@ -18,8 +18,31 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+/**
+ * Serializer Interface.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 interface SerializerInterface
 {
+    /**
+     * Serializes the given data to the specified output format.
+     *
+     * @param object|array|scalar $data
+     * @param string $format
+     *
+     * @return string
+     */
     function serialize($data, $format);
+
+    /**
+     * Deserializes the given data to the specified type.
+     *
+     * @param string $data
+     * @param string $type
+     * @param string $format
+     *
+     * @return object|array|scalar
+     */
     function deserialize($data, $type, $format);
 }

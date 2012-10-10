@@ -276,17 +276,14 @@ class XmlSerializationVisitor extends AbstractVisitor
     }
 
     /**
-     * Checks the name is a valid xml element name
+     * Checks that the name is a valid XML element name.
      *
      * @param string $name
      *
-     * @return Boolean
+     * @return boolean
      */
     private function isElementNameValid($name)
     {
-        return $name &&
-            false === strpos($name, ' ') &&
-            preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+        return $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
     }
-
 }

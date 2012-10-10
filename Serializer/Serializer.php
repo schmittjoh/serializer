@@ -102,6 +102,9 @@ class Serializer implements SerializerInterface
         return $visitorResult;
     }
 
+    /**
+     * @return VisitorInterface
+     */
     protected function getDeserializationVisitor($format)
     {
         if (!isset($this->deserializationVisitors[$format])) {
@@ -111,6 +114,9 @@ class Serializer implements SerializerInterface
         return $this->deserializationVisitors[$format];
     }
 
+    /**
+     * @return VisitorInterface
+     */
     protected function getSerializationVisitor($format)
     {
         if (!isset($this->serializationVisitors[$format])) {

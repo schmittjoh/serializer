@@ -21,18 +21,112 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
+/**
+ * Interface for visitors.
+ *
+ * This contains the minimal set of values that must be supported for any
+ * output format.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 interface VisitorInterface
 {
+    /**
+     * Allows visitors to convert the input data to a different representation
+     * before the actual serialization/deserialization process starts.
+     *
+     * @param mixed $data
+     *
+     * @return mixed
+     */
     function prepare($data);
+
+    /**
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function visitString($data, array $type);
+
+    /**
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function visitBoolean($data, array $type);
+
+    /**
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function visitDouble($data, array $type);
+
+    /**
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function visitInteger($data, array $type);
+
+    /**
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function visitArray($data, array $type);
+
+    /**
+     * Called before the properties of the object are being visited.
+     *
+     * @param ClassMetadata $metadata
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return void
+     */
     function startVisitingObject(ClassMetadata $metadata, $data, array $type);
+
+    /**
+     * @param PropertyMetadata $metadata
+     * @param mixed $data
+     *
+     * @return void
+     */
     function visitProperty(PropertyMetadata $metadata, $data);
+
+    /**
+     * Called after all properties of the object have been visited.
+     *
+     * @param ClassMetadata $metadata
+     * @param mixed $data
+     * @param array $type
+     *
+     * @return mixed
+     */
     function endVisitingObject(ClassMetadata $metadata, $data, array $type);
+
+    /**
+     * Called before serialization/deserialization starts.
+     *
+     * @param GraphNavigator $navigator
+     *
+     * @return void
+     */
     function setNavigator(GraphNavigator $navigator);
+
+    /**
+     * @return GraphNavigator
+     */
     function getNavigator();
+
+    /**
+     * @return object|array|scalar
+     */
     function getResult();
 }
