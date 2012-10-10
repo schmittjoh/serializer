@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests;
 
+use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
+
 use Symfony\Component\Translation\MessageSelector;
 
 use Symfony\Component\Translation\IdentityTranslator;
@@ -96,7 +98,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
         $container->set('annotation_reader', new AnnotationReader());
         $container->set('translator', new IdentityTranslator(new MessageSelector()));
         $container->setParameter('kernel.debug', true);
-        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/serializer');
         $container->setParameter('kernel.bundles', array());
         $extension = new JMSSerializerExtension();
         $extension->load(array(array()), $container);
@@ -106,6 +108,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
 
         $container->getCompilerPassConfig()->setOptimizationPasses(array(
             new ResolveDefinitionTemplatesPass(),
+            new ResolveParameterPlaceHoldersPass(),
         ));
         $container->getCompilerPassConfig()->setRemovingPasses(array());
         $container->compile();
