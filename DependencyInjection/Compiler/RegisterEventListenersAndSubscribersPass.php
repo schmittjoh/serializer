@@ -12,6 +12,10 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
     {
         $listeners = array();
         foreach ($container->findTaggedServiceIds('jms_serializer.event_listener') as $id => $tags) {
+            if (!$container->getDefinition($id)->isPublic()) {
+                throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires the service to be public.', $id));
+            }
+
             foreach ($tags as $attributes) {
                 if ( ! isset($attributes['event'])) {
                     throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires an attribute named "event".', $id));
@@ -27,9 +31,14 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
         }
 
         foreach ($container->findTaggedServiceIds('jms_serializer.event_subscriber') as $id => $tags) {
-            $subscriberClass = $container->getDefinition($id)->getClass();
+            $subscriberDefinition = $container->getDefinition($id);
+            $subscriberClass = $subscriberDefinition->getClass();
             if ( ! is_subclass_of($subscriberClass, 'JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface')) {
                 throw new \RuntimeException(sprintf('The service "%s" (class: %s) does not implement the EventSubscriberInterface.', $id, $subscriberClass));
+            }
+
+            if (!$subscriberDefinition->isPublic()) {
+                throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires the service to be public.', $id));
             }
 
             foreach (call_user_func(array($subscriberClass, 'getSubscribedEvents')) as $eventData) {
