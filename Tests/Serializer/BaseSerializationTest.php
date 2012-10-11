@@ -70,6 +70,7 @@ use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Serializer\Fixture\Article;
 use JMS\SerializerBundle\Tests\Fixtures\Input;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithEmptyHash;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -498,6 +499,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testInput()
     {
         $this->assertEquals($this->getContent('input'), $this->serializer->serialize(new Input(), $this->getFormat()));
+    }
+
+    public function testObjectWithEmptyHash()
+    {
+        $this->assertEquals($this->getContent('hash_empty'), $this->serializer->serialize(new ObjectWithEmptyHash(), $this->getFormat()));
     }
 
     abstract protected function getContent($key);

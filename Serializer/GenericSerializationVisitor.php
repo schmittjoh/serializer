@@ -84,7 +84,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = array();
             $rs = &$this->root;
         } else {
-            $rs = array();
+            $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
         }
 
         foreach ($data as $k => $v) {
