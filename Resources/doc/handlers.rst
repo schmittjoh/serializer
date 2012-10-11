@@ -32,10 +32,12 @@ easier to share with other users, and easier to set-up in general:
         public static function getSubscribingMethods()
         {
             return array(
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format' => 'json',
-                'type' => 'DateTime',
-                'serializeDateTimeToJson',
+                array(
+                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'format' => 'json',
+                    'type' => 'DateTime',
+                    'method' => 'serializeDateTimeToJson',
+                ),
             );
         }
         
@@ -47,7 +49,7 @@ easier to share with other users, and easier to set-up in general:
 
 .. code-block :: xml
 
-    <service id="my_handler" class="MyHandler" public="false">
+    <service id="my_handler" class="MyHandler">
         <tag name="jms_serializer.subscribing_handler" />
     </service>
 
