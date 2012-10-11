@@ -23,6 +23,7 @@ XML Reference
                       read-only="true"
                       groups="foo,bar"
                       xml-key-value-pairs="true"
+                      xml-attribute-map="true"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->

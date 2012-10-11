@@ -69,6 +69,7 @@ use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Serializer\Fixture\Article;
+use JMS\SerializerBundle\Tests\Fixtures\Input;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -492,6 +493,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $serialized = $this->serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
         $object = $this->serializer->deserialize($serialized, 'CustomDeserializationObject', $this->getFormat());
         $this->assertEquals('customly_unserialized_value', $object->someProperty);
+    }
+
+    public function testInput()
+    {
+        $this->assertEquals($this->getContent('input'), $this->serializer->serialize(new Input(), $this->getFormat()));
     }
 
     abstract protected function getContent($key);

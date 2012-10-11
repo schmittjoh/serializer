@@ -34,6 +34,7 @@ YAML Reference
                     inline: true
                     key_attribute_name: foo
                     entry_name: bar
+                xml_attribute_map: true
 
         handler_callbacks:
             serialization:

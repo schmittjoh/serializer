@@ -418,3 +418,29 @@ This allows you to use the keys of an array as xml tags.
 .. note ::
 
     When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
+
+@XmlAttributeMap
+~~~~~~~~~~~~~
+
+This is similar to the @XmlKeyValuePairs, but instead of creating child elements, it creates attributes.
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\SerializerBundle\Annotation\XmlAttribute;
+
+    class Input
+    {
+        /** @XmlAttributeMap */
+        private $id = array(
+            'name' => 'firstname',
+            'value' => 'Adrien',
+        );
+    }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <result name="firstname" value="Adrien"/>

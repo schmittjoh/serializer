@@ -35,6 +35,7 @@ use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
+use JMS\SerializerBundle\Tests\Fixtures\Input;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -139,6 +140,19 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testArrayKeyValues()
     {
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object
+     */
+    public function testXmlAttributeMapWithoutArray()
+    {
+        $attributes = new \ArrayObject(array(
+            'type' => 'text',
+        ));
+
+        $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
 
     /**
