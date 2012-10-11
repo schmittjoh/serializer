@@ -54,7 +54,7 @@
         <service id="jms_serializer.event_dispatcher" class="%jms_serializer.event_dispatcher.class%" public="false">
             <argument type="service" id="service_container" />
         </service>
-        <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%" public="false">
+        <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
         </service>
         
