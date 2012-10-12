@@ -38,7 +38,8 @@ class CustomHandlersPass implements CompilerPassInterface
 
         foreach ($container->findTaggedServiceIds('jms_serializer.subscribing_handler') as $id => $tags) {
             $class = $container->getDefinition($id)->getClass();
-            if ( ! is_subclass_of($class, 'JMS\SerializerBundle\Serializer\Handler\SubscribingHandlerInterface')) {
+            $ref = new \ReflectionClass($class);
+            if ( ! $ref->implementsInterface('JMS\SerializerBundle\Serializer\Handler\SubscribingHandlerInterface')) {
                 throw new \RuntimeException(sprintf('The service "%s" must implement the SubscribingHandlerInterface.', $id));
             }
 
