@@ -23,7 +23,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 class UnserializeObjectConstructor implements ObjectConstructorInterface
 {
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, $type)
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type)
     {
         return unserialize(sprintf('O:%d:"%s":0:{}', strlen($metadata->name), $metadata->name));
     }

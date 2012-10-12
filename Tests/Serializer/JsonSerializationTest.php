@@ -18,9 +18,13 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface;
+use JMS\SerializerBundle\Serializer\VisitorInterface;
 
-use JMS\SerializerBundle\EventDispatcher\Event;
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;
+
+use JMS\SerializerBundle\Serializer\EventDispatcher\Event;
 
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 
@@ -78,6 +82,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
             $outputs['nullable'] = '{"foo":"bar","baz":null}';
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
+            $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
+            $outputs['hash_empty'] = '{"hash":{}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -90,6 +96,11 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testAddLinksToOutput()
     {
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\SerializerBundle\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type) {
+                return $visitor->visitArray(iterator_to_array($data), $type);
+            }
+        );
 
         $list = new AuthorList();
         $list->add(new Author('foo'));

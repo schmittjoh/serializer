@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Metadata\MethodMetadata;
@@ -108,8 +110,9 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pConfig['type'])) {
-                        $pMetadata->type = (string) $pConfig['type'];
+                        $pMetadata->setType((string) $pConfig['type']);
                     }
+
                     if (isset($pConfig['groups'])) {
                         $pMetadata->groups = $pConfig['groups'];
                     }
@@ -148,6 +151,10 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
                     }
 
+                    if (isset($pConfig['xml_attribute_map'])) {
+                        $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute_map'];
+                    }
+
                     if (isset($pConfig['xml_value'])) {
                         $pMetadata->xmlValue = (Boolean) $pConfig['xml_value'];
                     }
@@ -175,6 +182,15 @@ class YamlDriver extends AbstractFileDriver
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $metadata->addPropertyMetadata($pMetadata);
+                }
+            }
+        }
+
+        if (isset($config['handler_callbacks'])) {
+            foreach ($config['handler_callbacks'] as $direction => $formats) {
+                foreach ($formats as $format => $methodName) {
+                    $direction = GraphNavigator::parseDirection($direction);
+                    $metadata->addHandlerCallback($direction, $format, $methodName);
                 }
             }
         }

@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
@@ -162,7 +164,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
-        $container->setParameter('kernel.cache_dir', sys_get_temp_dir());
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/serializer');
         $container->setParameter('kernel.bundles', array());
         $container->set('annotation_reader', new AnnotationReader());
         $container->set('service_container', $container);
@@ -173,6 +175,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $bundle->build($container);
 
         $container->getCompilerPassConfig()->setOptimizationPasses(array(
+            new ResolveParameterPlaceHoldersPass(),
             new ResolveDefinitionTemplatesPass(),
         ));
         $container->getCompilerPassConfig()->setRemovingPasses(array());

@@ -22,23 +22,13 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 
 abstract class XmlCollection
 {
-    public $inline = false;
+    /**
+     * @var string
+     */
     public $entry = 'entry';
 
-    public function __construct(array $values)
-    {
-        if (isset($values['entry'])) {
-            if (!is_string($values['entry'])) {
-                throw new InvalidArgumentException(sprintf('Value for attribute "entry" must be a string, but got %s.', json_encode($values['entry'])));
-            }
-            $this->entry = $values['entry'];
-        }
-
-        if (isset($values['inline'])) {
-            if (!is_bool($values['inline'])) {
-                throw new InvalidArgumentException(sprintf('Value for attribute "inline" must be a boolean, but got %s.', json_encode($values['inline'])));
-            }
-            $this->inline = $values['inline'];
-        }
-    }
+    /**
+     * @var boolean
+     */
+    public $inline = false;
 }

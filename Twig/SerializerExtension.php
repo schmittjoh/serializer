@@ -22,14 +22,14 @@ use JMS\SerializerBundle\Serializer\SerializerInterface;
 
 /**
  * Serializer helper twig extension
- * 
+ *
  * Basically provides access to JMSSerializer from Twig
  */
-class SerializerExtension extends \Twig_Extension 
+class SerializerExtension extends \Twig_Extension
 {
     protected $serializer;
 
-    public function getName() 
+    public function getName()
     {
         return 'jms_serializer';
     }
@@ -39,14 +39,18 @@ class SerializerExtension extends \Twig_Extension
         $this->serializer = $serializer;
     }
 
-    public function getFilters() 
+    public function getFilters()
     {
         return array(
             'serialize'      => new \Twig_Filter_Method($this, 'serialize'),
         );
     }
 
-    public function serialize($object, $type = 'json') 
+    /**
+     * @param object $object
+     * @param string $type
+     */
+    public function serialize($object, $type = 'json')
     {
         return $this->serializer->serialize($object, $type);
     }

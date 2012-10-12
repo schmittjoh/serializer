@@ -23,12 +23,22 @@ use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 abstract class AbstractVisitor implements VisitorInterface
 {
     protected $namingStrategy;
-    protected $customHandlers;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers)
+    private $serializeNull = false;
+
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy)
     {
         $this->namingStrategy = $namingStrategy;
-        $this->customHandlers = $customHandlers;
+    }
+
+    public function setSerializeNull($serializeNull)
+    {
+        $this->serializeNull = (bool) $serializeNull;
+    }
+
+    public function getSerializeNull()
+    {
+        return (bool) $this->serializeNull;
     }
 
     public function getNamingStrategy()

@@ -1,9 +1,6 @@
 <?php
 
-namespace JMS\SerializerBundle\EventDispatcher;
-
-use JMS\SerializerBundle\EventDispatcher\EventDispatcherInterface;
-use JMS\SerializerBundle\EventDispatcher\EventSubscriberInterface;
+namespace JMS\SerializerBundle\Serializer\EventDispatcher;
 
 /**
  * Light-weight event dispatcher.

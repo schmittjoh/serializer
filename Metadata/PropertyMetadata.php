@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Metadata;
 
+use JMS\SerializerBundle\Serializer\TypeParser;
+
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
@@ -41,6 +43,9 @@ class PropertyMetadata extends BasePropertyMetadata
     public $setter;
     public $inline = false;
     public $readOnly = false;
+    public $xmlAttributeMap = false;
+
+    private static $typeParser;
 
     public function setAccessor($type, $getter = null, $setter = null)
     {
@@ -70,6 +75,15 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
+    public function setType($type)
+    {
+        if (null === self::$typeParser) {
+            self::$typeParser = new TypeParser();
+        }
+
+        $this->type = self::$typeParser->parse($type);
+    }
+
     public function serialize()
     {
         return serialize(array(
@@ -89,6 +103,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->xmlAttributeMap,
             parent::serialize(),
         ));
     }
@@ -112,6 +127,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->xmlAttributeMap,
             $parentStr
         ) = unserialize($str);
 

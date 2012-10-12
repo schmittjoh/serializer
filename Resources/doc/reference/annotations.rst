@@ -170,6 +170,26 @@ object has been serialized.
 This annotation can be defined on a method which is supposed to be called after
 the object has been deserialized.
 
+@HandlerCallback
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a method if serialization/deserialization is handled
+by the object iself.
+
+.. code-block :: php
+
+    <?php
+    
+    class Article
+    {
+        /**
+         * @HandlerCallack("xml", direction = "serialization")
+         */
+        public function serializeToXml(XmlSerializationVisitor $visitor)
+        {
+            // custom logic here
+        }
+    }
+
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.
@@ -398,3 +418,29 @@ This allows you to use the keys of an array as xml tags.
 .. note ::
 
     When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
+
+@XmlAttributeMap
+~~~~~~~~~~~~~
+
+This is similar to the @XmlKeyValuePairs, but instead of creating child elements, it creates attributes.
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\SerializerBundle\Annotation\XmlAttribute;
+
+    class Input
+    {
+        /** @XmlAttributeMap */
+        private $id = array(
+            'name' => 'firstname',
+            'value' => 'Adrien',
+        );
+    }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <result name="firstname" value="Adrien"/>

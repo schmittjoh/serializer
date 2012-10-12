@@ -18,6 +18,12 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
+use JMS\SerializerBundle\Annotation\HandlerCallback;
+
+use JMS\SerializerBundle\Serializer\TypeParser;
+
 use JMS\SerializerBundle\Annotation\AccessorOrder;
 
 use JMS\SerializerBundle\Annotation\Accessor;
@@ -49,6 +55,7 @@ use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Annotation\XmlAttributeMap;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -107,6 +114,9 @@ class AnnotationDriver implements DriverInterface
                     $propertiesMetadata[] = $virtualPropertyMetadata;
                     $propertiesAnnotations[] = $methodAnnotations;
                     continue 2;
+                } else if ($annot instanceof HandlerCallback) {
+                    $classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
+                    continue 2;
                 }
             }
         }
@@ -141,7 +151,7 @@ class AnnotationDriver implements DriverInterface
                     } else if ($annot instanceof Exclude) {
                         $isExclude = true;
                     } else if ($annot instanceof Type) {
-                        $propertyMetadata->type = $annot->name;
+                        $propertyMetadata->setType($annot->name);
                     } else if ($annot instanceof XmlList) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
@@ -167,6 +177,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->groups = $annot->groups;
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
+                    } else if ($annot instanceof XmlAttributeMap) {
+                        $propertyMetadata->xmlAttributeMap = true;
                     }
                 }
 

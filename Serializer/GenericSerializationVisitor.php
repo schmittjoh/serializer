@@ -23,7 +23,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
-abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
+abstract class GenericSerializationVisitor extends AbstractVisitor
 {
     private $navigator;
     private $root;
@@ -42,7 +42,12 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $this->navigator;
     }
 
-    public function visitString($data, $type)
+    public function visitNull($data, array $type)
+    {
+        return null;
+    }
+
+    public function visitString($data, array $type)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -51,7 +56,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
-    public function visitBoolean($data, $type)
+    public function visitBoolean($data, array $type)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -60,7 +65,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
-    public function visitInteger($data, $type)
+    public function visitInteger($data, array $type)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -69,7 +74,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
-    public function visitDouble($data, $type)
+    public function visitDouble($data, array $type)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -78,17 +83,19 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, array $type)
     {
         if (null === $this->root) {
             $this->root = array();
             $rs = &$this->root;
         } else {
-            $rs = array();
+            // ArrayObject is specially treated by the json_encode function and
+            // serialized to { } while a mere array would be serialized to [].
+            $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
         }
 
         foreach ($data as $k => $v) {
-            $v = $this->navigator->accept($v, null, $this);
+            $v = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $this);
 
             if (null === $v && (!is_string($k) || !$this->getSerializeNull())) {
                 continue;
@@ -100,12 +107,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $rs;
     }
 
-    public function visitTraversable($data, $type)
-    {
-        return $this->visitArray($data, $type);
-    }
-
-    public function startVisitingObject(ClassMetadata $metadata, $data, $type)
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         if (null === $this->root) {
             $this->root = new \stdClass;
@@ -115,7 +117,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         $this->data = array();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
@@ -132,7 +134,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
                 : $data->{$metadata->getter}());
 
-        $v = $this->navigator->accept($v, null, $this);
+        $v = $this->navigator->accept($v, $metadata->type, $this);
         if (null === $v && !$this->getSerializeNull()) {
             return;
         }
@@ -160,12 +162,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         }
 
         $this->data[$key] = $value;
-    }
-
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
-    {
-        // TODO
-        return false;
     }
 
     public function getRoot()

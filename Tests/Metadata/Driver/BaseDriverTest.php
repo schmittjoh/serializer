@@ -32,24 +32,24 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('blog-post', $m->xmlRootName);
 
         $p = new PropertyMetadata($m->name, 'title');
-        $p->type = 'string';
+        $p->type = array('name' => 'string', 'params' => array());
         $p->groups = array("comments","post");
         $this->assertEquals($p, $m->propertyMetadata['title']);
 
         $p = new PropertyMetadata($m->name, 'createdAt');
-        $p->type = 'DateTime';
+        $p->type = array('name' => 'DateTime', 'params' => array());
         $p->xmlAttribute = true;
         $this->assertEquals($p, $m->propertyMetadata['createdAt']);
 
         $p = new PropertyMetadata($m->name, 'published');
-        $p->type = 'boolean';
+        $p->type = array('name' => 'boolean', 'params' => array());
         $p->serializedName = 'is_published';
         $p->xmlAttribute = true;
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['published']);
 
         $p = new PropertyMetadata($m->name, 'comments');
-        $p->type = 'ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Comment>';
+        $p->type = array('name' => 'ArrayCollection', 'params' => array(array('name' => 'JMS\SerializerBundle\Tests\Fixtures\Comment', 'params' => array())));
         $p->xmlCollection = true;
         $p->xmlCollectionInline = true;
         $p->xmlEntryName = 'comment';
@@ -57,7 +57,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['comments']);
 
         $p = new PropertyMetadata($m->name, 'author');
-        $p->type = 'JMS\SerializerBundle\Tests\Fixtures\Author';
+        $p->type = array('name' => 'JMS\SerializerBundle\Tests\Fixtures\Author', 'params' => array());
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
 
@@ -65,7 +65,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
 
         $p = new PropertyMetadata($m->name, 'price');
-        $p->type = 'double';
+        $p->type = array('name' => 'double', 'params' => array());
         $p->xmlValue = true;
         $this->assertEquals($p, $m->propertyMetadata['price']);
     }

@@ -61,8 +61,8 @@ class SetVisitorsPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('jms_serializer.serializer') as $id => $attr) {
             $container
                 ->getDefinition($id)
-                ->replaceArgument(2, $serializationVisitors)
-                ->replaceArgument(3, $deserializationVisitors)
+                ->replaceArgument(5, $serializationVisitors)
+                ->replaceArgument(6, $deserializationVisitors)
             ;
         }
     }

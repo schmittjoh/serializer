@@ -18,27 +18,20 @@
 
 namespace JMS\SerializerBundle\Serializer\Construction;
 
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
-    /**
-     * @var \Symfony\Bridge\Doctrine\ManagerRegistry
-     */
     private $managerRegistry;
-
-    /**
-     * @var \JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface
-     */
     private $fallbackConstructor;
 
     /**
      * Constructor.
      *
-     * @param \Symfony\Bridge\Doctrine\ManagerRegistry                                 $managerRegistry
-     * @param \JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface $fallbackConstructor
+     * @param ManagerRegistry            $managerRegistry
+     * @param ObjectConstructorInterface $fallbackConstructor
      */
     public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor)
     {
@@ -49,7 +42,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * {@inheritdoc}
      */
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, $type)
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type)
     {
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);

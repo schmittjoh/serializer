@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
 
 use Metadata\MetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -35,6 +35,7 @@ use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
+use JMS\SerializerBundle\Tests\Fixtures\Input;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -97,22 +98,15 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
-        $xmlVisitor = new XmlDeserializationVisitor(
-            new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy()),
-            $this->getDeserializationHandlers(),
-            new UnserializeObjectConstructor()
-        );
-        $xmlVisitor->setDoctypeWhitelist(array(
+        $this->deserializationVisitors['xml']->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 
-        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), new EventDispatcher(), array(), array('xml' => $xmlVisitor));
-
-        $serializer->deserialize('<?xml version="1.0"?>
+        $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
             <foo></foo>', 'stdClass', 'xml');
 
-        $serializer->deserialize('<?xml version="1.0"?>
+        $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
@@ -121,36 +115,44 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testVirtualAttributes()
     {
-        $serializer = $this->getSerializer();
-        $serializer->setGroups(array('attributes'));
-        $this->assertEquals($this->getContent('virtual_attributes'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+        $this->serializer->setGroups(array('attributes'));
+        $this->assertEquals($this->getContent('virtual_attributes'), $this->serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
     public function testVirtualValues()
     {
-        $serializer = $this->getSerializer();
-        $serializer->setGroups(array('values'));
-        $this->assertEquals($this->getContent('virtual_values'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+        $this->serializer->setGroups(array('values'));
+        $this->assertEquals($this->getContent('virtual_values'), $this->serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
     public function testVirtualXmlList()
     {
-        $serializer = $this->getSerializer();
-        $serializer->setGroups(array('list'));
-        $this->assertEquals($this->getContent('virtual_properties_list'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+        $this->serializer->setGroups(array('list'));
+        $this->assertEquals($this->getContent('virtual_properties_list'), $this->serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
     public function testVirtualXmlMap()
     {
-        $serializer = $this->getSerializer();
-        $serializer->setGroups(array('map'));
-        $this->assertEquals($this->getContent('virtual_properties_map'), $serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
+        $this->serializer->setGroups(array('map'));
+        $this->assertEquals($this->getContent('virtual_properties_map'), $this->serializer->serialize(new ObjectWithVirtualXmlProperties(),'xml'));
     }
 
     public function testArrayKeyValues()
     {
-        $serializer = $this->getSerializer();
-        $this->assertEquals($this->getContent('array_key_values'), $serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+        $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object
+     */
+    public function testXmlAttributeMapWithoutArray()
+    {
+        $attributes = new \ArrayObject(array(
+            'type' => 'text',
+        ));
+
+        $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
 
     /**

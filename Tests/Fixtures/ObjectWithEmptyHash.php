@@ -16,22 +16,14 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Serializer;
+namespace JMS\SerializerBundle\Tests\Fixtures;
 
-/**
- * Abstract Deserialization Visitor.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- */
-abstract class AbstractDeserializationVisitor extends AbstractVisitor
+use JMS\SerializerBundle\Annotation as Serializer;
+
+class ObjectWithEmptyHash
 {
-    public function visitUsingCustomHandler($data, $type, &$visited)
-    {
-        foreach ($this->customHandlers as $handler) {
-            $rs = $handler->deserialize($this, $data, $type, $visited);
-            if ($visited) {
-                return $rs;
-            }
-        }
-    }
+    /**
+     * @Serializer\Type("array<string,string>")
+     */
+    private $hash = array();
 }
