@@ -12,7 +12,7 @@ Upgrading From 0.9 to 1.0
     would use the new handler system, if you instead were handling an arbitrary number of
     possibly unknown types, you would use the event system.
 
-    Please see the documentation for how to set-uup one of these.
+    Please see the documentation for how to set-up one of these.
 
 - Configuration
 
