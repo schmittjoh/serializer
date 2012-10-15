@@ -37,7 +37,7 @@ class GroupsObject
     private $foobar;
 
     /**
-     * @Groups({"bar"})
+     * @Groups({"bar", "Default"})
      * @Type("string")
      */
     private $bar;

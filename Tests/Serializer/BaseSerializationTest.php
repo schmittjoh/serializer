@@ -69,7 +69,7 @@ use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
-use JMS\SerializerBundle\Tests\Serializer\Fixture\Article;
+use JMS\SerializerBundle\Tests\Fixtures\Article;
 use JMS\SerializerBundle\Tests\Fixtures\Input;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithEmptyHash;
 use Metadata\MetadataFactory;
@@ -318,7 +318,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('article'), $result);
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($article, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Serializer\Fixture\Article'));
+            $this->assertEquals($article, $this->deserialize($result, 'JMS\SerializerBundle\Tests\Fixtures\Article'));
         }
     }
 
@@ -480,23 +480,24 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testGroups()
     {
-        $serializer =  $this->serializer;
-
         $groupsObject = new GroupsObject();
 
-        $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
-        $serializer->setGroups(array("foo"));
-        $this->assertEquals($this->getContent('groups_foo'), $serializer->serialize($groupsObject, $this->getFormat()));
+        $this->serializer->setGroups(array("foo"));
+        $this->assertEquals($this->getContent('groups_foo'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
-        $serializer->setGroups(array("foo", "bar"));
-        $this->assertEquals($this->getContent('groups_foobar'), $serializer->serialize($groupsObject, $this->getFormat()));
+        $this->serializer->setGroups(array("foo", "bar"));
+        $this->assertEquals($this->getContent('groups_foobar'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
-        $serializer->setGroups(null);
-        $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
+        $this->serializer->setGroups(null);
+        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
-        $serializer->setGroups(array());
-        $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
+        $this->serializer->setGroups(array());
+        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+
+        $this->serializer->setGroups(array('Default'));
+        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
     }
 
     public function testVirtualProperty()

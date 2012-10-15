@@ -193,8 +193,9 @@ by the object iself.
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.
-This annotation must only be defined when you want to be able to deserialize an
-object.
+For deserialization, this annotation must be defined. For serialization, you may
+define it in order to enhance the produced output; for example, you may want to
+force a certain format to be used for DateTime types.
 
 Available Types:
 
@@ -219,7 +220,12 @@ Available Types:
 |                           | Examples: array<string, string>,                 |
 |                           | array<string, MyNamespace\MyObject>, etc.        |
 +---------------------------+--------------------------------------------------+
-| DateTime                  | PHP's DateTime object                            |
+| DateTime                  | PHP's DateTime object (default format/timezone)  |
++---------------------------+--------------------------------------------------+
+| DateTime<"format">        | PHP's DateTime object (custom format/default     |
+|                           | timezone)                                        |
++---------------------------+--------------------------------------------------+
+| DateTime<"format", "zone">| PHP's DateTime object (custom format/timezone)   |
 +---------------------------+--------------------------------------------------+
 | T                         | Where T is a fully qualified class name.         |
 +---------------------------+--------------------------------------------------+

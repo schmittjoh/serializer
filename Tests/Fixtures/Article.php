@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\SerializerBundle\Tests\Serializer\Fixture;
+namespace JMS\SerializerBundle\Tests\Fixtures;
 
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;

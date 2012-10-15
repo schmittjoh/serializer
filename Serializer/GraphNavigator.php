@@ -95,8 +95,17 @@ final class GraphNavigator
      */
     public function accept($data, array $type = null, VisitorInterface $visitor)
     {
-        // determine type if not given
+        // If the type was not given, we infer the most specific type from the
+        // input data in serialization mode.
         if (null === $type) {
+            if (self::DIRECTION_DESERIALIZATION === $this->direction) {
+                $msg = 'The type must be given for all properties when deserializing.';
+                if (null !== $path = $this->getCurrentPath()) {
+                    $msg .= ' Path: '.$path;
+                }
+
+                throw new \RuntimeException($msg);
+            }
 
             $typeName = gettype($data);
             if ('object' === $typeName) {
