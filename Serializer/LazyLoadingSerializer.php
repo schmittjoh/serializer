@@ -29,7 +29,7 @@ class LazyLoadingSerializer extends Serializer
         $this->container = $container;
     }
 
-    protected function getDeserializationVisitor($format)
+    public function getDeserializationVisitor($format)
     {
         $visitor = parent::getDeserializationVisitor($format);
 
@@ -40,7 +40,7 @@ class LazyLoadingSerializer extends Serializer
         return $this->container->get($visitor);
     }
 
-    protected function getSerializationVisitor($format)
+    public function getSerializationVisitor($format)
     {
         $visitor = parent::getSerializationVisitor($format);
 

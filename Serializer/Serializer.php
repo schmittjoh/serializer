@@ -105,7 +105,7 @@ class Serializer implements SerializerInterface
     /**
      * @return VisitorInterface
      */
-    protected function getDeserializationVisitor($format)
+    public function getDeserializationVisitor($format)
     {
         if (!isset($this->deserializationVisitors[$format])) {
             throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
@@ -117,7 +117,7 @@ class Serializer implements SerializerInterface
     /**
      * @return VisitorInterface
      */
-    protected function getSerializationVisitor($format)
+    public function getSerializationVisitor($format)
     {
         if (!isset($this->serializationVisitors[$format])) {
             throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
