@@ -88,40 +88,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     protected $serializationVisitors;
     protected $deserializationVisitors;
 
-    public function testNullableArray()
+    public function testSerializeNullArray()
     {
         $arr = array('foo' => 'bar', 'baz' => null, null);
 
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $visitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy),
-            'xml'  => new XmlSerializationVisitor($namingStrategy),
-            'yml'  => new YamlSerializationVisitor($namingStrategy),
-        );
-        foreach($visitors as $v) {
-            $v->setSerializeNull(true);
-        }
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, new UnserializeObjectConstructor(), $this->dispatcher, null, $visitors, $this->deserializationVisitors);
-
-        $this->assertEquals($this->getContent('nullable'), $serializer->serialize($arr, $this->getFormat()));
+        $this->serializer->setSerializeNull(true);
+        $this->assertEquals($this->getContent('nullable'), $this->serializer->serialize($arr, $this->getFormat()));
+        $this->serializer->setSerializeNull(false);
     }
 
-    public function testNullableObject()
+    public function testSerializeNullObject()
     {
         $obj = new ObjectWithNullProperty('foo', 'bar');
 
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $visitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy),
-            'xml'  => new XmlSerializationVisitor($namingStrategy),
-            'yml'  => new YamlSerializationVisitor($namingStrategy),
-        );
-        foreach($visitors as $v) {
-            $v->setSerializeNull(true);
-        }
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, new UnserializeObjectConstructor(), $this->dispatcher, null, $visitors, $this->deserializationVisitors);
-
-        $this->assertEquals($this->getContent('simple_object_nullable'), $serializer->serialize($obj, $this->getFormat()));
+        $this->serializer->setSerializeNull(true);
+        $this->assertEquals($this->getContent('simple_object_nullable'), $this->serializer->serialize($obj, $this->getFormat()));
+        $this->serializer->setSerializeNull(false);
     }
 
     public function testNull()
