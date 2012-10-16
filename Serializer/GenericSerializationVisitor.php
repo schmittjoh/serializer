@@ -97,7 +97,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $this);
 
-            if (null === $v && (!is_string($k) || !$this->getSerializeNull())) {
+            if (null === $v && (!is_string($k) || !$this->shouldSerializeNull())) {
                 continue;
             }
 
@@ -135,7 +135,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 : $data->{$metadata->getter}());
 
         $v = $this->navigator->accept($v, $metadata->type, $this);
-        if (null === $v && !$this->getSerializeNull()) {
+        if (null === $v && !$this->shouldSerializeNull()) {
             return;
         }
 

@@ -36,9 +36,9 @@ abstract class AbstractVisitor implements VisitorInterface
         $this->serializeNull = (bool) $serializeNull;
     }
 
-    public function getSerializeNull()
+    public function shouldSerializeNull()
     {
-        return (bool) $this->serializeNull;
+        return $this->serializeNull;
     }
 
     public function getNamingStrategy()

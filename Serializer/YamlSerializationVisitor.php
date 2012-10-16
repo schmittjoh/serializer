@@ -85,7 +85,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v && (!is_string($k) || !$this->getSerializeNull())) {
+            if (null === $v && (!is_string($k) || !$this->shouldSerializeNull())) {
                 continue;
             }
 
@@ -157,7 +157,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
             : $data->{$metadata->getter}());
 
-        if (null === $v && !$this->getSerializeNull()) {
+        if (null === $v && !$this->shouldSerializeNull()) {
             return;
         }
 
