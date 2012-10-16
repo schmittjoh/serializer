@@ -42,6 +42,13 @@ interface VisitorInterface
     function prepare($data);
 
     /**
+     * Controls whether keys will be preserved when serializing null values
+     *
+     * @param bool $serializeNull
+     */
+    public function setSerializeNull($serializeNull);
+
+    /**
      * @param mixed $data
      * @param array $type
      *
