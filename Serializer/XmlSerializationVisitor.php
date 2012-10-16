@@ -76,7 +76,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $this->document = $this->createDocument(null, null, true);
             $node = $this->document->createAttribute('xsi:nil');
             $node->value = 'true';
-            $this->currentNode->appendChild($this->document->appendChild($node));
+            $this->currentNode->appendChild($node);
 
             return;
         }

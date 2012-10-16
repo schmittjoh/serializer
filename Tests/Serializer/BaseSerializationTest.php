@@ -124,6 +124,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('simple_object_nullable'), $serializer->serialize($obj, $this->getFormat()));
     }
 
+    public function testNull()
+    {
+        $this->assertEquals($this->getContent('null'), $this->serialize(null));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(null, $this->deserialize($this->getContent('null'), 'NULL'));
+        }
+    }
+
     public function testString()
     {
         $this->assertEquals($this->getContent('string'), $this->serialize('foo'));
