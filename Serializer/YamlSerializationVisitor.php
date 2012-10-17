@@ -59,6 +59,15 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->metadataStack = new \SplStack;
     }
 
+    public function visitNull($data, array $type)
+    {
+        if ('' === $this->writer->content) {
+            $this->writer->writeln('null');
+        }
+
+        return 'null';
+    }
+
     public function visitString($data, array $type)
     {
         $v = Inline::dump($data);
@@ -76,7 +85,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v) {
+            if (null === $v && (!is_string($k) || !$this->shouldSerializeNull())) {
                 continue;
             }
 
@@ -148,7 +157,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
             : $data->{$metadata->getter}());
 
-        if (null === $v) {
+        if (null === $v && !$this->shouldSerializeNull()) {
             return;
         }
 

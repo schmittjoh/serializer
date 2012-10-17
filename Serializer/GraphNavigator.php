@@ -107,10 +107,6 @@ final class GraphNavigator
                 throw new \RuntimeException($msg);
             }
 
-            if (null === $data) {
-                return null;
-            }
-
             $typeName = gettype($data);
             if ('object' === $typeName) {
                 $typeName = get_class($data);
@@ -120,6 +116,9 @@ final class GraphNavigator
         }
 
         switch ($type['name']) {
+            case 'NULL':
+                return $visitor->visitNull($data, $type);
+
             case 'string':
                 return $visitor->visitString($data, $type);
 

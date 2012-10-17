@@ -24,9 +24,21 @@ abstract class AbstractVisitor implements VisitorInterface
 {
     protected $namingStrategy;
 
+    private $serializeNull = false;
+
     public function __construct(PropertyNamingStrategyInterface $namingStrategy)
     {
         $this->namingStrategy = $namingStrategy;
+    }
+
+    public function setSerializeNull($serializeNull)
+    {
+        $this->serializeNull = (bool) $serializeNull;
+    }
+
+    public function shouldSerializeNull()
+    {
+        return $this->serializeNull;
     }
 
     public function getNamingStrategy()

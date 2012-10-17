@@ -53,6 +53,11 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $this->decode($data);
     }
 
+    public function visitNull($data, array $type)
+    {
+        return null;
+    }
+
     public function visitString($data, array $type)
     {
         $data = (string) $data;

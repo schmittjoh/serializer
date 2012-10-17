@@ -51,9 +51,15 @@ values:
                         path: "@MyBarBundle/Resources/config/serializer"
 
             visitors:
+                json:
+                    options: 0 # json_encode options bitmask
+                    serialize_null: false # whether to preserve keys with null values
                 xml:
+                    serialize_null: false
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
+                yaml:
+                    serialize_null: false
 
     .. code-block :: xml
 

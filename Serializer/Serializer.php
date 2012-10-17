@@ -52,6 +52,13 @@ class Serializer implements SerializerInterface
         $this->deserializationVisitors = $deserializationVisitors;
     }
 
+    public function setSerializeNull($serializeNull)
+    {
+        foreach ($this->serializationVisitors as $visitor) {
+            $visitor->setSerializeNull($serializeNull);
+        }
+    }
+
     public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
     {
         $this->exclusionStrategy = $exclusionStrategy;

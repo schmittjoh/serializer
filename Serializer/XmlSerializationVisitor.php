@@ -70,6 +70,23 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
+    public function visitNull($data, array $type)
+    {
+        if (null === $this->document) {
+            $this->document = $this->createDocument(null, null, true);
+            $node = $this->document->createAttribute('xsi:nil');
+            $node->value = 'true';
+            $this->currentNode->appendChild($node);
+
+            return;
+        }
+
+        $node = $this->document->createAttribute('xsi:nil');
+        $node->value = 'true';
+
+        return $node;
+    }
+
     public function visitString($data, array $type)
     {
         if (null === $this->document) {
@@ -147,7 +164,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($object)
             : $object->{$metadata->getter}());
 
-        if (null === $v) {
+        if (null === $v && !$this->shouldSerializeNull()) {
             return;
         }
 

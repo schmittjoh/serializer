@@ -45,7 +45,6 @@
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
-        
         <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
     </parameters>
 
@@ -167,6 +166,9 @@
             <call method="setOptions">
                 <argument>%jms_serializer.json_serialization_visitor.options%</argument>
             </call>
+            <call method="setSerializeNull">
+                <argument>%jms_serializer.json_serialization_visitor.serialize_null%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="json" />
         </service>
         <service id="jms_serializer.json_deserialization_visitor" class="%jms_serializer.json_deserialization_visitor.class%" public="false">
@@ -176,6 +178,9 @@
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <call method="setSerializeNull">
+                <argument>%jms_serializer.xml_serialization_visitor.serialize_null%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%" public="false">
@@ -188,6 +193,9 @@
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <call method="setSerializeNull">
+                <argument>%jms_serializer.yaml_serialization_visitor.serialize_null%</argument>
+            </call>
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
     </services>

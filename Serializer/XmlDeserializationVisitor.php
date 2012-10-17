@@ -84,6 +84,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $doc;
     }
 
+    public function visitNull($data, array $type)
+    {
+        return null;
+    }
+
     public function visitString($data, array $type)
     {
         $data = (string) $data;

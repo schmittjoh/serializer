@@ -67,6 +67,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
 use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Fixtures\Article;
 use JMS\SerializerBundle\Tests\Fixtures\Input;
@@ -86,6 +87,33 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     protected $handlerRegistry;
     protected $serializationVisitors;
     protected $deserializationVisitors;
+
+    public function testSerializeNullArray()
+    {
+        $arr = array('foo' => 'bar', 'baz' => null, null);
+
+        $this->serializer->setSerializeNull(true);
+        $this->assertEquals($this->getContent('nullable'), $this->serializer->serialize($arr, $this->getFormat()));
+        $this->serializer->setSerializeNull(false);
+    }
+
+    public function testSerializeNullObject()
+    {
+        $obj = new ObjectWithNullProperty('foo', 'bar');
+
+        $this->serializer->setSerializeNull(true);
+        $this->assertEquals($this->getContent('simple_object_nullable'), $this->serializer->serialize($obj, $this->getFormat()));
+        $this->serializer->setSerializeNull(false);
+    }
+
+    public function testNull()
+    {
+        $this->assertEquals($this->getContent('null'), $this->serialize(null));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(null, $this->deserialize($this->getContent('null'), 'NULL'));
+        }
+    }
 
     public function testString()
     {
