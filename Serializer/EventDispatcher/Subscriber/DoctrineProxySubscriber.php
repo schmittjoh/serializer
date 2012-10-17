@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber;
 
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\SerializerBundle\Serializer\EventDispatcher\PreSerializeEvent;
@@ -12,6 +13,12 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
+
+        if ($object instanceof PersistentCollection) {
+            $event->setType('ArrayCollection');
+
+            return;
+        }
 
         if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
             return;
