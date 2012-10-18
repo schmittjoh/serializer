@@ -67,8 +67,9 @@
         <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%" public="false">
+        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%">
             <argument type="service" id="translator" />
+            <tag name="jms_serializer.subscribing_handler" />
         </service>
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
     
