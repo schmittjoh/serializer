@@ -71,8 +71,10 @@
             <argument type="service" id="translator" />
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
-    
+        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+            
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
