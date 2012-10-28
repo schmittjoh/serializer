@@ -54,8 +54,8 @@ class Serializer implements SerializerInterface
 
     public function setSerializeNull($serializeNull)
     {
-        foreach ($this->serializationVisitors as $visitor) {
-            $visitor->setSerializeNull($serializeNull);
+        foreach (array_keys($this->serializationVisitors) as $format) {
+            $this->getSerializationVisitor($format)->setSerializeNull($serializeNull);
         }
     }
 
