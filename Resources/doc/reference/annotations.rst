@@ -61,6 +61,7 @@ set the value via reflection, but you may change this to use a public method ins
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\AccessType;
 
     /** @AccessType("public_method") */
     class User
@@ -86,6 +87,7 @@ be called to retrieve, or set the value of the given property:
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\Accessor;
 
     class User
     {
@@ -115,6 +117,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
 .. code-block :: php
 
     <?php
+    use JMS\SerializerBundle\Annotation\AccessorOrder;
 
     /**
      * @AccessorOrder("alphabetical")
@@ -167,11 +170,32 @@ object has been serialized.
 This annotation can be defined on a method which is supposed to be called after
 the object has been deserialized.
 
+@HandlerCallback
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a method if serialization/deserialization is handled
+by the object iself.
+
+.. code-block :: php
+
+    <?php
+    
+    class Article
+    {
+        /**
+         * @HandlerCallack("xml", direction = "serialization")
+         */
+        public function serializeToXml(XmlSerializationVisitor $visitor)
+        {
+            // custom logic here
+        }
+    }
+
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.
-This annotation must only be defined when you want to be able to deserialize an
-object.
+For deserialization, this annotation must be defined. For serialization, you may
+define it in order to enhance the produced output; for example, you may want to
+force a certain format to be used for DateTime types.
 
 Available Types:
 
@@ -196,7 +220,12 @@ Available Types:
 |                           | Examples: array<string, string>,                 |
 |                           | array<string, MyNamespace\MyObject>, etc.        |
 +---------------------------+--------------------------------------------------+
-| DateTime                  | PHP's DateTime object                            |
+| DateTime                  | PHP's DateTime object (default format/timezone)  |
++---------------------------+--------------------------------------------------+
+| DateTime<"format">        | PHP's DateTime object (custom format/default     |
+|                           | timezone)                                        |
++---------------------------+--------------------------------------------------+
+| DateTime<"format", "zone">| PHP's DateTime object (custom format/timezone)   |
 +---------------------------+--------------------------------------------------+
 | T                         | Where T is a fully qualified class name.         |
 +---------------------------+--------------------------------------------------+
@@ -273,6 +302,12 @@ Resulting XML:
     <user>
         <name><![CDATA[Johannes]]></name>
     </user>
+
+.. note ::
+
+    @XmlRoot only applies to the root element, but is for example not taken into
+    account for collections. You can define the entry name for collections using
+    @XmlList, or @XmlMap.
 
 @XmlAttribute
 ~~~~~~~~~~~~~
@@ -389,3 +424,29 @@ This allows you to use the keys of an array as xml tags.
 .. note ::
 
     When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
+
+@XmlAttributeMap
+~~~~~~~~~~~~~
+
+This is similar to the @XmlKeyValuePairs, but instead of creating child elements, it creates attributes.
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\SerializerBundle\Annotation\XmlAttribute;
+
+    class Input
+    {
+        /** @XmlAttributeMap */
+        private $id = array(
+            'name' => 'firstname',
+            'value' => 'Adrien',
+        );
+    }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <result name="firstname" value="Adrien"/>

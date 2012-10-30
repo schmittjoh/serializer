@@ -22,14 +22,9 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 
 abstract class Version
 {
+    /**
+     * @Required
+     * @var string
+     */
     public $version;
-
-    public function __construct(array $values)
-    {
-        if (!isset($values['value']) || !is_scalar($values['value'])) {
-            throw new RuntimeException('$version must be a scalar.');
-        }
-
-        $this->version = $values['value'];
-    }
 }

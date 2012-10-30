@@ -26,17 +26,9 @@ use JMS\SerializerBundle\Exception\RuntimeException;
  */
 final class XmlRoot
 {
+    /**
+     * @Required
+     * @var string
+     */
     public $name;
-
-    public function __construct(array $values)
-    {
-        if (!isset($values['value'])) {
-            throw new RuntimeException('You must define a name for @XmlRoot.');
-        }
-        if (!is_string($values['value'])) {
-            throw new RuntimeException('"value" must be a string, but got '.json_encode($values['value']));
-        }
-
-        $this->name = $values['value'];
-    }
 }

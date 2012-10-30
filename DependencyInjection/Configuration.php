@@ -26,12 +26,13 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 class Configuration implements ConfigurationInterface
 {
     private $debug;
-    private $factories;
 
-    public function __construct($debug = false, array $factories = array())
+    /**
+     * @param boolean $debug
+     */
+    public function __construct($debug = false)
     {
         $this->debug = $debug;
-        $this->factories = $factories;
     }
 
     public function getConfigTreeBuilder()
@@ -43,11 +44,30 @@ class Configuration implements ConfigurationInterface
                 ->children()
         ;
 
+        $this->addHandlersSection($root);
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
 
         return $tb;
+    }
+
+    private function addHandlersSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('handlers')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->arrayNode('datetime')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('default_format')->defaultValue(\DateTime::ISO8601)->end()
+                            ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
+                        ->end()
+                   ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     private function addSerializersSection(NodeBuilder $builder)
@@ -63,18 +83,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-
-        $handlerNode = $builder
-            ->arrayNode('handlers')
-                ->addDefaultsIfNotSet()
-                ->disallowNewKeysInSubsequentConfigs()
-                ->children()
-        ;
-
-        foreach ($this->factories as $factory) {
-            $factory->addConfiguration(
-                $handlerNode->arrayNode($factory->getConfigKey())->canBeUnset());
-        }
     }
 
     private function addMetadataSection(NodeBuilder $builder)
@@ -155,6 +163,15 @@ class Configuration implements ConfigurationInterface
                                         return $v;
                                     })
                                 ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('xml')
+                        ->fixXmlConfig('whitelisted-doctype', 'doctype_whitelist')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('doctype_whitelist')
+                                ->prototype('scalar')->end()
                             ->end()
                         ->end()
                     ->end()

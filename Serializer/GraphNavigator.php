@@ -18,131 +18,224 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
+use JMS\SerializerBundle\Serializer\Handler\HandlerRegistryInterface;
+use JMS\SerializerBundle\Serializer\EventDispatcher\Event;
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
+/**
+ * Handles traversal along the object graph.
+ *
+ * This class handles traversal along the graph, and calls different methods
+ * on visitors, or custom handlers to process its nodes.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 final class GraphNavigator
 {
     const DIRECTION_SERIALIZATION = 1;
     const DIRECTION_DESERIALIZATION = 2;
 
     private $direction;
-    private $exclusionStrategy;
+    private $dispatcher;
     private $metadataFactory;
+    private $format;
+    private $handlerRegistry;
+    private $objectConstructor;
+    private $exclusionStrategy;
+    private $customHandlers = array();
     private $visiting;
 
-    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    /**
+     * Parses a direction string to one of the direction constants.
+     *
+     * @param string $dirStr
+     *
+     * @return integer
+     */
+    public static function parseDirection($dirStr)
+    {
+        switch (strtolower($dirStr)) {
+            case 'serialization':
+                return self::DIRECTION_SERIALIZATION;
+
+            case 'deserialization':
+                return self::DIRECTION_DESERIALIZATION;
+
+            default:
+                throw new \InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
+        }
+    }
+
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, $format, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, ExclusionStrategyInterface $exclusionStrategy = null, EventDispatcherInterface $dispatcher = null)
     {
         $this->direction = $direction;
+        $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
+        $this->format = $format;
+        $this->handlerRegistry = $handlerRegistry;
+        $this->objectConstructor = $objectConstructor;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
     }
 
-    public function accept($data, $type, VisitorInterface $visitor)
+    /**
+     * Called for each node of the graph that is being traversed.
+     *
+     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param array|null $type array has the format ["name" => string, "params" => array]
+     * @param VisitorInterface $visitor
+     *
+     * @return mixed the return value depends on the direction, and type of visitor
+     */
+    public function accept($data, array $type = null, VisitorInterface $visitor)
     {
-        // determine type if not given
+        // If the type was not given, we infer the most specific type from the
+        // input data in serialization mode.
         if (null === $type) {
-            if (null === $data) {
-                return null;
+            if (self::DIRECTION_DESERIALIZATION === $this->direction) {
+                $msg = 'The type must be given for all properties when deserializing.';
+                if (null !== $path = $this->getCurrentPath()) {
+                    $msg .= ' Path: '.$path;
+                }
+
+                throw new \RuntimeException($msg);
             }
 
-            $type = gettype($data);
-            if ('object' === $type) {
-                $type = get_class($data);
+            $typeName = gettype($data);
+            if ('object' === $typeName) {
+                $typeName = get_class($data);
             }
+
+            $type = array('name' => $typeName, 'params' => array());
         }
 
-        if ('string' === $type) {
-            return $visitor->visitString($data, $type);
-        } else if ('integer' === $type) {
-            return $visitor->visitInteger($data, $type);
-        } else if ('boolean' === $type) {
-            return $visitor->visitBoolean($data, $type);
-        } else if ('double' === $type) {
-            return $visitor->visitDouble($data, $type);
-        } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
-            return $visitor->visitArray($data, $type);
-        } else if ('resource' === $type) {
-            $path = array();
-            foreach ($this->visiting as $obj) {
-                $path[] = get_class($obj);
-            }
+        switch ($type['name']) {
+            case 'NULL':
+                return $visitor->visitNull($data, $type);
 
-            $msg = 'Resources are not supported in serialized data.';
-            if ($path) {
-                $msg .= ' Path: '.implode(' -> ', $path);
-            }
+            case 'string':
+                return $visitor->visitString($data, $type);
 
-            throw new \RuntimeException($msg);
-        } else {
-            if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
-                if ($this->visiting->contains($data)) {
+            case 'integer':
+                return $visitor->visitInteger($data, $type);
+
+            case 'boolean':
+                return $visitor->visitBoolean($data, $type);
+
+            case 'double':
+                return $visitor->visitDouble($data, $type);
+
+            case 'array':
+                return $visitor->visitArray($data, $type);
+
+            case 'resource':
+                $msg = 'Resources are not supported in serialized data.';
+                if (null !== $path = $this->getCurrentPath()) {
+                    $msg .= ' Path: '.implode(' -> ', $path);
+                }
+
+                throw new \RuntimeException($msg);
+
+            default:
+                $isSerializing = self::DIRECTION_SERIALIZATION === $this->direction;
+
+                if ($isSerializing && null !== $data) {
+                    if ($this->visiting->contains($data)) {
+                        return null;
+                    }
+                    $this->visiting->attach($data);
+                }
+
+                // First, try whether a custom handler exists for the given type. This is done
+                // before loading metadata because the type name might not be a class, but
+                // could also simply be an artifical type.
+                if (null !== $handler = $this->handlerRegistry->getHandler($this->direction, $type['name'], $this->format)) {
+                    $rs = call_user_func($handler, $visitor, $data, $type);
+
+                    if ($isSerializing) {
+                        $this->visiting->detach($data);
+                    }
+
+                    return $rs;
+                }
+
+                // Trigger pre-serialization callbacks, and listeners if they exist.
+                if ($isSerializing) {
+                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($visitor, $data, $type));
+                        $type = $event->getType();
+                    }
+                }
+
+                // Load metadata, and check whether this class should be excluded.
+                $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $isSerializing ? $data : null)) {
+                    if ($isSerializing) {
+                        $this->visiting->detach($data);
+                    }
+
                     return null;
                 }
-                $this->visiting->attach($data);
-            }
 
-            // try custom handler
-            $handled = false;
-            $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
-            if ($handled) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                    $this->visiting->detach($data);
+                if ($isSerializing) {
+                    foreach ($metadata->preSerializeMethods as $method) {
+                        $method->invoke($data);
+                    }
                 }
 
-                return $rs;
-            }
-
-            $metadata = $this->metadataFactory->getMetadataForClass($type);
-            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                    $this->visiting->detach($data);
+                $object = $data;
+                if ( ! $isSerializing) {
+                    $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type);
                 }
 
-                return null;
-            }
+                if (isset($metadata->handlerCallbacks[$this->direction][$this->format])) {
+                    $rs = $object->{$metadata->handlerCallbacks[$this->direction][$this->format]}($visitor, $isSerializing ? null : $data);
+                    $this->afterVisitingObject($visitor, $metadata, $object, $type);
 
-            // pre-serialization callbacks
-            if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                foreach ($metadata->preSerializeMethods as $method) {
-                    $method->invoke($data);
-                }
-            }
-
-            // check if traversable
-            if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
-                $rs = $visitor->visitTraversable($data, $type);
-                $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
-
-                return $rs;
-            }
-
-            $visitor->startVisitingObject($metadata, $data, $type);
-            foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
-                    continue;
+                    return $isSerializing ? $rs : $object;
                 }
 
-                if (self::DIRECTION_DESERIALIZATION === $this->direction && $propertyMetadata->readOnly) {
-                    continue;
-                }
+                $visitor->startVisitingObject($metadata, $object, $type);
+                foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $isSerializing ? $data : null)) {
+                        continue;
+                    }
 
-                // try custom handler
-                if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data)) {
+                    if ( ! $isSerializing && $propertyMetadata->readOnly) {
+                        continue;
+                    }
+
                     $visitor->visitProperty($propertyMetadata, $data);
                 }
-            }
 
-            $rs = $visitor->endVisitingObject($metadata, $data, $type);
-            $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
+                if ($isSerializing) {
+                    $this->afterVisitingObject($visitor, $metadata, $data, $type);
 
-            return $rs;
+                    return $visitor->endVisitingObject($metadata, $data, $type);
+                }
+
+                $rs = $visitor->endVisitingObject($metadata, $data, $type);
+                $this->afterVisitingObject($visitor, $metadata, $rs, $type);
+
+                return $rs;
         }
     }
 
+    /**
+     * Detaches an object from the visiting map.
+     *
+     * Use this method if you like to re-visit an object which is already
+     * being visited. Be aware that you might cause an endless loop if you
+     * use this inappropriately.
+     *
+     * @param object $object
+     */
     public function detachObject($object)
     {
         if (null === $object) {
@@ -154,7 +247,21 @@ final class GraphNavigator
         $this->visiting->detach($object);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object)
+    private function getCurrentPath()
+    {
+        $path = array();
+        foreach ($this->visiting as $obj) {
+            $path[] = get_class($obj);
+        }
+
+        if ( ! $path) {
+            return null;
+        }
+
+        return implode(' -> ', $path);
+    }
+
+    private function afterVisitingObject(VisitorInterface $visitor, ClassMetadata $metadata, $object, array $type)
     {
         if (self::DIRECTION_SERIALIZATION === $this->direction) {
             $this->visiting->detach($object);
@@ -163,11 +270,19 @@ final class GraphNavigator
                 $method->invoke($object);
             }
 
+            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $this->format)) {
+                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $this->format, new Event($visitor, $object, $type));
+            }
+
             return;
         }
 
         foreach ($metadata->postDeserializeMethods as $method) {
             $method->invoke($object);
+        }
+
+        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
+            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new Event($visitor, $object, $type));
         }
     }
 }

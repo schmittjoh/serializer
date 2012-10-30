@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Serializer\Handler;
+namespace JMS\SerializerBundle\Annotation;
 
-use JMS\SerializerBundle\Serializer\VisitorInterface;
-
-interface DeserializationHandlerInterface
+/**
+ * @Annotation
+ * @Target({"PROPERTY", "METHOD"})
+ */
+final class XmlAttributeMap
 {
-    function deserialize(VisitorInterface $visitor, $data, $type, &$handled);
 }

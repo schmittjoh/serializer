@@ -18,45 +18,26 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
-use JMS\SerializerBundle\SerializerBundleAwareInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class JMSSerializerExtension extends Extension
+class JMSSerializerExtension extends ConfigurableExtension
 {
-    private $kernel;
-    private $factories = array();
-
-    public function __construct(KernelInterface $kernel)
+    public function loadInternal(array $config, ContainerBuilder $container)
     {
-        $this->kernel = $kernel;
-    }
-
-    public function addHandlerFactory(HandlerFactoryInterface $factory)
-    {
-        $this->factories[$factory->getConfigKey()] = $factory;
-    }
-
-    public function load(array $configs, ContainerBuilder $container)
-    {
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
-
         $loader = new XmlFileLoader($container, new FileLocator(array(
                         __DIR__.'/../Resources/config/')));
         $loader->load('services.xml');
 
-        // add factories as resource
-        foreach ($this->factories as $factory) {
-            $container->addObjectResource($factory);
-        }
+        // Built-in handlers.
+        $container->getDefinition('jms_serializer.datetime_handler')
+            ->addArgument($config['handlers']['datetime']['default_format'])
+            ->addArgument($config['handlers']['datetime']['default_timezone']);
 
         // property naming
         $container
@@ -72,38 +53,10 @@ class JMSSerializerExtension extends Extension
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
         }
 
-        // gather handlers
-        $serializationHandlers = $deserializationHandlers = array();
-        foreach ($config['handlers'] as $k => $handlerConfig) {
-            $id = $this->factories[$k]->getHandlerId($container, $handlerConfig);
-            $type = $this->factories[$k]->getType($handlerConfig);
-
-            if (0 !== ($type & HandlerFactoryInterface::TYPE_SERIALIZATION)) {
-                $serializationHandlers[] = new Reference($id);
-            }
-
-            if (0 !== ($type & HandlerFactoryInterface::TYPE_DESERIALIZATION)) {
-                $deserializationHandlers[] = new Reference($id);
-            }
-        }
-
-        foreach (array('json', 'xml', 'yaml') as $format) {
-            $container
-                ->getDefinition('jms_serializer.'.$format.'_serialization_visitor')
-                ->replaceArgument(1, $serializationHandlers)
-            ;
-        }
-        foreach (array('json', 'xml') as $format) {
-            $container
-                ->getDefinition('jms_serializer.'.$format.'_deserialization_visitor')
-                ->replaceArgument(1, $deserializationHandlers)
-            ;
-        }
-
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
-        } else if ('file' === $config['metadata']['cache']) {
+        } elseif ('file' === $config['metadata']['cache']) {
             $container
                 ->getDefinition('jms_serializer.metadata.cache.file_cache')
                 ->replaceArgument(0, $config['metadata']['file_cache']['dir'])
@@ -155,20 +108,16 @@ class JMSSerializerExtension extends Extension
         ;
 
         $container
+            ->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist'])
+        ;
+
+        $container
             ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
         ;
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        foreach ($this->kernel->getBundles() as $bundle) {
-            if (!method_exists($bundle, 'configureSerializerExtension')) {
-                continue;
-            }
-
-            $bundle->configureSerializerExtension($this);
-        }
-
-        return new Configuration($this->kernel->isDebug(), $this->factories);
+        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
     }
 }

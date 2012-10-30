@@ -24,12 +24,14 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 
 class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
+    const DEFAULT_GROUP = 'Default';
+
     private $groups = array();
 
     public function __construct(array $groups)
     {
         if (empty($groups)) {
-            throw new RuntimeException('Empty group array may not be configured for GroupsExclusionStrategy');
+            $groups = array(self::DEFAULT_GROUP);
         }
 
         foreach ($groups as $group) {
@@ -37,7 +39,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 
-    public function shouldSkipClass(ClassMetadata $metadata)
+    public function shouldSkipClass(ClassMetadata $metadata, $object = null)
     {
         return false;
     }
@@ -45,10 +47,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property)
+    public function shouldSkipProperty(PropertyMetadata $property, $object = null)
     {
-        if (!$property->groups) {
-            return true;
+        if ( ! $property->groups) {
+            return ! isset($this->groups[self::DEFAULT_GROUP]);
         }
 
         foreach ($property->groups as $group) {

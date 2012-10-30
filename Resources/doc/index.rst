@@ -26,16 +26,21 @@ Documentation
     installation
     configuration
     usage
+    event_system
+    handlers
     reference
     cookbook
 
 - :doc:`Installation <installation>`
 - :doc:`Configuration <configuration>`
 - :doc:`Usage <usage>`
+- :doc:`Events <event_system>`
+- :doc:`Handlers <handlers>`
+
 - Recipies
-    * :doc:`Custom Handlers </cookbook/custom_handlers>`
     * :doc:`/cookbook/exclusion_strategies`
     * :doc:`/cookbook/metadata_for_third_party`
+    
 - Reference
     * :doc:`Annotations </reference/annotations>`
     * :doc:`XML Reference </reference/xml_reference>`

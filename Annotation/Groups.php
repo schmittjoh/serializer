@@ -28,17 +28,4 @@ final class Groups
 {
     /** @var array<string> @Required */
     public $groups;
-
-    public function __construct()
-    {
-        if (0 === func_num_args()) {
-            return;
-        }
-        $values = func_get_arg(0);
-
-        if (!isset($values['value'])) {
-            throw new InvalidArgumentException('The "groups" attribute must be set.');
-        }
-        $this->groups = (array) $values['value'];
-    }
 }

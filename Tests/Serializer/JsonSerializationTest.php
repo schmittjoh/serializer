@@ -18,6 +18,18 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
+use JMS\SerializerBundle\Serializer\VisitorInterface;
+
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
+use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;
+
+use JMS\SerializerBundle\Serializer\EventDispatcher\Event;
+
+use JMS\SerializerBundle\Tests\Fixtures\Author;
+
+use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 
@@ -64,10 +76,16 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
+            $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name"}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['nullable'] = '{"foo":"bar","baz":null}';
+            $outputs['null'] = 'null';
+            $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
+            $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
+            $outputs['hash_empty'] = '{"hash":{}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -77,8 +95,44 @@ class JsonSerializationTest extends BaseSerializationTest
         return $outputs[$key];
     }
 
+    public function testAddLinksToOutput()
+    {
+        $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\SerializerBundle\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type) {
+                return $visitor->visitArray(iterator_to_array($data), $type);
+            }
+        );
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
+    }
+
     protected function getFormat()
     {
         return 'json';
+    }
+}
+
+class LinkAddingSubscriber implements EventSubscriberInterface
+{
+    public function onPostSerialize(Event $event)
+    {
+        $author = $event->getObject();
+
+        $event->getVisitor()->addData('_links', array(
+            'details' => 'http://foo.bar/details/'.$author->getName(),
+            'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
+        ));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\SerializerBundle\Tests\Fixtures\Author'),
+        );
     }
 }

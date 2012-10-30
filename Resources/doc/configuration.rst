@@ -14,28 +14,24 @@ values:
 .. configuration-block ::
 
     .. code-block :: yaml
-    
+
         # config.yml
         jms_serializer:
             handlers:
-                object_based: false
                 datetime:
-                    format: "Y-m-dTH:i:s" # ISO8601
+                    default_format: "c" # ISO8601
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
-                array_collection: true
-                form_error: true
-                constraint_violation: true
-    
+
             property_naming:
                 separator:  _
                 lower_case: true
-    
+
             metadata:
                 cache: file
                 debug: "%kernel.debug%"
                 file_cache:
                     dir: "%kernel.cache_dir%/serializer"
-    
+
                 # Using auto-detection, the mapping files for each bundle will be
                 # expected in the Resources/config/serializer directory.
                 #
@@ -43,7 +39,7 @@ values:
                 # class: My\FooBundle\Entity\User
                 # expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
                 auto_detection: true
-    
+
                 # if you don't want to use auto-detection, you can also define the
                 # namespace prefix and the corresponding directory explicitly
                 directories:
@@ -52,36 +48,43 @@ values:
                         path: "@MyFooBundle/Resources/config/serializer"
                     another-name:
                         namespace_prefix: "My\\BarBundle"
-                        path: "@MyBarBundle/Resources/config/serializer"    
+                        path: "@MyBarBundle/Resources/config/serializer"
+
+            visitors:
+                json:
+                    options: 0 # json_encode options bitmask
+                xml:
+                    doctype_whitelist:
+                        - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
 
     .. code-block :: xml
-    
+
         <!-- config.xml -->
         <jms-serializer>
             <handlers>
                 <object-based />
-                <datetime 
+                <datetime
                     format="Y-mdTH:i:s"
                     default-timezone="UTC" />
                 <array-collection />
                 <form-error />
-                <constraint-violation /> 
+                <constraint-violation />
             </handlers>
-            
+
             <property-naming
                 seperator="_"
                 lower-case="true" />
-                
+
             <metadata
                 cache="file"
                 debug="%kernel.debug%"
                 auto-detection="true">
-                
+
                 <file-cache dir="%kernel.cache_dir%/serializer" />
-                
+
                 <!-- If auto-detection is enabled, mapping files for each bundle will
-                     be expected in the Resources/config/serializer directory. 
-                     
+                     be expected in the Resources/config/serializer directory.
+
                      Example:
                      class: My\FooBundle\Entity\User
                      expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
@@ -90,5 +93,11 @@ values:
                     namespace-prefix="My\FooBundle"
                     path="@MyFooBundle/Resources/config/serializer" />
             </metadata>
+
+            <visitors>
+                <xml>
+                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
+                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
+                </xml>
+            </visitors>
         </jms-serializer>
-    

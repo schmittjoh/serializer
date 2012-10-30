@@ -18,6 +18,8 @@
 
 namespace JMS\SerializerBundle\Metadata\Driver;
 
+use JMS\SerializerBundle\Serializer\GraphNavigator;
+
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
@@ -115,9 +117,9 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $type = $pElem->attributes()->type) {
-                        $pMetadata->type = (string) $type;
+                        $pMetadata->setType((string) $type);
                     } else if (isset($pElem->type)) {
-                        $pMetadata->type = (string) $pElem->type;
+                        $pMetadata->setType((string) $pElem->type);
                     }
 
                     if (null !== $groups = $pElem->attributes()->groups) {
@@ -158,12 +160,21 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute'};
                     }
 
+                    if (isset($pElem->attributes()->{'xml-attribute-map'})) {
+                        $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute-map'};
+                    }
+
                     if (isset($pElem->attributes()->{'xml-value'})) {
                         $pMetadata->xmlValue = 'true' === (string) $pElem->attributes()->{'xml-value'};
                     }
 
                     if (isset($pElem->attributes()->{'xml-key-value-pairs'})) {
                         $pMetadata->xmlKeyValuePairs = 'true' === (string) $pElem->attributes()->{'xml-key-value-pairs'};
+                    }
+
+                    //we need read-only before setter and getter set, because that method depends on flag being set
+                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
+                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};
@@ -178,9 +189,6 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
 
-                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
-                    }
                 }
 
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
@@ -210,6 +218,20 @@ class XmlDriver extends AbstractFileDriver
 
                 case 'post-deserialize':
                     $metadata->addPostDeserializeMethod(new MethodMetadata($name, (string) $method->attributes()->name));
+                    break;
+
+                case 'handler':
+                    if ( ! isset($method->attributes()->format)) {
+                        throw new RuntimeException('The format attribute must be set for "handler" callback methods.');
+                    }
+                    if ( ! isset($method->attributes()->direction)) {
+                        throw new RuntimeException('The direction attribute must be set for "handler" callback methods.');
+                    }
+
+                    $direction = GraphNavigator::parseDirection((string) $method->attributes()->direction);
+                    $format = (string) $method->attributes()->format;
+                    $metadata->addHandlerCallback($direction, $format, (string) $method->attributes()->name);
+
                     break;
 
                 default:

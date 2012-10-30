@@ -15,6 +15,9 @@ YAML Reference
                 exclude: true
                 expose: true
                 access_type: public_method # defaults to property
+                accessor: # access_type must be set to public_method
+                    getter: getSomeOtherProperty
+                    setter: setSomeOtherProperty
                 type: string
                 serialized_name: foo
                 since_version: 1.0
@@ -31,6 +34,15 @@ YAML Reference
                     inline: true
                     key_attribute_name: foo
                     entry_name: bar
+                xml_attribute_map: true
+
+        handler_callbacks:
+            serialization:
+                xml: serializeToXml
+                json: serializeToJson
+            deserialization:
+                xml: deserializeFromXml
+
         callback_methods:
             pre_serialize: [foo, bar]
             post_serialize: [foo, bar]

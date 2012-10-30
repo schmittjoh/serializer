@@ -19,30 +19,26 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Exception\XmlErrorException;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
-class XmlDeserializationVisitor extends AbstractDeserializationVisitor
+class XmlDeserializationVisitor extends AbstractVisitor
 {
-    private $objectConstructor;
     private $objectStack;
     private $metadataStack;
     private $currentObject;
     private $currentMetadata;
     private $result;
     private $navigator;
-    private $disableExternalEntities;
+    private $disableExternalEntities = true;
+    private $doctypeWhitelist = array();
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
+    public function enableExternalEntities()
     {
-        parent::__construct($namingStrategy, $customHandlers);
-
-        $this->objectConstructor = $objectConstructor;
-        $this->disableExternalEntities = $disableExternalEntities;
+        $this->disableExternalEntities = false;
     }
 
     public function setNavigator(GraphNavigator $navigator)
@@ -62,6 +58,21 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     {
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
+
+        $dom = new \DOMDocument();
+        $dom->loadXML($data);
+        foreach ($dom->childNodes as $child) {
+            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+                $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
+                if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                        $internalSubset
+                    ));
+                }
+            }
+        }
+
         $doc = simplexml_load_string($data);
         libxml_use_internal_errors($previous);
         libxml_disable_entity_loader($previousEntityLoaderState);
@@ -73,7 +84,12 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $doc;
     }
 
-    public function visitString($data, $type)
+    public function visitNull($data, array $type)
+    {
+        return null;
+    }
+
+    public function visitString($data, array $type)
     {
         $data = (string) $data;
 
@@ -84,13 +100,13 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $data;
     }
 
-    public function visitBoolean($data, $type)
+    public function visitBoolean($data, array $type)
     {
         $data = (string) $data;
 
         if ('true' === $data) {
             $data = true;
-        } else if ('false' === $data) {
+        } elseif ('false' === $data) {
             $data = false;
         } else {
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
@@ -103,7 +119,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $data;
     }
 
-    public function visitInteger($data, $type)
+    public function visitInteger($data, array $type)
     {
         $data = (integer) $data;
 
@@ -114,7 +130,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $data;
     }
 
-    public function visitDouble($data, $type)
+    public function visitDouble($data, array $type)
     {
         $data = (double) $data;
 
@@ -125,11 +141,11 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $data;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, array $type)
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
 
-        if (!isset($data->$entryName)) {
+        if ( ! isset($data->$entryName)) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -137,56 +153,52 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
             return array();
         }
 
-        if ('array' === $type) {
-            throw new RuntimeException(sprintf('You must specify either a list type, or a key and entry type for type array.'));
+        switch (count($type['params'])) {
+            case 0:
+                throw new RuntimeException(sprintf('The array type must be specified either as "array<T>", or "array<K,V>".'));
+
+            case 1:
+                $result = array();
+                if (null === $this->result) {
+                    $this->result = &$result;
+                }
+
+                foreach ($data->$entryName as $v) {
+                    $result[] = $this->navigator->accept($v, $type['params'][0], $this);
+                }
+
+                return $result;
+
+            case 2:
+                if (null === $this->currentMetadata) {
+                    throw new RuntimeException('Maps are not supported on top-level without metadata.');
+                }
+
+                list($keyType, $entryType) = $type['params'];
+                $result = array();
+                if (null === $this->result) {
+                    $this->result = &$result;
+                }
+
+                foreach ($data->$entryName as $v) {
+                    if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
+                        throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
+                    }
+
+                    $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this);
+                    $result[$k] = $this->navigator->accept($v, $entryType, $this);
+                }
+
+                return $result;
+
+            default:
+                throw new \LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type['params'])));
         }
-
-        if (false === $pos = strpos($type, ',', 6)) {
-            $listType = substr($type, 6, -1);
-
-            $result = array();
-            if (null === $this->result) {
-                $this->result = &$result;
-            }
-
-            foreach ($data->$entryName as $v) {
-                $result[] = $this->navigator->accept($v, $listType, $this);
-            }
-
-            return $result;
-        }
-
-        if (null === $this->currentMetadata) {
-            throw new RuntimeException('Maps are not supported on top-level without metadata.');
-        }
-
-        $keyType = trim(substr($type, 6, $pos - 6));
-        $entryType = trim(substr($type, $pos+1, -1));
-        $result = array();
-        if (null === $this->result) {
-            $this->result = &$result;
-        }
-
-        foreach ($data->$entryName as $v) {
-            if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
-                throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
-            }
-
-            $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this);
-            $result[$k] = $this->navigator->accept($v, $entryType, $this);
-        }
-
-        return $result;
     }
 
-    public function visitTraversable($data, $type)
+    public function startVisitingObject(ClassMetadata $metadata, $object, array $type)
     {
-        throw new RuntimeException('Traversable is not supported for Deserialization.');
-    }
-
-    public function startVisitingObject(ClassMetadata $metadata, $data, $type)
-    {
-        $this->setCurrentObject($this->objectConstructor->construct($this, $metadata, $data, $type));
+        $this->setCurrentObject($object);
 
         if (null === $this->result) {
             $this->result = $this->currentObject;
@@ -198,7 +210,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $name = $this->namingStrategy->translateName($metadata);
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
         if ($metadata->xmlAttribute) {
@@ -246,18 +258,12 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         $this->currentObject->{$metadata->setter}($v);
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         $rs = $this->currentObject;
         $this->revertCurrentObject();
 
         return $rs;
-    }
-
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
-    {
-        // TODO
-        return false;
     }
 
     public function setCurrentObject($object)
@@ -295,5 +301,21 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param array<string> $doctypeWhitelist
+     */
+    public function setDoctypeWhitelist(array $doctypeWhitelist)
+    {
+        $this->doctypeWhitelist = $doctypeWhitelist;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getDoctypeWhitelist()
+    {
+        return $this->doctypeWhitelist;
     }
 }
