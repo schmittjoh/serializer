@@ -33,47 +33,39 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $refClass = new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Doctrine\BlogPost');
         $metadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
 
-        return array(array($metadata));
+        return $metadata;
     }
 
-    /**
-     * @dataProvider getMetadata
-     */
-    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata($metadata)
+    public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
     {
+        $metadata = $this->getMetadata();
+
         $this->assertEquals('DateTime', $metadata->propertyMetadata['createdAt']->type);
     }
 
-    /**
-     * @dataProvider getMetadata
-     */
-    public function testSingleValuedAssociationIsProperlyHinted($metadata)
+    public function testSingleValuedAssociationIsProperlyHinted()
     {
+        $metadata = $this->getMetadata();
         $this->assertEquals('JMS\SerializerBundle\Tests\Fixtures\Doctrine\Author', $metadata->propertyMetadata['author']->type);
     }
 
-    /**
-     * @dataProvider getMetadata
-     */
-    public function testMultiValuedAssociationIsProperlyHinted($metadata)
+    public function testMultiValuedAssociationIsProperlyHinted()
     {
+        $metadata = $this->getMetadata();
         $this->assertEquals('ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Doctrine\Comment>', $metadata->propertyMetadata['comments']->type);
     }
 
-    /**
-     * @dataProvider getMetadata
-     */
-    public function testTypeGuessByDoctrineIsOverwrittenByDelegateDriver($metadata)
+    public function testTypeGuessByDoctrineIsOverwrittenByDelegateDriver()
     {
+        $metadata = $this->getMetadata();
+
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals('integer', $metadata->propertyMetadata['published']->type);
     }
 
-    /**
-     * @dataProvider getMetadata
-     */
-    public function testUnknownDoctrineTypeDoesNotResultInAGuess($metadata)
+    public function testUnknownDoctrineTypeDoesNotResultInAGuess()
     {
+        $metadata = $this->getMetadata();
         $this->assertNull($metadata->propertyMetadata['slug']->type);
     }
 
