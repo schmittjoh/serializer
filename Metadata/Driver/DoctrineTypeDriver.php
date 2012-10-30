@@ -76,7 +76,7 @@ class DoctrineTypeDriver implements DriverInterface
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
-        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class)) {
+        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->getName())) {
             return $classMetadata;
         }
 
