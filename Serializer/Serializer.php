@@ -54,6 +54,9 @@ class Serializer implements SerializerInterface
         $this->serializeNull = false;
     }
 
+    /**
+     * @param boolean $serializeNull
+     */
     public function setSerializeNull($serializeNull)
     {
         $this->serializeNull = $serializeNull;
@@ -64,6 +67,9 @@ class Serializer implements SerializerInterface
         $this->exclusionStrategy = $exclusionStrategy;
     }
 
+    /**
+     * @param integer $version
+     */
     public function setVersion($version)
     {
         if (null === $version) {
@@ -75,6 +81,9 @@ class Serializer implements SerializerInterface
         $this->exclusionStrategy = new VersionExclusionStrategy($version);
     }
 
+    /**
+     * @param null|array $groups
+     */
     public function setGroups($groups)
     {
         if ( ! $groups) {
