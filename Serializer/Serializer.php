@@ -40,6 +40,7 @@ class Serializer implements SerializerInterface
     private $serializationVisitors;
     private $deserializationVisitors;
     private $exclusionStrategy;
+    private $serializeNull;
 
     public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, array $serializationVisitors = array(), array $deserializationVisitors = array())
     {
@@ -50,13 +51,12 @@ class Serializer implements SerializerInterface
         $this->typeParser = $typeParser ?: new TypeParser();
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
+        $this->serializeNull = false;
     }
 
     public function setSerializeNull($serializeNull)
     {
-        foreach ($this->serializationVisitors as $visitor) {
-            $visitor->setSerializeNull($serializeNull);
-        }
+        $this->serializeNull = $serializeNull;
     }
 
     public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
@@ -89,6 +89,7 @@ class Serializer implements SerializerInterface
     public function serialize($data, $format)
     {
         $visitor = $this->getSerializationVisitor($format);
+        $visitor->setSerializeNull($this->serializeNull);
         $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
         $navigator->accept($visitor->prepare($data), null, $visitor);
 
