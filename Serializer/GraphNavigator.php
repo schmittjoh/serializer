@@ -134,6 +134,7 @@ final class GraphNavigator
                 return $visitor->visitBoolean($data, $type);
 
             case 'double':
+            case 'float':
                 return $visitor->visitDouble($data, $type);
 
             case 'array':
