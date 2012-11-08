@@ -3,12 +3,9 @@
 namespace JMS\SerializerBundle\Serializer\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
-
 use JMS\SerializerBundle\Serializer\GraphNavigator;
-
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use Doctrine\Common\Collections\Collection;
-use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use JMS\SerializerBundle\Serializer\Handler\SubscribingHandlerInterface;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
