@@ -57,6 +57,7 @@ use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\InvalidGroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
+use JMS\SerializerBundle\Tests\Fixtures\InitializedObjectConstructor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
@@ -105,13 +106,28 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->serializer->setSerializeNull(false);
     }
 
-    public function testNull()
+    /**
+     * @dataProvider getTypes
+     */
+    public function testNull($type)
     {
-        $this->assertEquals($this->getContent('null'), $this->serialize(null));
+        $this->assertEquals($this->getContent('null'), $this->serialize(null), $type);
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals(null, $this->deserialize($this->getContent('null'), 'NULL'));
+            $this->assertEquals(null, $this->deserialize($this->getContent('null'), $type));
         }
+    }
+
+    public function getTypes()
+    {
+        return array(
+            array('NULL'),
+            array('integer'),
+            array('double'),
+            array('float'),
+            array('string'),
+            array('DateTime'),
+        );
     }
 
     public function testString()
@@ -143,21 +159,23 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getNumerics
      */
-    public function testNumerics($key, $value)
+    public function testNumerics($key, $value, $type)
     {
         $this->assertEquals($this->getContent($key), $this->serialize($value));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($value, $this->deserialize($this->getContent($key), is_double($value) ? 'double' : 'integer'));
+            $this->assertEquals($value, $this->deserialize($this->getContent($key), $type));
         }
     }
 
     public function getNumerics()
     {
         return array(
-            array('integer', 1),
-            array('float', 4.533),
-            array('float_trailing_zero', 1.0),
+            array('integer', 1, 'integer'),
+            array('float', 4.533, 'double'),
+            array('float', 4.533, 'float'),
+            array('float_trailing_zero', 1.0, 'double'),
+            array('float_trailing_zero', 1.0, 'float'),
         );
     }
 
@@ -225,6 +243,29 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
     }
 
+    /**
+     * @dataProvider getDateTime
+     */
+    public function testDateTime($key, $value, $type)
+    {
+        $this->assertEquals($this->getContent($key), $this->serialize($value, $type));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent($key), $type);
+
+            $this->assertTrue(is_object($deserialized));
+            $this->assertEquals(get_class($value), get_class($deserialized));
+            $this->assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
+        }
+    }
+
+    public function getDateTime()
+    {
+        return array(
+            array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
+        );
+    }
+
     public function testBlogPost()
     {
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
@@ -239,6 +280,32 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+        }
+    }
+
+    public function testDeserializingNull()
+    {
+        if (get_class($this) === 'JMS\SerializerBundle\Tests\Serializer\XmlSerializationTest') {
+            $this->markTestSkipped('Deserializing null not working in XML.');
+        }
+
+        $objectConstructor = new InitializedObjectConstructor();
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
+        $this->serializer->setSerializeNull(true);
+
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+
+        $this->setField($post, 'author', null);
+
+        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post));
+            $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
+            $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
+            $this->assertAttributeSame(false, 'published', $deserialized);
+            $this->assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
+            $this->assertEquals(null, $this->getField($deserialized, 'author'));
         }
     }
 
