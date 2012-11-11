@@ -40,19 +40,31 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getMetadata();
 
-        $this->assertEquals('DateTime', $metadata->propertyMetadata['createdAt']->type);
+        $this->assertEquals(
+            array('name'=> 'DateTime', 'params' => array()),
+            $metadata->propertyMetadata['createdAt']->type
+        );
     }
 
     public function testSingleValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
-        $this->assertEquals('JMS\SerializerBundle\Tests\Fixtures\Doctrine\Author', $metadata->propertyMetadata['author']->type);
+        $this->assertEquals(
+            array('name'=> 'JMS\SerializerBundle\Tests\Fixtures\Doctrine\Author', 'params' => array()),
+            $metadata->propertyMetadata['author']->type
+        );
     }
 
     public function testMultiValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
-        $this->assertEquals('ArrayCollection<JMS\SerializerBundle\Tests\Fixtures\Doctrine\Comment>', $metadata->propertyMetadata['comments']->type);
+
+        $this->assertEquals(
+            array('name'=> 'ArrayCollection', 'params' => array(
+                array('name' => 'JMS\SerializerBundle\Tests\Fixtures\Doctrine\Comment', 'params' => array()))
+            ),
+            $metadata->propertyMetadata['comments']->type
+        );
     }
 
     public function testTypeGuessByDoctrineIsOverwrittenByDelegateDriver()
@@ -60,7 +72,10 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         // This would be guessed as boolean but we've overriden it to integer
-        $this->assertEquals('integer', $metadata->propertyMetadata['published']->type);
+        $this->assertEquals(
+            array('name'=> 'integer', 'params' => array()), 
+            $metadata->propertyMetadata['published']->type
+        );
     }
 
     public function testUnknownDoctrineTypeDoesNotResultInAGuess()
