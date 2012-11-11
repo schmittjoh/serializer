@@ -20,7 +20,6 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use JMS\SerializerBundle\Metadata\Driver\DoctrineTypeDriver;
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;

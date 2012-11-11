@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -76,7 +75,7 @@ class DoctrineTypeDriver implements DriverInterface
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
-        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->getName())) {
+        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
             return $classMetadata;
         }
 
