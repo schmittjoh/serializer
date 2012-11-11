@@ -89,14 +89,14 @@ class DoctrineTypeDriver implements DriverInterface
             }
 
             $propertyName = $propertyMetadata->name;
-            if ($doctrineMetadata->hasField($propertyName)) {
-                $propertyMetadata->type = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName));
+            if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {
+                $propertyMetadata->setType($fieldType);
             } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
                 $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
                 if ($doctrineMetadata->isSingleValuedAssociation($propertyName)) {
-                    $propertyMetadata->type = $targetEntity;
+                    $propertyMetadata->setType($targetEntity);
                 } else {
-                    $propertyMetadata->type = "ArrayCollection<{$targetEntity}>";
+                    $propertyMetadata->setType("ArrayCollection<{$targetEntity}>");
                 }
             }
         }
