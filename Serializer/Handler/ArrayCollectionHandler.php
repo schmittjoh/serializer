@@ -14,7 +14,7 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
     {
         $methods = array();
         $formats = array('json', 'xml', 'yml');
-        $collectionTypes = array('ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection', 'Doctrine\ORM\PersistentCollection');
+        $collectionTypes = array('ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection', 'Doctrine\ORM\PersistentCollection', 'Doctrine\ODM\MongoDB\PersistentCollection');
 
         foreach ($collectionTypes as $type) {
             foreach ($formats as $format) {
