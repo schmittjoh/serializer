@@ -92,6 +92,7 @@ class DateTimeHandler implements SubscribingHandlerInterface
 
     /**
      * @return string
+     * @param array $type
      */
     private function getFormat(array $type)
     {

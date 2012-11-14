@@ -6,6 +6,7 @@ class PreSerializeEvent extends Event
 {
     /**
      * @param string $typeName
+     * @param array $params
      */
     public function setType($typeName, array $params = array())
     {
