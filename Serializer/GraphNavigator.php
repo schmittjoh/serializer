@@ -137,7 +137,7 @@ final class GraphNavigator
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
                 if (null !== $path = $this->getCurrentPath()) {
-                    $msg .= ' Path: '.implode(' -> ', $path);
+                    $msg .= ' Path: '.$path;
                 }
 
                 throw new \RuntimeException($msg);
