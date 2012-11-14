@@ -2,7 +2,6 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer\EventDispatcher;
 
-use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Serializer\EventDispatcher\Event;
 use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
 use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;

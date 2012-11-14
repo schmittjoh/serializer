@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use JMS\SerializerBundle\Serializer\GraphNavigator;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use Metadata\MethodMetadata;
@@ -35,8 +34,8 @@ class YamlDriver extends AbstractFileDriver
     {
         $config = Yaml::parse(file_get_contents($file));
 
-        if (!isset($config[$name = $class->getName()])) {
-            throw new RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $class->getName(), $file));
+        if (!isset($config[$name = $class->name])) {
+            throw new RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file));
         }
 
         $config = $config[$name];
@@ -74,7 +73,7 @@ class YamlDriver extends AbstractFileDriver
 
         if (!$excludeAll) {
             foreach ($class->getProperties() as $property) {
-                if ($name !== $property->getDeclaringClass()->getName()) {
+                if ($name !== $property->class) {
                     continue;
                 }
                 $pName = $property->getName();
@@ -221,17 +220,17 @@ class YamlDriver extends AbstractFileDriver
     {
         if (is_string($config)) {
             $config = array($config);
-        } else if (!is_array($config)) {
+        } elseif (!is_array($config)) {
             throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($cConfig['pre_serialize'])));
         }
 
         $methods = array();
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
-                throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $name, $class->getName()));
+                throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $name, $class->name));
             }
 
-            $methods[] = new MethodMetadata($class->getName(), $name);
+            $methods[] = new MethodMetadata($class->name, $name);
         }
 
         return $methods;

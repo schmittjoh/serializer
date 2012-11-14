@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;

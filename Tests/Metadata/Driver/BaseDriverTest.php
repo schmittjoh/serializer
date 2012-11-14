@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase

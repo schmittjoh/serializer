@@ -34,9 +34,9 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('jms_serializer.event_subscriber') as $id => $tags) {
             $subscriberDefinition = $container->getDefinition($id);
             $subscriberClass = $container->getDefinition($id)->getClass();
-            
+
             $subscriberClassReflectionObj = new \ReflectionClass($subscriberClass);
-            
+
             if ( ! $subscriberClassReflectionObj->implementsInterface('JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface') ) {
                 throw new \RuntimeException(sprintf('The service "%s" (class: %s) does not implement the EventSubscriberInterface.', $id, $subscriberClass));
             }

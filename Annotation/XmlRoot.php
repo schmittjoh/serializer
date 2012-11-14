@@ -18,8 +18,6 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
-
 /**
  * @Annotation
  * @Target("CLASS")

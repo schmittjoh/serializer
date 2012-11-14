@@ -56,7 +56,7 @@ final class TypeParser
         do {
             if ($this->isNextToken(self::T_NAME)) {
                 $params[] = $this->parseType();
-            } else if ($this->isNextToken(self::T_STRING)) {
+            } elseif ($this->isNextToken(self::T_STRING)) {
                 $this->moveNext();
                 $params[] = $this->token[0];
             } else {
@@ -69,6 +69,9 @@ final class TypeParser
         return array('name' => $typeName, 'params' => $params);
     }
 
+    /**
+     * @param integer $token
+     */
     private function isNextToken($token)
     {
         return null !== $this->next && $this->next[2] === $token;
@@ -95,6 +98,9 @@ final class TypeParser
         $this->moveNext();
     }
 
+    /**
+     * @param integer $token
+     */
     private function match($token)
     {
         if (null === $this->next) {
@@ -129,6 +135,9 @@ final class TypeParser
         throw new \LogicException(sprintf('The token %s does not exist.', json_encode($token)));
     }
 
+    /**
+     * @param string $type
+     */
     private function tokenize($type)
     {
         $this->tokens = preg_split('/((?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*|"(?:[^"]|"")*"|\'(?:[^\']|\'\')*\'|<|>|,)|\s*/', $type, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);

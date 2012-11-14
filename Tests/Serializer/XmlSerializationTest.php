@@ -18,16 +18,7 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
-
-use Metadata\MetadataFactory;
-use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue;
-use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
-use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
 use JMS\SerializerBundle\Serializer\Serializer;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;

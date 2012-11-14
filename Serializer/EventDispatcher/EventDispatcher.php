@@ -82,6 +82,9 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
+    /**
+     * @param string $loweredClass
+     */
     protected function initializeListeners($eventName, $loweredClass, $format)
     {
         $listeners = array();

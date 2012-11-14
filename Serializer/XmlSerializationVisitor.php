@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * XmlSerializationVisitor.

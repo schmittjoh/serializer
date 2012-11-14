@@ -39,12 +39,13 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function prepare($data);
+    public function prepare($data);
 
     /**
      * Controls whether keys will be preserved when serializing null values
      *
      * @param bool $serializeNull
+     * @return void
      */
     public function setSerializeNull($serializeNull);
 
@@ -54,7 +55,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitNull($data, array $type);
+    public function visitNull($data, array $type);
 
     /**
      * @param mixed $data
@@ -62,7 +63,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitString($data, array $type);
+    public function visitString($data, array $type);
 
     /**
      * @param mixed $data
@@ -70,7 +71,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitBoolean($data, array $type);
+    public function visitBoolean($data, array $type);
 
     /**
      * @param mixed $data
@@ -78,7 +79,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitDouble($data, array $type);
+    public function visitDouble($data, array $type);
 
     /**
      * @param mixed $data
@@ -86,7 +87,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitInteger($data, array $type);
+    public function visitInteger($data, array $type);
 
     /**
      * @param mixed $data
@@ -94,7 +95,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function visitArray($data, array $type);
+    public function visitArray($data, array $type);
 
     /**
      * Called before the properties of the object are being visited.
@@ -105,7 +106,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    function startVisitingObject(ClassMetadata $metadata, $data, array $type);
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type);
 
     /**
      * @param PropertyMetadata $metadata
@@ -113,7 +114,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    function visitProperty(PropertyMetadata $metadata, $data);
+    public function visitProperty(PropertyMetadata $metadata, $data);
 
     /**
      * Called after all properties of the object have been visited.
@@ -124,7 +125,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    function endVisitingObject(ClassMetadata $metadata, $data, array $type);
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type);
 
     /**
      * Called before serialization/deserialization starts.
@@ -133,15 +134,15 @@ interface VisitorInterface
      *
      * @return void
      */
-    function setNavigator(GraphNavigator $navigator);
+    public function setNavigator(GraphNavigator $navigator);
 
     /**
      * @return GraphNavigator
      */
-    function getNavigator();
+    public function getNavigator();
 
     /**
      * @return object|array|scalar
      */
-    function getResult();
+    public function getResult();
 }

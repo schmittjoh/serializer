@@ -2,10 +2,6 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
-
-use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
-
 use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\Handler\HandlerRegistry;
 use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;

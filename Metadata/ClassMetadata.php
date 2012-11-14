@@ -87,6 +87,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods[] = $method;
     }
 
+    /**
+     * @param integer $direction
+     * @param string|integer $format
+     * @param string $methodName
+     */
     public function addHandlerCallback($direction, $format, $methodName)
     {
         $this->handlerCallbacks[$direction][$format] = $methodName;

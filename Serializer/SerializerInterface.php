@@ -33,7 +33,7 @@ interface SerializerInterface
      *
      * @return string
      */
-    function serialize($data, $format);
+    public function serialize($data, $format);
 
     /**
      * Deserializes the given data to the specified type.
@@ -44,5 +44,5 @@ interface SerializerInterface
      *
      * @return object|array|scalar
      */
-    function deserialize($data, $type, $format);
+    public function deserialize($data, $type, $format);
 }

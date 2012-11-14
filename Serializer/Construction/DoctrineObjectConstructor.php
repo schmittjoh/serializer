@@ -71,8 +71,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList        = $classMetadata->getIdentifierFieldNames();
         $missingIdentifierList = array_filter(
             $identifierList,
-            function ($identifier) use ($data)
-            {
+            function ($identifier) use ($data) {
                 return !isset($data[$identifier]);
             }
         );

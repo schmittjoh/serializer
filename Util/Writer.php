@@ -54,6 +54,9 @@ class Writer
         return $this;
     }
 
+    /**
+     * @param string $content
+     */
     public function writeln($content)
     {
         $this->write($content."\n");
@@ -68,6 +71,9 @@ class Writer
         $this->content = substr($this->content, 0, -1 * strlen($change));
     }
 
+    /**
+     * @param string $content
+     */
     public function write($content)
     {
         $contentEndsWithNewLine = "\n" === substr($this->content, -1);

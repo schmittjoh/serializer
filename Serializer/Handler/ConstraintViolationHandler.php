@@ -23,8 +23,6 @@ use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\GraphNavigator;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use JMS\SerializerBundle\Serializer\VisitorInterface;
-use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
 class ConstraintViolationHandler implements SubscribingHandlerInterface

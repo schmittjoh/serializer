@@ -18,8 +18,6 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-use JMS\SerializerBundle\Exception\InvalidArgumentException;
-
 abstract class XmlCollection
 {
     /**

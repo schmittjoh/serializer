@@ -19,13 +19,10 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
-
 use JMS\SerializerBundle\Serializer\Handler\HandlerRegistryInterface;
-
 use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
-use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
