@@ -83,6 +83,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
     /**
      * @param array $data
+     * @param array $type
      */
     public function visitArray($data, array $type)
     {

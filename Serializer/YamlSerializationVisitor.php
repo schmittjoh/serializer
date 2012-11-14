@@ -81,6 +81,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     /**
      * @param array $data
+     * @param array $type
      */
     public function visitArray($data, array $type)
     {

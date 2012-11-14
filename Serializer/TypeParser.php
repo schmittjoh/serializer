@@ -123,6 +123,9 @@ final class TypeParser
         return null !== $this->next;
     }
 
+    /**
+     * @param integer $token
+     */
     public static function getTokenName($token)
     {
         $ref = new \ReflectionClass(get_called_class());
