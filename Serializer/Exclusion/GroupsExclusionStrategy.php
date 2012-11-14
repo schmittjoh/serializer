@@ -20,7 +20,6 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Exception\RuntimeException;
 
 class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {

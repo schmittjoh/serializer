@@ -79,6 +79,9 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
+    /**
+     * @param array $data
+     */
     public function visitArray($data, array $type)
     {
         $count = $this->writer->changeCount;
@@ -178,7 +181,7 @@ class YamlSerializationVisitor extends AbstractVisitor
                 ->rtrim(false)
                 ->writeln(' '.$v)
             ;
-        } else if ($count === $this->writer->changeCount) {
+        } elseif ($count === $this->writer->changeCount) {
             $this->writer->revert();
         }
 

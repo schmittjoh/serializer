@@ -3,7 +3,6 @@
 namespace JMS\SerializerBundle\Serializer\EventDispatcher;
 
 use JMS\SerializerBundle\Serializer\VisitorInterface;
-use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 class Event
 {

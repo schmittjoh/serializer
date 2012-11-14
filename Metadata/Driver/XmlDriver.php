@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use JMS\SerializerBundle\Serializer\GraphNavigator;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
@@ -41,7 +40,7 @@ class XmlDriver extends AbstractFileDriver
             throw new XmlErrorException(libxml_get_last_error());
         }
 
-        $metadata = new ClassMetadata($name = $class->getName());
+        $metadata = new ClassMetadata($name = $class->name);
         if (!$elems = $elem->xpath("./class[@name = '".$name."']")) {
             throw new RuntimeException(sprintf('Could not find class %s inside XML element.', $name));
         }
@@ -78,7 +77,7 @@ class XmlDriver extends AbstractFileDriver
         if (!$excludeAll) {
 
             foreach ($class->getProperties() as $property) {
-                if ($name !== $property->getDeclaringClass()->getName()) {
+                if ($name !== $property->class) {
                     continue;
                 }
 
@@ -118,7 +117,7 @@ class XmlDriver extends AbstractFileDriver
 
                     if (null !== $type = $pElem->attributes()->type) {
                         $pMetadata->setType((string) $type);
-                    } else if (isset($pElem->type)) {
+                    } elseif (isset($pElem->type)) {
                         $pMetadata->setType((string) $pElem->type);
                     }
 

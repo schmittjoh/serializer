@@ -3,9 +3,7 @@
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\SerializerBundle\Serializer\Handler\HandlerRegistry;
-
 use JMS\SerializerBundle\Serializer\GraphNavigator;
-
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 

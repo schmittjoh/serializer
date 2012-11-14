@@ -19,18 +19,9 @@
 namespace JMS\SerializerBundle;
 
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-
 use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
-use JMS\SerializerBundle\DependencyInjection\Factory\FormErrorFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\DateTimeFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\ConstraintViolationFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\ArrayCollectionFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\ObjectBasedFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\DoctrineProxyFactory;
-use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

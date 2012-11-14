@@ -19,8 +19,6 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 

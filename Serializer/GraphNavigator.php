@@ -88,7 +88,7 @@ final class GraphNavigator
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param array|null $type array has the format ["name" => string, "params" => array]
+     * @param null|array $type array has the format ["name" => string, "params" => array]
      * @param VisitorInterface $visitor
      *
      * @return mixed the return value depends on the direction, and type of visitor
@@ -137,7 +137,7 @@ final class GraphNavigator
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
                 if (null !== $path = $this->getCurrentPath()) {
-                    $msg .= ' Path: '.$path;
+                    $msg .= ' Path: '.implode(' -> ', $path);
                 }
 
                 throw new \RuntimeException($msg);
@@ -240,7 +240,7 @@ final class GraphNavigator
     {
         if (null === $object) {
             throw new InvalidArgumentException('$object cannot be null');
-        } else if (!is_object($object)) {
+        } elseif (!is_object($object)) {
             throw new InvalidArgumentException(sprintf('Expected an object to detach, given "%s".', gettype($object)));
         }
 

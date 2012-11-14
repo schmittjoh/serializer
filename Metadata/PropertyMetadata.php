@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Metadata;
 
 use JMS\SerializerBundle\Serializer\TypeParser;
-
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
@@ -55,7 +54,7 @@ class PropertyMetadata extends BasePropertyMetadata
             if (empty($getter)) {
                 if ($class->hasMethod('get'.$this->name) && $class->getMethod('get'.$this->name)->isPublic()) {
                     $getter = 'get'.$this->name;
-                } else if ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
+                } elseif ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
                     $getter = 'is'.$this->name;
                 } else {
                     throw new \RuntimeException(sprintf('There is neither a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), $this->class, $this->name));

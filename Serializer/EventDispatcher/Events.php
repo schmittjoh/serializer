@@ -8,5 +8,5 @@ abstract class Events
     const POST_SERIALIZE = 'serializer.post_serialize';
     const POST_DESERIALIZE = 'serializer.post_deserialize';
 
-    private final function __construct() { }
+    final private function __construct() { }
 }

@@ -19,22 +19,12 @@
 namespace JMS\SerializerBundle\Serializer\Handler;
 
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
-
-use JMS\SerializerBundle\Serializer\GraphNavigator;
-
 use Symfony\Component\Yaml\Inline;
-
 use JMS\SerializerBundle\Serializer\YamlSerializationVisitor;
-
 use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
-
-use JMS\SerializerBundle\Serializer\GenericDeserializationVisitor;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
-use JMS\SerializerBundle\Serializer\VisitorInterface;
 
 class DateTimeHandler implements SubscribingHandlerInterface
 {
@@ -100,6 +90,9 @@ class DateTimeHandler implements SubscribingHandlerInterface
         return $datetime;
     }
 
+    /**
+     * @return string
+     */
     private function getFormat(array $type)
     {
         return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;

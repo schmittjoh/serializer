@@ -41,5 +41,5 @@ interface ObjectConstructorInterface
      *
      * @return object
      */
-    function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type);
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type);
 }

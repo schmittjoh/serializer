@@ -22,8 +22,6 @@ use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
-use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
 class XmlDeserializationVisitor extends AbstractVisitor
 {

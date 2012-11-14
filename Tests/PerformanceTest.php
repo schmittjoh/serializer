@@ -19,11 +19,8 @@
 namespace JMS\SerializerBundle\Tests;
 
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
-
 use Symfony\Component\Translation\MessageSelector;
-
 use Symfony\Component\Translation\IdentityTranslator;
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
@@ -33,17 +30,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
-use JMS\SerializerBundle\Serializer\Exclusion\NoneExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\AllExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactory;
-use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\SerializerBundle\Serializer\Normalizer\ArrayCollectionNormalizer;
-use JMS\SerializerBundle\Serializer\Normalizer\NativePhpTypeNormalizer;
-use JMS\SerializerBundle\Serializer\Normalizer\PropertyBasedNormalizer;
-use JMS\SerializerBundle\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 /**
  * @group performance

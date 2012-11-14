@@ -25,8 +25,6 @@ use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
-use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
-use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
 class FormErrorHandler implements SubscribingHandlerInterface

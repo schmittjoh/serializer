@@ -32,19 +32,19 @@ interface ExclusionStrategyInterface
      * Whether the class should be skipped.
      *
      * @param ClassMetadata $metadata
-     * @param object        $object instance, provided during serialization but not deserialization
+     * @param object|null        $object instance, provided during serialization but not deserialization
      *
      * @return boolean
      */
-    function shouldSkipClass(ClassMetadata $metadata, $object = null);
+    public function shouldSkipClass(ClassMetadata $metadata, $object = null);
 
     /**
      * Whether the property should be skipped.
      *
      * @param PropertyMetadata $property
-     * @param object           $object instance, provided during serialization but not deserialization
+     * @param object|null           $object instance, provided during serialization but not deserialization
      *
      * @return boolean
      */
-    function shouldSkipProperty(PropertyMetadata $property, $object = null);
+    public function shouldSkipProperty(PropertyMetadata $property, $object = null);
 }

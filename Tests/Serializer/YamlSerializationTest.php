@@ -18,7 +18,6 @@
 
 namespace JMS\SerializerBundle\Tests\Serializer;
 
-use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\SerializerBundle\Exception\RuntimeException;
 
 class YamlSerializationTest extends BaseSerializationTest

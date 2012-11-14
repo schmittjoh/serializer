@@ -25,6 +25,7 @@ interface EventDispatcherInterface
      * @param string $class
      * @param string $format
      * @param Event $event
+     * @return void
      */
     public function dispatch($eventName, $class, $format, Event $event);
 
@@ -35,6 +36,7 @@ interface EventDispatcherInterface
      * @param callable $callable
      * @param string|null $class
      * @param string|null $format
+     * @return void
      */
     public function addListener($eventName, $callable, $class = null, $format = null);
 
@@ -42,6 +44,7 @@ interface EventDispatcherInterface
      * Adds a subscribers.
      *
      * @param EventSubscriberInterface $subscriber
+     * @return void
      */
     public function addSubscriber(EventSubscriberInterface $subscriber);
 }

@@ -18,7 +18,6 @@
 
 namespace JMS\SerializerBundle\Serializer\Naming;
 
-use JMS\SerializerBundle\Annotation\SerializedName;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 /**
