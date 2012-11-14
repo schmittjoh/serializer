@@ -58,6 +58,7 @@ use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\SerializerBundle\Tests\Fixtures\CustomDeserializationObject;
 use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
+use JMS\SerializerBundle\Tests\Fixtures\InvalidGroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
@@ -489,6 +490,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->serializer->setGroups(array('Default'));
         $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+    }
+
+    /**
+     * @expectedException JMS\SerializerBundle\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\SerializerBundle\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
+     */
+    public function testInvalidGroupName()
+    {
+        $groupsObject = new InvalidGroupsObject();
+
+        $this->serializer->serialize($groupsObject, $this->getFormat());
     }
 
     public function testVirtualProperty()

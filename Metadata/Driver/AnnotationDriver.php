@@ -55,6 +55,7 @@ use JMS\SerializerBundle\Annotation\ReadOnly;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Annotation\XmlAttributeMap;
 use Metadata\Driver\DriverInterface;
 
@@ -175,6 +176,15 @@ class AnnotationDriver implements DriverInterface
                         $accessor = array($annot->getter, $annot->setter);
                     } else if ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
+                        foreach ((array) $propertyMetadata->groups as $groupName) {
+                            if (false !== strpos($groupName, ',')) {
+                                throw new InvalidArgumentException(sprintf(
+                                    'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
+                                    implode(', ', $propertyMetadata->groups),
+                                    $propertyMetadata->class.'->'.$propertyMetadata->name
+                                ));
+                            }
+                        }
                     } else if ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
                     } else if ($annot instanceof XmlAttributeMap) {
