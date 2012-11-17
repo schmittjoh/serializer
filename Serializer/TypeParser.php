@@ -7,7 +7,7 @@ namespace JMS\SerializerBundle\Serializer;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class TypeParser
+final class TypeParser extends \JMS\Parser\AbstractParser
 {
     const T_NAME = 1;
     const T_STRING = 2;
@@ -16,167 +16,74 @@ final class TypeParser
     const T_COMMA = 5;
     const T_NONE = 6;
 
-    private $tokens;
-    private $token;
-    private $next;
-    private $pointer = 0;
-
-    /**
-     * @param string $type
-     *
-     * @return array of the format ["name" => string, "params" => array]
-     */
-    public function parse($type)
+    public function __construct()
     {
-        if (empty($type)) {
-            throw new \InvalidArgumentException('$type cannot be empty.');
-        }
+        parent::__construct(new \JMS\Parser\SimpleLexer(
+            '/
+                # PHP Class Names
+                ((?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)
 
-        $this->tokenize($type);
+                # Strings
+                |("(?:[^"]|"")*"|\'(?:[^\']|\'\')*\')
 
-        $parsedType = $this->parseType();
-        if (null !== $this->next) {
-            throw new \InvalidArgumentException(sprintf('Expected end of type, but got %s (%s) at position %d.', $this->getTokenName($this->next[0]), json_encode($this->next[2]), $this->next[1]));
-        }
+                # Ignore whitespace
+                |\s*
 
-        return $parsedType;
+                # Terminals
+                |(.)
+            /x',
+            array(self::T_NAME => 'T_NAME', self::T_STRING => 'T_STRING', self::T_OPEN_BRACKET => 'T_OPEN_BRACKET',
+                  self::T_CLOSE_BRACKET => 'T_CLOSE_BRACKET', self::T_COMMA => 'T_COMMA', self::T_NONE => 'T_NONE'),
+            function($value) {
+                switch ($value[0]) {
+                    case '"':
+                    case "'":
+                        return array(TypeParser::T_STRING, substr($value, 1, -1));
+
+                    case '<':
+                        return array(TypeParser::T_OPEN_BRACKET, '<');
+
+                    case '>':
+                        return array(TypeParser::T_CLOSE_BRACKET, '>');
+
+                    case ',':
+                        return array(TypeParser::T_COMMA, ',');
+
+                    default:
+                        if (preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $value)) {
+                            return array(TypeParser::T_NAME, $value);
+                        }
+
+                        return array(TypeParser::T_NONE, $value);
+                }
+            }
+        ));
     }
 
-    private function parseType()
+    /**
+     * @return array of the format ["name" => string, "params" => array]
+     */
+    public function parseInternal()
     {
-        $this->match(self::T_NAME);
-        $typeName = $this->token[0];
-
-        if ( ! $this->isNextToken(self::T_OPEN_BRACKET)) {
+        $typeName = $this->match(self::T_NAME);
+        if ( ! $this->lexer->isNext(self::T_OPEN_BRACKET)) {
             return array('name' => $typeName, 'params' => array());
         }
 
         $this->match(self::T_OPEN_BRACKET);
         $params = array();
         do {
-            if ($this->isNextToken(self::T_NAME)) {
-                $params[] = $this->parseType();
-            } elseif ($this->isNextToken(self::T_STRING)) {
-                $this->moveNext();
-                $params[] = $this->token[0];
+            if ($this->lexer->isNext(self::T_NAME)) {
+                $params[] = $this->parseInternal();
+            } else if ($this->lexer->isNext(self::T_STRING)) {
+                $params[] = $this->match(self::T_STRING);
             } else {
                 $this->matchAny(array(self::T_NAME, self::T_STRING)); // Will throw an exception.
             }
-        } while ($this->isNextToken(self::T_COMMA) && $this->moveNext());
+        } while ($this->lexer->isNext(self::T_COMMA) && $this->lexer->moveNext());
 
         $this->match(self::T_CLOSE_BRACKET);
 
         return array('name' => $typeName, 'params' => $params);
-    }
-
-    /**
-     * @param integer $token
-     */
-    private function isNextToken($token)
-    {
-        return null !== $this->next && $this->next[2] === $token;
-    }
-
-    private function matchAny(array $tokens)
-    {
-        if (null === $this->next) {
-            throw new \InvalidArgumentException(sprintf('Expected any of %s, but reached end of type.', implode(' or ', array_map(array($this, 'getTokenName'), $tokens))));
-        }
-
-        $found = false;
-        foreach ($tokens as $token) {
-            if ($this->next[2] === $token) {
-                $found = true;
-                break;
-            }
-        }
-
-        if ( ! $found) {
-            throw new \InvalidArgumentException(sprintf('Expected any of %s, but got %s at position %d.', implode(' or ', array_map(array($this, 'getTokenName'), $tokens)), $this->getTokenName($this->next[2]), $this->next[1]));
-        }
-
-        $this->moveNext();
-    }
-
-    /**
-     * @param integer $token
-     */
-    private function match($token)
-    {
-        if (null === $this->next) {
-            throw new \InvalidArgumentException(sprintf('Expected token %s, but reached end of type.', $this->getTokenName($token)));
-        }
-
-        if ($this->next[2] !== $token) {
-            throw new \InvalidArgumentException(sprintf('Expected token %s, but got %s at position %d.', $this->getTokenName($token), $this->getTokenName($this->next[2]), $this->next[1]));
-        }
-
-        $this->moveNext();
-    }
-
-    private function moveNext()
-    {
-        $this->pointer += 1;
-        $this->token = $this->next;
-        $this->next = isset($this->tokens[$this->pointer]) ? $this->tokens[$this->pointer] : null;
-
-        return null !== $this->next;
-    }
-
-    /**
-     * @param integer $token
-     */
-    public static function getTokenName($token)
-    {
-        $ref = new \ReflectionClass(get_called_class());
-        foreach ($ref->getConstants() as $name => $value) {
-            if ($value === $token) {
-                return $name;
-            }
-        }
-
-        throw new \LogicException(sprintf('The token %s does not exist.', json_encode($token)));
-    }
-
-    /**
-     * @param string $type
-     */
-    private function tokenize($type)
-    {
-        $this->tokens = preg_split('/((?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*|"(?:[^"]|"")*"|\'(?:[^\']|\'\')*\'|<|>|,)|\s*/', $type, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
-        $this->pointer = -1;
-
-        foreach ($this->tokens as &$token) {
-            $token[2] = $this->getType($token[0]);
-        }
-
-        $this->moveNext();
-    }
-
-    private function getType(&$value)
-    {
-        switch ($value[0]) {
-            case '"':
-            case "'":
-                $value = substr($value, 1, -1);
-
-                return self::T_STRING;
-
-            case '<':
-                return self::T_OPEN_BRACKET;
-
-            case '>':
-                return self::T_CLOSE_BRACKET;
-
-            case ',':
-                return self::T_COMMA;
-
-            default:
-                if (preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $value)) {
-                    return self::T_NAME;
-                }
-
-                return self::T_NONE;
-        }
     }
 }

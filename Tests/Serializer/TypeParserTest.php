@@ -32,8 +32,8 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Expected token T_CLOSE_BRACKET, but reached end of type.
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage Expected T_CLOSE_BRACKET, but got end of input.
      */
     public function testParamTypeMustEndWithBracket()
     {
@@ -41,8 +41,8 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Expected token T_NAME, but got T_COMMA at position 0.
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage Expected T_NAME, but got "," of type T_COMMA at beginning of input.
      */
     public function testMustStartWithName()
     {
@@ -50,8 +50,8 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Expected any of T_NAME or T_STRING, but got T_CLOSE_BRACKET at position 4.
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage Expected any of T_NAME or T_STRING, but got ">" of type T_CLOSE_BRACKET at position 4 (0-based).
      */
     public function testEmptyParams()
     {
@@ -59,8 +59,8 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Expected any of T_NAME or T_STRING, but got T_CLOSE_BRACKET at position 7.
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage Expected any of T_NAME or T_STRING, but got ">" of type T_CLOSE_BRACKET at position 7 (0-based).
      */
     public function testNoTrailingComma()
     {
