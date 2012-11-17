@@ -63,7 +63,7 @@ final class TypeParser extends \JMS\Parser\AbstractParser
     /**
      * @return array of the format ["name" => string, "params" => array]
      */
-    public function parseInternal()
+    protected function parseInternal()
     {
         $typeName = $this->match(self::T_NAME);
         if ( ! $this->lexer->isNext(self::T_OPEN_BRACKET)) {
