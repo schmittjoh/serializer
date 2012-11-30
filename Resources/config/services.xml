@@ -27,7 +27,7 @@
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
 
-        <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
+        <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\Serializer</parameter>
 
         <parameter key="jms_serializer.twig_extension.class">JMS\SerializerBundle\Twig\SerializerExtension</parameter>
 
@@ -146,14 +146,9 @@
             <argument type="service" id="jms_serializer.metadata_factory" />
             <argument type="service" id="jms_serializer.handler_registry" />
             <argument type="service" id="jms_serializer.object_constructor" />
-            <argument type="service" id="jms_serializer.event_dispatcher" />
-            <argument>null</argument>
             <argument type="collection" /><!-- Serialization Visitors -->
             <argument type="collection" /><!-- Deserialization Visitors -->
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
-            <tag name="jms_serializer.serializer" />
+            <argument type="service" id="jms_serializer.event_dispatcher" />
         </service>
         <service id="serializer" alias="jms_serializer.serializer" />
 

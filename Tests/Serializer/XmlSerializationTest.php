@@ -89,7 +89,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
-        $this->deserializationVisitors['xml']->setDoctypeWhitelist(array(
+        $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 

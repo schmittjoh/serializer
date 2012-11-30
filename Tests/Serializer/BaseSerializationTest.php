@@ -74,6 +74,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use PhpCollection\Map;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -599,17 +600,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = array(
+        $this->serializationVisitors = new Map(array(
             'json' => new JsonSerializationVisitor($namingStrategy),
             'xml'  => new XmlSerializationVisitor($namingStrategy),
             'yml'  => new YamlSerializationVisitor($namingStrategy),
-        );
-        $this->deserializationVisitors = array(
+        ));
+        $this->deserializationVisitors = new Map(array(
             'json' => new JsonDeserializationVisitor($namingStrategy),
             'xml'  => new XmlDeserializationVisitor($namingStrategy),
-        );
+        ));
 
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
     }
 
     private function getField($obj, $name)

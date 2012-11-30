@@ -26,7 +26,13 @@ use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+use PhpCollection\MapInterface;
 
+/**
+ * Serializer Implementation.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class Serializer implements SerializerInterface
 {
     private $factory;
@@ -39,7 +45,18 @@ class Serializer implements SerializerInterface
     private $exclusionStrategy;
     private $serializeNull;
 
-    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, array $serializationVisitors = array(), array $deserializationVisitors = array())
+    /**
+     * Constructor.
+     *
+     * @param \Metadata\MetadataFactoryInterface $factory
+     * @param Handler\HandlerRegistryInterface $handlerRegistry
+     * @param Construction\ObjectConstructorInterface $objectConstructor
+     * @param \PhpCollection\MapInterface<VisitorInterface> $serializationVisitors
+     * @param \PhpCollection\MapInterface<VisitorInterface> $deserializationVisitors
+     * @param EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param TypeParser $typeParser
+     */
+    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null)
     {
         $this->factory = $factory;
         $this->handlerRegistry = $handlerRegistry;
@@ -94,7 +111,7 @@ class Serializer implements SerializerInterface
 
     public function serialize($data, $format)
     {
-        $visitor = $this->getSerializationVisitor($format);
+        $visitor = $this->serializationVisitors->get($format)->get();
         $visitor->setSerializeNull($this->serializeNull);
         $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
         $navigator->accept($visitor->prepare($data), null, $visitor);
@@ -104,7 +121,7 @@ class Serializer implements SerializerInterface
 
     public function deserialize($data, $type, $format)
     {
-        $visitor = $this->getDeserializationVisitor($format);
+        $visitor = $this->deserializationVisitors->get($format)->get();
         $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
         $navigatorResult = $navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $visitor);
 
@@ -114,29 +131,5 @@ class Serializer implements SerializerInterface
         }
 
         return $visitorResult;
-    }
-
-    /**
-     * @return VisitorInterface
-     */
-    public function getDeserializationVisitor($format)
-    {
-        if (!isset($this->deserializationVisitors[$format])) {
-            throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
-        }
-
-        return $this->deserializationVisitors[$format];
-    }
-
-    /**
-     * @return VisitorInterface
-     */
-    public function getSerializationVisitor($format)
-    {
-        if (!isset($this->serializationVisitors[$format])) {
-            throw new UnsupportedFormatException(sprintf('Unsupported format "%s".', $format));
-        }
-
-        return $this->serializationVisitors[$format];
     }
 }
