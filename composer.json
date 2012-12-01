@@ -19,7 +19,7 @@
         "doctrine/common": "2.*"
     },
     "suggest": {
-        "symfony/yaml": "Required if you'd like to serialize content to YAML format."
+        "symfony/yaml": "Required if you'd like to serialize data to YAML format."
     },
     "require-dev": {
         "twig/twig": ">=1.8,<2.0-dev",
