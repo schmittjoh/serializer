@@ -1,36 +1,54 @@
 Event System
 ============
 
-The serializer dispatches different events during the serialization, and 
+The serializer dispatches different events during the serialization, and
 deserialization process which you can use to hook in and alter the default
 behavior.
 
 Register an Event Listener, or Subscriber
 -----------------------------------------
-A listener is a simple callable which receives an event object. You can
-use the tags ``jms_serializer.event_listener``, or ``jms_serializer.event_subscriber``
-in order to register it.
+A listener is a simple callable which receives an event object.
 
-The semantics are mainly the same as registering a regular Symfony2 event listener 
-except that you can to specify some additional attributes:
+The difference between both is similar to that of handlers. Listeners do not know to which they listen, but you
+need to provide that information when they are registered. Subscribers on the hand, can be passed to the listener
+and will tell the listener for which events they want to be called; this makes them easier to share, and re-use.
 
-- *format*: The format that you want to listen to; defaulting to all formats.
-- *type*: The type name that you want to listen to; defaulting to all types.
-- *direction*: The direction (serialization, or deserialization); defaulting to both.
+.. code-block :: php
+
+    class MyEventSubscriber implements JMS\Serializer\EventDispatcher\EventSubscriberInterface
+    {
+        public function getSubscribingMethods()
+        {
+            return array(
+                array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
+            );
+        }
+
+        public function onPreSerialize(JMS\Serializer\EventDispatcher\PreSerializeEvent $event)
+        {
+            // do something
+        }
+    }
+
+    $builder
+        ->configureListeners(function(JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
+            $dispatcher->addListener('serializer.pre_serialize',
+                function(JMS\Serializer\EventDispatcher\PreSerializeEvent $event) {
+                    // do something
+                }
+            );
+
+            $dispatcher->addSubscriber(new MyEventSubscriber());
+        })
+    ;
 
 Events
 ------
 
-.. note ::
-
-    Events are not dispatched by Symfony2's event dispatcher as such
-    you cannot register listeners with the ``kernel.event_listener`` tag,
-    or the ``@DI\Observe`` annotation. Please see above.
-
 serializer.pre_serialize
 ~~~~~~~~~~~~~~~~~~~~~~~~
 This is dispatched before a type is visited. You have access to the visitor,
-data, and type. Listeners may modify the type that is being used for 
+data, and type. Listeners may modify the type that is being used for
 serialization.
 
 **Event Object**: ``JMS\Serializer\EventDispatcher\PreSerializeEvent``
@@ -45,7 +63,7 @@ objects such as links.
 
 serializer.post_deserialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This is dispatched after a type is processed. You can use it to normalize 
+This is dispatched after a type is processed. You can use it to normalize
 submitted data if you require external services for example.
 
 **Event Object**: ``JMS\Serializer\EventDispatcher\Event``

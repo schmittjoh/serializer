@@ -67,7 +67,7 @@ expose them via an API that is consumed by a third-party:
          */
         private $name2;
     }
-    
+
 .. note ::
 
     ``@Until``, and ``@Since`` both accept a standardized PHP version number.
@@ -93,30 +93,30 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
 
 .. code-block :: php
 
-    <?php 
-    
+    <?php
+
     use JMS\Serializer\Annotation\Groups;
-    
+
     class BlogPost
     {
         /** @Groups({"list", "details"}) */
         private $id;
-        
+
         /** @Groups({"list", "details"}) */
         private $title;
-        
+
         /** @Groups({"list"}) */
         private $nbComments;
-        
+
         /** @Groups({"details"}) */
         private $comments;
     }
-    
+
 You can then tell the serializer which groups to serialize in your controller:
 
 .. code-block :: php
 
     <?php
-    
+
     $serializer->setGroups(array('list'));
     $serializer->serialize(new BlogPost(), 'json');

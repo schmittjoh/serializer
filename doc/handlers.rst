@@ -7,26 +7,31 @@ Handlers allow you to change the serialization, or deserialization process
 for a single type/format combination.
 
 Handlers are simple callback which receive three arguments: the visitor,
-the data, and the type. 
+the data, and the type.
 
-Configuration
--------------
-You can register any service as a handler by adding either the ``jms_serializer.handler``,
-or the ``jms_serializer.subscribing_handler``.
+Simple Callables
+----------------
+You can register simple callables on the builder object::
 
-Using ``jms_serializer.subscribing_handler``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Using this tag, the configuration is contained in the handler itself which makes it
-easier to share with other users, and easier to set-up in general:
+    $builder
+        ->configureHandlers(function(JMS\Serializer\Handler\HandlerRegistry $registry) {
+            $registry->registerHandler('serialization', 'MyObject', 'json',
+                function($visitor, MyObject $obj, array $type) {
+                    return $obj->getName();
+                }
+            );
+        })
+    ;
 
-.. code-block :: php
+Subscribing Handlers
+--------------------
+Subscribing handlers contain the configuration themselves which makes them easier to share with other users,
+and easier to set-up in general::
 
-    <?php
-    
     use JMS\Serializer\Handler\SubscribingHandlerInterface;
     use JMS\Serializer\GraphNavigator;
     use JMS\Serializer\JsonSerializationVisitor;
-    
+
     class MyHandler implements SubscribingHandlerInterface
     {
         public static function getSubscribingMethods()
@@ -40,33 +45,18 @@ easier to share with other users, and easier to set-up in general:
                 ),
             );
         }
-        
+
         public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type)
         {
             return $date->format($type['params'][0]);
         }
     }
 
-.. code-block :: xml
+Also, this type of handler is registered via the builder object::
 
-    <service id="my_handler" class="MyHandler">
-        <tag name="jms_serializer.subscribing_handler" />
-    </service>
+    $builder
+        ->configureHandlers(function(JMS\Serializer\Handler\HandlerRegistry $registry) {
+            $registry->registerSubscribingHandler(new MyHandler());
+        })
+    ;
 
-Using ``jms_serializer.handler``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If you have a handler like above, you can also wire it using the ``jms_serializer.handler`` tag:
-
-.. code-block :: xml
-
-    <service id="my_handler" class="MyHandler" public="false">
-        <tag name="jms_serializer.handler" type="DateTime" direction="serialization" format="json"
-                    method="serializeDateTimeToJson" />
-    </service>
-
-.. tip ::
-
-    The ``direction`` attribute is not required if you want to support both directions. Likewise can the
-    ``method`` attribute be omitted, then a default using the scheme ``serializeTypeToFormat``,
-    or ``deserializeTypeFromFormat`` will be used for serialization or deserialization
-    respectively.

@@ -52,6 +52,10 @@ class HandlerRegistry implements HandlerRegistryInterface
 
     public function registerHandler($direction, $typeName, $format, $handler)
     {
+        if (is_string($direction)) {
+            $direction = GraphNavigator::parseDirection($direction);
+        }
+
         $this->handlers[$direction][$typeName][$format] = $handler;
     }
 

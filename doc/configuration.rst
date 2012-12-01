@@ -1,103 +1,72 @@
 Configuration
 =============
 
-Initial Configuration
----------------------
-JMSSerializerBundle requires no initial configuration to get you started.
+.. note ::
 
-Reference
----------
+    If you are using Symfony2, this section is mostly irrelevant for you as the entire integration is provided by
+    JMSSerializerBundle; please see `its documentation <http://jmsyst.com/bundles/JMSSerializerBundle>`_. If you are
+    using another framework, there also might be a module, or other special integration. Please check packagist, or
+    whatever registry usually holds such information for your framework.
 
-Below you find a reference of all configuration options with their default
-values:
+Constructing a Serializer
+-------------------------
 
-.. configuration-block ::
+This library provides a special builder object which makes constructing serializer instances a breeze in any PHP
+project. In its shortest version, it's just a single line of code::
 
-    .. code-block :: yaml
+    $serializer = JMS\Serializer\SerializerBuilder::create()->build();
 
-        # config.yml
-        jms_serializer:
-            handlers:
-                datetime:
-                    default_format: "c" # ISO8601
-                    default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
+This serializer is fully functional, but you might want to tweak it a bit for example to configure a cache directory.
 
-            property_naming:
-                separator:  _
-                lower_case: true
+Configuring a Cache Directory
+-----------------------------
+The serializer collects several metadata about your objects from various sources such as YML, XML, or annotations. In
+order to make this process as efficient as possible, it is encourage to let the serializer cache that information. For
+that, you can configure a cache directory::
 
-            metadata:
-                cache: file
-                debug: "%kernel.debug%"
-                file_cache:
-                    dir: "%kernel.cache_dir%/serializer"
+    $builder = new JMS\Serializer\SerializerBuilder();
 
-                # Using auto-detection, the mapping files for each bundle will be
-                # expected in the Resources/config/serializer directory.
-                #
-                # Example:
-                # class: My\FooBundle\Entity\User
-                # expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
-                auto_detection: true
+    $serializer =
+        JMS\Serializer\SerializerBuilder::create()
+        ->setCacheDir($someWritableDir)
+        ->setDebug($trueOrFalse)
+        ->build();
 
-                # if you don't want to use auto-detection, you can also define the
-                # namespace prefix and the corresponding directory explicitly
-                directories:
-                    any-name:
-                        namespace_prefix: "My\\FooBundle"
-                        path: "@MyFooBundle/Resources/config/serializer"
-                    another-name:
-                        namespace_prefix: "My\\BarBundle"
-                        path: "@MyBarBundle/Resources/config/serializer"
+As you can see, we also added a call to the ``setDebug`` method. In debug mode, the serializer will perform a bit more
+filesystem checks to see whether the data that it has cached is still valid. These checks are useful during development
+so that you do not need to manually clear cache folders, however in production they are just unnecessary overhead. The
+debug setting allows you to make the behavior environment specific.
 
-            visitors:
-                json:
-                    options: 0 # json_encode options bitmask
-                xml:
-                    doctype_whitelist:
-                        - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
+Adding Custom Handlers
+----------------------
+If you have created custom handlers, you can add them to the serializer easily::
 
-    .. code-block :: xml
+    $serializer =
+        JMS\Serializer\SerializerBuilder::create()
+            ->addDefaultHandlers()
+            ->configureHandlers(function(JMS\Serializer\Handler\HandlerRegistry $registry) {
+                $registry->registerHandler('serialization', 'MyObject', 'json',
+                    function($visitor, MyObject $obj, array $type) {
+                        return $obj->getName();
+                    }
+                );
+            })
+            ->build();
 
-        <!-- config.xml -->
-        <jms-serializer>
-            <handlers>
-                <object-based />
-                <datetime
-                    format="Y-mdTH:i:s"
-                    default-timezone="UTC" />
-                <array-collection />
-                <form-error />
-                <constraint-violation />
-            </handlers>
+For more complex handlers, it is advisable to extract them to dedicated classes,
+see :doc:`handlers documentation <handlers>`.
 
-            <property-naming
-                seperator="_"
-                lower-case="true" />
+Configuring Metadata Locations
+------------------------------
+This library supports several metadata sources. By default, it uses Doctrine annotations, but you may also store
+metadata in XML, or YML files. For the latter, it is necessary to configure a metadata directory where those files
+are located::
 
-            <metadata
-                cache="file"
-                debug="%kernel.debug%"
-                auto-detection="true">
+    $serializer =
+        JMS\Serializer\SerializerBuilder::create()
+            ->addMetadataDir($someDir)
+            ->build();
 
-                <file-cache dir="%kernel.cache_dir%/serializer" />
-
-                <!-- If auto-detection is enabled, mapping files for each bundle will
-                     be expected in the Resources/config/serializer directory.
-
-                     Example:
-                     class: My\FooBundle\Entity\User
-                     expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
-                -->
-                <directory
-                    namespace-prefix="My\FooBundle"
-                    path="@MyFooBundle/Resources/config/serializer" />
-            </metadata>
-
-            <visitors>
-                <xml>
-                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
-                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
-                </xml>
-            </visitors>
-        </jms-serializer>
+The serializer would expect the metadata files to be named like the fully qualified class names where all ``\`` are
+replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
+at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.

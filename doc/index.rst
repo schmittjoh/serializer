@@ -1,29 +1,43 @@
-JMSSerializerBundle
-===================
+Serializer
+==========
 
 Introduction
 ------------
+This library allows you to (de-)serialize data of any complexity. Currently, it supports XML, JSON, and YAML.
 
-JMSSerializerBundle allows you to serialize your objects into a requested
-output format such as JSON, XML, or YAML, and vice versa. It provides you 
-with a rich toolset which empowers you to adapt the output to your specific
-needs.
+It also provides you with a rich tool-set to adapt the output to your specific needs.
 
 Built-in features include:
 
-- (de-)serialize object graphs of any complexity including circular references
-- supports many built-in PHP types (such as dates)
-- integrates with Doctrine ORM, et. al.
-- supports versioning, e.g. for APIs
-- configurable via PHP, XML, YAML, or annotations
+- (De-)serialize data of any complexity; circular references are handled gracefully.
+- Supports many built-in PHP types (such as dates)
+- Integrates with Doctrine ORM, et. al.
+- Supports versioning, e.g. for APIs
+- Configurable via PHP, XML, YAML, or Doctrine Annotations
+
+Installation
+------------
+This library can be easily installed via composer
+
+.. code-block :: bash
+
+    composer require jms/serializer
+
+or just add it to your ``composer.json`` file directly.
+
+Usage
+-----
+For standalone projects usage of the provided builder is encouraged::
+
+    $serializer = JMS\Serializer\SerializerBuilder::create()->build();
+    $serializer->serialize($data, 'json');
 
 Documentation
 -------------
 
 .. toctree ::
     :hidden:
-    
-    installation
+
     configuration
     usage
     event_system
@@ -31,7 +45,6 @@ Documentation
     reference
     cookbook
 
-- :doc:`Installation <installation>`
 - :doc:`Configuration <configuration>`
 - :doc:`Usage <usage>`
 - :doc:`Events <event_system>`
@@ -39,8 +52,7 @@ Documentation
 
 - Recipies
     * :doc:`/cookbook/exclusion_strategies`
-    * :doc:`/cookbook/metadata_for_third_party`
-    
+
 - Reference
     * :doc:`Annotations </reference/annotations>`
     * :doc:`XML Reference </reference/xml_reference>`
