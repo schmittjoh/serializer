@@ -1,0 +1,19 @@
+filter:
+    paths: [src/*, tests/*]
+    excluded_paths: ["tests/*/Fixtures/*"]
+
+default_config:
+    psr0_compliance: true
+    checkstyle: true
+    composer_config_check:
+        publish_checks: true
+        level: warning
+    reflection_fixes: true
+    use_statement_fixes: true
+
+path_configs:
+    tests:
+        paths: [tests/*]
+        psr0_compliance: false
+        checkstyle: false
+        phpunit_checks: true
