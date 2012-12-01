@@ -36,10 +36,3 @@ example, when accepting data via an API.
     $serializer = JMS\Serializer\SerializerBuilder::create()->build();
     $object = $serializer->deserialize($jsonData, 'MyNamespace\MyObject', 'json');
 
-More Resources
---------------
-
-- :doc:`Customizing which data should be (de-)serialized </cookbook/exclusion_strategies>`
-- :doc:`Adding custom serialization handlers </cookbook/custom_handlers>`
-- :doc:`(De-)Serializing third-party objects </cookbook/metadata_for_third_party>`
-- :doc:`Versioning Objects </cookbook/versioning_objects>`
