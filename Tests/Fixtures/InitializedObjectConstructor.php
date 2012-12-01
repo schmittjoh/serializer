@@ -26,20 +26,16 @@ use JMS\SerializerBundle\Serializer\Construction\ObjectConstructorInterface;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 
 use JMS\SerializerBundle\Tests\Fixtures\Author;
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 
-class InitializedObjectConstructor implements ObjectConstructorInterface
+class InitializedObjectConstructor extends UnserializeObjectConstructor
 {
     public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type)
     {
-        $post = new \StdClass;
-        $post->title = 'This is a nice title.';
-        $post->author = new Author('Foo Bar');
-        $post->createdAt = new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC'));
-        $post->comments = new ArrayCollection();
-        $post->published = false;
+        if ($type['name'] !== 'JMS\SerializerBundle\Tests\Fixtures\BlogPost') {
+            return parent::construct($visitor, $metadata, $data, $type);
+        }
 
-        $post->comments->add(new \StdClass);
-
-        return $post;
+        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
     }
 }

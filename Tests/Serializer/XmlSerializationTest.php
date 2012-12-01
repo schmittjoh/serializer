@@ -146,6 +146,11 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
 
+    public function testDeserializingNull()
+    {
+        $this->markTestSkipped('Not supported in XML.');
+    }
+
     /**
      * @param string $key
      */

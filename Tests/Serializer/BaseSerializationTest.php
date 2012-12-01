@@ -286,10 +286,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingNull()
     {
-        if (get_class($this) === 'JMS\SerializerBundle\Tests\Serializer\XmlSerializationTest') {
-            $this->markTestSkipped('Deserializing null not working in XML.');
-        }
-
         $objectConstructor = new InitializedObjectConstructor();
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
         $this->serializer->setSerializeNull(true);
@@ -302,6 +298,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post));
+
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             $this->assertAttributeSame(false, 'published', $deserialized);
