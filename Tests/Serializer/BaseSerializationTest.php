@@ -80,6 +80,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
     protected $factory;
     protected $dispatcher;
+
+    /** @var Serializer */
     protected $serializer;
     protected $handlerRegistry;
     protected $serializationVisitors;
@@ -541,6 +543,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testObjectWithEmptyHash()
     {
         $this->assertEquals($this->getContent('hash_empty'), $this->serializer->serialize(new ObjectWithEmptyHash(), $this->getFormat()));
+    }
+
+    /**
+     * @group null
+     */
+    public function testSerializeObjectWhenNull()
+    {
+        $this->serializer->setSerializeNull(false);
+        $this->assertEquals($this->getContent('object_when_null'), $this->serialize(new Comment(null, 'foo')));
+
+        $this->serializer->setSerializeNull(true);
+        $this->assertEquals($this->getContent('object_when_null_and_serialized'), $this->serialize(new Comment(null, 'foo')));
     }
 
     abstract protected function getContent($key);

@@ -79,6 +79,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
             $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
             $outputs['hash_empty'] = '{"hash":{}}';
+            $outputs['object_when_null'] = '{"text":"foo"}';
+            $outputs['object_when_null_and_serialized'] = '{"author":null,"text":"foo"}';
         }
 
         if (!isset($outputs[$key])) {
