@@ -245,6 +245,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getDateTime
+     * @group datetime
      */
     public function testDateTime($key, $value, $type)
     {
@@ -290,7 +291,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
 
         $objectConstructor = new InitializedObjectConstructor();
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
         $this->serializer->setSerializeNull(true);
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));

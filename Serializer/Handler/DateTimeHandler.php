@@ -25,6 +25,8 @@ use JMS\SerializerBundle\Serializer\XmlDeserializationVisitor;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
+use JMS\SerializerBundle\Serializer\VisitorInterface;
+use JMS\SerializerBundle\Serializer\GraphNavigator;
 
 class DateTimeHandler implements SubscribingHandlerInterface
 {
@@ -37,7 +39,15 @@ class DateTimeHandler implements SubscribingHandlerInterface
         foreach (array('json', 'xml', 'yml') as $format) {
             $methods[] = array(
                 'type' => 'DateTime',
+                'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
                 'format' => $format,
+            );
+
+            $methods[] = array(
+                'type' => 'DateTime',
+                'format' => $format,
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'method' => 'serializeDateTime',
             );
         }
 
@@ -50,32 +60,27 @@ class DateTimeHandler implements SubscribingHandlerInterface
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
     }
 
-    public function serializeDateTimeToXml(XmlSerializationVisitor $visitor, \DateTime $date, array $type)
+    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type)
     {
-        if (null === $visitor->document) {
-            $visitor->document = $visitor->createDocument(null, null, true);
-        }
-
-        return $visitor->document->createTextNode($date->format($this->getFormat($type)));
-    }
-
-    public function serializeDateTimeToYml(YamlSerializationVisitor $visitor, \DateTime $date, array $type)
-    {
-        return Inline::dump($date->format($this->getFormat($type)));
-    }
-
-    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type)
-    {
-        return $date->format($this->getFormat($type));
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
+        $attributes = $data->attributes();
+        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+            return null;
+        }
+
         return $this->parseDateTime($data, $type);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
     {
+        if (null === $data) {
+            return null;
+        }
+
         return $this->parseDateTime($data, $type);
     }
 

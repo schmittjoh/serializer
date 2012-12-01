@@ -22,7 +22,7 @@ class HandlerRegistry implements HandlerRegistryInterface
                 return 'serialize'.$type.'To'.$format;
 
             default:
-                throw new \LogicException(sprintf('The direction %s does not exist.', json_encode($direction)));
+                throw new \LogicException(sprintf('The direction %s does not exist; see GraphNavigator::DIRECTION_??? constants.', json_encode($direction)));
         }
     }
 
