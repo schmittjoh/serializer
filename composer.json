@@ -1,9 +1,9 @@
 {
-    "name": "jms/serializer-bundle",
-    "type": "symfony-bundle",
-    "description": "Allows you to easily serialize, and deserialize object graphs of any complexity",
+    "name": "jms/serializer",
+    "type": "library",
+    "description": "Library for (de-)serializing object graphs of any complexity.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
-    "homepage": "http://jmsyst.com/bundles/JMSSerializerBundle",
+    "homepage": "http://jmsyst.com/libs/serializer",
     "license": "Apache2",
     "authors": [
         {
@@ -15,28 +15,25 @@
         "php": ">=5.3.2",
         "jms/metadata": ">=1.1.0,<1.3-dev",
         "jms/parser-lib": "1.*",
-        "phpcollection/phpcollection": "0.1.*"
+        "phpcollection/phpcollection": "0.1.*",
+        "doctrine/common": "2.*"
     },
-    "conflict": {
-        "symfony/framework-bundle": "<2.1-dev",
-        "jms/di-extra-bundle": "<1.3-dev"
+    "suggest": {
+        "symfony/yaml": "Required if you'd like to serialize content to YAML format."
     },
     "require-dev": {
-        "symfony/doctrine-bridge": ">=2.1,<2.2-dev",
-        "symfony/framework-bundle": ">=2.1,<2.2-dev",
-	"jms/di-extra-bundle": ">=1.3-dev",
-        "symfony/yaml": ">=2.1,<2.3-dev",
-        "symfony/form": ">=2.1,<2.3-dev",
-        "symfony/validator": ">=2.1,<2.3-dev",
-        "symfony/translation": ">=2.1,<2.3-dev",
         "twig/twig": ">=1.8,<2.0-dev",
-        "doctrine/orm": ">=2.1,<2.4-dev"
+        "doctrine/orm": ">=2.1,<2.4-dev",
+        "symfony/yaml": "2.*",
+        "symfony/translation": ">=2.0,<2.2-dev",
+        "symfony/validator": ">=2.0,<2.2-dev",
+        "symfony/form": ">=2.0,<2.2-dev"
     },
     "autoload": {
-        "psr-0": { "JMS\\SerializerBundle": "" }
+        "psr-0": {
+            "JMS\\Serializer": "src/"
+        }
     },
-    "minimum-stability": "dev",
-    "target-dir": "JMS/SerializerBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"

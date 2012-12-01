@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\BlogPost" xml-root-name="blog-post">
+        <property name="title" type="string" groups="comments,post"/>
+        <property name="createdAt" xml-attribute="true" type="DateTime"/>
+        <property name="published" type="boolean" serialized-name="is_published" xml-attribute="true" groups="post" />
+        <property name="comments" groups="comments">
+            <type><![CDATA[ArrayCollection<JMS\Serializer\Tests\Fixtures\Comment>]]></type>
+            <xml-list inline="true" entry-name="comment" />
+        </property>
+        <property name="author" groups="post" type="JMS\Serializer\Tests\Fixtures\Author" />
+    </class>
+</serializer>

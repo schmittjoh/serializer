@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\BlogPost" xml-root-name="blog-post" exclusion-policy="ALL">
+        <property name="title" type="string" expose="true" />
+    </class>
+</serializer>

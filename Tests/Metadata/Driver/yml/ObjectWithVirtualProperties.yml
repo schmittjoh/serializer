@@ -1,8 +1,0 @@
-JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties:
-    properties:
-        existField:
-            type: string
-    virtual_properties:
-        getVirtualValue: ~
-        getVirtualSerializedValue:
-            serialized_name: test

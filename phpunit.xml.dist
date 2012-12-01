@@ -8,12 +8,12 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="Tests/bootstrap.php"
+         bootstrap="tests/bootstrap.php"
 >
          
     <testsuites>
-        <testsuite name="SerializerExtraBbundle Test Suite">
-            <directory>./Tests</directory>
+        <testsuite name="JMS Serializer Test Suite">
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     

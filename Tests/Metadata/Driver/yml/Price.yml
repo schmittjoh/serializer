@@ -1,5 +1,0 @@
-JMS\SerializerBundle\Tests\Fixtures\Price:
-    properties:
-        price:
-            type: double
-            xml_value: true

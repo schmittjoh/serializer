@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\GetSetObject" access-type="public_method">
+        <property name="id" type="integer" access-type="property" />
+        <property name="name" type="string" accessor-getter="getTrimmedName" accessor-setter="setCapitalizedName" />
+    </class>
+</serializer>
