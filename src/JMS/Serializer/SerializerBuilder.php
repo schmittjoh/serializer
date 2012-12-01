@@ -25,7 +25,8 @@ use Metadata\Cache\FileCache;
 /**
  * Builder for serializer instances.
  *
- * This makes it easier for you to wire all the different classes together.
+ * This object makes serializer construction a breeze for projects that do not use
+ * any special dependency injection container.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
@@ -277,8 +278,6 @@ class SerializerBuilder
 
     public function build()
     {
-        $fileLocator = new FileLocator($this->metadataDirs);
-
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {
             $annotationReader = new AnnotationReader();
@@ -289,11 +288,18 @@ class SerializerBuilder
             }
         }
 
-        $metadataFactory = new MetadataFactory(new DriverChain(array(
-            new YamlDriver($fileLocator),
-            new XmlDriver($fileLocator),
-            new AnnotationDriver($annotationReader),
-        )), null, $this->debug);
+        if ( ! empty($this->metadataDirs)) {
+            $fileLocator = new FileLocator($this->metadataDirs);
+            $metadataDriver = new DriverChain(array(
+                new YamlDriver($fileLocator),
+                new XmlDriver($fileLocator),
+                new AnnotationDriver($annotationReader),
+            ));
+        } else {
+            $metadataDriver = new AnnotationDriver($annotationReader);
+        }
+
+        $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
 
         if (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir.'/metadata');
