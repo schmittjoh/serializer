@@ -7,11 +7,9 @@ behavior.
 
 Register an Event Listener, or Subscriber
 -----------------------------------------
-A listener is a simple callable which receives an event object.
-
-The difference between both is similar to that of handlers. Listeners do not know to which they listen, but you
-need to provide that information when they are registered. Subscribers on the hand, can be passed to the listener
-and will tell the listener for which events they want to be called; this makes them easier to share, and re-use.
+The difference between listeners, and subscribers is that listener do not know to which events they listen
+while subscribers contain that information. Thus, subscribers are easier to share, and re-use. Listeners
+on the other hand, can be simple callables and do not require a dedicated class.
 
 .. code-block :: php
 
