@@ -62,6 +62,7 @@ objects such as links.
 serializer.post_deserialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is dispatched after a type is processed. You can use it to normalize
-submitted data if you require external services for example.
+submitted data if you require external services for example, or also to
+perform validation of the submitted data.
 
 **Event Object**: ``JMS\Serializer\EventDispatcher\Event``
