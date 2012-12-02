@@ -61,7 +61,7 @@ set the value via reflection, but you may change this to use a public method ins
 .. code-block :: php
 
     <?php
-    use JMS\SerializerBundle\Annotation\AccessType;
+    use JMS\Serializer\Annotation\AccessType;
 
     /** @AccessType("public_method") */
     class User
@@ -87,7 +87,7 @@ be called to retrieve, or set the value of the given property:
 .. code-block :: php
 
     <?php
-    use JMS\SerializerBundle\Annotation\Accessor;
+    use JMS\Serializer\Annotation\Accessor;
 
     class User
     {
@@ -117,7 +117,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
 .. code-block :: php
 
     <?php
-    use JMS\SerializerBundle\Annotation\AccessorOrder;
+    use JMS\Serializer\Annotation\AccessorOrder;
 
     /**
      * @AccessorOrder("alphabetical")
@@ -244,7 +244,7 @@ Examples:
 
     namespace MyNamespace;
 
-    use JMS\SerializerBundle\Annotation\Type;
+    use JMS\Serializer\Annotation\Type;
 
     class BlogPost
     {
@@ -287,7 +287,7 @@ This allows you to specify the name of the top-level element.
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\XmlRoot;
+    use JMS\Serializer\Annotation\XmlRoot;
 
     /** @XmlRoot("user") */
     class User
@@ -318,7 +318,7 @@ and not as child elements.
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\XmlAttribute;
+    use JMS\Serializer\Annotation\XmlAttribute;
 
     class User
     {
@@ -345,9 +345,9 @@ properties of that object must have the @XmlAttribute annotation.
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\XmlAttribute;
-    use JMS\SerializerBundle\Annotation\XmlValue;
-    use JMS\SerializerBundle\Annotation\XmlRoot;
+    use JMS\Serializer\Annotation\XmlAttribute;
+    use JMS\Serializer\Annotation\XmlValue;
+    use JMS\Serializer\Annotation\XmlRoot;
 
     /** @XmlRoot("price") */
     class Price
@@ -375,8 +375,8 @@ keys of the array are not important.
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\XmlList;
-    use JMS\SerializerBundle\Annotation\XmlRoot;
+    use JMS\Serializer\Annotation\XmlList;
+    use JMS\Serializer\Annotation\XmlRoot;
 
     /** @XmlRoot("post") */
     class Post
@@ -426,7 +426,7 @@ This allows you to use the keys of an array as xml tags.
     When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
 
 @XmlAttributeMap
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 This is similar to the @XmlKeyValuePairs, but instead of creating child elements, it creates attributes.
 
@@ -434,7 +434,7 @@ This is similar to the @XmlKeyValuePairs, but instead of creating child elements
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\XmlAttribute;
+    use JMS\Serializer\Annotation\XmlAttribute;
 
     class Input
     {
