@@ -20,6 +20,7 @@ namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Metadata\Driver\DriverInterface;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * This class decorates any other driver. If the inner driver does not provide a
@@ -92,6 +93,18 @@ class DoctrineTypeDriver implements DriverInterface
                 $propertyMetadata->setType($fieldType);
             } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
                 $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
+
+                if (null === $targetMetadata = $this->tryLoadingDoctrineMetadata($targetEntity)) {
+                    continue;
+                }
+
+                // For inheritance schemes, we cannot add any type as we would only add the super-type of the hierarchy.
+                // On serialization, this would lead to only the supertype being serialized, and properties of subtypes
+                // being ignored.
+                if ($targetMetadata instanceof ClassMetadataInfo && ! $targetMetadata->isInheritanceTypeNone()) {
+                    continue;
+                }
+
                 if ($doctrineMetadata->isSingleValuedAssociation($propertyName)) {
                     $propertyMetadata->setType($targetEntity);
                 } else {
