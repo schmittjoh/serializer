@@ -22,6 +22,9 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 
+/**
+ * Doctrine object constructor for new (or existing) objects during deserialization.
+ */
 class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
     private $managerRegistry;
@@ -30,8 +33,8 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * Constructor.
      *
-     * @param ManagerRegistry            $managerRegistry
-     * @param ObjectConstructorInterface $fallbackConstructor
+     * @param ManagerRegistry            $managerRegistry     Manager registry
+     * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
     public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor)
     {
@@ -66,18 +69,23 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
             return $objectManager->getReference($metadata->name, $data);
         }
 
-        // Entity update, load it from database
-        $classMetadata         = $objectManager->getClassMetadata($metadata->name);
-        $identifierList        = $classMetadata->getIdentifierFieldNames();
-        $missingIdentifierList = array_filter(
-            $identifierList,
-            function ($identifier) use ($data) {
-                return !isset($data[$identifier]);
-            }
-        );
+        // Fallback to default constructor if missing identifier(s)
+        $classMetadata  = $objectManager->getClassMetadata($metadata->name);
+        $identifierList = array();
 
-        return (!$missingIdentifierList)
-            ? $objectManager->find($metadata->name, $data)
-            : $this->fallbackConstructor->construct($visitor, $metadata, $data, $type);
+        foreach ($classMetadata->getIdentifierFieldNames() as $name) {
+            if ( ! isset($data[$name])) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type);
+            }
+
+            $identifierList[$name] = $data[$name];
+        }
+
+        // Entity update, load it from database
+        $object = $objectManager->find($metadata->name, $identifierList);
+
+        $objectManager->initializeObject($object);
+
+        return $object;
     }
 }
