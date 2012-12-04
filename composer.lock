@@ -1,6 +1,75 @@
 {
-    "hash": "9471111601a72982bc2cac0dc6c249ae",
+    "hash": "b82f8c17646b58e7b60049d37ab0f655",
     "packages": [
+        {
+            "name": "doctrine/common",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/common",
+                "reference": "a836c86c13e964051549e234250cf665a5f5a190"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/doctrine/common/archive/a836c86c13e964051549e234250cf665a5f5a190.zip",
+                "reference": "a836c86c13e964051549e234250cf665a5f5a190",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "time": "1353613273",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4.x-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Common Library for Doctrine projects",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "collections",
+                "spl",
+                "eventmanager",
+                "annotations",
+                "persistence"
+            ]
+        },
         {
             "name": "jms/metadata",
             "version": "dev-master",
@@ -193,103 +262,34 @@
     ],
     "packages-dev": [
         {
-            "name": "doctrine/common",
-            "version": "2.3.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/common",
-                "reference": "bb0aebbf234db52df476a2b473d434745b34221c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/doctrine/common/archive/bb0aebbf234db52df476a2b473d434745b34221c.zip",
-                "reference": "bb0aebbf234db52df476a2b473d434745b34221c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "time": "1348120518",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.3.x-dev"
-                }
-            },
-            "installation-source": "source",
-            "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common": "lib/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
-                },
-                {
-                    "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com",
-                    "homepage": "http://www.instaclick.com"
-                },
-                {
-                    "name": "Roman Borschel",
-                    "email": "roman@code-factory.org"
-                },
-                {
-                    "name": "Benjamin Eberlei",
-                    "email": "kontakt@beberlei.de"
-                },
-                {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
-                }
-            ],
-            "description": "Common Library for Doctrine projects",
-            "homepage": "http://www.doctrine-project.org",
-            "keywords": [
-                "collections",
-                "spl",
-                "eventmanager",
-                "annotations",
-                "persistence"
-            ]
-        },
-        {
             "name": "doctrine/dbal",
-            "version": "2.3.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal",
-                "reference": "22a30c9cece379eab619727c83e1859288f32f89"
+                "reference": "2e2336a6c1c3dd3897f9419df9675a5fb0a0edda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/dbal/archive/22a30c9cece379eab619727c83e1859288f32f89.zip",
-                "reference": "22a30c9cece379eab619727c83e1859288f32f89",
+                "url": "https://github.com/doctrine/dbal/archive/2e2336a6c1c3dd3897f9419df9675a5fb0a0edda.zip",
+                "reference": "2e2336a6c1c3dd3897f9419df9675a5fb0a0edda",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
-                "doctrine/common": "2.3.*"
+                "doctrine/common": ">=2.3-dev,<2.5-dev"
             },
-            "time": "1353866609",
+            "time": "1354311197",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3.x-dev"
+                    "dev-master": "2.4.x-dev"
                 }
             },
             "installation-source": "source",
             "autoload": {
                 "psr-0": {
-                    "Doctrine\\DBAL": "lib/"
+                    "Doctrine\\DBAL\\": "lib/"
                 }
             },
             "license": [
@@ -326,46 +326,34 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.3.x-dev",
+            "version": "2.2.0-BETA2",
             "source": {
                 "type": "git",
                 "url": "git://github.com/doctrine/doctrine2.git",
-                "reference": "287b29aeaada588923a47e677d6974b023f88fd4"
+                "reference": "2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/doctrine2/archive/287b29aeaada588923a47e677d6974b023f88fd4.zip",
-                "reference": "287b29aeaada588923a47e677d6974b023f88fd4",
+                "url": "https://github.com/doctrine/doctrine2/zipball/2.2.0-BETA2",
+                "reference": "2.2.0-BETA2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
                 "ext-pdo": "*",
-                "symfony/console": "2.*",
-                "doctrine/dbal": "2.3.*"
+                "doctrine/common": "master-dev",
+                "doctrine/dbal": "master-dev"
             },
-            "suggest": {
-                "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
-            },
-            "time": "1354051577",
-            "bin": [
-                "bin/doctrine",
-                "bin/doctrine.php"
-            ],
+            "time": "2012-01-03 13:27:03",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.3.x-dev"
-                }
-            },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Doctrine\\ORM": "lib/"
                 }
             },
             "license": [
-                "MIT"
+                "LGPL"
             ],
             "authors": [
                 {
@@ -395,65 +383,18 @@
             ]
         },
         {
-            "name": "symfony/console",
-            "version": "dev-master",
-            "target-dir": "Symfony/Component/Console",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Console",
-                "reference": "003a487a674175a1d2e62f205ecd91ffe85554b1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/Console/archive/003a487a674175a1d2e62f205ecd91ffe85554b1.zip",
-                "reference": "003a487a674175a1d2e62f205ecd91ffe85554b1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "time": "1353329932",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev"
-                }
-            },
-            "installation-source": "source",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Console\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Console Component",
-            "homepage": "http://symfony.com"
-        },
-        {
             "name": "symfony/event-dispatcher",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher",
-                "reference": "v2.1.3"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/EventDispatcher/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/EventDispatcher/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
@@ -466,14 +407,14 @@
                 "symfony/dependency-injection": "2.1.*",
                 "symfony/http-kernel": "2.1.*"
             },
-            "time": "2012-10-04 08:17:57",
+            "time": "1352368308",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\EventDispatcher": ""
@@ -497,33 +438,33 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.1.3",
+            "version": "dev-master",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem",
-                "reference": "v2.1.3"
+                "reference": "23e5f803eeb98fd57ab8d8fa1209082041d9d1ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Filesystem/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Filesystem/archive/23e5f803eeb98fd57ab8d8fa1209082041d9d1ab.zip",
+                "reference": "23e5f803eeb98fd57ab8d8fa1209082041d9d1ab",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-20 00:10:30",
+            "time": "1354185165",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.2-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\Filesystem": ""
+                    "Symfony\\Component\\Filesystem\\": ""
                 }
             },
             "license": [
@@ -544,17 +485,17 @@
         },
         {
             "name": "symfony/form",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/Form",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Form",
-                "reference": "v2.1.3"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Form/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Form/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
@@ -571,14 +512,14 @@
                 "symfony/validator": "2.1.*",
                 "symfony/http-foundation": "2.1.*"
             },
-            "time": "2012-10-22 07:37:12",
+            "time": "1354185138",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Form": ""
@@ -602,17 +543,17 @@
         },
         {
             "name": "symfony/locale",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/Locale",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Locale",
-                "reference": "v2.1.3"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Locale/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Locale/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
@@ -621,14 +562,14 @@
             "suggest": {
                 "ext-intl": ">=5.3.3"
             },
-            "time": "2012-10-20 00:10:30",
+            "time": "1352824146",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Locale": ""
@@ -652,30 +593,30 @@
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/OptionsResolver",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/OptionsResolver",
-                "reference": "v2.1.3"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/OptionsResolver/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/OptionsResolver/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-04 08:17:57",
+            "time": "1352368308",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\OptionsResolver": ""
@@ -704,17 +645,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation",
-                "reference": "v2.1.3"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Translation/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Translation/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
@@ -728,14 +669,14 @@
                 "symfony/config": "2.1.*",
                 "symfony/yaml": "2.1.*"
             },
-            "time": "2012-10-20 00:10:30",
+            "time": "1353512262",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Translation": ""
@@ -759,17 +700,17 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v2.1.3",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator",
-                "reference": "v2.1.3"
+                "reference": "8376f1e8ff276fc4aacfbe173ebce0b423200235"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Validator/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Validator/archive/8376f1e8ff276fc4aacfbe173ebce0b423200235.zip",
+                "reference": "8376f1e8ff276fc4aacfbe173ebce0b423200235",
                 "shasum": ""
             },
             "require": {
@@ -785,14 +726,14 @@
                 "symfony/http-foundation": "2.1.*",
                 "symfony/yaml": "2.1.*"
             },
-            "time": "2012-10-22 07:37:12",
+            "time": "1354548315",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Validator": ""
@@ -816,33 +757,33 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.1.3",
+            "version": "dev-master",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml",
-                "reference": "v2.1.3"
+                "reference": "bed4fddc24392513e01b32a78d600b1272ed9a6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Yaml/zipball/v2.1.3",
-                "reference": "v2.1.3",
+                "url": "https://github.com/symfony/Yaml/archive/bed4fddc24392513e01b32a78d600b1272ed9a6c.zip",
+                "reference": "bed4fddc24392513e01b32a78d600b1272ed9a6c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-29 04:15:41",
+            "time": "1352815684",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.2-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\Yaml": ""
+                    "Symfony\\Component\\Yaml\\": ""
                 }
             },
             "license": [
@@ -867,18 +808,18 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "b58df0e1ae4b664f561bfaeffdb673829daa6b79"
+                "reference": "6810dbe8a7be204813a4397b1bddcfdb875fe2e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/archive/b58df0e1ae4b664f561bfaeffdb673829daa6b79.zip",
-                "reference": "b58df0e1ae4b664f561bfaeffdb673829daa6b79",
+                "url": "https://github.com/fabpot/Twig/archive/6810dbe8a7be204813a4397b1bddcfdb875fe2e2.zip",
+                "reference": "6810dbe8a7be204813a4397b1bddcfdb875fe2e2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "1353925549",
+            "time": "1354387289",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -914,7 +855,7 @@
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [
 
     ]
