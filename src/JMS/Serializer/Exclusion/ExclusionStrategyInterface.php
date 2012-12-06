@@ -20,6 +20,7 @@ namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\NavigatorContext;
 
 /**
  * Interface for exclusion strategies.
@@ -32,19 +33,19 @@ interface ExclusionStrategyInterface
      * Whether the class should be skipped.
      *
      * @param ClassMetadata $metadata
-     * @param object|null        $object instance, provided during serialization but not deserialization
+     * @param NavigatorContext $navigatorContext
      *
      * @return boolean
      */
-    public function shouldSkipClass(ClassMetadata $metadata, $object = null);
+    public function shouldSkipClass(ClassMetadata $metadata, NavigatorContext $navigatorContext);
 
     /**
      * Whether the property should be skipped.
      *
      * @param PropertyMetadata $property
-     * @param object|null           $object instance, provided during serialization but not deserialization
+     * @param NavigatorContext $navigatorContext
      *
      * @return boolean
      */
-    public function shouldSkipProperty(PropertyMetadata $property, $object = null);
+    public function shouldSkipProperty(PropertyMetadata $property, NavigatorContext $navigatorContext);
 }

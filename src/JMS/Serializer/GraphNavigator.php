@@ -41,14 +41,12 @@ final class GraphNavigator
     const DIRECTION_SERIALIZATION = 1;
     const DIRECTION_DESERIALIZATION = 2;
 
-    private $direction;
+    private $context;
     private $dispatcher;
     private $metadataFactory;
-    private $format;
     private $handlerRegistry;
     private $objectConstructor;
     private $exclusionStrategy;
-    private $visiting;
 
     /**
      * Parses a direction string to one of the direction constants.
@@ -73,14 +71,12 @@ final class GraphNavigator
 
     public function __construct($direction, MetadataFactoryInterface $metadataFactory, $format, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, ExclusionStrategyInterface $exclusionStrategy = null, EventDispatcherInterface $dispatcher = null)
     {
-        $this->direction = $direction;
+        $this->context = new NavigatorContext($direction, $format);
         $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
-        $this->format = $format;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
         $this->exclusionStrategy = $exclusionStrategy;
-        $this->visiting = new \SplObjectStorage();
     }
 
     /**
@@ -97,9 +93,9 @@ final class GraphNavigator
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
-            if (self::DIRECTION_DESERIALIZATION === $this->direction) {
+            if (!$this->context->isSerializing()) {
                 $msg = 'The type must be given for all properties when deserializing.';
-                if (null !== $path = $this->getCurrentPath()) {
+                if (null !== $path = $this->context->getPath()) {
                     $msg .= ' Path: '.$path;
                 }
 
@@ -115,7 +111,7 @@ final class GraphNavigator
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-        else if (self::DIRECTION_SERIALIZATION === $this->direction && null === $data) {
+        else if ($this->context->isSerializing() && null === $data) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 
@@ -141,49 +137,45 @@ final class GraphNavigator
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
-                if (null !== $path = $this->getCurrentPath()) {
+                if (null !== $path = $this->context->getPath()) {
                     $msg .= ' Path: '.$path;
                 }
 
                 throw new \RuntimeException($msg);
 
             default:
-                $isSerializing = self::DIRECTION_SERIALIZATION === $this->direction;
+                $isSerializing = $this->context->isSerializing();
 
                 if ($isSerializing && null !== $data) {
-                    if ($this->visiting->contains($data)) {
+                    if ($this->context->isVisiting($data)) {
                         return null;
                     }
-                    $this->visiting->attach($data);
+                    $this->context->startVisiting($data);
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler($this->direction, $type['name'], $this->format)) {
+                if (null !== $handler = $this->handlerRegistry->getHandler($this->context->getDirection(), $type['name'], $this->context->getFormat())) {
                     $rs = call_user_func($handler, $visitor, $data, $type);
 
-                    if ($isSerializing) {
-                        $this->visiting->detach($data);
-                    }
+                    $this->context->stopVisiting($data);
 
                     return $rs;
                 }
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 if ($isSerializing) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($visitor, $data, $type));
+                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->context->getFormat())) {
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->context->getFormat(), $event = new PreSerializeEvent($visitor, $data, $type));
                         $type = $event->getType();
                     }
                 }
 
                 // Load metadata, and check whether this class should be excluded.
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $isSerializing ? $data : null)) {
-                    if ($isSerializing) {
-                        $this->visiting->detach($data);
-                    }
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
+                    $this->context->stopVisiting($data);
 
                     return null;
                 }
@@ -199,8 +191,8 @@ final class GraphNavigator
                     $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type);
                 }
 
-                if (isset($metadata->handlerCallbacks[$this->direction][$this->format])) {
-                    $rs = $object->{$metadata->handlerCallbacks[$this->direction][$this->format]}($visitor, $isSerializing ? null : $data);
+                if (isset($metadata->handlerCallbacks[$this->context->getDirection()][$this->context->getFormat()])) {
+                    $rs = $object->{$metadata->handlerCallbacks[$this->context->getDirection()][$this->context->getFormat()]}($visitor, $isSerializing ? null : $data);
                     $this->afterVisitingObject($visitor, $metadata, $object, $type);
 
                     return $isSerializing ? $rs : $object;
@@ -208,7 +200,7 @@ final class GraphNavigator
 
                 $visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $isSerializing ? $data : null)) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
 
@@ -249,34 +241,20 @@ final class GraphNavigator
             throw new InvalidArgumentException(sprintf('Expected an object to detach, given "%s".', gettype($object)));
         }
 
-        $this->visiting->detach($object);
-    }
-
-    private function getCurrentPath()
-    {
-        $path = array();
-        foreach ($this->visiting as $obj) {
-            $path[] = get_class($obj);
-        }
-
-        if ( ! $path) {
-            return null;
-        }
-
-        return implode(' -> ', $path);
+        $this->context->stopVisiting($object);
     }
 
     private function afterVisitingObject(VisitorInterface $visitor, ClassMetadata $metadata, $object, array $type)
     {
-        if (self::DIRECTION_SERIALIZATION === $this->direction) {
-            $this->visiting->detach($object);
+        if ($this->context->isSerializing()) {
+            $this->context->stopVisiting($object);
 
             foreach ($metadata->postSerializeMethods as $method) {
                 $method->invoke($object);
             }
 
-            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $this->format)) {
-                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $this->format, new Event($visitor, $object, $type));
+            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $this->context->getFormat())) {
+                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $this->context->getFormat(), new Event($visitor, $object, $type));
             }
 
             return;
@@ -286,8 +264,8 @@ final class GraphNavigator
             $method->invoke($object);
         }
 
-        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
-            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new Event($visitor, $object, $type));
+        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->context->getFormat())) {
+            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->context->getFormat(), new Event($visitor, $object, $type));
         }
     }
 }
