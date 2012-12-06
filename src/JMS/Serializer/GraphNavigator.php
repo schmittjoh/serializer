@@ -48,7 +48,6 @@ final class GraphNavigator
     private $handlerRegistry;
     private $objectConstructor;
     private $exclusionStrategy;
-    private $customHandlers = array();
     private $visiting;
 
     /**
