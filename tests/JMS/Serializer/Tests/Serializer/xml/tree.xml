@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <tree>
+    <children>
+      <entry>
+        <children>
+          <entry>
+            <children>
+              <entry/>
+            </children>
+            <foo><![CDATA[bar]]></foo>
+          </entry>
+        </children>
+        <foo><![CDATA[bar]]></foo>
+      </entry>
+    </children>
+    <foo><![CDATA[bar]]></foo>
+  </tree>
+</result>

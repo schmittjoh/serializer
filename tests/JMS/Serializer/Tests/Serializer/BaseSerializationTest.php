@@ -24,6 +24,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -82,6 +83,8 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
+use JMS\Serializer\Exclusion\DepthExclusionStrategy;
+use JMS\Serializer\Tests\Fixtures\Node;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -706,6 +709,27 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->getContent('car_without_type'),
             'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
         );
+    }
+
+    public function testDepthExclusionStrategy()
+    {
+        $context = SerializationContext::create()
+            ->addExclusionStrategy(new DepthExclusionStrategy())
+        ;
+
+        $data = new Tree(
+            new Node(array(
+                new Node(array(
+                    new Node(array(
+                        new Node(array(
+                            new Node(),
+                        )),
+                    )),
+                )),
+            ))
+        );
+
+        $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
     }
 
     abstract protected function getContent($key);

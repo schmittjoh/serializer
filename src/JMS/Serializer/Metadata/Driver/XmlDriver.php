@@ -187,6 +187,10 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->xmlKeyValuePairs = 'true' === (string) $pElem->attributes()->{'xml-key-value-pairs'};
                     }
 
+                    if (isset($pElem->attributes()->{'max-depth'})) {
+                        $pMetadata->maxDepth = (int) $pElem->attributes()->{'max-depth'};
+                    }
+
                     //we need read-only before setter and getter set, because that method depends on flag being set
                     if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
                         $pMetadata->readOnly = 'true' === strtolower($readOnly);

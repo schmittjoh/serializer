@@ -145,6 +145,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $m->discriminatorMap);
     }
 
+    public function testMaxDepth()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Node'));
+
+        $this->assertEquals(2, $m->propertyMetadata['children']->maxDepth);
+    }
+
     /**
      * @return DriverInterface
      */

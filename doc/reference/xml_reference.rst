@@ -25,6 +25,7 @@ XML Reference
                       groups="foo,bar"
                       xml-key-value-pairs="true"
                       xml-attribute-map="true"
+                      max-depth="2"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
