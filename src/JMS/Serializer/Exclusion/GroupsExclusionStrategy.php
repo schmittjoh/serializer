@@ -20,6 +20,7 @@ namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\NavigatorContext;
 
 class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
@@ -38,7 +39,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 
-    public function shouldSkipClass(ClassMetadata $metadata, $object = null)
+    /**
+     * {@inheritDoc}
+     */
+    public function shouldSkipClass(ClassMetadata $metadata, NavigatorContext $navigatorContext)
     {
         return false;
     }
@@ -46,7 +50,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, $object = null)
+    public function shouldSkipProperty(PropertyMetadata $property, NavigatorContext $navigatorContext)
     {
         if ( ! $property->groups) {
             return ! isset($this->groups[self::DEFAULT_GROUP]);

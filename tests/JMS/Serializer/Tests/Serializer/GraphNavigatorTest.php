@@ -9,6 +9,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
 use Metadata\MetadataFactory;
+use JMS\Serializer\Tests\Fixtures\Node;
+use JMS\Serializer\JsonSerializationVisitor;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,10 +39,22 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $exclusionStrategy = $this->getMock('JMS\Serializer\Exclusion\ExclusionStrategyInterface');
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->with($metadata, $object);
+            ->with($metadata, $this->callback(function ($navigatorContext) use ($object) {
+                return
+                    $object === $navigatorContext->getObject()
+                    && $navigatorContext->isSerializing()
+                    && 'foo' === $navigatorContext->getFormat()
+                ;
+            }));
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->with($metadata->propertyMetadata['foo'], $object);
+            ->with($metadata->propertyMetadata['foo'], $this->callback(function ($navigatorContext) use ($object) {
+                return
+                    $object === $navigatorContext->getObject()
+                    && $navigatorContext->isSerializing()
+                    && 'foo' === $navigatorContext->getFormat()
+                ;
+            }));
 
         $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, $exclusionStrategy, $this->dispatcher);
         $this->navigator->accept($object, null, $this->visitor);
@@ -54,11 +68,23 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $exclusionStrategy = $this->getMock('JMS\Serializer\Exclusion\ExclusionStrategyInterface');
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->with($metadata, null);
+            ->with($metadata, $this->callback(function ($navigatorContext) {
+                return
+                    $navigatorContext->getObject() === null
+                    && !$navigatorContext->isSerializing()
+                    && 'foo' === $navigatorContext->getFormat()
+                ;
+            }));
 
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->with($metadata->propertyMetadata['foo'], null);
+            ->with($metadata->propertyMetadata['foo'], $this->callback(function ($navigatorContext) {
+                return
+                    $navigatorContext->getObject() === null
+                    && !$navigatorContext->isSerializing()
+                    && 'foo' === $navigatorContext->getFormat()
+                ;
+            }));
 
         $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, $exclusionStrategy, $this->dispatcher);
         $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->visitor);
