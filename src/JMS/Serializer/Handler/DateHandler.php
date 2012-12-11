@@ -28,7 +28,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 
-class DateTimeHandler implements SubscribingHandlerInterface
+class DateHandler implements SubscribingHandlerInterface
 {
     private $defaultFormat;
     private $defaultTimezone;
@@ -36,6 +36,8 @@ class DateTimeHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
+        $types = array('DateTime', 'DateInterval');
+
         foreach (array('json', 'xml', 'yml') as $format) {
             $methods[] = array(
                 'type' => 'DateTime',
@@ -43,12 +45,14 @@ class DateTimeHandler implements SubscribingHandlerInterface
                 'format' => $format,
             );
 
-            $methods[] = array(
-                'type' => 'DateTime',
-                'format' => $format,
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'method' => 'serializeDateTime',
-            );
+            foreach ($types as $type) {
+                $methods[] = array(
+                    'type' => $type,
+                    'format' => $format,
+                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'method' => 'serialize'.$type,
+                );
+            }
         }
 
         return $methods;
@@ -63,6 +67,13 @@ class DateTimeHandler implements SubscribingHandlerInterface
     public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type)
     {
         return $visitor->visitString($date->format($this->getFormat($type)), $type);
+    }
+
+    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type)
+    {
+        $iso8601DateIntervalString = $this->format($date);
+
+        return $visitor->visitString($iso8601DateIntervalString, $type);
     }
 
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
@@ -102,5 +113,44 @@ class DateTimeHandler implements SubscribingHandlerInterface
     private function getFormat(array $type)
     {
         return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
+    }
+
+    /**
+     * @param \DateInterval $dateInterval
+     * @return string
+     */
+    public function format(\DateInterval $dateInterval)
+    {
+        $format = 'P';
+
+        if (0 < $dateInterval->y) {
+            $format .= $dateInterval->y.'Y';
+        }
+
+        if (0 < $dateInterval->m) {
+            $format .= $dateInterval->m.'M';
+        }
+
+        if (0 < $dateInterval->d) {
+            $format .= $dateInterval->d.'D';
+        }
+
+        if (0 < $dateInterval->h || 0 < $dateInterval->i || 0 < $dateInterval->s) {
+            $format .= 'T';
+        }
+
+        if (0 < $dateInterval->h) {
+            $format .= $dateInterval->h.'H';
+        }
+
+        if (0 < $dateInterval->i) {
+            $format .= $dateInterval->i.'M';
+        }
+
+        if (0 < $dateInterval->s) {
+            $format .= $dateInterval->s.'S';
+        }
+
+        return $format;
     }
 }

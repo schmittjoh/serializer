@@ -30,7 +30,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;
-use JMS\Serializer\Handler\DateTimeHandler;
+use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -265,6 +265,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return array(
             array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
         );
+    }
+
+    public function testDateInterval()
+    {
+        $duration = new \DateInterval('PT45M');
+
+        $this->assertEquals($this->getContent('date_interval'), $this->serializer->serialize($duration, $this->getFormat()));
     }
 
     public function testBlogPost()
@@ -646,7 +653,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new DateTimeHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
