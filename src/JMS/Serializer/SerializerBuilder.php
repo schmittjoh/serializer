@@ -12,7 +12,7 @@ use Metadata\Driver\DriverChain;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use Metadata\Driver\FileLocator;
-use JMS\Serializer\Handler\DateTimeHandler;
+use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
@@ -90,7 +90,7 @@ class SerializerBuilder
     public function addDefaultHandlers()
     {
         $this->handlersConfigured = true;
-        $this->handlerRegistry->registerSubscribingHandler(new DateTimeHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
 
         return $this;
