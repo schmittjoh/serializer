@@ -10,6 +10,6 @@ class PreSerializeEvent extends Event
      */
     public function setType($typeName, array $params = array())
     {
-        $this->type = array('name' => $typeName, 'params' => $typeName);
+        $this->type = array('name' => $typeName, 'params' => $params);
     }
 }
