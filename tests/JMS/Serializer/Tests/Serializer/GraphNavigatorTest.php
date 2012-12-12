@@ -90,6 +90,38 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->visitor);
     }
 
+    public function testNavigatorChangeTypeOnSerialization()
+    {
+        $object = new SerializableClass;
+        $typeName = 'JsonSerializable';
+
+        $this->dispatcher->addListener('serializer.pre_serialize', function($event) use ($typeName) {
+            $type = $event->getType();
+            $type['name'] = $typeName;
+            $event->setType($type['name'], $type['params']);
+        });
+
+        $subscribingHandlerClass = $this->getMockClass('JMS\Serializer\Handler\SubscribingHandlerInterface', array('getSubscribingMethods', 'serialize'));
+        $subscribingHandlerClass::staticExpects($this->once())
+            ->method('getSubscribingMethods')
+            ->will($this->returnValue(array(array(
+                'type' => $typeName,
+                'format' => 'foo',
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'method' => 'serialize'
+            ))));
+
+        $subscribingHandler = new $subscribingHandlerClass();
+        $subscribingHandler->expects($this->once())
+            ->method('serialize')
+            ->with($this->equalTo($this->visitor), $this->equalTo($object));
+
+        $this->handlerRegistry->registerSubscribingHandler($subscribingHandler);
+
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, null, $this->dispatcher);
+        $this->navigator->accept($object, null, $this->visitor);
+    }
+
     protected function setUp()
     {
         $this->visitor = $this->getMock('JMS\Serializer\VisitorInterface');
