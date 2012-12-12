@@ -79,7 +79,8 @@ class DateHandler implements SubscribingHandlerInterface
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
         $attributes = $data->attributes();
-        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+        if ((isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') ||
+            (isset($attributes['xsi:nil'][0]) && (string) $attributes['xsi:nil'][0] === 'true')) {
             return null;
         }
 
