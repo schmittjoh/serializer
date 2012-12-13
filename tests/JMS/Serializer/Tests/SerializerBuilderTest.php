@@ -62,7 +62,8 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException JMS\Serializer\Exception\UnsupportedFormatException
+     * @expectedExceptionMessage The format "xml" is not supported for serialization.
      */
     public function testDoesNotAddOtherVisitorsWhenConfiguredExplicitly()
     {

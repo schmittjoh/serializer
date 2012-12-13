@@ -40,7 +40,11 @@ class Serializer implements SerializerInterface
     private $objectConstructor;
     private $dispatcher;
     private $typeParser;
+
+    /** @var \PhpCollection\MapInterface */
     private $serializationVisitors;
+
+    /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
     private $exclusionStrategy;
     private $serializeNull;
@@ -111,6 +115,10 @@ class Serializer implements SerializerInterface
 
     public function serialize($data, $format)
     {
+        if ( ! $this->serializationVisitors->containsKey($format)) {
+            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
+        }
+
         $visitor = $this->serializationVisitors->get($format)->get();
         $visitor->setSerializeNull($this->serializeNull);
         $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
@@ -121,6 +129,10 @@ class Serializer implements SerializerInterface
 
     public function deserialize($data, $type, $format)
     {
+        if ( ! $this->deserializationVisitors->containsKey($format)) {
+            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
+        }
+
         $visitor = $this->deserializationVisitors->get($format)->get();
         $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
         $navigatorResult = $navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $visitor);
