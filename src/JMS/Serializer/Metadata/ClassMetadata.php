@@ -131,6 +131,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
+            $this->handlerCallbacks,
             parent::serialize(),
         ));
     }
@@ -144,6 +145,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
+            $this->handlerCallbacks,
             $parentStr
         ) = unserialize($str);
 
