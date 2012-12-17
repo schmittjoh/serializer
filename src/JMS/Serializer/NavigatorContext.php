@@ -58,6 +58,9 @@ class NavigatorContext
 
     public function isVisiting($object)
     {
+        if (! is_object($object)) {
+            throw new \LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
+        }
         return $this->visitingSet->contains($object);
     }
 
