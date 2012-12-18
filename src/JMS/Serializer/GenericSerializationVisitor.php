@@ -51,7 +51,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return $data;
+        return (string) $data;
     }
 
     public function visitBoolean($data, array $type)
@@ -60,7 +60,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return $data;
+        return (boolean) $data;
     }
 
     public function visitInteger($data, array $type)
@@ -69,7 +69,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return $data;
+        return (int) $data;
     }
 
     public function visitDouble($data, array $type)
@@ -78,7 +78,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return $data;
+        return (float) $data;
     }
 
     /**
