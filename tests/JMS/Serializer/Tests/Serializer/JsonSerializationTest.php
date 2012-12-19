@@ -111,6 +111,58 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
     }
 
+    public function getPrimitiveTypes()
+    {
+        return array(
+            array(
+                'type' => 'boolean',
+                'data' => true,
+            ),
+            array(
+                'type' => 'boolean',
+                'data' => 1,
+            ),
+            array(
+                'type' => 'integer',
+                'data' => 123,
+            ),
+            array(
+                'type' => 'integer',
+                'data' => "123",
+            ),
+            array(
+                'type' => 'string',
+                'data' => "hello",
+            ),
+            array(
+                'type' => 'string',
+                'data' => 123,
+            ),
+            array(
+                'type' => 'double',
+                'data' => 0.1234,
+            ),
+            array(
+                'type' => 'double',
+                'data' => "0.1234",
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getPrimitiveTypes
+     */
+    public function testPrimitiveTypes($primitiveType, $data)
+    {
+        $visitor = $this->serializationVisitors->get('json')->get();
+        $functionToCall = 'visit' . ucfirst($primitiveType);
+        $result = $visitor->$functionToCall($data, array());
+        if ($primitiveType == 'double') {
+            $primitiveType = 'float';
+        }
+        $this->assertInternalType($primitiveType, $result);
+    }
+
     protected function getFormat()
     {
         return 'json';

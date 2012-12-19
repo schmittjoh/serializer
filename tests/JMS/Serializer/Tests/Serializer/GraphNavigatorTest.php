@@ -121,58 +121,6 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->navigator->accept($object, null, $this->visitor);
     }
 
-    public function getPrimitiveTypes()
-    {
-        return array(
-            array(
-                'type' => 'boolean',
-                'data' => true,
-            ),
-            array(
-                'type' => 'boolean',
-                'data' => 1,
-            ),
-            array(
-                'type' => 'integer',
-                'data' => 123,
-            ),
-            array(
-                'type' => 'integer',
-                'data' => "123",
-            ),
-            array(
-                'type' => 'string',
-                'data' => "hello",
-            ),
-            array(
-                'type' => 'string',
-                'data' => 123,
-            ),
-            array(
-                'type' => 'double',
-                'data' => 0.1234,
-            ),
-            array(
-                'type' => 'double',
-                'data' => "0.1234",
-            ),
-        );
-    }
-
-    /**
-     * @dataProvider getPrimitiveTypes
-     * @param  string $primitiveType
-     * @param  mixed  $data
-     */
-    public function testSerializationCastsType($primitiveType, $data)
-    {
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, 'foo', $this->handlerRegistry, $this->objectConstructor, null, $this->dispatcher);
-
-        $this->visitor->expects($this->once())
-            ->method('visit' . ucfirst($primitiveType));
-        $this->navigator->accept($data, array('name' => $primitiveType), $this->visitor);
-    }
-
     protected function setUp()
     {
         $this->visitor = $this->getMock('JMS\Serializer\VisitorInterface');
