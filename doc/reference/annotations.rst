@@ -182,7 +182,7 @@ by the object iself.
     class Article
     {
         /**
-         * @HandlerCallack("xml", direction = "serialization")
+         * @HandlerCallback("xml", direction = "serialization")
          */
         public function serializeToXml(XmlSerializationVisitor $visitor)
         {
