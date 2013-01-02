@@ -21,6 +21,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Metadata\Cache\FileCache;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 
 /**
  * Builder for serializer instances.
@@ -335,7 +336,7 @@ class SerializerBuilder
             return;
         }
 
-        $this->propertyNamingStrategy = new CamelCaseNamingStrategy();
+        $this->propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
     }
 
     private function createDir($dir)
