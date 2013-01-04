@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\EventDispatcher\SerializeVisitedEvent;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\Event;
@@ -148,6 +149,12 @@ final class GraphNavigator
 
                 if ($isSerializing && null !== $data) {
                     if ($this->context->isVisiting($data)) {
+                        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.serialize_visited', $type['name'], $this->context->getFormat())) {
+                            $this->dispatcher->dispatch('serializer.serialize_visited', $type['name'], $this->context->getFormat(), $event = new SerializeVisitedEvent($visitor, $data, $type));
+
+                            return $event->getObject();
+                        }
+
                         return null;
                     }
                     $this->context->startVisiting($data);
