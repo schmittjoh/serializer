@@ -6,5 +6,10 @@ comments:
         author:
             full_name: 'Foo Bar'
         text: foo
+comments2:
+    -
+        author:
+            full_name: 'Foo Bar'
+        text: foo
 author:
     full_name: 'Foo Bar'

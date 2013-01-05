@@ -2,6 +2,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Handler\PhpCollectionHandler;
 use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -92,6 +93,7 @@ class SerializerBuilder
     {
         $this->handlersConfigured = true;
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
 
         return $this;
