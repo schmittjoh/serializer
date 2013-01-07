@@ -13,6 +13,7 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
+        $type   = $event->getType();
 
         if ($object instanceof PersistentCollection) {
             $event->setType('ArrayCollection');
@@ -21,6 +22,14 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+            try {
+                $class = new \ReflectionClass($type['name']);
+
+                if ($class->isInterface()) {
+                    $event->setType(get_class($object));
+                }
+            } catch (\ReflectionException $e) {}
+
             return;
         }
 
