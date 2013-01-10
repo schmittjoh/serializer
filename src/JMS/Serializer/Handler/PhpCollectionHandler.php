@@ -29,7 +29,7 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        $formats = array('json', 'xml', 'yml');
+        $formats = array('json', 'xml', 'yml', 'array');
         $collectionTypes = array(
             'PhpCollection\Sequence' => 'Sequence',
             'PhpCollection\Map' => 'Map',

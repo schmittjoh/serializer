@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\ArraySerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
@@ -31,7 +32,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        $formats = array('xml', 'json', 'yml');
+        $formats = array('xml', 'json', 'yml', 'array');
         $types = array('Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation');
 
         foreach ($types as $type => $method) {
@@ -65,6 +66,11 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
     }
 
     public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
+    {
+        return $visitor->visitArray(iterator_to_array($list), $type, $context);
+    }
+
+    public function serializeListToArray(ArraySerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
     {
         return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
@@ -107,5 +113,20 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
             'property_path' => $violation->getPropertyPath(),
             'message' => $violation->getMessage(),
         );
+    }
+
+    public function serializeViolationToArray(ArraySerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    {
+
+        $data = array(
+            'property_path' => $violation->getPropertyPath(),
+            'message' => $violation->getMessage()
+        );
+
+        if (null === $visitor->getRoot()) {
+            $visitor->setRoot($data);
+        }
+
+        return $data;
     }
 }
