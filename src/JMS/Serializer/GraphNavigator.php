@@ -152,7 +152,7 @@ final class GraphNavigator
                         if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.serialize_visited', $type['name'], $this->context->getFormat())) {
                             $this->dispatcher->dispatch('serializer.serialize_visited', $type['name'], $this->context->getFormat(), $event = new SerializeVisitedEvent($visitor, $data, $type));
 
-                            return $event->getObject();
+                            return $visitor->visitArray($event->getObject(), array('name' => 'array', 'params' => array()));
                         }
 
                         return null;
