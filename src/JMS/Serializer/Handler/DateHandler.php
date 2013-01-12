@@ -99,9 +99,10 @@ class DateHandler implements SubscribingHandlerInterface
     private function parseDateTime($data, array $type)
     {
         $timezone = isset($type['params'][1]) ? $type['params'][1] : $this->defaultTimezone;
-        $datetime = \DateTime::createFromFormat($this->getFormat($type), (string) $data, $timezone);
+        $format = $this->getFormat($type);
+        $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         if (false === $datetime) {
-            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $this->defaultFormat));
+            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
 
         return $datetime;
