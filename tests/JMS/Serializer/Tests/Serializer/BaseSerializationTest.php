@@ -20,6 +20,8 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\ArrayDeserializationVisitor;
+use JMS\Serializer\ArraySerializationVisitor;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -994,10 +996,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'json' => new JsonSerializationVisitor($namingStrategy),
             'xml'  => new XmlSerializationVisitor($namingStrategy),
             'yml'  => new YamlSerializationVisitor($namingStrategy),
+            'array'=> new ArraySerializationVisitor($namingStrategy)
         ));
         $this->deserializationVisitors = new Map(array(
             'json' => new JsonDeserializationVisitor($namingStrategy),
             'xml'  => new XmlDeserializationVisitor($namingStrategy),
+            'array'=> new ArrayDeserializationVisitor($namingStrategy)
         ));
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
