@@ -155,11 +155,11 @@ final class GraphNavigator
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($isSerializing) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->context->getFormat(), $event = new PreSerializeEvent($visitor, $data, $type));
-                        $type = $event->getType();
-                    }
+                $eventName = $isSerializing ? 'serializer.pre_serialize' : 'serializer.pre_deserialize';
+                if (null !== $this->dispatcher && $this->dispatcher->hasListeners($eventName, $type['name'], $this->context->getFormat())) {
+                    $event = $isSerializing ? new PreSerializeEvent($visitor, $data, $type) : new Event($visitor, $data, $type);
+                    $this->dispatcher->dispatch($eventName, $type['name'], $this->context->getFormat(), $event);
+                    $type = $event->getType();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
