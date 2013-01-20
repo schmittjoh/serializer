@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\Event;
