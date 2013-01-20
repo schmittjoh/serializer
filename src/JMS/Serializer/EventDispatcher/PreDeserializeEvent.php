@@ -6,7 +6,7 @@ use JMS\Serializer\VisitorInterface;
 
 class PreDeserializeEvent extends Event
 {
-  protected $data;
+    protected $data;
 
     public function __construct(VisitorInterface $visitor, &$data, array $type)
     {
