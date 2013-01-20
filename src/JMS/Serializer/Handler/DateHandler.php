@@ -98,7 +98,7 @@ class DateHandler implements SubscribingHandlerInterface
 
     private function parseDateTime($data, array $type)
     {
-        $timezone = isset($type['params'][1]) ? $type['params'][1] : $this->defaultTimezone;
+        $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
         $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         if (false === $datetime) {
