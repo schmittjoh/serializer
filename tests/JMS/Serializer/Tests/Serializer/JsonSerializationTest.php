@@ -20,6 +20,8 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
@@ -161,6 +163,14 @@ class JsonSerializationTest extends BaseSerializationTest
             $primitiveType = 'float';
         }
         $this->assertInternalType($primitiveType, $result);
+    }
+
+    public function testArrayCollectionDeserialization()
+    {
+        $coll = $this->serializer->deserialize('["foo", "bar"]', 'ArrayCollection', 'json');
+        $expectedColl = new ArrayCollection(array('foo', 'bar'));
+
+        $this->assertEquals($expectedColl, $coll);
     }
 
     protected function getFormat()

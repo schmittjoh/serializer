@@ -27,6 +27,7 @@ use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use PhpCollection\MapInterface;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Serializer Implementation.
@@ -138,7 +139,7 @@ class Serializer implements SerializerInterface
         $navigatorResult = $navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $visitor);
 
         // This is a special case if the root is handled by a callback on the object iself.
-        if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
+        if (((null === $visitorResult = $visitor->getResult()) || $navigatorResult instanceof Collection) && null !== $navigatorResult) {
             return $navigatorResult;
         }
 
