@@ -8,7 +8,7 @@ class Event
 {
     protected $type;
     private $object;
-    private $visitor;
+    protected $visitor;
 
     public function __construct(VisitorInterface $visitor, $object, array $type)
     {
