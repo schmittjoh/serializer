@@ -75,12 +75,27 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->builder->build()->serialize('foo', 'xml');
     }
 
-    private function getField($obj, $name)
+    public function testIncludeInterfaceMetadata()
     {
-        $ref = new \ReflectionProperty($obj, $name);
-        $ref->setAccessible(true);
+        $this->assertFalse(
+            $this->getIncludeInterfaces($this->builder),
+            'Interface metadata are not included by default'
+        );
 
-        return $ref->getValue($obj);
+        $this->assertTrue(
+            $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(true)),
+            'Force including interface metadata'
+        );
+
+        $this->assertFalse(
+            $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(false)),
+            'Force not including interface metadata'
+        );
+
+        $this->assertSame(
+            $this->builder,
+            $this->builder->includeInterfaceMetadata(true)
+        );
     }
 
     protected function setUp()
@@ -96,5 +111,19 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         $this->fs->remove($this->tmpDir);
+    }
+
+    private function getField($obj, $name)
+    {
+        $ref = new \ReflectionProperty($obj, $name);
+        $ref->setAccessible(true);
+
+        return $ref->getValue($obj);
+    }
+
+    private function getIncludeInterfaces(SerializerBuilder $builder)
+    {
+        $factory = $this->getField($builder->build(), 'factory');
+        return $this->getField($factory, 'includeInterfaces');
     }
 }

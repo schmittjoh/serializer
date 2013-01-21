@@ -47,6 +47,7 @@ class SerializerBuilder
     private $debug = false;
     private $cacheDir;
     private $annotationReader;
+    private $includeInterfaceMetadata = false;
 
     public static function create()
     {
@@ -181,6 +182,18 @@ class SerializerBuilder
     }
 
     /**
+     * @param Boolean $include Whether to include the metadata from the interfaces
+     *
+     * @return SerializerBuilder
+     */
+    public function includeInterfaceMetadata($include)
+    {
+        $this->includeInterfaceMetadata = (Boolean) $include;
+
+        return $this;
+    }
+
+    /**
      * Sets a map of namespace prefixes to directories.
      *
      * This method overrides any previously defined directories.
@@ -303,6 +316,8 @@ class SerializerBuilder
         }
 
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
+
+        $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
         if (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir.'/metadata');
