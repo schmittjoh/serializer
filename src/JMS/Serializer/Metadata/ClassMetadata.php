@@ -48,16 +48,19 @@ class ClassMetadata extends MergeableClassMetadata
      *
      * @param string $order
      * @param array $customOrder
+     *
+     * @throws InvalidArgumentException When the accessor order is not valid
+     * @throws InvalidArgumentException When the custom order is not valid
      */
     public function setAccessorOrder($order, array $customOrder = array())
     {
         if (!in_array($order, array(self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM), true)) {
-            throw new \InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
+            throw new InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
         }
 
         foreach ($customOrder as $name) {
             if (!is_string($name)) {
-                throw new \InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
+                throw new InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
             }
         }
 

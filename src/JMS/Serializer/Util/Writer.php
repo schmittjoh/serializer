@@ -56,6 +56,8 @@ class Writer
 
     /**
      * @param string $content
+     *
+     * @return Writer
      */
     public function writeln($content)
     {
@@ -73,10 +75,11 @@ class Writer
 
     /**
      * @param string $content
+     *
+     * @return Writer
      */
     public function write($content)
     {
-        $contentEndsWithNewLine = "\n" === substr($this->content, -1);
         $addition = '';
 
         $lines = explode("\n", $content);

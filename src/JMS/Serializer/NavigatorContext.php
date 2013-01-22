@@ -2,6 +2,9 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\LogicException;
+
 class NavigatorContext
 {
     private $direction;
@@ -52,14 +55,14 @@ class NavigatorContext
         $poppedObject = $this->visitingStack->pop();
 
         if ($object !== $poppedObject) {
-            throw new \RuntimeException('NavigatorContext visitingStack not working well');
+            throw new RuntimeException('NavigatorContext visitingStack not working well');
         }
     }
 
     public function isVisiting($object)
     {
         if (! is_object($object)) {
-            throw new \LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
+            throw new LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
         }
         return $this->visitingSet->contains($object);
     }

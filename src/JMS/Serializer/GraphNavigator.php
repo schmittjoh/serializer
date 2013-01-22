@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\Event;
@@ -65,7 +66,7 @@ final class GraphNavigator
                 return self::DIRECTION_DESERIALIZATION;
 
             default:
-                throw new \InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
+                throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
         }
     }
 
@@ -99,7 +100,7 @@ final class GraphNavigator
                     $msg .= ' Path: '.$path;
                 }
 
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
 
             $typeName = gettype($data);
@@ -141,7 +142,7 @@ final class GraphNavigator
                     $msg .= ' Path: '.$path;
                 }
 
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
 
             default:
                 $isSerializing = $this->context->isSerializing();

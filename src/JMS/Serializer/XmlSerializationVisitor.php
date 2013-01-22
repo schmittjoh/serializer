@@ -180,7 +180,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
             || (!$metadata->xmlValue && $this->hasValue)) {
-            throw new \RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->class));
+            throw new RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->class));
         }
 
         if ($metadata->xmlValue) {
