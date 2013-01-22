@@ -13,6 +13,9 @@ class LazyEventDispatcher extends EventDispatcher
         $this->container = $container;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function initializeListeners($eventName, $loweredClass, $format)
     {
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);

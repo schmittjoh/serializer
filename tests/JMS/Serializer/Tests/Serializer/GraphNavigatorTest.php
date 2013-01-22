@@ -17,13 +17,12 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     private $metadataFactory;
     private $handlerRegistry;
     private $objectConstructor;
-    private $exclusionStrategy;
     private $dispatcher;
     private $navigator;
     private $visitor;
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage Resources are not supported in serialized data.
      */
     public function testResourceThrowsException()

@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Exception;
 
 /**
- * RuntimeException for the SerializerBundle.
+ * RuntimeException for the Serializer.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */

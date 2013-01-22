@@ -20,11 +20,8 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\JsonDeserializationVisitor;
 use Symfony\Component\Yaml\Inline;
-use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 

@@ -145,7 +145,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 return $result;
 
             default:
-                throw new \RuntimeException(sprintf('Array type cannot have more than 2 parameters, but got %s.', json_encode($type['params'])));
+                throw new RuntimeException(sprintf('Array type cannot have more than 2 parameters, but got %s.', json_encode($type['params'])));
         }
     }
 

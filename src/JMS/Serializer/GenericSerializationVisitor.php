@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
@@ -160,7 +161,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     public function addData($key, $value)
     {
         if (isset($this->data[$key])) {
-            throw new \InvalidArgumentException(sprintf('There is already data for "%s".', $key));
+            throw new InvalidArgumentException(sprintf('There is already data for "%s".', $key));
         }
 
         $this->data[$key] = $value;
