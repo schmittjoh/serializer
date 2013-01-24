@@ -92,9 +92,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = array();
             $rs = &$this->root;
         } else {
-            // ArrayObject is specially treated by the json_encode function and
-            // serialized to { } while a mere array would be serialized to [].
-            $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
+            $rs = array();
         }
 
         foreach ($data as $k => $v) {
