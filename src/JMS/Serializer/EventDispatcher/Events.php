@@ -7,7 +7,7 @@ abstract class Events
     const PRE_SERIALIZE = 'serializer.pre_serialize';
     const POST_SERIALIZE = 'serializer.post_serialize';
     const POST_DESERIALIZE = 'serializer.post_deserialize';
-    const SERIALIZE_VISITED = 'serializer.serialize_visited';
+    const CIRCULAR_SERIALIZATION = 'serializer.circular_serialization';
 
     final private function __construct() { }
 }
