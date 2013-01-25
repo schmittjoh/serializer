@@ -7,7 +7,7 @@ use JMS\Serializer\VisitorInterface;
 class Event
 {
     protected $type;
-    protected $object;
+    private $object;
     private $visitor;
 
     public function __construct(VisitorInterface $visitor, $object, array $type)
