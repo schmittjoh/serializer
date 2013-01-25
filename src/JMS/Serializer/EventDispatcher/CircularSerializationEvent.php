@@ -17,7 +17,8 @@ class CircularSerializationEvent extends Event
     /**
      * @return mixed
      */
-    public function getReplacement() {
+    public function getReplacement()
+    {
         return $this->replacement;
     }
 }
