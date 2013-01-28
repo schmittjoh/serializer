@@ -28,7 +28,7 @@
         "symfony/yaml": "2.*",
         "symfony/translation": ">=2.0,<2.2-dev",
         "symfony/validator": ">=2.0,<2.2-dev",
-        "symfony/form": ">=2.0,<2.2-dev",
+        "symfony/form": ">=2.1,<2.2-dev",
         "symfony/filesystem": "2.*"
     },
     "autoload": {

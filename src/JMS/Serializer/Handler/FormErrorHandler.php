@@ -76,7 +76,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
             $errorsNode->appendChild($errorNode);
         }
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
                 $formNode->appendChild($node);
             }
@@ -116,6 +116,10 @@ class FormErrorHandler implements SubscribingHandlerInterface
 
     private function getErrorMessage(FormError $error)
     {
+        if (null !== $error->getMessagePluralization()) {
+            return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), 'validators');
+        }
+
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
     }
 
@@ -133,7 +137,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         $children = array();
-        foreach ($data->getChildren() as $child) {
+        foreach ($data->all() as $child) {
             $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
         }
 
