@@ -76,7 +76,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
             $errorsNode->appendChild($errorNode);
         }
 
-        foreach ($form->getChildren() as $child) {
+        foreach ($form->all() as $child) {
             if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
                 $formNode->appendChild($node);
             }
@@ -137,7 +137,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         $children = array();
-        foreach ($data->getChildren() as $child) {
+        foreach ($data->all() as $child) {
             $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
         }
 
