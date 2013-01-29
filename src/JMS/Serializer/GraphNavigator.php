@@ -20,6 +20,7 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\CircularSerializationEvent;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\Event;
@@ -66,7 +67,7 @@ final class GraphNavigator
                 return self::DIRECTION_DESERIALIZATION;
 
             default:
-                throw new \InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
+                throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
         }
     }
 
@@ -100,7 +101,7 @@ final class GraphNavigator
                     $msg .= ' Path: '.$path;
                 }
 
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
 
             $typeName = gettype($data);
@@ -142,7 +143,7 @@ final class GraphNavigator
                     $msg .= ' Path: '.$path;
                 }
 
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
 
             default:
                 $isSerializing = $this->context->isSerializing();
@@ -173,7 +174,7 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($this->context->getDirection(), $type['name'], $this->context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type);
+                    $rs = call_user_func($handler, $visitor, $data, $type, $this->context);
 
                     $this->context->stopVisiting($data);
 

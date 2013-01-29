@@ -20,11 +20,8 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\JsonDeserializationVisitor;
 use Symfony\Component\Yaml\Inline;
-use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 
@@ -98,10 +95,11 @@ class DateHandler implements SubscribingHandlerInterface
 
     private function parseDateTime($data, array $type)
     {
-        $timezone = isset($type['params'][1]) ? $type['params'][1] : $this->defaultTimezone;
-        $datetime = \DateTime::createFromFormat($this->getFormat($type), (string) $data, $timezone);
+        $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
+        $format = $this->getFormat($type);
+        $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         if (false === $datetime) {
-            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $this->defaultFormat));
+            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
 
         return $datetime;

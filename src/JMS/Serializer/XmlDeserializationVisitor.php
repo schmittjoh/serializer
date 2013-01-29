@@ -19,6 +19,8 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\XmlErrorException;
+use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -63,7 +65,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
                 $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
                 if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
-                    throw new \InvalidArgumentException(sprintf(
+                    throw new InvalidArgumentException(sprintf(
                         'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
                         $internalSubset
                     ));
@@ -190,7 +192,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 return $result;
 
             default:
-                throw new \LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type['params'])));
+                throw new LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type['params'])));
         }
     }
 

@@ -7,6 +7,12 @@
     </author>
     <text><![CDATA[foo]]></text>
   </comment>
+  <comment2>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[foo]]></text>
+  </comment2>
   <author>
     <full_name><![CDATA[Foo Bar]]></full_name>
   </author>

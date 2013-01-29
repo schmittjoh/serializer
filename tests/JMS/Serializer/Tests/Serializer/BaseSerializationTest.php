@@ -19,6 +19,8 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\PhpCollectionHandler;
+use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
@@ -287,6 +289,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
+            $this->assertAttributeEquals(new Sequence(array($comment)), 'comments2', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
         }
     }
@@ -655,6 +658,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
+        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
             function(VisitorInterface $visitor, $object, array $type) {

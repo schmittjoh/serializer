@@ -50,7 +50,7 @@ Documentation
 - :doc:`Events <event_system>`
 - :doc:`Handlers <handlers>`
 
-- Recipies
+- Recipes
     * :doc:`/cookbook/exclusion_strategies`
 
 - Reference

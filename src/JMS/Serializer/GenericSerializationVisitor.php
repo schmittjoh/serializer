@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
@@ -35,6 +36,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $this->dataStack = new \SplStack;
     }
 
+    /**
+     * @return GraphNavigator
+     */
     public function getNavigator()
     {
         return $this->navigator;
@@ -91,9 +95,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = array();
             $rs = &$this->root;
         } else {
-            // ArrayObject is specially treated by the json_encode function and
-            // serialized to { } while a mere array would be serialized to [].
-            $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
+            $rs = array();
         }
 
         foreach ($data as $k => $v) {
@@ -160,7 +162,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     public function addData($key, $value)
     {
         if (isset($this->data[$key])) {
-            throw new \InvalidArgumentException(sprintf('There is already data for "%s".', $key));
+            throw new InvalidArgumentException(sprintf('There is already data for "%s".', $key));
         }
 
         $this->data[$key] = $value;

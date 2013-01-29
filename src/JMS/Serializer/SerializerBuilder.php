@@ -2,6 +2,8 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\Exception\RuntimeException;
 use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -22,6 +24,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
  * Builder for serializer instances.
@@ -46,6 +49,7 @@ class SerializerBuilder
     private $debug = false;
     private $cacheDir;
     private $annotationReader;
+    private $includeInterfaceMetadata = false;
 
     public static function create()
     {
@@ -80,7 +84,7 @@ class SerializerBuilder
             $this->createDir($dir);
         }
         if ( ! is_writable($dir)) {
-            throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
+            throw new InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
 
         $this->cacheDir = $dir;
@@ -92,6 +96,7 @@ class SerializerBuilder
     {
         $this->handlersConfigured = true;
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
 
         return $this;
@@ -179,6 +184,18 @@ class SerializerBuilder
     }
 
     /**
+     * @param Boolean $include Whether to include the metadata from the interfaces
+     *
+     * @return SerializerBuilder
+     */
+    public function includeInterfaceMetadata($include)
+    {
+        $this->includeInterfaceMetadata = (Boolean) $include;
+
+        return $this;
+    }
+
+    /**
      * Sets a map of namespace prefixes to directories.
      *
      * This method overrides any previously defined directories.
@@ -186,12 +203,14 @@ class SerializerBuilder
      * @param array<string,string> $namespacePrefixToDirMap
      *
      * @return SerializerBuilder
+     *
+     * @throws InvalidArgumentException When a directory does not exist
      */
     public function setMetadataDirs(array $namespacePrefixToDirMap)
     {
-        foreach ($namespacePrefixToDirMap as $prefix => $dir) {
+        foreach ($namespacePrefixToDirMap as $dir) {
             if ( ! is_dir($dir)) {
-                throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
+                throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
             }
         }
 
@@ -222,15 +241,18 @@ class SerializerBuilder
      * @param string $namespacePrefix An optional prefix if you only store metadata for specific namespaces in this directory.
      *
      * @return SerializerBuilder
+     *
+     * @throws InvalidArgumentException When a directory does not exist
+     * @throws InvalidArgumentException When a directory has already been registered
      */
     public function addMetadataDir($dir, $namespacePrefix = '')
     {
         if ( ! is_dir($dir)) {
-            throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
+            throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
         if (isset($this->metadataDirs[$namespacePrefix])) {
-            throw new \InvalidArgumentException(sprintf('There is already a directory configured for the namespace prefix "%s". Please use replaceMetadataDir() to override directories.', $namespacePrefix));
+            throw new InvalidArgumentException(sprintf('There is already a directory configured for the namespace prefix "%s". Please use replaceMetadataDir() to override directories.', $namespacePrefix));
         }
 
         $this->metadataDirs[$namespacePrefix] = $dir;
@@ -261,15 +283,18 @@ class SerializerBuilder
      * @param string $namespacePrefix
      *
      * @return SerializerBuilder
+     *
+     * @throws InvalidArgumentException When a directory does not exist
+     * @throws InvalidArgumentException When no directory is configured for the ns prefix
      */
     public function replaceMetadataDir($dir, $namespacePrefix = '')
     {
         if ( ! is_dir($dir)) {
-            throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
+            throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
         if ( ! isset($this->metadataDirs[$namespacePrefix])) {
-            throw new \InvalidArgumentException(sprintf('There is no directory configured for namespace prefix "%s". Please use addMetadataDir() for adding new directories.', $namespacePrefix));
+            throw new InvalidArgumentException(sprintf('There is no directory configured for namespace prefix "%s". Please use addMetadataDir() for adding new directories.', $namespacePrefix));
         }
 
         $this->metadataDirs[$namespacePrefix] = $dir;
@@ -301,6 +326,8 @@ class SerializerBuilder
         }
 
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
+
+        $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
         if (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir.'/metadata');
@@ -346,7 +373,7 @@ class SerializerBuilder
         }
 
         if (false === @mkdir($dir, 0777, true)) {
-            throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));
+            throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
         }
     }
 }

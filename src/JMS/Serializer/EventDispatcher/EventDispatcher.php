@@ -1,6 +1,7 @@
 <?php
 
 namespace JMS\Serializer\EventDispatcher;
+use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
  * Light-weight event dispatcher.
@@ -41,7 +42,7 @@ class EventDispatcher implements EventDispatcherInterface
     {
         foreach ($subscriber->getSubscribedEvents() as $eventData) {
             if ( ! isset($eventData['event'])) {
-                throw new \InvalidArgumentException(sprintf('Each event must have a "event" key.'));
+                throw new InvalidArgumentException(sprintf('Each event must have a "event" key.'));
             }
 
             $method = isset($eventData['method']) ? $eventData['method'] : self::getDefaultMethodName($eventData['event']);
@@ -83,7 +84,11 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
+     * @param string $eventName
      * @param string $loweredClass
+     * @param string $format
+     *
+     * @return array An array of listeners
      */
     protected function initializeListeners($eventName, $loweredClass, $format)
     {

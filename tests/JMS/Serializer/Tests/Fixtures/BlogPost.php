@@ -25,6 +25,7 @@ use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpCollection\Sequence;
 
 /** @XmlRoot("blog-post") */
 class BlogPost
@@ -57,6 +58,13 @@ class BlogPost
     private $comments;
 
     /**
+     * @Type("PhpCollection\Sequence<JMS\Serializer\Tests\Fixtures\Comment>")
+     * @XmlList(inline=true, entry="comment2")
+     * @Groups({"comments"})
+     */
+    private $comments2;
+
+    /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      * @Groups({"post"})
      */
@@ -68,6 +76,7 @@ class BlogPost
         $this->author = $author;
         $this->published = false;
         $this->comments = new ArrayCollection();
+        $this->comments2 = new Sequence();
         $this->createdAt = $createdAt;
     }
 
@@ -79,5 +88,6 @@ class BlogPost
     public function addComment(Comment $comment)
     {
         $this->comments->add($comment);
+        $this->comments2->add($comment);
     }
 }
