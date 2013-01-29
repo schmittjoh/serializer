@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\EventDispatcher\CircularSerializationEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -149,6 +150,12 @@ final class GraphNavigator
 
                 if ($isSerializing && null !== $data) {
                     if ($this->context->isVisiting($data)) {
+                        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.circular_serialization', $type['name'], $this->context->getFormat())) {
+                            $this->dispatcher->dispatch('serializer.circular_serialization', $type['name'], $this->context->getFormat(), $event = new CircularSerializationEvent($visitor, $data, $type));
+
+                            return $this->accept($event->getReplacement(), null, $visitor);
+                        }
+
                         return null;
                     }
                     $this->context->startVisiting($data);
