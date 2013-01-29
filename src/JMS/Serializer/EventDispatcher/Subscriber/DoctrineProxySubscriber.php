@@ -13,9 +13,17 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
+        $type = $event->getType();
+
+        // If the set type name is not an actual class, but a faked type for which a custom handler exists, we do not
+        // modify it with this subscriber. Also, we forgo autoloading here as an instance of this type is already created,
+        // so it must be loaded if its a real class.
+        $virtualType = ! class_exists($type['name'], false);
 
         if ($object instanceof PersistentCollection) {
-            $event->setType('ArrayCollection');
+            if ( ! $virtualType) {
+                $event->setType('ArrayCollection');
+            }
 
             return;
         }
@@ -25,7 +33,10 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         $object->__load();
-        $event->setType(get_parent_class($object));
+
+        if ( ! $virtualType) {
+            $event->setType(get_parent_class($object));
+        }
     }
 
     public static function getSubscribedEvents()
