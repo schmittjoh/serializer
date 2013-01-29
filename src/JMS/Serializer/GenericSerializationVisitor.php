@@ -36,6 +36,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $this->dataStack = new \SplStack;
     }
 
+    /**
+     * @return GraphNavigator
+     */
     public function getNavigator()
     {
         return $this->navigator;

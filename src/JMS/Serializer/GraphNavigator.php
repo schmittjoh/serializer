@@ -167,7 +167,7 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($this->context->getDirection(), $type['name'], $this->context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type);
+                    $rs = call_user_func($handler, $visitor, $data, $type, $this->context);
 
                     $this->context->stopVisiting($data);
 
