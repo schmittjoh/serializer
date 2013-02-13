@@ -86,6 +86,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['object_when_null_and_serialized'] = '{"author":null,"text":"foo"}';
             $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
             $outputs['date_interval'] = '"PT45M"';
+            $outputs['nullable_2D_array']= '[["a","b","c"],[1,null,3],["x",4.56,"z"]]';
         }
 
         if (!isset($outputs[$key])) {
