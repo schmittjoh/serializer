@@ -1,10 +1,10 @@
 <?php
-namespace JMS\Serializer\Serializer\Naming;
+namespace JMS\Serializer\Naming;
 
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class PropertyNamingStrategy implements PropertyNamingStrategyInterface
+class IdenticalPropertyNamingStrategy implements PropertyNamingStrategyInterface
 {
     public function translateName(PropertyMetadata $property)
     {
