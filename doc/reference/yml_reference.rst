@@ -24,6 +24,7 @@ YAML Reference
                 until_version: 1.1
                 groups: [foo, bar]
                 xml_attribute: true
+                xml_value: true
                 inline: true
                 read_only: true
                 xml_key_value_pairs: true
