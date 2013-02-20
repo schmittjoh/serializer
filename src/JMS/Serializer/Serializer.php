@@ -23,6 +23,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
+use JMS\Serializer\Exclusion\ChainExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
@@ -80,23 +81,45 @@ class Serializer implements SerializerInterface
         $this->serializeNull = $serializeNull;
     }
 
+    /**
+     * @param [type] $exclusionStrategy [description]
+     */
     public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
     {
         $this->exclusionStrategy = $exclusionStrategy;
     }
 
     /**
-     * @param integer $version
+     * @param ExclusionStrategyInterface $strategy
      */
+    public function addExclusionStrategy(ExclusionStrategyInterface $strategy)
+    {
+        if ($this->exclusionStrategy instanceof ChainExclusionStrategy) {
+            $this->exclusionStrategy->addExclusionStrategy($strategy);
+        } elseif ($this->exclusionStrategy) {
+            $this->exclusionStrategy = new ChainExclusionStrategy(array($this->exclusionStrategy, $strategy));
+        } else {
+            $this->exclusionStrategy = $strategy;
+        }
+    }
+
+    /**
+    * @param integer $version
+    */
     public function setVersion($version)
     {
         if (null === $version) {
-            $this->exclusionStrategy = null;
+            if ($this->exclusionStrategy instanceof ChainExclusionStrategy) {
+                $this->exclusionStrategy->removeExclusionStrategy('JMS\Serializer\Exclusion\VersionExclusionStrategy');
+            } else {
+                $this->exclusionStrategy = null;
+            }
 
             return;
         }
 
-        $this->exclusionStrategy = new VersionExclusionStrategy($version);
+        $strategy = new VersionExclusionStrategy($version);
+        $this->addExclusionStrategy($strategy);
     }
 
     /**
@@ -105,12 +128,17 @@ class Serializer implements SerializerInterface
     public function setGroups($groups)
     {
         if ( ! $groups) {
-            $this->exclusionStrategy = null;
+            if ($this->exclusionStrategy instanceof ChainExclusionStrategy) {
+                $this->exclusionStrategy->removeExclusionStrategy('JMS\Serializer\Exclusion\GroupsExclusionStrategy');
+            } else {
+                $this->exclusionStrategy = null;
+            }
 
             return;
         }
 
-        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
+        $strategy = new GroupsExclusionStrategy((array) $groups);
+        $this->addExclusionStrategy($strategy);
     }
 
     public function serialize($data, $format)
