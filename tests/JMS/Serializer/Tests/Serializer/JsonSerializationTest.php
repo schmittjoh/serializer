@@ -86,6 +86,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['object_when_null_and_serialized'] = '{"author":null,"text":"foo"}';
             $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
             $outputs['date_interval'] = '"PT45M"';
+            $outputs['object_with_dynamic_object'] = '{"object":{"foo":"foo","moo":"bar","camel_case":"boo","type_attr":"JMS_Serializer_Tests_Fixtures_SimpleObject"}}';
         }
 
         if (!isset($outputs[$key])) {

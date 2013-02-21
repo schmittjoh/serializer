@@ -19,7 +19,10 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\ObjectHandler;
 use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\Naming\ClassNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\ObjectWithDynamicObject;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -632,6 +635,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('object_when_null_and_serialized'), $this->serialize(new Comment(null, 'foo')));
     }
 
+    public function testDynamicObject()
+    {
+        $object = new ObjectWithDynamicObject(new SimpleObject('foo', 'bar'));
+        $this->assertEquals($this->getContent('object_with_dynamic_object'), $this->serialize($object));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($object, $this->deserialize($this->getContent('object_with_dynamic_object'), get_class($object)));
+        }
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -660,6 +673,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new ObjectHandler(new ClassNamingStrategy('_')));
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
             function(VisitorInterface $visitor, $object, array $type) {
                 return $visitor->visitArray(iterator_to_array($object), $type);
