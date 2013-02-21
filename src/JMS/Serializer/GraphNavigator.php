@@ -18,12 +18,13 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -159,6 +160,11 @@ final class GraphNavigator
                 if ($isSerializing) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->context->getFormat())) {
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->context->getFormat(), $event = new PreSerializeEvent($visitor, $data, $type));
+                        $type = $event->getType();
+                    }
+                } else {
+                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $this->context->getFormat())) {
+                        $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $this->context->getFormat(), $event = new PreDeserializeEvent($visitor, $data, $type));
                         $type = $event->getType();
                     }
                 }
