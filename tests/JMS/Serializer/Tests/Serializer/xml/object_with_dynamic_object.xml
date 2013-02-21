@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <object type_attr="JMS_Serializer_Tests_Fixtures_SimpleObject">
+    <foo><![CDATA[foo]]></foo>
+    <moo><![CDATA[bar]]></moo>
+    <camel_case><![CDATA[boo]]></camel_case>
+  </object>
+</result>
