@@ -30,6 +30,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Exclusion\ChainExclusionStrategy;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;
 use JMS\Serializer\Handler\DateHandler;
@@ -49,6 +50,7 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
+use JMS\Serializer\Tests\Fixtures\ChainObject;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceParent;
 use JMS\Serializer\Tests\Fixtures\Comment;
 use JMS\Serializer\Tests\Fixtures\CurrencyAwareOrder;
@@ -575,6 +577,30 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->serializer->serialize($groupsObject, $this->getFormat());
     }
+   
+    public function testChainExclusion()
+    {
+        $chainObject = new ChainObject();
+
+        $this->serializer->setGroups(array("Default"));
+        $this->assertEquals($this->getContent('chain_default'), $this->serializer->serialize($chainObject, $this->getFormat()));
+
+        $this->serializer->setVersion("1");
+        $this->assertEquals($this->getContent('chain_default_v1'), $this->serializer->serialize($chainObject, $this->getFormat()));
+
+        $this->serializer->setExclusionStrategy(new ChainExclusionStrategy());
+        $this->serializer->setVersion(1);
+        $this->serializer->setGroups(array("Default"));
+        $this->assertEquals($this->getContent('chain_default_v1'), $this->serializer->serialize($chainObject, $this->getFormat()));
+
+        $this->serializer->setVersion(2);
+        $this->serializer->setGroups(array("bar"));
+        $this->assertEquals($this->getContent('chain_bar_v2'), $this->serializer->serialize($chainObject, $this->getFormat()));
+
+        $this->serializer->setGroups(array('Default'));
+        $this->serializer->setVersion(null);
+        $this->assertEquals($this->getContent('chain_default'), $this->serializer->serialize($chainObject, $this->getFormat()));
+    }
 
     public function testVirtualProperty()
     {
@@ -599,7 +625,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        $handler = function() {
+        $handler = function () {
             return new CustomDeserializationObject('customly_unserialized_value');
         };
 
