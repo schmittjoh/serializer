@@ -73,6 +73,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
+            $outputs['chain_default'] = '{"foo":"foo","bar":"bar"}';
+            $outputs['chain_default_v1'] = '{"foo":"foo"}';
+            $outputs['chain_bar_v2'] = '{"baz":"baz"}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name"}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
