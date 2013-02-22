@@ -86,19 +86,13 @@ final class GraphNavigator
      */
     public function accept($data, array $type = null, Context $context)
     {
-        $isSerializing = $context->getDirection() === GraphNavigator::DIRECTION_SERIALIZATION;
         $visitor = $context->getVisitor();
 
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
-            if ( ! $isSerializing) {
-                $msg = 'The type must be given for all properties when deserializing.';
-                if (null !== $path = $context->getPath()) {
-                    $msg .= ' Path: '.$path;
-                }
-
-                throw new RuntimeException($msg);
+            if ($context instanceof DeserializationContext) {
+                throw new RuntimeException('The type must be given for all properties when deserializing.');
             }
 
             $typeName = gettype($data);
@@ -110,7 +104,7 @@ final class GraphNavigator
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-        else if ($isSerializing && null === $data) {
+        else if ($context instanceof SerializationContext && null === $data) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 
@@ -136,23 +130,27 @@ final class GraphNavigator
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
-                if (null !== $path = $context->getPath()) {
+                if ($context instanceof SerializationContext && null !== $path = $context->getPath()) {
                     $msg .= ' Path: '.$path;
                 }
 
                 throw new RuntimeException($msg);
 
             default:
-                if ($isSerializing && null !== $data) {
-                    if ($context->isVisiting($data)) {
-                        return null;
+                if ($context instanceof SerializationContext) {
+                    if (null !== $data) {
+                        if ($context->isVisiting($data)) {
+                            return null;
+                        }
+                        $context->startVisiting($data);
                     }
-                    $context->startVisiting($data);
+                } elseif ($context instanceof DeserializationContext) {
+                    $context->increaseDepth();
                 }
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($isSerializing) {
+                if ($context instanceof SerializationContext) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
                         $type = $event->getType();
@@ -164,8 +162,7 @@ final class GraphNavigator
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
                     $rs = call_user_func($handler, $visitor, $data, $type, $context);
-
-                    $context->stopVisiting($data);
+                    $this->leaveScope($context, $data);
 
                     return $rs;
                 }
@@ -175,29 +172,30 @@ final class GraphNavigator
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
-                    $context->stopVisiting($data);
+                    $this->leaveScope($context, $data);
 
                     return null;
                 }
 
-                if ($isSerializing) {
+                if ($context instanceof SerializationContext) {
                     foreach ($metadata->preSerializeMethods as $method) {
-                        /** @var $method \ReflectionMethod */
-
                         $method->invoke($data);
                     }
                 }
 
                 $object = $data;
-                if ( ! $isSerializing) {
+                if ($context instanceof DeserializationContext) {
                     $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type);
                 }
 
                 if (isset($metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()])) {
-                    $rs = $object->{$metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()]}($visitor, $isSerializing ? null : $data);
+                    $rs = $object->{$metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()]}(
+                        $visitor,
+                        $context instanceof SerializationContext ? null : $data
+                    );
                     $this->afterVisitingObject($metadata, $object, $type, $context);
 
-                    return $isSerializing ? $rs : $object;
+                    return $context instanceof SerializationContext ? $rs : $object;
                 }
 
                 $visitor->startVisitingObject($metadata, $object, $type, $context);
@@ -206,14 +204,14 @@ final class GraphNavigator
                         continue;
                     }
 
-                    if ( ! $isSerializing && $propertyMetadata->readOnly) {
+                    if ($context instanceof DeserializationContext && $propertyMetadata->readOnly) {
                         continue;
                     }
 
                     $visitor->visitProperty($propertyMetadata, $data, $context);
                 }
 
-                if ($isSerializing) {
+                if ($context instanceof SerializationContext) {
                     $this->afterVisitingObject($metadata, $data, $type, $context);
 
                     return $visitor->endVisitingObject($metadata, $data, $type, $context);
@@ -226,11 +224,20 @@ final class GraphNavigator
         }
     }
 
+    private function leaveScope(Context $context, $data)
+    {
+        if ($context instanceof SerializationContext) {
+            $context->stopVisiting($data);
+        } elseif ($context instanceof DeserializationContext) {
+            $context->decreaseDepth();
+        }
+    }
+
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
-        if ($context->getDirection() === self::DIRECTION_SERIALIZATION) {
-            $context->stopVisiting($object);
+        $this->leaveScope($context, $object);
 
+        if ($context instanceof SerializationContext) {
             foreach ($metadata->postSerializeMethods as $method) {
                 $method->invoke($object);
             }

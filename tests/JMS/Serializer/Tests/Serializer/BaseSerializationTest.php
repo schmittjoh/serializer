@@ -19,8 +19,10 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\SerializationContext;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -97,7 +99,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $this->getContent('nullable'),
-            $this->serializer->serialize($arr, $this->getFormat(), Context::create()->setSerializeNull(true))
+            $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeNull(true))
         );
     }
 
@@ -107,7 +109,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $this->getContent('simple_object_nullable'),
-            $this->serializer->serialize($obj, $this->getFormat(), Context::create()->setSerializeNull(true))
+            $this->serializer->serialize($obj, $this->getFormat(), SerializationContext::create()->setSerializeNull(true))
         );
     }
 
@@ -306,10 +308,10 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->setField($post, 'author', null);
 
-        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post, Context::create()->setSerializeNull(true)));
+        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post, SerializationContext::create()->setSerializeNull(true)));
 
         if ($this->hasDeserializer()) {
-            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), Context::create()->setSerializeNull(true));
+            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), DeserializationContext::create()->setSerializeNull(true));
 
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
@@ -553,27 +555,27 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $this->getContent('groups_foo'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('foo')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('foo')))
         );
 
         $this->assertEquals(
             $this->getContent('groups_foobar'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('foo', 'bar')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('foo', 'bar')))
         );
 
         $this->assertEquals(
             $this->getContent('groups_all'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(null))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(null))
         );
 
         $this->assertEquals(
             $this->getContent('groups_all'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array()))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array()))
         );
 
         $this->assertEquals(
             $this->getContent('groups_default'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('Default')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
         );
     }
 
@@ -597,17 +599,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_low'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(2))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(2))
         );
 
         $this->assertEquals(
             $this->getContent('virtual_properties_all'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(7))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(7))
         );
 
         $this->assertEquals(
             $this->getContent('virtual_properties_high'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(9))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(9))
         );
     }
 
@@ -645,12 +647,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             $this->getContent('object_when_null'),
-            $this->serialize(new Comment(null, 'foo'), Context::create()->setSerializeNull(false))
+            $this->serialize(new Comment(null, 'foo'), SerializationContext::create()->setSerializeNull(false))
         );
 
         $this->assertEquals(
             $this->getContent('object_when_null_and_serialized'),
-            $this->serialize(new Comment(null, 'foo'), Context::create()->setSerializeNull(true))
+            $this->serialize(new Comment(null, 'foo'), SerializationContext::create()->setSerializeNull(true))
         );
     }
 

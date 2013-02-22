@@ -3,6 +3,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\SerializerBuilder;
 
@@ -75,6 +76,6 @@ class NavigatorContextTest extends \PHPUnit_Framework_TestCase
 
         $serializer = SerializerBuilder::create()->build();
 
-        $serializer->serialize($object, 'json', Context::create()->setExclusionStrategy($exclusionStrategy));
+        $serializer->serialize($object, 'json', SerializationContext::create()->setExclusionStrategy($exclusionStrategy));
     }
 }

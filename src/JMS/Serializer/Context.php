@@ -9,17 +9,14 @@ use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use PhpCollection\Map;
 
-class Context
+abstract class Context
 {
     /**
      * @var \PhpCollection\Map
      */
     public $attributes;
 
-    private $direction;
     private $format;
-    private $visitingSet;
-    private $visitingStack;
 
     /** @var VisitorInterface */
     private $visitor;
@@ -33,21 +30,13 @@ class Context
     /** @var boolean */
     private $serializeNull;
 
-    public static function create()
-    {
-        return new self();
-    }
-
     public function __construct()
     {
         $this->attributes = new Map();
     }
 
-    public function initialize($direction, $format, VisitorInterface $visitor, GraphNavigator $navigator)
+    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator)
     {
-        $this->visitingSet = new \SplObjectStorage();
-        $this->visitingStack = new \SplStack();
-        $this->direction = $direction;
         $this->format = $format;
         $this->visitor = $visitor;
         $this->navigator = $navigator;
@@ -131,69 +120,11 @@ class Context
         return $this->serializeNull;
     }
 
-    public function getDirection()
-    {
-        return $this->direction;
-    }
-
     public function getFormat()
     {
         return $this->format;
     }
 
-    public function startVisiting($object)
-    {
-        if ($this->direction !== GraphNavigator::DIRECTION_SERIALIZATION) {
-            return;
-        }
-
-        $this->visitingSet->attach($object);
-        $this->visitingStack->push($object);
-    }
-
-    public function stopVisiting($object)
-    {
-        if ($this->direction !== GraphNavigator::DIRECTION_SERIALIZATION) {
-            return;
-        }
-
-        $this->visitingSet->detach($object);
-        $poppedObject = $this->visitingStack->pop();
-
-        if ($object !== $poppedObject) {
-            throw new RuntimeException('Context visitingStack not working well');
-        }
-    }
-
-    public function isVisiting($object)
-    {
-        if (! is_object($object)) {
-            throw new LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
-        }
-        return $this->visitingSet->contains($object);
-    }
-
-    public function getPath()
-    {
-        $path = array();
-        foreach ($this->visitingStack as $obj) {
-            $path[] = get_class($obj);
-        }
-
-        if ( ! $path) {
-            return null;
-        }
-
-        return implode(' -> ', $path);
-    }
-
-    public function getDepth()
-    {
-        return $this->visitingStack->count();
-    }
-
-    public function getObject()
-    {
-        return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
-    }
+    abstract public function getDepth();
+    abstract public function getDirection();
 }

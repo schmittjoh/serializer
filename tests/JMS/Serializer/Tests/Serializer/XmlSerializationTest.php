@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
@@ -108,7 +109,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_attributes'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), Context::create()->setGroups(array('attributes')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('attributes')))
         );
     }
 
@@ -116,7 +117,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_values'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), Context::create()->setGroups(array('values')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('values')))
         );
     }
 
@@ -124,7 +125,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_list'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), Context::create()->setGroups(array('list')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('list')))
         );
     }
 
@@ -132,7 +133,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_map'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), Context::create()->setGroups(array('map')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('map')))
         );
     }
 

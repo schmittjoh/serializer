@@ -45,7 +45,6 @@ class Serializer implements SerializerInterface
     private $deserializationVisitors;
 
     private $navigator;
-    private $defaultContext;
 
     /**
      * Constructor.
@@ -58,7 +57,7 @@ class Serializer implements SerializerInterface
      * @param EventDispatcher\EventDispatcherInterface $dispatcher
      * @param TypeParser $typeParser
      */
-    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, Context $defaultContext = null)
+    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null)
     {
         $this->factory = $factory;
         $this->handlerRegistry = $handlerRegistry;
@@ -67,23 +66,21 @@ class Serializer implements SerializerInterface
         $this->typeParser = $typeParser ?: new TypeParser();
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
-        $this->defaultContext = $defaultContext ?: new Context();
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 
-    public function serialize($data, $format, Context $context = null)
+    public function serialize($data, $format, SerializationContext $context = null)
     {
         if ( ! $this->serializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
         }
 
         if (null === $context) {
-            $context = $this->defaultContext;
+            $context = new SerializationContext();
         }
 
         $context->initialize(
-            GraphNavigator::DIRECTION_SERIALIZATION,
             $format,
             $visitor = $this->serializationVisitors->get($format)->get(),
             $this->navigator
@@ -95,18 +92,17 @@ class Serializer implements SerializerInterface
         return $visitor->getResult();
     }
 
-    public function deserialize($data, $type, $format, Context $context = null)
+    public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if ( ! $this->deserializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
         if (null === $context) {
-            $context = $this->defaultContext;
+            $context = new DeserializationContext();
         }
 
         $context->initialize(
-            GraphNavigator::DIRECTION_DESERIALIZATION,
             $format,
             $visitor = $this->deserializationVisitors->get($format)->get(),
             $this->navigator
