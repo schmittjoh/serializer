@@ -3,7 +3,6 @@
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\VisitorInterface;
 
 class Event
 {

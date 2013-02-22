@@ -27,7 +27,6 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 
 /**
  * Handles traversal along the object graph.

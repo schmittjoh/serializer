@@ -23,9 +23,6 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
-use JMS\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use PhpCollection\MapInterface;
 
 /**

@@ -8,8 +8,6 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use PhpCollection\Map;
-use PhpOption\None;
-use PhpOption\Some;
 
 class Context
 {

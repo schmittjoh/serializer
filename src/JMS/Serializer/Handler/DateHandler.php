@@ -20,7 +20,6 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
-use Symfony\Component\Yaml\Inline;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;

@@ -20,12 +20,10 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
-
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
-
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 

@@ -9,8 +9,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
 use Metadata\MetadataFactory;
-use JMS\Serializer\Tests\Fixtures\Node;
-use JMS\Serializer\JsonSerializationVisitor;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 {
