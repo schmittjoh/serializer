@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use PhpCollection\Sequence;
@@ -94,18 +95,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $arr = array('foo' => 'bar', 'baz' => null, null);
 
-        $this->serializer->setSerializeNull(true);
-        $this->assertEquals($this->getContent('nullable'), $this->serializer->serialize($arr, $this->getFormat()));
-        $this->serializer->setSerializeNull(false);
+        $this->assertEquals(
+            $this->getContent('nullable'),
+            $this->serializer->serialize($arr, $this->getFormat(), Context::create()->setSerializeNull(true))
+        );
     }
 
     public function testSerializeNullObject()
     {
         $obj = new ObjectWithNullProperty('foo', 'bar');
 
-        $this->serializer->setSerializeNull(true);
-        $this->assertEquals($this->getContent('simple_object_nullable'), $this->serializer->serialize($obj, $this->getFormat()));
-        $this->serializer->setSerializeNull(false);
+        $this->assertEquals(
+            $this->getContent('simple_object_nullable'),
+            $this->serializer->serialize($obj, $this->getFormat(), Context::create()->setSerializeNull(true))
+        );
     }
 
     /**
@@ -251,7 +254,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateTime($key, $value, $type)
     {
-        $this->assertEquals($this->getContent($key), $this->serialize($value, $type));
+        $this->assertEquals($this->getContent($key), $this->serialize($value));
 
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
@@ -298,16 +301,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $objectConstructor = new InitializedObjectConstructor();
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
-        $this->serializer->setSerializeNull(true);
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
 
         $this->setField($post, 'author', null);
 
-        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post));
+        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post, Context::create()->setSerializeNull(true)));
 
         if ($this->hasDeserializer()) {
-            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post));
+            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), Context::create()->setSerializeNull(true));
 
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
@@ -549,20 +551,30 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(array("foo"));
-        $this->assertEquals($this->getContent('groups_foo'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('groups_foo'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('foo')))
+        );
 
-        $this->serializer->setGroups(array("foo", "bar"));
-        $this->assertEquals($this->getContent('groups_foobar'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('groups_foobar'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('foo', 'bar')))
+        );
 
-        $this->serializer->setGroups(null);
-        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('groups_all'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(null))
+        );
 
-        $this->serializer->setGroups(array());
-        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('groups_all'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array()))
+        );
 
-        $this->serializer->setGroups(array('Default'));
-        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('groups_default'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), Context::create()->setGroups(array('Default')))
+        );
     }
 
     /**
@@ -583,14 +595,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testVirtualVersions()
     {
-        $this->serializer->setVersion(2);
-        $this->assertEquals($this->getContent('virtual_properties_low'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('virtual_properties_low'),
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(2))
+        );
 
-        $this->serializer->setVersion(7);
-        $this->assertEquals($this->getContent('virtual_properties_all'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('virtual_properties_all'),
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(7))
+        );
 
-        $this->serializer->setVersion(9);
-        $this->assertEquals($this->getContent('virtual_properties_high'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $this->assertEquals(
+            $this->getContent('virtual_properties_high'),
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), Context::create()->setVersion(9))
+        );
     }
 
     public function testCustomHandler()
@@ -625,11 +643,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializeObjectWhenNull()
     {
-        $this->serializer->setSerializeNull(false);
-        $this->assertEquals($this->getContent('object_when_null'), $this->serialize(new Comment(null, 'foo')));
+        $this->assertEquals(
+            $this->getContent('object_when_null'),
+            $this->serialize(new Comment(null, 'foo'), Context::create()->setSerializeNull(false))
+        );
 
-        $this->serializer->setSerializeNull(true);
-        $this->assertEquals($this->getContent('object_when_null_and_serialized'), $this->serialize(new Comment(null, 'foo')));
+        $this->assertEquals(
+            $this->getContent('object_when_null_and_serialized'),
+            $this->serialize(new Comment(null, 'foo'), Context::create()->setSerializeNull(true))
+        );
     }
 
     abstract protected function getContent($key);
@@ -640,14 +662,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return true;
     }
 
-    protected function serialize($data)
+    protected function serialize($data, Context $context = null)
     {
-        return $this->serializer->serialize($data, $this->getFormat());
+        return $this->serializer->serialize($data, $this->getFormat(), $context);
     }
 
-    protected function deserialize($content, $type)
+    protected function deserialize($content, $type, Context $context = null)
     {
-        return $this->serializer->deserialize($content, $type, $this->getFormat());
+        return $this->serializer->deserialize($content, $type, $this->getFormat(), $context);
     }
 
     protected function setUp()
@@ -661,12 +683,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
-            function(VisitorInterface $visitor, $object, array $type) {
-                return $visitor->visitArray(iterator_to_array($object), $type);
+            function(VisitorInterface $visitor, $object, array $type, Context $context) {
+                return $visitor->visitArray(iterator_to_array($object), $type, $context);
             }
         );
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
-            function(VisitorInterface $visitor, $data) {
+            function(VisitorInterface $visitor, $data, $type, Context $context) {
                 $type = array(
                     'name' => 'array',
                     'params' => array(
@@ -675,7 +697,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                     ),
                 );
 
-                $elements = $visitor->getNavigator()->accept($data, $type, $visitor);
+                $elements = $visitor->getNavigator()->accept($data, $type, $context);
                 $list = new AuthorList();
                 foreach ($elements as $author) {
                     $list->add($author);

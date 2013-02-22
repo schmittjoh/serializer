@@ -3,6 +3,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Context;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -81,8 +82,7 @@ class NavigatorContextTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
 
         $serializer = SerializerBuilder::create()->build();
-        $serializer->setExclusionStrategy($exclusionStrategy);
 
-        $serializer->serialize($object, 'json');
+        $serializer->serialize($object, 'json', Context::create()->setExclusionStrategy($exclusionStrategy));
     }
 }

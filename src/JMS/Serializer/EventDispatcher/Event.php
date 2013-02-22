@@ -2,24 +2,30 @@
 
 namespace JMS\Serializer\EventDispatcher;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\VisitorInterface;
 
 class Event
 {
     protected $type;
     private $object;
-    private $visitor;
+    private $context;
 
-    public function __construct(VisitorInterface $visitor, $object, array $type)
+    public function __construct(Context $context, $object, array $type)
     {
-        $this->visitor = $visitor;
+        $this->context = $context;
         $this->object = $object;
         $this->type = $type;
     }
 
     public function getVisitor()
     {
-        return $this->visitor;
+        return $this->context->getVisitor();
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
     public function getType()
