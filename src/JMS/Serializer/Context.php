@@ -2,8 +2,6 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
