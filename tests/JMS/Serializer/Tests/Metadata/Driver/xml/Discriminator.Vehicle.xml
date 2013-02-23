@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle" discriminator-field-name="type">
+        <discriminator-class value="car">JMS\Serializer\Tests\Fixtures\Discriminator\Car</discriminator-class>
+        <discriminator-class value="moped">JMS\Serializer\Tests\Fixtures\Discriminator\Moped</discriminator-class>
+        <property name="km" type="integer" />
+    </class>
+</serializer>

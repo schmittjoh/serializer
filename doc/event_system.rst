@@ -57,7 +57,14 @@ This is dispatched right before a type is left. You can for example use this
 to add additional data to an object that you normally do not save inside
 objects such as links.
 
-**Event Object**: ``JMS\Serializer\EventDispatcher\Event``
+**Event Object**: ``JMS\Serializer\EventDispatcher\ObjectEvent``
+
+serializer.pre_deserialize
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is dispatched before an object is deserialized. You can use this to
+modify submitted data, or modify the type that is being used for deserialization.
+
+**Event Object**: ``JMS\Serializer\EventDispatcher\PreDeserializeEvent``
 
 serializer.post_deserialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,4 +72,4 @@ This is dispatched after a type is processed. You can use it to normalize
 submitted data if you require external services for example, or also to
 perform validation of the submitted data.
 
-**Event Object**: ``JMS\Serializer\EventDispatcher\Event``
+**Event Object**: ``JMS\Serializer\EventDispatcher\ObjectEvent``

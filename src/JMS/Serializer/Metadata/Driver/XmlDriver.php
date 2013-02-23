@@ -63,6 +63,20 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $xmlRootName;
         }
 
+        $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
+        $discriminatorMap = array();
+        foreach ($elem->xpath('./discriminator-class') as $entry) {
+            if ( ! isset($entry->attributes()->value)) {
+                throw new RuntimeException('Each discriminator-class element must have a "value" attribute.');
+            }
+
+            $discriminatorMap[(string) $entry->attributes()->value] = (string) $entry;
+        }
+
+        if ( ! empty($discriminatorFieldName) || ! empty($discriminatorMap)) {
+            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap);
+        }
+
         foreach ($elem->xpath('./virtual-property') as $method) {
             if (!isset($method->attributes()->method)) {
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');

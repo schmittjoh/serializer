@@ -5,6 +5,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
 
 class EventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -76,7 +77,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->dispatcher = new EventDispatcher();
-        $this->event = new Event($this->getMock('JMS\Serializer\Context'), new \stdClass(), array('name' => 'foo', 'params' => array()));
+        $this->event = new ObjectEvent($this->getMock('JMS\Serializer\Context'), new \stdClass(), array('name' => 'foo', 'params' => array()));
     }
 
     private function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)

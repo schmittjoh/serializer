@@ -4,6 +4,7 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
+use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
 {
@@ -18,9 +19,9 @@ class SerializationContext extends Context
         return new self();
     }
 
-    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator)
+    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
-        parent::initialize($format, $visitor, $navigator);
+        parent::initialize($format, $visitor, $navigator, $factory);
 
         $this->visitingSet = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();

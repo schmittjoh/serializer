@@ -2,7 +2,7 @@
 
 namespace JMS\Serializer\EventDispatcher;
 
-class PreSerializeEvent extends Event
+class PreSerializeEvent extends ObjectEvent
 {
     /**
      * @param string $typeName

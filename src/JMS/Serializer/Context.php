@@ -5,6 +5,8 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
+use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 use PhpCollection\Map;
 
 abstract class Context
@@ -22,6 +24,9 @@ abstract class Context
     /** @var GraphNavigator */
     private $navigator;
 
+    /** @var MetadataFactory */
+    private $metadataFactory;
+
     /** @var ExclusionStrategyInterface */
     private $exclusionStrategy;
 
@@ -33,16 +38,22 @@ abstract class Context
         $this->attributes = new Map();
     }
 
-    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator)
+    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
         $this->format = $format;
         $this->visitor = $visitor;
         $this->navigator = $navigator;
+        $this->metadataFactory = $factory;
     }
 
     public function accept($data, array $type)
     {
         return $this->navigator->accept($data, $type, $this);
+    }
+
+    public function getMetadataFactory()
+    {
+        return $this->metadataFactory;
     }
 
     public function getVisitor()

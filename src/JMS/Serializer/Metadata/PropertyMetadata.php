@@ -75,6 +75,15 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
+    public function getValue($obj)
+    {
+        if (null === $this->getter) {
+            return parent::getValue($obj);
+        }
+
+        return $obj->{$this->getter}();
+    }
+
     public function setType($type)
     {
         if (null === self::$typeParser) {

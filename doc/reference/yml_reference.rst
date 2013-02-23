@@ -10,6 +10,10 @@ YAML Reference
         access_type: public_method # defaults to property
         accessor_order: custom
         custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
+        discriminator:
+            field_name: type
+            map:
+                some-value: ClassName
         properties:
             some-property:
                 exclude: true

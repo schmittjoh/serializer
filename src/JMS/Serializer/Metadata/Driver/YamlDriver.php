@@ -56,6 +56,18 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
+        if (isset($config['discriminator'])) {
+            if ( ! isset($config['discriminator']['field_name'])) {
+                throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
+            }
+
+            if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
+                throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
+            }
+
+            $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
+        }
+
         if (array_key_exists('virtual_properties', $config) ) {
 
             foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {

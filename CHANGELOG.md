@@ -5,6 +5,8 @@ For instructions on how to upgrade from one version to another, please see the d
 0.12 (tbd)
 ----------
 - adds, and exposes SerializationContext/DeserializationContext
+- adds built-in support for deserialization of polymorphic objects when they have a common base class
+- adds serializer.pre_deserialize event
 
 0.11 (2013-01-29)
 -----------------

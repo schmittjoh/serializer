@@ -83,7 +83,8 @@ class Serializer implements SerializerInterface
         $context->initialize(
             $format,
             $visitor = $this->serializationVisitors->get($format)->get(),
-            $this->navigator
+            $this->navigator,
+            $this->factory
         );
 
         $visitor->setNavigator($this->navigator);
@@ -105,7 +106,8 @@ class Serializer implements SerializerInterface
         $context->initialize(
             $format,
             $visitor = $this->deserializationVisitors->get($format)->get(),
-            $this->navigator
+            $this->navigator,
+            $this->factory
         );
 
         $visitor->setNavigator($this->navigator);

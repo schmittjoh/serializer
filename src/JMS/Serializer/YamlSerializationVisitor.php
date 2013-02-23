@@ -158,8 +158,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
-            : $data->{$metadata->getter}());
+        $v = $metadata->getValue($data);
 
         if (null === $v && !$context->shouldSerializeNull()) {
             return;

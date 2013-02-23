@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -83,6 +84,8 @@ class AnnotationDriver implements DriverInterface
                 $classAccessType = $annot->type;
             } elseif ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
+            } elseif ($annot instanceof Discriminator) {
+                $classMetadata->setDiscriminator($annot->field, $annot->map);
             }
         }
 
@@ -128,7 +131,7 @@ class AnnotationDriver implements DriverInterface
 
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
-                $AccessType = $classAccessType;
+                $accessType = $classAccessType;
                 $accessor = array(null, null);
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
@@ -162,7 +165,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof XmlValue) {
                         $propertyMetadata->xmlValue = true;
                     } elseif ($annot instanceof AccessType) {
-                        $AccessType = $annot->type;
+                        $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
                        $propertyMetadata->readOnly = true;
                     } elseif ($annot instanceof Accessor) {
@@ -185,7 +188,7 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                $propertyMetadata->setAccessor($AccessType, $accessor[0], $accessor[1]);
+                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

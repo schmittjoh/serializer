@@ -190,6 +190,19 @@ by the object iself.
         }
     }
 
+@Discriminator
+~~~~~~~~~~~~~~
+This annotation can to enable deserialization of relations which are polymorphic, but
+where a common base class exists. The ``@Discriminator`` annotation has to be applied
+to the least super type::
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"})
+     */
+    abstract class Vehicle { }
+    class Car extends Vehicle { }
+    class Moped extends Vehicle { }
+
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.

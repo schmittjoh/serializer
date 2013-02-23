@@ -49,6 +49,26 @@ class ClassMetadata extends MergeableClassMetadata
     public $customOrder;
     public $handlerCallbacks = array();
 
+    public $discriminatorBaseClass;
+    public $discriminatorFieldName;
+    public $discriminatorValue;
+    public $discriminatorMap = array();
+
+    public function setDiscriminator($fieldName, array $map)
+    {
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException('The $fieldName cannot be empty.');
+        }
+
+        if (empty($map)) {
+            throw new \InvalidArgumentException('The discriminator map cannot be empty.');
+        }
+
+        $this->discriminatorBaseClass = $this->name;
+        $this->discriminatorFieldName = $fieldName;
+        $this->discriminatorMap = $map;
+    }
+
     /**
      * Sets the order of properties in the class.
      *
@@ -108,7 +128,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function merge(MergeableInterface $object)
     {
-        if (!$object instanceof ClassMetadata) {
+        if ( ! $object instanceof ClassMetadata) {
             throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
         }
         parent::merge($object);
@@ -126,6 +146,45 @@ class ClassMetadata extends MergeableClassMetadata
             $this->customOrder = $object->customOrder;
         }
 
+        if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
+            throw new \LogicException(sprintf(
+                'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
+                $object->name,
+                $this->discriminatorBaseClass,
+                $this->discriminatorBaseClass
+            ));
+        }
+
+        if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
+            if (false == $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
+                throw new \LogicException(sprintf(
+                    'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
+                    $this->name,
+                    $this->discriminatorBaseClass
+                ));
+            }
+
+            $this->discriminatorValue = $typeValue;
+
+            if (isset($this->propertyMetadata[$this->discriminatorFieldName])
+                    && ! $this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata) {
+                throw new \LogicException(sprintf(
+                    'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
+                    $this->discriminatorFieldName,
+                    $this->discriminatorBaseClass,
+                    $this->name
+                ));
+            }
+
+            $discriminatorProperty = new StaticPropertyMetadata(
+                $this->name,
+                $this->discriminatorFieldName,
+                $typeValue
+            );
+            $discriminatorProperty->serializedName = $this->discriminatorFieldName;
+            $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
+        }
+
         $this->sortProperties();
     }
 
@@ -141,6 +200,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
+            $this->discriminatorBaseClass,
+            $this->discriminatorFieldName,
+            $this->discriminatorValue,
+            $this->discriminatorMap,
             parent::serialize(),
         ));
     }
@@ -155,6 +218,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
+            $this->discriminatorBaseClass,
+            $this->discriminatorFieldName,
+            $this->discriminatorValue,
+            $this->discriminatorMap,
             $parentStr
         ) = unserialize($str);
 

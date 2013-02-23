@@ -18,8 +18,10 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use Metadata\Driver\DriverInterface;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -113,5 +115,37 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
     }
 
+    public function testLoadDiscriminator()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'car' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Car',
+                'moped' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Moped',
+            ),
+            $m->discriminatorMap
+        );
+    }
+
+    public function testLoadDiscriminatorSubClass()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Car'));
+
+        $this->assertNotNull($m);
+        $this->assertNull($m->discriminatorValue);
+        $this->assertNull($m->discriminatorBaseClass);
+        $this->assertNull($m->discriminatorFieldName);
+        $this->assertEquals(array(), $m->discriminatorMap);
+    }
+
+    /**
+     * @return DriverInterface
+     */
     abstract protected function getDriver();
 }

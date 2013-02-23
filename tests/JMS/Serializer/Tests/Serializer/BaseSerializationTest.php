@@ -23,6 +23,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -654,6 +655,37 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->getContent('object_when_null_and_serialized'),
             $this->serialize(new Comment(null, 'foo'), SerializationContext::create()->setSerializeNull(true))
         );
+    }
+
+    /**
+     * @group polymorphic
+     */
+    public function testPolymorphicObjects()
+    {
+        $this->assertEquals(
+            $this->getContent('car'),
+            $this->serialize(new Car(5))
+        );
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                new Car(5),
+                $this->deserialize(
+                    $this->getContent('car'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used.'
+            );
+
+            $this->assertEquals(
+                new Car(5),
+                $this->deserialize(
+                    $this->getContent('car'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
+                ),
+                'Class is resolved correctly when least supertype is used.'
+            );
+        }
     }
 
     abstract protected function getContent($key);

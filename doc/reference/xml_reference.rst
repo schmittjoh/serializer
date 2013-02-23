@@ -7,7 +7,8 @@ XML Reference
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
             accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
-            access-type="public_method">
+            access-type="public_method" discriminator-field-name="type">
+            <discriminator-class value="some-value">ClassName</discriminator-class>
             <property name="some-property"
                       exclude="true"
                       expose="true"

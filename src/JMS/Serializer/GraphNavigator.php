@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -137,6 +139,7 @@ final class GraphNavigator
                 throw new RuntimeException($msg);
 
             default:
+                // TODO: The rest of this method needs some refactoring.
                 if ($context instanceof SerializationContext) {
                     if (null !== $data) {
                         if ($context->isVisiting($data)) {
@@ -155,6 +158,12 @@ final class GraphNavigator
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
                         $type = $event->getType();
                     }
+                } elseif ($context instanceof DeserializationContext) {
+                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
+                        $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
+                        $type = $event->getType();
+                        $data = $event->getData();
+                    }
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
@@ -171,6 +180,11 @@ final class GraphNavigator
 
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+
+                if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap)) {
+                    $metadata = $this->resolveMetadata($context, $data, $metadata);
+                }
+
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                     $this->leaveScope($context, $data);
 
@@ -224,6 +238,37 @@ final class GraphNavigator
         }
     }
 
+    private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
+    {
+        switch (true) {
+            case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
+                $typeValue = (string) $data[$metadata->discriminatorFieldName];
+                break;
+
+            case is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
+                $typeValue = (string) $data->{$metadata->discriminatorFieldName};
+                break;
+
+            default:
+                throw new \LogicException(sprintf(
+                    'The discriminator field name "%s" for base-class "%s" was not found in input data.',
+                    $metadata->discriminatorFieldName,
+                    $metadata->name
+                ));
+        }
+
+        if ( ! isset($metadata->discriminatorMap[$typeValue])) {
+            throw new \LogicException(sprintf(
+                'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
+                $typeValue,
+                $metadata->name,
+                implode(', ', array_keys($metadata->discriminatorMap))
+            ));
+        }
+
+        return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
+    }
+
     private function leaveScope(Context $context, $data)
     {
         if ($context instanceof SerializationContext) {
@@ -243,7 +288,7 @@ final class GraphNavigator
             }
 
             if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $context->getFormat())) {
-                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new Event($context, $object, $type));
+                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
             }
 
             return;
@@ -254,7 +299,7 @@ final class GraphNavigator
         }
 
         if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
-            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new Event($context, $object, $type));
+            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
         }
     }
 }

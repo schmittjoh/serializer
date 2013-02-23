@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -73,11 +74,19 @@ class DoctrineTypeDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
+        /** @var $classMetadata ClassMetadata */
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
         if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
             return $classMetadata;
+        }
+
+        if (empty($classMetadata->discriminatorMap) && ! empty($doctrineMetadata->discriminatorMap)) {
+            $classMetadata->setDiscriminator(
+                $doctrineMetadata->discriminatorColumn['name'],
+                $doctrineMetadata->discriminatorMap
+            );
         }
 
         // We base our scan on the internal driver's property list so that we
@@ -116,6 +125,11 @@ class DoctrineTypeDriver implements DriverInterface
         return $classMetadata;
     }
 
+    /**
+     * @param string $className
+     *
+     * @return ClassMetadataInfo|null
+     */
     private function tryLoadingDoctrineMetadata($className) {
         if (!$manager = $this->registry->getManagerForClass($className)) {
             return null;
