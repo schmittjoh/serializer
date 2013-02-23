@@ -20,6 +20,7 @@ namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\Driver\DriverInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -82,17 +83,21 @@ class DoctrineTypeDriver implements DriverInterface
             return $classMetadata;
         }
 
-        if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
-                && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()) {
-            $classMetadata->setDiscriminator(
-                $doctrineMetadata->discriminatorColumn['name'],
-                $doctrineMetadata->discriminatorMap
-            );
+        if ($doctrineMetadata instanceof ClassMetadataInfo) {
+            if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
+                    && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()) {
+                $classMetadata->setDiscriminator(
+                    $doctrineMetadata->discriminatorColumn['name'],
+                    $doctrineMetadata->discriminatorMap
+                );
+            }
         }
 
         // We base our scan on the internal driver's property list so that we
         // respect any internal white/blacklisting like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
+            /** @var $propertyMetadata PropertyMetadata */
+
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
                 continue;

@@ -237,7 +237,7 @@ class YamlDriver extends AbstractFileDriver
         if (is_string($config)) {
             $config = array($config);
         } elseif (!is_array($config)) {
-            throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($cConfig['pre_serialize'])));
+            throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
         }
 
         $methods = array();
