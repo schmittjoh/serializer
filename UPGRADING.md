@@ -13,7 +13,7 @@ From 0.11 to 0.12
 
     After:
 
-        $serializer->serialize($data, 'json', Context::create()->setVersion(1));
+        $serializer->serialize($data, 'json', SerializationContext::create()->setVersion(1));
 
 - All visit??? methods of the VisitorInterface, now require a third argument, the Context; the context is for example
   passed as an additional argument to handler, exclusion strategies, and also available in event listeners.
