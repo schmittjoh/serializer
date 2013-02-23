@@ -7,6 +7,7 @@ For instructions on how to upgrade from one version to another, please see the d
 - adds, and exposes SerializationContext/DeserializationContext
 - adds built-in support for deserialization of polymorphic objects when they have a common base class
 - adds serializer.pre_deserialize event
+- adds a disjunct exclusion strategy
 
 0.11 (2013-01-29)
 -----------------
