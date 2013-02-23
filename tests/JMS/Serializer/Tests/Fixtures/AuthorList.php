@@ -18,11 +18,17 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
+use JMS\Serializer\Annotation as Serializer;
+
 /**
  * An array-acting object that holds many author instances.
  */
 class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
+    /**
+     * @Serializer\Type("array<JMS\Serializer\Tests\Fixtures\Author>")
+     * @var array
+     */
     protected $authors = array();
 
     /**

@@ -51,12 +51,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $this->decode($data);
     }
 
-    public function visitNull($data, array $type)
+    public function visitNull($data, array $type, Context $context)
     {
         return null;
     }
 
-    public function visitString($data, array $type)
+    public function visitString($data, array $type, Context $context)
     {
         $data = (string) $data;
 
@@ -67,7 +67,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitBoolean($data, array $type)
+    public function visitBoolean($data, array $type, Context $context)
     {
         $data = (Boolean) $data;
 
@@ -78,7 +78,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitInteger($data, array $type)
+    public function visitInteger($data, array $type, Context $context)
     {
         $data = (integer) $data;
 
@@ -89,7 +89,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitDouble($data, array $type)
+    public function visitDouble($data, array $type, Context $context)
     {
         $data = (double) $data;
 
@@ -100,7 +100,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitArray($data, array $type)
+    public function visitArray($data, array $type, Context $context)
     {
         if ( ! is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
@@ -125,7 +125,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 }
 
                 foreach ($data as $v) {
-                    $result[] = $this->navigator->accept($v, $listType, $this);
+                    $result[] = $this->navigator->accept($v, $listType, $context);
                 }
 
                 return $result;
@@ -139,7 +139,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 }
 
                 foreach ($data as $k => $v) {
-                    $result[$this->navigator->accept($k, $keyType, $this)] = $this->navigator->accept($v, $entryType, $this);
+                    $result[$this->navigator->accept($k, $keyType, $context)] = $this->navigator->accept($v, $entryType, $context);
                 }
 
                 return $result;
@@ -149,7 +149,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type)
+    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->setCurrentObject($object);
 
@@ -158,7 +158,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         }
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
         $name = $this->namingStrategy->translateName($metadata);
 
@@ -170,7 +170,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $this) : null;
+        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);
@@ -181,7 +181,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         $this->currentObject->{$metadata->setter}($v);
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();

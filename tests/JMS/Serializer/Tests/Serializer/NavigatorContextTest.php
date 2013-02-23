@@ -2,15 +2,9 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use JMS\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\GraphNavigator;
-use Metadata\MetadataFactory;
+use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Node;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializerBuilder;
 
 class NavigatorContextTest extends \PHPUnit_Framework_TestCase
@@ -81,8 +75,7 @@ class NavigatorContextTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
 
         $serializer = SerializerBuilder::create()->build();
-        $serializer->setExclusionStrategy($exclusionStrategy);
 
-        $serializer->serialize($object, 'json');
+        $serializer->serialize($object, 'json', SerializationContext::create()->setExclusionStrategy($exclusionStrategy));
     }
 }

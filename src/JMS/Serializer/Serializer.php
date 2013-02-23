@@ -23,9 +23,6 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
-use JMS\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use PhpCollection\MapInterface;
 
 /**
@@ -46,8 +43,8 @@ class Serializer implements SerializerInterface
 
     /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
-    private $exclusionStrategy;
-    private $serializeNull;
+
+    private $navigator;
 
     /**
      * Constructor.
@@ -69,73 +66,50 @@ class Serializer implements SerializerInterface
         $this->typeParser = $typeParser ?: new TypeParser();
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
-        $this->serializeNull = false;
+
+        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 
-    /**
-     * @param boolean $serializeNull
-     */
-    public function setSerializeNull($serializeNull)
-    {
-        $this->serializeNull = $serializeNull;
-    }
-
-    public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
-    {
-        $this->exclusionStrategy = $exclusionStrategy;
-    }
-
-    /**
-     * @param integer $version
-     */
-    public function setVersion($version)
-    {
-        if (null === $version) {
-            $this->exclusionStrategy = null;
-
-            return;
-        }
-
-        $this->exclusionStrategy = new VersionExclusionStrategy($version);
-    }
-
-    /**
-     * @param null|array $groups
-     */
-    public function setGroups($groups)
-    {
-        if ( ! $groups) {
-            $this->exclusionStrategy = null;
-
-            return;
-        }
-
-        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
-    }
-
-    public function serialize($data, $format)
+    public function serialize($data, $format, SerializationContext $context = null)
     {
         if ( ! $this->serializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
         }
 
-        $visitor = $this->serializationVisitors->get($format)->get();
-        $visitor->setSerializeNull($this->serializeNull);
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
-        $navigator->accept($visitor->prepare($data), null, $visitor);
+        if (null === $context) {
+            $context = new SerializationContext();
+        }
+
+        $context->initialize(
+            $format,
+            $visitor = $this->serializationVisitors->get($format)->get(),
+            $this->navigator
+        );
+
+        $visitor->setNavigator($this->navigator);
+        $this->navigator->accept($visitor->prepare($data), null, $context);
 
         return $visitor->getResult();
     }
 
-    public function deserialize($data, $type, $format)
+    public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if ( ! $this->deserializationVisitors->containsKey($format)) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
-        $visitor = $this->deserializationVisitors->get($format)->get();
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $format, $this->handlerRegistry, $this->objectConstructor, $this->exclusionStrategy, $this->dispatcher));
-        $navigatorResult = $navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $visitor);
+        if (null === $context) {
+            $context = new DeserializationContext();
+        }
+
+        $context->initialize(
+            $format,
+            $visitor = $this->deserializationVisitors->get($format)->get(),
+            $this->navigator
+        );
+
+        $visitor->setNavigator($this->navigator);
+        $navigatorResult = $this->navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $context);
 
         // This is a special case if the root is handled by a callback on the object iself.
         if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {

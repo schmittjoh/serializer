@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
-use Symfony\Component\Yaml\Inline;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
@@ -61,16 +61,16 @@ class DateHandler implements SubscribingHandlerInterface
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
     }
 
-    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type)
+    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
     {
-        return $visitor->visitString($date->format($this->getFormat($type)), $type);
+        return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
-    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type)
+    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
     {
         $iso8601DateIntervalString = $this->format($date);
 
-        return $visitor->visitString($iso8601DateIntervalString, $type);
+        return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
 
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)

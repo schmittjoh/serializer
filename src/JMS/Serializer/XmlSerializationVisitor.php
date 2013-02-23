@@ -69,7 +69,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
-    public function visitNull($data, array $type)
+    public function visitNull($data, array $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -86,7 +86,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $node;
     }
 
-    public function visitString($data, array $type)
+    public function visitString($data, array $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -98,7 +98,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createCDATASection($data);
     }
 
-    public function visitBoolean($data, array $type)
+    public function visitBoolean($data, array $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -110,17 +110,17 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createTextNode($data ? 'true' : 'false');
     }
 
-    public function visitInteger($data, array $type)
+    public function visitInteger($data, array $type, Context $context)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitDouble($data, array $type)
+    public function visitDouble($data, array $type, Context $context)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitArray($data, array $type)
+    public function visitArray($data, array $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -140,7 +140,7 @@ class XmlSerializationVisitor extends AbstractVisitor
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            if (null !== $node = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $this)) {
+            if (null !== $node = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $context)) {
                 $this->currentNode->appendChild($node);
             }
 
@@ -148,7 +148,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
@@ -158,17 +158,17 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->hasValue = false;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $object)
+    public function visitProperty(PropertyMetadata $metadata, $object, Context $context)
     {
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($object)
             : $object->{$metadata->getter}());
 
-        if (null === $v && !$this->shouldSerializeNull()) {
+        if (null === $v && !$context->shouldSerializeNull()) {
             return;
         }
 
         if ($metadata->xmlAttribute) {
-            $node = $this->navigator->accept($v, $metadata->type, $this);
+            $node = $this->navigator->accept($v, $metadata->type, $context);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
@@ -186,7 +186,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($metadata->xmlValue) {
             $this->hasValue = true;
 
-            $node = $this->navigator->accept($v, $metadata->type, $this);
+            $node = $this->navigator->accept($v, $metadata->type, $context);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node)));
             }
@@ -202,7 +202,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
 
             foreach ($v as $key => $value) {
-                $node = $this->navigator->accept($value, null, $this);
+                $node = $this->navigator->accept($value, null, $context);
                 if (!$node instanceof \DOMCharacterData) {
                     throw new RuntimeException(sprintf('Unsupported value for a XML attribute map value. Expected character data, but got %s.', json_encode($v)));
                 }
@@ -220,7 +220,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         $this->setCurrentMetadata($metadata);
 
-        if (null !== $node = $this->navigator->accept($v, $metadata->type, $this)) {
+        if (null !== $node = $this->navigator->accept($v, $metadata->type, $context)) {
             $this->currentNode->appendChild($node);
         }
 
@@ -238,7 +238,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->hasValue = false;
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
     }
 

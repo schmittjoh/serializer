@@ -59,7 +59,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->metadataStack = new \SplStack;
     }
 
-    public function visitNull($data, array $type)
+    public function visitNull($data, array $type, Context $context)
     {
         if ('' === $this->writer->content) {
             $this->writer->writeln('null');
@@ -68,7 +68,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return 'null';
     }
 
-    public function visitString($data, array $type)
+    public function visitString($data, array $type, Context $context)
     {
         $v = Inline::dump($data);
 
@@ -83,13 +83,13 @@ class YamlSerializationVisitor extends AbstractVisitor
      * @param array $data
      * @param array $type
      */
-    public function visitArray($data, array $type)
+    public function visitArray($data, array $type, Context $context)
     {
         $count = $this->writer->changeCount;
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v && (!is_string($k) || !$this->shouldSerializeNull())) {
+            if (null === $v && (!is_string($k) || ! $context->shouldSerializeNull())) {
                 continue;
             }
 
@@ -101,7 +101,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
             $this->writer->indent();
 
-            if (null !== $v = $this->navigator->accept($v, null, $this)) {
+            if (null !== $v = $this->navigator->accept($v, null, $context)) {
                 $this->writer
                     ->rtrim(false)
                     ->writeln(' '.$v)
@@ -119,7 +119,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         }
     }
 
-    public function visitBoolean($data, array $type)
+    public function visitBoolean($data, array $type, Context $context)
     {
         $v = $data ? 'true' : 'false';
 
@@ -130,7 +130,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function visitDouble($data, array $type)
+    public function visitDouble($data, array $type, Context $context)
     {
         $v = (string) $data;
 
@@ -141,7 +141,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function visitInteger($data, array $type)
+    public function visitInteger($data, array $type, Context $context)
     {
         $v = (string) $data;
 
@@ -152,16 +152,16 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
             : $data->{$metadata->getter}());
 
-        if (null === $v && !$this->shouldSerializeNull()) {
+        if (null === $v && !$context->shouldSerializeNull()) {
             return;
         }
 
@@ -177,7 +177,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
         $count = $this->writer->changeCount;
 
-        if (null !== $v = $this->navigator->accept($v, $metadata->type, $this)) {
+        if (null !== $v = $this->navigator->accept($v, $metadata->type, $context)) {
             $this->writer
                 ->rtrim(false)
                 ->writeln(' '.$v)
@@ -192,7 +192,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->revertCurrentMetadata();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
     }
 

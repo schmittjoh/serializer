@@ -36,7 +36,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();
-        $this->visitor = $this->getMock('JMS\Serializer\VisitorInterface');
+        $this->visitor = $this->getMock('JMS\Serializer\Context');
     }
 
     private function createEvent($object, array $type)

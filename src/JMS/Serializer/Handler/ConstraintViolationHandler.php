@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
@@ -58,14 +59,14 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         }
     }
 
-    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
     {
-        return $visitor->visitArray(iterator_to_array($list), $type);
+        return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
 
-    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
     {
-        return $visitor->visitArray(iterator_to_array($list), $type);
+        return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
 
     public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)

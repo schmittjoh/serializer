@@ -2,6 +2,7 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
 use PhpCollection\Sequence;
@@ -37,19 +38,19 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, array $type)
+    public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, array $type, Context $context)
     {
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
 
-        return $visitor->visitArray($sequence->all(), $type);
+        return $visitor->visitArray($sequence->all(), $type, $context);
     }
 
-    public function deserializeSequence(VisitorInterface $visitor, $data, array $type)
+    public function deserializeSequence(VisitorInterface $visitor, $data, array $type, Context $context)
     {
         // See above.
         $type['name'] = 'array';
 
-        return new Sequence($visitor->visitArray($data, $type));
+        return new Sequence($visitor->visitArray($data, $type, $context));
     }
 }

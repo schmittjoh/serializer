@@ -42,12 +42,12 @@ interface VisitorInterface
     public function prepare($data);
 
     /**
-     * Controls whether keys will be preserved when serializing null values
+     * @param mixed $data
+     * @param array $type
      *
-     * @param bool $serializeNull
-     * @return void
+     * @return mixed
      */
-    public function setSerializeNull($serializeNull);
+    public function visitNull($data, array $type, Context $context);
 
     /**
      * @param mixed $data
@@ -55,7 +55,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitNull($data, array $type);
+    public function visitString($data, array $type, Context $context);
 
     /**
      * @param mixed $data
@@ -63,7 +63,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitString($data, array $type);
+    public function visitBoolean($data, array $type, Context $context);
 
     /**
      * @param mixed $data
@@ -71,7 +71,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type);
+    public function visitDouble($data, array $type, Context $context);
 
     /**
      * @param mixed $data
@@ -79,7 +79,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type);
+    public function visitInteger($data, array $type, Context $context);
 
     /**
      * @param mixed $data
@@ -87,15 +87,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type);
-
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
-    public function visitArray($data, array $type);
+    public function visitArray($data, array $type, Context $context);
 
     /**
      * Called before the properties of the object are being visited.
@@ -106,7 +98,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type);
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
 
     /**
      * @param PropertyMetadata $metadata
@@ -114,7 +106,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function visitProperty(PropertyMetadata $metadata, $data);
+    public function visitProperty(PropertyMetadata $metadata, $data, Context $context);
 
     /**
      * Called after all properties of the object have been visited.
@@ -125,7 +117,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type);
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
 
     /**
      * Called before serialization/deserialization starts.
@@ -137,6 +129,7 @@ interface VisitorInterface
     public function setNavigator(GraphNavigator $navigator);
 
     /**
+     * @deprecated use Context::getNavigator/Context::accept instead
      * @return GraphNavigator
      */
     public function getNavigator();

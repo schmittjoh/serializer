@@ -57,7 +57,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testAddSubscriber()
     {
         $subscriber = new MockSubscriber();
-        $subscriber::$events = array(
+        MockSubscriber::$events = array(
             array('event' => 'foo.bar_baz', 'format' => 'foo'),
             array('event' => 'bar', 'method' => 'bar', 'class' => 'foo'),
         );
@@ -76,7 +76,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->dispatcher = new EventDispatcher();
-        $this->event = new Event($this->getMock('JMS\Serializer\VisitorInterface'), new \stdClass(), array('name' => 'foo', 'params' => array()));
+        $this->event = new Event($this->getMock('JMS\Serializer\Context'), new \stdClass(), array('name' => 'foo', 'params' => array()));
     }
 
     private function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)

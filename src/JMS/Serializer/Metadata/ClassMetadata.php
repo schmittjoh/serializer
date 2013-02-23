@@ -35,9 +35,15 @@ class ClassMetadata extends MergeableClassMetadata
     const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
     const ACCESSOR_ORDER_CUSTOM = 'custom';
 
+    /** @var \ReflectionMethod[] */
     public $preSerializeMethods = array();
+
+    /** @var \ReflectionMethod[] */
     public $postSerializeMethods = array();
+
+    /** @var \ReflectionMethod[] */
     public $postDeserializeMethods = array();
+
     public $xmlRootName;
     public $accessorOrder;
     public $customOrder;

@@ -2,60 +2,43 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\RuntimeException;
 
-class NavigatorContext
+class SerializationContext extends Context
 {
-    private $direction;
-    private $format;
+    /** @var \SplObjectStorage */
     private $visitingSet;
+
+    /** @var \SplStack */
     private $visitingStack;
 
-    public function __construct($direction, $format)
+    public static function create()
     {
-        $this->direction = $direction;
-        $this->format = $format;
+        return new self();
+    }
+
+    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator)
+    {
+        parent::initialize($format, $visitor, $navigator);
+
         $this->visitingSet = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();
     }
 
-    public function getDirection()
-    {
-        return $this->direction;
-    }
-
-    public function isSerializing()
-    {
-        return $this->direction === GraphNavigator::DIRECTION_SERIALIZATION;
-    }
-
-    public function getFormat()
-    {
-        return $this->format;
-    }
-
     public function startVisiting($object)
     {
-        if (!$this->isSerializing()) {
-            return;
-        }
-
         $this->visitingSet->attach($object);
         $this->visitingStack->push($object);
     }
 
     public function stopVisiting($object)
     {
-        if (!$this->isSerializing()) {
-            return;
-        }
-
         $this->visitingSet->detach($object);
         $poppedObject = $this->visitingStack->pop();
 
         if ($object !== $poppedObject) {
-            throw new RuntimeException('NavigatorContext visitingStack not working well');
+            throw new RuntimeException('Context visitingStack not working well');
         }
     }
 
@@ -79,6 +62,11 @@ class NavigatorContext
         }
 
         return implode(' -> ', $path);
+    }
+
+    public function getDirection()
+    {
+        return GraphNavigator::DIRECTION_SERIALIZATION;
     }
 
     public function getDepth()
