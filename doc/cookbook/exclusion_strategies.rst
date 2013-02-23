@@ -73,14 +73,11 @@ expose them via an API that is consumed by a third-party:
     ``@Until``, and ``@Since`` both accept a standardized PHP version number.
 
 If you have annotated your objects like above, you can serializing different
-versions like this:
+versions like this::
 
-.. code-block :: php
+    use JMS\Serializer\SerializationContext;
 
-    <?php
-
-    $serializer->setVersion('1.0');
-    $serializer->serialize(new VersionObject(), 'json');
+    $serializer->serialize(new VersionObject(), 'json', SerializationContext::create()->setVersion(1));
 
 
 Creating Different Views of Your Objects
@@ -92,8 +89,6 @@ whether it is displayed in a list view or in a details view.
 You can achieve that by using the ``@Groups`` annotation on your properties.
 
 .. code-block :: php
-
-    <?php
 
     use JMS\Serializer\Annotation\Groups;
 
@@ -112,11 +107,8 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
         private $comments;
     }
 
-You can then tell the serializer which groups to serialize in your controller:
+You can then tell the serializer which groups to serialize in your controller::
 
-.. code-block :: php
+    use JMS\Serializer\SerializationContext;
 
-    <?php
-
-    $serializer->setGroups(array('list'));
-    $serializer->serialize(new BlogPost(), 'json');
+    $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
