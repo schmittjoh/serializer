@@ -192,6 +192,10 @@ by the object iself.
 
 @Discriminator
 ~~~~~~~~~~~~~~
+
+.. versionadded : 0.12
+    @Discriminator was added
+
 This annotation can to enable deserialization of relations which are polymorphic, but
 where a common base class exists. The ``@Discriminator`` annotation has to be applied
 to the least super type::
