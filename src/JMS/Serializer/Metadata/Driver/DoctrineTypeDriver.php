@@ -82,7 +82,8 @@ class DoctrineTypeDriver implements DriverInterface
             return $classMetadata;
         }
 
-        if (empty($classMetadata->discriminatorMap) && ! empty($doctrineMetadata->discriminatorMap)) {
+        if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
+                && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()) {
             $classMetadata->setDiscriminator(
                 $doctrineMetadata->discriminatorColumn['name'],
                 $doctrineMetadata->discriminatorMap

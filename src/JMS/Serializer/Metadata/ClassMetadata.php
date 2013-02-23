@@ -49,6 +49,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $customOrder;
     public $handlerCallbacks = array();
 
+    public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
     public $discriminatorFieldName;
     public $discriminatorValue;
@@ -200,6 +201,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
+            $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
             $this->discriminatorFieldName,
             $this->discriminatorValue,
@@ -218,6 +220,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
+            $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
             $this->discriminatorFieldName,
             $this->discriminatorValue,

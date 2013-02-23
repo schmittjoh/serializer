@@ -85,7 +85,11 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
             } elseif ($annot instanceof Discriminator) {
-                $classMetadata->setDiscriminator($annot->field, $annot->map);
+                if ($annot->disabled) {
+                    $classMetadata->discriminatorDisabled = true;
+                } else {
+                    $classMetadata->setDiscriminator($annot->field, $annot->map);
+                }
             }
         }
 

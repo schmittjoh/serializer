@@ -57,15 +57,19 @@ class YamlDriver extends AbstractFileDriver
         }
 
         if (isset($config['discriminator'])) {
-            if ( ! isset($config['discriminator']['field_name'])) {
-                throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
-            }
+            if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
+                $metadata->discriminatorDisabled = true;
+            } else {
+                if ( ! isset($config['discriminator']['field_name'])) {
+                    throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
+                }
 
-            if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
-                throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
-            }
+                if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
+                    throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
+                }
 
-            $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
+                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
+            }
         }
 
         if (array_key_exists('virtual_properties', $config) ) {
