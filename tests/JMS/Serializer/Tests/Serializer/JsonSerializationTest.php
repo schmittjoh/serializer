@@ -86,6 +86,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
+            $outputs['car_without_type'] = '{"km":5}';
         }
 
         if (!isset($outputs[$key])) {

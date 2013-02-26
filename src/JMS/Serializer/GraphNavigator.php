@@ -180,7 +180,7 @@ final class GraphNavigator
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap)) {
+                if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($context, $data, $metadata);
                 }
 

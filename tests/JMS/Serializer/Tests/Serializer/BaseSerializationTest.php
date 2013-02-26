@@ -685,6 +685,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 ),
                 'Class is resolved correctly when least supertype is used.'
             );
+
+            $this->assertEquals(
+                new Car(5),
+                $this->deserialize(
+                    $this->getContent('car_without_type'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
         }
     }
 
