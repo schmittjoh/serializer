@@ -697,6 +697,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group polymorphic
+     * @expectedException LogicException
+     */
+    public function testPolymorphicObjectsInvalidDeserialization()
+    {
+        if (!$this->hasDeserializer()) {
+            throw new \LogicException('No deserializer');
+        }
+
+        $this->deserialize(
+            $this->getContent('car_without_type'),
+            'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
+        );
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
