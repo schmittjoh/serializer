@@ -48,6 +48,11 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->delegates = $delegates;
     }
 
+    public function addStrategy(ExclusionStrategyInterface $strategy)
+    {
+        $this->delegates->add($strategy);
+    }
+
     /**
      * Whether the class should be skipped.
      *

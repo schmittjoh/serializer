@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
@@ -49,6 +50,8 @@ abstract class Context
     /** @var boolean */
     private $serializeNull;
 
+    private $initialized = false;
+
     public function __construct()
     {
         $this->attributes = new Map();
@@ -56,6 +59,11 @@ abstract class Context
 
     public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
+        if ($this->initialized) {
+            throw new \LogicException('This context was already initialized, and cannot be re-used.');
+        }
+
+        $this->initialized = true;
         $this->format = $format;
         $this->visitor = $visitor;
         $this->navigator = $navigator;
@@ -89,13 +97,48 @@ abstract class Context
 
     public function setAttribute($key, $value)
     {
+        $this->assertMutable();
         $this->attributes->set($key, $value);
+
+        return $this;
+    }
+
+    private function assertMutable()
+    {
+        if ( ! $this->initialized) {
+            return;
+        }
+
+        throw new \LogicException('This context was already initialized and is immutable; you cannot modify it anymore.');
+    }
+
+    public function addExclusionStrategy(ExclusionStrategyInterface $strategy)
+    {
+        $this->assertMutable();
+
+        if (null === $this->exclusionStrategy) {
+            $this->exclusionStrategy = $strategy;
+
+            return $this;
+        }
+
+        if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
+            $this->exclusionStrategy->addStrategy($strategy);
+
+            return $this;
+        }
+
+        $this->exclusionStrategy = new DisjunctExclusionStrategy(array(
+            $this->exclusionStrategy,
+            $strategy,
+        ));
 
         return $this;
     }
 
     public function setExclusionStrategy(ExclusionStrategyInterface $strategy)
     {
+        $this->assertMutable();
         $this->exclusionStrategy = $strategy;
 
         return $this;
@@ -107,28 +150,26 @@ abstract class Context
     public function setVersion($version)
     {
         if (null === $version) {
-            $this->exclusionStrategy = null;
-
-            return $this;
+            throw new \LogicException('The version must not be null.');
         }
 
-        $this->exclusionStrategy = new VersionExclusionStrategy($version);
+        $this->attributes->set('version', $version);
+        $this->addExclusionStrategy(new VersionExclusionStrategy($version));
 
         return $this;
     }
 
     /**
-     * @param null|array $groups
+     * @param array|string $groups
      */
     public function setGroups($groups)
     {
-        if ( ! $groups) {
-            $this->exclusionStrategy = null;
-
-            return $this;
+        if (empty($groups)) {
+            throw new \LogicException('The groups must not be empty.');
         }
 
-        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
+        $this->attributes->set('groups', (array) $groups);
+        $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
 
         return $this;
     }
