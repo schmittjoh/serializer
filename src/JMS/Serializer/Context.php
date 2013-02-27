@@ -136,14 +136,6 @@ abstract class Context
         return $this;
     }
 
-    public function setExclusionStrategy(ExclusionStrategyInterface $strategy)
-    {
-        $this->assertMutable();
-        $this->exclusionStrategy = $strategy;
-
-        return $this;
-    }
-
     /**
      * @param integer $version
      */

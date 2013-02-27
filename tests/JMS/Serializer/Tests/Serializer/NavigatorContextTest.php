@@ -92,6 +92,6 @@ class NavigatorContextTest extends \PHPUnit_Framework_TestCase
 
         $serializer = SerializerBuilder::create()->build();
 
-        $serializer->serialize($object, 'json', SerializationContext::create()->setExclusionStrategy($exclusionStrategy));
+        $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 }
