@@ -98,7 +98,12 @@ final class GraphNavigator
 
             $typeName = gettype($data);
             if ('object' === $typeName) {
-                $typeName = get_class($data);
+                if ($data instanceof \stdClass) {
+                    $data = (array)$data;
+                    $typeName = $type = 'array';
+                } else {
+                    $typeName = get_class($data);
+                }
             }
 
             $type = array('name' => $typeName, 'params' => array());
