@@ -70,7 +70,7 @@ abstract class Context
         $this->metadataFactory = $factory;
     }
 
-    public function accept($data, array $type)
+    public function accept($data, array $type = null)
     {
         return $this->navigator->accept($data, $type, $this);
     }
