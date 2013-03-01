@@ -173,7 +173,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     }
 
     /**
-     * @param array $data
+     * @param array|\ArrayObject $data the passed data must be understood by whatever encoding function is applied later.
      */
     public function setRoot($data)
     {
