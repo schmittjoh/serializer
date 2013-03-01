@@ -204,7 +204,8 @@ final class GraphNavigator
                 if (isset($metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()])) {
                     $rs = $object->{$metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()]}(
                         $visitor,
-                        $context instanceof SerializationContext ? null : $data
+                        $context instanceof SerializationContext ? null : $data,
+                        $context
                     );
                     $this->afterVisitingObject($metadata, $object, $type, $context);
 

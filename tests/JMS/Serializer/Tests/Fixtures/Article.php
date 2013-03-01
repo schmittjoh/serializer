@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\XmlDeserializationVisitor;
 use Symfony\Component\Yaml\Inline;
@@ -32,7 +33,7 @@ class Article
     public $value;
 
     /** @HandlerCallback("xml", direction = "serialization") */
-    public function serializeToXml(XmlSerializationVisitor $visitor)
+    public function serializeToXml(XmlSerializationVisitor $visitor, $data, Context $context)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument(null, null, false);
