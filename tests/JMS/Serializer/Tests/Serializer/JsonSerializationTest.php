@@ -164,6 +164,14 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertInternalType($primitiveType, $result);
     }
 
+    /**
+     * @group empty-object
+     */
+    public function testSerializeEmptyObject()
+    {
+        $this->assertEquals('{}', $this->serialize(new Author(null)));
+    }
+
     protected function getFormat()
     {
         return 'json';

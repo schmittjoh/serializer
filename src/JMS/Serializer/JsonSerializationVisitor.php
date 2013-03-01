@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Metadata\ClassMetadata;
+
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
     private $options = 0;
@@ -48,5 +50,21 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         }
 
         return $result;
+    }
+
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    {
+        $rs = parent::endVisitingObject($metadata, $data, $type, $context);
+
+        // Force JSON output to "{}" instead of "[]" if it contains either no properties or all properties are null.
+        if (empty($rs)) {
+            $rs = new \ArrayObject();
+
+            if (array() === $this->getRoot()) {
+                $this->setRoot($rs);
+            }
+        }
+
+        return $rs;
     }
 }

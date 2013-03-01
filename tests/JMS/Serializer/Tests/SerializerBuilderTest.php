@@ -74,7 +74,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->builder, $this->builder->configureHandlers(function(HandlerRegistry $registry) {
         }));
 
-        $this->assertEquals('[]', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
+        $this->assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
     }
 
     /**
