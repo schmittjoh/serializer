@@ -184,6 +184,8 @@ final class GraphNavigator
                     $metadata = $this->resolveMetadata($context, $data, $metadata);
                 }
 
+                $context->pushClassMetadata($metadata);
+
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                     $this->leaveScope($context, $data);
 
@@ -222,7 +224,9 @@ final class GraphNavigator
                         continue;
                     }
 
+                    $context->pushPropertyMetadata($propertyMetadata);
                     $visitor->visitProperty($propertyMetadata, $data, $context);
+                    $context->popPropertyMetadata();
                 }
 
                 if ($context instanceof SerializationContext) {
@@ -281,6 +285,7 @@ final class GraphNavigator
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->leaveScope($context, $object);
+        $context->popClassMetadata();
 
         if ($context instanceof SerializationContext) {
             foreach ($metadata->postSerializeMethods as $method) {
