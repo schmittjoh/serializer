@@ -94,9 +94,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $arr = array('foo' => 'bar', 'baz' => null, null);
 
-        $datShouldBe = json_encode($arr,0);
         $this->serializer->setSerializeNull(true);
-        $this->assertEquals($datShouldBe, $this->serializer->serialize($arr, $this->getFormat()));
         $this->assertEquals($this->getContent('nullable'), $this->serializer->serialize($arr, $this->getFormat()));
         $this->serializer->setSerializeNull(false);
     }
@@ -106,9 +104,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $arr = array(array('a','b','c'),array(1,null,3),array('x',4.56,'z'));
 
         $this->serializer->setSerializeNull(true);
-        $dat = $this->serializer->serialize($arr, $this->getFormat());
-        $datShouldBe = json_encode($arr,0);
-        $this->assertEquals($datShouldBe, $this->serializer->serialize($arr, $this->getFormat()));
         $this->assertEquals($this->getContent('nullable_2D_array'), $this->serializer->serialize($arr, $this->getFormat()));
         $this->serializer->setSerializeNull(false);
     }

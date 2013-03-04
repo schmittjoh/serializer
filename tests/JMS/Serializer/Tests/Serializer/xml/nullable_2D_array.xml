@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <entry>
+    <entry><![CDATA[a]]></entry>
+    <entry><![CDATA[b]]></entry>
+    <entry><![CDATA[c]]></entry>
+  </entry>
+  <entry>
+    <entry>1</entry>
+    <entry xsi:nil="true"/>
+    <entry>3</entry>
+  </entry>
+  <entry>
+    <entry><![CDATA[x]]></entry>
+    <entry>4.56</entry>
+    <entry><![CDATA[z]]></entry>
+  </entry>
+</result>
