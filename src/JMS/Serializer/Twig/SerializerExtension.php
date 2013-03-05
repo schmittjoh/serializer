@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Twig;
 
 use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 
 
 /**
@@ -50,9 +51,10 @@ class SerializerExtension extends \Twig_Extension
     /**
      * @param object $object
      * @param string $type
+     * @param SerializationContext $context
      */
-    public function serialize($object, $type = 'json')
+    public function serialize($object, $type = 'json', $context = null)
     {
-        return $this->serializer->serialize($object, $type);
+        return $this->serializer->serialize($object, $type, $context);
     }
 }
