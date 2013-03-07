@@ -19,7 +19,10 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\SerializerBuilder;
 
@@ -92,6 +95,56 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
         $serializer = SerializerBuilder::create()->build();
 
+        $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
+    }
+
+    public function testSerializationMetadataStack()
+    {
+        $object = new Node(array(
+            $child = new InlineChild(),
+        ));
+        $self = $this;
+
+        $exclusionStrategy = $this->getMock('JMS\Serializer\Exclusion\ExclusionStrategyInterface');
+        $exclusionStrategy->expects($this->any())
+            ->method('shouldSkipClass')
+            ->will($this->returnCallback(function (ClassMetadata $classMetadata, SerializationContext $context) use ($self, $object, $child) {
+                $stack = $context->getMetadataStack();
+
+                if ($object === $context->getObject()) {
+                    $self->assertEquals(0, $stack->count());
+                }
+
+                if ($child === $context->getObject()) {
+                    $self->assertEquals(2, $stack->count());
+                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[1]->name);
+                    $self->assertEquals('children', $stack[0]->name);
+                }
+
+                return false;
+            }));
+
+        $exclusionStrategy->expects($this->any())
+            ->method('shouldSkipProperty')
+            ->will($this->returnCallback(function (PropertyMetadata $propertyMetadata, SerializationContext $context) use ($self, $object, $child) {
+                $stack = $context->getMetadataStack();
+
+                if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && $propertyMetadata->name === 'children') {
+                    $self->assertEquals(1, $stack->count());
+                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[0]->name);
+                }
+
+                if ('JMS\Serializer\Tests\Fixtures\InlineChild' === $propertyMetadata->class) {
+                    $self->assertEquals(3, $stack->count());
+                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[2]->name);
+                    $self->assertEquals('children', $stack[1]->name);
+                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\InlineChild', $stack[0]->name);
+                }
+
+                return false;
+            }));
+
+        $serializer = SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 }

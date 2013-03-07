@@ -184,13 +184,13 @@ final class GraphNavigator
                     $metadata = $this->resolveMetadata($context, $data, $metadata);
                 }
 
-                $context->pushClassMetadata($metadata);
-
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                     $this->leaveScope($context, $data);
 
                     return null;
                 }
+
+                $context->pushClassMetadata($metadata);
 
                 if ($context instanceof SerializationContext) {
                     foreach ($metadata->preSerializeMethods as $method) {
