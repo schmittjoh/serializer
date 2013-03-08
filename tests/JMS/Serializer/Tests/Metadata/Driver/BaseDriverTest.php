@@ -31,6 +31,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($m);
         $this->assertEquals('blog-post', $m->xmlRootName);
+        $this->assertCount(3, $m->xmlNamespaces);
+        $this->assertArrayHasKey('', $m->xmlNamespaces);
+        $this->assertEquals('http://example.com/namespace', $m->xmlNamespaces['']);
+        $this->assertArrayHasKey('gd', $m->xmlNamespaces);
+        $this->assertEquals('http://schemas.google.com/g/2005', $m->xmlNamespaces['gd']);
+        $this->assertArrayHasKey('atom', $m->xmlNamespaces);
+        $this->assertEquals('http://www.w3.org/2005/Atom', $m->xmlNamespaces['atom']);
 
         $p = new PropertyMetadata($m->name, 'id');
         $p->type = array('name' => 'string', 'params' => array());
@@ -55,6 +62,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['published']);
 
+        $p = new PropertyMetadata($m->name, 'etag');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlAttribute = true;
+        $p->groups = array("post");
+        $p->xmlPrefix = "gd";
+        $this->assertEquals($p, $m->propertyMetadata['etag']);
+
         $p = new PropertyMetadata($m->name, 'comments');
         $p->type = array('name' => 'ArrayCollection', 'params' => array(array('name' => 'JMS\Serializer\Tests\Fixtures\Comment', 'params' => array())));
         $p->xmlCollection = true;
@@ -66,6 +80,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p = new PropertyMetadata($m->name, 'author');
         $p->type = array('name' => 'JMS\Serializer\Tests\Fixtures\Author', 'params' => array());
         $p->groups = array("post");
+        $p->xmlPrefix = 'atom';
         $this->assertEquals($p, $m->propertyMetadata['author']);
 
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Price'));

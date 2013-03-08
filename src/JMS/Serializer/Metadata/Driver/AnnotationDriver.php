@@ -26,6 +26,8 @@ use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessType;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlPrefix;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlValue;
@@ -80,6 +82,8 @@ class AnnotationDriver implements DriverInterface
                 $exclusionPolicy = $annot->policy;
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
+            } elseif ($annot instanceof XmlNamespace) {
+                $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
                 $excludeAll = true;
             } elseif ($annot instanceof AccessType) {
@@ -155,6 +159,8 @@ class AnnotationDriver implements DriverInterface
                         $isExclude = true;
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
+                    } elseif ($annot instanceof XmlPrefix) {
+                        $propertyMetadata->xmlPrefix = $annot->prefix;
                     } elseif ($annot instanceof XmlList) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;

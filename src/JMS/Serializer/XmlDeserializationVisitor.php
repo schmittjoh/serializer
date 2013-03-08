@@ -214,7 +214,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            if (isset($data[$name])) {
+            if ($metadata->xmlPrefix !== '') {
+                $nodes = $data->xpath('./@'.$metadata->xmlPrefix.':'.$name);
+                if (!empty($nodes)) {
+                    $v = (string) reset($nodes);
+                    $metadata->reflection->setValue($this->currentObject, $v);    
+                }
+                
+            } elseif (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
                 $metadata->reflection->setValue($this->currentObject, $v);
             }
@@ -243,11 +250,20 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if (!isset($data->$name)) {
-            return;
+        if ($metadata->xmlPrefix !== '') {
+            $nodes = $data->xpath('./'.$metadata->xmlPrefix.':'.$name);
+            if (empty($nodes)) {
+                return;
+            }
+            $node = reset($nodes);
+        } else {
+            if (!isset($data->$name)) {
+                return;
+            }
+            $node = $data->$name;
         }
 
-        $v = $this->navigator->accept($data->$name, $metadata->type, $context);
+        $v = $this->navigator->accept($node, $metadata->type, $context);
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);

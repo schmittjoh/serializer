@@ -56,6 +56,14 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
+        if (array_key_exists('xml_namespaces', $config) ) {
+
+            foreach ( $config['xml_namespaces'] as $prefix => $uri) {
+                $metadata->registerNamespace($uri, $prefix);
+            }
+
+        }
+
         if (isset($config['discriminator'])) {
             if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
                 $metadata->discriminatorDisabled = true;
@@ -130,6 +138,10 @@ class YamlDriver extends AbstractFileDriver
 
                     if (isset($pConfig['groups'])) {
                         $pMetadata->groups = $pConfig['groups'];
+                    }
+
+                    if (isset($pConfig['xml_prefix'])) {
+                        $pMetadata->xmlPrefix = (string) $pConfig['xml_prefix'];
                     }
 
                     if (isset($pConfig['xml_list'])) {

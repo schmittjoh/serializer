@@ -184,6 +184,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
             $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
+            $this->addNamespaceAttributes($metadata, $this->currentNode);
         }
 
         $this->hasValue = false;
@@ -205,8 +206,11 @@ class XmlSerializationVisitor extends AbstractVisitor
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
-
-            $this->currentNode->setAttribute($this->namingStrategy->translateName($metadata), $node->nodeValue);
+            $attributeName = $this->namingStrategy->translateName($metadata);
+            if ($metadata->xmlPrefix !== '') {
+                $attributeName = $metadata->xmlPrefix . ':' . $attributeName;
+            }
+            $this->currentNode->setAttribute($attributeName, $node->nodeValue);
 
             return;
         }
@@ -246,6 +250,10 @@ class XmlSerializationVisitor extends AbstractVisitor
                     throw new RuntimeException(sprintf('Unsupported value for a XML attribute map value. Expected character data, but got %s.', json_encode($v)));
                 }
 
+                if ($metadata->xmlPrefix !== '') {
+                    $key = $metadata->xmlPrefix . ':' . $key;
+                }
+
                 $this->currentNode->setAttribute($key, $node->nodeValue);
             }
 
@@ -253,7 +261,11 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
 
         if ($addEnclosingElement = (!$metadata->xmlCollection || !$metadata->xmlCollectionInline) && !$metadata->inline) {
-            $element = $this->document->createElement($this->namingStrategy->translateName($metadata));
+            $elementName = $this->namingStrategy->translateName($metadata);
+            if ($metadata->xmlPrefix !== '') {
+                $elementName = $metadata->xmlPrefix . ':' . $elementName;
+            }
+            $element = $this->document->createElement($elementName);
             $this->setCurrentNode($element);
         }
 
@@ -376,6 +388,23 @@ class XmlSerializationVisitor extends AbstractVisitor
                 'http://www.w3.org/2001/XMLSchema-instance'
             );
             $this->nullWasVisited = true;
+        }
+    }
+    
+    /**
+     * Adds namespace attributes to the XML root element
+     *
+     * @param \JMS\Serializer\Metadata\ClassMetadata $metadata
+     * @param \DOMElement $element
+     */
+    private function addNamespaceAttributes(ClassMetadata $metadata, \DOMElement $element)
+    {
+        foreach ($metadata->xmlNamespaces as $prefix => $uri) {
+            $attribute = 'xmlns';
+            if ($prefix !== '') {
+                $attribute .= ':'.$prefix;
+            }
+            $element->setAttributeNS('http://www.w3.org/2000/xmlns/', $attribute, $uri);
         }
     }
 }

@@ -22,6 +22,8 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlPrefix;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlElement;
@@ -30,7 +32,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PhpCollection\Map;
 use PhpCollection\Sequence;
 
-/** @XmlRoot("blog-post") */
+/**
+ * @XmlRoot("blog-post")
+ * @XmlNamespace(uri="http://example.com/namespace")
+ * @XmlNamespace(uri="http://schemas.google.com/g/2005", prefix="gd")
+ * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
+ */
 class BlogPost
 {
     /**
@@ -61,6 +68,14 @@ class BlogPost
     private $published;
 
     /**
+     * @Type("string")
+     * @XmlAttribute
+     * @XmlPrefix("gd")
+     * @Groups({"post"})
+     */
+    private $etag;
+
+    /**
      * @Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Comment>")
      * @XmlList(inline=true, entry="comment")
      * @Groups({"comments"})
@@ -83,6 +98,7 @@ class BlogPost
     /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      * @Groups({"post"})
+     * @XmlPrefix("atom")
      */
     private $author;
 
@@ -96,6 +112,7 @@ class BlogPost
         $this->metadata = new Map();
         $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
+        $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
     }
 
     public function setPublished()
