@@ -58,10 +58,27 @@ class XmlSerializationTest extends BaseSerializationTest
         $person = new Person;
         $person->name = 'Matthias Noback';
         $person->age = 28;
+
+        $collectionAwarePerson = new Person;
+        $collectionAwarePerson->name = 'Rob Hogan';
+        $collectionAwarePerson->age = 26;
+
         $personCollection->persons->add($person);
         $personCollection->location = 'The Netherlands';
+        $personCollection->setCollectionAwarePersons(
+            new \Doctrine\Common\Collections\ArrayCollection(array($collectionAwarePerson)));
 
         $this->assertEquals($this->getContent('person_collection'), $this->serialize($personCollection));
+    }
+
+    public function testDeserializationSetterIsUsedWhenAccessTypeSpecifiedOnXmlListProperty()
+    {
+        $personCollection = $this->deserialize(
+            $this->getContent('person_collection'),
+            'JMS\Serializer\Tests\Fixtures\PersonCollection');
+
+        $this->assertNotNull($personCollection->getCollectionAwarePersons()->first()->collection,
+            "Child not aware of parent. Parent's setter may not have been used");
     }
 
     /**
