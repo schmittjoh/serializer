@@ -216,20 +216,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
         if ($metadata->xmlAttribute) {
             if (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
-                $metadata->reflection->setValue($this->currentObject, $v);
             }
-
-            return;
         }
 
-        if ($metadata->xmlValue) {
+        else if ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $context);
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
         }
 
-        if ($metadata->xmlCollection) {
+        else if ($metadata->xmlCollection) {
             $enclosingElem = $data;
             if (!$metadata->xmlCollectionInline && isset($data->$name)) {
                 $enclosingElem = $data->$name;
@@ -238,24 +232,20 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $this->setCurrentMetadata($metadata);
             $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
             $this->revertCurrentMetadata();
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
         }
 
-        if (!isset($data->$name)) {
-            return;
+        else if (isset($data->$name)) {
+            $v = $this->navigator->accept($data->$name, $metadata->type, $context);
         }
 
-        $v = $this->navigator->accept($data->$name, $metadata->type, $context);
-
-        if (null === $metadata->setter) {
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
+        if (isset($v)) {
+            if (null === $metadata->setter) {
+                $metadata->reflection->setValue($this->currentObject, $v);
+            }
+            else{
+                $this->currentObject->{$metadata->setter}($v);
+            }
         }
-
-        $this->currentObject->{$metadata->setter}($v);
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
