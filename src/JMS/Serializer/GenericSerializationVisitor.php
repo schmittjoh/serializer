@@ -130,7 +130,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $rs;
         }
 
-        return $rs;
+        return (object) $rs;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
@@ -145,8 +145,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
         $k = $this->namingStrategy->translateName($metadata);
 
-        if ($metadata->inline && is_array($v)) {
-            $this->data = array_merge($this->data, $v);
+        if ($metadata->inline && (is_array($v) || (is_object($v) && 'stdClass' === get_class($v)))) {
+            $this->data = array_merge($this->data, (array) $v);
         } else {
             $this->data[$k] = $v;
         }
