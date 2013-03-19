@@ -181,7 +181,7 @@ class XmlSerializationTest extends BaseSerializationTest
     
     public function testObjectWithXmlNamespaces()
     {
-        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
         
         $xml = simplexml_load_string($this->serialize($object));
         $xml->registerXPathNamespace('ns1', "http://purl.org/dc/elements/1.1/");
@@ -190,6 +190,7 @@ class XmlSerializationTest extends BaseSerializationTest
         
         $this->assertEquals('2011-07-30T00:00:00+0000', $this->xpathFirstToString($xml, './@created_at'));
         $this->assertEquals('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', $this->xpathFirstToString($xml, './@ns2:etag'));
+        $this->assertEquals('en', $this->xpathFirstToString($xml, './@ns1:language'));
         $this->assertEquals('This is a nice title.', $this->xpathFirstToString($xml, './ns1:title'));
         $this->assertEquals('Foo Bar', $this->xpathFirstToString($xml, './ns3:author'));
 
@@ -197,6 +198,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
         $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
         $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
+        $this->assertAttributeSame('en', 'language', $deserialized);
         $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
 
     }

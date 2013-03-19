@@ -62,12 +62,19 @@ class ObjectWithXmlNamespaces
      * @XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     private $author;
+    
+    /**
+     * @Type("string")
+     * @XmlAttribute(namespace="http://purl.org/dc/elements/1.1/");
+     */
+    private $language;
 
-    public function __construct($title, $author, \DateTime $createdAt)
+    public function __construct($title, $author, \DateTime $createdAt, $language)
     {
         $this->title = $title;
         $this->author = $author;
         $this->createdAt = $createdAt;
+        $this->language = $language;
         $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
     }
 }
