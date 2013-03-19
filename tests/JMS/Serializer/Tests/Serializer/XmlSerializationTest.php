@@ -30,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\Input;
 
 class XmlSerializationTest extends BaseSerializationTest
@@ -176,6 +177,34 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializingNull()
     {
         $this->markTestSkipped('Not supported in XML.');
+    }
+    
+    public function testObjectWithXmlNamespaces()
+    {
+        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        
+        $xml = simplexml_load_string($this->serialize($object));
+        $xml->registerXPathNamespace('ns1', "http://purl.org/dc/elements/1.1/");
+        $xml->registerXPathNamespace('ns2', "http://schemas.google.com/g/2005");
+        $xml->registerXPathNamespace('ns3', "http://www.w3.org/2005/Atom");
+        
+        $this->assertEquals('2011-07-30T00:00:00+0000', $this->xpathFirstToString($xml, './@created_at'));
+        $this->assertEquals('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', $this->xpathFirstToString($xml, './@ns2:etag'));
+        $this->assertEquals('This is a nice title.', $this->xpathFirstToString($xml, './ns1:title'));
+        $this->assertEquals('Foo Bar', $this->xpathFirstToString($xml, './ns3:author'));
+
+        $deserialized = $this->deserialize($this->getContent('object_with_xml_namespaces'), get_class($object));
+        $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
+        $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
+        $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
+        $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
+
+    }
+    
+    private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
+    {
+        $nodes = $xml->xpath($xpath);
+        return (string) reset($nodes);
     }
 
     /**

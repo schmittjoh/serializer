@@ -4,6 +4,7 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
         "": http://example.com/namespace
         gd: http://schemas.google.com/g/2005
         atom: http://www.w3.org/2005/Atom
+        dc: http://purl.org/dc/elements/1.1/
     properties:
         id:
             type: string
@@ -13,6 +14,7 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
         title:
             type: string
             groups: [comments, post]
+            xml_namespace: http://purl.org/dc/elements/1.1/
         createdAt:
             type: DateTime
             xml_attribute: true
@@ -25,7 +27,7 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
             type: string
             groups: [post]
             xml_attribute: true
-            xml_prefix: gd
+            xml_namespace: http://schemas.google.com/g/2005
         comments:
             type: ArrayCollection<JMS\Serializer\Tests\Fixtures\Comment>
             groups: [comments]
@@ -35,4 +37,4 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
         author:
             type: JMS\Serializer\Tests\Fixtures\Author
             groups: [post]
-            xml_prefix: atom
+            xml_namespace: http://www.w3.org/2005/Atom

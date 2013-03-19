@@ -155,8 +155,8 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
                     }
 
-                    if (null !== $xmlPrefix = $pElem->attributes()->{'xml-prefix'}) {
-                        $pMetadata->xmlPrefix = (string) $xmlPrefix;
+                    if (null !== $xmlNamespace = $pElem->attributes()->{'xml-namespace'}) {
+                        $pMetadata->xmlNamespace = (string) $xmlNamespace;
                     }
                     
                     if (isset($pElem->{'xml-list'})) {

@@ -214,8 +214,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            if ($metadata->xmlPrefix !== '') {
-                $nodes = $data->xpath('./@'.$metadata->xmlPrefix.':'.$name);
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                $registeredNamespaces = $data->getDocNamespaces();
+                if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
+                    $prefix = uniqid('ns-');
+                    $data->registerXPathNamespace ($prefix, $namespace);
+                }
+                $attributeName = ($prefix === '')?$name:$prefix.':'.$name;
+                $nodes = $data->xpath('./@'.$attributeName);
                 if (!empty($nodes)) {
                     $v = (string) reset($nodes);
                     $metadata->reflection->setValue($this->currentObject, $v);    
@@ -250,8 +256,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if ($metadata->xmlPrefix !== '') {
-            $nodes = $data->xpath('./'.$metadata->xmlPrefix.':'.$name);
+        if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+            $registeredNamespaces = $data->getDocNamespaces();
+            if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
+                $prefix = uniqid('ns-');
+                $data->registerXPathNamespace($prefix, $namespace);
+            }
+            $elementName = ($prefix === '')?$name:$prefix.':'.$name;
+            $nodes = $data->xpath('./'.$elementName );
             if (empty($nodes)) {
                 return;
             }

@@ -24,4 +24,8 @@ namespace JMS\Serializer\Annotation;
  */
 final class XmlAttribute
 {
+    /**
+     * @var string
+     */
+    public $namespace;
 }

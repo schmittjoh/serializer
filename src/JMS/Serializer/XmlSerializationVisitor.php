@@ -207,10 +207,14 @@ class XmlSerializationVisitor extends AbstractVisitor
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
             $attributeName = $this->namingStrategy->translateName($metadata);
-            if ($metadata->xmlPrefix !== '') {
-                $attributeName = $metadata->xmlPrefix . ':' . $attributeName;
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
+                    $prefix = uniqid('ns-');
+                }
+                $this->currentNode->setAttributeNS($namespace, $prefix.':'.$attributeName, $node->nodeValue);    
+            } else {
+                $this->currentNode->setAttribute($attributeName, $node->nodeValue);    
             }
-            $this->currentNode->setAttribute($attributeName, $node->nodeValue);
 
             return;
         }
@@ -250,11 +254,14 @@ class XmlSerializationVisitor extends AbstractVisitor
                     throw new RuntimeException(sprintf('Unsupported value for a XML attribute map value. Expected character data, but got %s.', json_encode($v)));
                 }
 
-                if ($metadata->xmlPrefix !== '') {
-                    $key = $metadata->xmlPrefix . ':' . $key;
+                if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                    if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
+                        $prefix = uniqid('ns-');
+                    }
+                    $this->currentNode->setAttributeNS($namespace, $prefix.':'.$key, $node->nodeValue);    
+                } else {
+                    $this->currentNode->setAttribute($key, $node->nodeValue);
                 }
-
-                $this->currentNode->setAttribute($key, $node->nodeValue);
             }
 
             return;
@@ -262,10 +269,14 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         if ($addEnclosingElement = (!$metadata->xmlCollection || !$metadata->xmlCollectionInline) && !$metadata->inline) {
             $elementName = $this->namingStrategy->translateName($metadata);
-            if ($metadata->xmlPrefix !== '') {
-                $elementName = $metadata->xmlPrefix . ':' . $elementName;
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                if (!$prefix = $this->document->lookupPrefix($namespace)) {
+                    $prefix = uniqid('ns-');
+                }
+                $element = $this->document->createElementNS($namespace, $prefix.':'.$elementName);
+            } else {
+                $element = $this->document->createElement($elementName);
             }
-            $element = $this->document->createElement($elementName);
             $this->setCurrentNode($element);
         }
 

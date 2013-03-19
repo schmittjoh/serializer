@@ -847,7 +847,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
     }
 
-    private function getField($obj, $name)
+    protected function getField($obj, $name)
     {
         $ref = new \ReflectionProperty($obj, $name);
         $ref->setAccessible(true);

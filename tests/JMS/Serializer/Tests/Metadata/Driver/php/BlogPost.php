@@ -9,6 +9,7 @@ $metadata->xmlRootName = 'blog-post';
 $metadata->registerNamespace('http://example.com/namespace');
 $metadata->registerNamespace('http://schemas.google.com/g/2005', 'gd');
 $metadata->registerNamespace('http://www.w3.org/2005/Atom', 'atom');
+$metadata->registerNamespace('http://purl.org/dc/elements/1.1/', 'dc');
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'id');
 $pMetadata->setType('string');
@@ -19,6 +20,7 @@ $metadata->addPropertyMetadata($pMetadata);
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'title');
 $pMetadata->setType('string');
 $pMetadata->groups = array('comments','post');
+$pMetadata->xmlNamespace = "http://purl.org/dc/elements/1.1/";
 $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'createdAt');
@@ -37,7 +39,7 @@ $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'eta
 $pMetadata->setType('string');
 $pMetadata->groups = array('post');
 $pMetadata->xmlAttribute = true;
-$pMetadata->xmlPrefix = 'gd';
+$pMetadata->xmlNamespace = 'http://schemas.google.com/g/2005';
 $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'comments');
@@ -52,7 +54,7 @@ $metadata->addPropertyMetadata($pMetadata);
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'author');
 $pMetadata->setType('JMS\Serializer\Tests\Fixtures\Author');
 $pMetadata->groups = array('post');
-$pMetadata->xmlPrefix  = 'atom';
+$pMetadata->xmlNamespace  = 'http://www.w3.org/2005/Atom';
 
 $metadata->addPropertyMetadata($pMetadata);
 
