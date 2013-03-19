@@ -168,6 +168,48 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($m->discriminatorFieldName);
         $this->assertEquals(array(), $m->discriminatorMap);
     }
+    
+    public function testLoadXmlObjectWithNamespacesMetadata()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));
+        $this->assertNotNull($m);
+        $this->assertEquals('test-object', $m->xmlRootName);
+        $this->assertCount(3, $m->xmlNamespaces);
+        $this->assertArrayHasKey('', $m->xmlNamespaces);
+        $this->assertEquals('http://example.com/namespace', $m->xmlNamespaces['']);
+        $this->assertArrayHasKey('gd', $m->xmlNamespaces);
+        $this->assertEquals('http://schemas.google.com/g/2005', $m->xmlNamespaces['gd']);
+        $this->assertArrayHasKey('atom', $m->xmlNamespaces);
+        $this->assertEquals('http://www.w3.org/2005/Atom', $m->xmlNamespaces['atom']);
+        
+        $p = new PropertyMetadata($m->name, 'title');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
+        $this->assertEquals($p, $m->propertyMetadata['title']);
+        
+        $p = new PropertyMetadata($m->name, 'createdAt');
+        $p->type = array('name' => 'DateTime', 'params' => array());
+        $p->xmlAttribute = true;
+        $this->assertEquals($p, $m->propertyMetadata['createdAt']);
+
+        $p = new PropertyMetadata($m->name, 'etag');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlAttribute = true;
+        $p->xmlNamespace = "http://schemas.google.com/g/2005";
+        $this->assertEquals($p, $m->propertyMetadata['etag']);
+        
+        $p = new PropertyMetadata($m->name, 'author');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlAttribute = false;
+        $p->xmlNamespace = "http://www.w3.org/2005/Atom";
+        $this->assertEquals($p, $m->propertyMetadata['author']);
+        
+        $p = new PropertyMetadata($m->name, 'language');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlAttribute = true;
+        $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
+        $this->assertEquals($p, $m->propertyMetadata['language']);
+    }
 
     public function testMaxDepth()
     {
