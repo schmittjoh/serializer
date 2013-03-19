@@ -32,6 +32,8 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\Input;
+use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
+use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -201,6 +203,22 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertAttributeSame('en', 'language', $deserialized);
         $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
 
+    }
+    
+    public function testXmlNamespacesInheritance()
+    {
+        $object = new SimpleClassObject();
+        $object->foo = 'foo';
+        $object->bar = 'bar';
+        
+        $this->assertEquals($this->getContent('simple_class_object'), $this->serialize($object));
+        
+        $childObject = new SimpleSubClassObject();
+        $childObject->foo = 'foo';
+        $childObject->bar = 'bar';
+        $childObject->moo = 'moo';
+        
+        $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
     }
     
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
