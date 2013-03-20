@@ -37,4 +37,16 @@ class SimpleSubClassObject
      */
     public $moo;
 
+    /**
+     * @Type("string")
+     * @XmlElement(namespace="http://foo.example.org")
+     */
+    public $baz;
+
+    /**
+     * @Type("string")
+     * @XmlElement(namespace="http://new.foo.example.org")
+     */
+    public $qux;
+
 }

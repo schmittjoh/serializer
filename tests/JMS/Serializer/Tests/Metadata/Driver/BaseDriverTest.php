@@ -168,7 +168,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($m->discriminatorFieldName);
         $this->assertEquals(array(), $m->discriminatorMap);
     }
-    
+
     public function testLoadXmlObjectWithNamespacesMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));
@@ -181,12 +181,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://schemas.google.com/g/2005', $m->xmlNamespaces['gd']);
         $this->assertArrayHasKey('atom', $m->xmlNamespaces);
         $this->assertEquals('http://www.w3.org/2005/Atom', $m->xmlNamespaces['atom']);
-        
+
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
         $this->assertEquals($p, $m->propertyMetadata['title']);
-        
+
         $p = new PropertyMetadata($m->name, 'createdAt');
         $p->type = array('name' => 'DateTime', 'params' => array());
         $p->xmlAttribute = true;
@@ -197,13 +197,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlAttribute = true;
         $p->xmlNamespace = "http://schemas.google.com/g/2005";
         $this->assertEquals($p, $m->propertyMetadata['etag']);
-        
+
         $p = new PropertyMetadata($m->name, 'author');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlAttribute = false;
         $p->xmlNamespace = "http://www.w3.org/2005/Atom";
         $this->assertEquals($p, $m->propertyMetadata['author']);
-        
+
         $p = new PropertyMetadata($m->name, 'language');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlAttribute = true;
@@ -225,6 +225,101 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
         $this->assertFalse($m->propertyMetadata['name']->xmlElementCData);
     }
+    
+    public function testXmlNamespaceInheritanceMetadata()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleClassObject'));
+        $this->assertNotNull($m);
+        $this->assertCount(3, $m->xmlNamespaces);
+        $this->assertArrayHasKey('old_foo', $m->xmlNamespaces);
+        $this->assertEquals('http://old.foo.example.org', $m->xmlNamespaces['old_foo']);
+        $this->assertArrayHasKey('foo', $m->xmlNamespaces);
+        $this->assertEquals('http://foo.example.org', $m->xmlNamespaces['foo']);
+        $this->assertArrayHasKey('new_foo', $m->xmlNamespaces);
+        $this->assertEquals('http://new.foo.example.org', $m->xmlNamespaces['new_foo']);
+        $this->assertCount(3, $m->propertyMetadata);
+
+        $p = new PropertyMetadata($m->name, 'foo');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://old.foo.example.org";
+        $p->xmlAttribute = true;
+        $this->assertEquals($p, $m->propertyMetadata['foo']);
+
+        $p = new PropertyMetadata($m->name, 'bar');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://foo.example.org";
+        $this->assertEquals($p, $m->propertyMetadata['bar']);
+
+        $p = new PropertyMetadata($m->name, 'moo');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://new.foo.example.org";
+        $this->assertEquals($p, $m->propertyMetadata['moo']);
+
+
+        $subm = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleSubClassObject'));
+        $this->assertNotNull($subm);
+        $this->assertCount(2, $subm->xmlNamespaces);
+        $this->assertArrayHasKey('old_foo', $subm->xmlNamespaces);
+        $this->assertEquals('http://foo.example.org', $subm->xmlNamespaces['old_foo']);
+        $this->assertArrayHasKey('foo', $subm->xmlNamespaces);
+        $this->assertEquals('http://better.foo.example.org', $subm->xmlNamespaces['foo']);
+        $this->assertCount(3, $subm->propertyMetadata);
+
+        $p = new PropertyMetadata($subm->name, 'moo');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://better.foo.example.org";
+        $this->assertEquals($p, $subm->propertyMetadata['moo']);
+
+        $p = new PropertyMetadata($subm->name, 'baz');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://foo.example.org";
+        $this->assertEquals($p, $subm->propertyMetadata['baz']);
+
+        $p = new PropertyMetadata($subm->name, 'qux');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://new.foo.example.org";
+        $this->assertEquals($p, $subm->propertyMetadata['qux']);
+
+        $m->merge($subm);
+        $this->assertNotNull($m);
+        $this->assertCount(3, $m->xmlNamespaces);
+        $this->assertArrayHasKey('old_foo', $m->xmlNamespaces);
+        $this->assertEquals('http://foo.example.org', $m->xmlNamespaces['old_foo']);
+        $this->assertArrayHasKey('foo', $m->xmlNamespaces);
+        $this->assertEquals('http://better.foo.example.org', $m->xmlNamespaces['foo']);
+        $this->assertArrayHasKey('new_foo', $m->xmlNamespaces);
+        $this->assertEquals('http://new.foo.example.org', $m->xmlNamespaces['new_foo']);
+        $this->assertCount(5, $m->propertyMetadata);
+
+        $p = new PropertyMetadata($m->name, 'foo');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://old.foo.example.org";
+        $p->xmlAttribute = true;
+        $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
+        $this->assertEquals($p, $m->propertyMetadata['foo']);
+
+        $p = new PropertyMetadata($m->name, 'bar');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://foo.example.org";
+        $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
+        $this->assertEquals($p, $m->propertyMetadata['bar']);
+
+        $p = new PropertyMetadata($m->name, 'moo');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://better.foo.example.org";
+        $this->assertEquals($p, $m->propertyMetadata['moo']);
+
+        $p = new PropertyMetadata($m->name, 'baz');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://foo.example.org";
+        $this->assertEquals($p, $m->propertyMetadata['baz']);
+
+        $p = new PropertyMetadata($m->name, 'qux');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->xmlNamespace = "http://new.foo.example.org";
+        $this->assertEquals($p, $m->propertyMetadata['qux']);
+    }
+
 
     /**
      * @return DriverInterface

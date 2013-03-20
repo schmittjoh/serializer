@@ -37,7 +37,4 @@ $pMetadata->xmlAttribute = true;
 $pMetadata->xmlNamespace = 'http://purl.org/dc/elements/1.1/';
 $metadata->addPropertyMetadata($pMetadata);
 
-
-$metadata->addPropertyMetadata($pMetadata);
-
 return $metadata;

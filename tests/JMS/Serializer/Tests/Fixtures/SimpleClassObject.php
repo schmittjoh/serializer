@@ -24,13 +24,15 @@ use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlElement;
 
 /**
+ * @XmlNamespace(prefix="old_foo", uri="http://old.foo.example.org");
  * @XmlNamespace(prefix="foo", uri="http://foo.example.org");
+ * @XmlNamespace(prefix="new_foo", uri="http://new.foo.example.org");
  */
 class SimpleClassObject
 {
     /**
      * @Type("string")
-     * @XmlAttribute(namespace="http://foo.example.org")
+     * @XmlAttribute(namespace="http://old.foo.example.org")
      */
     public $foo;
     
@@ -39,5 +41,11 @@ class SimpleClassObject
      * @XmlElement(namespace="http://foo.example.org")
      */
     public $bar;
+
+    /**
+     * @Type("string")
+     * @XmlElement(namespace="http://new.foo.example.org")
+     */
+    public $moo;
 
 }
