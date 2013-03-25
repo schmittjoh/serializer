@@ -4,7 +4,7 @@
     "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
     "homepage": "http://jmsyst.com/libs/serializer",
-    "license": "Apache2",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Johannes M. Schmitt",
