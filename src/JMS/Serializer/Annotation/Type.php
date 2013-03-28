@@ -20,7 +20,7 @@ namespace JMS\Serializer\Annotation;
 
 /**
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"PROPERTY", "METHOD"})
  */
 final class Type
 {
