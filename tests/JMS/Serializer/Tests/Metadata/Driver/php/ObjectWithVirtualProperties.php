@@ -21,4 +21,9 @@ $pMetadata->getter = 'getVirtualSerializedValue';
 $pMetadata->serializedName = 'test';
 $metadata->addPropertyMetadata($pMetadata);
 
+$pMetadata = new VirtualPropertyMetadata($className, 'typedVirtualProperty');
+$pMetadata->getter = 'getTypedVirtualProperty';
+$pMetadata->setType('integer');
+$metadata->addPropertyMetadata($pMetadata);
+
 return $metadata;

@@ -6,3 +6,5 @@ JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties:
         getVirtualValue: ~
         getVirtualSerializedValue:
             serialized_name: test
+        getTypedVirtualProperty:
+            type: integer

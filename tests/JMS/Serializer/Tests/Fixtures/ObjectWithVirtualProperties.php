@@ -52,4 +52,13 @@ class ObjectWithVirtualProperties
     {
         return 'other-name';
     }
+
+    /**
+     * @VirtualProperty
+     * @Type("integer")
+     */
+    public function getTypedVirtualProperty()
+    {
+        return '1';
+    }
 }
