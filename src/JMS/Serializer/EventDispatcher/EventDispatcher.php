@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function addListener($eventName, $callable, $class = null, $format = null)
     {
-        $this->listeners[$eventName][] = array($callable, null === $class ? null : strtolower($class), $format);
+        $this->listeners[$eventName][] = array($callable, $class, $format);
         unset($this->classListeners[$eventName]);
     }
 
@@ -62,7 +62,7 @@ class EventDispatcher implements EventDispatcherInterface
             }
 
             $method = isset($eventData['method']) ? $eventData['method'] : self::getDefaultMethodName($eventData['event']);
-            $class = isset($eventData['class']) ? strtolower($eventData['class']) : null;
+            $class  = isset($eventData['class'])  ? $eventData['class']  : null;
             $format = isset($eventData['format']) ? $eventData['format'] : null;
             $this->listeners[$eventData['event']][] = array(array($subscriber, $method), $class, $format);
             unset($this->classListeners[$eventData['event']]);
@@ -75,12 +75,11 @@ class EventDispatcher implements EventDispatcherInterface
             return false;
         }
 
-        $loweredClass = strtolower($class);
-        if ( ! isset($this->classListeners[$eventName][$loweredClass][$format])) {
-            $this->classListeners[$eventName][$loweredClass][$format] = $this->initializeListeners($eventName, $loweredClass, $format);
+        if ( ! isset($this->classListeners[$eventName][$class][$format])) {
+            $this->classListeners[$eventName][$class][$format] = $this->initializeListeners($eventName, $class, $format);
         }
 
-        return !!$this->classListeners[$eventName][$loweredClass][$format];
+        return !!$this->classListeners[$eventName][$class][$format];
     }
 
     public function dispatch($eventName, $class, $format, Event $event)
@@ -89,28 +88,28 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $loweredClass = strtolower($class);
-        if ( ! isset($this->classListeners[$eventName][$loweredClass][$format])) {
-            $this->classListeners[$eventName][$loweredClass][$format] = $this->initializeListeners($eventName, $loweredClass, $format);
+        if ( ! isset($this->classListeners[$eventName][$class][$format])) {
+            $this->classListeners[$eventName][$class][$format] = $this->initializeListeners($eventName, $class, $format);
         }
 
-        foreach ($this->classListeners[$eventName][$loweredClass][$format] as $listener) {
+        foreach ($this->classListeners[$eventName][$class][$format] as $listener) {
             call_user_func($listener, $event);
         }
     }
 
     /**
      * @param string $eventName
-     * @param string $loweredClass
+     * @param string $class
      * @param string $format
      *
      * @return array An array of listeners
      */
-    protected function initializeListeners($eventName, $loweredClass, $format)
+    protected function initializeListeners($eventName, $class, $format)
     {
         $listeners = array();
         foreach ($this->listeners[$eventName] as $listener) {
-            if (null !== $listener[1] && $loweredClass !== $listener[1]) {
+            // first check (is_a) for classes, second - for other types
+            if (null !== $listener[1] && !is_a($class, $listener[1], true) && $class !== $listener[1]) {
                 continue;
             }
             if (null !== $listener[2] && $format !== $listener[2]) {
