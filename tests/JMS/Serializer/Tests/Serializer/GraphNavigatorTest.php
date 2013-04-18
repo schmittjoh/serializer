@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -131,8 +131,11 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             $event->setType($type['name'], $type['params']);
         });
 
+
         $subscribingHandlerClass = $this->getMockClass('JMS\Serializer\Handler\SubscribingHandlerInterface', array('getSubscribingMethods', 'serialize'));
-        $subscribingHandlerClass::staticExpects($this->once())
+
+        $subscribingHandler = new $subscribingHandlerClass();
+        $subscribingHandler->expects($this->once())
             ->method('getSubscribingMethods')
             ->will($this->returnValue(array(array(
                 'type' => $typeName,
@@ -140,8 +143,6 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'method' => 'serialize'
             ))));
-
-        $subscribingHandler = new $subscribingHandlerClass();
         $subscribingHandler->expects($this->once())
             ->method('serialize')
             ->with($this->equalTo($this->context), $this->equalTo($object));
