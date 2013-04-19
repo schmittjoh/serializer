@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
 use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -115,6 +116,7 @@ class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
         return $this;
     }
