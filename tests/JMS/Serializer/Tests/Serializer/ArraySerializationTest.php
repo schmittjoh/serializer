@@ -65,6 +65,7 @@ class ArraySerializationTest extends BaseSerializationTest
             'comments' => array(array('author' => array('full_name' => 'Foo Bar'), 'text' => 'foo')),
             'comments2' => array(array('author' => array('full_name' => 'Foo Bar'), 'text' => 'foo')),
             'author' => array('full_name' => 'Foo Bar'),
+            'metadata' => array('foo' => 'bar')
         );
         $output['blog_post_unauthored'] = array(
             'title' => 'This is a nice title.',
@@ -73,6 +74,7 @@ class ArraySerializationTest extends BaseSerializationTest
             'comments' => array(),
             'comments2' => array(),
             'author' => null,
+            'metadata' => array('foo' => 'bar')
         );
         $output['price'] = array('price' => 3);
         $output['currency_aware_price'] = array('currency' => 'EUR', 'amount' => 2.34);
@@ -124,7 +126,7 @@ class ArraySerializationTest extends BaseSerializationTest
         $output['groups_foo'] = array('foo' => 'foo', 'foobar' => 'foobar');
         $output['groups_foobar'] = array('foo' => 'foo', 'foobar' => 'foobar', 'bar' => 'bar');
         $output['groups_default'] = array('bar' => 'bar', 'none' => 'none');
-        $output['virtual_properties'] = array('exist_field' => 'value', 'virtual_value' => 'value', 'test' => 'other-name');
+        $output['virtual_properties'] = array('exist_field' => 'value', 'virtual_value' => 'value', 'test' => 'other-name', 'typed_virtual_property' => 1);
         $output['virtual_properties_low'] = array('low' => 1);
         $output['virtual_properties_high'] = array('high' => 8);
         $output['virtual_properties_all'] = array('low' => 1, 'high' => 8);
@@ -137,6 +139,8 @@ class ArraySerializationTest extends BaseSerializationTest
         $output['object_when_null_and_serialized'] = array('author' => null, 'text' => 'foo');
         $output['date_time'] = '2011-08-30T00:00:00+0000';
         $output['date_interval'] = 'PT45M';
+        $output['car'] = array('km' => 5, 'type' => 'car');
+        $output['car_without_type'] = array('km' => 5);
 
         if (!isset($output[$key]) && $key !== 'null') {
             throw new RuntimeException(sprintf('The key "%s" is not supported.', $key));
