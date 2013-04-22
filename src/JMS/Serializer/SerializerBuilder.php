@@ -36,6 +36,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Metadata\Cache\FileCache;
@@ -80,7 +81,7 @@ class SerializerBuilder
         $this->deserializationVisitors = new Map();
     }
 
-    public function setAnnotationReader(AnnotationReader $reader)
+    public function setAnnotationReader(Reader $reader)
     {
         $this->annotationReader = $reader;
 
