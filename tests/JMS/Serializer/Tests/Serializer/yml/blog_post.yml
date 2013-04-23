@@ -11,5 +11,7 @@ comments2:
         author:
             full_name: 'Foo Bar'
         text: foo
+metadata:
+    foo: bar
 author:
     full_name: 'Foo Bar'

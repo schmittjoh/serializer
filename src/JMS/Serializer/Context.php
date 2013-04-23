@@ -18,10 +18,13 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\Map;
@@ -52,6 +55,9 @@ abstract class Context
 
     private $initialized = false;
 
+    /** @var \SplStack */
+    private $metadataStack;
+
     public function __construct()
     {
         $this->attributes = new Map();
@@ -68,6 +74,7 @@ abstract class Context
         $this->visitor = $visitor;
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
+        $this->metadataStack = new \SplStack();
     }
 
     public function accept($data, array $type = null)
@@ -181,6 +188,39 @@ abstract class Context
     public function getFormat()
     {
         return $this->format;
+    }
+
+    public function pushClassMetadata(ClassMetadata $metadata)
+    {
+        $this->metadataStack->push($metadata);
+    }
+
+    public function pushPropertyMetadata(PropertyMetadata $metadata)
+    {
+        $this->metadataStack->push($metadata);
+    }
+
+    public function popPropertyMetadata()
+    {
+        $metadata = $this->metadataStack->pop();
+
+        if (!$metadata instanceof PropertyMetadata) {
+            throw new RuntimeException('Context metadataStack not working well');
+        }
+    }
+
+    public function popClassMetadata()
+    {
+        $metadata = $this->metadataStack->pop();
+
+        if (!$metadata instanceof ClassMetadata) {
+            throw new RuntimeException('Context metadataStack not working well');
+        }
+    }
+
+    public function getMetadataStack()
+    {
+        return $this->metadataStack;
     }
 
     abstract public function getDepth();

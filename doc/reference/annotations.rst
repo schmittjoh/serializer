@@ -141,6 +141,14 @@ default the order is undefined, but you may change it to either "alphabetical", 
         private $name;
     }
 
+@VirtualProperty
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a method to indicate that the data returned by
+the method should appear like a property of the object.
+
+**Note**: This only works for serialization and is completely ignored during
+deserialization.
+
 @Inline
 ~~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property

@@ -13,6 +13,9 @@
     </author>
     <text><![CDATA[foo]]></text>
   </comment2>
+  <metadata>
+    <entry key="foo"><![CDATA[bar]]></entry>
+  </metadata>
   <author>
     <full_name><![CDATA[Foo Bar]]></full_name>
   </author>

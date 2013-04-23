@@ -21,6 +21,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
+use PhpCollection\Map;
 use PhpCollection\Sequence;
 
 class PhpCollectionHandler implements SubscribingHandlerInterface
@@ -31,6 +32,7 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
         $formats = array('json', 'xml', 'yml');
         $collectionTypes = array(
             'PhpCollection\Sequence' => 'Sequence',
+            'PhpCollection\Map' => 'Map',
         );
 
         foreach ($collectionTypes as $type => $shortName) {
@@ -52,6 +54,20 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
         }
 
         return $methods;
+    }
+
+    public function serializeMap(VisitorInterface $visitor, Map $map, array $type, Context $context)
+    {
+        $type['name'] = 'array';
+
+        return $visitor->visitArray(iterator_to_array($map), $type, $context);
+    }
+
+    public function deserializeMap(VisitorInterface $visitor, $data, array $type, Context $context)
+    {
+        $type['name'] = 'array';
+
+        return new Map($visitor->visitArray($data, $type, $context));
     }
 
     public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, array $type, Context $context)

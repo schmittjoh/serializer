@@ -95,4 +95,14 @@ class SerializationContext extends Context
     {
         return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
     }
+
+    public function getVisitingStack()
+    {
+        return $this->visitingStack;
+    }
+
+    public function getVisitingSet()
+    {
+        return $this->visitingSet;
+    }
 }

@@ -190,6 +190,8 @@ final class GraphNavigator
                     return null;
                 }
 
+                $context->pushClassMetadata($metadata);
+
                 if ($context instanceof SerializationContext) {
                     foreach ($metadata->preSerializeMethods as $method) {
                         $method->invoke($data);
@@ -222,7 +224,9 @@ final class GraphNavigator
                         continue;
                     }
 
+                    $context->pushPropertyMetadata($propertyMetadata);
                     $visitor->visitProperty($propertyMetadata, $data, $context);
+                    $context->popPropertyMetadata();
                 }
 
                 if ($context instanceof SerializationContext) {
@@ -281,6 +285,7 @@ final class GraphNavigator
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->leaveScope($context, $object);
+        $context->popClassMetadata();
 
         if ($context instanceof SerializationContext) {
             foreach ($metadata->postSerializeMethods as $method) {

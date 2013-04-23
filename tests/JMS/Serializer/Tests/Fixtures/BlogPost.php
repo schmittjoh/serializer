@@ -20,11 +20,13 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpCollection\Map;
 use PhpCollection\Sequence;
 
 /** @XmlRoot("blog-post") */
@@ -65,6 +67,12 @@ class BlogPost
     private $comments2;
 
     /**
+     * @Type("PhpCollection\Map<string,string>")
+     * @XmlMap(keyAttribute = "key")
+     */
+    private $metadata;
+
+    /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      * @Groups({"post"})
      */
@@ -77,12 +85,19 @@ class BlogPost
         $this->published = false;
         $this->comments = new ArrayCollection();
         $this->comments2 = new Sequence();
+        $this->metadata = new Map();
+        $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
     }
 
     public function setPublished()
     {
         $this->published = true;
+    }
+
+    public function getMetadata()
+    {
+        return $this->metadata;
     }
 
     public function addComment(Comment $comment)

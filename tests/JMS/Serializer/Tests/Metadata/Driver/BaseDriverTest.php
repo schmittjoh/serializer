@@ -78,6 +78,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('existField', $m->propertyMetadata);
         $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
         $this->assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
+        $this->assertArrayHasKey('typedVirtualProperty', $m->propertyMetadata);
 
         $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing' );
 
