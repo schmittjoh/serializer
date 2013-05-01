@@ -27,13 +27,14 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
+    protected static $collectionTypes = array('ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection', 'Doctrine\ORM\PersistentCollection', 'Doctrine\ODM\MongoDB\PersistentCollection');
+    
     public static function getSubscribingMethods()
     {
         $methods = array();
         $formats = array('json', 'xml', 'yml');
-        $collectionTypes = array('ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection', 'Doctrine\ORM\PersistentCollection', 'Doctrine\ODM\MongoDB\PersistentCollection');
 
-        foreach ($collectionTypes as $type) {
+        foreach (static::$collectionTypes as $type) {
             foreach ($formats as $format) {
                 $methods[] = array(
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
