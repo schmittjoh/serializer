@@ -73,6 +73,8 @@ use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
+use JMS\Serializer\Tests\Fixtures\IndexedSimpleObjectCollection;
+use JMS\Serializer\Tests\Fixtures\AssociativeSimpleObjectCollection;
 use JMS\Serializer\Tests\Fixtures\Article;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
@@ -243,6 +245,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         if ($this->hasDeserializer()) {
             $this->assertEquals($data, $this->deserialize($this->getContent('array_objects'), 'array<JMS\Serializer\Tests\Fixtures\SimpleObject>'));
+        }
+    }
+
+    public function testAssociativeArrayObjects()
+    {
+        $data = array("a" => new SimpleObject('foo', 'bar'), "b" => new SimpleObject('baz', 'boo'));
+        $this->assertEquals($this->getContent('associative_array_objects'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($data, $this->deserialize($this->getContent('associative_array_objects'), 'array<string, JMS\Serializer\Tests\Fixtures\SimpleObject>'));
         }
     }
 
@@ -707,6 +719,32 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
         );
     }
+
+    public function testIndexArrayCollection()
+    {
+        $collection = new IndexedSimpleObjectCollection;
+        $object = new SimpleObject("foo", "bar");
+        $collection->objects->add($object);
+
+        $this->assertEquals($this->getContent('indexed_simple_object_collection'), $this->serialize($collection));
+
+        if ($this->hasDeserializer()) {
+        	$this->assertEquals($collection, $this->deserialize($this->getContent('indexed_simple_object_collection'), 'JMS\Serializer\Tests\Fixtures\IndexedSimpleObjectCollection'));
+        }        
+    }
+
+    public function testAssociativeArrayCollection()
+    {
+    	$collection = new AssociativeSimpleObjectCollection;
+    	$object = new SimpleObject("foo", "bar");
+    	$collection->objects->set("a", $object);
+
+    	$this->assertEquals($this->getContent('associative_simple_object_collection'), $this->serialize($collection));
+    
+    	if ($this->hasDeserializer()) {
+    		$this->assertEquals($collection, $this->deserialize($this->getContent('associative_simple_object_collection'), 'JMS\Serializer\Tests\Fixtures\AssociativeSimpleObjectCollection'));
+    	}
+    }    
 
     abstract protected function getContent($key);
     abstract protected function getFormat();

@@ -98,8 +98,16 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
+        if (isset($type['params'][1])) {
+            $type = $type['params'][1];
+        } else if (isset($type['params'][0])) {
+            $type = $type['params'][0];
+        } else {
+            $type = null;
+        }        
+
         foreach ($data as $k => $v) {
-            $v = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $context);
+            $v = $this->navigator->accept($v, $type, $context);
 
             if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
                 continue;

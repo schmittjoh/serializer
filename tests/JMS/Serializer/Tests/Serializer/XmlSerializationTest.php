@@ -142,6 +142,11 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
+    public function testAssociativeArrayObjects()
+    {
+    	$this->markTestSkipped('This is not available for the XML format.');
+    }    
+
     /**
      * @expectedException JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object

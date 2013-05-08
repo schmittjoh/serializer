@@ -1,0 +1,8 @@
+a:
+    foo: foo
+    moo: bar
+    camel_case: boo
+b:
+    foo: baz
+    moo: boo
+    camel_case: boo
