@@ -97,13 +97,13 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         } else {
             $rs = array();
         }
-        
+
         if (isset($type['params'][1])) {
-        	$type = $type['params'][1];
+            $type = $type['params'][1];
         } else if (isset($type['params'][0])) {
-        	$type = $type['params'][0];
+            $type = $type['params'][0];
         } else {
-        	$type = null;
+            $type = null;
         }        
 
         foreach ($data as $k => $v) {
