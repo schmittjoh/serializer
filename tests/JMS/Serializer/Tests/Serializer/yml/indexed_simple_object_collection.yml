@@ -1,0 +1,5 @@
+objects:
+    -
+        foo: foo
+        moo: bar
+        camel_case: boo

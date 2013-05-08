@@ -49,6 +49,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
+            $outputs['associative_array_objects'] = '{"a":{"foo":"foo","moo":"bar","camel_case":"boo"},"b":{"foo":"baz","moo":"boo","camel_case":"boo"}}';
             $outputs['blog_post'] = '{"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"}}';
             $outputs['blog_post_unauthored'] = '{"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null}';
             $outputs['price'] = '{"price":3}';
@@ -87,6 +88,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
+            $outputs['indexed_simple_object_collection'] = '{"objects":[{"foo":"foo","moo":"bar","camel_case":"boo"}]}';
+            $outputs['associative_simple_object_collection'] = '{"objects":{"a":{"foo":"foo","moo":"bar","camel_case":"boo"}}}';
         }
 
         if (!isset($outputs[$key])) {

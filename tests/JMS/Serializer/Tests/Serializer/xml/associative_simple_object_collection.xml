@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object_collection>
+  <object _key="a">
+    <foo><![CDATA[foo]]></foo>
+    <moo><![CDATA[bar]]></moo>
+    <camel_case><![CDATA[boo]]></camel_case>
+  </object>
+</object_collection>
