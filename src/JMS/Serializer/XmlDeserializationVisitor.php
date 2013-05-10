@@ -213,23 +213,17 @@ class XmlDeserializationVisitor extends AbstractVisitor
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
+        $v = null;
+
         if ($metadata->xmlAttribute) {
             if (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
-                $metadata->reflection->setValue($this->currentObject, $v);
             }
-
-            return;
         }
-
-        if ($metadata->xmlValue) {
+        elseif ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $context);
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
         }
-
-        if ($metadata->xmlCollection) {
+        elseif ($metadata->xmlCollection) {
             $enclosingElem = $data;
             if (!$metadata->xmlCollectionInline && isset($data->$name)) {
                 $enclosingElem = $data->$name;
@@ -238,16 +232,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $this->setCurrentMetadata($metadata);
             $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
             $this->revertCurrentMetadata();
-            $metadata->reflection->setValue($this->currentObject, $v);
-
+        }
+        elseif (isset($data->$name)) {
+            $v = $this->navigator->accept($data->$name, $metadata->type, $context);
+        }
+        else {
             return;
         }
-
-        if (!isset($data->$name)) {
-            return;
-        }
-
-        $v = $this->navigator->accept($data->$name, $metadata->type, $context);
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);
