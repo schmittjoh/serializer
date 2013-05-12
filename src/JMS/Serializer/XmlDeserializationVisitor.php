@@ -219,11 +219,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
             if (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
             }
-        }
-        elseif ($metadata->xmlValue) {
+        } elseif ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $context);
-        }
-        elseif ($metadata->xmlCollection) {
+        } elseif ($metadata->xmlCollection) {
             $enclosingElem = $data;
             if (!$metadata->xmlCollectionInline && isset($data->$name)) {
                 $enclosingElem = $data->$name;
@@ -232,11 +230,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $this->setCurrentMetadata($metadata);
             $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
             $this->revertCurrentMetadata();
-        }
-        elseif (isset($data->$name)) {
+        } elseif (isset($data->$name)) {
             $v = $this->navigator->accept($data->$name, $metadata->type, $context);
-        }
-        else {
+        } else {
             return;
         }
 
