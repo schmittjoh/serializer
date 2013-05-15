@@ -40,6 +40,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $currentNode;
     private $currentMetadata;
     private $hasValue;
+    private $hasNullNamespace;
 
     public function setDefaultRootName($name)
     {
@@ -76,10 +77,12 @@ class XmlSerializationVisitor extends AbstractVisitor
             $node = $this->document->createAttribute('xsi:nil');
             $node->value = 'true';
             $this->currentNode->appendChild($node);
-
+            $this->attachNullNamespace();
+            
             return;
         }
 
+        $this->attachNullNamespace();
         $node = $this->document->createAttribute('xsi:nil');
         $node->value = 'true';
 
@@ -318,5 +321,13 @@ class XmlSerializationVisitor extends AbstractVisitor
     private function isElementNameValid($name)
     {
         return $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+    }
+    
+    private function attachNullNamespace() 
+    {
+        if (!$this->hasNullNamespace) {
+            $this->document->documentElement->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+            $this->hasNullNamespace = true;
+        }
     }
 }
