@@ -39,6 +39,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -321,6 +322,7 @@ class SerializerBuilder
 
     public function build()
     {
+        $this->registerAnnotationsNamespace();
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {
             $annotationReader = new AnnotationReader();
@@ -371,6 +373,17 @@ class SerializerBuilder
             $this->serializationVisitors,
             $this->deserializationVisitors,
             $this->eventDispatcher
+        );
+    }
+
+    /**
+     * Registers the Annotations with the Doctrine autoloader
+     */
+    private function registerAnnotationsNamespace()
+    {
+        AnnotationRegistry::registerAutoloadNamespace(
+            'JMS\\Serializer\\Annotation',
+            __DIR__ . "/../../"
         );
     }
 
