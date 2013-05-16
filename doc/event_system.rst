@@ -54,7 +54,7 @@ serialization.
 serializer.post_serialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 This is dispatched right before a type is left. You can for example use this
-to add additional data to an object that you normally do not save inside
+to add additional data for an object that you normally do not save inside
 objects such as links.
 
 **Event Object**: ``JMS\Serializer\EventDispatcher\ObjectEvent``
