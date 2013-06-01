@@ -87,6 +87,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
+            $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
         }
 
         if (!isset($outputs[$key])) {

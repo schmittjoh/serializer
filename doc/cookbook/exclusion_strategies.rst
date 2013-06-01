@@ -112,3 +112,44 @@ You can then tell the serializer which groups to serialize in your controller::
     use JMS\Serializer\SerializationContext;
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
+
+Limiting serialization depth of some properties
+-----------------------------------------------
+You can limit the depth of what will be serialized in a property with the
+``@MaxDepth`` annotation.
+This exclusion strategy is a bit different from the others, because it will
+affect the serialized content of others classes than the one you apply the
+annotation to.
+
+.. code-block :: php
+
+    use JMS\Serializer\Annotation\MaxDepth;
+
+    class User
+    {
+        private $username;
+
+        /** @MaxDepth(1) */
+        private $friends;
+
+        /** @MaxDepth(2) */
+        private $posts;
+    }
+
+    class Post
+    {
+        private $title;
+
+        private $author;
+    }
+
+In this example, serializing a user, because the max depth of the ``$friends``
+property is 1, the user friends would be serialized, but not their friends;
+and because the the max depth of the ``$posts`` property is 2, the posts would
+be serialized, and their author would also be serialized.
+
+You need to tell the serializer to take into account MaxDepth checks::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
