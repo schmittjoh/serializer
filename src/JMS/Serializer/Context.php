@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
@@ -169,6 +170,13 @@ abstract class Context
 
         $this->attributes->set('groups', (array) $groups);
         $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
+
+        return $this;
+    }
+
+    public function enableMaxDepthChecks()
+    {
+        $this->addExclusionStrategy(new DepthExclusionStrategy());
 
         return $this;
     }

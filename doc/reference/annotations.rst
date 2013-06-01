@@ -52,6 +52,12 @@ This annotation can be defined on a property to specifiy to if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
+@MaxDepth
+~~~~~~~~~
+This annotation can be defined on a property to limit the depth to which the
+content will be serialized. It is very useful when a property will contain a
+large object graph.
+
 @AccessType
 ~~~~~~~~~~~
 This annotation can be defined on a property, or a class to specify in which way
