@@ -98,7 +98,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
-        $innerType = ($isAssociative = isset($type['params'][1]))
+        $isAssociative = false;
+        $innerType = isset($type['params'][1])
             ? $type['params'][1]
             : isset($type['params'][0]) ? $type['params'][0] : null;
 
@@ -109,11 +110,15 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            if ($isAssociative) {
-                $rs[$k] = $v;
-            } else {
-                $rs[] = $v;
+            if (is_string($k)) {
+                $isAssociative = true;
             }
+
+            $rs[$k] = $v;
+        }
+
+        if (!$isAssociative) {
+            $rs = array_values($rs);
         }
 
         return $rs;
