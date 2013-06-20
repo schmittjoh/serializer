@@ -40,7 +40,7 @@ class DepthExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $context)
     {
-        return $this->isTooDeep($context);
+        return $this->isPropertyTooDeep($property, $context);
     }
 
     private function isTooDeep(Context $context)
@@ -63,5 +63,14 @@ class DepthExclusionStrategy implements ExclusionStrategyInterface
         }
 
         return false;
+    }
+    
+    private function isPropertyTooDeep(PropertyMetadata $property, Context $context)
+    {
+        if($property->maxDepth === null) {
+            return false;
+        }
+
+        return $property->maxDepth <= $context->getDepth();
     }
 }
