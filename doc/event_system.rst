@@ -15,7 +15,7 @@ on the other hand, can be simple callables and do not require a dedicated class.
 
     class MyEventSubscriber implements JMS\Serializer\EventDispatcher\EventSubscriberInterface
     {
-        public function getSubscribingMethods()
+        public static function getSubscribedEvents()
         {
             return array(
                 array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
