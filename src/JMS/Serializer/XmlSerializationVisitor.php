@@ -299,6 +299,13 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $doc;
     }
 
+    public function prepare($data)
+    {
+        $this->nullWasVisited = false;
+
+        return $data;
+    }
+
     private function visitNumeric($data, array $type)
     {
         if (null === $this->document) {
@@ -333,12 +340,5 @@ class XmlSerializationVisitor extends AbstractVisitor
             );
             $this->nullWasVisited = true;
         }
-    }
-
-    public function prepare($data)
-    {
-        $this->nullWasVisited = false;
-
-        return $data;
     }
 }
