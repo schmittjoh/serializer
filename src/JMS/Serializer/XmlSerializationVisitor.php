@@ -86,6 +86,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $node = $this->document->createAttribute('xsi:nil');
         $node->value = 'true';
         $this->attachNullNamespace();
+
         return $node;
     }
 
