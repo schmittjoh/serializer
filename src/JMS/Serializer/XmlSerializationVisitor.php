@@ -326,13 +326,19 @@ class XmlSerializationVisitor extends AbstractVisitor
     private function attachNullNamespace()
     {
         if (!$this->nullWasVisited) {
-            $this->document->documentElement->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+            $this->document->documentElement->setAttributeNS(
+                'http://www.w3.org/2000/xmlns/',
+                'xmlns:xsi',
+                'http://www.w3.org/2001/XMLSchema-instance'
+            );
             $this->nullWasVisited = true;
         }
     }
 
-    public function prepare($data) {
+    public function prepare($data)
+    {
         $this->nullWasVisited = false;
+
         return $data;
     }
 }
