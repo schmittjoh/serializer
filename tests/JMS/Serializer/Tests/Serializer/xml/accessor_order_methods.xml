@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <c><![CDATA[c]]></c>
+  <foo><![CDATA[c]]></foo>
   <b><![CDATA[b]]></b>
   <a><![CDATA[a]]></a>
 </result>
