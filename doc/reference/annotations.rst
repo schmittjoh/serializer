@@ -147,6 +147,28 @@ default the order is undefined, but you may change it to either "alphabetical", 
         private $name;
     }
 
+    /**
+     * @AccessorOrder("custom", custom = {"name", "SomeMethod" ,"id"})
+     *
+     * Resulting Property Order: name, mood, id
+     */
+    class User
+    {
+        private $id;
+        private $name;
+
+        /**
+         * @Serializer\VirtualProperty
+         * @Serializer\SerializedName("mood")
+         *
+         * @return string
+         */
+        public function getSomeMethod()
+        {
+            return 'happy';
+        }
+    }
+
 @VirtualProperty
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method to indicate that the data returned by
