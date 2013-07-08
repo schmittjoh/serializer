@@ -46,6 +46,14 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->defaultRootName = $name;
     }
 
+    /**
+     * @return boolean
+     */
+    public function hasDefaultRootName()
+    {
+        return 'result' === $this->defaultRootName;
+    }
+
     public function setDefaultVersion($version)
     {
         $this->defaultVersion = $version;
