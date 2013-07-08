@@ -31,6 +31,7 @@ and easier to set-up in general::
     use JMS\Serializer\Handler\SubscribingHandlerInterface;
     use JMS\Serializer\GraphNavigator;
     use JMS\Serializer\JsonSerializationVisitor;
+    use JMS\Serializer\Context;
 
     class MyHandler implements SubscribingHandlerInterface
     {
@@ -46,7 +47,7 @@ and easier to set-up in general::
             );
         }
 
-        public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type)
+        public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type, Context $context)
         {
             return $date->format($type['params'][0]);
         }
