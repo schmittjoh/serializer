@@ -120,4 +120,12 @@ class Serializer implements SerializerInterface
 
         return $visitorResult;
     }
+
+    /**
+     * @return MetadataFactoryInterface
+     */
+    public function getMetadataFactory()
+    {
+        return $this->factory;
+    }
 }
