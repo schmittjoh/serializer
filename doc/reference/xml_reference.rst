@@ -12,6 +12,7 @@ XML Reference
             <property name="some-property"
                       exclude="true"
                       expose="true"
+                      escape="false"
                       type="string"
                       serialized-name="foo"
                       since-version="1.0"

@@ -21,6 +21,24 @@ that should be used for the class.
 This annotation can be defined on a property to indicate that the property should
 not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
+@Escape
+~~~~~~~~
+This annotation can be defined on a property to indicate that the property should
+not be escaped during serialization.
+
+.. code-block :: php
+
+    <?php
+    use JMS\Serializer\Annotation\Escape;
+
+    class User
+    {
+        /**
+        * @Escape(false)
+        */
+        private $id;
+    }
+
 @Expose
 ~~~~~~~
 This annotation can be defined on a property to indicate that the property should
