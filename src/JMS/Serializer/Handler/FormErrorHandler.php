@@ -138,7 +138,9 @@ class FormErrorHandler implements SubscribingHandlerInterface
 
         $children = array();
         foreach ($data->all() as $child) {
-            $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
+            if ($child instanceof Form) {
+                $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
+            }
         }
 
         if ($children) {
