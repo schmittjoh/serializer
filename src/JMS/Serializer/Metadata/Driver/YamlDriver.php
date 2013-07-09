@@ -183,6 +183,10 @@ class YamlDriver extends AbstractFileDriver
                           $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
                     }
 
+                    if (isset($pConfig['escape'])) {
+                          $pMetadata->escape = (Boolean) $pConfig['escape'];
+                    }
+
                     $pMetadata->setAccessor(
                         isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
                         isset($pConfig['accessor']['getter']) ? $pConfig['accessor']['getter'] : null,

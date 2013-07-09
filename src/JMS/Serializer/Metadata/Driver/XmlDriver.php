@@ -196,6 +196,10 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->readOnly = 'true' === strtolower($readOnly);
                     }
 
+                    if (null !== $escape = $pElem->attributes()->{'escape'}) {
+                        $pMetadata->escape = 'true' === strtolower($escape);
+                    }
+
                     $getter = $pElem->attributes()->{'accessor-getter'};
                     $setter = $pElem->attributes()->{'accessor-setter'};
                     $pMetadata->setAccessor(

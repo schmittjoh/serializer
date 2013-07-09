@@ -11,6 +11,12 @@ $pMetadata->setType('string');
 $pMetadata->groups = array('comments','post');
 $metadata->addPropertyMetadata($pMetadata);
 
+$pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'hash');
+$pMetadata->setType('string');
+$pMetadata->groups = array('comments','post');
+$pMetadata->escape = false;
+$metadata->addPropertyMetadata($pMetadata);
+
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'createdAt');
 $pMetadata->setType('DateTime');
 $pMetadata->xmlAttribute = true;

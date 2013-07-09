@@ -39,6 +39,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlAttribute = false;
     public $xmlValue = false;
     public $xmlKeyValuePairs = false;
+    public $escape = true;
     public $getter;
     public $setter;
     public $inline = false;
@@ -102,6 +103,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->escape,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
@@ -127,13 +129,14 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->escape,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
-            $this->xmlKeyValuePairs,
+            $this->xmlKeyValuePairs,            
             $this->getter,
             $this->setter,
             $this->inline,
