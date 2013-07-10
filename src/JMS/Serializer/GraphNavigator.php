@@ -194,7 +194,7 @@ final class GraphNavigator
 
                 if ($context instanceof SerializationContext) {
                     foreach ($metadata->preSerializeMethods as $method) {
-                        $method->invoke($data);
+                        $method->invoke($data, array(new PreSerializeEvent($context, $data, $type)));
                     }
                 }
 
