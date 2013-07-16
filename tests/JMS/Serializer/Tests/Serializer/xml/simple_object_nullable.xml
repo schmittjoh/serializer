@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<result>
+<result xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <foo><![CDATA[foo]]></foo>
   <moo><![CDATA[bar]]></moo>
   <camel_case><![CDATA[boo]]></camel_case>
