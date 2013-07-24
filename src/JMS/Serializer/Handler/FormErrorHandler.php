@@ -29,7 +29,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 
 class FormErrorHandler implements SubscribingHandlerInterface
 {
-    private $translator;
+    protected $translator;
 
     public static function getSubscribingMethods()
     {
@@ -114,7 +114,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $this->getErrorMessage($formError);
     }
 
-    private function getErrorMessage(FormError $error)
+    protected function getErrorMessage(FormError $error)
     {
         if (null !== $error->getMessagePluralization()) {
             return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), 'validators');
@@ -123,7 +123,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
     }
 
-    private function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
+    protected function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
     {
         $isRoot = null === $visitor->getRoot();
 
