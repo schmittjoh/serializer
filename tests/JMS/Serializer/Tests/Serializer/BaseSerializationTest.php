@@ -288,7 +288,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testBlogPost()
     {
-        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar', new \DateTime('1960-01-01 00:00', new \DateTimeZone('UTC'))), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
         $post->addComment($comment = new Comment($author, 'foo'));
 
         $this->assertEquals($this->getContent('blog_post'), $this->serialize($post));

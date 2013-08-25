@@ -5,13 +5,16 @@ comments:
     -
         author:
             full_name: 'Foo Bar'
+            birthday: '-315619200'
         text: foo
 comments2:
     -
         author:
             full_name: 'Foo Bar'
+            birthday: '-315619200'
         text: foo
 metadata:
     foo: bar
 author:
     full_name: 'Foo Bar'
+    birthday: '-315619200'

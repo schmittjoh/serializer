@@ -4,12 +4,14 @@
   <comment>
     <author>
       <full_name><![CDATA[Foo Bar]]></full_name>
+      <birthday><![CDATA[-315619200]]></birthday>
     </author>
     <text><![CDATA[foo]]></text>
   </comment>
   <comment2>
     <author>
       <full_name><![CDATA[Foo Bar]]></full_name>
+      <birthday><![CDATA[-315619200]]></birthday>
     </author>
     <text><![CDATA[foo]]></text>
   </comment2>
@@ -18,5 +20,6 @@
   </metadata>
   <author>
     <full_name><![CDATA[Foo Bar]]></full_name>
+    <birthday><![CDATA[-315619200]]></birthday>
   </author>
 </blog-post>
