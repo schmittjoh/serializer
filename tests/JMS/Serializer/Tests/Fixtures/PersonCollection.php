@@ -22,6 +22,7 @@ use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlList;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\AccessType;
 
 /**
  * @XmlRoot("person_collection")
@@ -35,6 +36,13 @@ class PersonCollection
     public $persons;
 
     /**
+     * @Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Person>")
+     * @XmlList(entry = "collection_aware_person", inline = true)
+     * @AccessType("public_method")
+     */
+    private $collectionAwarePersons;
+
+    /**
      * @Type("string")
      */
     public $location;
@@ -42,5 +50,25 @@ class PersonCollection
     public function __construct()
     {
         $this->persons = new ArrayCollection;
+        $this->collectionAwarePersons = new ArrayCollection;
+    }
+
+    /**
+     * @param ArrayCollection|Person[] $persons
+     */
+    public function setCollectionAwarePersons(ArrayCollection $persons)
+    {
+        $this->collectionAwarePersons = $persons;
+        foreach ($this->collectionAwarePersons as $person) {
+            $person->collection = $this;
+        }
+    }
+
+    /**
+     * @return ArrayCollection|Person[]
+     */
+    public function getCollectionAwarePersons()
+    {
+        return $this->collectionAwarePersons;
     }
 }
