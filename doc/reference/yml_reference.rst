@@ -40,6 +40,7 @@ YAML Reference
                     key_attribute_name: foo
                     entry_name: bar
                 xml_attribute_map: true
+                max_depth: 2
 
         handler_callbacks:
             serialization:

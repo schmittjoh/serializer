@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -49,6 +50,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
+use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
@@ -82,6 +84,8 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
+use JMS\Serializer\Exclusion\DepthExclusionStrategy;
+use JMS\Serializer\Tests\Fixtures\Node;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -546,6 +550,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->getContent('accessor_order_child'), $this->serialize(new AccessorOrderChild()));
         $this->assertEquals($this->getContent('accessor_order_parent'), $this->serialize(new AccessorOrderParent()));
+        $this->assertEquals($this->getContent('accessor_order_methods'), $this->serialize(new AccessorOrderMethod()));
     }
 
     public function testGroups()
@@ -706,6 +711,27 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->getContent('car_without_type'),
             'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
         );
+    }
+
+    public function testDepthExclusionStrategy()
+    {
+        $context = SerializationContext::create()
+            ->addExclusionStrategy(new DepthExclusionStrategy())
+        ;
+
+        $data = new Tree(
+            new Node(array(
+                new Node(array(
+                    new Node(array(
+                        new Node(array(
+                            new Node(),
+                        )),
+                    )),
+                )),
+            ))
+        );
+
+        $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
     }
 
     abstract protected function getContent($key);

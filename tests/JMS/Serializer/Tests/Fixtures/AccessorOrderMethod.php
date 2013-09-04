@@ -20,17 +20,19 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class Node
+/** @Serializer\AccessorOrder("custom",  custom = {"method", "b", "a"}) */
+class AccessorOrderMethod
 {
+    private $b = 'b', $a = 'a';
+
     /**
-     * @Serializer\MaxDepth(2)
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("foo")
+     *
+     * @return string
      */
-    public $children;
-
-    public $foo = 'bar';
-
-    public function __construct($children = array())
+    public function getMethod()
     {
-        $this->children = $children;
+        return 'c';
     }
 }

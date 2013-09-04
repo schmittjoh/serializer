@@ -67,6 +67,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes","read_only_property":42}';
             $outputs['accessor_order_child'] = '{"c":"c","d":"d","a":"a","b":"b"}';
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
+            $outputs['accessor_order_methods'] = '{"foo":"c","b":"b","a":"a"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
@@ -87,6 +88,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
+            $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
         }
 
         if (!isset($outputs[$key])) {

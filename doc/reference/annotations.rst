@@ -52,6 +52,12 @@ This annotation can be defined on a property to specifiy to if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
+@MaxDepth
+~~~~~~~~~
+This annotation can be defined on a property to limit the depth to which the
+content will be serialized. It is very useful when a property will contain a
+large object graph.
+
 @AccessType
 ~~~~~~~~~~~
 This annotation can be defined on a property, or a class to specify in which way
@@ -141,6 +147,28 @@ default the order is undefined, but you may change it to either "alphabetical", 
         private $name;
     }
 
+    /**
+     * @AccessorOrder("custom", custom = {"name", "SomeMethod" ,"id"})
+     *
+     * Resulting Property Order: name, mood, id
+     */
+    class User
+    {
+        private $id;
+        private $name;
+
+        /**
+         * @Serializer\VirtualProperty
+         * @Serializer\SerializedName("mood")
+         *
+         * @return string
+         */
+        public function getSomeMethod()
+        {
+            return 'happy';
+        }
+    }
+
 @VirtualProperty
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method to indicate that the data returned by
@@ -186,7 +214,7 @@ by the object iself.
 .. code-block :: php
 
     <?php
-    
+
     class Article
     {
         /**
@@ -247,10 +275,10 @@ Available Types:
 +---------------------------+--------------------------------------------------+
 | DateTime                  | PHP's DateTime object (default format/timezone)  |
 +---------------------------+--------------------------------------------------+
-| DateTime<"format">        | PHP's DateTime object (custom format/default     |
+| DateTime<'format'>        | PHP's DateTime object (custom format/default     |
 |                           | timezone)                                        |
 +---------------------------+--------------------------------------------------+
-| DateTime<"format", "zone">| PHP's DateTime object (custom format/timezone)   |
+| DateTime<'format', 'zone'>| PHP's DateTime object (custom format/timezone)   |
 +---------------------------+--------------------------------------------------+
 | T                         | Where T is a fully qualified class name.         |
 +---------------------------+--------------------------------------------------+
@@ -292,6 +320,11 @@ Examples:
          * @Type("DateTime")
          */
         private $createdAt;
+
+        /**
+         * @Type("DateTime<'Y-m-d'>")
+         */
+        private $updatedAt;
 
         /**
          * @Type("boolean")
