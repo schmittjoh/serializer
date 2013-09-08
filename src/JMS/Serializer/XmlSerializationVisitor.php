@@ -184,8 +184,9 @@ class XmlSerializationVisitor extends AbstractVisitor
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
             $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
-            $this->addNamespaceAttributes($metadata, $this->currentNode);
         }
+        
+        $this->addNamespaceAttributes($metadata, $this->currentNode);
 
         $this->hasValue = false;
     }
@@ -270,7 +271,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement = (!$metadata->xmlCollection || !$metadata->xmlCollectionInline) && !$metadata->inline) {
             $elementName = $this->namingStrategy->translateName($metadata);
             if ('' !== $namespace = (string) $metadata->xmlNamespace) {
-                if (!$prefix = $this->document->lookupPrefix($namespace)) {
+                if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
                     $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
                 }
                 $element = $this->document->createElementNS($namespace, $prefix.':'.$elementName);
