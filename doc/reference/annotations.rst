@@ -99,7 +99,7 @@ be called to retrieve, or set the value of the given property:
     {
         private $id;
 
-        /** @Accessor(getter="getTrimmedName") */
+        /** @Accessor(getter="getTrimmedName",setter="setName") */
         private $name;
 
         // ...
