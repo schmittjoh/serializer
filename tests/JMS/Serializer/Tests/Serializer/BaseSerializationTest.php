@@ -66,6 +66,7 @@ use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\IndexedCommentsBlogPost;
 use JMS\Serializer\Tests\Fixtures\InlineParent;
 use JMS\Serializer\Tests\Fixtures\InitializedObjectConstructor;
+use JMS\Serializer\Tests\Fixtures\InitializedBlogPostConstructor;
 use JMS\Serializer\Tests\Fixtures\Log;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
@@ -306,7 +307,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingNull()
     {
-        $objectConstructor = new InitializedObjectConstructor();
+        $objectConstructor = new InitializedBlogPostConstructor();
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
@@ -732,6 +733,35 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
+    }
+
+    public function testDeserializingIntoExistingObject()
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
+        $serializer = new Serializer(
+            $this->factory, $this->handlerRegistry, $objectConstructor,
+            $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher
+        );
+
+        $order = new Order(new Price(12));
+
+        $context = new DeserializationContext();
+        $context->attributes->set('target', $order);
+
+        $deseralizedOrder = $serializer->deserialize(
+            $this->getContent('order'),
+            get_class($order),
+            $this->getFormat(),
+            $context
+        );
+
+        $this->assertSame($order, $deseralizedOrder);
+        $this->assertEquals(new Order(new Price(12.34)), $deseralizedOrder);
+        $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
     }
 
     abstract protected function getContent($key);
