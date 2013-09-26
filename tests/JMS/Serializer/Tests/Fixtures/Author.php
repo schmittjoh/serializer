@@ -29,13 +29,24 @@ class Author
      */
     private $name;
 
-    public function __construct($name)
+    /**
+     * @Type("DateTime<'U','UTC'>")
+     */
+    private $birthday;
+
+    public function __construct($name, $birthday = null)
     {
         $this->name = $name;
+        $this->birthday = $birthday;
     }
 
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getBirthday()
+    {
+        return $this->birthday;
     }
 }
