@@ -255,6 +255,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
     }
 
+    public function testArrayIndexedNonSequential()
+    {
+        $data = array('one', 'two', 'three');
+        unset($data[1]);
+
+        $this->assertEquals(
+            $this->getContent('array_non_sequential'),
+            $this->serializer->serialize($data, $this->getFormat())
+        );
+    }
+
     /**
      * @dataProvider getDateTime
      * @group datetime
