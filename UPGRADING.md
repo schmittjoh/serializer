@@ -1,3 +1,10 @@
+From 0.13 to ???
+================
+
+- If you have implemented your own ObjectConstructor, you need to add the DeserializationContext as an additional
+  parameter for the ``construct`` method.
+
+
 From 0.11 to 0.12
 =================
 
