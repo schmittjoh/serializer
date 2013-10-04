@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,24 +18,39 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
-use JMS\Serializer\Metadata\ClassMetadata;
-
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Construction\ObjectConstructorInterface;
 
-use JMS\Serializer\Tests\Fixtures\Author;
-use JMS\Serializer\Construction\UnserializeObjectConstructor;
-
-class InitializedObjectConstructor extends UnserializeObjectConstructor
+/**
+ * Object constructor that allows deserialization into already constructed
+ * objects passed through the deserialization context
+ */
+class InitializedObjectConstructor implements ObjectConstructorInterface
 {
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type)
+    private $fallbackConstructor;
+
+    /**
+     * Constructor.
+     *
+     * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
+     */
+    public function __construct(ObjectConstructorInterface $fallbackConstructor)
     {
-        if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
-            return parent::construct($visitor, $metadata, $data, $type);
+        $this->fallbackConstructor = $fallbackConstructor;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
+    {
+        if ($context->attributes->containsKey('target') && $context->getDepth() === 1) {
+            return $context->attributes->get('target')->get();
         }
 
-        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
     }
+
 }
