@@ -14,6 +14,8 @@ YAML Reference
             field_name: type
             map:
                 some-value: ClassName
+        virtual_properties:
+            getSomeProperty: {}
         properties:
             some-property:
                 exclude: true
