@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
