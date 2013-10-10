@@ -73,7 +73,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (int) $data;
+        return is_numeric($data) ? $data :(int)$data;
     }
 
     public function visitDouble($data, array $type, Context $context)
