@@ -69,6 +69,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
             $outputs['accessor_order_methods'] = '{"foo":"c","b":"b","a":"a"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
+            $outputs['inline_child_empty'] = '{"c":"c","d":"d"}';
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
