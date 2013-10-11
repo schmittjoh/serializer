@@ -144,8 +144,10 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
         $k = $this->namingStrategy->translateName($metadata);
 
-        if ($metadata->inline && is_array($v)) {
-            $this->data = array_merge($this->data, $v);
+        if ($metadata->inline) {
+            if (is_array($v)) {
+                $this->data = array_merge($this->data, $v);
+            }
         } else {
             $this->data[$k] = $v;
         }

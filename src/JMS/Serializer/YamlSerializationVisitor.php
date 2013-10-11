@@ -176,7 +176,7 @@ class YamlSerializationVisitor extends AbstractVisitor
                 ->rtrim(false)
                 ->writeln(' '.$v)
             ;
-        } elseif ($count === $this->writer->changeCount) {
+        } elseif ($count === $this->writer->changeCount && !$metadata->inline) {
             $this->writer->revert();
         }
 
