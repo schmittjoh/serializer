@@ -24,6 +24,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
@@ -403,6 +404,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->serialize($inline);
         $this->assertEquals($this->getContent('inline'), $result);
+
+        // no deserialization support
+    }
+
+    public function testInlineEmptyChild()
+    {
+        $inline = new InlineParent(new InlineChildEmpty());
+
+        $result = $this->serialize($inline);
+        $this->assertEquals($this->getContent('inline_child_empty'), $result);
 
         // no deserialization support
     }
