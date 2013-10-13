@@ -158,7 +158,6 @@ class ClassMetadata extends MergeableClassMetadata
         
         //Respect already configured discriminator related settings, after which they can be processed
         $this->discriminatorDisabled = $object->discriminatorDisabled;
-        $this->discriminatorDisabled = $object->discriminatorDisabled;
         $this->discriminatorBaseClass = $object->discriminatorBaseClass;
         $this->discriminatorFieldName = $object->discriminatorFieldName;
         $this->discriminatorValue = $object->discriminatorValue;
