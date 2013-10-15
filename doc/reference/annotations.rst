@@ -52,6 +52,28 @@ This annotation can be defined on a property to specifiy to if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
+@RecursionGroups
+~~~~~~~~~~~~~~~~
+
+This annotation can be defined on a property to modify the active
+serialization groups when descending into referenced subobjects. You can
+replace the whole list or add and remove groups from the list.
+
+.. code-block :: php
+
+    <?php
+    use JMS\Serializer\Annotation\RecursionGroups
+
+    class User
+    {
+        private $id;
+
+        /** @RecursionGroups(set={"group"}, add={"Default"}, remove={"Default"}) */
+        private $name;
+
+        // ...
+    }
+
 @MaxDepth
 ~~~~~~~~~
 This annotation can be defined on a property to limit the depth to which the

@@ -53,6 +53,10 @@ YAML Reference
                     cdata: false
                     namespace: http://www.w3.org/2005/Atom
                 max_depth: 2
+                recursion_groups:
+                    set: [foo, bar]
+                    add: [foo, bar]
+                    remove: [foo, bar]
 
         handler_callbacks:
             serialization:
