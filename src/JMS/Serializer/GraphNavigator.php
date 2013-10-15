@@ -167,7 +167,15 @@ final class GraphNavigator
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($context instanceof SerializationContext) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                        $event = new PreSerializeEvent($context, $data, $type);
+
+                        $classReflection = new \ReflectionClass($type['name']);
+
+                        if ($classReflection->isInterface()) {
+                            $event->setType(get_class($event->getObject()));
+                        }
+
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event);
                         $type = $event->getType();
                     }
                 } elseif ($context instanceof DeserializationContext) {
