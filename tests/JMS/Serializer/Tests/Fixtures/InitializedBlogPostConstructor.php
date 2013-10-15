@@ -16,16 +16,27 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Construction;
+namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\VisitorInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
 
-class UnserializeObjectConstructor implements ObjectConstructorInterface
+use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\VisitorInterface;
+
+use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Construction\UnserializeObjectConstructor;
+
+class InitializedBlogPostConstructor extends UnserializeObjectConstructor
 {
     public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
-        return unserialize(sprintf('O:%d:"%s":0:{}', strlen($metadata->name), $metadata->name));
+        if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
+            return parent::construct($visitor, $metadata, $data, $type);
+        }
+
+        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
     }
 }

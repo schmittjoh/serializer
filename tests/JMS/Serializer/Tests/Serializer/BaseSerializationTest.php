@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
 use Symfony\Component\Translation\MessageSelector;
@@ -66,6 +67,7 @@ use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\IndexedCommentsBlogPost;
 use JMS\Serializer\Tests\Fixtures\InlineParent;
 use JMS\Serializer\Tests\Fixtures\InitializedObjectConstructor;
+use JMS\Serializer\Tests\Fixtures\InitializedBlogPostConstructor;
 use JMS\Serializer\Tests\Fixtures\Log;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
@@ -306,7 +308,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingNull()
     {
-        $objectConstructor = new InitializedObjectConstructor();
+        $objectConstructor = new InitializedBlogPostConstructor();
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
@@ -402,6 +404,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->serialize($inline);
         $this->assertEquals($this->getContent('inline'), $result);
+
+        // no deserialization support
+    }
+
+    public function testInlineEmptyChild()
+    {
+        $inline = new InlineParent(new InlineChildEmpty());
+
+        $result = $this->serialize($inline);
+        $this->assertEquals($this->getContent('inline_child_empty'), $result);
 
         // no deserialization support
     }
@@ -732,6 +744,35 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
+    }
+
+    public function testDeserializingIntoExistingObject()
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
+        $serializer = new Serializer(
+            $this->factory, $this->handlerRegistry, $objectConstructor,
+            $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher
+        );
+
+        $order = new Order(new Price(12));
+
+        $context = new DeserializationContext();
+        $context->attributes->set('target', $order);
+
+        $deseralizedOrder = $serializer->deserialize(
+            $this->getContent('order'),
+            get_class($order),
+            $this->getFormat(),
+            $context
+        );
+
+        $this->assertSame($order, $deseralizedOrder);
+        $this->assertEquals(new Order(new Price(12.34)), $deseralizedOrder);
+        $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
     }
 
     abstract protected function getContent($key);

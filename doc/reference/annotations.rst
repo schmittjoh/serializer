@@ -99,7 +99,7 @@ be called to retrieve, or set the value of the given property:
     {
         private $id;
 
-        /** @Accessor(getter="getTrimmedName") */
+        /** @Accessor(getter="getTrimmedName",setter="setName") */
         private $name;
 
         // ...
@@ -214,7 +214,7 @@ by the object iself.
 .. code-block :: php
 
     <?php
-    
+
     class Article
     {
         /**
@@ -275,10 +275,10 @@ Available Types:
 +---------------------------+--------------------------------------------------+
 | DateTime                  | PHP's DateTime object (default format/timezone)  |
 +---------------------------+--------------------------------------------------+
-| DateTime<"format">        | PHP's DateTime object (custom format/default     |
+| DateTime<'format'>        | PHP's DateTime object (custom format/default     |
 |                           | timezone)                                        |
 +---------------------------+--------------------------------------------------+
-| DateTime<"format", "zone">| PHP's DateTime object (custom format/timezone)   |
+| DateTime<'format', 'zone'>| PHP's DateTime object (custom format/timezone)   |
 +---------------------------+--------------------------------------------------+
 | T                         | Where T is a fully qualified class name.         |
 +---------------------------+--------------------------------------------------+
@@ -320,6 +320,11 @@ Examples:
          * @Type("DateTime")
          */
         private $createdAt;
+
+        /**
+         * @Type("DateTime<'Y-m-d'>")
+         */
+        private $updatedAt;
 
         /**
          * @Type("boolean")

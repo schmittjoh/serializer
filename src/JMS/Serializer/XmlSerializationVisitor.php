@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,10 +40,19 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $currentNode;
     private $currentMetadata;
     private $hasValue;
+    private $nullWasVisited;
 
     public function setDefaultRootName($name)
     {
         $this->defaultRootName = $name;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasDefaultRootName()
+    {
+        return 'result' === $this->defaultRootName;
     }
 
     public function setDefaultVersion($version)
@@ -77,11 +86,14 @@ class XmlSerializationVisitor extends AbstractVisitor
             $node->value = 'true';
             $this->currentNode->appendChild($node);
 
+            $this->attachNullNamespace();
+
             return;
         }
 
         $node = $this->document->createAttribute('xsi:nil');
         $node->value = 'true';
+        $this->attachNullNamespace();
 
         return $node;
     }
@@ -296,6 +308,13 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $doc;
     }
 
+    public function prepare($data)
+    {
+        $this->nullWasVisited = false;
+
+        return $data;
+    }
+
     private function visitNumeric($data, array $type)
     {
         if (null === $this->document) {
@@ -318,5 +337,17 @@ class XmlSerializationVisitor extends AbstractVisitor
     private function isElementNameValid($name)
     {
         return $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+    }
+
+    private function attachNullNamespace()
+    {
+        if (!$this->nullWasVisited) {
+            $this->document->documentElement->setAttributeNS(
+                'http://www.w3.org/2000/xmlns/',
+                'xmlns:xsi',
+                'http://www.w3.org/2001/XMLSchema-instance'
+            );
+            $this->nullWasVisited = true;
+        }
     }
 }
