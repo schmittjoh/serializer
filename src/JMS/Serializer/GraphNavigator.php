@@ -142,8 +142,15 @@ final class GraphNavigator
                 if ($context instanceof SerializationContext) {
                     if (null !== $data) {
                         if ($context->isVisiting($data)) {
+                            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.circular_serialization', $type['name'], $this->context->getFormat())) {
+                                $this->dispatcher->dispatch('serializer.circular_serialization', $type['name'], $this->context->getFormat(), $event = new CircularSerializationEvent($visitor, $data, $type));
+
+                                return $this->accept($event->getReplacement(), null, $visitor);
+                            }
+
                             return null;
                         }
+
                         $context->startVisiting($data);
                     }
                 } elseif ($context instanceof DeserializationContext) {
