@@ -2,7 +2,7 @@
 
 namespace JMS\Serializer\EventDispatcher;
 
-class CircularSerializationEvent extends Event
+class CircularSerializationEvent extends ObjectEvent
 {
     private $replacement = null;
 
