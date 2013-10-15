@@ -16,20 +16,11 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-class Discriminator
+use JMS\Serializer\Annotation as Serializer;
+
+class InlineChildEmpty
 {
-    /** @var array<string> */
-    public $map;
 
-    /** @var string */
-    public $field = 'type';
-
-    /** @var boolean */
-    public $disabled = false;
 }

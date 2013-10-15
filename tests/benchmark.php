@@ -9,7 +9,8 @@ list(, $format, $iterations) = $_SERVER['argv'];
 
 require_once 'bootstrap.php';
 
-function benchmark(\Closure $f, $times = 10) {
+function benchmark(\Closure $f, $times = 10)
+{
     $time = microtime(true);
     for ($i=0; $i<$times; $i++) {
         $f();
@@ -18,7 +19,8 @@ function benchmark(\Closure $f, $times = 10) {
     return (microtime(true) - $time) / $times;
 }
 
-function createCollection() {
+function createCollection()
+{
     $collection = array();
     for ($i=0; $i<50; $i++) {
         $collection[] = createObject();
@@ -27,7 +29,8 @@ function createCollection() {
     return $collection;
 }
 
-function createObject() {
+function createObject()
+{
     $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime);
     for ($i=0; $i<10; $i++) {
         $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
@@ -36,15 +39,12 @@ function createObject() {
     return $post;
 }
 
-
-
 $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 $collection = createCollection();
 $metrics = array();
 $f = function() use ($serializer, $collection, $format) {
     $serializer->serialize($collection, $format);
 };
-
 
 // Load all necessary classes into memory.
 benchmark($f, 1);

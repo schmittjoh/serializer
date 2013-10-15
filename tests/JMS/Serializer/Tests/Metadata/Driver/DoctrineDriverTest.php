@@ -2,13 +2,13 @@
 
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,7 +72,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals(
-            array('name'=> 'integer', 'params' => array()), 
+            array('name'=> 'integer', 'params' => array()),
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -91,6 +91,11 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         $plainMetadata = $this->getAnnotationDriver()->loadMetadataForClass($refClass);
         $doctrineMetadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+
+        // Do not compare timestamps
+        if (abs($doctrineMetadata->createdAt - $plainMetadata->createdAt) < 2) {
+            $plainMetadata->createdAt = $doctrineMetadata->createdAt;
+        }
 
         $this->assertEquals($plainMetadata, $doctrineMetadata);
     }
