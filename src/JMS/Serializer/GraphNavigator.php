@@ -169,10 +169,13 @@ final class GraphNavigator
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
                         $event = new PreSerializeEvent($context, $data, $type);
 
-                        $classReflection = new \ReflectionClass($type['name']);
+                        try {
+                            $classReflection = new \ReflectionClass($type['name']);
 
-                        if ($classReflection->isInterface()) {
-                            $event->setType(get_class($event->getObject()));
+                            if ($classReflection->isInterface()) {
+                                $event->setType(get_class($event->getObject()));
+                            }
+                        } catch (\ReflectionException $exception) {
                         }
 
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event);
@@ -190,10 +193,12 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
+                    try {
+                        $rs = call_user_func($handler, $visitor, $data, $type, $context);
+                        $this->leaveScope($context, $data);
 
-                    return $rs;
+                        return $rs;
+                    } catch (\Exception $e) {}
                 }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
