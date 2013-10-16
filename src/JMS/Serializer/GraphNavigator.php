@@ -169,11 +169,13 @@ final class GraphNavigator
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
                         $event = new PreSerializeEvent($context, $data, $type);
 
-                        $classReflection = new \ReflectionClass($type['name']);
+                        try {
+                            $classReflection = new \ReflectionClass($type['name']);
 
-                        if ($classReflection->isInterface()) {
-                            $event->setType(get_class($event->getObject()));
-                        }
+                            if ($classReflection->isInterface()) {
+                                $event->setType(get_class($event->getObject()));
+                            }
+                        } catch (\ReflectionException $exception) {}
 
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event);
                         $type = $event->getType();
