@@ -29,6 +29,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\SkipStepException;
 
 /**
  * Handles traversal along the object graph.
@@ -198,7 +199,7 @@ final class GraphNavigator
                         $this->leaveScope($context, $data);
 
                         return $rs;
-                    } catch (\Exception $e) {}
+                    } catch (SkipStepException $e) {}
                 }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
