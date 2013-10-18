@@ -231,6 +231,22 @@ abstract class Context
         return $this->metadataStack;
     }
 
+    /**
+     * @return array
+     */
+    public function getCurrentPath()
+    {
+        $paths = array();
+        foreach ($this->metadataStack as $metadata) {
+            if ($metadata instanceof PropertyMetadata) {
+                array_unshift($paths, $metadata->name);
+            }
+        }
+
+        return $paths;
+    }
+
+
     abstract public function getDepth();
     abstract public function getDirection();
 }
