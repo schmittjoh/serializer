@@ -57,24 +57,26 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
          * TODO: There should be some sort of caching
          */
         $groups = $this->groups;
-        $groupModifiers = array();
-        foreach ($navigatorContext->getMetadataStack() as $metadata) {
-            if ($metadata instanceof PropertyMetadata && is_array($metadata->recursionGroups)) {
-                $groupModifiers[] = $metadata->recursionGroups;
-            }
-        }
-        foreach (array_reverse($groupModifiers) as $modifier) {
-            if (isset($modifier['set'])) {
-                $groups = $modifier['set'];
-            }
-            if (isset($modifier['add'])) {
-                foreach ($modifier['add'] as $group) {
-                    $groups[$group] = true;
+        if ($navigatorContext->getMetadataStack()) {
+            $groupModifiers = array();
+            foreach ($navigatorContext->getMetadataStack() as $metadata) {
+                if ($metadata instanceof PropertyMetadata && is_array($metadata->recursionGroups)) {
+                    $groupModifiers[] = $metadata->recursionGroups;
                 }
             }
-            if (isset($modifier['remove'])) {
-                foreach ($modifier['remove'] as $group) {
-                    unset($groups[$group]);
+            foreach (array_reverse($groupModifiers) as $modifier) {
+                if (isset($modifier['set'])) {
+                    $groups = $modifier['set'];
+                }
+                if (isset($modifier['add'])) {
+                    foreach ($modifier['add'] as $group) {
+                        $groups[$group] = true;
+                    }
+                }
+                if (isset($modifier['remove'])) {
+                    foreach ($modifier['remove'] as $group) {
+                        unset($groups[$group]);
+                    }
                 }
             }
         }
