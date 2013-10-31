@@ -5,6 +5,7 @@ For instructions on how to upgrade from one version to another, please see the d
 ??? (???)
 ---------
 - [BC Break] Passes DeserializationContext to ObjectConstructor instances as additional argument
+- adds a handler for Propel related classes
 
 0.13 (2013-07-29)
 -----------------
