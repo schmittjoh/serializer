@@ -39,7 +39,7 @@ class JsonSerializationVisitorTest extends \PHPUnit_Framework_TestCase
         $data[] = $data;
 
         $visitor = $this->getMockBuilder('JMS\Serializer\JsonSerializationVisitor')
-            ->setMethods(['getRoot'])
+            ->setMethods(array('getRoot'))
             ->disableOriginalConstructor()
             ->getMock();
         $visitor
