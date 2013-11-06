@@ -35,7 +35,7 @@ class JsonSerializationVisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExceptionThrownOnJsonFailure()
     {
-        $data = new \ArrayObject([]);
+        $data = new \ArrayObject(array());
         $data[] = $data;
 
         $visitor = $this->getMockBuilder('JMS\Serializer\JsonSerializationVisitor')

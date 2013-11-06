@@ -66,12 +66,10 @@ class JsonErrorException extends RuntimeException
         }
 
         // Any PHP versions less than 5.3.3 won't have access to these constants
-        if (version_compare(phpversion(), '5.3.3', '<')) {
-            return null;
-        }
-
-        if ($code === JSON_ERROR_UTF8) {
-            return 'Malformed UTF-8 characters, possibly incorrectly encoded';
+        if (version_compare(phpversion(), '5.3.3', '>=')) {
+            if ($code === JSON_ERROR_UTF8) {
+                return 'Malformed UTF-8 characters, possibly incorrectly encoded';
+            }
         }
 
         // Other codes are unknown
