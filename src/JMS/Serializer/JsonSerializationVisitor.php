@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Exception\JsonErrorException;
 
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
@@ -26,7 +27,14 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function getResult()
     {
-        return json_encode($this->getRoot(), $this->options);
+        $result = json_encode($this->getRoot(), $this->options);
+
+        // When JSON serialization fails an exception will be thrown
+        if (false === $result) {
+            throw JsonErrorException::fromLastError();
+        }
+
+        return $result;
     }
 
     public function getOptions()
