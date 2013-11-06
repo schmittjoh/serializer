@@ -27,7 +27,12 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function getResult()
     {
-        $result = json_encode($this->getRoot(), $this->options);
+        $root = $this->getRoot();
+        $options = $this->options;
+
+        // Errors intentionally suppressed here to deliver consistency across
+        // PHP versions (PHP 5.5 does not emit warnings when encoding fails)
+        $result = @json_encode($root, $options);
 
         // When JSON serialization fails an exception will be thrown
         if (false === $result) {
