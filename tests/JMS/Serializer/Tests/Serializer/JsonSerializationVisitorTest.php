@@ -23,15 +23,8 @@ use JMS\Serializer\JsonSerializationVisitor;
 class JsonSerializationVisitorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests that an exception is thrown when the PHP `json_encode` method fails
-     * to serialize the data.
-     *
-     * This is a rare but possible occurance. The cause of the serialization
-     * failure is invariably the data which is being serialized, however in
-     * certain edge cases the serializer doesn't catch the issue which cased the
-     * json serialization error.
-     *
      * @expectedException JMS\Serializer\Exception\JsonErrorException
+     * @expectedExceptionMessage Recursion detected
      */
     public function testExceptionThrownOnJsonFailure()
     {

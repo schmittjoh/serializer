@@ -43,9 +43,7 @@ class JsonErrorException extends RuntimeException
 
     private static function getLastErrorMessage()
     {
-        // PHP 5.5.0 has a new function 'json_last_error_msg' which provides the
-        // error message from the last json error. This should be used in place
-        // of this function where possible.
+        // >= PHP 5.5
         if (function_exists('json_last_error_msg')) {
             return json_last_error_msg();
         }
@@ -63,16 +61,10 @@ class JsonErrorException extends RuntimeException
                 return 'Control character error, possibly incorrectly encoded';
             case JSON_ERROR_SYNTAX:
                 return 'Syntax error';
-        }
-
-        // Any PHP versions less than 5.3.3 won't have access to these constants
-        if (version_compare(phpversion(), '5.3.3', '>=')) {
-            if ($code === JSON_ERROR_UTF8) {
+            case JSON_ERROR_UTF8:
                 return 'Malformed UTF-8 characters, possibly incorrectly encoded';
-            }
+            default:
+                return "Unknown error ($code)";
         }
-
-        // Other codes are unknown
-        return "Unknown error ($code)";
     }
 }
