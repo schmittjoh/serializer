@@ -214,10 +214,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         $v = null;
+        $propertyExists = true;
 
         if ($metadata->xmlAttribute) {
             if (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
+            } else {
+                $propertyExists = false;
             }
         } elseif ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $context);
@@ -233,6 +236,10 @@ class XmlDeserializationVisitor extends AbstractVisitor
         } elseif (isset($data->$name)) {
             $v = $this->navigator->accept($data->$name, $metadata->type, $context);
         } else {
+            return;
+        }
+        
+        if (! $propertyExists) {
             return;
         }
 
