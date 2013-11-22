@@ -2,6 +2,7 @@
 <serializer>
     <class name="JMS\Serializer\Tests\Fixtures\BlogPost" xml-root-name="blog-post">
         <property name="title" type="string" groups="comments,post"/>
+        <property name="hash" type="string" groups="comments,post" escape="false"/>
         <property name="createdAt" xml-attribute="true" type="DateTime"/>
         <property name="published" type="boolean" serialized-name="is_published" xml-attribute="true" groups="post" />
         <property name="comments" groups="comments">

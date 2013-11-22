@@ -44,6 +44,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Until;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Escape;
 use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -72,6 +73,7 @@ class AnnotationDriver implements DriverInterface
         $propertiesAnnotations = array();
 
         $exclusionPolicy = 'NONE';
+        $escape = true;
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
@@ -91,6 +93,8 @@ class AnnotationDriver implements DriverInterface
                 } else {
                     $classMetadata->setDiscriminator($annot->field, $annot->map);
                 }
+            } elseif ($annot instanceof Escape) {
+                $escape = $annot->value;
             }
         }
 
@@ -140,7 +144,7 @@ class AnnotationDriver implements DriverInterface
                 $accessor = array(null, null);
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
-
+                $propertyMetadata->escape = $escape;
                 foreach ($propertyAnnotations as $annot) {
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
@@ -192,6 +196,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlAttributeMap = true;
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof Escape) {
+                        $propertyMetadata->escape = $annot->value;
                     }
                 }
 

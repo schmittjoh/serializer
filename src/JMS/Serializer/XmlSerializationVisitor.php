@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
@@ -29,8 +28,8 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class XmlSerializationVisitor extends AbstractVisitor
 {
-    public $document;
 
+    public $document;
     private $navigator;
     private $defaultRootName = 'result';
     private $defaultVersion = '1.0';
@@ -102,12 +101,21 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
-            $this->currentNode->appendChild($this->document->createCDATASection($data));
+            $this->currentNode->appendChild($this->createStringNode($data));
 
             return;
         }
 
-        return $this->document->createCDATASection($data);
+        return $this->createStringNode($data);
+    }
+
+    protected function createStringNode($data)
+    {
+        if (null === $this->currentMetadata || $this->currentMetadata->escape === true) {
+            return $this->document->createCDATASection($data);
+        }
+
+        return $this->document->createTextNode($data);
     }
 
     public function visitBoolean($data, array $type, Context $context)
@@ -164,7 +172,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
-            $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
+            $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ? : $this->defaultRootName));
         }
 
         $this->hasValue = false;
@@ -189,8 +197,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
-            || (!$metadata->xmlValue && $this->hasValue)) {
+        if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0) || (!$metadata->xmlValue && $this->hasValue)) {
             throw new RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->class));
         }
 
@@ -240,8 +247,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($element->hasChildNodes() || $element->hasAttributes()
-                || (isset($metadata->type['name']) && $metadata->type['name'] === 'array' && isset($metadata->type['params'][1]))) {
+            if ($element->hasChildNodes() || $element->hasAttributes() || (isset($metadata->type['name']) && $metadata->type['name'] === 'array' && isset($metadata->type['params'][1]))) {
                 $this->currentNode->appendChild($element);
             }
         }
@@ -251,6 +257,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
+
     }
 
     public function getResult()
@@ -297,7 +304,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function createDocument($version = null, $encoding = null, $addRoot = true)
     {
-        $doc = new \DOMDocument($version ?: $this->defaultVersion, $encoding ?: $this->defaultEncoding);
+        $doc = new \DOMDocument($version ? : $this->defaultVersion, $encoding ? : $this->defaultEncoding);
         $doc->formatOutput = true;
 
         if ($addRoot) {

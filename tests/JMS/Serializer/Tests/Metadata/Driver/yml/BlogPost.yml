@@ -4,6 +4,10 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
         title:
             type: string
             groups: [comments, post]
+        hash:
+            type: string
+            groups: [comments, post]
+            escape: false
         createdAt:
             type: DateTime
             xml_attribute: true

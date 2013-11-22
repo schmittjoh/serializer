@@ -37,6 +37,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->groups = array("comments","post");
         $this->assertEquals($p, $m->propertyMetadata['title']);
 
+        $p = new PropertyMetadata($m->name, 'hash');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->groups = array("comments","post");
+        $p->escape = false;
+        $this->assertEquals($p, $m->propertyMetadata['hash']);
+        
         $p = new PropertyMetadata($m->name, 'createdAt');
         $p->type = array('name' => 'DateTime', 'params' => array());
         $p->xmlAttribute = true;

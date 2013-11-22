@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Escape;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
@@ -37,6 +38,13 @@ class BlogPost
      * @Groups({"comments","post"})
      */
     private $title;
+
+    /**
+     * @Type("string")
+     * @Groups({"comments","post"})
+     * @Escape(false)
+     */
+    private $hash;
 
     /**
      * @Type("DateTime")
@@ -88,6 +96,7 @@ class BlogPost
         $this->metadata = new Map();
         $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
+        $this->hash = 'absghc';
     }
 
     public function setPublished()

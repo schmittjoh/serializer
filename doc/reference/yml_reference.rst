@@ -20,6 +20,7 @@ YAML Reference
             some-property:
                 exclude: true
                 expose: true
+                escape: false
                 access_type: public_method # defaults to property
                 accessor: # access_type must be set to public_method
                     getter: getSomeOtherProperty
