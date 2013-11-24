@@ -25,6 +25,8 @@
     "require-dev": {
         "twig/twig": ">=1.8,<2.0-dev",
         "doctrine/orm": ">=2.1,<2.4-dev",
+        "doctrine/phpcr-odm": "~1.0.1",
+        "jackalope/jackalope-doctrine-dbal": "1.0.*",
         "propel/propel1": "~1.7",
         "symfony/yaml": "2.*",
         "symfony/translation": ">=2.0,<2.2-dev",
