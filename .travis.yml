@@ -5,7 +5,7 @@ php:
   - 5.4
 
 before_script:
-    - comoser self-update
+    - composer self-update
     - composer install --dev
 
 script: phpunit --coverage-clover clover
