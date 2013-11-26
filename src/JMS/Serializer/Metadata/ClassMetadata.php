@@ -139,8 +139,10 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
 
-        // Handler methods are taken from the outer class completely.
-        $this->handlerCallbacks = $object->handlerCallbacks;
+        // Handler methods are overwritten in toto
+        if ( $object->handlerCallbacks ) {
+            $this->handlerCallbacks = $object->handlerCallbacks;
+        }
 
         if ($object->accessorOrder) {
             $this->accessorOrder = $object->accessorOrder;
