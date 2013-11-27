@@ -42,6 +42,8 @@ YAML Reference
                     key_attribute_name: foo
                     entry_name: bar
                 xml_attribute_map: true
+                xml_element:
+                    cdata: false
                 max_depth: 2
 
         handler_callbacks:
