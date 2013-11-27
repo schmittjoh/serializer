@@ -32,6 +32,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
         $this->assertEquals('blog-post', $m->xmlRootName);
 
+        $p = new PropertyMetadata($m->name, 'id');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->groups = array("comments","post");
+        $p->xmlElementCData = false;
+        $this->assertEquals($p, $m->propertyMetadata['id']);
+
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = array('name' => 'string', 'params' => array());
         $p->groups = array("comments","post");
@@ -150,6 +156,14 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Node'));
 
         $this->assertEquals(2, $m->propertyMetadata['children']->maxDepth);
+    }
+
+    public function testPersonCData()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
+
+        $this->assertNotNull($m);
+        $this->assertFalse($m->propertyMetadata['name']->xmlElementCData);
     }
 
     /**

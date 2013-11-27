@@ -171,6 +171,13 @@ class XmlDriver extends AbstractFileDriver
                         }
                     }
 
+                    if (isset($pElem->{'xml-element'})) {
+                        $colConfig = $pElem->{'xml-element'};
+                        if (isset($colConfig->attributes()->cdata)) {
+                            $pMetadata->xmlElementCData = 'true' === (string) $colConfig->attributes()->cdata;
+                        }
+                    }
+
                     if (isset($pElem->attributes()->{'xml-attribute'})) {
                         $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute'};
                     }

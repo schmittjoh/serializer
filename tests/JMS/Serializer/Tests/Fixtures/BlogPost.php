@@ -24,6 +24,7 @@ use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpCollection\Map;
@@ -32,6 +33,13 @@ use PhpCollection\Sequence;
 /** @XmlRoot("blog-post") */
 class BlogPost
 {
+    /**
+     * @Type("string")
+     * @XmlElement(cdata=false)
+     * @Groups({"comments","post"})
+     */
+    private $id = 'what_a_nice_id';
+
     /**
      * @Type("string")
      * @Groups({"comments","post"})
