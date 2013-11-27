@@ -20,7 +20,6 @@ namespace JMS\Serializer\EventDispatcher\Subscriber;
 
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Common\Persistence\Proxy;
-use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
@@ -44,7 +43,7 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+        if ( ! $object instanceof Proxy) {
             return;
         }
 
