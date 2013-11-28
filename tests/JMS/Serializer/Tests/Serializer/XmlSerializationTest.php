@@ -18,7 +18,11 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Handler\DateHandler;
+use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
@@ -139,6 +143,21 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testArrayKeyValues()
     {
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+    }
+
+    /**
+     * @dataProvider getDateTime
+     * @group datetime
+     */
+    public function testDateTimeNoCData($key, $value, $type)
+    {
+        $handlerRegistry = new HandlerRegistry();
+        $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ISO8601, 'UTC', false));
+        $objectConstructor = new UnserializeObjectConstructor();
+
+        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors);
+
+        $this->assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
 
     /**

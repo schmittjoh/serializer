@@ -117,6 +117,18 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string) $data);
     }
 
+    public function visitSimpleString($data, array $type, Context $context)
+    {
+        if (null === $this->document) {
+            $this->document = $this->createDocument(null, null, true);
+            $this->currentNode->appendChild($this->document->createTextNode((string) $data));
+
+            return;
+        }
+
+        return $this->document->createTextNode((string) $data);
+    }
+
     public function visitBoolean($data, array $type, Context $context)
     {
         if (null === $this->document) {

@@ -24,11 +24,13 @@ use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\XmlSerializationVisitor;
 
 class DateHandler implements SubscribingHandlerInterface
 {
     private $defaultFormat;
     private $defaultTimezone;
+    private $xmlCData;
 
     public static function getSubscribingMethods()
     {
@@ -55,20 +57,28 @@ class DateHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function __construct($defaultFormat = \DateTime::ISO8601, $defaultTimezone = 'UTC')
+    public function __construct($defaultFormat = \DateTime::ISO8601, $defaultTimezone = 'UTC', $xmlCData = true)
     {
         $this->defaultFormat = $defaultFormat;
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
+        $this->xmlCData = $xmlCData;
     }
 
     public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
     {
+        if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
+            return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
+        }
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
     public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
     {
         $iso8601DateIntervalString = $this->format($date);
+
+        if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
+            return $visitor->visitSimpleString($iso8601DateIntervalString, $type, $context);
+        }
 
         return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
