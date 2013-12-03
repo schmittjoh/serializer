@@ -25,11 +25,25 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 
+/**
+ * The DateHandler works as an Extension to create strings from DateTime or DateInterval object or create
+ * them from strings
+ * DateTime is possible for all formats in both ways (deserialization and serialisation)
+ * DateIntval is possible for all formats in serialisation and for XML only for deserialization
+ *
+ * Class DateHandler
+ * @package JMS\Serializer\Handler
+ */
 class DateHandler implements SubscribingHandlerInterface
 {
     private $defaultFormat;
     private $defaultTimezone;
 
+    /**
+     * this method decides which method needs to be called for a specific Date object creation
+     *
+     * @return array
+     */
     public static function getSubscribingMethods()
     {
         $methods = array();
@@ -41,7 +55,15 @@ class DateHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
                 'format' => $format,
             );
-
+            //the DateInerval is no able to be deserialzed from xml
+            if($format == "xml"){
+                $methods[] = array(
+                    'type' => 'DateInterval',
+                    'format' => $format,
+                    'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
+                    'method' => 'deserializeDateIntervalXml',
+                );
+            }
             foreach ($types as $type) {
                 $methods[] = array(
                     'type' => $type,
@@ -55,17 +77,39 @@ class DateHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+
+    /**
+     * @param string $defaultFormat
+     * @param string $defaultTimezone
+     */
     public function __construct($defaultFormat = \DateTime::ISO8601, $defaultTimezone = 'UTC')
     {
         $this->defaultFormat = $defaultFormat;
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
     }
 
+    /**
+     * method to serialize a DateTime object to a formatted string
+     *
+     * @param VisitorInterface $visitor
+     * @param \DateTime $date
+     * @param array $type
+     * @param Context $context
+     * @return mixed
+     */
     public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
     {
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
+    /**
+     * method to serialize a DateInterval object to a formatted string
+     * @param VisitorInterface $visitor
+     * @param \DateInterval $date
+     * @param array $type
+     * @param Context $context
+     * @return mixed
+     */
     public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
     {
         $iso8601DateIntervalString = $this->format($date);
@@ -73,16 +117,56 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
 
-    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    /**
+     * method will parse the node for a "DateTime-string" and will give it to the factory method for the DateInterval
+     * @param \JMS\Serializer\VisitorInterface|\JMS\Serializer\XmlDeserializationVisitor|\JMS\Serializer\XmlDomDeserializationVisitor $visitor
+     * @param $data
+     * @param array $type
+     * @return \DateInterval | null
+     */
+    public function deserializeDateIntervalXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
-        $attributes = $data->attributes('xsi', true);
-        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+        if($data instanceof \DOMDocument)
+        {
+            $data = $data->documentElement;
+
+        }
+        if($visitor->checkNullNode($data)){
             return null;
         }
-
-        return $this->parseDateTime($data, $type);
+        return $this->parseDateInterval($data->nodeValue,$type);
     }
 
+    /**
+     * with the help of the newer visitor this mehtod will deserialize a Date string into an DataTime Object
+     *
+     * @param XmlDeserializationVisitor $visitor
+     * @param $data
+     * @param array $type
+     * @return \DateTime|null
+     */
+    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    {
+        if($data instanceof \DOMDocument)
+        {
+            $data = $data->documentElement;
+
+        }
+        if($visitor->checkNullNode($data)){
+            return null;
+        }
+        return $this->parseDateTime($data->nodeValue,$type);
+    }
+
+
+    /**
+     * This method will create the DateTime object from information getting by the JsonDeserializer
+     *
+     * @param JsonDeserializationVisitor $visitor
+     * @param $data
+     * @param array $type
+     * @return \DateTime|null
+     */
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
@@ -92,6 +176,14 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type);
     }
 
+    /**
+     * if not set inside of the params this method will create a DataTime object with the default timezone
+     *
+     * @param $data
+     * @param array $type
+     * @return \DateTime
+     * @throws \JMS\Serializer\Exception\RuntimeException
+     */
     private function parseDateTime($data, array $type)
     {
         $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
@@ -100,9 +192,27 @@ class DateHandler implements SubscribingHandlerInterface
         if (false === $datetime) {
             throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
-
         return $datetime;
     }
+
+
+    /**
+     * same as the parseDateTime this method will parse the string and return a new DateInterval object
+     *
+     * @param $data
+     * @param array $type
+     * @return \DateInterval
+     * @throws \JMS\Serializer\Exception\RuntimeException
+     */
+    private function parseDateInterval($data,array $type)
+    {
+        $dateInterval = new \DateInterval($data);
+        if(false === $dateInterval){
+            throw new RuntimeException(sprintf('Invalid datetintervall "%s"', $data));
+        }
+        return $dateInterval;
+    }
+
 
     /**
      * @return string
