@@ -1,26 +1,14 @@
 <?php
-/**
- * Created: 
- *
- * User: maximilianberghoff
- * Date: 14.10.13
- * Time: 09:00
- *
- * @desc: 
- */
 
 namespace JMS\Serializer;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Exception\DomXmlErrorException;
+use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use PhpCollection\Sequence;
 
 /**
  * this visitor will parse the xml string by the DOM classes only
@@ -32,65 +20,72 @@ use PhpCollection\Sequence;
 class XmlDeserializationVisitor extends AbstractVisitor{
 
     /**
+     * @var
+     */
+    private $objectStack;
+
+    /**
+     * @var
+     */
+    private $metadataStack;
+
+    /**
+     * @var
+     */
+    private $currentObject;
+
+    /**
+     * @var PropertyMetadata
+     */
+    private $currentMetadata;
+
+    /**
+     * @var
+     */
+    private $result;
+
+    /**
      * @var GraphNavigator $navigator
      */
-    protected $navigator;
+    private  $navigator;
+
+    /**
+     * @var bool
+     */
+    private $disableExternalEntities = true;
+
+    /**
+     * @var array
+     */
+    private $doctypeWhitelist = array();
 
     /**
      * @var \DOMElement $domElement
      */
     private  $domElement;
 
-    /**
-     * @var bool
-     */
-    protected $disableExternalEntities = true;
+
+    public function enableExternalEntities()
+    {
+        $this->disableExternalEntities = false;
+    }
 
     /**
-     * @var array
+     * {@inheritdoc}
      */
-    protected $doctypeWhitelist = array();
+    public function setNavigator(GraphNavigator $navigator)
+    {
+        $this->navigator = $navigator;
+        $this->objectStack = new \SplStack;
+        $this->metadataStack = new \SplStack;
+        $this->result = null;
+    }
 
     /**
-     * @var
-     */
-    protected $objectStack;
-
-    /**
-     * @var
-     */
-    protected $metadataStack;
-
-    /**
-     * @var
-     */
-    protected $currentObject;
-
-    /**
-     * @var PropertyMetadata
-     */
-    protected $currentMetadata;
-
-    /**
-     * @var
-     */
-    protected $result;
-
-    /**
-     * this will be the most different part to the parent
-     * the data won`t be returned as an SimpleXmlElemnt, they will stay as DOMDocuments
-     *
-     * @param mixed $data
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\XmlErrorException
-     * @return \DOMDocument
+     * {@inheritdoc}
      */
     public function prepare($data)
     {
-        $previous = libxml_use_internal_errors(true);
-        $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
-
         $dom = new \DOMDocument();
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
@@ -115,7 +110,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      * sets the node this visitor is visiting to an DomElement class -> handle all the same way
      *
      * @param $data
-     * @throws Exception\DomXmlErrorException
+     * @throws Exception\XmlErrorException
      */
     private function setDomElement($data)
     {
@@ -134,16 +129,77 @@ class XmlDeserializationVisitor extends AbstractVisitor{
             $this->domElement = $data;
             return;
         }
-        throw new DomXmlErrorException('Wrong data format for DOM Parsing given');
+        throw new XmlErrorException('Wrong data format for DOM Parsing given');
     }
 
     /**
-     * @param mixed $data
-     * @param array $type
+     * helper to get the text that is inside of a node
      *
-     * @param Context $context
-     * @throws Exception\DomXmlErrorException
-     * @return mixed
+     * @return string
+     */
+    private function getCurrentText()
+    {
+        $children = $this->domElement->childNodes;
+        $text = '';
+        for($i = 0; $i < $children->length; $i++)
+        {
+            $child = $children->item($i);
+            if($child instanceof \DOMText)
+            {
+                $text .= $child->textContent;
+            }
+        }
+        return $text;
+    }
+
+    /**
+     * this method will create a list of child nodes. Instead of the normal DOMNode::childNodes property
+     * i will return an array of nodes, which could be parsed like an array
+     *
+     * @throws Exception\XmlErrorException
+     */
+    private function getCurrentChildNodes(){
+        if(!$this->domElement->hasChildNodes())
+        {
+            throw new XmlErrorException('The DOMElement you are parsing has no childnodes for getting a vlaue');
+        }
+        $childNodes = $this->domElement->childNodes;
+        $result = array();
+        for($i = 0; $i < $childNodes->length; $i++)
+        {
+            $result[] = $childNodes->item($i);
+        }
+
+        return $result;
+    }
+
+    /**
+     * instead of the nodeList this method will return an array of nodes which should be all DOMAttr
+     */
+    private function getCurrentAttributes()
+    {
+        $nodeAttributes = $this->domElement->attributes;
+        $result = array();
+        if(!($nodeAttributes instanceof \DOMNodeList || $nodeAttributes instanceof \DOMNamedNodeMap))
+        {
+            return $result;
+        }
+        if($nodeAttributes->length > 0)
+        {
+            for($i = 0; $i < $nodeAttributes->length; $i++)
+            {
+                $node = $nodeAttributes->item($i);
+                if($node instanceof \DOMAttr)
+                {
+                    $result[] = $node;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function visitNull($data, array $type, Context $context)
     {
@@ -155,16 +211,11 @@ class XmlDeserializationVisitor extends AbstractVisitor{
             }
             return null;
         }
-        throw new DomXmlErrorException('The DOMNode you where parsing has no NULL property ');
+        throw new XmlErrorException('The DOMNode you where parsing has no NULL property ');
     }
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @throws Exception\DomXmlErrorException
-     * @return mixed
+     * {@inheritdoc}
      */
     public function visitString($data, array $type, Context $context)
     {
@@ -180,15 +231,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     }
 
     /**
-     * this visitor will check if the entry of a boolean value is true or 1 and return this value
-     * try to divide it into true false or something else means wrong entries too
-     *
-     * @param \DOMNode $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @throws Exception\DomXmlErrorException
-     * @return mixed
+     * {@inheritdoc}
      */
     public function visitBoolean($data, array $type, Context $context)
     {
@@ -202,7 +245,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
             $data = false;
         }
         else{
-            throw new DomXmlErrorException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
+            throw new XmlErrorException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
         }
         if(null === $this->result)
         {
@@ -212,20 +255,33 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     }
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @throws Exception\DomXmlErrorException
-     * @internal param \JMS\Serializer\Context $contex
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function visitInteger($data, array $type, Context $context)
+    {
+        $this->setDomElement($data);
+        if(!$this->domElement instanceof \DOMNode)
+        {
+            throw new XmlErrorException('DomNode given for visitInteger was wrong');
+        }
+
+        $data = (int) $this->getCurrentText();
+        if(null === $this->result)
+        {
+            $this->result = $data;
+        }
+        return $data;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function visitDouble($data, array $type, Context $context)
     {
         $this->setDomElement($data);
         if(!$this->domElement instanceof \DOMNode)
         {
-            throw new DomXmlErrorException('DomNode given for visitInteger was wrong');
+            throw new XmlErrorException('DomNode given for visitInteger was wrong');
         }
 
         $data = (double) $this->getCurrentText();
@@ -241,7 +297,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      * @param array $type
      *
      * @param Context $context
-     * @throws Exception\DomXmlErrorException
+     * @throws Exception\XmlErrorException
      * @internal param \JMS\Serializer\Context $contex
      * @return mixed
      */
@@ -250,7 +306,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         $this->setDomElement($data);
         if(!$this->domElement instanceof \DOMNode)
         {
-            throw new DomXmlErrorException('DomNode given for visitInteger was wrong');
+            throw new XmlErrorException('DomNode given for visitInteger was wrong');
         }
 
         $data = (float) $this->getCurrentText();
@@ -262,37 +318,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     }
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @throws Exception\DomXmlErrorException
-     * @return mixed
-     */
-    public function visitInteger($data, array $type, Context $context)
-    {
-        $this->setDomElement($data);
-        if(!$this->domElement instanceof \DOMNode)
-        {
-            throw new DomXmlErrorException('DomNode given for visitInteger was wrong');
-        }
-
-        $data = (int) $this->getCurrentText();
-        if(null === $this->result)
-        {
-            $this->result = $data;
-        }
-        return $data;
-    }
-
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @throws RuntimeException
-     * @throws LogicException
-     * @return mixed
+     * {@inheritdoc}
      */
     public function visitArray($data, array $type, Context $context)
     {
@@ -336,6 +362,14 @@ class XmlDeserializationVisitor extends AbstractVisitor{
 
     }
 
+    /**
+     * helper method for the visitArray() method
+     * 
+     * @param array $data
+     * @param array $type
+     * @param Context $context
+     * @return array
+     */
     private function visitArrayWithOneParam(array $data, array $type, Context $context)
     {
         $result = array();
@@ -352,6 +386,15 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         return $result;
     }
 
+    /**
+     * helper method for the visitArray() method
+     * 
+     * @param array $data
+     * @param array $type
+     * @param Context $context
+     * @return array
+     * @throws Exception\RuntimeException
+     */
     private function visitArrayWithTwoParam(array $data,array $type, Context $context)
     {
         if (null === $this->currentMetadata) {
@@ -367,6 +410,9 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->setCurrentObject($object);
@@ -377,12 +423,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     }
 
     /**
-     *
-     * @param PropertyMetadata $metadata
-     * @param mixed $data
-     * @param Context $context
-     * @return null|void
-     * @throws RuntimeException
+     * {@inheritdoc}
      */
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
@@ -421,53 +462,13 @@ class XmlDeserializationVisitor extends AbstractVisitor{
 
 
     /**
-     * this little method will check a node for a node null value
-     * this could be if nil="true" or the string content of the node is NULL or null
-     * in both cases we will return true and set the current
+     * helper for the visitProperty() method to parse for attributes in the current node
      *
-     * @param $data
-     * @return bool
+     * @param PropertyMetadata $metadata
+     * @param $name
+     * @param Context $context
+     * @return null
      */
-    public function checkNullNode($data)
-    {
-       $this->setDomElement($data);
-        //check if there is an nil attribute
-       $nodeAttributes = $this->getCurrentAttributes();
-       foreach($nodeAttributes as $nodeAttribute)
-       {
-           if($nodeAttribute->localName == 'nil' && $nodeAttribute->textContent == "true")
-           {
-               return true;
-           }
-       }
-
-       //check if the textContent is NULL or null
-       if($this->getCurrentText() == 'NULL' || $this->getCurrentText() == 'null')
-       {
-           return true;
-       }
-       return false;
-
-
-
-    }
-
-    /**
-     * What should happen if a value, attribute, .. matches to a node that is a null node:
-     * < ... ns:nil="true"> or <result>null</result>
-     * In this case we will set the property to null
-     *
-     * @param \Metadata\PropertyMetadata $metadata
-     * @param $data
-     * @param Context $context* @param Context $context
-     */
-    private function visitNullNode(\Metadata\PropertyMetadata $metadata, $data, Context $context)
-    {
-        $metadata->reflection->setValue($this->currentObject,null);
-        return;
-    }
-
-
     private function visitPropertyAttribute(PropertyMetadata $metadata, $name, Context $context)
     {
         $attributes = $this->getCurrentAttributes();
@@ -500,7 +501,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      * @param $name
      * @param Context $context
      * @return null
-     * @throws Exception\DomXmlErrorException
+     * @throws Exception\XmlErrorException
      */
     private function visitPropertyValue(PropertyMetadata $metadata, $name, Context $context)
     {
@@ -554,18 +555,18 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      * @param $name
      * @param Context $context
      * @return null
-     * @throws Exception\DomXmlErrorException
+     * @throws Exception\XmlErrorException
      */
     private function visitPropertyDefault(PropertyMetadata $metadata, $name, Context $context)
     {
         $nodeList = $this->domElement->getElementsByTagName($name);
         if(count($nodeList) == 0)
         {
-            throw new DomXmlErrorException('There is no Tag with the name '.$name);
+            throw new XmlErrorException('There is no Tag with the name '.$name);
         }
         if(count($nodeList) > 1)
         {
-            throw new DomXmlErrorException('There are more than one Tag with the name '.$name.'. Maybe use Namespacing instead?');
+            throw new XmlErrorException('There are more than one Tag with the name '.$name.'. Maybe use Namespacing instead?');
         }
         $childNode = null;
 
@@ -598,119 +599,14 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         $this->currentObject->{$metadata->setter}($v);
     }
 
-    private function getCurrentText()
-    {
-        $children = $this->domElement->childNodes;
-        $text = '';
-        for($i = 0; $i < $children->length; $i++)
-        {
-            $child = $children->item($i);
-            if($child instanceof \DOMText)
-            {
-                $text .= $child->textContent;
-            }
-        }
-        return $text;
-    }
-
     /**
-     * this method will create a list of child nodes. Instead of the normal DOMNode::childNodes property
-     * i will return an array of nodes, which could be parsed like an array
-     *
-     * @throws Exception\DomXmlErrorException
-     */
-    private function getCurrentChildNodes(){
-        if(!$this->domElement->hasChildNodes())
-        {
-            throw new DomXmlErrorException('The DOMElement you are parsing has no childnodes for getting a vlaue');
-        }
-        $childNodes = $this->domElement->childNodes;
-        $result = array();
-        for($i = 0; $i < $childNodes->length; $i++)
-        {
-            $result[] = $childNodes->item($i);
-        }
-
-        return $result;
-    }
-
-    /**
-     * instead of the nodeList this method will return an array of nodes which should be all DOMAttr
-     */
-    private function getCurrentAttributes()
-    {
-        $nodeAttributes = $this->domElement->attributes;
-        $result = array();
-        if(!($nodeAttributes instanceof \DOMNodeList || $nodeAttributes instanceof \DOMNamedNodeMap))
-        {
-            return $result;
-        }
-        if($nodeAttributes->length > 0)
-        {
-            for($i = 0; $i < $nodeAttributes->length; $i++)
-            {
-                $node = $nodeAttributes->item($i);
-                if($node instanceof \DOMAttr)
-                {
-                    $result[] = $node;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Called after all properties of the object have been visited.
-     *
-     * @param ClassMetadata $metadata
-     * @param mixed $data
-     * @param array $type
-     *
-     * @param Context $context
-     * @return mixed
+     * {@inheritdoc}
      */
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $rs = $this->currentObject;
         $this->revertCurrentObject();
         return $rs;
-    }
-
-    /**
-     * Called before serialization/deserialization starts.
-     *
-     * @param GraphNavigator $navigator
-     *
-     * @return void
-     */
-    public function setNavigator(GraphNavigator $navigator)
-    {
-        $this->navigator = $navigator;
-        $this->objectStack = new \SplStack;
-        $this->metadataStack = new \SplStack;
-        $this->result = null;
-    }
-
-    /**
-     * @deprecated use Context::getNavigator/Context::accept instead
-     * @return GraphNavigator
-     */
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
-    /**
-     * @return object|array|scalar
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    public function enableExternalEntities()
-    {
-        $this->disableExternalEntities = false;
     }
 
 
@@ -765,6 +661,14 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
      * @param array<string> $doctypeWhitelist
      */
     public function setDoctypeWhitelist(array $doctypeWhitelist)
@@ -779,4 +683,60 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     {
         return $this->doctypeWhitelist;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNavigator()
+    {
+        return $this->navigator;
+    }
+    
+    /**
+     * this little method will check a node for a node null value
+     * this could be if nil="true" or the string content of the node is NULL or null
+     * in both cases we will return true and set the current
+     *
+     * @param $data
+     * @return bool
+     */
+    public function checkNullNode($data)
+    {
+        $this->setDomElement($data);
+        //check if there is an nil attribute
+        $nodeAttributes = $this->getCurrentAttributes();
+        foreach($nodeAttributes as $nodeAttribute)
+        {
+            if($nodeAttribute->localName == 'nil' && $nodeAttribute->textContent == "true")
+            {
+                return true;
+            }
+        }
+
+        //check if the textContent is NULL or null
+        if($this->getCurrentText() == 'NULL' || $this->getCurrentText() == 'null')
+        {
+            return true;
+        }
+        return false;
+
+
+
+    }
+
+    /**
+     * What should happen if a value, attribute, .. matches to a node that is a null node:
+     * < ... ns:nil="true"> or <result>null</result>
+     * In this case we will set the property to null
+     *
+     * @param \Metadata\PropertyMetadata $metadata
+     * @param $data
+     * @param Context $context* @param Context $context
+     */
+    private function visitNullNode(\Metadata\PropertyMetadata $metadata, $data, Context $context)
+    {
+        $metadata->reflection->setValue($this->currentObject,null);
+        return;
+    }
+
 }

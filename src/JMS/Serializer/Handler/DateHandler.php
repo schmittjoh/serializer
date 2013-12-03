@@ -25,24 +25,14 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 
-/**
- * The DateHandler works as an Extension to create strings from DateTime or DateInterval object or create
- * them from strings
- * DateTime is possible for all formats in both ways (deserialization and serialisation)
- * DateIntval is possible for all formats in serialisation and for XML only for deserialization
- *
- * Class DateHandler
- * @package JMS\Serializer\Handler
- */
+
 class DateHandler implements SubscribingHandlerInterface
 {
     private $defaultFormat;
     private $defaultTimezone;
 
     /**
-     * this method decides which method needs to be called for a specific Date object creation
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribingMethods()
     {
@@ -55,7 +45,7 @@ class DateHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
                 'format' => $format,
             );
-            //the DateInerval is no able to be deserialzed from xml
+            //The DateInterval is now able to be deserialized from xml
             if($format == "xml"){
                 $methods[] = array(
                     'type' => 'DateInterval',
@@ -119,7 +109,8 @@ class DateHandler implements SubscribingHandlerInterface
 
     /**
      * method will parse the node for a "DateTime-string" and will give it to the factory method for the DateInterval
-     * @param \JMS\Serializer\VisitorInterface|\JMS\Serializer\XmlDeserializationVisitor|\JMS\Serializer\XmlDomDeserializationVisitor $visitor
+     *
+     * @param XmlDeserializationVisitor $visitor
      * @param $data
      * @param array $type
      * @return \DateInterval | null
