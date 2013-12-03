@@ -132,17 +132,19 @@ class ClassMetadata extends MergeableClassMetadata
         if ( ! $object instanceof ClassMetadata) {
             throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
         }
+
+        // Handler methods are overwritten in toto
+        // disable inheritance if child class has new properties
+        if ( $object->handlerCallbacks && !$this->propertyMetadata ) {
+            $this->handlerCallbacks = $object->handlerCallbacks;
+        }
+
         parent::merge($object);
 
         $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
-
-        // Handler methods are overwritten in toto
-        if ( $object->handlerCallbacks ) {
-            $this->handlerCallbacks = $object->handlerCallbacks;
-        }
 
         if ($object->accessorOrder) {
             $this->accessorOrder = $object->accessorOrder;
