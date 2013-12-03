@@ -1,7 +1,22 @@
 <?php
 
-namespace JMS\Serializer;
+/*
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -57,7 +72,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     /**
      * @var array
      */
-    private $doctypeWhitelist = array();
+    private $ddoctypeWhitelist = array();
 
     /**
      * @var \DOMElement $domElement
@@ -161,7 +176,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     private function getCurrentChildNodes(){
         if(!$this->domElement->hasChildNodes())
         {
-            throw new XmlErrorException('The DOMElement you are parsing has no childnodes for getting a vlaue');
+            throw new XmlErrorException('The DOMElement you are parsing has no childnodes for getting a value');
         }
         $childNodes = $this->domElement->childNodes;
         $result = array();
@@ -298,7 +313,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      *
      * @param Context $context
      * @throws Exception\XmlErrorException
-     * @internal param \JMS\Serializer\Context $contex
+     * @internal param \JMS\Serializer\Context $context
      * @return mixed
      */
     public function visitFloat($data, array $type, Context $context)
@@ -515,7 +530,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         {
             return null;
         }
-        //look in the childnode for the type that was declared for the property
+        //look in the childNode for the type that was declared for the property
         $v = $this->navigator->accept(
             $childNode,
             $metadata->type,
