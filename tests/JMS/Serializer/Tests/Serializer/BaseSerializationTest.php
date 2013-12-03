@@ -599,7 +599,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testInvalidGroupName()
     {
         $groupsObject = new InvalidGroupsObject();
-
         $this->serializer->serialize($groupsObject, $this->getFormat());
     }
 
