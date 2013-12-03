@@ -35,18 +35,15 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 class XmlDeserializationVisitor extends AbstractVisitor{
 
     /**
-     * @var
+     * @var \SplStack
      */
     private $objectStack;
 
     /**
-     * @var
+     * @var \SplStack
      */
     private $metadataStack;
 
-    /**
-     * @var
-     */
     private $currentObject;
 
     /**
@@ -54,9 +51,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      */
     private $currentMetadata;
 
-    /**
-     * @var
-     */
+
     private $result;
 
     /**
