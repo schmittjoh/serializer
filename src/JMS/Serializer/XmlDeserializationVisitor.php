@@ -334,7 +334,6 @@ class XmlDeserializationVisitor extends AbstractVisitor{
             {
                 return $node->nodeName == $entryName || $node->localName == $entryName;
             }
-
         });
 
         if(count($matchedNode) == 0)
