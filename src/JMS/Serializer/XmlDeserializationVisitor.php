@@ -94,8 +94,19 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     /**
      * {@inheritdoc}
      */
+    public function getNavigator()
+    {
+        return $this->navigator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function prepare($data)
     {
+        $previous = libxml_use_internal_errors(true);
+        $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
+
         $dom = new \DOMDocument();
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
@@ -109,6 +120,10 @@ class XmlDeserializationVisitor extends AbstractVisitor{
                 }
             }
         }
+
+        libxml_use_internal_errors($previous);
+        libxml_disable_entity_loader($previousEntityLoaderState);
+
         if(false === $dom)
         {
             throw new XmlErrorException(libxml_get_last_error());
@@ -693,14 +708,7 @@ class XmlDeserializationVisitor extends AbstractVisitor{
         return $this->doctypeWhitelist;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-    
+
     /**
      * this little method will check a node for a node null value
      * this could be if nil="true" or the string content of the node is NULL or null
