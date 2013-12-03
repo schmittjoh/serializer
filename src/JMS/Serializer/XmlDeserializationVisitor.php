@@ -14,8 +14,10 @@ namespace JMS\Serializer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Exception\DomXmlErrorException;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use PhpCollection\Sequence;
@@ -65,9 +67,13 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     protected $currentObject;
 
     /**
-     * @var
+     * @var PropertyMetadata
      */
     protected $currentMetadata;
+
+    /**
+     * @var
+     */
     protected $result;
 
     /**
@@ -76,17 +82,31 @@ class XmlDeserializationVisitor extends AbstractVisitor{
      *
      * @param mixed $data
      *
-     * @throws Exception\DomXmlErrorException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\XmlErrorException
      * @return \DOMDocument
      */
     public function prepare($data)
     {
+        $previous = libxml_use_internal_errors(true);
+        $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
+
         $dom = new \DOMDocument();
         $dom->loadXML($data);
-
+        foreach ($dom->childNodes as $child) {
+            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+                $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
+                if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                    throw new InvalidArgumentException(sprintf(
+                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                        $internalSubset
+                    ));
+                }
+            }
+        }
         if(false === $dom)
         {
-            throw new DomXmlErrorException(libxml_get_last_error());
+            throw new XmlErrorException(libxml_get_last_error());
         }
         return $dom;
     }
@@ -691,5 +711,72 @@ class XmlDeserializationVisitor extends AbstractVisitor{
     public function enableExternalEntities()
     {
         $this->disableExternalEntities = false;
+    }
+
+
+    /**
+     * @param mixed $object
+     */
+    public function setCurrentObject($object)
+    {
+        $this->objectStack->push($this->currentObject);
+        $this->currentObject = $object;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentObject()
+    {
+        return $this->currentObject;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function revertCurrentObject()
+    {
+        return $this->currentObject = $this->objectStack->pop();
+    }
+
+    /**
+     * @param PropertyMetadata $metadata
+     */
+    public function setCurrentMetadata(PropertyMetadata $metadata)
+    {
+        $this->metadataStack->push($this->currentMetadata);
+        $this->currentMetadata = $metadata;
+    }
+
+    /**
+     * @return PropertyMetadata
+     */
+    public function getCurrentMetadata()
+    {
+        return $this->currentMetadata;
+    }
+
+    /**
+     * @return PropertyMetadata
+     */
+    public function revertCurrentMetadata()
+    {
+        return $this->currentMetadata = $this->metadataStack->pop();
+    }
+
+    /**
+     * @param array<string> $doctypeWhitelist
+     */
+    public function setDoctypeWhitelist(array $doctypeWhitelist)
+    {
+        $this->doctypeWhitelist = $doctypeWhitelist;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getDoctypeWhitelist()
+    {
+        return $this->doctypeWhitelist;
     }
 }
