@@ -168,6 +168,16 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
         $this->data[$key] = $value;
     }
+    
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
 
     public function getRoot()
     {
