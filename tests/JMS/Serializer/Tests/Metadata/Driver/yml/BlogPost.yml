@@ -1,6 +1,11 @@
 JMS\Serializer\Tests\Fixtures\BlogPost:
     xml_root_name: blog-post
     properties:
+        id:
+            type: string
+            groups: [comments, post]
+            xml_element:
+                cdata: false
         title:
             type: string
             groups: [comments, post]

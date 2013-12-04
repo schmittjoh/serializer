@@ -162,6 +162,13 @@ class YamlDriver extends AbstractFileDriver
                         }
                     }
 
+                    if (isset($pConfig['xml_element'])) {
+                        $colConfig = $pConfig['xml_element'];
+                        if (isset($colConfig['cdata'])) {
+                            $pMetadata->xmlElementCData = (Boolean) $colConfig['cdata'];
+                        }
+                    }
+
                     if (isset($pConfig['xml_attribute'])) {
                         $pMetadata->xmlAttribute = (Boolean) $pConfig['xml_attribute'];
                     }

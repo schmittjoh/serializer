@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
     <class name="JMS\Serializer\Tests\Fixtures\BlogPost" xml-root-name="blog-post">
+        <property name="id" type="string" groups="comments,post">
+            <xml-element cdata="false"/>
+        </property>
         <property name="title" type="string" groups="comments,post"/>
         <property name="createdAt" xml-attribute="true" type="DateTime"/>
         <property name="published" type="boolean" serialized-name="is_published" xml-attribute="true" groups="post" />

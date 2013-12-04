@@ -32,6 +32,7 @@ XML Reference
                 <type><![CDATA[]]></type>
                 <xml-list inline="true" entry-name="foobar" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
+                <xml-element cdata="false" />
             </property>
             <callback-method name="foo" type="pre-serialize" />
             <callback-method name="bar" type="post-serialize" />
