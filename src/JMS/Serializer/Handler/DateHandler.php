@@ -25,7 +25,6 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
 
-
 class DateHandler implements SubscribingHandlerInterface
 {
     private $defaultFormat;
@@ -46,7 +45,7 @@ class DateHandler implements SubscribingHandlerInterface
                 'format' => $format,
             );
             //The DateInterval is now able to be deserialized from xml
-            if($format == "xml"){
+            if ($format == "xml") {
                 $methods[] = array(
                     'type' => 'DateInterval',
                     'format' => $format,
@@ -117,19 +116,18 @@ class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateIntervalXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
-        if($data instanceof \DOMDocument)
-        {
+        if ($data instanceof \DOMDocument) {
             $data = $data->documentElement;
 
         }
-        if($visitor->checkNullNode($data)){
+        if ($visitor->checkNullNode($data)) {
             return null;
         }
-        return $this->parseDateInterval($data->nodeValue,$type);
+        return $this->parseDateInterval($data->nodeValue, $type);
     }
 
     /**
-     * with the help of the newer visitor this mehtod will deserialize a Date string into an DataTime Object
+     * with the help of the newer visitor this method will deserialize a Date string into an DataTime Object
      *
      * @param XmlDeserializationVisitor $visitor
      * @param $data
@@ -138,15 +136,14 @@ class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
-        if($data instanceof \DOMDocument)
-        {
+        if ($data instanceof \DOMDocument) {
             $data = $data->documentElement;
 
         }
-        if($visitor->checkNullNode($data)){
+        if ($visitor->checkNullNode($data)) {
             return null;
         }
-        return $this->parseDateTime($data->nodeValue,$type);
+        return $this->parseDateTime($data->nodeValue, $type);
     }
 
 
@@ -195,10 +192,10 @@ class DateHandler implements SubscribingHandlerInterface
      * @return \DateInterval
      * @throws \JMS\Serializer\Exception\RuntimeException
      */
-    private function parseDateInterval($data,array $type)
+    private function parseDateInterval($data, array $type)
     {
         $dateInterval = new \DateInterval($data);
-        if(false === $dateInterval){
+        if (false === $dateInterval) {
             throw new RuntimeException(sprintf('Invalid datetintervall "%s"', $data));
         }
         return $dateInterval;
