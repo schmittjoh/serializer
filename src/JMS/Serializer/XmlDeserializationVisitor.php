@@ -115,8 +115,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
                 if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
                     throw new InvalidArgumentException(sprintf(
-                        'The document type "%s" is not allowed. If it is safe,
-                        you may add it to the whitelist configuration.',
+                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
                         $internalSubset
                     ));
                 }
@@ -191,7 +190,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
         for ($i = 0; $i < $childNodes->length; $i++) {
             $result[] = $childNodes->item($i);
         }
-
         return $result;
     }
 
@@ -200,6 +198,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
      */
     private function getCurrentAttributes()
     {
+        /** @var \DOMNodeList $nodeAttributes */
         $nodeAttributes = $this->domElement->attributes;
         $result = array();
         if (!($nodeAttributes instanceof \DOMNodeList || $nodeAttributes instanceof \DOMNamedNodeMap)) {
@@ -227,7 +226,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             }
             return null;
         }
-        throw new XmlErrorException(libxml_get_last_error());
+        throw new RuntimeException('No null data given to visit');
     }
 
     /**
@@ -277,7 +276,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $this->setDomElement($data);
         if (!$this->domElement instanceof \DOMNode) {
-            throw new XmlErrorException(libxml_get_last_error());
+            throw new RuntimeException('Wrong data given to visit.');
         }
 
         $data = (int) $this->getCurrentText();
@@ -516,26 +515,27 @@ class XmlDeserializationVisitor extends AbstractVisitor
      * @param PropertyMetadata $metadata
      * @param $name
      * @param Context $context
+     * @throws Exception\RuntimeException
      * @return null
-     * @throws Exception\XmlErrorException
      */
     private function visitPropertyValue(PropertyMetadata $metadata, $name, Context $context)
     {
-        $nodeList = $this->getCurrentChildNodes();
-        $childNode = \array_filter($nodeList, function ($node) use ($name) {
-            return $node instanceof \DOMElement && $name == $node->localName;
-        });
-
-        $childNode = \array_shift($childNode);
-        if (!$childNode instanceof \DOMNode) {
-            return null;
+        if ($this->domElement->localName != $name) {
+            throw new RuntimeException(
+                sprintf(
+                    'The current element`s name %s does not match with the given one %s',
+                    $this->domElement->localName,
+                    $name
+                )
+            );
         }
-        //look in the childNode for the type that was declared for the property
+
         $v = $this->navigator->accept(
-            $childNode,
+            $this->domElement,
             $metadata->type,
             $context
         );
+
         //insert the result into the reflection
         $metadata->reflection->setValue($this->currentObject, $v);
         return;
@@ -574,16 +574,19 @@ class XmlDeserializationVisitor extends AbstractVisitor
     private function visitPropertyDefault(PropertyMetadata $metadata, $name, Context $context)
     {
         $nodeList = $this->domElement->getElementsByTagName($name);
+
+        //no node found with that name
         if ($nodeList->length == 0) {
-            throw new RuntimeException('There is no Tag with the name '.$name);
-        }
-        if ($nodeList->length > 1) {
             throw new RuntimeException(
-                'There are more than one Tag with the name '.$name.'. Maybe use Namespacing instead?'
+                sprintf(
+                    'There is no Tag with the name %s',
+                    $name
+                )
             );
         }
-        $childNode = null;
 
+        //look for the node with that name
+        $childNode = null;
         for ($i = 0; $i < $nodeList->length; $i++) {
             $node = $nodeList->item($i);
             if ($node instanceof \DOMNode) {
