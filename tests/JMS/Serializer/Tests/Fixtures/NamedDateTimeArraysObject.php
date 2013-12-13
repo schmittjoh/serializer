@@ -23,41 +23,25 @@ use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
 
 
-class DateTimeArraysObject
+class NamedDateTimeArraysObject
 {
     /**
      * @var \DateTime[]
-     * @Type("array<DateTime>")
+     * @Type("array<string,DateTime<'d.m.Y H:i:s'>>")
+     * @XmlKeyValuePairs
      */
-    private $arrayWithDefaultDateTime;
+    private $namedArrayWithFormattedDate;
 
-    /**
-     * @var \DateTime[]
-     * @Type("array<DateTime<'d.m.Y H:i:s'>>")
-     */
-    private $arrayWithFormattedDateTime;
-
-
-    function __construct($arrayWithDefaultDateTime, $arrayWithFormattedDateTime)
+    function __construct($namedArrayWithFormattedDate)
     {
-        $this->arrayWithDefaultDateTime    = $arrayWithDefaultDateTime;
-        $this->arrayWithFormattedDateTime  = $arrayWithFormattedDateTime;
+        $this->namedArrayWithFormattedDate = $namedArrayWithFormattedDate;
     }
 
     /**
      * @return \DateTime[]
      */
-    public function getArrayWithDefaultDateTime()
+    public function getNamedArrayWithFormattedDate()
     {
-        return $this->arrayWithDefaultDateTime;
+        return $this->namedArrayWithFormattedDate;
     }
-
-    /**
-     * @return \DateTime[]
-     */
-    public function getArrayWithFormattedDateTime()
-    {
-        return $this->arrayWithFormattedDateTime;
-    }
-
 }

@@ -8,8 +8,4 @@
     <entry><![CDATA[01.01.2047 12:47:47]]></entry>
     <entry><![CDATA[05.12.2013 00:00:00]]></entry>
   </array_with_formatted_date_time>
-  <named_array_with_formatted_date>
-    <testdate1><![CDATA[01.01.2047 12:47:47]]></testdate1>
-    <testdate2><![CDATA[05.12.2013 00:00:00]]></testdate2>
-  </named_array_with_formatted_date>
 </result>
