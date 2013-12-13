@@ -99,8 +99,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         }
 
         foreach ($data as $k => $v) {
-            $typeArray = isset($type['params'][0]) ? (isset($type['params'][1]) && is_array($type['params'][1]) ? $type['params'][1] : $type['params'][0]) : null;
-            $v = $this->navigator->accept($v, $typeArray, $context);
+            $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
             if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
                 continue;
@@ -110,6 +109,20 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         }
 
         return $rs;
+    }
+
+    /**
+     * @param array $typeArray
+     */
+    protected function getElementType($typeArray)
+    {
+        if (false === isset($typeArray['params'][0]))
+            return null;
+
+        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1]))
+            return $typeArray['params'][1];
+        else
+            return $typeArray['params'][0];
     }
 
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
