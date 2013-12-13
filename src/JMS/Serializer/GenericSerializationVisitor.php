@@ -111,20 +111,6 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return $rs;
     }
 
-    /**
-     * @param array $typeArray
-     */
-    protected function getElementType($typeArray)
-    {
-        if (false === isset($typeArray['params'][0]))
-            return null;
-
-        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1]))
-            return $typeArray['params'][1];
-        else
-            return $typeArray['params'][0];
-    }
-
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if (null === $this->root) {
