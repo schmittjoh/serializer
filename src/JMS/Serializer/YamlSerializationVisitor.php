@@ -96,8 +96,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
             $this->writer->indent();
 
-            $typeArray = isset($type['params'][0]) ? (isset($type['params'][1]) && is_array($type['params'][1]) ? $type['params'][1] : $type['params'][0]) : null;
-            if (null !== $v = $this->navigator->accept($v, $typeArray, $context)) {
+            if (null !== $v = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->writer
                     ->rtrim(false)
                     ->writeln(' '.$v)

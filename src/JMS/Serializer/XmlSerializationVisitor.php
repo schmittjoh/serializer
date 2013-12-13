@@ -171,14 +171,14 @@ class XmlSerializationVisitor extends AbstractVisitor
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            $typeArray = isset($type['params'][0]) ? (isset($type['params'][1]) && is_array($type['params'][1]) ? $type['params'][1] : $type['params'][0]) : null;
-            if (null !== $node = $this->navigator->accept($v, $typeArray, $context)) {
+            if (null !== $node = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->currentNode->appendChild($node);
             }
 
             $this->revertCurrentNode();
         }
     }
+
 
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
