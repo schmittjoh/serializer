@@ -1,0 +1,11 @@
+JMS\Serializer\Tests\Fixtures\Person:
+    xml_root_name: child
+    properties:
+        name:
+            type: string
+            xml_value: true
+            xml_element:
+                cdata: false
+        age:
+            type: integer
+            xml_attribute: true

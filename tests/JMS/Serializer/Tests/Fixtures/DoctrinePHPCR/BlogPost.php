@@ -16,72 +16,67 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
 
-use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
-use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Type;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhpCollection\Map;
-use PhpCollection\Sequence;
+use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
 
-/** @XmlRoot("blog-post") */
+/**
+ * @PHPCRODM\Document
+ * @XmlRoot("blog-post")
+ */
 class BlogPost
 {
     /**
-     * @Type("string")
-     * @XmlElement(cdata=false)
-     * @Groups({"comments","post"})
+     * @PHPCRODM\Id()
      */
-    private $id = 'what_a_nice_id';
+    protected $id;
 
     /**
-     * @Type("string")
+     * @PHPCRODM\String()
      * @Groups({"comments","post"})
      */
     private $title;
 
     /**
-     * @Type("DateTime")
+     * @PHPCRODM\String()
+     */
+    protected $slug;
+
+    /**
+     * @PHPCRODM\Date()
      * @XmlAttribute
      */
     private $createdAt;
 
     /**
-     * @Type("boolean")
+     * @PHPCRODM\Boolean()
+     * @Type("integer")
+     * This boolean to integer conversion is one of the few changes between this
+     * and the standard BlogPost class. It's used to test the override behavior
+     * of the DoctrineTypeDriver so notice it, but please don't change it.
+     *
      * @SerializedName("is_published")
-     * @XmlAttribute
      * @Groups({"post"})
+     * @XmlAttribute
      */
     private $published;
 
     /**
-     * @Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Comment>")
+     * @PHPCRODM\ReferenceMany(targetDocument="Comment", property="blogPost")
      * @XmlList(inline=true, entry="comment")
      * @Groups({"comments"})
      */
     private $comments;
 
     /**
-     * @Type("PhpCollection\Sequence<JMS\Serializer\Tests\Fixtures\Comment>")
-     * @XmlList(inline=true, entry="comment2")
-     * @Groups({"comments"})
-     */
-    private $comments2;
-
-    /**
-     * @Type("PhpCollection\Map<string,string>")
-     * @XmlMap(keyAttribute = "key")
-     */
-    private $metadata;
-
-    /**
-     * @Type("JMS\Serializer\Tests\Fixtures\Author")
+     * @PHPCRODM\ReferenceOne(targetDocument="Author")
      * @Groups({"post"})
      */
     private $author;
@@ -92,9 +87,6 @@ class BlogPost
         $this->author = $author;
         $this->published = false;
         $this->comments = new ArrayCollection();
-        $this->comments2 = new Sequence();
-        $this->metadata = new Map();
-        $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
     }
 
@@ -103,14 +95,8 @@ class BlogPost
         $this->published = true;
     }
 
-    public function getMetadata()
-    {
-        return $this->metadata;
-    }
-
     public function addComment(Comment $comment)
     {
         $this->comments->add($comment);
-        $this->comments2->add($comment);
     }
 }

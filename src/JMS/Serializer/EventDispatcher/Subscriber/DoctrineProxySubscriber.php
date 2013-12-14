@@ -19,6 +19,8 @@
 namespace JMS\Serializer\EventDispatcher\Subscriber;
 
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ODM\MongoDB\PersistentCollection as MongoDBPersistentCollection;
+use Doctrine\ODM\PHPCR\PersistentCollection as PHPCRPersistentCollection;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
@@ -36,7 +38,10 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         // so it must be loaded if its a real class.
         $virtualType = ! class_exists($type['name'], false);
 
-        if ($object instanceof PersistentCollection) {
+        if ($object instanceof PersistentCollection
+            || $object instanceof MongoDBPersistentCollection
+            || $object instanceof PHPCRPersistentCollection
+        ) {
             if ( ! $virtualType) {
                 $event->setType('ArrayCollection');
             }

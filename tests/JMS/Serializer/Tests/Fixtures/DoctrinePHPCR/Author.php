@@ -16,28 +16,34 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
 
-use JMS\Serializer\Annotation\XmlAttribute;
-use JMS\Serializer\Annotation\XmlValue;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\SerializedName;
 
-/**
- * @XmlRoot("child")
- */
-class Person
+use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
+
+/** @PHPCRODM\Document */
+class Author
 {
     /**
-     * @Type("string")
-     * @XmlValue(cdata=false)
+     * @PHPCRODM\Id()
      */
-    public $name;
+    protected $id;
 
     /**
-     * @Type("integer")
-     * @XmlAttribute
+     * @PHPCRODM\String()
+     * @SerializedName("full_name")
      */
-    public $age;
+    private $name;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }

@@ -16,28 +16,16 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
-
-use JMS\Serializer\Annotation\XmlAttribute;
-use JMS\Serializer\Annotation\XmlValue;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlElement;
-use JMS\Serializer\Annotation\Type;
+namespace JMS\Serializer\Annotation;
 
 /**
- * @XmlRoot("child")
+ * @Annotation
+ * @Target({"PROPERTY","METHOD"})
  */
-class Person
+final class XmlElement
 {
     /**
-     * @Type("string")
-     * @XmlValue(cdata=false)
+     * @var boolean
      */
-    public $name;
-
-    /**
-     * @Type("integer")
-     * @XmlAttribute
-     */
-    public $age;
+    public $cdata = true;
 }

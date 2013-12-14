@@ -36,7 +36,7 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
             'Doctrine\Common\Collections\ArrayCollection',
             'Doctrine\ORM\PersistentCollection',
             'Doctrine\ODM\MongoDB\PersistentCollection',
-            'Doctrine\ODM\PHPCR\ChildrenCollection'
+            'Doctrine\ODM\PHPCR\PersistentCollection',
         );
 
         foreach ($collectionTypes as $type) {

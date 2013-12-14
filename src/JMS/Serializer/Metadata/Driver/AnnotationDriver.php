@@ -30,10 +30,12 @@ use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
+use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Metadata\XmlElementMetadata;
 use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Type;
@@ -169,6 +171,9 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlAttribute = true;
                     } elseif ($annot instanceof XmlValue) {
                         $propertyMetadata->xmlValue = true;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {

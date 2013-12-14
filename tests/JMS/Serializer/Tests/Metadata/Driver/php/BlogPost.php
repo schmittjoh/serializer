@@ -6,6 +6,12 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 $metadata = new ClassMetadata('JMS\Serializer\Tests\Fixtures\BlogPost');
 $metadata->xmlRootName = 'blog-post';
 
+$pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'id');
+$pMetadata->setType('string');
+$pMetadata->groups = array('comments','post');
+$pMetadata->xmlElementCData = false;
+$metadata->addPropertyMetadata($pMetadata);
+
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'title');
 $pMetadata->setType('string');
 $pMetadata->groups = array('comments','post');
