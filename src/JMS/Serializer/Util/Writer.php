@@ -36,16 +36,26 @@ class Writer
 
     private $changes = array();
 
-    public function indent()
+    /**
+     * @param integer $amount
+     * 
+     * @return $this
+     */
+    public function indent($amount = 1)
     {
-        $this->indentationLevel += 1;
+        $this->indentationLevel += $amount;
 
         return $this;
     }
 
-    public function outdent()
+    /**
+     * @param integer $amount
+     * 
+     * @return $this
+     */
+    public function outdent($amount = 1)
     {
-        $this->indentationLevel -= 1;
+        $this->indentationLevel -= $amount;
 
         if ($this->indentationLevel < 0) {
             throw new RuntimeException('The identation level cannot be less than zero.');
