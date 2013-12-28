@@ -193,6 +193,9 @@ abstract class Context
         return $this->serializeNull;
     }
 
+    /**
+     * @return string
+     */
     public function getFormat()
     {
         return $this->format;
@@ -232,5 +235,9 @@ abstract class Context
     }
 
     abstract public function getDepth();
+
+    /**
+     * @return integer
+     */
     abstract public function getDirection();
 }

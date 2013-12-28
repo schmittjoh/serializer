@@ -35,7 +35,6 @@ use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\VirtualProperty;
-use JMS\Serializer\Metadata\XmlElementMetadata;
 use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Type;
