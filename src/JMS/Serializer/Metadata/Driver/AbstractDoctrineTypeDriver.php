@@ -134,7 +134,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
     /**
      * @param string $className
      *
-     * @return ClassMetadata|null
+     * @return null|DoctrineClassMetadata
      */
     protected function tryLoadingDoctrineMetadata($className)
     {
@@ -149,6 +149,9 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $manager->getClassMetadata($className);
     }
 
+    /**
+     * @param string $type
+     */
     protected function normalizeFieldType($type)
     {
         if (!isset($this->fieldMapping[$type])) {

@@ -35,6 +35,9 @@ class SerializationContext extends Context
         return new self();
     }
 
+    /**
+     * @param string $format
+     */
     public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
         parent::initialize($format, $visitor, $navigator, $factory);
