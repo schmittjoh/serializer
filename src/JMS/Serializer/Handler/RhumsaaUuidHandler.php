@@ -23,11 +23,6 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
 use Rhumsaa\Uuid\Uuid;
 
-/**
- * Description of RhumsaaUuidHandler
- *
- * @author david
- */
 class RhumsaaUuidHandler implements SubscribingHandlerInterface
 {
 

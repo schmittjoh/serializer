@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace JMS\Serializer\Tests\Handler;
 
 use Rhumsaa\Uuid\Uuid;
@@ -14,11 +8,6 @@ use JMS\Serializer\Handler\RhumsaaUuidHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Annotation\Type;
 
-/**
- * Description of RhumsaaUuidHandlerTest
- *
- * @author david
- */
 class RhumsaaUuidHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
