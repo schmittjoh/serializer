@@ -125,6 +125,7 @@ final class GraphNavigator
             case 'float':
                 return $visitor->visitDouble($data, $type, $context);
 
+            case 'stdClass':
             case 'array':
                 return $visitor->visitArray($data, $type, $context);
 
