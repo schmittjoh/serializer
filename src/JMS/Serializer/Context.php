@@ -64,6 +64,9 @@ abstract class Context
         $this->attributes = new Map();
     }
 
+    /**
+     * @param string $format
+     */
     public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
         if ($this->initialized) {
