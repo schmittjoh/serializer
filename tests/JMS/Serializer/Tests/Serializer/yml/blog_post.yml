@@ -17,3 +17,5 @@ metadata:
     foo: bar
 author:
     full_name: 'Foo Bar'
+publisher:
+    pub_name: 'Bar Foo'

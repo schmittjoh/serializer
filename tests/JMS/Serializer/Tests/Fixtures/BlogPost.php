@@ -102,10 +102,16 @@ class BlogPost
      */
     private $author;
 
-    public function __construct($title, Author $author, \DateTime $createdAt)
+    /**
+     * @Type("JMS\Serializer\Tests\Fixtures\Publisher")
+     */
+    private $publisher;
+
+    public function __construct($title, Author $author, \DateTime $createdAt, Publisher $publisher)
     {
         $this->title = $title;
         $this->author = $author;
+        $this->publisher = $publisher;
         $this->published = false;
         $this->comments = new ArrayCollection();
         $this->comments2 = new Sequence();

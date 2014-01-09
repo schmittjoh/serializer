@@ -20,4 +20,7 @@
   <atom:author>
     <full_name><![CDATA[Foo Bar]]></full_name>
   </atom:author>
+  <publisher xmlns:ns2="http://example.com/namespace2">
+    <ns2:pub_name><![CDATA[Bar Foo]]></ns2:pub_name>
+  </publisher>
 </blog-post>

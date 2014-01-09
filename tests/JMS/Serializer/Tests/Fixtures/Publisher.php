@@ -18,35 +18,32 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlElement;
 
 /**
- * @XmlNamespace(prefix="old_foo", uri="http://foo.example.org");
- * @XmlNamespace(prefix="foo", uri="http://better.foo.example.org");
+ * @XmlRoot("publisher")
+ * @XmlNamespace(uri="http://example.com/namespace2", prefix="ns2")
  */
-class SimpleSubClassObject
-    extends SimpleClassObject
+class Publisher
 {
-
     /**
      * @Type("string")
-     * @XmlElement(namespace="http://better.foo.example.org")
+     * @XmlElement(namespace="http://example.com/namespace2")
+     * @SerializedName("pub_name")
      */
-    public $moo;
+    private $name;
 
-    /**
-     * @Type("string")
-     * @XmlElement(namespace="http://foo.example.org")
-     */
-    public $baz;
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
 
-    /**
-     * @Type("string")
-     * @XmlElement(namespace="http://new.foo.example.org")
-     */
-    public $qux;
-
+    public function getName()
+    {
+        return $this->name;
+    }
 }
