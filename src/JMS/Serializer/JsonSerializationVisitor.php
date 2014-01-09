@@ -61,7 +61,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $rs = new \ArrayObject();
 
             if (array() === $this->getRoot()) {
-                $this->setRoot($rs);
+                $this->setRoot(clone $rs);
             }
         }
 
