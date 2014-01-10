@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\SimpleClassObject">
+        <xml-namespace prefix="foo" uri="http://foo.example.org"/>
+        <xml-namespace prefix="old_foo" uri="http://old.foo.example.org"/>
+        <xml-namespace prefix="new_foo" uri="http://new.foo.example.org"/>
+        <property name="foo" type="string" xml-attribute="true" xml-namespace="http://old.foo.example.org"/>
+        <property name="bar" type="string" xml-namespace="http://foo.example.org"/>
+        <property name="moo" type="string" xml-namespace="http://new.foo.example.org"/>
+    </class>
+</serializer>

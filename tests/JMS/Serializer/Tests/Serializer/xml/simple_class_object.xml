@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result xmlns:old_foo="http://old.foo.example.org" xmlns:foo="http://foo.example.org" xmlns:new_foo="http://new.foo.example.org" old_foo:foo="foo">
+  <foo:bar><![CDATA[bar]]></foo:bar>
+  <new_foo:moo><![CDATA[moo]]></new_foo:moo>
+</result>

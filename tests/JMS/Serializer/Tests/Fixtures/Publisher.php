@@ -16,16 +16,34 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
+
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlElement;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "METHOD"})
+ * @XmlRoot("publisher")
+ * @XmlNamespace(uri="http://example.com/namespace2", prefix="ns2")
  */
-final class XmlAttribute
+class Publisher
 {
     /**
-     * @var string
+     * @Type("string")
+     * @XmlElement(namespace="http://example.com/namespace2")
+     * @SerializedName("pub_name")
      */
-    public $namespace;
+    private $name;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }

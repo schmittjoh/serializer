@@ -27,6 +27,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\VisitorInterface;
 
 use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 
 class InitializedBlogPostConstructor extends UnserializeObjectConstructor
@@ -37,6 +38,6 @@ class InitializedBlogPostConstructor extends UnserializeObjectConstructor
             return parent::construct($visitor, $metadata, $data, $type);
         }
 
-        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
     }
 }
