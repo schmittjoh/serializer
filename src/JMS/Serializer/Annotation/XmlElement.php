@@ -20,7 +20,7 @@ namespace JMS\Serializer\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 final class XmlElement
 {
@@ -28,4 +28,9 @@ final class XmlElement
      * @var boolean
      */
     public $cdata = true;
+    
+    /**
+     * @var string
+     */
+    public $namespace;
 }

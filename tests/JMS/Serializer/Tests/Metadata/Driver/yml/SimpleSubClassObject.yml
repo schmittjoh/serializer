@@ -1,0 +1,14 @@
+JMS\Serializer\Tests\Fixtures\SimpleSubClassObject:
+    xml_namespaces:
+        foo: http://better.foo.example.org
+        old_foo: http://foo.example.org
+    properties:
+        moo:
+            type: string
+            xml_namespace: http://better.foo.example.org
+        baz:
+            type: string
+            xml_namespace: http://foo.example.org
+        qux:
+            type: string
+            xml_namespace: http://new.foo.example.org

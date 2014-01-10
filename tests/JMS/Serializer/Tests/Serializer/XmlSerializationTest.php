@@ -30,7 +30,10 @@ use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\Input;
+use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
+use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -176,6 +179,59 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializingNull()
     {
         $this->markTestSkipped('Not supported in XML.');
+    }
+
+    public function testObjectWithXmlNamespaces()
+    {
+        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
+
+        $serialized = $this->serialize($object);
+        $this->assertEquals($this->getContent('object_with_xml_namespaces'), $this->serialize($object));
+
+        $xml = simplexml_load_string($this->serialize($object));
+        $xml->registerXPathNamespace('ns1', "http://purl.org/dc/elements/1.1/");
+        $xml->registerXPathNamespace('ns2', "http://schemas.google.com/g/2005");
+        $xml->registerXPathNamespace('ns3', "http://www.w3.org/2005/Atom");
+
+        $this->assertEquals('2011-07-30T00:00:00+0000', $this->xpathFirstToString($xml, './@created_at'));
+        $this->assertEquals('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', $this->xpathFirstToString($xml, './@ns2:etag'));
+        $this->assertEquals('en', $this->xpathFirstToString($xml, './@ns1:language'));
+        $this->assertEquals('This is a nice title.', $this->xpathFirstToString($xml, './ns1:title'));
+        $this->assertEquals('Foo Bar', $this->xpathFirstToString($xml, './ns3:author'));
+
+        $deserialized = $this->deserialize($this->getContent('object_with_xml_namespacesalias'), get_class($object));
+        $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
+        $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
+        $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
+        $this->assertAttributeSame('en', 'language', $deserialized);
+        $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
+
+    }
+
+    public function testXmlNamespacesInheritance()
+    {
+        $object = new SimpleClassObject();
+        $object->foo = 'foo';
+        $object->bar = 'bar';
+        $object->moo = 'moo';
+
+        $this->assertEquals($this->getContent('simple_class_object'), $this->serialize($object));
+
+        $childObject = new SimpleSubClassObject();
+        $childObject->foo = 'foo';
+        $childObject->bar = 'bar';
+        $childObject->moo = 'moo';
+        $childObject->baz = 'baz';
+        $childObject->qux = 'qux';
+
+
+        $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
+    }
+
+    private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
+    {
+        $nodes = $xml->xpath($xpath);
+        return (string) reset($nodes);
     }
 
     /**

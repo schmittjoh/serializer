@@ -45,6 +45,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $postDeserializeMethods = array();
 
     public $xmlRootName;
+    public $xmlNamespaces = array();
     public $accessorOrder;
     public $customOrder;
     public $handlerCallbacks = array();
@@ -138,6 +139,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
+        $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
         // Handler methods are taken from the outer class completely.
         $this->handlerCallbacks = $object->handlerCallbacks;
@@ -189,6 +191,24 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
+    public function registerNamespace($uri, $prefix = null)
+    {
+        if (!is_string($uri)) {
+            throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
+        }
+
+        if ($prefix !== null ) {
+            if (!is_string($prefix)) {
+                throw new InvalidArgumentException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
+            }
+        } else {
+            $prefix = "";
+        }
+
+        $this->xmlNamespaces[$prefix] = $uri;
+
+    }
+
     public function serialize()
     {
         $this->sortProperties();
@@ -198,6 +218,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+            $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
@@ -217,6 +238,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+            $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
