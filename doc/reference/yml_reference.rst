@@ -16,6 +16,8 @@ YAML Reference
                 some-value: ClassName
         virtual_properties:
             getSomeProperty: {}
+        xml_namespaces:
+            atom: http://www.w3.org/2005/Atom
         properties:
             some-property:
                 exclude: true
@@ -45,6 +47,7 @@ YAML Reference
                 xml_element:
                     cdata: false
                 max_depth: 2
+                xml_namespace: http://www.w3.org/2005/Atom
 
         handler_callbacks:
             serialization:

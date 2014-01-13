@@ -8,6 +8,7 @@ XML Reference
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
             accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
             access-type="public_method" discriminator-field-name="type">
+            <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
             <discriminator-class value="some-value">ClassName</discriminator-class>
             <property name="some-property"
                       exclude="true"
@@ -26,6 +27,7 @@ XML Reference
                       xml-key-value-pairs="true"
                       xml-attribute-map="true"
                       max-depth="2"
+                      xml-namespace="http://www.w3.org/2005/Atom"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
