@@ -17,6 +17,7 @@ YAML Reference
         virtual_properties:
             getSomeProperty: {}
         xml_namespaces:
+            "": http://your.default.namespace
             atom: http://www.w3.org/2005/Atom
         properties:
             some-property:
