@@ -55,10 +55,10 @@ class Article
     }
 
     /** @HandlerCallback("xml", direction = "deserialization") */
-    public function deserializeFromXml(XmlDeserializationVisitor $visitor, \SimpleXMLElement $data)
+    public function deserializeFromXml(XmlDeserializationVisitor $visitor, \DOMDocument $data, Context $context)
     {
-        $this->element = $data->getName();
-        $this->value = (string) $data;
+        $this->element = $data->documentElement->localName;
+        $this->value = $visitor->visitString($data, array('name'=>'string'), $context);
     }
 
     /** @HandlerCallback("json", direction = "deserialization") */

@@ -412,13 +412,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
      */
     private function visitArrayWithTwoParam(array $data, array $type, Context $context)
     {
+
         if (null === $this->currentMetadata) {
             throw new RuntimeException('Maps are not supported on top-level without metadata.');
         }
-        list($keyType, $entryType) = $type['params'];
         $result = array();
         foreach ($data as $node) {
-            //todo[max] implement this, forgot it
+            $result[] = $this->navigator->accept($node, $type['params'][0], $context);
         }
         return $result;
     }

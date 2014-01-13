@@ -69,13 +69,16 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
-        $this->deserialize('<?xml version="1.0"?>
+        $this->deserialize(
+            '<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
             <result>
                 &foo;
-            </result>', 'stdClass');
+            </result>',
+            'stdClass'
+        );
     }
 
     /**
@@ -139,6 +142,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testArrayKeyValues()
     {
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+
     }
 
     /**
