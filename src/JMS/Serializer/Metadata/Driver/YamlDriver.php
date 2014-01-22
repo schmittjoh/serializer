@@ -140,10 +140,6 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->groups = $pConfig['groups'];
                     }
 
-                    if (isset($pConfig['xml_namespace'])) {
-                        $pMetadata->xmlNamespace = (string) $pConfig['xml_namespace'];
-                    }
-
                     if (isset($pConfig['xml_list'])) {
                         $pMetadata->xmlCollection = true;
 
@@ -178,6 +174,10 @@ class YamlDriver extends AbstractFileDriver
                         $colConfig = $pConfig['xml_element'];
                         if (isset($colConfig['cdata'])) {
                             $pMetadata->xmlElementCData = (Boolean) $colConfig['cdata'];
+                        }
+
+                        if (isset($colConfig['namespace'])) {
+                            $pMetadata->xmlNamespace = (string) $colConfig['namespace'];
                         }
                     }
 

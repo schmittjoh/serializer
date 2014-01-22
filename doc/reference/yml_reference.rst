@@ -47,8 +47,8 @@ YAML Reference
                 xml_attribute_map: true
                 xml_element:
                     cdata: false
+                    namespace: http://www.w3.org/2005/Atom
                 max_depth: 2
-                xml_namespace: http://www.w3.org/2005/Atom
 
         handler_callbacks:
             serialization:

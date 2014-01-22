@@ -5,10 +5,13 @@ JMS\Serializer\Tests\Fixtures\SimpleSubClassObject:
     properties:
         moo:
             type: string
-            xml_namespace: http://better.foo.example.org
+            xml_element:
+                namespace: http://better.foo.example.org
         baz:
             type: string
-            xml_namespace: http://foo.example.org
+            xml_element:
+                namespace: http://foo.example.org
         qux:
             type: string
-            xml_namespace: http://new.foo.example.org
+            xml_element:
+                namespace: http://new.foo.example.org

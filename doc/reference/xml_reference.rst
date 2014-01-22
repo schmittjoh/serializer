@@ -27,14 +27,13 @@ XML Reference
                       xml-key-value-pairs="true"
                       xml-attribute-map="true"
                       max-depth="2"
-                      xml-namespace="http://www.w3.org/2005/Atom"
             >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
                 <type><![CDATA[]]></type>
                 <xml-list inline="true" entry-name="foobar" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
-                <xml-element cdata="false" />
+                <xml-element cdata="false" namespace="http://www.w3.org/2005/Atom"/>
             </property>
             <callback-method name="foo" type="pre-serialize" />
             <callback-method name="bar" type="post-serialize" />
