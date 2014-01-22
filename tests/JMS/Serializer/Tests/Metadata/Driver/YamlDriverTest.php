@@ -24,9 +24,9 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
 {
-    public function testBlogPostExcludeAllStrategy()
+    public function testBlogPost()
     {
-        $m = $this->getDriver('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $this->assertArrayHasKey('title', $m->propertyMetadata);
 
@@ -38,7 +38,7 @@ class YamlDriverTest extends BaseDriverTest
 
     public function testBlogPostExcludeNoneStrategy()
     {
-        $m = $this->getDriver('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $this->assertArrayNotHasKey('title', $m->propertyMetadata);
 
@@ -50,7 +50,7 @@ class YamlDriverTest extends BaseDriverTest
 
     public function testBlogPostCaseInsensitive()
     {
-        $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = array('name' => 'string', 'params' => array());
@@ -59,7 +59,7 @@ class YamlDriverTest extends BaseDriverTest
 
     public function testBlogPostAccessor()
     {
-        $m = $this->getDriver('accessor')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('accessor')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $this->assertArrayHasKey('title', $m->propertyMetadata);
 
@@ -69,15 +69,15 @@ class YamlDriverTest extends BaseDriverTest
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
+    private function getDriverForSubDir($subDir = null)
+    {
+        return new YamlDriver(new FileLocator(array(
+            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/yml' . ($subDir ? '/'.$subDir : ''),
+        )));
+    }
+
     protected function getDriver()
     {
-        $append = '';
-        if (func_num_args() == 1) {
-            $append = '/'.func_get_arg(0);
-        }
-
-        return new YamlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/yml'.$append,
-        )));
+        return $this->getDriverForSubDir();
     }
 }
