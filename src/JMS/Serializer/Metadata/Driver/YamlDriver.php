@@ -224,6 +224,10 @@ class YamlDriver extends AbstractFileDriver
 
     private function addClassProperties(ClassMetadata $metadata, array $config)
     {
+        if (isset($config['custom_accessor_order']) && ! isset($config['accessor_order'])) {
+            $config['accessor_order'] = 'custom';
+        }
+
         if (isset($config['accessor_order'])) {
             $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
         }

@@ -24,6 +24,12 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
 {
+    public function testAccessorOrderIsInferred()
+    {
+        $m = $this->getDriverForSubDir('accessor_inferred')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
+        $this->assertEquals(array('age', 'name'), array_keys($m->propertyMetadata));
+    }
+
     public function testShortExposeSyntax()
     {
         $m = $this->getDriverForSubDir('short_expose')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
