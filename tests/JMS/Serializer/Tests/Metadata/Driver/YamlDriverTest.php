@@ -24,6 +24,14 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
 {
+    public function testShortExposeSyntax()
+    {
+        $m = $this->getDriverForSubDir('short_expose')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
+
+        $this->assertArrayHasKey('name', $m->propertyMetadata);
+        $this->assertArrayNotHasKey('age', $m->propertyMetadata);
+    }
+
     public function testBlogPost()
     {
         $m = $this->getDriverForSubDir('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));

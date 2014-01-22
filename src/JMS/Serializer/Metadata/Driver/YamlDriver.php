@@ -46,45 +46,12 @@ class YamlDriver extends AbstractFileDriver
         $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
         $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
 
+        $this->addClassProperties($metadata, $config);
+
         $propertiesMetadata = array();
-
-        if (isset($config['accessor_order'])) {
-            $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
-        }
-
-        if (isset($config['xml_root_name'])) {
-            $metadata->xmlRootName = (string) $config['xml_root_name'];
-        }
-
-        if (array_key_exists('xml_namespaces', $config) ) {
-
-            foreach ( $config['xml_namespaces'] as $prefix => $uri) {
-                $metadata->registerNamespace($uri, $prefix);
-            }
-
-        }
-
-        if (isset($config['discriminator'])) {
-            if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
-                $metadata->discriminatorDisabled = true;
-            } else {
-                if ( ! isset($config['discriminator']['field_name'])) {
-                    throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
-                }
-
-                if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
-                    throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
-                }
-
-                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
-            }
-        }
-
         if (array_key_exists('virtual_properties', $config) ) {
-
             foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {
-
-                if ( !$class->hasMethod( $methodName ) ) {
+                if ( ! $class->hasMethod( $methodName ) ) {
                     throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
                 }
 
@@ -95,19 +62,20 @@ class YamlDriver extends AbstractFileDriver
             }
         }
 
-        if (!$excludeAll) {
+        if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($name !== $property->class) {
                     continue;
                 }
+
                 $pName = $property->getName();
                 $propertiesMetadata[$pName] = new PropertyMetadata($name, $pName);
             }
 
             foreach ($propertiesMetadata as $pName => $pMetadata) {
-
                 $isExclude = false;
-                $isExpose = $pMetadata instanceof VirtualPropertyMetadata;
+                $isExpose = $pMetadata instanceof VirtualPropertyMetadata
+                    || (isset($config['properties']) && array_key_exists($pName, $config['properties']));
 
                 if (isset($config['properties'][$pName])) {
                     $pConfig = $config['properties'][$pName];
@@ -217,7 +185,7 @@ class YamlDriver extends AbstractFileDriver
                     }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
-                || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                        || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $metadata->addPropertyMetadata($pMetadata);
                 }
             }
@@ -252,6 +220,41 @@ class YamlDriver extends AbstractFileDriver
     protected function getExtension()
     {
         return 'yml';
+    }
+
+    private function addClassProperties(ClassMetadata $metadata, array $config)
+    {
+        if (isset($config['accessor_order'])) {
+            $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
+        }
+
+        if (isset($config['xml_root_name'])) {
+            $metadata->xmlRootName = (string) $config['xml_root_name'];
+        }
+
+        if (array_key_exists('xml_namespaces', $config) ) {
+
+            foreach ( $config['xml_namespaces'] as $prefix => $uri) {
+                $metadata->registerNamespace($uri, $prefix);
+            }
+
+        }
+
+        if (isset($config['discriminator'])) {
+            if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
+                $metadata->discriminatorDisabled = true;
+            } else {
+                if ( ! isset($config['discriminator']['field_name'])) {
+                    throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
+                }
+
+                if ( ! isset($config['discriminator']['map']) || ! is_array($config['discriminator']['map'])) {
+                    throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
+                }
+
+                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
+            }
+        }
     }
 
     private function getCallbackMetadata(\ReflectionClass $class, $config)
