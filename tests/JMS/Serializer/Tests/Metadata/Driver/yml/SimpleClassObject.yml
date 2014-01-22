@@ -7,10 +7,13 @@ JMS\Serializer\Tests\Fixtures\SimpleClassObject:
         foo:
             type: string
             xml_attribute: true
-            xml_namespace: http://old.foo.example.org
+            xml_element:
+                namespace: http://old.foo.example.org
         bar:
             type: string
-            xml_namespace: http://foo.example.org
+            xml_element:
+                namespace: http://foo.example.org
         moo:
             type: string
-            xml_namespace: http://new.foo.example.org
+            xml_element:
+                namespace: http://new.foo.example.org

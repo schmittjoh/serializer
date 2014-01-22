@@ -154,10 +154,6 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
                     }
-
-                    if (null !== $xmlNamespace = $pElem->attributes()->{'xml-namespace'}) {
-                        $pMetadata->xmlNamespace = (string) $xmlNamespace;
-                    }
                     
                     if (isset($pElem->{'xml-list'})) {
                         $pMetadata->xmlCollection = true;
@@ -193,6 +189,10 @@ class XmlDriver extends AbstractFileDriver
                         $colConfig = $pElem->{'xml-element'};
                         if (isset($colConfig->attributes()->cdata)) {
                             $pMetadata->xmlElementCData = 'true' === (string) $colConfig->attributes()->cdata;
+                        }
+
+                        if (isset($colConfig->attributes()->namespace)) {
+                            $pMetadata->xmlNamespace = (string) $colConfig->attributes()->namespace;
                         }
                     }
 
