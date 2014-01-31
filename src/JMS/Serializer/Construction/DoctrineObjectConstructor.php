@@ -82,8 +82,14 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
             $identifierList[$name] = $data[$name];
         }
 
-        // Entity update, load it from database
+        // Entity update, try to load it from database
         $object = $objectManager->find($metadata->name, $identifierList);
+        
+        if ( ! is_object($object))
+        {
+        	// Entity with that identifier didn't exist, create a new Entity
+        	return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+        }
 
         $objectManager->initializeObject($object);
 
