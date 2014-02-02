@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
+use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
@@ -499,6 +500,36 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $form->add($child);
 
         $this->assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
+    }
+
+    public function testFormErrorsWithNonFormComponents()
+    {
+
+        if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
+            $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
+        }
+
+        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+
+        $factoryBuilder = new FormFactoryBuilder();
+        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\SubmitType);
+        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\ButtonType);
+        $factory = $factoryBuilder->getFormFactory();
+
+        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
+        $formConfigBuilder->setFormFactory($factory);
+        $formConfigBuilder->setCompound(true);
+        $formConfigBuilder->setDataMapper($this->getMock('Symfony\Component\Form\DataMapperInterface'));
+        $fooConfig = $formConfigBuilder->getFormConfig();
+
+        $form = new Form($fooConfig);
+        $form->add('save', 'submit');
+
+        try {
+            $this->serialize($form);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Serialization should not throw an exception');
+        }
     }
 
     public function testConstraintViolation()
