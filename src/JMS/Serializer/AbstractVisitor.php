@@ -44,13 +44,16 @@ abstract class AbstractVisitor implements VisitorInterface
      */
     protected function getElementType($typeArray)
     {
-        if (false === isset($typeArray['params'][0]))
+        if (false === isset($typeArray['params'][0])) {
             return null;
+        }
 
-        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1]))
+        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1])) {
             return $typeArray['params'][1];
-        else
+        }
+        else {
             return $typeArray['params'][0];
+        }
     }
 
 }

@@ -274,10 +274,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
-            foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime)
+            foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
                 $dateTime->setTimezone(new \DateTimeZone('UTC'));
-            foreach ($deserializedObject->getArrayWithFormattedDateTime() as $dateTime)
+            }
+
+            foreach ($deserializedObject->getArrayWithFormattedDateTime() as $dateTime) {
                 $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
 
             $this->assertEquals($object, $deserializedObject);
         }
@@ -298,15 +301,17 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
 
             // skip XML deserialization
-            if ($this->getFormat() === 'xml')
+            if ($this->getFormat() === 'xml') {
                 return;
+            }
 
             /** @var DateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
-            foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime)
+            foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
                 $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
 
             $this->assertEquals($object, $deserializedObject);
         }
