@@ -179,7 +179,6 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
     }
 
-
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if (null === $this->document) {
