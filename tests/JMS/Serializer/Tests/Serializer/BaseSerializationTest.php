@@ -256,6 +256,68 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+
+    public function testDateTimeArrays()
+    {
+        $data = array(
+            new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
+            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+        );
+
+        $object = new DateTimeArraysObject($data, $data);
+        $serializedObject = $this->serialize( $object );
+
+        $this->assertEquals($this->getContent('array_datetimes_object'), $serializedObject);
+
+        if ($this->hasDeserializer()) {
+            /** @var DateTimeArraysObject $deserializedObject */
+            $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
+
+            /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
+            foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            foreach ($deserializedObject->getArrayWithFormattedDateTime() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            $this->assertEquals($object, $deserializedObject);
+        }
+    }
+
+    public function testNamedDateTimeArrays()
+    {
+        $data = array(
+            new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
+            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+        );
+
+        $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $serializedObject = $this->serialize( $object );
+
+        $this->assertEquals($this->getContent('array_named_datetimes_object'), $serializedObject);
+
+        if ($this->hasDeserializer()) {
+
+            // skip XML deserialization
+            if ($this->getFormat() === 'xml') {
+                return;
+            }
+
+            /** @var NamedDateTimeArraysObject $deserializedObject */
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
+
+            /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
+            foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            $this->assertEquals($object, $deserializedObject);
+        }
+    }
+
+
     public function testArrayMixed()
     {
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
