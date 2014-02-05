@@ -96,7 +96,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
             $this->writer->indent();
 
-            if (null !== $v = $this->navigator->accept($v, null, $context)) {
+            if (null !== $v = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->writer
                     ->rtrim(false)
                     ->writeln(' '.$v)

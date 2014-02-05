@@ -171,7 +171,7 @@ class XmlSerializationVisitor extends AbstractVisitor
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            if (null !== $node = $this->navigator->accept($v, isset($type['params'][1]) ? $type['params'][1] : null, $context)) {
+            if (null !== $node = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->currentNode->appendChild($node);
             }
 
