@@ -225,7 +225,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
         $this->assertFalse($m->propertyMetadata['name']->xmlElementCData);
     }
-    
+
     public function testXmlNamespaceInheritanceMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleClassObject'));

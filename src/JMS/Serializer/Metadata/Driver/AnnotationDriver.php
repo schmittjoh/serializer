@@ -76,6 +76,7 @@ class AnnotationDriver implements DriverInterface
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
+        $readOnlyClass = false;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
@@ -87,6 +88,8 @@ class AnnotationDriver implements DriverInterface
                 $excludeAll = true;
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
+            } elseif ($annot instanceof ReadOnly) {
+                $readOnlyClass = true;
             } elseif ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
             } elseif ($annot instanceof Discriminator) {
@@ -137,7 +140,7 @@ class AnnotationDriver implements DriverInterface
             }
 
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
-
+                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
                 $accessType = $classAccessType;

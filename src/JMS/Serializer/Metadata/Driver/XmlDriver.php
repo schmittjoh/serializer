@@ -63,6 +63,8 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $xmlRootName;
         }
 
+        $readOnlyClass = !!strtolower($elem->attributes()->{'read-only'});
+
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = array();
         foreach ($elem->xpath('./discriminator-class') as $entry) {
@@ -154,7 +156,7 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
                     }
-                    
+
                     if (isset($pElem->{'xml-list'})) {
                         $pMetadata->xmlCollection = true;
 
@@ -218,7 +220,7 @@ class XmlDriver extends AbstractFileDriver
 
                     //we need read-only before setter and getter set, because that method depends on flag being set
                     if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
+                        $pMetadata->readOnly = $readOnlyClass || 'true' === strtolower($readOnly);
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};

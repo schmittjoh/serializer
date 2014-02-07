@@ -83,7 +83,6 @@ class PropertyMetadata extends BasePropertyMetadata
         if (null === $this->getter) {
             return parent::getValue($obj);
         }
-
         return $obj->{$this->getter}();
     }
 
