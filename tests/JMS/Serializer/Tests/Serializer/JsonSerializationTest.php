@@ -179,14 +179,24 @@ class JsonSerializationTest extends BaseSerializationTest
 
     /**
      * @group encoding
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
      */
-    public function testSerializeWithNonUtf8EncodingHasConsistentBehavior()
+    public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', 1);
-        $this->assertEquals('{"foo":"bar","bar":null}', $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e'))));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+    }
 
+    /**
+     * @group encoding
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
+     */
+    public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
+    {
         ini_set('display_errors', 0);
-        $this->assertEquals('{"foo":"bar","bar":null}', $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e'))));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
     }
 
     public function testSerializeArrayWithEmptyObject()
