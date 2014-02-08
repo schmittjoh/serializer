@@ -26,7 +26,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function getResult()
     {
-        return json_encode($this->getRoot(), $this->options);
+        return @json_encode($this->getRoot(), $this->options);
     }
 
     public function getOptions()

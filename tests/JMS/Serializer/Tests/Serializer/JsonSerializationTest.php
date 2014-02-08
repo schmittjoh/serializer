@@ -175,6 +175,18 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('{}', $this->serialize(new Author(null)));
     }
 
+    /**
+     * @group encoding
+     */
+    public function testSerializeWithNonUtf8EncodingHasConsistentBehavior()
+    {
+        ini_set('display_errors', 1);
+        $this->assertEquals('{"foo":"bar","bar":null}', $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e'))));
+
+        ini_set('display_errors', 0);
+        $this->assertEquals('{"foo":"bar","bar":null}', $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e'))));
+    }
+
     protected function getFormat()
     {
         return 'json';
