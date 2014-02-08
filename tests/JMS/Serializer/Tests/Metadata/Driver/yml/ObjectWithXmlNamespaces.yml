@@ -1,0 +1,28 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces:
+    xml_root_name: test-object
+    xml_namespaces:
+        "": http://example.com/namespace
+        gd: http://schemas.google.com/g/2005
+        atom: http://www.w3.org/2005/Atom
+    properties:
+        title:
+            type: string
+            xml_element:
+                namespace: http://purl.org/dc/elements/1.1/
+        createdAt:
+            type: DateTime
+            xml_attribute: true
+        etag:
+            type: string
+            xml_attribute: true
+            xml_element:
+                namespace: http://schemas.google.com/g/2005
+        author:
+            type: string
+            xml_element:
+                namespace: http://www.w3.org/2005/Atom
+        language:
+            type: string
+            xml_attribute: true
+            xml_element:
+                namespace: http://purl.org/dc/elements/1.1/

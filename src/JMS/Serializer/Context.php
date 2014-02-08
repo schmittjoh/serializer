@@ -64,6 +64,9 @@ abstract class Context
         $this->attributes = new Map();
     }
 
+    /**
+     * @param string $format
+     */
     public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
     {
         if ($this->initialized) {
@@ -193,6 +196,9 @@ abstract class Context
         return $this->serializeNull;
     }
 
+    /**
+     * @return string
+     */
     public function getFormat()
     {
         return $this->format;
@@ -232,5 +238,9 @@ abstract class Context
     }
 
     abstract public function getDepth();
+
+    /**
+     * @return integer
+     */
     abstract public function getDirection();
 }

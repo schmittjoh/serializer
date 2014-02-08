@@ -16,6 +16,9 @@ YAML Reference
                 some-value: ClassName
         virtual_properties:
             getSomeProperty: {}
+        xml_namespaces:
+            "": http://your.default.namespace
+            atom: http://www.w3.org/2005/Atom
         properties:
             some-property:
                 exclude: true
@@ -42,6 +45,9 @@ YAML Reference
                     key_attribute_name: foo
                     entry_name: bar
                 xml_attribute_map: true
+                xml_element:
+                    cdata: false
+                    namespace: http://www.w3.org/2005/Atom
                 max_depth: 2
 
         handler_callbacks:

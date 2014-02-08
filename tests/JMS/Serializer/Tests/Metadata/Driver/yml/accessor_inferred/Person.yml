@@ -1,0 +1,6 @@
+JMS\Serializer\Tests\Fixtures\Person:
+    custom_accessor_order: ["age", "name"]
+
+    properties:
+        age: ~
+        name: ~

@@ -26,10 +26,12 @@ use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessType;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
+use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
@@ -79,6 +81,8 @@ class AnnotationDriver implements DriverInterface
                 $exclusionPolicy = $annot->policy;
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
+            } elseif ($annot instanceof XmlNamespace) {
+                $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
                 $excludeAll = true;
             } elseif ($annot instanceof AccessType) {
@@ -154,6 +158,10 @@ class AnnotationDriver implements DriverInterface
                         $isExclude = true;
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlAttribute = false;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
                     } elseif ($annot instanceof XmlList) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
@@ -167,8 +175,12 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlKeyValuePairs = true;
                     } elseif ($annot instanceof XmlAttribute) {
                         $propertyMetadata->xmlAttribute = true;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
                     } elseif ($annot instanceof XmlValue) {
                         $propertyMetadata->xmlValue = true;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {

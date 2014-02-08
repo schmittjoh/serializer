@@ -79,6 +79,20 @@ class XmlDriver extends AbstractFileDriver
             $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap);
         }
 
+        foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {
+            if (!isset($xmlNamespace->attributes()->uri)) {
+                throw new RuntimeException('The prefix attribute must be set for all xml-namespace elements.');
+            }
+
+            if (isset($xmlNamespace->attributes()->prefix)) {
+                $prefix = (string) $xmlNamespace->attributes()->prefix;
+            } else {
+                $prefix = null;
+            }
+
+            $metadata->registerNamespace((string) $xmlNamespace->attributes()->uri, $prefix);
+        }
+
         foreach ($elem->xpath('./virtual-property') as $method) {
             if (!isset($method->attributes()->method)) {
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
@@ -140,7 +154,7 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups =  preg_split('/\s*,\s*/', (string) $groups);
                     }
-
+                    
                     if (isset($pElem->{'xml-list'})) {
                         $pMetadata->xmlCollection = true;
 
@@ -168,6 +182,17 @@ class XmlDriver extends AbstractFileDriver
 
                         if (isset($colConfig->attributes()->{'key-attribute-name'})) {
                             $pMetadata->xmlKeyAttribute = (string) $colConfig->attributes()->{'key-attribute-name'};
+                        }
+                    }
+
+                    if (isset($pElem->{'xml-element'})) {
+                        $colConfig = $pElem->{'xml-element'};
+                        if (isset($colConfig->attributes()->cdata)) {
+                            $pMetadata->xmlElementCData = 'true' === (string) $colConfig->attributes()->cdata;
+                        }
+
+                        if (isset($colConfig->attributes()->namespace)) {
+                            $pMetadata->xmlNamespace = (string) $colConfig->attributes()->namespace;
                         }
                     }
 
