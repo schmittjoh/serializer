@@ -92,6 +92,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Node;
+use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -399,6 +400,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testReadOnly()
     {
         $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
+        $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            $this->assertNull($this->getField($deserialized, 'id'));
+            $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testReadOnlyClass()
+    {
+        $author = new AuthorReadOnlyPerClass(123, 'Ruud Kamphuis');
         $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
 
         if ($this->hasDeserializer()) {
