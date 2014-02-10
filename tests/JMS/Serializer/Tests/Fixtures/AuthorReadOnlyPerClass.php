@@ -40,6 +40,7 @@ class AuthorReadOnlyPerClass
      * @Type("string")
      * @SerializedName("full_name")
      * @Accessor("getName")
+     * @ReadOnly(false)
      */
     private $name;
 

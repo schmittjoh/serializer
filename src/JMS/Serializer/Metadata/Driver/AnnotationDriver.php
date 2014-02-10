@@ -140,9 +140,9 @@ class AnnotationDriver implements DriverInterface
             }
 
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
-                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
+                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
                 $accessType = $classAccessType;
                 $accessor = array(null, null);
 
@@ -187,7 +187,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                       $propertyMetadata->readOnly = true;
+                       $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {

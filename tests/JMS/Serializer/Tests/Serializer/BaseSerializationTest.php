@@ -417,7 +417,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
             $this->assertNull($this->getField($deserialized, 'id'));
-            $this->assertNull($this->getField($deserialized, 'name'));
+            $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }
     }
 

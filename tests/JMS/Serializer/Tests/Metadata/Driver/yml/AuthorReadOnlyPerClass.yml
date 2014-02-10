@@ -8,4 +8,4 @@ JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass:
             serialized_name:  full_name
             access_type:      public_method
             accessor_getter:  getName
-            read_only:        true
+            read_only:        false

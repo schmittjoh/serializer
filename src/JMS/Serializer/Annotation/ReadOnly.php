@@ -24,4 +24,8 @@ namespace JMS\Serializer\Annotation;
  */
 final class ReadOnly
 {
+    /**
+     * @var boolean
+     */
+    public $readOnly = true;
 }

@@ -191,6 +191,8 @@ to determine the order.
 This annotation can be defined on a property to indicate that the data of the property
 is read only and cannot be set during deserialization.
 
+A property can be marked as non read only with ``@ReadOnly(false)`` annotation (useful when a class is marked as read only).
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before
