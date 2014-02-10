@@ -167,7 +167,7 @@ class YamlDriver extends AbstractFileDriver
 
                     //we need read_only before setter and getter set, because that method depends on flag being set
                     if (isset($pConfig['read_only'])) {
-                          $pMetadata->readOnly = (Boolean)$pConfig['read_only'];
+                          $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
                     } else {
                         $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
                     }
