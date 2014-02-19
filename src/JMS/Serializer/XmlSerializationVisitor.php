@@ -159,11 +159,12 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         $entryName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryName) ? $this->currentMetadata->xmlEntryName : 'entry';
         $keyAttributeName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute) ? $this->currentMetadata->xmlKeyAttribute : null;
+        $namespace =  (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlNamespace) ? $this->currentMetadata->xmlNamespace : null;
 
         foreach ($data as $k => $v) {
             $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
 
-            if ('' !== $namespace = (string) $this->currentMetadata->xmlNamespace) {
+            if (!is_null($namespace)) {
                 if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
                     $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
                 }

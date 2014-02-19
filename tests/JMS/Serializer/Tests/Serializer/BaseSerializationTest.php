@@ -361,8 +361,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
         $post->addComment($comment = new Comment($author, 'foo'));
 
-        $post->addTag($tag = New Tag("tag1"));
-        $post->addTag($tag = New Tag("tag2"));
+        $post->addTag($tag1 = New Tag("tag1"));
+        $post->addTag($tag2 = New Tag("tag2"));
 
         $this->assertEquals($this->getContent('blog_post'), $this->serialize($post));
 
@@ -375,6 +375,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals(new Sequence(array($comment)), 'comments2', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+            $this->assertAttributeEquals(array($tag1, $tag2), 'tag', $deserialized);
         }
     }
 
