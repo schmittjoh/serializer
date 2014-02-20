@@ -16,7 +16,9 @@ YAML Reference
             map:
                 some-value: ClassName
         virtual_properties:
-            getSomeProperty: {}
+            getSomeProperty:
+                serialized_name: foo
+                type: integer
         xml_namespaces:
             "": http://your.default.namespace
             atom: http://www.w3.org/2005/Atom
