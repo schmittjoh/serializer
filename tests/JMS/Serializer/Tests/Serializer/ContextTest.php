@@ -28,6 +28,28 @@ use JMS\Serializer\SerializerBuilder;
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
+    public function getScalars()
+    {
+    	return array(
+    	    array("string"),
+    	    array(5),
+    	    array(5.5),
+    	    array(array())
+    	);
+    }
+    /**
+     * @dataProvider getScalars
+     */
+    public function testCanVisitScalars($scalar)
+    {
+    	$context = SerializationContext::create();
+
+	    $context->startVisiting($scalar);
+	    $this->assertFalse($context->isVisiting($scalar));
+	    $context->stopVisiting($scalar);
+
+    }
+
     public function testSerializationContextPathAndDepth()
     {
         $object = new Node(array(
