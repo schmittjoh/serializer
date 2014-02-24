@@ -60,8 +60,10 @@ class PropertyMetadata extends BasePropertyMetadata
                     $getter = 'get'.$this->name;
                 } elseif ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
                     $getter = 'is'.$this->name;
+                } elseif ($class->hasMethod('has'.$this->name) && $class->getMethod('has'.$this->name)->isPublic()) {
+                    $getter = 'has'.$this->name;
                 } else {
-                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), $this->class, $this->name));
+                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), 'has'.ucfirst($this->name), $this->class, $this->name));
                 }
             }
 

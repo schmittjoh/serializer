@@ -48,9 +48,105 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('foo', 'bar'));
         $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
     }
+
+    /**
+     * @dataProvider providerPublicMethodData
+     */
+    public function testAccessorTypePublicMethod($property, $getterInit, $setterInit, $getterName, $setterName)
+    {
+        $object = new PropertyMetadataPublicMethod();
+
+        $metadata = new PropertyMetadata(get_class($object), $property);
+        $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getterInit, $setterInit);
+
+        $this->assertEquals($getterName, $metadata->getter);
+        $this->assertEquals($setterName, $metadata->setter);
+
+        // setter is not supported by setValue(), any idea?
+        $object->{$metadata->setter}('x');
+
+        $this->assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
+    }
+
+    /**
+     * @dataProvider providerPublicMethodException
+     */
+    public function testAccessorTypePublicMethodException($getter, $setter, $message)
+    {
+        $this->setExpectedException('\JMS\Serializer\Exception\RuntimeException', $message);
+
+        $object = new PropertyMetadataPublicMethod();
+
+        $metadata = new PropertyMetadata(get_class($object), 'e');
+        $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getter, $setter);
+    }
+
+    public function providerPublicMethodData()
+    {
+        return array(
+            array('a', null, null, 'geta', 'seta'),
+            array('b', null, null, 'isb', 'setb'),
+            array('c', null, null, 'hasc', 'setc'),
+            array('d', 'fetchd', 'saved', 'fetchd', 'saved')
+        );
+    }
+
+    public function providerPublicMethodException()
+    {
+        return array(
+            array(null, null, 'a public getE method, nor a public isE method, nor a public hasE method in class'),
+            array(null, 'setx', 'a public getE method, nor a public isE method, nor a public hasE method in class'),
+            array('getx', null, 'no public setE method in class'),
+        );
+    }
 }
 
 class PropertyMetadataOrder
 {
     private $b, $a;
+}
+
+class PropertyMetadataPublicMethod
+{
+    private $a, $b, $c, $d, $e;
+
+    public function getA()
+    {
+        return 'A:' . $this->a;
+    }
+
+    public function setA($a)
+    {
+        $this->a = 'A:' . $a;
+    }
+
+    public function isB()
+    {
+        return 'B:' . $this->b;
+    }
+
+    public function setB($b)
+    {
+        $this->b = 'B:' . $b;
+    }
+
+    public function hasC()
+    {
+        return 'C:' . $this->c;
+    }
+
+    public function setC($c)
+    {
+        $this->c = 'C:' . $c;
+    }
+
+    public function fetchD()
+    {
+        return 'D:' . $this->d;
+    }
+
+    public function saveD($d)
+    {
+        $this->d = 'D:' . $d;
+    }
 }
