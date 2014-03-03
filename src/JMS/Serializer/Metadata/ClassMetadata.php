@@ -45,6 +45,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $postDeserializeMethods = array();
 
     public $xmlRootName;
+    public $xmlRootNamespace;
     public $xmlNamespaces = array();
     public $accessorOrder;
     public $customOrder;
@@ -139,6 +140,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
+        $this->xmlRootNamespace = $object->xmlRootNamespace;
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
         // Handler methods are taken from the outer class completely.
@@ -218,6 +220,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+            $this->xmlRootNamespace,
             $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,
@@ -238,6 +241,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
+            $this->xmlRootNamespace,
             $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,

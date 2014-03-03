@@ -33,6 +33,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     private $navigator;
     private $defaultRootName = 'result';
+    private $defaultRootNamespace;
     private $defaultVersion = '1.0';
     private $defaultEncoding = 'UTF-8';
     private $stack;
@@ -42,9 +43,10 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $hasValue;
     private $nullWasVisited;
 
-    public function setDefaultRootName($name)
+    public function setDefaultRootName($name, $namespace = null)
     {
         $this->defaultRootName = $name;
+        $this->defaultRootNamespace = $namespace;
     }
 
     /**
@@ -183,7 +185,19 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
-            $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
+            if ($metadata->xmlRootName) {
+                $rootName = $metadata->xmlRootName;
+                $rootNamespace = $metadata->xmlRootNamespace;
+            } else {
+                $rootName = $this->defaultRootName;
+                $rootNamespace = $this->defaultRootNamespace;
+            }
+            if ($rootNamespace) {
+                $this->currentNode = $this->document->createElementNS($rootNamespace, $rootName);
+            } else {
+                $this->currentNode = $this->document->createElement($rootName);
+            }
+            $this->document->appendChild($this->currentNode);
         }
         
         $this->addNamespaceAttributes($metadata, $this->currentNode);
@@ -353,7 +367,12 @@ class XmlSerializationVisitor extends AbstractVisitor
         $doc->formatOutput = true;
 
         if ($addRoot) {
-            $this->setCurrentNode($rootNode = $doc->createElement($this->defaultRootName));
+            if ($this->defaultRootNamespace) {
+                $rootNode = $doc->createElementNS($this->defaultRootNamespace, $this->defaultRootName);
+            } else {
+                $rootNode = $doc->createElement($this->defaultRootName);
+            }
+            $this->setCurrentNode($rootNode);
             $doc->appendChild($rootNode);
         }
 
