@@ -238,6 +238,10 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
+        if (isset($config['xml_root_namespace'])) {
+            $metadata->xmlRootNamespace = (string) $config['xml_root_namespace'];
+        }
+
         if (array_key_exists('xml_namespaces', $config) ) {
 
             foreach ( $config['xml_namespaces'] as $prefix => $uri) {

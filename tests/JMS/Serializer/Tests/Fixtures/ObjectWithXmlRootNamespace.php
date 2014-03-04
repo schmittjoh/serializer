@@ -26,15 +26,11 @@ use JMS\Serializer\Annotation\XmlAttribute;
 
 /**
  * @XmlRoot("test-object", namespace="http://example.com/namespace")
- * @XmlNamespace(uri="http://example.com/namespace")
- * @XmlNamespace(uri="http://schemas.google.com/g/2005", prefix="gd")
- * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
  */
-class ObjectWithXmlNamespaces
+class ObjectWithXmlRootNamespace
 {
     /**
      * @Type("string")
-     * @XmlElement(namespace="http://purl.org/dc/elements/1.1/");
      */
     private $title;
 
@@ -46,19 +42,18 @@ class ObjectWithXmlNamespaces
 
     /**
      * @Type("string")
-     * @XmlAttribute(namespace="http://schemas.google.com/g/2005")
+     * @XmlAttribute
      */
     private $etag;
 
     /**
      * @Type("string")
-     * @XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     private $author;
     
     /**
      * @Type("string")
-     * @XmlAttribute(namespace="http://purl.org/dc/elements/1.1/");
+     * @XmlAttribute
      */
     private $language;
 
