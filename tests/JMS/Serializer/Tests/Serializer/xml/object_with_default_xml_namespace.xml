@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/namespace" xmlns:v2="http://example.com/namespace/v2" color="green">
+    <name>Test Name</name>
+    <description>Test Description</description>
+    <v2:status>New</v2:status>
+</test-object>

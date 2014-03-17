@@ -25,6 +25,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithDefaultNamespace;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
@@ -206,6 +207,19 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
         $this->assertAttributeSame('en', 'language', $deserialized);
         $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
+
+    }
+
+    /**
+     * @group tmp
+     */
+    public function testDeserializingXmlWithDefaultNamespace()
+    {
+        $deserialized = $this->deserialize($this->getContent('object_with_default_xml_namespace'), 'JMS\Serializer\Tests\Fixtures\ObjectWithDefaultNamespace');
+        $this->assertEquals('Test Name', $this->getField($deserialized, 'name'));
+        $this->assertEquals('green', $this->getField($deserialized, 'color'));
+        $this->assertEquals('Test Description', $this->getField($deserialized, 'description'));
+        $this->assertEquals('New', $this->getField($deserialized, 'status'));
 
     }
 
