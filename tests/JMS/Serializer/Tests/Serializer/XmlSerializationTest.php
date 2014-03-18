@@ -31,6 +31,7 @@ use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
@@ -206,6 +207,12 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertAttributeSame('en', 'language', $deserialized);
         $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
 
+    }
+
+    public function testObjectWithXmlRootNamespace()
+    {
+        $object = new ObjectWithXmlRootNamespace('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
+        $this->assertEquals($this->getContent('object_with_xml_root_namespace'), $this->serialize($object));
     }
 
     public function testXmlNamespacesInheritance()

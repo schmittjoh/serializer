@@ -42,6 +42,11 @@ class YamlSerializationTest extends BaseSerializationTest
         $this->markTestSkipped('This is not available for the YAML format.');
     }
 
+    public function testFormErrorsWithNonFormComponents()
+    {
+        $this->markTestSkipped('This is not available for the YAML format.');
+    }
+
     protected function getContent($key)
     {
         if (!file_exists($file = __DIR__.'/yml/'.$key.'.yml')) {

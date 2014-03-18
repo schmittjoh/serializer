@@ -174,6 +174,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));
         $this->assertNotNull($m);
         $this->assertEquals('test-object', $m->xmlRootName);
+        $this->assertEquals('http://example.com/namespace', $m->xmlRootNamespace);
         $this->assertCount(3, $m->xmlNamespaces);
         $this->assertArrayHasKey('', $m->xmlNamespaces);
         $this->assertEquals('http://example.com/namespace', $m->xmlNamespaces['']);
@@ -225,7 +226,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
         $this->assertFalse($m->propertyMetadata['name']->xmlElementCData);
     }
-    
+
     public function testXmlNamespaceInheritanceMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleClassObject'));

@@ -23,10 +23,13 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
+use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
+use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
@@ -89,6 +92,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Node;
+use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -253,6 +257,68 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+
+    public function testDateTimeArrays()
+    {
+        $data = array(
+            new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
+            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+        );
+
+        $object = new DateTimeArraysObject($data, $data);
+        $serializedObject = $this->serialize( $object );
+
+        $this->assertEquals($this->getContent('array_datetimes_object'), $serializedObject);
+
+        if ($this->hasDeserializer()) {
+            /** @var DateTimeArraysObject $deserializedObject */
+            $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
+
+            /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
+            foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            foreach ($deserializedObject->getArrayWithFormattedDateTime() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            $this->assertEquals($object, $deserializedObject);
+        }
+    }
+
+    public function testNamedDateTimeArrays()
+    {
+        $data = array(
+            new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
+            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+        );
+
+        $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $serializedObject = $this->serialize( $object );
+
+        $this->assertEquals($this->getContent('array_named_datetimes_object'), $serializedObject);
+
+        if ($this->hasDeserializer()) {
+
+            // skip XML deserialization
+            if ($this->getFormat() === 'xml') {
+                return;
+            }
+
+            /** @var NamedDateTimeArraysObject $deserializedObject */
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
+
+            /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
+            foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            $this->assertEquals($object, $deserializedObject);
+        }
+    }
+
+
     public function testArrayMixed()
     {
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
@@ -334,6 +400,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testReadOnly()
     {
         $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
+        $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            $this->assertNull($this->getField($deserialized, 'id'));
+            $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testReadOnlyClass()
+    {
+        $author = new AuthorReadOnlyPerClass(123, 'Ruud Kamphuis');
         $this->assertEquals($this->getContent('readonly'), $this->serialize($author));
 
         if ($this->hasDeserializer()) {
@@ -499,6 +577,36 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $form->add($child);
 
         $this->assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
+    }
+
+    public function testFormErrorsWithNonFormComponents()
+    {
+
+        if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
+            $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
+        }
+
+        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+
+        $factoryBuilder = new FormFactoryBuilder();
+        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\SubmitType);
+        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\ButtonType);
+        $factory = $factoryBuilder->getFormFactory();
+
+        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
+        $formConfigBuilder->setFormFactory($factory);
+        $formConfigBuilder->setCompound(true);
+        $formConfigBuilder->setDataMapper($this->getMock('Symfony\Component\Form\DataMapperInterface'));
+        $fooConfig = $formConfigBuilder->getFormConfig();
+
+        $form = new Form($fooConfig);
+        $form->add('save', 'submit');
+
+        try {
+            $this->serialize($form);
+        } catch (\Exception $e) {
+            $this->assertTrue(false, 'Serialization should not throw an exception');
+        }
     }
 
     public function testConstraintViolation()

@@ -76,17 +76,21 @@ class AnnotationDriver implements DriverInterface
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
+        $readOnlyClass = false;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
+                $classMetadata->xmlRootNamespace = $annot->namespace;
             } elseif ($annot instanceof XmlNamespace) {
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
                 $excludeAll = true;
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
+            } elseif ($annot instanceof ReadOnly) {
+                $readOnlyClass = true;
             } elseif ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
             } elseif ($annot instanceof Discriminator) {
@@ -137,9 +141,9 @@ class AnnotationDriver implements DriverInterface
             }
 
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
-
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
+                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
                 $accessType = $classAccessType;
                 $accessor = array(null, null);
 
@@ -184,7 +188,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                       $propertyMetadata->readOnly = true;
+                       $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {

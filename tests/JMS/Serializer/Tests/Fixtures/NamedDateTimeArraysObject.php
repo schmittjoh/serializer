@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -15,23 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+namespace JMS\Serializer\Tests\Fixtures;
 
-namespace JMS\Serializer\Annotation;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\XmlMap;
+use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlKeyValuePairs;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-final class XmlRoot
+
+class NamedDateTimeArraysObject
 {
     /**
-     * @Required
-     * @var string
+     * @var \DateTime[]
+     * @Type("array<string,DateTime<'d.m.Y H:i:s'>>")
+     * @XmlKeyValuePairs
      */
-    public $name;
+    private $namedArrayWithFormattedDate;
+
+    function __construct($namedArrayWithFormattedDate)
+    {
+        $this->namedArrayWithFormattedDate = $namedArrayWithFormattedDate;
+    }
 
     /**
-     * @var string
+     * @return \DateTime[]
      */
-    public $namespace;
+    public function getNamedArrayWithFormattedDate()
+    {
+        return $this->namedArrayWithFormattedDate;
+    }
 }

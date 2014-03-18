@@ -15,7 +15,7 @@
         "php": ">=5.3.2",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
-        "phpcollection/phpcollection": ">=0.1,<0.3-dev",
+        "phpcollection/phpcollection": "~0.1",
         "doctrine/annotations": "1.*"
     },
     "suggest": {
@@ -24,14 +24,14 @@
     "minimum-stability": "dev",
     "require-dev": {
         "twig/twig": ">=1.8,<2.0-dev",
-        "doctrine/orm": ">=2.1,<2.4-dev",
+        "doctrine/orm": "~2.1",
         "doctrine/phpcr-odm": "~1.0.1",
         "jackalope/jackalope-doctrine-dbal": "1.0.*",
         "propel/propel1": "~1.7",
         "symfony/yaml": "2.*",
-        "symfony/translation": ">=2.0,<2.2-dev",
-        "symfony/validator": ">=2.0,<2.2-dev",
-        "symfony/form": ">=2.1,<2.2-dev",
+        "symfony/translation": "~2.0",
+        "symfony/validator": "~2.0",
+        "symfony/form": "~2.1",
         "symfony/filesystem": "2.*"
     },
     "autoload": {
@@ -41,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.14-dev"
+            "dev-master": "0.15-dev"
         }
     }
 }

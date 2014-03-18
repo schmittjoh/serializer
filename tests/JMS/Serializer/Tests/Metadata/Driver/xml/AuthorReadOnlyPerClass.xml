@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass" xml-root-name="author" read-only="true">
+        <property name="id" read-only="true"/>
+        <property name="name" serialized-name="full_name" access-type="public_method" accessor-getter="getName" read-only="false" />
+    </class>
+</serializer>

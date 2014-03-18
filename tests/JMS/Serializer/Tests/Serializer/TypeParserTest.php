@@ -83,6 +83,15 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
         $this->parser->parse('Foo<aa,>');
     }
 
+    /**
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage  Expected any of T_NAME or T_STRING, but got "\" of type T_NONE at position 4 (0-based).
+     */
+    public function testLeadingBackslash()
+    {
+        $this->parser->parse('Foo<\Bar>');
+    }
+
     protected function setUp()
     {
         $this->parser = new TypeParser();

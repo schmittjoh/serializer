@@ -5,6 +5,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 $metadata = new ClassMetadata('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces');
 $metadata->xmlRootName = 'test-object';
+$metadata->xmlRootNamespace = 'http://example.com/namespace';
 
 $metadata->registerNamespace('http://example.com/namespace');
 $metadata->registerNamespace('http://schemas.google.com/g/2005', 'gd');
