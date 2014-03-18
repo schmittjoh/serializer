@@ -18,9 +18,12 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Builder\DefaultDriverFactory;
+use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
+use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -68,6 +71,7 @@ class SerializerBuilder
     private $cacheDir;
     private $annotationReader;
     private $includeInterfaceMetadata = false;
+    private $driverFactory;
 
     public static function create()
     {
@@ -78,6 +82,7 @@ class SerializerBuilder
     {
         $this->handlerRegistry = new HandlerRegistry();
         $this->eventDispatcher = new EventDispatcher();
+        $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = new Map();
         $this->deserializationVisitors = new Map();
     }
@@ -321,6 +326,11 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setMetadataDriverFactory(DriverFactoryInterface $driverFactory)
+    {
+        $this->driverFactory = $driverFactory;
+    }
+
     public function build()
     {
         $annotationReader = $this->annotationReader;
@@ -333,17 +343,7 @@ class SerializerBuilder
             }
         }
 
-        if ( ! empty($this->metadataDirs)) {
-            $fileLocator = new FileLocator($this->metadataDirs);
-            $metadataDriver = new DriverChain(array(
-                new YamlDriver($fileLocator),
-                new XmlDriver($fileLocator),
-                new AnnotationDriver($annotationReader),
-            ));
-        } else {
-            $metadataDriver = new AnnotationDriver($annotationReader);
-        }
-
+        $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
