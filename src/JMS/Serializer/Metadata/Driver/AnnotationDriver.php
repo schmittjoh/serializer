@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Serializer\Annotation\PathBasedExclusion;
+
 use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
@@ -99,6 +101,8 @@ class AnnotationDriver implements DriverInterface
                 } else {
                     $classMetadata->setDiscriminator($annot->field, $annot->map);
                 }
+            } elseif ($annot instanceof PathBasedExclusion) {
+                $classMetadata->setExclusionPaths($annot->paths);
             }
         }
 
