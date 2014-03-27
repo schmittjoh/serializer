@@ -52,6 +52,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
+        if ($property->allGroups) {
+            return false;
+        }
+
         if ( ! $property->groups) {
             return ! isset($this->groups[self::DEFAULT_GROUP]);
         }

@@ -208,6 +208,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlAttributeMap = true;
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof AllGroups) {
+                        $propertyMetadata->allGroups = true;
                     }
                 }
 
