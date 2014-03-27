@@ -48,6 +48,7 @@ use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\AllGroups;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
