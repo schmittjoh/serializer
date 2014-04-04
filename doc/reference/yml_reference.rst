@@ -2,8 +2,8 @@ YAML Reference
 --------------
 ::
 
-    # MyBundle\Resources\config\serializer\Fully.Qualified.ClassName.yml
-    Fully\Qualified\ClassName:
+    # Vendor\MyBundle\Resources\config\serializer\Model.ClassName.yml
+    Vendor\MyBundle\Model\ClassName:
         exclusion_policy: ALL
         xml_root_name: foobar
         exclude: true
