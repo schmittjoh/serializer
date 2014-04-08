@@ -611,7 +611,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', 'Message template', array(), null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -619,8 +619,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', 'Message template', array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', 'Message template', array(), null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }

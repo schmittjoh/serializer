@@ -30,7 +30,7 @@
         "propel/propel1": "~1.7",
         "symfony/yaml": "2.*",
         "symfony/translation": "~2.0",
-        "symfony/validator": "~2.0",
+        "symfony/validator": "~2.2",
         "symfony/form": "~2.1",
         "symfony/filesystem": "2.*"
     },
