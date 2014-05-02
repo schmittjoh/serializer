@@ -66,9 +66,10 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
-            $this->writeOnly,
             $this->class,
-            $this->name
+            $this->name,
+            $this->writeOnly
+
         ));
     }
 
