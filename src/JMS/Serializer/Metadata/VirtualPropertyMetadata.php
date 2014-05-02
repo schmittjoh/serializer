@@ -66,6 +66,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->writeOnly,
             $this->class,
             $this->name
         ));
@@ -94,6 +95,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->writeOnly,
             $this->class,
             $this->name
         ) = unserialize($str);

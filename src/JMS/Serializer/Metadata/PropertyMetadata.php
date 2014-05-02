@@ -45,6 +45,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $setter;
     public $inline = false;
     public $readOnly = false;
+    public $writeOnly = false;
     public $xmlAttributeMap = false;
     public $maxDepth = null;
 
@@ -55,7 +56,7 @@ class PropertyMetadata extends BasePropertyMetadata
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->reflection->getDeclaringClass();
 
-            if (empty($getter)) {
+            if (empty($getter) && !$this->writeOnly) {
                 if ($class->hasMethod('get'.$this->name) && $class->getMethod('get'.$this->name)->isPublic()) {
                     $getter = 'get'.$this->name;
                 } elseif ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
@@ -119,6 +120,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->writeOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
             parent::serialize(),
@@ -146,6 +148,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
+            $this->writeOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
             $parentStr
