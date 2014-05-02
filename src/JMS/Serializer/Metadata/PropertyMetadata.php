@@ -148,10 +148,10 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->inline,
             $this->readOnly,
-            $this->writeOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
-            $parentStr
+            $parentStr,
+            $this->writeOnly
         ) = unserialize($str);
 
         parent::unserialize($parentStr);
