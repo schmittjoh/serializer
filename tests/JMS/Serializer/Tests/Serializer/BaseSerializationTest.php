@@ -23,6 +23,8 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\AuthorWriteOnly;
+use JMS\Serializer\Tests\Fixtures\AuthorWriteOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
@@ -419,6 +421,34 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertNull($this->getField($deserialized, 'id'));
             $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }
+    }
+
+    public function testWriteOnly()
+    {
+        if (!$this->hasDeserializer()) {
+
+            $this->markTestSkipped();
+        }
+
+        $author = new AuthorWriteOnly(123, 'Ruud Kamphuis');
+        $this->assertEquals($author, $this->deserialize($this->getContent('writeonly'), get_class($author)));
+        $reserializedAuthor = $this->deserialize($this->serialize($author), get_class($author));
+        $this->assertNull($this->getField($reserializedAuthor, 'id'));
+        $this->assertEquals('Ruud Kamphuis', $this->getField($reserializedAuthor, 'name'));
+    }
+
+    public function testWriteOnlyClass()
+    {
+        if (!$this->hasDeserializer()) {
+
+            $this->markTestSkipped();
+        }
+
+        $author = new AuthorWriteOnlyPerClass(123, 'Ruud Kamphuis');
+        $this->assertEquals($author, $this->deserialize($this->getContent('writeonly'), get_class($author)));
+        $reserializedAuthor = $this->deserialize($this->serialize($author), get_class($author));
+        $this->assertNull($this->getField($reserializedAuthor, 'id'));
+        $this->assertEquals('Ruud Kamphuis', $this->getField($reserializedAuthor, 'name'));
     }
 
     public function testPrice()
