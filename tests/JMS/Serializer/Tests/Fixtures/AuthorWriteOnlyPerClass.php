@@ -41,6 +41,7 @@ class AuthorWriteOnlyPerClass
      * @Type("string")
      * @SerializedName("full_name")
      * @WriteOnly(false)
+     * @Accessor(setter="setName")
      */
     private $name;
 
@@ -58,5 +59,11 @@ class AuthorWriteOnlyPerClass
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 }
