@@ -157,8 +157,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      * Allows you to add additional data to the current object/root element.
      *
      * @param string $key
-     * @param scalar|array $value This value must either be a regular scalar, or an array.
-     *                            It must not contain any objects anymore.
+     * @param scalar|array|null $value This value must either be a regular scalar, or an array.
+     *                                 It must not contain any objects anymore.
      */
     public function addData($key, $value)
     {
@@ -173,8 +173,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      * Allows you to replace existing data on the current object/root element.
      *
      * @param string $key
-     * @param scalar|array $value This value must either be a regular scalar, or an array.
-     *                            It must not contain any objects anymore.
+     * @param scalar|array|null $value This value must either be a regular scalar, or an array.
+     *                                 It must not contain any objects anymore.
      */
     public function replaceData($key, $value)
     {
