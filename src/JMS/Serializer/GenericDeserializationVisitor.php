@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -58,6 +59,9 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
+        if (is_array($data)) {
+            throw new LogicException('Expected string but got array. Do you have the wrong @Type mapping in class ' . get_class($this->currentObject) . '?');
+        }
         $data = (string) $data;
 
         if (null === $this->result) {
