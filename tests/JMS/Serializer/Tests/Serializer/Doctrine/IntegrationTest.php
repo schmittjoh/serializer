@@ -58,21 +58,21 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $that = $this;
         $this->registry = new SimpleManagerRegistry(
-            function($id) {
+            function($id) use ($that) {
                 switch ($id) {
                     case 'default_connection':
                         return $this->createConnection();
 
                     case 'default_manager':
-                        return $this->createEntityManager($this->registry->getConnection());
+                        return $this->createEntityManager($that->registry->getConnection());
 
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
             }
         );
-        $that = $this;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
                 function(array $metadataDirs, Reader $annotationReader) use ($that) {
