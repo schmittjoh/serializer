@@ -22,6 +22,7 @@ use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
 use Metadata\MetadataFactory;
@@ -29,10 +30,15 @@ use Metadata\MetadataFactory;
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 {
     private $metadataFactory;
+    /** @var HandlerRegistry */
     private $handlerRegistry;
+    /** @var UnserializeObjectConstructor */
     private $objectConstructor;
+    /** @var EventDispatcher */
     private $dispatcher;
+    /** @var GraphNavigator */
     private $navigator;
+    /** @var JMS\Serializer\Context */
     private $context;
 
     /**
@@ -122,8 +128,16 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
     public function testNavigatorChangeTypeOnSerialization()
     {
+        list($major, $minor, $patch) = explode(".", \PHPUnit_Runner_Version::id());
+        if ($major >= 4 || ($major === 3 && $minor === 9)) {
+            // skip test since PHPUnit 3.9.* - removed staticExpects, @see https://github.com/sebastianbergmann/phpunit-documentation/issues/77
+            $this->markTestSkipped("Test skipped because it uses staticExpects removed since PHPUnit 3.9.*");
+            return;
+        }
+
         $object = new SerializableClass;
         $typeName = 'JsonSerializable';
+
 
         $this->dispatcher->addListener('serializer.pre_serialize', function($event) use ($typeName) {
             $type = $event->getType();
@@ -175,4 +189,33 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 class SerializableClass
 {
     public $foo = 'bar';
+}
+
+class MockSubscribingHandler implements SubscribingHandlerInterface {
+
+    /**
+     * Return format:
+     *
+     *      array(
+     *          array(
+     *              'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+     *              'format' => 'json',
+     *              'type' => 'DateTime',
+     *              'method' => 'serializeDateTimeToJson',
+     *          ),
+     *      )
+     *
+     * The direction and method keys can be omitted.
+     *
+     * @return array
+     */
+    public static function getSubscribingMethods()
+    {
+        array(
+            'type' => 'JsonSerializable',
+            'format' => 'foo',
+            'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+            'method' => 'serialize'
+        );
+    }
 }
