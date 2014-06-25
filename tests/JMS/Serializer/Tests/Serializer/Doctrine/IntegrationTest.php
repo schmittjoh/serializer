@@ -27,7 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ManagerRegistry */
-    private $registry;
+    public $registry;
 
     /** @var Serializer */
     private $serializer;
