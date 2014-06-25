@@ -85,7 +85,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->prepareDatabase();
-    }                                        PHP Fatal error:  Using $this when not in object context
+    }
 
     private function prepareDatabase()
     {
