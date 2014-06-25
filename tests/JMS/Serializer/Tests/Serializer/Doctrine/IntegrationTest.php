@@ -96,7 +96,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
     }
 
-    private function createConnection()
+    public function createConnection()
     {
         $con = DriverManager::getConnection(array(
             'driver' => 'pdo_sqlite',
@@ -106,7 +106,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         return $con;
     }
 
-    private function createEntityManager(Connection $con)
+    public function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
         $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
