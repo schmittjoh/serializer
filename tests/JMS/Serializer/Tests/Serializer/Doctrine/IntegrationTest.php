@@ -72,20 +72,20 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 }
             }
         );
-
+        $that = $this;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function(array $metadataDirs, Reader $annotationReader) {
+                function(array $metadataDirs, Reader $annotationReader) use ($that) {
                     $defaultFactory = new DefaultDriverFactory();
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $this->registry);
+                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $that->registry);
                 }
             ))
             ->build()
         ;
 
         $this->prepareDatabase();
-    }
+    }                                        PHP Fatal error:  Using $this when not in object context
 
     private function prepareDatabase()
     {
