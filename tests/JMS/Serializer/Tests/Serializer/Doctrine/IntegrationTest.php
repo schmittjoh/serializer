@@ -63,10 +63,10 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             function($id) use ($that) {
                 switch ($id) {
                     case 'default_connection':
-                        return $this->createConnection();
+                        return $that->createConnection();
 
                     case 'default_manager':
-                        return $this->createEntityManager($that->registry->getConnection());
+                        return $that->createEntityManager($that->registry->getConnection());
 
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
