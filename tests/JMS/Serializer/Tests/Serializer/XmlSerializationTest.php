@@ -73,6 +73,15 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Empty data not allowed.
+     */
+    public function testEmptyDocumentException()
+    {
+        $this->deserialize('', 'stdClass');
+    }
+
+    /**
+     * @expectedException JMS\Serializer\Exception\InvalidArgumentException
      * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
