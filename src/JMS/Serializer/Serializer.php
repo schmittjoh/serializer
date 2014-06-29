@@ -77,7 +77,7 @@ class Serializer implements SerializerInterface
         }
 
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = SerializationContext::create()->enableMaxDepthChecks();
         }
 
         $context->initialize(
@@ -100,7 +100,7 @@ class Serializer implements SerializerInterface
         }
 
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = DeserializationContext::create()->enableMaxDepthChecks();
         }
 
         $context->initialize(
