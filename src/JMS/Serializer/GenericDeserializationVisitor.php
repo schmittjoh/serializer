@@ -172,8 +172,8 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
         $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
 
-        if (null === $metadata->setter)) {
-            if (is_object($this->currentObject) {
+        if (null === $metadata->setter) {
+            if (is_object($this->currentObject)) {
                 $metadata->reflection->setValue($this->currentObject, $v);
             }
             return;
