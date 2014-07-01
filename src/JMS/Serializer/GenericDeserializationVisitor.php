@@ -177,6 +177,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 $metadata->reflection->setValue($this->currentObject, $v);
                 return;
             }
+
             if (isset($metadata->propertyName)) {
                 $this->currentObject->{$metadata->setter}($v, $metadata->propertyName);
             } else {
