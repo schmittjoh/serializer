@@ -5,7 +5,6 @@ matrix:
     - php: hhvm
 
 php:
-  - 5.3
   - 5.4
   - 5.5
   - hhvm
@@ -14,7 +13,7 @@ before_script:
     - composer self-update
     - composer install --dev
 
-script: phpunit --coverage-clover clover
+script: vendor/bin/phpunit --coverage-clover clover
 
 after_success:
     - wget https://scrutinizer-ci.com/ocular.phar

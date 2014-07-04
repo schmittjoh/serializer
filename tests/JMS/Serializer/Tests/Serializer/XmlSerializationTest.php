@@ -73,7 +73,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
@@ -88,7 +87,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testDocumentTypesAreNotAllowed()
     {
@@ -97,6 +95,14 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
+        if (
+            (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500) ||
+            (PHP_VERSION_ID >= 50513)
+        ) {
+            $this->markTestSkipped(
+                sprintf('PHP version %s does not support this behavior', phpversion())
+            );
+        }
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
