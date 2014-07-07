@@ -19,6 +19,8 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\SimpleEmptyObject;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -202,7 +204,17 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testSerializeArrayWithEmptyObject()
     {
-        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
+    }
+
+    public function testArrayEmptyObject()
+    {
+        $data = array(new SimpleEmptyObject('bar'), new SimpleEmptyObject('baz'));
+        $this->assertEquals($this->getContent('array_empty_objects'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty_objects'), 'array<JMS\Serializer\Tests\Fixtures\SimpleEmptyObject>'));
+        }
     }
 
     protected function getFormat()

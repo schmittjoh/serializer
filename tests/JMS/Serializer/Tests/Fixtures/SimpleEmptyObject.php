@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\Type;
 
 class SimpleEmptyObject
 {
-    /** @Type("stdClass") */
+    /** @Type("JMS\Serializer\Tests\Fixtures\SecondSimpleEmptyObject") */
     private $foo;
 
     /**
@@ -18,7 +18,7 @@ class SimpleEmptyObject
 
     public function __construct($bar)
     {
-        $this->foo = new \stdClass();
+        $this->foo = new SecondSimpleEmptyObject(null);
         $this->bar = $bar;
     }
 

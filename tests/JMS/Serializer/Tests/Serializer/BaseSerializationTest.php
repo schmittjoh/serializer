@@ -27,7 +27,6 @@ use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
-use JMS\Serializer\Tests\Fixtures\SimpleEmptyObject;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use PhpCollection\Sequence;
 use Symfony\Component\Form\FormFactoryBuilder;
@@ -257,17 +256,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($data, $this->deserialize($this->getContent('array_objects'), 'array<JMS\Serializer\Tests\Fixtures\SimpleObject>'));
         }
     }
-
-    public function testArrayEmptyObject()
-    {
-        $data = array(new SimpleEmptyObject('bar'), new SimpleEmptyObject('baz'));
-        $this->assertEquals($this->getContent('array_empty_objects'), $this->serialize($data));
-
-        if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty_objects'), 'array<JMS\Serializer\Tests\Fixtures\SimpleEmptyObject>'));
-        }
-    }
-
 
     public function testDateTimeArrays()
     {
