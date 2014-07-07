@@ -48,6 +48,15 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
         } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
             $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
 
+            // The Mongo ODM can't return a specific association target class for collection references with more than one
+            // possible target class, so we just treat it as a generic ArrayCollection.
+            if($targetEntity === null) {
+                if($doctrineMetadata->isCollectionValuedAssociation($propertyName)) {
+                    $propertyMetadata->setType('ArrayCollection');
+                }
+                return;
+            }
+
             if (null === $targetMetadata = $this->tryLoadingDoctrineMetadata($targetEntity)) {
                 return;
             }
