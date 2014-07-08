@@ -190,6 +190,12 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
+        if ($object->discriminatorFieldName && !$this->discriminatorFieldName) {
+            $this->discriminatorFieldName = $object->discriminatorFieldName;
+            $this->discriminatorBaseClass = $object->discriminatorBaseClass;
+            $this->discriminatorMap       = $object->discriminatorMap;
+        }
+
         $this->sortProperties();
     }
 
