@@ -24,7 +24,7 @@ class JsonDeserializationVisitor extends GenericDeserializationVisitor
 {
     protected function decode($str)
     {
-        $decoded = json_decode($str, true);
+        $decoded = json_decode($str, true, $depth = 512, JSON_BIGINT_AS_STRING);
 
         switch (json_last_error()) {
             case JSON_ERROR_NONE:
