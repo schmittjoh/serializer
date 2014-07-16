@@ -47,6 +47,22 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->serialize($obj);
     }
 
+
+    /**
+     * @dataProvider getXMLBooleans
+     */
+    public function testXMLBooleans($xmlBoolean, $boolean)
+    {
+        if ($this->hasDeserializer()) {
+            $this->assertSame($boolean, $this->deserialize('<result>'.$xmlBoolean.'</result>', 'boolean'));
+        }
+    }
+
+    public function getXMLBooleans()
+    {
+        return array(array('true', true), array('false', false), array('1', true), array('0', false));
+    }
+
     public function testPropertyIsObjectWithAttributeAndValue()
     {
         $personCollection = new PersonLocation;
