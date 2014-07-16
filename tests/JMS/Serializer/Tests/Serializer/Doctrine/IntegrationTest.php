@@ -72,13 +72,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 }
             }
         );
-
+        $registry = $this->registry;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function(array $metadataDirs, Reader $annotationReader) {
+                function(array $metadataDirs, Reader $annotationReader)  use ($registry) {
                     $defaultFactory = new DefaultDriverFactory();
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $this->registry);
+                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
             ->build()
