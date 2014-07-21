@@ -251,6 +251,18 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
     }
 
+    public function testAccessorSetterDeserialization()
+    {
+        /** @var \JMS\Serializer\Tests\Fixtures\AccessorSetter $object */
+        $object = $this->deserialize('<?xml version="1.0"?>
+            <AccessorSetter attribute="2014-07-21T14:37:28Z">2015-07-21T14:37:28Z</AccessorSetter>',
+            'JMS\Serializer\Tests\Fixtures\AccessorSetter'
+        );
+
+        $this->assertEquals(1405953448, $object->getAttributeTimestamp());
+        $this->assertEquals(1437489448, $object->getElementTimestamp());
+    }
+
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
