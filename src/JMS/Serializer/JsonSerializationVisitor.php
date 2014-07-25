@@ -36,7 +36,11 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
                 throw new \RuntimeException('Your data could not be encoded because it contains invalid UTF8 characters.');
 
             default:
-                throw new \RuntimeException(sprintf('An error occurred while encoding your data (error code %d).', json_last_error()));
+                if (function_exists('json_last_error_msg')) {
+                    throw new \RuntimeException(sprintf('Error while parsing JSON data : (#%d) %s.', json_last_error(), json_last_error_msg()));
+                } else {
+                    throw new \RuntimeException(sprintf('An error occurred while encoding your data. (Error code %d).', json_last_error()));
+                }
         }
     }
 
