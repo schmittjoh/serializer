@@ -19,12 +19,25 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 class JsonDeserializationVisitor extends GenericDeserializationVisitor
 {
+    protected $jsonBigIntAsString;
+
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $jsonBigIntAsString)
+    {
+        parent::__construct($namingStrategy);
+        $this->jsonBigIntAsString = $jsonBigIntAsString;
+    }
+
     protected function decode($str)
     {
-        $decoded = json_decode($str, true);
+        if ($this->jsonBigIntAsString) {
+            $decoded = json_decode($str, true, $depth = 512, JSON_BIGINT_AS_STRING);
+        } else {
+            $decoded = json_decode($str, true);
+        }
 
         switch (json_last_error()) {
             case JSON_ERROR_NONE:

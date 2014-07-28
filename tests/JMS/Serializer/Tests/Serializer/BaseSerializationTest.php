@@ -950,7 +950,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'yml'  => new YamlSerializationVisitor($namingStrategy),
         ));
         $this->deserializationVisitors = new Map(array(
-            'json' => new JsonDeserializationVisitor($namingStrategy),
+            'json' => new JsonDeserializationVisitor($namingStrategy, true),
             'xml'  => new XmlDeserializationVisitor($namingStrategy),
         ));
 
