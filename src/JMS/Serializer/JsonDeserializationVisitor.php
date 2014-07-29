@@ -25,7 +25,7 @@ class JsonDeserializationVisitor extends GenericDeserializationVisitor
 {
     protected $jsonBigIntAsString;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $jsonBigIntAsString)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $jsonBigIntAsString = false)
     {
         parent::__construct($namingStrategy);
         $this->jsonBigIntAsString = $jsonBigIntAsString;
