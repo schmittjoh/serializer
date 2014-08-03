@@ -162,7 +162,7 @@ class ClassMetadata extends MergeableClassMetadata
      *
      * @param MergeableInterface $object
      */
-    protected function mergeDiscriminator(MergeableInterface $object)
+    protected function mergeDiscriminator(ClassMetadata $object)
     {
         if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
             throw new \LogicException(sprintf(
