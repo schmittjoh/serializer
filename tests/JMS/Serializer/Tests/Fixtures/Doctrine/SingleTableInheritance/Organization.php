@@ -8,19 +8,19 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorColumn(name="orgType", type="string")
  * @ORM\DiscriminatorMap({
- *     "student" = "JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student",
- *     "teacher" = "JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher",
+ *     "school" = "JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School"
  * })
  */
-abstract class Person extends AbstractModel
+abstract class Organization
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy = "AUTO")
      * @ORM\Column(type = "integer")
-     * @JMS\Groups({"foo"})
      */
     private $id;
 }
+
+
