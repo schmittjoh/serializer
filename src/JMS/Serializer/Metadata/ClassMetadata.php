@@ -194,7 +194,6 @@ class ClassMetadata extends MergeableClassMetadata
                 $this->discriminatorFieldName,
                 $typeValue
             );
-            $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
