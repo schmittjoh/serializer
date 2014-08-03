@@ -611,7 +611,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        if (method_exists('Symfony\Component\Validator\ConstraintViolation', 'getMessageTemplate')) {
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
             $violation = new ConstraintViolation('Message of violation', null, array(), null, 'foo', null);
         } else {
             $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
@@ -624,7 +624,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $violations = new ConstraintViolationList();
 
-        if (method_exists('Symfony\Component\Validator\ConstraintViolation', 'getMessageTemplate')) {
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
             $violations->add(new ConstraintViolation('Message of violation', null, array(), null, 'foo', null));
             $violations->add(new ConstraintViolation('Message of another violation', null, array(), null, 'bar', null));
         } else {

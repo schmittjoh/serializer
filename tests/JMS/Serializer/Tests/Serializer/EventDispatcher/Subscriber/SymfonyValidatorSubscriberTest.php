@@ -60,7 +60,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $obj = new \stdClass;
 
-        if (method_exists('Symfony\Component\Validator\ConstraintViolation', 'getMessageTemplate')) {
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
             $violation = new ConstraintViolation('foo', null, array(), 'a', 'b', 'c');
         } else {
             $violation = new ConstraintViolation('foo', array(), 'a', 'b', 'c');
