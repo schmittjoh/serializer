@@ -131,15 +131,19 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             $event->setType($type['name'], $type['params']);
         });
 
-        $subscribingHandlerClass = $this->getMockClass('JMS\Serializer\Handler\SubscribingHandlerInterface', array('getSubscribingMethods', 'serialize'));
-        $subscribingHandlerClass::staticExpects($this->once())
-            ->method('getSubscribingMethods')
-            ->will($this->returnValue(array(array(
-                'type' => $typeName,
-                'format' => 'foo',
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'method' => 'serialize'
-            ))));
+        $subscribingHandlerClass = $this->getMockClass(
+            'JMS\Serializer\Tests\Fixtures\SubscribingHandler',
+            array('serialize'),
+            array(),
+            'Mock_SubscribingHandler_testNavigatorChangeTypeOnSerialization'
+        );
+
+        $subscribingHandlerClass::setSubscribingMethods(array(array(
+            'type'      => $typeName,
+            'format'    => 'foo',
+            'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+            'method'    => 'serialize',
+        )));
 
         $subscribingHandler = new $subscribingHandlerClass();
         $subscribingHandler->expects($this->once())
