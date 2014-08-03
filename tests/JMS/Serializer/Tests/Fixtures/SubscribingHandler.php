@@ -14,7 +14,7 @@ abstract class SubscribingHandler implements SubscribingHandlerInterface
             return static::$subscribingMethods[get_called_class()];
         }
 
-        return [];
+        return array();
     }
 
     public static function setSubscribingMethods(array $subscribingMethods)
