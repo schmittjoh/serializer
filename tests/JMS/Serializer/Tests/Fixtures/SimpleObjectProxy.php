@@ -18,7 +18,7 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Common\Persistence\Proxy;
 
 class SimpleObjectProxy extends SimpleObject implements Proxy
 {
