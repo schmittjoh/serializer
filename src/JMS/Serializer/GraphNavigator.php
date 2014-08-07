@@ -85,15 +85,6 @@ final class GraphNavigator
         $this->objectConstructor = $objectConstructor;
     }
 
-    /**
-     *
-     *
-     * @param mixed $data the data depends on the direction, and type of visitor
-     * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context $context
-     *
-     * @return mixed the return value depends on the direction, and type of visitor
-     */
 
     /**
      * Called for each node of the graph that is being traversed.
