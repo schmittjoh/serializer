@@ -50,9 +50,10 @@ final class GraphNavigator
     /**
      * Parses a direction string to one of the direction constants.
      *
-     * @param string $dirStr
+     * @param string $dirStr operation direction
      *
      * @return integer
+     * @throws InvalidArgumentException
      */
     public static function parseDirection($dirStr)
     {
@@ -68,6 +69,14 @@ final class GraphNavigator
         }
     }
 
+    /**
+     * Constructor
+     *
+     * @param MetadataFactoryInterface   $metadataFactory
+     * @param HandlerRegistryInterface   $handlerRegistry
+     * @param ObjectConstructorInterface $objectConstructor
+     * @param EventDispatcherInterface   $dispatcher
+     */
     public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null)
     {
         $this->dispatcher = $dispatcher;
@@ -77,36 +86,29 @@ final class GraphNavigator
     }
 
     /**
+     *
+     *
+     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param Context $context
+     *
+     * @return mixed the return value depends on the direction, and type of visitor
+     */
+
+    /**
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param Context $context
      *
      * @return mixed the return value depends on the direction, and type of visitor
+     * @throws Exception\RuntimeException
      */
     public function accept($data, array $type = null, Context $context)
     {
         $visitor = $context->getVisitor();
-
-        // If the type was not given, we infer the most specific type from the
-        // input data in serialization mode.
-        if (null === $type) {
-            if ($context instanceof DeserializationContext) {
-                throw new RuntimeException('The type must be given for all properties when deserializing.');
-            }
-
-            $typeName = gettype($data);
-            if ('object' === $typeName) {
-                $typeName = get_class($data);
-            }
-
-            $type = array('name' => $typeName, 'params' => array());
-        }
-        // If the data is null, we have to force the type to null regardless of the input in order to
-        // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-        else if ($context instanceof SerializationContext && null === $data) {
-            $type = array('name' => 'NULL', 'params' => array());
-        }
+        $type = $this->resolveType($data, $type, $context);
 
         switch ($type['name']) {
             case 'NULL':
@@ -180,7 +182,7 @@ final class GraphNavigator
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($context, $data, $metadata);
+                    $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -204,9 +206,9 @@ final class GraphNavigator
 
                 if (isset($metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()])) {
                     $rs = $object->{$metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()]}(
-                        $visitor,
-                        $context instanceof SerializationContext ? null : $data,
-                        $context
+                                 $visitor,
+                                     $context instanceof SerializationContext ? null : $data,
+                                     $context
                     );
                     $this->afterVisitingObject($metadata, $object, $type, $context);
 
@@ -241,7 +243,14 @@ final class GraphNavigator
         }
     }
 
-    private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
+    /**
+     * @param mixed $data the data depends on the direction, and type of visitorta
+     * @param ClassMetadata $metadata
+     *
+     * @return mixed
+     * @throws \LogicException
+     */
+    private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
             case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
@@ -272,6 +281,10 @@ final class GraphNavigator
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
+    /**
+     * @param Context $context
+     * @param mixed   $data the data depends on the direction, and type of visitor
+     */
     private function leaveScope(Context $context, $data)
     {
         if ($context instanceof SerializationContext) {
@@ -281,6 +294,12 @@ final class GraphNavigator
         }
     }
 
+    /**
+     * @param ClassMetadata $metadata
+     * @param object        $object
+     * @param array         $type
+     * @param Context       $context
+     */
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->leaveScope($context, $object);
@@ -305,5 +324,39 @@ final class GraphNavigator
         if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
             $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
         }
+    }
+
+    /**
+     * Resolve type as  array with format ["name" => string, "params" => array]
+     *
+     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param Context $context
+     *
+     * @return array
+     * @throws Exception\RuntimeException
+     */
+    private function resolveType($data, array $type, Context $context)
+    {
+        // If the type was not given, we infer the most specific type from the
+        // input data in serialization mode.
+        if (null === $type) {
+            if ($context instanceof DeserializationContext) {
+                throw new RuntimeException('The type must be given for all properties when deserializing.');
+            }
+
+            $typeName = gettype($data);
+            if ('object' === $typeName) {
+                $typeName = get_class($data);
+            }
+
+            $type = array('name' => $typeName, 'params' => array());
+        } else if ($context instanceof SerializationContext && null === $data) {
+            // If the data is null, we have to force the type to null regardless of the input in order to
+            // guarantee correct handling of null values, and not have any internal auto-casting behavior.
+            $type = array('name' => 'NULL', 'params' => array());
+        }
+
+        return $type;
     }
 }
