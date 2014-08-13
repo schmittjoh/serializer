@@ -66,6 +66,7 @@ class DateHandler implements SubscribingHandlerInterface
 
     public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
     {
+        $date->setTimeZone($this->getTimezone($type));
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
         }
@@ -121,6 +122,15 @@ class DateHandler implements SubscribingHandlerInterface
     private function getFormat(array $type)
     {
         return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
+    }
+
+    /**
+     * @return string
+     * @param \DateTimeZone
+     */
+    private function getTimezone(array $type)
+    {
+        return isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
     }
 
     /**

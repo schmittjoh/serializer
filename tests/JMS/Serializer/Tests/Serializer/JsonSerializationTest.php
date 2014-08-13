@@ -26,6 +26,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Handler\DateHandler;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -115,6 +116,13 @@ class JsonSerializationTest extends BaseSerializationTest
         $list->add(new Author('bar'));
 
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
+    }
+
+    public function testDefaultTimeZoneShouldSerializeCorrect()
+    {
+        $this->handlerRegistry->registerSubscribingHandler(new DateHandler('Y-m-d\TH:i:s\Z', $defaultTimezone = 'Etc/UTC'));
+        $datetime = new \DateTime('2011-08-30T00:00:00', new \DateTimeZone('Europe/Paris'));
+        $this->assertEquals('"2011-08-29T22:00:00Z"', $this->serialize($datetime));
     }
 
     public function getPrimitiveTypes()
