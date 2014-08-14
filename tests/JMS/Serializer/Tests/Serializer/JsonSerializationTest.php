@@ -114,7 +114,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $list->add(new Author('foo'));
         $list->add(new Author('bar'));
 
-        $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
+        $this->assertEquals('[{"full_name":"FOO","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"BAR","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
     }
 
     public function getPrimitiveTypes()
@@ -222,10 +222,17 @@ class LinkAddingSubscriber implements EventSubscriberInterface
         ));
     }
 
+    public function onPostSerializeTwo(Event $event)
+    {
+        $author = $event->getObject();
+        $event->getVisitor()->replaceData('full_name', strtoupper($event->getVisitor()->getData('full_name')));
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
             array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerializeTwo', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
         );
     }
 }
