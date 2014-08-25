@@ -24,6 +24,8 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 {
     private $options = 0;
 
+    private $rootIsArray = false;
+
     public function getResult()
     {
         $result = @json_encode($this->getRoot(), $this->options);
@@ -52,6 +54,10 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function visitArray($data, array $type, Context $context)
     {
+        if (null === $this->getRoot()) {
+            $this->rootIsArray = true;
+        }
+
         $result = parent::visitArray($data, $type, $context);
 
         if (null !== $this->getRoot() && isset($type['params'][1]) && 0 === count($result)) {
@@ -71,7 +77,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         if (empty($rs)) {
             $rs = new \ArrayObject();
 
-            if (array() === $this->getRoot()) {
+            if (array() === $this->getRoot() && !$this->rootIsArray) {
                 $this->setRoot(clone $rs);
             }
         }
