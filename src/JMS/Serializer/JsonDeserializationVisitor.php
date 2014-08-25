@@ -23,7 +23,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 class JsonDeserializationVisitor extends GenericDeserializationVisitor
 {
-    protected $jsonBigIntAsString;
+    private $jsonBigIntAsString;
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy, $jsonBigIntAsString = false)
     {
