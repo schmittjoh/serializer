@@ -41,7 +41,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->disableExternalEntities = false;
     }
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;
