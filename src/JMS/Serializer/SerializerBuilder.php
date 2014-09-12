@@ -43,6 +43,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
+use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -57,6 +58,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  */
 class SerializerBuilder
 {
+    private $metadataCache;
     private $metadataDirs = array();
     private $handlerRegistry;
     private $handlersConfigured = false;
@@ -333,6 +335,13 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setMetadataCache(CacheInterface $cache)
+    {
+        $this->metadataCache = $cache;
+
+        return $this;
+    }
+
     public function build()
     {
         $annotationReader = $this->annotationReader;
@@ -350,7 +359,9 @@ class SerializerBuilder
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
-        if (null !== $this->cacheDir) {
+        if (null !== $this->metadataCache) {
+            $metadataFactory->setCache($this->metadataCache);
+        } else if (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir.'/metadata');
             $metadataFactory->setCache(new FileCache($this->cacheDir.'/metadata'));
         }
