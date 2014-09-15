@@ -67,7 +67,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->defaultEncoding = $encoding;
     }
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->document = null;
@@ -199,7 +199,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
             $this->document->appendChild($this->currentNode);
         }
-        
+
         $this->addNamespaceAttributes($metadata, $this->currentNode);
 
         $this->hasValue = false;
@@ -421,7 +421,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $this->nullWasVisited = true;
         }
     }
-    
+
     /**
      * Adds namespace attributes to the XML root element
      *
