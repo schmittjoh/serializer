@@ -75,7 +75,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if ( ! array_key_exists($name, $data)) {
+            if ( ! array_key_exists($name, $data) || '' == $data[$name]) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 
