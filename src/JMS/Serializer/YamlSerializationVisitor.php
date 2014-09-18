@@ -35,8 +35,11 @@ class YamlSerializationVisitor extends AbstractVisitor
     public $writer;
 
     private $navigator;
+    private $navigatorStack;
     private $stack;
+    private $stackStack;
     private $metadataStack;
+    private $metadataStackStack;
     private $currentMetadata;
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy)
@@ -44,14 +47,28 @@ class YamlSerializationVisitor extends AbstractVisitor
         parent::__construct($namingStrategy);
 
         $this->writer = new Writer();
+        $this->navigatorStack = new \SplStack;
+        $this->stackStack = new \SplStack;
+        $this->metadataStackStack = new \SplStack;
     }
 
     public function setNavigator(GraphNavigator $navigator)
     {
+        $this->navigatorStack->push($this->navigator);
+        $this->stackStack->push($this->stack);
+        $this->metadataStackStack->push($this->metadataStack);
+
         $this->navigator = $navigator;
         $this->writer->reset();
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
+    }
+
+    public function endNavigator()
+    {
+        $this->navigator = $this->navigatorStack->pop();
+        $this->stack = $this->stackStack->pop();
+        $this->metadataStack = $this->metadataStackStack->pop();
     }
 
     public function visitNull($data, array $type, Context $context)

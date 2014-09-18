@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * XmlSerializationVisitor.
@@ -31,17 +32,30 @@ class XmlSerializationVisitor extends AbstractVisitor
 {
     public $document;
 
+    private $documentStack;
     private $navigator;
+    private $navigatorStack;
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
     private $defaultVersion = '1.0';
     private $defaultEncoding = 'UTF-8';
     private $stack;
+    private $stackStack;
     private $metadataStack;
+    private $metadataStackStack;
     private $currentNode;
     private $currentMetadata;
     private $hasValue;
     private $nullWasVisited;
+
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy)
+    {
+        parent::__construct($namingStrategy);
+        $this->navigatorStack = new \SplStack;
+        $this->documentStack = new \SplStack;
+        $this->stackStack = new \SplStack;
+        $this->metadataStackStack = new \SplStack;
+    }
 
     public function setDefaultRootName($name, $namespace = null)
     {
@@ -69,10 +83,23 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function setNavigator(GraphNavigator $navigator)
     {
+        $this->navigatorStack->push($this->navigator);
+        $this->documentStack->push($this->document);
+        $this->stackStack->push($this->stack);
+        $this->metadataStackStack->push($this->metadataStack);
+
         $this->navigator = $navigator;
         $this->document = null;
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
+    }
+
+    public function endNavigator()
+    {
+        $this->navigator = $this->navigatorStack->pop();
+        $this->document = $this->documentStack->pop();
+        $this->stack = $this->stackStack->pop();
+        $this->metadataStack = $this->metadataStackStack->pop();
     }
 
     public function getNavigator()
@@ -199,7 +226,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
             $this->document->appendChild($this->currentNode);
         }
-        
+
         $this->addNamespaceAttributes($metadata, $this->currentNode);
 
         $this->hasValue = false;
@@ -421,7 +448,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $this->nullWasVisited = true;
         }
     }
-    
+
     /**
      * Adds namespace attributes to the XML root element
      *

@@ -21,19 +21,42 @@ namespace JMS\Serializer;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
+    private $navigatorStack;
     private $navigator;
+    private $rootStack;
     private $root;
+    private $dataStackStack;
     private $dataStack;
     private $data;
 
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy)
+    {
+        parent::__construct($namingStrategy);
+        $this->navigatorStack = new \SplStack;
+        $this->dataStackStack = new \SplStack;
+        $this->rootStack = new \SplStack;
+    }
+
     public function setNavigator(GraphNavigator $navigator)
     {
+        $this->navigatorStack->push($this->navigator);
+        $this->dataStackStack->push($this->dataStack);
+        $this->rootStack->push($this->root);
+
         $this->navigator = $navigator;
-        $this->root = null;
         $this->dataStack = new \SplStack;
+        $this->root = null;
+    }
+
+    public function endNavigator()
+    {
+        $this->navigator = $this->navigatorStack->pop();
+        $this->dataStack = $this->dataStackStack->pop();
+        $this->root = $this->rootStack->pop();
     }
 
     /**

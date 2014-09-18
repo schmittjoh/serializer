@@ -89,8 +89,10 @@ class Serializer implements SerializerInterface
 
         $visitor->setNavigator($this->navigator);
         $this->navigator->accept($visitor->prepare($data), null, $context);
+        $result = $visitor->getResult();
+        $visitor->endNavigator();
 
-        return $visitor->getResult();
+        return $result;
     }
 
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
