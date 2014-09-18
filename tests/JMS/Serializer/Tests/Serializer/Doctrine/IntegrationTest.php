@@ -56,14 +56,15 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $testCase = $this;
         $this->registry = new SimpleManagerRegistry(
-            function($id) {
+            function($id) use (&$testCase) {
                 switch ($id) {
                     case 'default_connection':
-                        return $this->createConnection();
+                        return $testCase->createConnection();
 
                     case 'default_manager':
-                        return $this->createEntityManager($this->registry->getConnection());
+                        return $testCase->createEntityManager($testCase->registry->getConnection());
 
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
@@ -71,12 +72,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             }
         );
 
+        $registry = $this->registry;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function(array $metadataDirs, Reader $annotationReader) {
+                function(array $metadataDirs, Reader $annotationReader) use (&$registry) {
                     $defaultFactory = new DefaultDriverFactory();
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $this->registry);
+                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
             ->build()
@@ -94,7 +96,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
     }
 
-    private function createConnection()
+    public function createConnection()
     {
         $con = DriverManager::getConnection(array(
             'driver' => 'pdo_sqlite',
@@ -104,7 +106,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         return $con;
     }
 
-    private function createEntityManager(Connection $con)
+    public function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
         $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
