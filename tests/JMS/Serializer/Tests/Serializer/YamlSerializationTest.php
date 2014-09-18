@@ -20,7 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
 
-class YamlSerializationTest extends BaseSerializationTest
+class YamlSerializationTest extends BaseSerializingTest
 {
     public function testConstraintViolation()
     {
