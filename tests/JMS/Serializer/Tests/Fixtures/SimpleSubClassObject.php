@@ -20,7 +20,6 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlElement;
 
 /**

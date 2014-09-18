@@ -19,8 +19,6 @@ use JMS\Serializer\SerializerBuilder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\Tests\Fixture\Doctrine\SingleTableInheritance\Clazz;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 

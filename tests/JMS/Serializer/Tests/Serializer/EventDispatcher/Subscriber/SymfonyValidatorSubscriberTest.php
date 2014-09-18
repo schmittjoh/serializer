@@ -24,7 +24,6 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
