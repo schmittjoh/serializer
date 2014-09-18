@@ -27,7 +27,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
-    public static function getSubscribingMethods()
+    public function getSubscribingMethods()
     {
         $methods = array();
         $formats = array('json', 'xml', 'yml');
