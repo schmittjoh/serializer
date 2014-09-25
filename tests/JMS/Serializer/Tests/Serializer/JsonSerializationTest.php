@@ -49,8 +49,10 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
-            $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"}}';
-            $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null}';
+            $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2013-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2013 00:00:00"]}';
+            $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2013 00:00:00"}}';
+            $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"}}';
+            $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null}';
             $outputs['price'] = '{"price":3}';
             $outputs['currency_aware_price'] = '{"currency":"EUR","amount":2.34}';
             $outputs['order'] = '{"cost":{"price":12.34}}';
@@ -173,6 +175,33 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeEmptyObject()
     {
         $this->assertEquals('{}', $this->serialize(new Author(null)));
+    }
+
+    /**
+     * @group encoding
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
+     */
+    public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
+    {
+        ini_set('display_errors', 1);
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+    }
+
+    /**
+     * @group encoding
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
+     */
+    public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
+    {
+        ini_set('display_errors', 0);
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+    }
+
+    public function testSerializeArrayWithEmptyObject()
+    {
+        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
     }
 
     protected function getFormat()

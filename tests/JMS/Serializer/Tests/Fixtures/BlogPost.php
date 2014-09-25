@@ -22,6 +22,7 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlElement;
@@ -30,7 +31,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PhpCollection\Map;
 use PhpCollection\Sequence;
 
-/** @XmlRoot("blog-post") */
+/**
+ * @XmlRoot("blog-post")
+ * @XmlNamespace(uri="http://example.com/namespace")
+ * @XmlNamespace(uri="http://schemas.google.com/g/2005", prefix="gd")
+ * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
+ * @XmlNamespace(uri="http://purl.org/dc/elements/1.1/", prefix="dc")
+ */
 class BlogPost
 {
     /**
@@ -43,6 +50,7 @@ class BlogPost
     /**
      * @Type("string")
      * @Groups({"comments","post"})
+     * @XmlElement(namespace="http://purl.org/dc/elements/1.1/");
      */
     private $title;
 
@@ -59,6 +67,13 @@ class BlogPost
      * @Groups({"post"})
      */
     private $published;
+
+    /**
+     * @Type("string")
+     * @XmlAttribute(namespace="http://schemas.google.com/g/2005")
+     * @Groups({"post"})
+     */
+    private $etag;
 
     /**
      * @Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Comment>")
@@ -83,19 +98,27 @@ class BlogPost
     /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      * @Groups({"post"})
+     * @XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     private $author;
 
-    public function __construct($title, Author $author, \DateTime $createdAt)
+    /**
+     * @Type("JMS\Serializer\Tests\Fixtures\Publisher")
+     */
+    private $publisher;
+
+    public function __construct($title, Author $author, \DateTime $createdAt, Publisher $publisher)
     {
         $this->title = $title;
         $this->author = $author;
+        $this->publisher = $publisher;
         $this->published = false;
         $this->comments = new ArrayCollection();
         $this->comments2 = new Sequence();
         $this->metadata = new Map();
         $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
+        $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
     }
 
     public function setPublished()

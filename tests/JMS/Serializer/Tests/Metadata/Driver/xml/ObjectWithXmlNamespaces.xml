@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces" xml-root-name="test-object" xml-root-namespace="http://example.com/namespace">
+        <xml-namespace uri="http://example.com/namespace"/>
+        <xml-namespace prefix="gd" uri="http://schemas.google.com/g/2005"/>
+        <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
+        <property name="title" type="string">
+            <xml-element namespace="http://purl.org/dc/elements/1.1/"/>
+        </property>
+        <property name="createdAt" xml-attribute="true" type="DateTime"/>
+        <property name="etag" type="string" xml-attribute="true">
+            <xml-element namespace="http://schemas.google.com/g/2005"/>
+        </property>
+        <property name="author" type="string">
+            <xml-element namespace="http://www.w3.org/2005/Atom"/>
+        </property>
+        <property name="language" type="string" xml-attribute="true">
+            <xml-element namespace="http://purl.org/dc/elements/1.1/"/>
+        </property>
+    </class>
+</serializer>

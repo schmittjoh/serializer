@@ -63,6 +63,12 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $xmlRootName;
         }
 
+        if (null !== $xmlRootNamespace = $elem->attributes()->{'xml-root-namespace'}) {
+            $metadata->xmlRootNamespace = (string) $xmlRootNamespace;
+        }
+
+        $readOnlyClass = 'true' === strtolower($elem->attributes()->{'read-only'});
+
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = array();
         foreach ($elem->xpath('./discriminator-class') as $entry) {
@@ -77,6 +83,20 @@ class XmlDriver extends AbstractFileDriver
             $metadata->discriminatorDisabled = true;
         } elseif ( ! empty($discriminatorFieldName) || ! empty($discriminatorMap)) {
             $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap);
+        }
+
+        foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {
+            if (!isset($xmlNamespace->attributes()->uri)) {
+                throw new RuntimeException('The prefix attribute must be set for all xml-namespace elements.');
+            }
+
+            if (isset($xmlNamespace->attributes()->prefix)) {
+                $prefix = (string) $xmlNamespace->attributes()->prefix;
+            } else {
+                $prefix = null;
+            }
+
+            $metadata->registerNamespace((string) $xmlNamespace->attributes()->uri, $prefix);
         }
 
         foreach ($elem->xpath('./virtual-property') as $method) {
@@ -176,6 +196,10 @@ class XmlDriver extends AbstractFileDriver
                         if (isset($colConfig->attributes()->cdata)) {
                             $pMetadata->xmlElementCData = 'true' === (string) $colConfig->attributes()->cdata;
                         }
+
+                        if (isset($colConfig->attributes()->namespace)) {
+                            $pMetadata->xmlNamespace = (string) $colConfig->attributes()->namespace;
+                        }
                     }
 
                     if (isset($pElem->attributes()->{'xml-attribute'})) {
@@ -201,6 +225,8 @@ class XmlDriver extends AbstractFileDriver
                     //we need read-only before setter and getter set, because that method depends on flag being set
                     if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
                         $pMetadata->readOnly = 'true' === strtolower($readOnly);
+                    } else {
+                        $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};

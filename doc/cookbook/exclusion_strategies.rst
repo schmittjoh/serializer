@@ -105,6 +105,8 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
 
         /** @Groups({"details"}) */
         private $comments;
+        
+        private $createdAt;
     }
 
 You can then tell the serializer which groups to serialize in your controller::
@@ -112,6 +114,12 @@ You can then tell the serializer which groups to serialize in your controller::
     use JMS\Serializer\SerializationContext;
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
+    
+    //will output $id, $title and $nbComments.
+
+    $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('Default', 'list')));
+    
+    //will output $id, $title, $nbComments and $createdAt.
 
 Limiting serialization depth of some properties
 -----------------------------------------------

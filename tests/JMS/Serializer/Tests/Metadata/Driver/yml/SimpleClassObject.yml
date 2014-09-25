@@ -1,0 +1,19 @@
+JMS\Serializer\Tests\Fixtures\SimpleClassObject:
+    xml_namespaces:
+        foo: http://foo.example.org
+        old_foo: http://old.foo.example.org
+        new_foo: http://new.foo.example.org
+    properties:
+        foo:
+            type: string
+            xml_attribute: true
+            xml_element:
+                namespace: http://old.foo.example.org
+        bar:
+            type: string
+            xml_element:
+                namespace: http://foo.example.org
+        moo:
+            type: string
+            xml_element:
+                namespace: http://new.foo.example.org

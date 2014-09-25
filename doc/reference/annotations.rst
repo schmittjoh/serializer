@@ -178,7 +178,7 @@ the method should appear like a property of the object.
 deserialization.
 
 @Inline
-~~~~~~~~
+~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
 should be inlined.
 
@@ -190,6 +190,8 @@ to determine the order.
 ~~~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
 is read only and cannot be set during deserialization.
+
+A property can be marked as non read only with ``@ReadOnly(false)`` annotation (useful when a class is marked as read only).
 
 @PreSerialize
 ~~~~~~~~~~~~~
@@ -512,18 +514,22 @@ Resulting XML:
     <result name="firstname" value="Adrien"/>
 
 @XmlElement
-~~~~~~~~
+~~~~~~~~~~~
 This annotation can be defined on a property to add additional xml serialization/deserialization properties.
 
 .. code-block :: php
 
     <?php
+
     use JMS\Serializer\Annotation\XmlElement;
 
+    /**
+     * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
+     */
     class User
     {
         /**
-        * @XmlElement(cdata=false)
+        * @XmlElement(cdata=false, namespace="http://www.w3.org/2005/Atom")
         */
         private $id = 'my_id;
     }
@@ -532,4 +538,48 @@ Resulting XML:
 
 .. code-block :: xml
 
-    <id>my_id</id>
+    <atom:id>my_id</atom:id>
+
+@XmlNamespace
+~~~~~~~~~~~~~
+This annotation allows you to specify Xml namespace/s and prefix used.
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\Serializer\Annotation\XmlNamespace;
+
+    /**
+     * @XmlNamespace(uri="http://example.com/namespace")
+     * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
+     */
+    class BlogPost
+    {
+        /**
+         * @Type("JMS\Serializer\Tests\Fixtures\Author")
+         * @Groups({"post"})
+         * @XmlElement(namespace="http://www.w3.org/2005/Atom")
+         */
+         private $author;
+    }
+
+    class Author
+    {
+        /**
+         * @Type("string")
+         * @SerializedName("full_name")
+         */
+         private $name;
+    }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <blog-post xmlns="http://example.com/namespace" xmlns:atom="http://www.w3.org/2005/Atom">
+        <atom:author>
+            <full_name><![CDATA[Foo Bar]]></full_name>
+        </atom:author>
+    </blog>

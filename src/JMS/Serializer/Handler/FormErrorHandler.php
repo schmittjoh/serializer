@@ -77,8 +77,10 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         foreach ($form->all() as $child) {
-            if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
-                $formNode->appendChild($node);
+            if ($child instanceof Form) {
+                if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
+                    $formNode->appendChild($node);
+                }
             }
         }
 
@@ -138,7 +140,9 @@ class FormErrorHandler implements SubscribingHandlerInterface
 
         $children = array();
         foreach ($data->all() as $child) {
-            $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
+            if ($child instanceof Form) {
+                $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
+            }
         }
 
         if ($children) {

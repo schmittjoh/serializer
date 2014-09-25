@@ -1,8 +1,14 @@
 language: php
 
+matrix:
+  allow_failures:
+    - php: hhvm
+
 php:
   - 5.3
   - 5.4
+  - 5.5
+  - hhvm
 
 before_script:
     - composer self-update
@@ -11,5 +17,6 @@ before_script:
 script: phpunit --coverage-clover clover
 
 after_success:
-    - curl -sL https://bit.ly/artifact-uploader | php
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover clover
 

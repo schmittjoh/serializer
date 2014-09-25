@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 

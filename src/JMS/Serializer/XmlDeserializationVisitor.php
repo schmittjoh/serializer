@@ -104,12 +104,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $data = (string) $data;
 
-        if ('true' === $data) {
+        if ('true' === $data || '1' === $data) {
             $data = true;
-        } elseif ('false' === $data) {
+        } elseif ('false' === $data || '0' === $data) {
             $data = false;
         } else {
-            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", or "false", but got %s.', json_encode($data)));
+            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
         }
 
         if (null === $this->result) {
@@ -214,7 +214,20 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            if (isset($data[$name])) {
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                $registeredNamespaces = $data->getDocNamespaces();
+                if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
+                    $prefix = uniqid('ns-');
+                    $data->registerXPathNamespace ($prefix, $namespace);
+                }
+                $attributeName = ($prefix === '')?$name:$prefix.':'.$name;
+                $nodes = $data->xpath('./@'.$attributeName);
+                if (!empty($nodes)) {
+                    $v = (string) reset($nodes);
+                    $metadata->reflection->setValue($this->currentObject, $v);
+                }
+
+            } elseif (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
                 $metadata->reflection->setValue($this->currentObject, $v);
             }
@@ -243,11 +256,26 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if (!isset($data->$name)) {
-            return;
+        if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+            $registeredNamespaces = $data->getDocNamespaces();
+            if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
+                $prefix = uniqid('ns-');
+                $data->registerXPathNamespace($prefix, $namespace);
+            }
+            $elementName = ($prefix === '')?$name:$prefix.':'.$name;
+            $nodes = $data->xpath('./'.$elementName );
+            if (empty($nodes)) {
+                return;
+            }
+            $node = reset($nodes);
+        } else {
+            if (!isset($data->$name)) {
+                return;
+            }
+            $node = $data->$name;
         }
 
-        $v = $this->navigator->accept($data->$name, $metadata->type, $context);
+        $v = $this->navigator->accept($node, $metadata->type, $context);
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);
