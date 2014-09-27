@@ -24,6 +24,10 @@ class SimpleObjectProxy extends SimpleObject implements Proxy
 {
     public $__isInitialized__ = false;
 
+    private $initializer;
+
+    private $cloner;
+
     private $baz = 'baz';
 
     public function __load()
@@ -37,5 +41,35 @@ class SimpleObjectProxy extends SimpleObject implements Proxy
     public function __isInitialized()
     {
         return $this->__isInitialized__;
+    }
+
+    public function __setInitialized($initialized)
+    {
+        $this->__isInitialized__ = $initialized;
+    }
+
+    public function __setInitializer(\Closure $initializer = null)
+    {
+        $this->initializer = $initializer;
+    }
+
+    public function __getInitializer()
+    {
+        return $this->initializer;
+    }
+
+    public function __setCloner(\Closure $cloner = null)
+    {
+        $this->cloner = $cloner;
+    }
+
+    public function __getCloner()
+    {
+        return $this->cloner;
+    }
+
+    public function __getLazyProperties()
+    {
+        return array();
     }
 }
