@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -92,6 +93,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
+            $outputs['type_string_array_conversion_error'] = '{"full_name":["Paul Atreides"]}';
         }
 
         if (!isset($outputs[$key])) {
@@ -202,6 +204,18 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeArrayWithEmptyObject()
     {
         $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+    }
+
+    /**
+     * @expectedException LogicException
+     * @expectedExceptionMessage Expected string but got array. Do you have the wrong @Type mapping in class JMS\Serializer\Tests\Fixtures\Author?
+     */
+    public function testDeserializeMoreAccurateErrorsTypeString() {
+        if ($this->hasDeserializer()) {
+            $this->deserialize($this->getContent('type_string_array_conversion_error'), 'JMS\Serializer\Tests\Fixtures\Author');
+        } else {
+            $this->markTestSkipped("Does not have deserializer");
+        }
     }
 
     protected function getFormat()

@@ -45,7 +45,7 @@ abstract class Context
     /** @var GraphNavigator */
     private $navigator;
 
-    /** @var MetadataFactory */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
 
     /** @var ExclusionStrategyInterface */
