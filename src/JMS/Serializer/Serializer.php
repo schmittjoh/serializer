@@ -113,7 +113,7 @@ class Serializer implements SerializerInterface
         $visitor->setNavigator($this->navigator);
         $navigatorResult = $this->navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $context);
 
-        // This is a special case if the root is handled by a callback on the object iself.
+        // This is a special case if the root is handled by a callback on the object itself.
         if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
             return $navigatorResult;
         }
