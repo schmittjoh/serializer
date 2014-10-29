@@ -98,14 +98,24 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
+        $i = 0;
+        $isHash = false;
         foreach ($data as $k => $v) {
+            if ($k !== $i++) {
+                $isHash = true;
+            }
+            
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
             if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
                 continue;
             }
 
-            $rs[$k] = $v;
+            if ($isHash) {
+                $rs[$k] = $v;
+            } else {
+                $rs[] = $v;
+            }
         }
 
         return $rs;
