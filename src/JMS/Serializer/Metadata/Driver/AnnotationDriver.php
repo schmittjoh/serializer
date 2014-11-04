@@ -219,6 +219,7 @@ class AnnotationDriver implements DriverInterface
                 } else {
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                 }
+
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $classMetadata->addPropertyMetadata($propertyMetadata);
