@@ -43,6 +43,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlElementCData = true;
     public $getter;
     public $setter;
+    public $propertyName;
     public $inline = false;
     public $readOnly = false;
     public $xmlAttributeMap = false;
@@ -50,7 +51,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     private static $typeParser;
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor($type, $getter = null, $setter = null, $propertyName = null)
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->reflection->getDeclaringClass();
@@ -78,6 +79,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
         $this->getter = $getter;
         $this->setter = $setter;
+        $this->propertyName = $propertyName;
     }
 
     public function getValue($obj)
@@ -86,7 +88,19 @@ class PropertyMetadata extends BasePropertyMetadata
             return parent::getValue($obj);
         }
 
-        return $obj->{$this->getter}();
+        if (!empty($this->propertyName)) {
+            return $obj->{$this->getter}($this->propertyName);
+        } else {
+            return $obj->{$this->getter}();
+        }
+    }
+
+    public function setValue($obj, $value)
+    {
+        if (!empty($this->propertyName)) {
+            return $obj->{$this->setter}($this->propertyName, $value);
+        }
+        return parent::setValue($obj, $value);
     }
 
     public function setType($type)
