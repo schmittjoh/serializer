@@ -3,7 +3,10 @@
 
 namespace JMS\Serializer\Annotation;
 
-
+/**
+ * @Annotation
+ * @Target("PROPERTY")
+ */
 final class GenericAccessor
 {
 
