@@ -82,6 +82,10 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->propertyName = $propertyName;
     }
 
+    /**
+     * @param object $obj
+     * @return mixed
+     */
     public function getValue($obj)
     {
         if (null === $this->getter) {
@@ -95,6 +99,10 @@ class PropertyMetadata extends BasePropertyMetadata
         }
     }
 
+    /**
+     * @param object $obj
+     * @param string $value
+     */
     public function setValue($obj, $value)
     {
         if (!empty($this->propertyName)) {
@@ -103,6 +111,9 @@ class PropertyMetadata extends BasePropertyMetadata
         return parent::setValue($obj, $value);
     }
 
+    /**
+     * @param string $type
+     */
     public function setType($type)
     {
         if (null === self::$typeParser) {
