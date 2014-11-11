@@ -1,6 +1,5 @@
 <?php
 
-
 namespace JMS\Serializer\Annotation;
 
 /**
