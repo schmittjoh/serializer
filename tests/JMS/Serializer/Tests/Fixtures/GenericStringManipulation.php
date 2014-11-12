@@ -13,18 +13,48 @@ trait GenericStringManipulation
      * @var string
      *
      * @Type("string")
-     * @GenericAccessor(getter="getStringAsUpperCase", setter="setStringAsLowerCase", propertyName="testString")
+     * @GenericAccessor(getter="getStringAsUpperCase", setter="setStringAsLowerCase", propertyName="propertyOne")
      */
-    protected $testString;
+    protected $propertyOne;
 
-    public function getTestString()
+    /**
+     * @var string
+     *
+     * @Type("string")
+     * @GenericAccessor(getter="getStringAsUpperCase", setter="setStringAsLowerCase", propertyName="propertyTwo")
+     */
+    protected $propertyTwo;
+
+    /**
+     * @param $value
+     */
+    public function setPropertyOne($value)
     {
-        return $this->testString;
+        $this->propertyOne = $value;
     }
 
-    public function setTestString($string)
+    /**
+     * @param $value
+     */
+    public function setPropertyTwo($value)
     {
-        $this->testString = $string;
+        $this->propertyTwo = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropertyOne()
+    {
+        return $this->propertyOne;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropertyTwo()
+    {
+        return $this->propertyTwo;
     }
 
     /**
