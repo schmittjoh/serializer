@@ -2,53 +2,26 @@
 
 namespace JMS\Serializer\Tests\Annotation;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Builder\DefaultDriverFactory;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\GenericAccessor;
 use JMS\Serializer\Tests\Fixtures\GenericStringManipulation;
 
+class testStub
+{
+    use GenericStringManipulation;
+}
 
 class GenericStringTest extends \PHPUnit_Framework_TestCase
 {
-    protected $factory;
-
-    protected $dispatcher;
-
-    /** @var Serializer */
-    protected $serializer;
-
-    protected $handlerRegistry;
-
-    protected $serializationVisitors;
-
-    protected $deserializationVisitors;
-
-    /** @var  GenericStringManipulation */
+    /** @var  testStub */
     protected $stub;
 
     public function setUp()
     {
-        $this->stub = new GenericStringManipulation();
-
-        $this->factory = new DefaultDriverFactory(new AnnotationDriver(new AnnotationReader()));
-
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-
-        $this->serializer = SerializerBuilder::create();
-        $this->serializer->setPropertyNamingStrategy($namingStrategy);
-        $this->serializer->setMetadataDriverFactory($this->factory);
-        $this->serializer = $this->serializer->build();
+        $this->stub = new testStub();
     }
 
     public function testSetUp()
     {
-        $this->assertTrue($this->stub instanceof GenericStringManipulation);
+        $this->assertTrue($this->stub instanceof testStub);
     }
 
     public function testAccessors()
