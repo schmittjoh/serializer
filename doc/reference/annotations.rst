@@ -211,7 +211,7 @@ the object has been deserialized.
 @HandlerCallback
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method if serialization/deserialization is handled
-by the object self.
+by the object itself.
 
 .. code-block :: php
 
