@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\GenericAccessor;
 
-trait GenericStringManipulation
+class GenericStringManipulation
 {
 
     /**

@@ -9,14 +9,10 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\GenericStringManipulation;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\GenericAccessor;
+use JMS\Serializer\Tests\Fixtures\GenericStringManipulation;
 
-class testStub
-{
-    use GenericStringManipulation;
-}
 
 class GenericStringTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,12 +29,12 @@ class GenericStringTest extends \PHPUnit_Framework_TestCase
 
     protected $deserializationVisitors;
 
-    /** @var  testStub */
+    /** @var  GenericStringManipulation */
     protected $stub;
 
     public function setUp()
     {
-        $this->stub = new testStub();
+        $this->stub = new GenericStringManipulation();
 
         $this->factory = new DefaultDriverFactory(new AnnotationDriver(new AnnotationReader()));
 
@@ -52,7 +48,7 @@ class GenericStringTest extends \PHPUnit_Framework_TestCase
 
     public function testSetUp()
     {
-        $this->assertTrue($this->stub instanceof testStub);
+        $this->assertTrue($this->stub instanceof GenericStringManipulation);
     }
 
     public function testAccessors()
@@ -71,8 +67,8 @@ class GenericStringTest extends \PHPUnit_Framework_TestCase
 
         $stdObject = new \ArrayObject(array('property_one' =>  $expected, 'property_two' => $expected));
 
-        /** @var testStub $testStub */
-        $testStub =  $this->serializer->deserialize(json_encode($stdObject),'JMS\Serializer\Tests\Annotation\testStub', 'json');
+        /** @var GenericStringManipulation $testStub */
+        $testStub =  $this->serializer->deserialize(json_encode($stdObject),'JMS\Serializer\Tests\Fixtures\GenericStringManipulation', 'json');
         $this->assertEquals(strtoupper($expected),json_decode($this->serializer->serialize($testStub, 'json'))->property_one);
         $this->assertEquals(strtoupper($expected),json_decode($this->serializer->serialize($testStub, 'json'))->property_two);
         $this->assertEquals(strtolower($expected),$testStub->getPropertyOne());
