@@ -39,7 +39,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
         throw new \LogicException('VirtualPropertyMetadata is immutable.');
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor($type, $getter = null, $setter = null, $propertyName = null)
     {
     }
 
