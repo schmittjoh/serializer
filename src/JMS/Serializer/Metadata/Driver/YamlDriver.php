@@ -197,7 +197,7 @@ class YamlDriver extends AbstractFileDriver
                     }
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
-                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                        || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $metadata->addPropertyMetadata($pMetadata);
                 }
             }
