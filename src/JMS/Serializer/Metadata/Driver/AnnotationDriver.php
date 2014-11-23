@@ -59,10 +59,12 @@ use JMS\Serializer\Annotation\MaxDepth;
 class AnnotationDriver implements DriverInterface
 {
     private $reader;
+    private $defaultExclusionPolicy;
 
-    public function __construct(Reader $reader)
+    public function __construct(Reader $reader, $defaultExclusionPolicy = ExclusionPolicy::NONE)
     {
         $this->reader = $reader;
+        $this->defaultExclusionPolicy = $defaultExclusionPolicy;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -73,7 +75,7 @@ class AnnotationDriver implements DriverInterface
         $propertiesMetadata = array();
         $propertiesAnnotations = array();
 
-        $exclusionPolicy = 'NONE';
+        $exclusionPolicy = $this->defaultExclusionPolicy;
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
@@ -188,7 +190,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                       $propertyMetadata->readOnly = $annot->readOnly;
+                        $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {
