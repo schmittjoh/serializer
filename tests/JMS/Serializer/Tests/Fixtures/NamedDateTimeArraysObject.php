@@ -18,10 +18,7 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlMap;
-use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
-
 
 class NamedDateTimeArraysObject
 {

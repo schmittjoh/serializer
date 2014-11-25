@@ -18,12 +18,9 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
 
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\VisitorInterface;
 
 use JMS\Serializer\Tests\Fixtures\Author;

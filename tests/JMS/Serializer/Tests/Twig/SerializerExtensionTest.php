@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Tests\Twig;
 
-use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Twig\SerializerExtension;
 
 class SerializerExtensionTest extends \PHPUnit_Framework_TestCase

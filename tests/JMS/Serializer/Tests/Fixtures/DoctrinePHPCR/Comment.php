@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
 
-use JMS\Serializer\Annotation\Type;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
 

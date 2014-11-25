@@ -31,7 +31,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
 {
     private $translator;
 
-    public static function getSubscribingMethods()
+    public function getSubscribingMethods()
     {
         $methods = array();
         foreach (array('xml', 'json', 'yml') as $format) {

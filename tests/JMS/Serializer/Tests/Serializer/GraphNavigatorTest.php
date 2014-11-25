@@ -132,7 +132,9 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         });
 
         $subscribingHandlerClass = $this->getMockClass('JMS\Serializer\Handler\SubscribingHandlerInterface', array('getSubscribingMethods', 'serialize'));
-        $subscribingHandlerClass::staticExpects($this->once())
+
+        $subscribingHandler = new $subscribingHandlerClass();
+        $subscribingHandler->expects($this->once())
             ->method('getSubscribingMethods')
             ->will($this->returnValue(array(array(
                 'type' => $typeName,
@@ -140,8 +142,6 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'method' => 'serialize'
             ))));
-
-        $subscribingHandler = new $subscribingHandlerClass();
         $subscribingHandler->expects($this->once())
             ->method('serialize')
             ->with($this->equalTo($this->context), $this->equalTo($object));

@@ -28,7 +28,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 
 class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
-    public static function getSubscribingMethods()
+    public function getSubscribingMethods()
     {
         $methods = array();
         $formats = array('xml', 'json', 'yml');

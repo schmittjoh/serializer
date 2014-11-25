@@ -36,5 +36,5 @@ interface SubscribingHandlerInterface
      *
      * @return array
      */
-    public static function getSubscribingMethods();
+    public function getSubscribingMethods();
 }

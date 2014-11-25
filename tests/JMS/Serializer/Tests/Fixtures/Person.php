@@ -21,7 +21,6 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\Type;
 
 /**
