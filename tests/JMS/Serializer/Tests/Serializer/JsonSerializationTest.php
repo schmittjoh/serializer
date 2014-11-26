@@ -19,6 +19,8 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\SimpleEmptyObject;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -48,6 +50,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_integers'] = '[1,3,4]';
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
+            $outputs['array_empty_objects'] = '[{"foo":{},"moo":"bar"},{"foo":{},"moo":"baz"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
             $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2013-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2013 00:00:00"]}';
             $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2013 00:00:00"}}';
@@ -201,7 +204,17 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testSerializeArrayWithEmptyObject()
     {
-        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
+    }
+
+    public function testArrayEmptyObject()
+    {
+        $data = array(new SimpleEmptyObject('bar'), new SimpleEmptyObject('baz'));
+        $this->assertEquals($this->getContent('array_empty_objects'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty_objects'), 'array<JMS\Serializer\Tests\Fixtures\SimpleEmptyObject>'));
+        }
     }
 
     protected function getFormat()

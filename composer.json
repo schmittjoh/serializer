@@ -32,7 +32,8 @@
         "symfony/translation": "~2.0",
         "symfony/validator": "~2.0",
         "symfony/form": "~2.1",
-        "symfony/filesystem": "2.*"
+        "symfony/filesystem": "2.*",
+        "phpunit/phpunit": "4.1.*"
     },
     "autoload": {
         "psr-0": {
