@@ -58,14 +58,17 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->registry = new SimpleManagerRegistry(
-            function($id) {
+        $connection    = $this->createConnection();
+        $entityManager = $this->createEntityManager($connection);
+
+        $this->registry = $registry = new SimpleManagerRegistry(
+            function($id) use($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
-                        return $this->createConnection();
+                        return $connection;
 
                     case 'default_manager':
-                        return $this->createEntityManager($this->registry->getConnection());
+                        return $entityManager;
 
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
@@ -75,10 +78,10 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function(array $metadataDirs, Reader $annotationReader) {
+                function(array $metadataDirs, Reader $annotationReader) use($registry) {
                     $defaultFactory = new DefaultDriverFactory();
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $this->registry);
+                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
             ->build()
