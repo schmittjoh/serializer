@@ -3,13 +3,8 @@
     "type": "library",
     "description": "Forked Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
-    "homepage": "",
     "license": "Apache2",
     "authors": [
-        {
-            "name": "Johannes M. Schmitt",
-            "email": "schmittjoh@gmail.com"
-        },
         {
             "name": "Brett Minnie",
             "email": "brett@bdb-studios.co.uk"
