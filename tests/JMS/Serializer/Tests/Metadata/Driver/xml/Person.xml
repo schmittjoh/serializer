@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<serializer>
-    <class name="JMS\Serializer\Tests\Fixtures\Person" xml-root-name="child">
-        <property name="name" xml-value="true" type="string">
-            <xml-element cdata="false"/>
-        </property>
-        <property name="age" xml-attribute="true" type="integer" />
-    </class>
-</serializer>

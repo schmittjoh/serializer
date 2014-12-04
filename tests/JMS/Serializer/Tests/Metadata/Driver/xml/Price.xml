@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<serializer>
-    <class name="JMS\Serializer\Tests\Fixtures\Price">
-        <property name="price" xml-value="true" type="double" />
-    </class>
-</serializer>

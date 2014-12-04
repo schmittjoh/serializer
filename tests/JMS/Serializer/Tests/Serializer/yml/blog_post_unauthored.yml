@@ -1,9 +1,0 @@
-id: what_a_nice_id
-title: 'This is a nice title.'
-created_at: '2011-07-30T00:00:00+0000'
-is_published: false
-etag: 1edf9bf60a32d89afbb85b2be849e3ceed5f5b10
-metadata:
-    foo: bar
-author: null
-publisher: null

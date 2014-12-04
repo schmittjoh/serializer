@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<result>
-  <violation property_path="foo">
-    <message><![CDATA[Message of violation]]></message>
-  </violation>
-  <violation property_path="bar">
-    <message><![CDATA[Message of another violation]]></message>
-  </violation>
-</result>

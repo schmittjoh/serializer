@@ -1,7 +1,0 @@
-JMS\Serializer\Tests\Fixtures\BlogPost:
-    xml_root_name: blog-post
-    properties:
-        title:
-            accessor:
-                getter: getOtherTitle
-                setter: setOtherTitle

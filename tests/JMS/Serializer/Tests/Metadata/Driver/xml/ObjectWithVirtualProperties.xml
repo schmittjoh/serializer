@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<serializer>
-    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties">
-        <property name="existField" type="string"/>
-        <virtual-property method="getVirtualValue"/>
-        <virtual-property method="getVirtualSerializedValue" serialized-name="test"/>
-        <virtual-property method="getTypedVirtualProperty" type="integer" />
-    </class>
-</serializer>

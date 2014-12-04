@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<result xmlns:old_foo="http://foo.example.org" xmlns:foo="http://better.foo.example.org" xmlns:new_foo="http://new.foo.example.org" xmlns:ns-8ae021a9="http://old.foo.example.org" ns-8ae021a9:foo="foo">
-  <old_foo:bar><![CDATA[bar]]></old_foo:bar>
-  <foo:moo><![CDATA[moo]]></foo:moo>
-  <old_foo:baz><![CDATA[baz]]></old_foo:baz>
-  <new_foo:qux><![CDATA[qux]]></new_foo:qux>
-</result>
