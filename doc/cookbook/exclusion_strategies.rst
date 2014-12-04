@@ -19,8 +19,8 @@ then it is easier to change the exclusion policy, and only mark these few proper
 
     <?php
 
-    use JMS\Serializer\Annotation\ExclusionPolicy;
-    use JMS\Serializer\Annotation\Expose;
+    use BDBStudios\Serializer\Annotation\ExclusionPolicy;
+    use BDBStudios\Serializer\Annotation\Expose;
 
     /**
      * The following annotations tells the serializer to skip all properties which
@@ -75,7 +75,7 @@ expose them via an API that is consumed by a third-party:
 If you have annotated your objects like above, you can serializing different
 versions like this::
 
-    use JMS\Serializer\SerializationContext;
+    use BDBStudios\Serializer\SerializationContext;
 
     $serializer->serialize(new VersionObject(), 'json', SerializationContext::create()->setVersion(1));
 
@@ -90,7 +90,7 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
 
 .. code-block :: php
 
-    use JMS\Serializer\Annotation\Groups;
+    use BDBStudios\Serializer\Annotation\Groups;
 
     class BlogPost
     {
@@ -105,20 +105,20 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
 
         /** @Groups({"details"}) */
         private $comments;
-        
+
         private $createdAt;
     }
 
 You can then tell the serializer which groups to serialize in your controller::
 
-    use JMS\Serializer\SerializationContext;
+    use BDBStudios\Serializer\SerializationContext;
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
-    
+
     //will output $id, $title and $nbComments.
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('Default', 'list')));
-    
+
     //will output $id, $title, $nbComments and $createdAt.
 
 Limiting serialization depth of some properties
@@ -131,7 +131,7 @@ annotation to.
 
 .. code-block :: php
 
-    use JMS\Serializer\Annotation\MaxDepth;
+    use BDBStudios\Serializer\Annotation\MaxDepth;
 
     class User
     {
@@ -158,6 +158,6 @@ be serialized, and their author would also be serialized.
 
 You need to tell the serializer to take into account MaxDepth checks::
 
-    use JMS\Serializer\SerializationContext;
+    use BDBStudios\Serializer\SerializationContext;
 
     $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());

@@ -12,7 +12,7 @@ very easily:
 
         <?php
 
-        $serializer = JMS\Serializer\SerializerBuilder::create()->build();
+        $serializer = BDBStudios\Serializer\SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json');
         $serializer->serialize($object, 'xml');
         $serializer->serialize($object, 'yml');
@@ -33,6 +33,6 @@ example, when accepting data via an API.
 
     <?php
 
-    $serializer = JMS\Serializer\SerializerBuilder::create()->build();
+    $serializer = BDBStudios\Serializer\SerializerBuilder::create()->build();
     $object = $serializer->deserialize($jsonData, 'MyNamespace\MyObject', 'json');
 

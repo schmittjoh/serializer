@@ -29,7 +29,7 @@ Usage
 -----
 For standalone projects usage of the provided builder is encouraged::
 
-    $serializer = JMS\Serializer\SerializerBuilder::create()->build();
+    $serializer = BDBStudios\Serializer\SerializerBuilder::create()->build();
     $jsonContent = $serializer->serialize($data, 'json');
     echo $jsonContent; // or return it in a Response
 
@@ -62,7 +62,7 @@ Documentation
 License
 -------
 
-The code is released under the business-friendly `Apache2 license`_. 
+The code is released under the business-friendly `Apache2 license`_.
 
 Documentation is subject to the `Attribution-NonCommercial-NoDerivs 3.0 Unported
 license`_.
