@@ -31,15 +31,15 @@ function createCollection()
 
 function createObject()
 {
-    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime);
+    $post = new \BDBStudios\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \BDBStudios\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime);
     for ($i=0; $i<10; $i++) {
-        $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
+        $post->addComment(new \BDBStudios\Serializer\Tests\Fixtures\Comment(new \BDBStudios\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
     }
 
     return $post;
 }
 
-$serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+$serializer = \BDBStudios\Serializer\SerializerBuilder::create()->build();
 $collection = createCollection();
 $metrics = array();
 $f = function() use ($serializer, $collection, $format) {
