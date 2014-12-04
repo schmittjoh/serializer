@@ -1,7 +1,7 @@
 {
-    "name": "jms/serializer",
+    "name": "bdbstudios/serializer",
     "type": "library",
-    "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
+    "description": "Forked Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
     "homepage": "http://jmsyst.com/libs/serializer",
     "license": "Apache2",
@@ -9,6 +9,10 @@
         {
             "name": "Johannes M. Schmitt",
             "email": "schmittjoh@gmail.com"
+        },
+        {
+            "name"  : "Brett Minnie",
+            "email" : "brett@bdb-studios.co.uk"
         }
     ],
     "require": {
