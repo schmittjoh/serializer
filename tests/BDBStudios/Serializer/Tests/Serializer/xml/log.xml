@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+  <author_list>
+    <entry _key="0">
+      <full_name><![CDATA[Johannes Schmitt]]></full_name>
+    </entry>
+    <entry _key="1">
+      <full_name><![CDATA[John Doe]]></full_name>
+    </entry>
+  </author_list>
+  <comment>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[foo]]></text>
+  </comment>
+  <comment>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[bar]]></text>
+  </comment>
+  <comment>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[baz]]></text>
+  </comment>
+</log>

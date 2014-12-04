@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/namespace" created_at="2011-07-30T00:00:00+0000" etag="1edf9bf60a32d89afbb85b2be849e3ceed5f5b10" language="en">
+  <title><![CDATA[This is a nice title.]]></title>
+  <author><![CDATA[Foo Bar]]></author>
+</test-object>

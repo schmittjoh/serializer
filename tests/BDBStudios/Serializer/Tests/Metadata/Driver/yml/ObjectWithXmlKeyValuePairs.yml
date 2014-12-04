@@ -1,0 +1,5 @@
+BDBStudios\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs:
+    properties:
+        array:
+            type: array
+            xml_key_value_pairs: true

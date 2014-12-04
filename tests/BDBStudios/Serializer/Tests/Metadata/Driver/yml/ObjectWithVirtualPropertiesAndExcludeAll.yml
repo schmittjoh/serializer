@@ -1,0 +1,4 @@
+BDBStudios\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll:
+    exclusion_policy: all
+    virtual_properties:
+        getVirtualValue: ~

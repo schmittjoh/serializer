@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/namespace" xmlns:name1="http://schemas.google.com/g/2005" xmlns:name2="http://www.w3.org/2005/Atom" xmlns:name3="http://purl.org/dc/elements/1.1/" created_at="2011-07-30T00:00:00+0000" name1:etag="1edf9bf60a32d89afbb85b2be849e3ceed5f5b10" name3:language="en">
+  <name3:title><![CDATA[This is a nice title.]]></name3:title>
+  <name2:author><![CDATA[Foo Bar]]></name2:author>
+</test-object>
