@@ -36,7 +36,7 @@ use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 
-class XmlSerializationTest extends BaseSerializationTest
+class XmlSerializationTest extends BaseSerializingTest
 {
     /**
      * @expectedException JMS\Serializer\Exception\RuntimeException

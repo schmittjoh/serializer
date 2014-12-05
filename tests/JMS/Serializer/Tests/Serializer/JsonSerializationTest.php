@@ -27,7 +27,7 @@ use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 
-class JsonSerializationTest extends BaseSerializationTest
+class JsonSerializationTest extends BaseSerializingTest
 {
     protected function getContent($key)
     {
