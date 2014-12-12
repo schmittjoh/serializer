@@ -42,7 +42,7 @@ abstract class Context
     /** @var VisitorInterface */
     private $visitor;
 
-    /** @var GraphNavigator */
+    /** @var GraphNavigatorInterface */
     private $navigator;
 
     /** @var MetadataFactory */
