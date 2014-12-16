@@ -374,6 +374,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testBlogPosts()
+    {
+        $posts = array();
+
+        $post1 = new BlogPost('#1 This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        $post1->addComment($comment = new Comment($author, 'foo'));
+
+        $post2 = new BlogPost('#2 This is a nice title again.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        $post2->addComment($comment = new Comment($author, 'foo'));
+
+        array_push($posts, $post1);
+        array_push($posts, $post2);
+
+        $this->assertEquals($this->getContent('blog_posts_groups_post'), $this->serialize($posts, SerializationContext::create()->setGroups(array('post'))));
+    }
+
     public function testDeserializingNull()
     {
         $objectConstructor = new InitializedBlogPostConstructor();
