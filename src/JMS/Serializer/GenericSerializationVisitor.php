@@ -24,8 +24,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
+    /** @var GraphNavigator */
     private $navigator;
     private $root;
+    /** @var \SplStack */
     private $dataStack;
     private $data;
 
@@ -88,6 +90,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     /**
      * @param array $data
      * @param array $type
+     * @param Context $context
+     *
+     * @return array
      */
     public function visitArray($data, array $type, Context $context)
     {
