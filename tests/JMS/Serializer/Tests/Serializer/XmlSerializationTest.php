@@ -93,6 +93,13 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
+        if ($this->isBugFixedPhpVersion()){
+            $this->setExpectedException(
+              'JMS\Serializer\Exception\InvalidArgumentException',
+              'The document type "<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">" is not allowed. If it is safe, you may add it to the whitelist configuration.'
+            );
+        }
+        
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
@@ -108,11 +115,21 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDocumentTypesAreNotAllowed()
     {
+        if ($this->isBugFixedPhpVersion()) {
+            $this->setExpectedException(
+              'JMS\Serializer\Exception\InvalidArgumentException',
+              'The document type "" is not allowed. If it is safe, you may add it to the whitelist configuration.');
+        }
+        
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
+        if ($this->isBugFixedPhpVersion()) {
+            $this->markTestSkipped(sprintf('PHP version %s does not support this behavior', phpversion()));
+        }
+        
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
@@ -255,6 +272,11 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $nodes = $xml->xpath($xpath);
         return (string) reset($nodes);
+    }
+    
+    private function isBugFixedPhpVersion()
+    {
+        return (PHP_VERSION_ID >= 50513) || (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500);
     }
 
     /**
