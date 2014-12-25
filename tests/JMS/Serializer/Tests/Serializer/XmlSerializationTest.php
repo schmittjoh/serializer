@@ -274,6 +274,11 @@ class XmlSerializationTest extends BaseSerializationTest
         return (string) reset($nodes);
     }
     
+    /**
+     * Whether or not PHP internalSubset bug is fixed in current version
+     * @return boolean 
+     * @link https://bugs.php.net/bug.php?id=67081
+     **/
     private function isBugFixedPhpVersion()
     {
         return (PHP_VERSION_ID >= 50513) || (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500);
