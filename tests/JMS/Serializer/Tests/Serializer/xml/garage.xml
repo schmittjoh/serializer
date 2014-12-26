@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <vehicles>
+    <entry>
+      <km>3</km>
+      <type><![CDATA[car]]></type>
+    </entry>
+    <entry>
+      <km>1</km>
+      <type><![CDATA[moped]]></type>
+    </entry>
+  </vehicles>
+</result>
