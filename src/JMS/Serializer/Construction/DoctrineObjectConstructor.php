@@ -65,7 +65,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!is_array($data)) {
+        if (!is_array($data) && !($data instanceOf \SimpleXMLElement)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
@@ -74,12 +74,31 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
 
+        // Find identifiers
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if ( ! array_key_exists($name, $data)) {
-                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
-            }
 
-            $identifierList[$name] = $data[$name];
+            if ($data instanceOf \SimpleXMLElement) {
+                // Data format source is XML
+                $children = $data->children();
+
+                if ($id = $data->xpath('./@' . $name)) {
+                    $id = (string) reset($id);
+
+                    $identifierList[$name] = $id;
+                } elseif (property_exists($children, $name)) {
+                    $identifierList[$name] = (string)$children->{$name};
+                } else {
+                    return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+                }
+
+            } else {
+                // Data format source is JSON
+                if ( ! array_key_exists($name, $data)) {
+                    return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+                }
+
+                $identifierList[$name] = $data[$name];
+            }
         }
 
         // Entity update, load it from database
