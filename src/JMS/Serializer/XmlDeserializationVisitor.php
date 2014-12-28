@@ -74,6 +74,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         $doc = simplexml_load_string($data);
+
         libxml_use_internal_errors($previous);
         libxml_disable_entity_loader($previousEntityLoaderState);
 
@@ -145,7 +146,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
 
-        if ( ! isset($data->$entryName)) {
+        if ( ! isset($data->$entryName) ) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -159,6 +160,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
             case 1:
                 $result = array();
+
                 if (null === $this->result) {
                     $this->result = &$result;
                 }
@@ -179,6 +181,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 if (null === $this->result) {
                     $this->result = &$result;
                 }
+
 
                 foreach ($data->$entryName as $v) {
                     if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
@@ -243,17 +246,33 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlCollection) {
-            $enclosingElem = $data;
-            if (!$metadata->xmlCollectionInline && isset($data->$name)) {
-                $enclosingElem = $data->$name;
+
+            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
+                $registeredNamespaces = $data->getDocNamespaces();
+                if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
+                    $prefix = uniqid('ns-');
+                    $data->registerXPathNamespace($prefix, $namespace);
+                }
+                $elementName = ($prefix === '')?$name:$prefix.':'.$name;
+                $nodes = $data->xpath('./'.$elementName );
+                if (empty($nodes)) {
+                    return;
+                }
+                $node = (object) array($name => $nodes);
+            } else {
+                $node = $data;
+                if (!$metadata->xmlCollectionInline && isset($node->$name)) {
+                    $node = $node->$name;
+                }
             }
 
             $this->setCurrentMetadata($metadata);
-            $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
+            $v = $this->navigator->accept($node, $metadata->type, $context);
             $this->revertCurrentMetadata();
             $metadata->reflection->setValue($this->currentObject, $v);
 
             return;
+
         }
 
         if ('' !== $namespace = (string) $metadata->xmlNamespace) {
