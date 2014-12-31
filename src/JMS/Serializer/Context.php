@@ -59,6 +59,9 @@ abstract class Context
     /** @var \SplStack */
     private $metadataStack;
 
+    /** @var \SplStack */
+    private $propertyNameStack;
+
     public function __construct()
     {
         $this->attributes = new Map();
@@ -79,6 +82,7 @@ abstract class Context
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
+        $this->propertyNameStack = new \SplStack();
     }
 
     public function accept($data, array $type = null)
@@ -212,12 +216,13 @@ abstract class Context
     public function pushPropertyMetadata(PropertyMetadata $metadata)
     {
         $this->metadataStack->push($metadata);
+        $this->propertyNameStack->push($metadata->name);
     }
 
     public function popPropertyMetadata()
     {
         $metadata = $this->metadataStack->pop();
-
+        $this->propertyNameStack->pop();
         if (!$metadata instanceof PropertyMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
@@ -235,6 +240,25 @@ abstract class Context
     public function getMetadataStack()
     {
         return $this->metadataStack;
+    }
+
+    public function getPropertyStack()
+    {
+        return $this->propertyNameStack;
+    }
+
+    public function getPropPath()
+    {
+        $path = array();
+        foreach ($this->getPropertyStack() as $name) {
+            $path[] = $name;
+        }
+
+        if ( ! $path) {
+            return null;
+        }
+
+        return implode('.', array_reverse($path));
     }
 
     abstract public function getDepth();

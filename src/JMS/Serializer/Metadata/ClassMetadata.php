@@ -56,6 +56,15 @@ class ClassMetadata extends MergeableClassMetadata
     public $discriminatorFieldName;
     public $discriminatorValue;
     public $discriminatorMap = array();
+    public $exclusionPaths = array();
+
+    public function setExclusionPaths($paths){
+        // Convert all paths to lower case to avoid issues with in_array
+        $this->exclusionPaths = array();
+        foreach($paths as $path){
+            array_push($this->exclusionPaths,strtolower($path));
+        }
+    }
 
     public function setDiscriminator($fieldName, array $map)
     {
@@ -190,6 +199,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
+        $this->exclusionPaths = $object->exclusionPaths;
+        
         $this->sortProperties();
     }
 
@@ -230,6 +241,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+        $this->exclusionPaths,
             parent::serialize(),
         ));
     }
@@ -251,6 +263,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+        $this->exclusionPaths,
             $parentStr
         ) = unserialize($str);
 

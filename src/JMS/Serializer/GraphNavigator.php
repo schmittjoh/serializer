@@ -46,6 +46,7 @@ final class GraphNavigator
     private $metadataFactory;
     private $handlerRegistry;
     private $objectConstructor;
+    private $pathBasedExclusion = array();
 
     /**
      * Parses a direction string to one of the direction constants.
@@ -195,6 +196,20 @@ final class GraphNavigator
                     $this->leaveScope($context, $data);
 
                     return null;
+                }
+
+                
+                // PathBasedExclusion always works from the root class.
+                // If we have recursed into an other property then ignore any
+                // PathBasedExclusion annotations
+                if($context->getDepth() == 1){
+                    $this->pathBasedExclusion = $metadata->exclusionPaths;
+                }
+                if( in_array(strtolower($context->getPropPath()), $this->pathBasedExclusion)){
+
+                    $this->leaveScope($context, $data);
+                    return null;
+
                 }
 
                 $context->pushClassMetadata($metadata);
