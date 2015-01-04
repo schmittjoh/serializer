@@ -227,7 +227,10 @@ final class GraphNavigator
                         continue;
                     }
 
-                    if ($context instanceof DeserializationContext && $propertyMetadata->readOnly) {
+                    if (
+                        ($context instanceof DeserializationContext && $propertyMetadata->readOnly)
+                        || ($context instanceof SerializationContext && $propertyMetadata->writeOnly)
+                    ) {
                         continue;
                     }
 

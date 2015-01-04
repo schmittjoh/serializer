@@ -35,6 +35,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
         if (!$outputs) {
             $outputs['readonly'] = '{"id":123,"full_name":"Ruud Kamphuis"}';
+            $outputs['writeonly'] = '{"id":123,"full_name":"Ruud Kamphuis"}';
             $outputs['string'] = '"foo"';
             $outputs['boolean_true'] = 'true';
             $outputs['boolean_false'] = 'false';

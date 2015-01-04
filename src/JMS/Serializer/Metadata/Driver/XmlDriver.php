@@ -68,6 +68,7 @@ class XmlDriver extends AbstractFileDriver
         }
 
         $readOnlyClass = 'true' === strtolower($elem->attributes()->{'read-only'});
+        $writeOnlyClass = 'true' === strtolower($elem->attributes()->{'write-only'});
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = array();
@@ -222,11 +223,17 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->maxDepth = (int) $pElem->attributes()->{'max-depth'};
                     }
 
-                    //we need read-only before setter and getter set, because that method depends on flag being set
+                    //we need read-only/write-only before setter and getter set, because that method depends on flag being set
                     if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
                         $pMetadata->readOnly = 'true' === strtolower($readOnly);
                     } else {
                         $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
+                    }
+
+                    if (null !== $writeOnly = $pElem->attributes()->{'write-only'}) {
+                        $pMetadata->writeOnly = 'true' === strtolower($writeOnly);
+                    } else {
+                        $pMetadata->writeOnly = $pMetadata->writeOnly || $writeOnlyClass;
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};

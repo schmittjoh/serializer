@@ -67,7 +67,8 @@ class StaticPropertyMetadata extends PropertyMetadata
             $this->readOnly,
             $this->class,
             $this->name,
-            $this->value
+            $this->value,
+            $this->writeOnly
         ));
     }
 
@@ -94,7 +95,8 @@ class StaticPropertyMetadata extends PropertyMetadata
             $this->readOnly,
             $this->class,
             $this->name,
-            $this->value
+            $this->value,
+            $this->writeOnly
         ) = unserialize($str);
     }
 }
