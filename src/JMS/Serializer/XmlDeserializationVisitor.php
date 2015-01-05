@@ -224,12 +224,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $nodes = $data->xpath('./@'.$attributeName);
                 if (!empty($nodes)) {
                     $v = (string) reset($nodes);
-                    $metadata->reflection->setValue($this->currentObject, $v);
+                    $this->setPropertyValue($metadata, $v);
                 }
 
             } elseif (isset($data[$name])) {
                 $v = $this->navigator->accept($data[$name], $metadata->type, $context);
-                $metadata->reflection->setValue($this->currentObject, $v);
+                $this->setPropertyValue($metadata, $v);
             }
 
             return;
@@ -237,7 +237,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         if ($metadata->xmlValue) {
             $v = $this->navigator->accept($data, $metadata->type, $context);
-            $metadata->reflection->setValue($this->currentObject, $v);
+            $this->setPropertyValue($metadata, $v);
 
             return;
         }
@@ -251,7 +251,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $this->setCurrentMetadata($metadata);
             $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
             $this->revertCurrentMetadata();
-            $metadata->reflection->setValue($this->currentObject, $v);
+            $this->setPropertyValue($metadata, $v);
 
             return;
         }
@@ -277,13 +277,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         $v = $this->navigator->accept($node, $metadata->type, $context);
 
-        if (null === $metadata->setter) {
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
-        }
-
-        $this->currentObject->{$metadata->setter}($v);
+        $this->setPropertyValue($metadata, $v);
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
@@ -346,4 +340,20 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         return $this->doctypeWhitelist;
     }
+
+    /**
+     * @param PropertyMetadata $metadata
+     * @param mixed $v
+     */
+    protected function setPropertyValue(PropertyMetadata $metadata, $v)
+    {
+        if (null === $metadata->setter) {
+            $metadata->reflection->setValue($this->currentObject, $v);
+
+            return;
+        }
+
+        $this->currentObject->{$metadata->setter}($v);
+    }
+
 }
