@@ -63,8 +63,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
-                if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
+                if ( ! in_array($internalSubset, $this->doctypeWhitelist, true)) {
                     throw new InvalidArgumentException(sprintf(
                         'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
                         $internalSubset
@@ -181,7 +181,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 }
 
                 foreach ($data->$entryName as $v) {
-                    if (!isset($v[$this->currentMetadata->xmlKeyAttribute])) {
+                    if ( ! isset($v[$this->currentMetadata->xmlKeyAttribute])) {
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
@@ -209,7 +209,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (!$metadata->type) {
+        if ( ! $metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
@@ -218,11 +218,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $registeredNamespaces = $data->getDocNamespaces();
                 if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
                     $prefix = uniqid('ns-');
-                    $data->registerXPathNamespace ($prefix, $namespace);
+                    $data->registerXPathNamespace($prefix, $namespace);
                 }
-                $attributeName = ($prefix === '')?$name:$prefix.':'.$name;
+                $attributeName = ($prefix === '') ? $name : $prefix.':'.$name;
                 $nodes = $data->xpath('./@'.$attributeName);
-                if (!empty($nodes)) {
+                if ( ! empty($nodes)) {
                     $v = (string) reset($nodes);
                     $metadata->reflection->setValue($this->currentObject, $v);
                 }
@@ -244,7 +244,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         if ($metadata->xmlCollection) {
             $enclosingElem = $data;
-            if (!$metadata->xmlCollectionInline && isset($data->$name)) {
+            if ( ! $metadata->xmlCollectionInline && isset($data->$name)) {
                 $enclosingElem = $data->$name;
             }
 
@@ -262,14 +262,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespace);
             }
-            $elementName = ($prefix === '')?$name:$prefix.':'.$name;
-            $nodes = $data->xpath('./'.$elementName );
+            $elementName = ($prefix === '') ? $name : $prefix.':'.$name;
+            $nodes = $data->xpath('./'.$elementName);
             if (empty($nodes)) {
                 return;
             }
             $node = reset($nodes);
         } else {
-            if (!isset($data->$name)) {
+            if ( ! isset($data->$name)) {
                 return;
             }
             $node = $data->$name;
@@ -345,5 +345,38 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function getDoctypeWhitelist()
     {
         return $this->doctypeWhitelist;
+    }
+
+    /**
+     * Retrieves internalSubset even in bugfixed php versions
+     *
+     * @param \DOMDocumentType $child
+     * @param string $data
+     * @return string
+     */
+    private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+    {
+        if (null !== $child->internalSubset) {
+            return str_replace(array("\n", "\r"), '', $child->internalSubset);
+        }
+        
+        $startPos = $endPos = stripos($data, '<!doctype');
+        $braces = 0;
+        do {
+            $char = $data[$endPos++];
+            if ($char === '<') {
+                ++$braces;
+            }
+            if ($char === '>') {
+                --$braces;
+            }
+        } while ($braces > 0);
+
+        $internalSubset = substr($data, $startPos, $endPos - $startPos);
+        $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
+        $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
+        $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
+
+        return $internalSubset;
     }
 }

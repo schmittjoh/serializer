@@ -531,7 +531,7 @@ This annotation can be defined on a property to add additional xml serialization
         /**
         * @XmlElement(cdata=false, namespace="http://www.w3.org/2005/Atom")
         */
-        private $id = 'my_id;
+        private $id = 'my_id';
     }
 
 Resulting XML:

@@ -22,6 +22,7 @@ use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
 use Metadata\MetadataFactory;
@@ -131,26 +132,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             $event->setType($type['name'], $type['params']);
         });
 
-        $subscribingHandlerClass = $this->getMockClass(
-            'JMS\Serializer\Tests\Fixtures\SubscribingHandler',
-            array('serialize'),
-            array(),
-            'Mock_SubscribingHandler_testNavigatorChangeTypeOnSerialization'
-        );
-
-        $subscribingHandlerClass::setSubscribingMethods(array(array(
-            'type'      => $typeName,
-            'format'    => 'foo',
-            'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-            'method'    => 'serialize',
-        )));
-
-        $subscribingHandler = new $subscribingHandlerClass();
-        $subscribingHandler->expects($this->once())
-            ->method('serialize')
-            ->with($this->equalTo($this->context), $this->equalTo($object));
-
-        $this->handlerRegistry->registerSubscribingHandler($subscribingHandler);
+        $this->handlerRegistry->registerSubscribingHandler(new TestSubscribingHandler());
 
         $this->context->expects($this->any())
             ->method('getDirection')
@@ -179,4 +161,17 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 class SerializableClass
 {
     public $foo = 'bar';
+}
+
+class TestSubscribingHandler implements SubscribingHandlerInterface
+{
+    public static function getSubscribingMethods()
+    {
+        return array(array(
+            'type' => 'JsonSerializable',
+            'format' => 'foo',
+            'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+            'method' => 'serialize'
+        ));
+    }
 }

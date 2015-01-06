@@ -59,7 +59,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
                 return;
             }
 
-            if (!$doctrineMetadata->isSingleValuedAssociation($propertyName)) {
+            if ( ! $doctrineMetadata->isSingleValuedAssociation($propertyName)) {
                 $targetEntity = "ArrayCollection<{$targetEntity}>";
             }
 
