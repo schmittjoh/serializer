@@ -349,13 +349,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     /**
      * Retrieves internalSubset even in bugfixed php versions
+     *
      * @param \DOMDocumentType $child
-     * @param $data
+     * @param string $data
      * @return string
      */
     private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
     {
-        if(!$this->isBugFixedPhpVersion()){
+        if((PHP_VERSION_ID >= 50513) || (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500)){
             return str_replace(array("\n", "\r"), '', $child->internalSubset);
         }
         $startPos = $endPos = stripos($data, '<!doctype');
@@ -374,15 +375,5 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
         $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
         return $internalSubset;
-    }
-
-    /**
-     * Whether or not PHP internalSubset bug is fixed in current version
-     * @return boolean
-     * @link https://bugs.php.net/bug.php?id=67081
-     **/
-    private function isBugFixedPhpVersion()
-    {
-        return (PHP_VERSION_ID >= 50513) || (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500);
     }
 }
