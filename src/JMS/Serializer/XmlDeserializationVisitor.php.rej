@@ -1,0 +1,23 @@
+--- /dev/null
++++ /dev/null
+@@ -356,17 +356,17 @@
+      */
+     private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+     {
+-        if(null !== $child->internalSubset){
++        if(null !== $child->internalSubset) {
+             return str_replace(array("\n", "\r"), '', $child->internalSubset);
+         }
+         $startPos = $endPos = stripos($data, '<!doctype');
+         $braces = 0;
+         do {
+             $char = $data[$endPos++];
+-            if($char === '<'){
++            if($char === '<') {
+                 ++$braces;
+             }
+-            if($char === '>'){
++            if($char === '>') {
+                 --$braces;
+             }
+         } while ($braces > 0);

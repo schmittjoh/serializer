@@ -64,8 +64,8 @@ class SerializationContext extends Context
 
     public function isVisiting($object)
     {
-        if (! is_object($object)) {
-            throw new LogicException('Expected object but got ' . gettype($object) . '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
+        if ( ! is_object($object)) {
+            throw new LogicException('Expected object but got '.gettype($object).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
         }
 
         return $this->visitingSet->contains($object);
@@ -97,7 +97,7 @@ class SerializationContext extends Context
 
     public function getObject()
     {
-        return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
+        return ! $this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
     }
 
     public function getVisitingStack()

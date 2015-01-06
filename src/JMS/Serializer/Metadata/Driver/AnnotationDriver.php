@@ -131,7 +131,7 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if (!$excludeAll) {
+        if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($property->class !== $name) {
                     continue;
@@ -188,7 +188,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                       $propertyMetadata->readOnly = $annot->readOnly;
+                        $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {
@@ -213,7 +213,7 @@ class AnnotationDriver implements DriverInterface
 
                 $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }

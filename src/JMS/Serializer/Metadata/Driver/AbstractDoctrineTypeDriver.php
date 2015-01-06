@@ -80,7 +80,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
-        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
+        if ( ! $doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
             return $classMetadata;
         }
 
@@ -138,7 +138,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      */
     protected function tryLoadingDoctrineMetadata($className)
     {
-        if (!$manager = $this->registry->getManagerForClass($className)) {
+        if ( ! $manager = $this->registry->getManagerForClass($className)) {
             return null;
         }
 
@@ -154,7 +154,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      */
     protected function normalizeFieldType($type)
     {
-        if (!isset($this->fieldMapping[$type])) {
+        if ( ! isset($this->fieldMapping[$type])) {
             return;
         }
 

@@ -69,7 +69,7 @@ class Writer
     public function revert()
     {
         $change = array_pop($this->changes);
-        $this->changeCount -=1 ;
+        $this->changeCount -= 1;
         $this->content = substr($this->content, 0, -1 * strlen($change));
     }
 
@@ -106,7 +106,7 @@ class Writer
 
     public function rtrim($preserveNewLines = true)
     {
-        if (!$preserveNewLines) {
+        if ( ! $preserveNewLines) {
             $this->content = rtrim($this->content);
 
             return $this;

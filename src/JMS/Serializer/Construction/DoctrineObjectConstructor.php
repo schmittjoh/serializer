@@ -51,7 +51,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);
 
-        if (!$objectManager) {
+        if ( ! $objectManager) {
             // No ObjectManager found, proceed with normal deserialization
             return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
         }
@@ -65,7 +65,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!is_array($data)) {
+        if ( ! is_array($data)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }

@@ -218,7 +218,7 @@ abstract class Context
     {
         $metadata = $this->metadataStack->pop();
 
-        if (!$metadata instanceof PropertyMetadata) {
+        if ( ! $metadata instanceof PropertyMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
     }
@@ -227,7 +227,7 @@ abstract class Context
     {
         $metadata = $this->metadataStack->pop();
 
-        if (!$metadata instanceof ClassMetadata) {
+        if ( ! $metadata instanceof ClassMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
     }

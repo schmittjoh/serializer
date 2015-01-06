@@ -83,12 +83,12 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public function setAccessorOrder($order, array $customOrder = array())
     {
-        if (!in_array($order, array(self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM), true)) {
+        if ( ! in_array($order, array(self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM), true)) {
             throw new InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
         }
 
         foreach ($customOrder as $name) {
-            if (!is_string($name)) {
+            if ( ! is_string($name)) {
                 throw new InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
             }
         }
@@ -195,12 +195,12 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function registerNamespace($uri, $prefix = null)
     {
-        if (!is_string($uri)) {
+        if ( ! is_string($uri)) {
             throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
-        if ($prefix !== null ) {
-            if (!is_string($prefix)) {
+        if ($prefix !== null) {
+            if ( ! is_string($prefix)) {
                 throw new InvalidArgumentException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }
         } else {
@@ -270,15 +270,15 @@ class ClassMetadata extends MergeableClassMetadata
                     $existsA = isset($order[$a]);
                     $existsB = isset($order[$b]);
 
-                    if (!$existsA && !$existsB) {
+                    if ( ! $existsA && ! $existsB) {
                         return 0;
                     }
 
-                    if (!$existsA) {
+                    if ( ! $existsA) {
                         return 1;
                     }
 
-                    if (!$existsB) {
+                    if ( ! $existsB) {
                         return -1;
                     }
 
