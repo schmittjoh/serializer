@@ -16,8 +16,18 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures\Discriminator;
+namespace JMS\Serializer\Tests\Fixtures;
 
-class Car extends Vehicle implements VehicleInterface
+use JMS\Serializer\Annotation\Type;
+
+class Garage
 {
+    /**
+     * @Type("array<JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle>")
+     */
+    public $vehicles;
+
+    public function __construct($vehicles) {
+        $this->vehicles = $vehicles;
+    }
 }
