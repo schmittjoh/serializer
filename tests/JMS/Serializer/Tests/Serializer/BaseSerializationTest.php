@@ -613,7 +613,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
+            $violation = new ConstraintViolation('Message of violation', null, array(), null, 'foo', null);
+        } else {
+            $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        }
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -621,8 +625,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
+            $violations->add(new ConstraintViolation('Message of violation', null, array(), null, 'foo', null));
+            $violations->add(new ConstraintViolation('Message of another violation', null, array(), null, 'bar', null));
+        } else {
+            $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
+            $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+        }
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }

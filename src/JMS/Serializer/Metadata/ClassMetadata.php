@@ -134,6 +134,7 @@ class ClassMetadata extends MergeableClassMetadata
         if ( ! $object instanceof ClassMetadata) {
             throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
         }
+
         parent::merge($object);
 
         $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
@@ -151,6 +152,18 @@ class ClassMetadata extends MergeableClassMetadata
             $this->customOrder = $object->customOrder;
         }
 
+        $this->mergeDiscriminator($object);
+
+        $this->sortProperties();
+    }
+
+    /**
+     * Merge the discriminator settings from the given metadata into this one
+     *
+     * @param MergeableInterface $object
+     */
+    protected function mergeDiscriminator(ClassMetadata $object)
+    {
         if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
             throw new \LogicException(sprintf(
                 'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
@@ -160,37 +173,62 @@ class ClassMetadata extends MergeableClassMetadata
             ));
         }
 
-        if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
-            if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
-                throw new \LogicException(sprintf(
-                    'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
-                    $this->name,
-                    $this->discriminatorBaseClass
-                ));
-            }
+        // merge discriminator settings
 
-            $this->discriminatorValue = $typeValue;
-
-            if (isset($this->propertyMetadata[$this->discriminatorFieldName])
-                    && ! $this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata) {
-                throw new \LogicException(sprintf(
-                    'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
-                    $this->discriminatorFieldName,
-                    $this->discriminatorBaseClass,
-                    $this->name
-                ));
-            }
-
-            $discriminatorProperty = new StaticPropertyMetadata(
-                $this->name,
-                $this->discriminatorFieldName,
-                $typeValue
-            );
-            $discriminatorProperty->serializedName = $this->discriminatorFieldName;
-            $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
+        if (!$this->discriminatorFieldName && $object->discriminatorFieldName) {
+            $this->discriminatorFieldName = $object->discriminatorFieldName;
+            $this->discriminatorMap       = $object->discriminatorMap;
         }
 
-        $this->sortProperties();
+        if ($object->discriminatorDisabled !== null) {
+            $this->discriminatorDisabled = $object->discriminatorDisabled;
+        }
+
+        if (isset($this->propertyMetadata[$this->discriminatorFieldName])
+            && ! $this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata
+        ) {
+            throw new \LogicException(sprintf(
+                'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
+                $this->discriminatorFieldName,
+                $this->discriminatorBaseClass,
+                $this->name
+            ));
+        }
+
+        // create discriminator property
+
+        if (!$this->discriminatorMap || $this->reflection->isAbstract()) {
+            return;
+        }
+
+        if (false === $discriminatorValue = array_search($this->name, $this->discriminatorMap, true)) {
+            throw new \LogicException(sprintf(
+                'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
+                $this->name,
+                $this->discriminatorBaseClass
+            ));
+        }
+
+        $this->discriminatorValue = $discriminatorValue;
+
+        $this->propertyMetadata[$this->discriminatorFieldName] = $this->getDiscriminatorProperty();
+    }
+
+    /**
+     * Get a property metadate for the discriminator field configured from this
+     * class metadata
+     *
+     * @return StaticPropertyMetadata
+     */
+    protected function getDiscriminatorProperty()
+    {
+        $discriminatorProperty = new StaticPropertyMetadata(
+            $this->name,
+            $this->discriminatorFieldName,
+            $this->discriminatorValue
+        );
+
+        return $discriminatorProperty;
     }
 
     public function registerNamespace($uri, $prefix = null)

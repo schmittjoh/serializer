@@ -16,13 +16,15 @@ use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializationContext;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use JMS\Serializer\Tests\Fixture\Doctrine\SingleTableInheritance\Clazz;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,6 +34,33 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     /** @var Serializer */
     private $serializer;
 
+    /**
+     * Test that discriminators are set if the base class is an entity
+     *
+     *   Organization(Entity) -> School(Entity)
+     *
+     */
+    public function testDiscriminatorIsInferredForEntityBaseClass()
+    {
+        $school = new School();
+        $json = $this->serializer->serialize($school, 'json', SerializationContext::create()->setSerializeNull(true));
+        $this->assertEquals('{"id":null,"org_type":"school"}', $json);
+    }
+
+    /**
+     * Test that discriminators are set if the root entity class extends
+     * a generic base class
+     *
+     *   AbstractModel -> Person(Entity) -> Student(Entity)
+     *
+     */
+    public function testDiscriminatorIsInferredForGenericBaseClass()
+    {
+        $student = new Student();
+        $json = $this->serializer->serialize($student, 'json', SerializationContext::create()->setSerializeNull(true));
+        $this->assertEquals('{"id":null,"is_student":true,"type":"student"}', $json);
+    }
+
     public function testDiscriminatorIsInferredFromDoctrine()
     {
         /** @var EntityManager $em */
@@ -40,11 +69,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $student1 = new Student();
         $student2 = new Student();
         $teacher = new Teacher();
-        $class = new Clazz($teacher, array($student1, $student2));
+        $school = new School();
+        $class = new Clazz($teacher, array($student1, $student2), $school);
 
         $em->persist($student1);
         $em->persist($student2);
         $em->persist($teacher);
+        $em->persist($school);
         $em->persist($class);
         $em->flush();
         $em->clear();
@@ -53,7 +84,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($class, $reloadedClass);
 
         $json = $this->serializer->serialize($reloadedClass, 'json');
-        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
+        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"is_student":true,"type":"student"},{"id":3,"is_student":true,"type":"student"}],"school":{"id":1,"org_type":"school"}}', $json);
+
+        $json = $this->serializer->serialize($reloadedClass, 'json', SerializationContext::create()->setGroups(array('foo', 'Default')));
+        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}],"school":{"id":1,"org_type":"school"}}', $json);
+
+        $json = $this->serializer->serialize($reloadedClass, 'json', SerializationContext::create()->setGroups(array('foo', 'bar', 'Default')));
+        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"is_student":true,"type":"student"},{"id":3,"is_student":true,"type":"student"}],"school":{"id":1,"org_type":"school"}}', $json);
     }
 
     protected function setUp()

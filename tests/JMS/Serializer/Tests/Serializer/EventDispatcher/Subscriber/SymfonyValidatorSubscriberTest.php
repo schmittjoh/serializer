@@ -60,10 +60,16 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $obj = new \stdClass;
 
+        if (method_exists('Symfony\Component\Validator\ValidatorBuilder', 'setTranslator')) {
+            $violation = new ConstraintViolation('foo', null, array(), 'a', 'b', 'c');
+        } else {
+            $violation = new ConstraintViolation('foo', array(), 'a', 'b', 'c');
+        }
+
         $this->validator->expects($this->once())
             ->method('validate')
             ->with($obj, array('foo'))
-            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', array(), 'a', 'b', 'c')))));
+            ->will($this->returnValue(new ConstraintViolationList(array($violation))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
 

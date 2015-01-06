@@ -8,11 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Student extends Person
+class School extends Organization
 {
-    /**
-     * @ORM\Column(type = "boolean")
-     * @JMS\Groups({"bar"})
-     */
-    protected $isStudent = true;
 }
+
