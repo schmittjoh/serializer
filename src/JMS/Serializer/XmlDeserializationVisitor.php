@@ -63,7 +63,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $dom->loadXML($data);
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                $internalSubset = str_replace(array("\n", "\r"), '', $child->internalSubset);
+                $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
                 if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
                     throw new InvalidArgumentException(sprintf(
                         'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
@@ -345,5 +345,35 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function getDoctypeWhitelist()
     {
         return $this->doctypeWhitelist;
+    }
+
+    /**
+     * Retrieves internalSubset even in bugfixed php versions
+     *
+     * @param \DOMDocumentType $child
+     * @param string $data
+     * @return string
+     */
+    private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+    {
+        if(null !== $child->internalSubset){
+            return str_replace(array("\n", "\r"), '', $child->internalSubset);
+        }
+        $startPos = $endPos = stripos($data, '<!doctype');
+        $braces = 0;
+        do {
+            $char = $data[$endPos++];
+            if($char === '<'){
+                ++$braces;
+            }
+            if($char === '>'){
+                --$braces;
+            }
+        } while ($braces > 0);
+        $internalSubset = substr($data, $startPos, $endPos-$startPos);
+        $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
+        $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
+        $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
+        return $internalSubset;
     }
 }
