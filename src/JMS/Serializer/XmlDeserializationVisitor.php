@@ -359,6 +359,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         if (null !== $child->internalSubset) {
             return str_replace(array("\n", "\r"), '', $child->internalSubset);
         }
+        
         $startPos = $endPos = stripos($data, '<!doctype');
         $braces = 0;
         do {
@@ -370,10 +371,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 --$braces;
             }
         } while ($braces > 0);
+
         $internalSubset = substr($data, $startPos, $endPos - $startPos);
         $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
         $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
         $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
+
         return $internalSubset;
     }
 }

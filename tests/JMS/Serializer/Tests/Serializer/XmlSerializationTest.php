@@ -93,7 +93,6 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
-        
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
@@ -109,7 +108,6 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDocumentTypesAreNotAllowed()
     {
-        
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 

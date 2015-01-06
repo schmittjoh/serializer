@@ -584,7 +584,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testFormErrorsWithNonFormComponents()
     {
-
         if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
             $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
         }
