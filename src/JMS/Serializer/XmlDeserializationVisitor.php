@@ -356,7 +356,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
      */
     private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
     {
-        if((PHP_VERSION_ID >= 50513) || (PHP_VERSION_ID >= 50429 && PHP_VERSION_ID < 50500)){
+        if(null !== $child->internalSubset){
             return str_replace(array("\n", "\r"), '', $child->internalSubset);
         }
         $startPos = $endPos = stripos($data, '<!doctype');
