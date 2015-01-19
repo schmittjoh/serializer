@@ -28,7 +28,7 @@ class PhpDriver extends AbstractFileDriver
     {
         $metadata = require $file;
 
-        if (!$metadata instanceof ClassMetadata) {
+        if ( ! $metadata instanceof ClassMetadata) {
             throw new RuntimeException(sprintf('The file %s was expected to return an instance of ClassMetadata, but returned %s.', $file, json_encode($metadata)));
         }
         if ($metadata->name !== $class->name) {

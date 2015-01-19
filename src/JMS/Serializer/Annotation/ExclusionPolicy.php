@@ -33,7 +33,7 @@ final class ExclusionPolicy
 
     public function __construct(array $values)
     {
-        if (!is_string($values['value'])) {
+        if ( ! is_string($values['value'])) {
             throw new RuntimeException('"value" must be a string.');
         }
 

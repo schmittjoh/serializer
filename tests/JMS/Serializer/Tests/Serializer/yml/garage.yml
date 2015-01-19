@@ -1,0 +1,7 @@
+vehicles:
+    -
+        km: 3
+        type: car
+    -
+        km: 1
+        type: moped

@@ -25,9 +25,12 @@ use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Tree;
+use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
@@ -581,7 +584,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testFormErrorsWithNonFormComponents()
     {
-
         if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
             $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
         }
@@ -816,6 +818,50 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                     'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
                 ),
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
+        }
+    }
+
+    /**
+     * @group polymorphic
+     */
+    public function testNestedPolymorphicObjects()
+    {
+        $garage = new Garage(array(new Car(3), new Moped(1)));
+        $this->assertEquals(
+            $this->getContent('garage'),
+            $this->serialize($garage)
+        );
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                $garage,
+                $this->deserialize(
+                    $this->getContent('garage'),
+                    'JMS\Serializer\Tests\Fixtures\Garage'
+                )
+            );
+        }
+    }
+
+    /**
+     * @group polymorphic
+     */
+    public function testNestedPolymorphicInterfaces()
+    {
+        $garage = new VehicleInterfaceGarage(array(new Car(3), new Moped(1)));
+        $this->assertEquals(
+            $this->getContent('garage'),
+            $this->serialize($garage)
+        );
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                $garage,
+                $this->deserialize(
+                    $this->getContent('garage'),
+                    'JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage'
+                )
             );
         }
     }

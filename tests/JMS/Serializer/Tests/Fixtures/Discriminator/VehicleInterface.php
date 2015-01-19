@@ -18,6 +18,14 @@
 
 namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 
-class Car extends Vehicle implements VehicleInterface
+use JMS\Serializer\Annotation as Serializer;
+
+/**
+ * @Serializer\Discriminator(field = "type", map = {
+ *    "car": "JMS\Serializer\Tests\Fixtures\Discriminator\Car",
+ *    "moped": "JMS\Serializer\Tests\Fixtures\Discriminator\Moped",
+ * })
+ */
+interface VehicleInterface
 {
 }

@@ -132,7 +132,7 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if (!$excludeAll) {
+        if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($property->class !== $name) {
                     continue;
@@ -189,7 +189,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                       $propertyMetadata->readOnly = $annot->readOnly;
+                        $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof GenericAccessor) {
