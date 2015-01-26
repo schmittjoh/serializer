@@ -21,11 +21,17 @@ namespace JMS\Serializer\Construction;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use \ReflectionClass;
 
 class UnserializeObjectConstructor implements ObjectConstructorInterface
 {
     public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
-        return unserialize(sprintf('O:%d:"%s":0:{}', strlen($metadata->name), $metadata->name));
+    	$class = new ReflectionClass($metadata->name);
+    	if ($class->isInternal()) {
+        	return unserialize(sprintf('O:%d:"%s":0:{}', strlen($metadata->name), $metadata->name));
+        } else {
+			return $class->newInstanceWithoutConstructor();
+		}
     }
 }
