@@ -24,28 +24,11 @@ use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
 {
-
-    /**
-     * @var int
-     */
-    protected $maxDepth = 3;
-
-    /**
-     * @var int
-     */
-    protected $currentDepth = 0;
-
     /** @var \SplObjectStorage */
     private $visitingSet;
 
     /** @var \SplStack */
     private $visitingStack;
-
-    public function __construct()
-    {
-        $this->currentDepth = 0;
-        parent::__construct();
-    }
 
     public static function create()
     {
@@ -81,21 +64,11 @@ class SerializationContext extends Context
 
     public function isVisiting($object)
     {
-        if (false ==  is_object($object)) {
-            throw new LogicException(
-                'Expected object but got ' .
-                gettype($object) .
-                '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?'
-            );
+        if ( ! is_object($object)) {
+            throw new LogicException('Expected object but got '.gettype($object).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
         }
 
-        $isVisiting = $this->visitingSet->contains($object);
-
-        if ($isVisiting) {
-            $this->currentDepth += 1;
-        }
-
-        return ($this->currentDepth > $this->maxDepth);
+        return $this->visitingSet->contains($object);
     }
 
     public function getPath()
@@ -135,23 +108,5 @@ class SerializationContext extends Context
     public function getVisitingSet()
     {
         return $this->visitingSet;
-    }
-
-    /**
-     * @param int $maxDepth
-     */
-    public function setMaxDepth($maxDepth = 1)
-    {
-        $this->maxDepth = $maxDepth;
-    }
-
-    public function getMaxDepth()
-    {
-        return $this->maxDepth;
-    }
-
-    public function increaseMaxDepth()
-    {
-        $this->maxDepth+=1;
     }
 }

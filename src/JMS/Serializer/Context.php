@@ -32,35 +32,32 @@ use PhpCollection\Map;
 
 abstract class Context
 {
-    /** @var int  */
-    protected $depth = 0;
-
     /**
      * @var \PhpCollection\Map
      */
     public $attributes;
 
-    protected $format;
+    private $format;
 
     /** @var VisitorInterface */
-    protected $visitor;
+    private $visitor;
 
     /** @var GraphNavigator */
-    protected $navigator;
+    private $navigator;
 
     /** @var MetadataFactory */
-    protected $metadataFactory;
+    private $metadataFactory;
 
     /** @var ExclusionStrategyInterface */
-    protected $exclusionStrategy;
+    private $exclusionStrategy;
 
     /** @var boolean */
-    protected $serializeNull;
+    private $serializeNull;
 
-    protected $initialized = false;
+    private $initialized = false;
 
     /** @var \SplStack */
-    protected $metadataStack;
+    private $metadataStack;
 
     public function __construct()
     {
@@ -240,27 +237,10 @@ abstract class Context
         return $this->metadataStack;
     }
 
+    abstract public function getDepth();
+
     /**
      * @return integer
      */
     abstract public function getDirection();
-
-    public function getDepth()
-    {
-        return $this->depth;
-    }
-
-    public function increaseDepth()
-    {
-        $this->depth += 1;
-    }
-
-    public function decreaseDepth()
-    {
-        if ($this->depth <= 0) {
-            throw new \LogicException('Depth cannot be smaller than zero.');
-        }
-
-        $this->depth -= 1;
-    }
 }
