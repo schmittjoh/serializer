@@ -126,8 +126,22 @@ class SerializationContext extends Context
         return $this->visitingSet;
     }
 
+    /**
+     * @param int $maxRecursionDepth
+     * @return Context
+     */
     public function setMaxRecursionDepth($maxRecursionDepth = 1)
     {
         $this->maxRecursionDepth = $maxRecursionDepth;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRecursionDepth()
+    {
+        return $this->maxRecursionDepth;
     }
 }
