@@ -24,6 +24,12 @@ use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
 {
+
+    /**
+     * @var int
+     */
+    protected $maxDepth = 3;
+
     /** @var \SplObjectStorage */
     private $visitingSet;
 
@@ -64,11 +70,21 @@ class SerializationContext extends Context
 
     public function isVisiting($object)
     {
-        if ( ! is_object($object)) {
-            throw new LogicException('Expected object but got '.gettype($object).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
+        if (false ==  is_object($object)) {
+            throw new LogicException(
+                'Expected object but got ' .
+                gettype($object) .
+                '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?'
+            );
         }
 
-        return $this->visitingSet->contains($object);
+        $isVisiting = $this->visitingSet->contains($object);
+
+        if ($isVisiting) {
+            return ($this->visitingStack->count() > $this->maxDepth);
+        }
+
+        return false;
     }
 
     public function getPath()
