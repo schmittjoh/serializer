@@ -28,7 +28,7 @@ class SerializationContext extends Context
     /**
      * @var int
      */
-    protected $maxDepth = 3;
+    protected $maxRecursionDepth = 1;
 
     /** @var \SplObjectStorage */
     private $visitingSet;
@@ -81,7 +81,7 @@ class SerializationContext extends Context
         $isVisiting = $this->visitingSet->contains($object);
 
         if ($isVisiting) {
-            return ($this->visitingStack->count() > $this->maxDepth);
+            return ($this->visitingStack->count() > $this->maxRecursionDepth);
         }
 
         return false;
@@ -124,5 +124,10 @@ class SerializationContext extends Context
     public function getVisitingSet()
     {
         return $this->visitingSet;
+    }
+
+    public function setMaxRecursionDepth($maxRecursionDepth = 1)
+    {
+        $this->maxRecursionDepth = $maxRecursionDepth;
     }
 }
