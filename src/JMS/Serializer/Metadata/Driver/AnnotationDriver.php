@@ -16,204 +16,216 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Metadata\Driver;
 
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\GenericAccessor;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Annotation\HandlerCallback;
+use JMS\Serializer\Annotation\AccessorOrder;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\AccessType;
+use JMS\Serializer\Annotation\XmlMap;
+use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlValue;
+use JMS\Serializer\Annotation\XmlKeyValuePairs;
+use JMS\Serializer\Annotation\XmlElement;
+use JMS\Serializer\Annotation\PostSerialize;
+use JMS\Serializer\Annotation\PostDeserialize;
+use JMS\Serializer\Annotation\PreSerialize;
+use JMS\Serializer\Annotation\VirtualProperty;
+use Metadata\MethodMetadata;
+use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Until;
+use JMS\Serializer\Annotation\Since;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Inline;
+use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Annotation\XmlAttributeMap;
+use Metadata\Driver\DriverInterface;
+use JMS\Serializer\Annotation\MaxDepth;
 
-/**
- * Generic Deserialization Visitor.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- */
-abstract class GenericDeserializationVisitor extends AbstractVisitor
+class AnnotationDriver implements DriverInterface
 {
-    private $navigator;
-    private $result;
-    private $objectStack;
-    private $currentObject;
+    private $reader;
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function __construct(Reader $reader)
     {
-        $this->navigator = $navigator;
-        $this->result = null;
-        $this->objectStack = new \SplStack;
+        $this->reader = $reader;
     }
 
-    public function getNavigator()
+    public function loadMetadataForClass(\ReflectionClass $class)
     {
-        return $this->navigator;
-    }
+        $classMetadata = new ClassMetadata($name = $class->name);
+        $classMetadata->fileResources[] = $class->getFilename();
 
-    public function prepare($data)
-    {
-        return $this->decode($data);
-    }
+        $propertiesMetadata = array();
+        $propertiesAnnotations = array();
 
-    public function visitNull($data, array $type, Context $context)
-    {
-        return null;
-    }
-
-    public function visitString($data, array $type, Context $context)
-    {
-        $data = (string) $data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
-    }
-
-    public function visitBoolean($data, array $type, Context $context)
-    {
-        $data = (Boolean) $data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
-    }
-
-    public function visitInteger($data, array $type, Context $context)
-    {
-        $data = (integer) $data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
-    }
-
-    public function visitDouble($data, array $type, Context $context)
-    {
-        $data = (double) $data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
-    }
-
-    public function visitArray($data, array $type, Context $context)
-    {
-        if ( ! is_array($data)) {
-            throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
-        }
-
-        // If no further parameters were given, keys/values are just passed as is.
-        if ( ! $type['params']) {
-            if (null === $this->result) {
-                $this->result = $data;
-            }
-
-            return $data;
-        }
-
-        switch (count($type['params'])) {
-            case 1: // Array is a list.
-                $listType = $type['params'][0];
-
-                $result = array();
-                if (null === $this->result) {
-                    $this->result = &$result;
+        $exclusionPolicy = 'NONE';
+        $excludeAll = false;
+        $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
+        $readOnlyClass = false;
+        foreach ($this->reader->getClassAnnotations($class) as $annot) {
+            if ($annot instanceof ExclusionPolicy) {
+                $exclusionPolicy = $annot->policy;
+            } elseif ($annot instanceof XmlRoot) {
+                $classMetadata->xmlRootName = $annot->name;
+                $classMetadata->xmlRootNamespace = $annot->namespace;
+            } elseif ($annot instanceof XmlNamespace) {
+                $classMetadata->registerNamespace($annot->uri, $annot->prefix);
+            } elseif ($annot instanceof Exclude) {
+                $excludeAll = true;
+            } elseif ($annot instanceof AccessType) {
+                $classAccessType = $annot->type;
+            } elseif ($annot instanceof ReadOnly) {
+                $readOnlyClass = true;
+            } elseif ($annot instanceof AccessorOrder) {
+                $classMetadata->setAccessorOrder($annot->order, $annot->custom);
+            } elseif ($annot instanceof Discriminator) {
+                if ($annot->disabled) {
+                    $classMetadata->discriminatorDisabled = true;
+                } else {
+                    $classMetadata->setDiscriminator($annot->field, $annot->map);
                 }
-
-                foreach ($data as $v) {
-                    $result[] = $this->navigator->accept($v, $listType, $context);
-                }
-
-                return $result;
-
-            case 2: // Array is a map.
-                list($keyType, $entryType) = $type['params'];
-
-                $result = array();
-                if (null === $this->result) {
-                    $this->result = &$result;
-                }
-
-                foreach ($data as $k => $v) {
-                    $result[$this->navigator->accept($k, $keyType, $context)] = $this->navigator->accept($v, $entryType, $context);
-                }
-
-                return $result;
-
-            default:
-                throw new RuntimeException(sprintf('Array type cannot have more than 2 parameters, but got %s.', json_encode($type['params'])));
-        }
-    }
-
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
-    {
-        $this->setCurrentObject($object);
-
-        if (null === $this->result) {
-            $this->result = $this->currentObject;
-        }
-    }
-
-    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
-    {
-        $name = $this->namingStrategy->translateName($metadata);
-
-        if (null === $data || ! array_key_exists($name, $data)) {
-            return;
-        }
-
-        if ( ! $metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
-        }
-
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
-
-        if (is_object($this->currentObject)) {
-            if (null === $metadata->setter) {
-                $metadata->reflection->setValue($this->currentObject, $v);
-                return;
-            }
-
-            if (isset($metadata->propertyName)) {
-                $this->currentObject->{$metadata->setter}($v, $metadata->propertyName);
-            } else {
-                $this->currentObject->{$metadata->setter}($v);
             }
         }
+
+        foreach ($class->getMethods() as $method) {
+            if ($method->class !== $name) {
+                continue;
+            }
+
+            $methodAnnotations = $this->reader->getMethodAnnotations($method);
+
+            foreach ($methodAnnotations as $annot) {
+                if ($annot instanceof PreSerialize) {
+                    $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->name));
+                    continue 2;
+                } elseif ($annot instanceof PostDeserialize) {
+                    $classMetadata->addPostDeserializeMethod(new MethodMetadata($name, $method->name));
+                    continue 2;
+                } elseif ($annot instanceof PostSerialize) {
+                    $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->name));
+                    continue 2;
+                } elseif ($annot instanceof VirtualProperty) {
+                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $method->name);
+                    $propertiesMetadata[] = $virtualPropertyMetadata;
+                    $propertiesAnnotations[] = $methodAnnotations;
+                    continue 2;
+                } elseif ($annot instanceof HandlerCallback) {
+                    $classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
+                    continue 2;
+                }
+            }
+        }
+
+        if ( ! $excludeAll) {
+            foreach ($class->getProperties() as $property) {
+                if ($property->class !== $name) {
+                    continue;
+                }
+                $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
+                $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
+            }
+
+            foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
+                $isExclude = false;
+                $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
+                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
+                $accessType = $classAccessType;
+                $accessor = array(null, null);
+
+                $propertyAnnotations = $propertiesAnnotations[$propertyKey];
+
+                foreach ($propertyAnnotations as $annot) {
+                    if ($annot instanceof Since) {
+                        $propertyMetadata->sinceVersion = $annot->version;
+                    } elseif ($annot instanceof Until) {
+                        $propertyMetadata->untilVersion = $annot->version;
+                    } elseif ($annot instanceof SerializedName) {
+                        $propertyMetadata->serializedName = $annot->name;
+                    } elseif ($annot instanceof Expose) {
+                        $isExpose = true;
+                    } elseif ($annot instanceof Exclude) {
+                        $isExclude = true;
+                    } elseif ($annot instanceof Type) {
+                        $propertyMetadata->setType($annot->name);
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlAttribute = false;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
+                    } elseif ($annot instanceof XmlList) {
+                        $propertyMetadata->xmlCollection = true;
+                        $propertyMetadata->xmlCollectionInline = $annot->inline;
+                        $propertyMetadata->xmlEntryName = $annot->entry;
+                    } elseif ($annot instanceof XmlMap) {
+                        $propertyMetadata->xmlCollection = true;
+                        $propertyMetadata->xmlCollectionInline = $annot->inline;
+                        $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
+                    } elseif ($annot instanceof XmlKeyValuePairs) {
+                        $propertyMetadata->xmlKeyValuePairs = true;
+                    } elseif ($annot instanceof XmlAttribute) {
+                        $propertyMetadata->xmlAttribute = true;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
+                    } elseif ($annot instanceof XmlValue) {
+                        $propertyMetadata->xmlValue = true;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof AccessType) {
+                        $accessType = $annot->type;
+                    } elseif ($annot instanceof ReadOnly) {
+                        $propertyMetadata->readOnly = $annot->readOnly;
+                    } elseif ($annot instanceof Accessor) {
+                        $accessor = array($annot->getter, $annot->setter);
+                    } elseif ($annot instanceof GenericAccessor) {
+                        $accessor = array($annot->getter, $annot->setter, $annot->propertyName);
+                    } elseif ($annot instanceof Groups) {
+                        $propertyMetadata->groups = $annot->groups;
+                        foreach ((array) $propertyMetadata->groups as $groupName) {
+                            if (false !== strpos($groupName, ',')) {
+                                throw new InvalidArgumentException(sprintf(
+                                    'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
+                                    implode(', ', $propertyMetadata->groups),
+                                    $propertyMetadata->class.'->'.$propertyMetadata->name
+                                ));
+                            }
+                        }
+                    } elseif ($annot instanceof Inline) {
+                        $propertyMetadata->inline = true;
+                    } elseif ($annot instanceof XmlAttributeMap) {
+                        $propertyMetadata->xmlAttributeMap = true;
+                    } elseif ($annot instanceof MaxDepth) {
+                        $propertyMetadata->maxDepth = $annot->depth;
+                    }
+                }
+
+                if (isset($accessor[2])) {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1], $accessor[2]);
+                } else {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                }
+                if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                    $classMetadata->addPropertyMetadata($propertyMetadata);
+                }
+            }
+        }
+
+        return $classMetadata;
     }
-
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
-    {
-        $obj = $this->currentObject;
-        $this->revertCurrentObject();
-
-        return $obj;
-    }
-
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    public function setCurrentObject($object)
-    {
-        $this->objectStack->push($this->currentObject);
-        $this->currentObject = $object;
-    }
-
-    public function getCurrentObject()
-    {
-        return $this->currentObject;
-    }
-
-    public function revertCurrentObject()
-    {
-        return $this->currentObject = $this->objectStack->pop();
-    }
-
-    abstract protected function decode($str);
 }
