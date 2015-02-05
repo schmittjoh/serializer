@@ -86,7 +86,7 @@ class SerializationContext extends Context
      */
     public function isVisiting($object)
     {
-        if (false ==  is_object($object)) {
+        if (false ===  is_object($object)) {
             throw new LogicException(
                 'Expected object but got ' .
                 gettype($object) .
