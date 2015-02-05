@@ -114,6 +114,45 @@ be called to retrieve, or set the value of the given property:
         }
     }
 
+@GenericAccessor
+~~~~~~~~~
+This annotation can be defined on a property to specify which generic method can be used to manipulate the property
+prior to being set or retrieved, this is to fill a need whereby you need to perform the same action on multiple properties
+but using a handler is not the solution as it is not true for all instances of the variable type.:
+
+.. code-block :: php
+
+    <?php
+    use JMS\Serializer\Annotation\GenericAccessor;
+
+    class User
+    {
+        private $id;
+
+        /** @GenericAccessor(getter="getTrimmedName",setter="setCamelCaseName", propertyName="forename") */
+        private $forename;
+
+        /** @AccesGenericAccessorsor(getter="getTrimmedName",setter="setCamelCaseName", propertyName="lastname") */
+        private $lastname;
+
+        // ...
+        public function getTrimmedName($propertyName)
+        {
+            if (property_exists(get_class($this), $propertyName)) {
+                return trim($this->{$propertyName});
+            }
+
+            return null;
+        }
+
+        public function setCamelCaseName($name, $propertyName)
+        {
+            if (property_exists(get_class($this), $propertyName)) {
+                $this->{$propertyName} = ucwords(strtolower($name));
+            }
+        }
+    }
+
 @AccessorOrder
 ~~~~~~~~~~~~~~
 This annotation can be defined on a class to control the order of properties. By
