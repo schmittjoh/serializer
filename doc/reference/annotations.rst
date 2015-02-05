@@ -132,7 +132,7 @@ but using a handler is not the solution as it is not true for all instances of t
         /** @GenericAccessor(getter="getTrimmedName",setter="setCamelCaseName", propertyName="forename") */
         private $forename;
 
-        /** @AccesGenericAccessorsor(getter="getTrimmedName",setter="setCamelCaseName", propertyName="lastname") */
+        /** @GenericAccessor(getter="getTrimmedName",setter="setCamelCaseName", propertyName="lastname") */
         private $lastname;
 
         // ...
