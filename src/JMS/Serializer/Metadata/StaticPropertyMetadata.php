@@ -40,7 +40,7 @@ class StaticPropertyMetadata extends PropertyMetadata
         throw new \LogicException('StaticPropertyMetadata is immutable.');
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor($type, $getter = null, $setter = null, $property = null)
     {
     }
 
