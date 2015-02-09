@@ -1,0 +1,42 @@
+collection:
+    -
+        name: child1
+        parent:
+            collection:
+                -
+                -
+                    name: child2
+            another_collection:
+                -
+                    name: child1
+                -
+                    name: child2
+    -
+        name: child2
+        parent:
+            collection:
+                -
+                    name: child1
+                -
+            another_collection:
+                -
+                    name: child1
+                -
+                    name: child2
+another_collection:
+    -
+        name: child1
+        parent:
+            collection:
+                -
+                    name: child1
+                -
+                    name: child2
+    -
+        name: child2
+        parent:
+            collection:
+                -
+                    name: child1
+                -
+                    name: child2
