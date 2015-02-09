@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\GenericAccessor;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -191,6 +192,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
+                    } elseif ($annot instanceof GenericAccessor) {
+                        $accessor = array($annot->getter, $annot->setter, $annot->propertyName);
                     } elseif ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
                         foreach ((array) $propertyMetadata->groups as $groupName) {
@@ -211,9 +214,13 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                if (isset($accessor[2])) {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1], $accessor[2]);
+                } else {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                }
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
+                if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
