@@ -539,6 +539,34 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testCircularReferenceWithRecursionDepthOfTwo()
+    {
+        $object = new CircularReferenceParent();
+
+        $this->assertEquals(
+            $this->getContent('circular_reference_depth_two'),
+            $this->serialize($object, SerializationContext::create()->setMaxRecursionDepth(2))
+        );
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('circular_reference_depth_two'), get_class($object));
+
+            $col = $this->getField($deserialized, 'collection');
+            $this->assertEquals(2, count($col));
+            $this->assertEquals('child1', $col[0]->getName());
+            $this->assertEquals('child2', $col[1]->getName());
+            $this->assertSame($deserialized, $col[0]->getParent());
+            $this->assertSame($deserialized, $col[1]->getParent());
+
+            $col = $this->getField($deserialized, 'anotherCollection');
+            $this->assertEquals(2, count($col));
+            $this->assertEquals('child1', $col[0]->getName());
+            $this->assertEquals('child2', $col[1]->getName());
+            $this->assertSame($deserialized, $col[0]->getParent());
+            $this->assertSame($deserialized, $col[1]->getParent());
+        }
+    }
+
     public function testLifecycleCallbacks()
     {
         $object = new ObjectWithLifecycleCallbacks();
