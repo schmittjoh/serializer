@@ -162,7 +162,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (null === $data || ! array_key_exists($name, $data)) {
+        if (null === $data || ! is_array($data) || ! array_key_exists($name, $data)) {
             return;
         }
 

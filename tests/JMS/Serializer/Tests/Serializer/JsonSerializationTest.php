@@ -93,6 +93,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['car_without_type'] = '{"km":5}';
             $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"}]}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
+            $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
+            $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -116,6 +118,25 @@ class JsonSerializationTest extends BaseSerializationTest
         $list->add(new Author('bar'));
 
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
+    }
+
+
+    public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
+    {
+
+        $content = $this->getContent('object_with_object_property_no_array_to_author');
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
+        $this->assertEquals('bar', $object->getFoo());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+    }
+
+    public function testDeserializingObjectWithObjectProperty()
+    {
+        $content = $this->getContent('object_with_object_property');
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
+        $this->assertEquals('bar', $object->getFoo());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+        $this->assertEquals('baz', $object->getAuthor()->getName());
     }
 
     public function getPrimitiveTypes()
