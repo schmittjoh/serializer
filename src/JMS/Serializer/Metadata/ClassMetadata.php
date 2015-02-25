@@ -44,6 +44,7 @@ class ClassMetadata extends MergeableClassMetadata
     /** @var \ReflectionMethod[] */
     public $postDeserializeMethods = array();
 
+    public $exclusionPolicy;
     public $xmlRootName;
     public $xmlRootNamespace;
     public $xmlNamespaces = array();
@@ -219,6 +220,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
+            $this->exclusionPolicy,
             $this->xmlRootName,
             $this->xmlRootNamespace,
             $this->xmlNamespaces,
@@ -240,6 +242,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
+            $this->exclusionPolicy,
             $this->xmlRootName,
             $this->xmlRootNamespace,
             $this->xmlNamespaces,

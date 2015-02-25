@@ -321,6 +321,14 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['qux']);
     }
 
+    public function testExclusionPolicy()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
+        $this->assertNull($m->exclusionPolicy);
+
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\AllExcludedObject'));
+        $this->assertEquals('ALL', $m->exclusionPolicy);
+    }
 
     /**
      * @return DriverInterface
