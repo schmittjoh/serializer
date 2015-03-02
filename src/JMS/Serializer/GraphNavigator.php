@@ -108,6 +108,21 @@ final class GraphNavigator
             $type = array('name' => 'NULL', 'params' => array());
         }
 
+        // Trigger pre-serialization callbacks, and listeners if they exist.
+        // Dispatch pre-serialization event before handling data to have ability change type in listener
+        if ($context instanceof SerializationContext) {
+            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
+                $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                $type = $event->getType();
+            }
+        } elseif ($context instanceof DeserializationContext) {
+            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
+                $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
+                $type = $event->getType();
+                $data = $event->getData();
+            }
+        }
+
         switch ($type['name']) {
             case 'NULL':
                 return $visitor->visitNull($data, $type, $context);
@@ -155,21 +170,6 @@ final class GraphNavigator
                     }
                 } elseif ($context instanceof DeserializationContext) {
                     $context->increaseDepth();
-                }
-
-                // Trigger pre-serialization callbacks, and listeners if they exist.
-                // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($context instanceof SerializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
-                        $type = $event->getType();
-                    }
-                } elseif ($context instanceof DeserializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
-                        $type = $event->getType();
-                        $data = $event->getData();
-                    }
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
