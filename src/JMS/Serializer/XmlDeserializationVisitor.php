@@ -59,18 +59,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
-        $dom = new \DOMDocument();
-        $dom->loadXML($data);
-        foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
-                if ( ! in_array($internalSubset, $this->doctypeWhitelist, true)) {
-                    throw new InvalidArgumentException(sprintf(
-                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
-                        $internalSubset
-                    ));
-                }
-            }
+        $internalSubset = $this->getDomDocumentTypeEntitySubset($data);
+        if (false !== $internalSubset && !in_array($internalSubset, $this->doctypeWhitelist, true)) {
+            throw new InvalidArgumentException(sprintf(
+                'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                $internalSubset
+            ));
         }
 
         $doc = simplexml_load_string($data);
@@ -349,34 +343,33 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     /**
      * Retrieves internalSubset even in bugfixed php versions
+     * Due to bugfix #67081@php.net method uses own doctype extraction.
      *
-     * @param \DOMDocumentType $child
      * @param string $data
-     * @return string
+     * @return string|bool
      */
-    private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+    private function getDomDocumentTypeEntitySubset($data)
     {
-        if (null !== $child->internalSubset) {
-            return str_replace(array("\n", "\r"), '', $child->internalSubset);
-        }
-        
         $startPos = $endPos = stripos($data, '<!doctype');
-        $braces = 0;
-        do {
-            $char = $data[$endPos++];
-            if ($char === '<') {
-                ++$braces;
-            }
-            if ($char === '>') {
-                --$braces;
-            }
-        } while ($braces > 0);
+        if (false !== $startPos) {
+            $braces = 0;
+            do {
+                $char = $data[$endPos++];
+                if ($char === '<') {
+                    ++$braces;
+                }
+                if ($char === '>') {
+                    --$braces;
+                }
+            } while ($braces > 0);
 
-        $internalSubset = substr($data, $startPos, $endPos - $startPos);
-        $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
-        $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
-        $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
+            $internalSubset = substr($data, $startPos, $endPos - $startPos);
+            $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
+            $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
+            $internalSubset = str_replace(array('[ <!', '> ]>'), array('[<!', '>]>'), $internalSubset);
+            return $internalSubset;
+        }
 
-        return $internalSubset;
+        return false;
     }
 }
