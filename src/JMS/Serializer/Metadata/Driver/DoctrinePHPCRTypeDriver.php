@@ -48,7 +48,10 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
             }
 
             $propertyMetadata->setType($fieldType);
-        } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
+            return;
+        }
+        
+        if ($doctrineMetadata->hasAssociation($propertyName)) {
             try {
                 $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
             } catch (\Exception $e) {
@@ -64,6 +67,18 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
             }
 
             $propertyMetadata->setType($targetEntity);
+            return;
+        }
+
+        switch ($propertyName) {
+            case $doctrineMetadata->nodename:
+            case $doctrineMetadata->localeMapping:
+            case $doctrineMetadata->depthMapping:
+            case $doctrineMetadata->versionNameField:
+            case $doctrineMetadata->versionCreatedField:
+            case $doctrineMetadata->uuidFieldName:
+            case $doctrineMetadata->identifier:
+                $propertyMetadata->setType('string');
         }
     }
 }

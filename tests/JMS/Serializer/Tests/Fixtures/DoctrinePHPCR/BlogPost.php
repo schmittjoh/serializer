@@ -81,6 +81,21 @@ class BlogPost
      */
     private $author;
 
+    /**
+     * @PHPCRODM\Nodename()
+     */
+    private $nodename;
+
+    /**
+     * @PHPCRODM\Uuid()
+     */
+    private $uuid;
+
+    /**
+     * @PHPCRODM\Locale()
+     */
+    private $locale;
+
     public function __construct($title, Author $author, \DateTime $createdAt)
     {
         $this->title = $title;
@@ -88,6 +103,7 @@ class BlogPost
         $this->published = false;
         $this->comments = new ArrayCollection();
         $this->createdAt = $createdAt;
+        $this->locale = 'de_at';
     }
 
     public function setPublished()

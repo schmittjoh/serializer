@@ -93,6 +93,28 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plainMetadata, $doctrineMetadata);
     }
 
+    public function provideSystemField()
+    {
+        return array(
+            array('nodename', 'string'),
+            array('uuid', 'string'),
+            array('locale', 'string'),
+        );
+    }
+
+    /**
+     * @dataProvider provideSystemField
+     */
+    public function testSystemField($field, $type)
+    {
+        $metadata = $this->getMetadata();
+
+        $this->assertEquals(
+            array('name' => $type, 'params' => array()),
+            $metadata->propertyMetadata[$field]->type
+        );
+    }
+
     protected function getDocumentManager()
     {
         $config = new Configuration();
