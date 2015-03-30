@@ -27,6 +27,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
 {
+    private $phpcrFieldMapping = array(
+        'long' => 'integer',
+    );
+
     /**
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param PropertyMetadata $propertyMetadata
@@ -80,5 +84,14 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
             case $doctrineMetadata->identifier:
                 $propertyMetadata->setType('string');
         }
+    }
+
+    protected function normalizeFieldType($type)
+    {
+        if (isset($this->phpcrFieldMapping[$type])) {
+            return $this->phpcrFieldMapping[$type];
+        }
+
+        return parent::normalizeFieldType($type);
     }
 }
