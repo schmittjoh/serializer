@@ -18,11 +18,11 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\SerializationContext;
 use \PropelCollection;
-use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
 class PropelCollectionHandler implements SubscribingHandlerInterface
 {
@@ -59,15 +59,22 @@ class PropelCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeCollection(VisitorInterface $visitor, PropelCollection $collection, array $type, Context $context)
+    public function serializeCollection(VisitorInterface $visitor, PropelCollection $collection, array $type, SerializationContext $context)
     {
+        //  Pop ourselves out of the context not to be counted as a depth level
+        $context->stopVisiting($collection);
+
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
+        $result = $visitor->visitArray($collection->getData(), $type, $context);
 
-        return $visitor->visitArray($collection->getData(), $type, $context);
+        //  Push ourselves back in, so we can be popped after leaving the handler
+        $context->startVisiting($collection);
+
+        return $result;
     }
 
-    public function deserializeCollection(VisitorInterface $visitor, $data, array $type, Context $context)
+    public function deserializeCollection(VisitorInterface $visitor, $data, array $type, DeserializationContext $context)
     {
         // See above. Set parameter type to PropelCollection<T> or PropelCollection<K,V>
         $type['name'] = 'array';
