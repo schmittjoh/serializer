@@ -1,0 +1,4 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithMagicVirtualProperties:
+  virtual_properties:
+    unexistantVirtualProperty:
+      is_magic: true
