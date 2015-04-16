@@ -22,6 +22,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
@@ -29,9 +30,11 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithStdClass;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
+use stdClass;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -325,6 +328,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testArrayMixed()
     {
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
+    }
+
+    public function testArrayStdClass()
+    {
+        $stdClass = new stdClass();
+        $stdClass->foo = "23";
+        $stdClass->bar = "42";
+        $stdClass->anotherStdClass = new stdClass();
+        $stdClass->anotherStdClass->test = "42";
+        $object = new ObjectWithStdClass($stdClass);
+
+        $this->assertEquals($this->getContent('array_std_class'), $this->serialize($object));
     }
 
     /**
@@ -960,6 +975,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
             function(VisitorInterface $visitor, $object, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type, $context);

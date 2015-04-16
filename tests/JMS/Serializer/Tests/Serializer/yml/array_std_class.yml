@@ -1,0 +1,5 @@
+std_class:
+    foo: '23'
+    bar: '42'
+    anotherStdClass:
+        test: '42'
