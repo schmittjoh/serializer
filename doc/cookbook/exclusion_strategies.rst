@@ -121,7 +121,7 @@ You can then tell the serializer which groups to serialize in your controller::
     
     //will output $id, $title, $nbComments and $createdAt.
 
-You can also take the opposite approach and exclude a property only if a specific groups is set
+You can also take the opposite approach and exclude a property only if a specific group is set,
 but expose it by default:
 
 .. code-block :: php
@@ -134,7 +134,7 @@ but expose it by default:
 
         private $title;
 
-        /** @ExcludeFroGroups({"list"}) */
+        /** @ExcludeForGroups({"list"}) */
         private $comments;
 
         private $createdAt;
