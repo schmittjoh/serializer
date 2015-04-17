@@ -18,14 +18,30 @@
 
 namespace JMS\Serializer\Construction;
 
+use Doctrine\Instantiator\Instantiator;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
 
 class UnserializeObjectConstructor implements ObjectConstructorInterface
 {
+    /** @var Instantiator  */
+    private $instantiator;
+
     public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
-        return unserialize(sprintf('O:%d:"%s":0:{}', strlen($metadata->name), $metadata->name));
+        return $this->getInstantiator()->instantiate($metadata->name);
+    }
+
+    /**
+     * @return Instantiator
+     */
+    private function getInstantiator()
+    {
+        if (null == $this->instantiator) {
+            $this->instantiator = new Instantiator();
+        }
+
+        return $this->instantiator;
     }
 }
