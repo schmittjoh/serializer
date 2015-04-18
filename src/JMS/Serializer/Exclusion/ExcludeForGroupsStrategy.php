@@ -6,14 +6,14 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Context;
 
-class ExcludeForGroupsStrategy
+class ExcludeForGroupsStrategy implements ExclusionStrategyInterface
 {
-    private $groups = array();
+    private $serializationGroups = array();
 
-    public function __construct(array $groups)
+    public function __construct(array $serializationGroups)
     {
-        foreach ($groups as $group) {
-            $this->groups[$group] = true;
+        foreach ($serializationGroups as $group) {
+            $this->serializationGroups[$group] = true;
         }
     }
 
@@ -30,12 +30,12 @@ class ExcludeForGroupsStrategy
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
-        if ( ! $property->groups) {
+        if ( ! $property->excludeForGroups) {
             return false;
         }
 
-        foreach ($property->groups as $group) {
-            if (isset($this->groups[$group])) {
+        foreach ($property->excludeForGroups as $group) {
+            if (isset($this->serializationGroups[$group])) {
                 return true;
             }
         }
