@@ -8,4 +8,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class ExcludeForGroups
 {
+    /** @var array<string> @Required */
+    public $groups;
 }
