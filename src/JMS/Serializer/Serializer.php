@@ -121,6 +121,49 @@ class Serializer implements SerializerInterface
         return $visitorResult;
     }
 
+    public function toArray($data, SerializationContext $context = null)
+    {
+        if (null === $context) {
+            $context = new SerializationContext();
+        }
+
+        $context->initialize(
+            'json',
+            $visitor = $this->serializationVisitors->get('json')->get(),
+            $this->navigator,
+            $this->factory
+        );
+
+        $visitor->setNavigator($this->navigator);
+        $this->navigator->accept($visitor->prepare($data), null, $context);
+
+        return (array) $visitor->getRoot();
+    }
+
+    public function fromArray($data, $type, DeserializationContext $context = null)
+    {
+        if (null === $context) {
+            $context = new DeserializationContext();
+        }
+
+        $context->initialize(
+            'json',
+            $visitor = $this->deserializationVisitors->get('json')->get(),
+            $this->navigator,
+            $this->factory
+        );
+
+        $visitor->setNavigator($this->navigator);
+        $navigatorResult = $this->navigator->accept($data, $this->typeParser->parse($type), $context);
+
+        // This is a special case if the root is handled by a callback on the object iself.
+        if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
+            return $navigatorResult;
+        }
+
+        return $visitorResult;
+    }
+
     /**
      * @return MetadataFactoryInterface
      */
