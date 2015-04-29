@@ -64,6 +64,26 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @dataProvider scalarValues
+     */
+    public function testToArrayWithScalar($input)
+    {
+        $result = $this->serializer->toArray($input);
+
+        $this->assertEquals(array($input), $result);
+    }
+
+    public function scalarValues()
+    {
+        return array(
+            array(42),
+            array(3.14159),
+            array('helloworld'),
+            array(true),
+        );
+    }
+
     public function testFromArray()
     {
         $data = array(
