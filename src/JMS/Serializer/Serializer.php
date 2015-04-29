@@ -140,7 +140,7 @@ class Serializer implements SerializerInterface
         return (array) $visitor->getRoot();
     }
 
-    public function fromArray($data, $type, DeserializationContext $context = null)
+    public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = new DeserializationContext();
