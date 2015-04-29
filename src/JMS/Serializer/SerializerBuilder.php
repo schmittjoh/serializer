@@ -28,6 +28,7 @@ use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Construction\EventedObjectConstructor;
 use PhpCollection\Map;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Metadata\Driver\DriverChain;
@@ -371,7 +372,7 @@ class SerializerBuilder
         return new Serializer(
             $metadataFactory,
             $this->handlerRegistry,
-            $this->objectConstructor ?: new UnserializeObjectConstructor(),
+            $this->objectConstructor ?: new EventedObjectConstructor($this->eventDispatcher, new UnserializeObjectConstructor()),
             $this->serializationVisitors,
             $this->deserializationVisitors,
             $this->eventDispatcher
