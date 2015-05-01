@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
@@ -52,8 +53,8 @@ class Serializer implements SerializerInterface
      * @param \Metadata\MetadataFactoryInterface $factory
      * @param Handler\HandlerRegistryInterface $handlerRegistry
      * @param Construction\ObjectConstructorInterface $objectConstructor
-     * @param \PhpCollection\MapInterface<VisitorInterface> $serializationVisitors
-     * @param \PhpCollection\MapInterface<VisitorInterface> $deserializationVisitors
+     * @param \PhpCollection\MapInterface $serializationVisitors of VisitorInterface
+     * @param \PhpCollection\MapInterface $deserializationVisitors of VisitorInterface
      * @param EventDispatcher\EventDispatcherInterface $dispatcher
      * @param TypeParser $typeParser
      */
@@ -72,96 +73,131 @@ class Serializer implements SerializerInterface
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
-        if ( ! $this->serializationVisitors->containsKey($format)) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
-        }
-
         if (null === $context) {
             $context = new SerializationContext();
         }
 
-        $context->initialize(
-            $format,
-            $visitor = $this->serializationVisitors->get($format)->get(),
-            $this->navigator,
-            $this->factory
-        );
+        return $this->serializationVisitors->get($format)
+            ->map(function(VisitorInterface $visitor) use ($context, $data, $format) {
+                $this->visit($visitor, $context, $visitor->prepare($data), $format);
 
-        $visitor->setNavigator($this->navigator);
-        $this->navigator->accept($visitor->prepare($data), null, $context);
-
-        return $visitor->getResult();
+                return $visitor->getResult();
+            })
+            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format)))
+        ;
     }
 
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
-        if ( ! $this->deserializationVisitors->containsKey($format)) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
-        }
-
         if (null === $context) {
             $context = new DeserializationContext();
         }
 
-        $context->initialize(
-            $format,
-            $visitor = $this->deserializationVisitors->get($format)->get(),
-            $this->navigator,
-            $this->factory
-        );
+        return $this->deserializationVisitors->get($format)
+            ->map(function(VisitorInterface $visitor) use ($context, $data, $format, $type) {
+                $preparedData = $visitor->prepare($data);
+                $navigatorResult = $this->visit($visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
-        $visitor->setNavigator($this->navigator);
-        $navigatorResult = $this->navigator->accept($visitor->prepare($data), $this->typeParser->parse($type), $context);
-
-        // This is a special case if the root is handled by a callback on the object iself.
-        if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
-            return $navigatorResult;
-        }
-
-        return $visitorResult;
+                return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
+            })
+            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format)))
+        ;
     }
 
+    /**
+     * Converts objects to an array structure.
+     *
+     * This is useful when the data needs to be passed on to other methods which expect array data.
+     *
+     * @param mixed $data anything that converts to an array, typically an object or an array of objects
+     *
+     * @return array
+     */
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
             $context = new SerializationContext();
         }
 
-        $context->initialize(
-            'json',
-            $visitor = $this->serializationVisitors->get('json')->get(),
-            $this->navigator,
-            $this->factory
-        );
+        return $this->serializationVisitors->get('json')
+            ->map(function(JsonSerializationVisitor $visitor) use ($context, $data) {
+                $this->visit($visitor, $context, $data, 'json');
+                $result = $this->convertArrayObjects($visitor->getRoot());
 
-        $visitor->setNavigator($this->navigator);
-        $this->navigator->accept($visitor->prepare($data), null, $context);
+                if ( ! is_array($result)) {
+                    throw new RuntimeException(sprintf(
+                        'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
+                        is_object($data) ? get_class($data) : gettype($data),
+                        is_object($result) ? get_class($result) : gettype($result)
+                    ));
+                }
 
-        return (array) $visitor->getRoot();
+                return $result;
+            })
+            ->get()
+        ;
     }
 
+    /**
+     * Restores objects from an array structure.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return mixed this returns whatever the passed type is, typically an object or an array of objects
+     */
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = new DeserializationContext();
         }
 
+        return $this->deserializationVisitors->get('json')
+            ->map(function(JsonDeserializationVisitor $visitor) use ($data, $type, $context) {
+                $navigatorResult = $this->visit($visitor, $context, $data, 'json', $this->typeParser->parse($type));
+
+                return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
+            })
+            ->get()
+        ;
+    }
+
+    private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
+    {
         $context->initialize(
-            'json',
-            $visitor = $this->deserializationVisitors->get('json')->get(),
+            $format,
+            $visitor,
             $this->navigator,
             $this->factory
         );
 
         $visitor->setNavigator($this->navigator);
-        $navigatorResult = $this->navigator->accept($data, $this->typeParser->parse($type), $context);
 
-        // This is a special case if the root is handled by a callback on the object iself.
-        if ((null === $visitorResult = $visitor->getResult()) && null !== $navigatorResult) {
+        return $this->navigator->accept($data, $type, $context);
+    }
+
+    private function handleDeserializeResult($visitorResult, $navigatorResult)
+    {
+        // This is a special case if the root is handled by a callback on the object itself.
+        if (null === $visitorResult && null !== $navigatorResult) {
             return $navigatorResult;
         }
 
         return $visitorResult;
+    }
+
+    private function convertArrayObjects($data)
+    {
+        if ($data instanceof \ArrayObject) {
+            $data = (array) $data;
+        }
+        if (is_array($data)) {
+            foreach ($data as $k => $v) {
+                $data[$k] = $this->convertArrayObjects($v);
+            }
+        }
+
+        return $data;
     }
 
     /**

@@ -19,6 +19,8 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
 use PhpCollection\Map;
@@ -69,6 +71,11 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testToArrayWithScalar($input)
     {
+        $this->setExpectedException('JMS\Serializer\Exception\RuntimeException', sprintf(
+            'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
+            gettype($input),
+            gettype($input)
+        ));
         $result = $this->serializer->toArray($input);
 
         $this->assertEquals(array($input), $result);
@@ -100,8 +107,17 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testToArrayReturnsArrayObjectAsArray()
     {
-        $result = $this->serializer->toArray(new \ArrayObject());
+        $result = $this->serializer->toArray(new Author(null));
 
-        $this->assertEquals(array(), $result);
+        $this->assertSame(array(), $result);
+    }
+
+    public function testToArrayConversNestedArrayObjects()
+    {
+        $list = new AuthorList();
+        $list->add(new Author(null));
+
+        $result = $this->serializer->toArray($list);
+        $this->assertSame(array('authors' => array(array())), $result);
     }
 }
