@@ -24,10 +24,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
-    private $navigator;
-    private $root;
-    private $dataStack;
-    private $data;
+    protected $navigator;
+    protected $root;
+    protected $dataStack;
+    protected $data;
 
     public function setNavigator(GraphNavigator $navigator)
     {
