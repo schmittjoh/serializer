@@ -22,6 +22,7 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 
@@ -170,8 +171,10 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 }
 
                 $nodes = $data->children($namespace)->$entryName;
-                foreach ($nodes as $v) {
+                foreach ($nodes as $k=>$v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
@@ -195,7 +198,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     }
 
                     $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[$k] = $this->navigator->accept($v, $entryType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
