@@ -25,6 +25,7 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
@@ -212,6 +213,20 @@ abstract class Context
     public function pushPropertyMetadata(PropertyMetadata $metadata)
     {
         $this->metadataStack->push($metadata);
+    }
+
+    public function pushIndexMetadata(IndexMetadata $metadata)
+    {
+        $this->metadataStack->push($metadata);
+    }
+
+    public function popIndexMetadata()
+    {
+        $metadata = $this->metadataStack->pop();
+
+        if ( ! $metadata instanceof IndexMetadata) {
+            throw new RuntimeException('Context metadataStack not working well');
+        }
     }
 
     public function popPropertyMetadata()

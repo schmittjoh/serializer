@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 
@@ -124,8 +125,10 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                     $this->result = &$result;
                 }
 
-                foreach ($data as $v) {
+                foreach ($data as $k => $v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[] = $this->navigator->accept($v, $listType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
@@ -139,7 +142,9 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 }
 
                 foreach ($data as $k => $v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[$this->navigator->accept($k, $keyType, $context)] = $this->navigator->accept($v, $entryType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
