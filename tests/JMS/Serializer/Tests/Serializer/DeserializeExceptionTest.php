@@ -79,6 +79,11 @@ class DeserializeExceptionTest extends \PHPUnit_Framework_TestCase
         $this->deserialize($this->getContent('object'), 'integer');
     }
 
+    public function testNumericStringConvert()
+    {
+        $this->assertEquals($this->deserialize($this->getContent('numeric'), 'integer'), 1);
+    }
+
     /**
      * @expectedException \JMS\Serializer\Exception\DeserializeException
      * @expectedExceptionMessage Path ".": expected float, but got array: {"t":"t"}
@@ -144,6 +149,7 @@ class DeserializeExceptionTest extends \PHPUnit_Framework_TestCase
 
         if (!$outputs) {
             $outputs['scalar'] = '1';
+            $outputs['numeric'] = '"1"';
             $outputs['object'] = '{ "t": "t" }';
             $outputs['blog_post'] = '{"id":"id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"}}';
             $outputs['blog_post_id'] = '{"id":{ "t": "t" },"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"}}';
