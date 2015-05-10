@@ -43,14 +43,11 @@ class DeserializeException extends RuntimeException
         $this->type = $type;
         $this->data = $data;
         $this->path = '';
-        foreach($context->getMetadataStack() as $element)
-        {
-            if ($element instanceof Metadata\IndexMetadata)
-            {
+        foreach ($context->getMetadataStack() as $element) {
+            if ($element instanceof Metadata\IndexMetadata) {
                 $this->path = '['.$element->index.']'.$this->path;
             }
-            if ($element instanceof Metadata\PropertyMetadata)
-            {
+            if ($element instanceof Metadata\PropertyMetadata) {
                 $this->path = '.'.($element->serializedName ?: $element->name).$this->path;
             }
         }

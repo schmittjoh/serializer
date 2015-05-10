@@ -63,7 +63,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         if (null === $data) {
             return;
         }
-        if (!is_scalar($data)) {
+        if ( ! is_scalar($data)) {
             throw new DeserializeException($type, $data, $context);
         }
         $data = (string) $data;
@@ -80,7 +80,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         if (null === $data) {
             return;
         }
-        if (!is_scalar($data)) {
+        if ( ! is_scalar($data)) {
             throw new DeserializeException($type, $data, $context);
         }
         $data = (Boolean) $data;
@@ -97,7 +97,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         if (null === $data) {
             return;
         }
-        if (!is_numeric($data)) {
+        if ( ! is_numeric($data)) {
             throw new DeserializeException($type, $data, $context);
         }
         $data = (integer) $data;
@@ -114,7 +114,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         if (null === $data) {
             return;
         }
-        if (!is_numeric($data)) {
+        if ( ! is_numeric($data)) {
             throw new DeserializeException($type, $data, $context);
         }
         $data = (double) $data;
@@ -197,7 +197,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         }
         if ( ! is_array($data)) {
             $context->popPropertyMetadata();
-            throw new DeserializeException(array( 'name' => 'object', 'params' => array() ), $data, $context);
+            throw new DeserializeException(array('name' => 'object', 'params' => array()), $data, $context);
         }
         if ( ! array_key_exists($name, $data)) {
             return;
