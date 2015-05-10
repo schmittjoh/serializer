@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\DeserializeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -109,7 +110,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         } elseif ('false' === $data || '0' === $data) {
             $data = false;
         } else {
-            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
+            throw new DeserializeException($type, $data, $context);
         }
 
         if (null === $this->result) {
