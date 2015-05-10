@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Exception;
 use JMS\Serializer\Context;
+use JMS\Serializer\Metadata;
 
 /**
  * DeserializeException for the Serializer.
@@ -26,9 +27,10 @@ use JMS\Serializer\Context;
  */
 class DeserializeException extends RuntimeException
 {
-    private $context;
-    private $type;
-    private $data;
+    public $context;
+    public $type;
+    public $data;
+    public $path;
 
     /**
      * @param array   $type
@@ -40,15 +42,22 @@ class DeserializeException extends RuntimeException
         $this->context = $context;
         $this->type = $type;
         $this->data = $data;
-        parent::__construct('', 0, null);
-    }
+        $this->path = '';
+        foreach($context->getMetadataStack() as $element)
+        {
+            if ($element instanceof Metadata\IndexMetadata)
+            {
+                $this->path = '['.$element->index.']'.$this->path;
+            }
+            if ($element instanceof Metadata\PropertyMetadata)
+            {
+                $this->path = '.'.($element->serializedName ?: $element->name).$this->path;
+            }
+        }
+        $this->path = trim($this->path, '.') ?: '.';
 
-    /**
-     * @return Context
-     */
-    public function getContext()
-    {
-        return $this->context;
+        $message = sprintf('Path "%s": expected %s, but got %s: %s', $this->path, $type['name'], gettype($data), json_encode($data));
+        parent::__construct($message, 0, null);
     }
 
 }
