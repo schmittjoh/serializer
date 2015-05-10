@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\DeserializeException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -59,6 +60,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if (!is_scalar($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (string) $data;
 
         if (null === $this->result) {
@@ -81,6 +88,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if (!is_numeric($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (integer) $data;
 
         if (null === $this->result) {
@@ -92,6 +105,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if (!is_numeric($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (double) $data;
 
         if (null === $this->result) {
@@ -104,7 +123,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     public function visitArray($data, array $type, Context $context)
     {
         if ( ! is_array($data)) {
-            throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
+            throw new DeserializeException($type, $data, $context);
         }
 
         // If no further parameters were given, keys/values are just passed as is.
@@ -167,7 +186,13 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (null === $data || ! array_key_exists($name, $data)) {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_array($data)) {
+            throw new DeserializeException(array( 'name' => 'array', 'params' => array() ), $data, $context);
+        }
+        if ( ! array_key_exists($name, $data)) {
             return;
         }
 
