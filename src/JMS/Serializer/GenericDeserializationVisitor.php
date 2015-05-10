@@ -77,6 +77,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if (!is_scalar($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (Boolean) $data;
 
         if (null === $this->result) {
@@ -190,7 +196,8 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             return;
         }
         if ( ! is_array($data)) {
-            throw new DeserializeException(array( 'name' => 'array', 'params' => array() ), $data, $context);
+            $context->popPropertyMetadata();
+            throw new DeserializeException(array( 'name' => 'object', 'params' => array() ), $data, $context);
         }
         if ( ! array_key_exists($name, $data)) {
             return;
