@@ -28,11 +28,24 @@ class ObjectEvent extends Event
     {
         parent::__construct($context, $type);
 
-        $this->object = $object;
+        $this->setObject($object);
     }
 
     public function getObject()
     {
         return $this->object;
+    }
+    
+    /**
+     * Sets the object or node to serialize
+     * 
+     * @param mixed $object
+     * @return $this
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
+        
+        return $this;
     }
 }
