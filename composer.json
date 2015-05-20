@@ -1,5 +1,5 @@
 {
-    "name": "jms/serializer",
+    "name": "haasalex/serializer",
     "type": "library",
     "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
