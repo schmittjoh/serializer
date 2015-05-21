@@ -24,13 +24,27 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
+    private $navigatorStack;
     private $navigator;
+    private $rootStack;
     private $root;
+    private $dataStackStack;
     private $dataStack;
     private $data;
 
+    public function __construct($namingStrategy)
+    {
+        parent::__construct($namingStrategy);
+        $this->navigatorStack = new \SplStack;
+        $this->dataStackStack = new \SplStack;
+        $this->rootStack = new \SplStack;
+    }
+
     public function setNavigator(GraphNavigator $navigator)
     {
+        $this->navigatorStack->push($this->navigator);
+        $this->dataStackStack->push($this->dataStack);
+        $this->rootStack->push($this->root);
         $this->navigator = $navigator;
         $this->root = null;
         $this->dataStack = new \SplStack;
@@ -42,6 +56,13 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     public function getNavigator()
     {
         return $this->navigator;
+    }
+
+    public function endNavigator()
+    {
+        $this->navigator = $this->navigatorStack->pop();
+        $this->dataStack = $this->dataStackStack->pop();
+        $this->root = $this->rootStack->pop();
     }
 
     public function visitNull($data, array $type, Context $context)
@@ -173,6 +194,56 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         }
 
         $this->data[$key] = $value;
+    }
+
+
+    /**
+     * Allows you to remove data from the current object based on name.
+     *
+     * @param string $key
+     * @throws Exception\InvalidArgumentException
+     */
+    public function removeDataPropertyName($propertyName)
+    {
+        $std = new \stdClass();
+        $std->temp = 'temp';
+
+        $propMetadata = new PropertyMetadata($std, "temp");
+        $propMetadata->name = $propertyName;
+        $key = $this->namingStrategy->translateName($propMetadata);
+
+        if (!array_key_exists($key, $this->data)) {
+            throw new InvalidArgumentException(sprintf('There is no data for "%s".', $key));
+        }
+
+        unset($propMetadata);
+        unset($std);
+        unset($this->data[$key]);
+    }
+
+    /**
+     * Allows you to remove data from the current object/root element.
+     *
+     * @param string $key
+     * @throws Exception\InvalidArgumentException
+     */
+    public function removeData($key)
+    {
+        if (!array_key_exists($key, $this->data)) {
+            throw new InvalidArgumentException(sprintf('There is no data for "%s".', $key));
+        }
+
+        unset($this->data[$key]);
+    }
+
+    /**
+     * Returns the current object
+     *
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function getRoot()

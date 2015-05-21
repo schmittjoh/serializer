@@ -31,13 +31,17 @@ class XmlSerializationVisitor extends AbstractVisitor
 {
     public $document;
 
+    private $documentStack;
     private $navigator;
+    private $navigatorStack;
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
     private $defaultVersion = '1.0';
     private $defaultEncoding = 'UTF-8';
     private $stack;
+    private $stackStack;
     private $metadataStack;
+    private $metadataStackStack;
     private $currentNode;
     private $currentMetadata;
     private $hasValue;
@@ -48,6 +52,15 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         parent::__construct($namingStrategy);
         $this->objectMetadataStack = new \SplStack;
+    }
+
+    public function __construct($namingStrategy)
+    {
+        parent::__construct($namingStrategy);
+        $this->navigatorStack = new \SplStack;
+        $this->documentStack = new \SplStack;
+        $this->stackStack = new \SplStack;
+        $this->metadataStackStack = new \SplStack;
     }
 
     public function setDefaultRootName($name, $namespace = null)
@@ -76,6 +89,10 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function setNavigator(GraphNavigator $navigator)
     {
+        $this->navigatorStack->push($this->navigator);
+        $this->documentStack->push($this->document);
+        $this->stackStack->push($this->stack);
+        $this->metadataStackStack->push($this->metadataStack);
         $this->navigator = $navigator;
         $this->document = null;
         $this->stack = new \SplStack;
@@ -85,6 +102,14 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function getNavigator()
     {
         return $this->navigator;
+    }
+
+    public function endNavigator()
+    {
+        $this->navigator = $this->navigatorStack->pop();
+        $this->document = $this->documentStack->pop();
+        $this->stack = $this->stackStack->pop();
+        $this->metadataStack = $this->metadataStackStack->pop();
     }
 
     public function visitNull($data, array $type, Context $context)

@@ -80,8 +80,10 @@ class Serializer implements SerializerInterface
         return $this->serializationVisitors->get($format)
             ->map(function(VisitorInterface $visitor) use ($context, $data, $format) {
                 $this->visit($visitor, $context, $visitor->prepare($data), $format);
+                $result = $visitor->getResult();
+                $visitor->endNavigator();
 
-                return $visitor->getResult();
+                return $result;
             })
             ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format)))
         ;
