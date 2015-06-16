@@ -162,11 +162,22 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      */
     public function addData($key, $value)
     {
-        if (isset($this->data[$key])) {
+        if ( $this->hasData($key) ) {
             throw new InvalidArgumentException(sprintf('There is already data for "%s".', $key));
         }
 
         $this->data[$key] = $value;
+    }
+    
+    /**
+     * Checks if some data key exists.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasData($key)
+    {
+        return isset($this->data[$key]);
     }
 
     public function getRoot()
