@@ -155,6 +155,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             ),
             $m->discriminatorMap
         );
+        $this->assertEquals('JMS\Serializer\Tests\Fixtures\Discriminator\Car', $m->discriminatorDefault);
     }
 
     public function testLoadDiscriminatorSubClass()
