@@ -51,8 +51,12 @@ class YamlDriver extends AbstractFileDriver
         $propertiesMetadata = array();
         if (array_key_exists('virtual_properties', $config)) {
             foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
-                if ( ! $class->hasMethod($methodName)) {
+                if (!isset($propertySettings['is_magic']) && ! $class->hasMethod($methodName)) {
                     throw new RuntimeException('The method '.$methodName.' not found in class '.$class->name);
+                }
+
+                if(isset($propertySettings['is_magic']) && $propertySettings['is_magic'] && !$class->hasMethod('__call')) {
+                    throw new RuntimeException('Virtual properties set as magic and the method __call not found in class ' . $class->name);
                 }
 
                 $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);

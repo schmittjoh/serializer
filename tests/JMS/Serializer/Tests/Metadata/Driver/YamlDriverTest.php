@@ -24,6 +24,16 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
 {
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Virtual properties set as magic and the method __call not found in class JMS\Serializer\Tests\Fixtures\ObjectWithMagicVirtualProperties
+     */
+    public function testVirtualProperty()
+    {
+        $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithMagicVirtualProperties'));
+    }
+
     public function testAccessorOrderIsInferred()
     {
         $m = $this->getDriverForSubDir('accessor_inferred')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
