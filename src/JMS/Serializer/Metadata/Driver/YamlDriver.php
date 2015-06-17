@@ -262,7 +262,16 @@ class YamlDriver extends AbstractFileDriver
                     throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
                 }
 
-                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map']);
+                $discriminatorDefault = null;
+                if (isset($config['discriminator']['default'])) {
+                    $discriminatorDefault = $config['discriminator']['default'];
+                }
+
+                $metadata->setDiscriminator(
+                    $config['discriminator']['field_name'],
+                    $config['discriminator']['map'],
+                    $discriminatorDefault
+                );
             }
         }
     }
