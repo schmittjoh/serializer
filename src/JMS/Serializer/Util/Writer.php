@@ -144,4 +144,11 @@ class Writer
     {
         return $this->content;
     }
+
+    public function __set($name, $value)
+    {
+        if ($name === 'indentationSpaces') {
+            $this->indentationUnit = str_repeat(' ', $value);
+        }
+    }
 }
