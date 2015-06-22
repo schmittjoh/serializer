@@ -145,6 +145,13 @@ class Writer
         return $this->content;
     }
 
+    public function __get($name)
+    {
+        if ($name === 'indentationSpaces') {
+            return strlen($this->indentationUnit);
+        }
+    }
+
     public function __set($name, $value)
     {
         if ($name === 'indentationSpaces') {
