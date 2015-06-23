@@ -20,7 +20,7 @@ class ExcludeForGroupsStrategyTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testNoGroupsDefinied()
+    public function testNoGroupsDefined()
     {
         $metadata = new StaticPropertyMetadata('stdClass', 'foo', 'bar');
         $context = SerializationContext::create();
