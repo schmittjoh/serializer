@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
+use JMS\Serializer\Annotation\ExcludeForGroups;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\Type;
 
@@ -42,6 +43,12 @@ class GroupsObject
      */
     private $bar;
 
+    /**
+     * @ExcludeForGroups({"bar"})
+     * @Type("string")
+     */
+    private $nobar;
+
      /**
      * @Type("string")
      */
@@ -53,5 +60,6 @@ class GroupsObject
         $this->bar = "bar";
         $this->foobar  = "foobar";
         $this->none = "none";
+        $this->nobar = "nobar";
     }
 }

@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\ExcludeForGroups;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -202,7 +203,19 @@ class AnnotationDriver implements DriverInterface
                                 ));
                             }
                         }
-                    } elseif ($annot instanceof Inline) {
+                    }
+                    elseif ($annot instanceof ExcludeForGroups) {
+                        $propertyMetadata->excludeForGroups = $annot->groups;
+                        foreach ((array) $propertyMetadata->excludeForGroups as $groupName) {
+                            if (false !== strpos($groupName, ',')) {
+                                throw new InvalidArgumentException(sprintf(
+                                    'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
+                                    implode(', ', $propertyMetadata->excludeForGroups),
+                                    $propertyMetadata->class.'->'.$propertyMetadata->name
+                                ));
+                            }
+                        }
+                    }elseif ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
                     } elseif ($annot instanceof XmlAttributeMap) {
                         $propertyMetadata->xmlAttributeMap = true;

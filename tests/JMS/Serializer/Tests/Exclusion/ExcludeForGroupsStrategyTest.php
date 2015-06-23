@@ -34,7 +34,7 @@ class ExcludeForGroupsStrategyTest extends \PHPUnit_Framework_TestCase
     public function testShouldNotSkipProperty()
     {
         $metadata = new StaticPropertyMetadata('stdClass', 'foo', 'bar');
-        $metadata->groups = ['someGroup'];
+        $metadata->excludeForGroups = ['someGroup'];
         $context = SerializationContext::create();
 
         $excludeForGroupsStrategy = new ExcludeForGroupsStrategy(['testGroup']);
@@ -46,7 +46,7 @@ class ExcludeForGroupsStrategyTest extends \PHPUnit_Framework_TestCase
     public function testShouldSkipProperty()
     {
         $metadata = new StaticPropertyMetadata('stdClass', 'foo', 'bar');
-        $metadata->groups = ['testGroup'];
+        $metadata->excludeForGroups = ['testGroup'];
         $context = SerializationContext::create();
 
         $excludeForGroupsStrategy = new ExcludeForGroupsStrategy(['testGroup']);

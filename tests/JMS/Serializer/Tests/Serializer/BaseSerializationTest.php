@@ -705,6 +705,28 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testExclusionGroups()
+    {
+        $groupsObject = new GroupsObject();
+
+        $this->assertEquals(
+            $this->getContent('exclude_groups_none'),
+            $this->serializer->serialize($groupsObject, $this->getFormat())
+        );
+
+        $context = SerializationContext::create()->setExclusionGroups('foo');
+        $this->assertEquals(
+            $this->getContent('exclude_groups_foo'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), $context)
+        );
+
+        $context = SerializationContext::create()->setExclusionGroups('bar');
+        $this->assertEquals(
+            $this->getContent('exclude_groups_bar'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), $context)
+        );
+    }
+
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
      * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
