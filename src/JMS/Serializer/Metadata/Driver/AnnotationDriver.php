@@ -203,8 +203,7 @@ class AnnotationDriver implements DriverInterface
                                 ));
                             }
                         }
-                    }
-                    elseif ($annot instanceof ExcludeForGroups) {
+                    } elseif ($annot instanceof ExcludeForGroups) {
                         $propertyMetadata->excludeForGroups = $annot->groups;
                         foreach ((array) $propertyMetadata->excludeForGroups as $groupName) {
                             if (false !== strpos($groupName, ',')) {
