@@ -72,10 +72,14 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['accessor_order_methods'] = '{"foo":"c","b":"b","a":"a"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
             $outputs['inline_child_empty'] = '{"c":"c","d":"d"}';
-            $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
+            $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","nobar":"nobar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
-            $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
+            $outputs['groups_default'] = '{"bar":"bar","nobar":"nobar","none":"none"}';
+            $outputs['exclude_groups_none'] = '{"foo":"foo","foobar":"foobar","bar":"bar","nobar":"nobar","none":"none"}';
+            $outputs['exclude_groups_foo'] = '{"foo":"foo","foobar":"foobar","bar":"bar","nobar":"nobar","none":"none"}';
+            $outputs['exclude_groups_bar'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
+
             $outputs['virtual_properties'] = '{"exist_field":"value","test":"other-name","virtual_value":"value","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
