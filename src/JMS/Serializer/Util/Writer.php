@@ -150,6 +150,8 @@ class Writer
         if ($name === 'indentationSpaces') {
             return strlen($this->indentationUnit);
         }
+        
+        return $this->{$name};
     }
 
     public function __set($name, $value)
@@ -157,5 +159,7 @@ class Writer
         if ($name === 'indentationSpaces') {
             $this->indentationUnit = str_repeat(' ', $value);
         }
+        
+        $this->{$name} = $value;
     }
 }
