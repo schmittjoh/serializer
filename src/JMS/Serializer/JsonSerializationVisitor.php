@@ -26,7 +26,14 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function getResult()
     {
-        $result = @json_encode($this->getRoot(), $this->options);
+        if (null !== ($root = $this->getRoot())) {
+            // If root is ArrayObject convert to vanilla array
+            if (is_object($root) && $root instanceof \ArrayObject) {
+                $root = $root->getArrayCopy();
+            }
+        }
+        
+        $result = @json_encode($root, $this->options);
 
         switch (json_last_error()) {
             case JSON_ERROR_NONE:
