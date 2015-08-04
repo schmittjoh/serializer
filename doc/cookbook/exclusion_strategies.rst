@@ -121,6 +121,33 @@ You can then tell the serializer which groups to serialize in your controller::
     
     //will output $id, $title, $nbComments and $createdAt.
 
+You can also take the opposite approach and exclude a property only if a specific exclusion-group is set,
+but expose it by default:
+
+.. code-block :: php
+
+    use JMS\Serializer\Annotation\Groups;
+
+    class BlogPost
+    {
+        private $id;
+
+        private $title;
+
+        /** @ExcludeForGroups({"list"}) */
+        private $comments;
+
+        private $createdAt;
+    }
+
+If you now set the `list` exclusion-group on serialization, the `comments` property will be excluded::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setExclusionGroups(array('list')));
+
+    //will output $id, $title and $createdAt.
+
 Limiting serialization depth of some properties
 -----------------------------------------------
 You can limit the depth of what will be serialized in a property with the

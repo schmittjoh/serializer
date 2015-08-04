@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
+use JMS\Serializer\Exclusion\ExcludeForGroupsStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
@@ -173,7 +174,20 @@ abstract class Context
 
         $this->attributes->set('groups', (array) $groups);
         $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
+        return $this;
+    }
 
+    /**
+     * @param array|string $groups
+     */
+    public function setExclusionGroups($groups)
+    {
+        if (empty($groups)) {
+            throw new \LogicException('The groups must not be empty.');
+        }
+
+        $this->attributes->set('excludeForGroups', (array) $groups);
+        $this->addExclusionStrategy(new ExcludeForGroupsStrategy((array) $groups));
         return $this;
     }
 
