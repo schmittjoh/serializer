@@ -129,7 +129,8 @@ class FormErrorHandler implements SubscribingHandlerInterface
     {
         $isRoot = null === $visitor->getRoot();
 
-        $form = $errors = array();
+        $form = new \ArrayObject();
+        $errors = array();
         foreach ($data->getErrors() as $error) {
             $errors[] = $this->getErrorMessage($error);
         }
