@@ -19,12 +19,15 @@
         "doctrine/annotations": "1.*",
         "doctrine/instantiator": "~1.0.3"
     },
+    "conflict": {
+        "twig/twig": "<1.12"
+    },
     "suggest": {
         "symfony/yaml": "Required if you'd like to serialize data to YAML format."
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "twig/twig": ">=1.8,<2.0-dev",
+        "twig/twig": "~1.12|~2.0",
         "doctrine/orm": "~2.1",
         "doctrine/phpcr-odm": "~1.0.1",
         "jackalope/jackalope-doctrine-dbal": "1.0.*",
