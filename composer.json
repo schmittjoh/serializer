@@ -24,7 +24,7 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "twig/twig": ">=1.8,<2.0-dev",
+        "twig/twig": ">=1.12,<2.0-dev",
         "doctrine/orm": "~2.1",
         "doctrine/phpcr-odm": "~1.0.1",
         "jackalope/jackalope-doctrine-dbal": "1.0.*",
