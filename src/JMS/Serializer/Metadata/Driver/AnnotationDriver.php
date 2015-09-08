@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\XmlStylesheet;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -83,6 +84,8 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
                 $classMetadata->xmlRootNamespace = $annot->namespace;
+            } elseif ($annot instanceof XmlStylesheet) {
+                $classMetadata->registerStylesheet($annot->href, $annot->type, $annot->title, $annot->media, $annot->charset, $annot->alternate);
             } elseif ($annot instanceof XmlNamespace) {
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
