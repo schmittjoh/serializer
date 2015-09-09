@@ -21,14 +21,23 @@ namespace JMS\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SymfonyValidatorSubscriber implements EventSubscriberInterface
 {
     private $validator;
 
-    public function __construct(ValidatorInterface $validator)
+    public function __construct($validator)
     {
+        if (!$validator instanceof ValidatorInterface && !$validator instanceof LegacyValidatorInterface) {
+            throw new \InvalidArgumentException('Argument 1 of '.__METHOD__.' must be an instance of Symfony\Component\Validator\Validator\ValidatorInterface or Symfony\Component\Validator\ValidatorInterface.');
+        }
+
+        if (!$validator instanceof ValidatorInterface) {
+            @trigger_error('Passing Symfony\Component\Validator\ValidatorInterface instance to '.__METHOD__.' is deprecated since version 1.1 and will be removed on 2.0.');
+        }
+
         $this->validator = $validator;
     }
 
@@ -50,7 +59,11 @@ class SymfonyValidatorSubscriber implements EventSubscriberInterface
         $validator = $this->validator;
         $context->attributes->get('validation_groups')->map(
             function(array $groups) use ($event, $validator) {
-                $list = $validator->validate($event->getObject(), $groups);
+                if ($validator instanceof ValidatorInterface) {
+                    $list = $validator->validate($event->getObject(), null, $groups);
+                } else {
+                    $list = $validator->validate($event->getObject(), $groups);
+                }
 
                 if ($list->count() > 0) {
                     throw new ValidationFailedException($list);
