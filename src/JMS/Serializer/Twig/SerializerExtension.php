@@ -50,7 +50,7 @@ class SerializerExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::createContext'),
+            new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
         );
     }
 
