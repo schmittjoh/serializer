@@ -24,7 +24,7 @@ then it is easier to change the exclusion policy, and only mark these few proper
 
     /**
      * The following annotations tells the serializer to skip all properties which
-     * have not marked with @Expose.
+     * have not marked with Expose.
      *
      * @ExclusionPolicy("all")
      */
