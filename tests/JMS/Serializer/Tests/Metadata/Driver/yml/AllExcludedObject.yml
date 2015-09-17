@@ -1,0 +1,5 @@
+JMS\Serializer\Tests\Fixtures\AllExcludedObject:
+    exclusion_policy: ALL
+    properties:
+        bar:
+            expose: true

@@ -80,6 +80,7 @@ class AnnotationDriver implements DriverInterface
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
+                $classMetadata->exclusionPolicy = $exclusionPolicy;
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
                 $classMetadata->xmlRootNamespace = $annot->namespace;
