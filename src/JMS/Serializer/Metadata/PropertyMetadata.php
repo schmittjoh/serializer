@@ -54,30 +54,36 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->reflection->getDeclaringClass();
+            $ucfirstProp = ucfirst($this->name);
 
             if (empty($getter)) {
-                if ($class->hasMethod('get'.$this->name) && $class->getMethod('get'.$this->name)->isPublic()) {
-                    $getter = 'get'.$this->name;
-                } elseif ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
-                    $getter = 'is'.$this->name;
-                } elseif ($class->hasMethod('has'.$this->name) && $class->getMethod('has'.$this->name)->isPublic()) {
-                    $getter = 'has'.$this->name;
+                if ($this->doesPublicMethodExist($class, 'get'.$ucfirstProp)) {
+                    $getter = 'get'.$ucfirstProp;
+                } elseif ($this->doesPublicMethodExist($class, 'is'.$ucfirstProp)) {
+                    $getter = 'is'.$ucfirstProp;
+                } elseif ($this->doesPublicMethodExist($class, 'has'.$ucfirstProp)) {
+                    $getter = 'has'.$ucfirstProp;
                 } else {
-                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), 'has'.ucfirst($this->name), $this->class, $this->name));
+                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.$ucfirstProp, 'is'.$ucfirstProp, 'has'.$ucfirstProp, $this->class, $this->name));
                 }
             }
 
-            if (empty($setter) && ! $this->readOnly) {
-                if ($class->hasMethod('set'.$this->name) && $class->getMethod('set'.$this->name)->isPublic()) {
-                    $setter = 'set'.$this->name;
+            if (empty($setter) && !$this->readOnly) {
+                if ($this->doesPublicMethodExist($class, 'set'.$ucfirstProp)) {
+                    $setter = 'set'.$ucfirstProp;
                 } else {
-                    throw new RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set'.ucfirst($this->name), $this->class, $this->name));
+                    throw new RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set'.$ucfirstProp, $this->class, $this->name));
                 }
             }
         }
 
         $this->getter = $getter;
         $this->setter = $setter;
+    }
+
+    protected function doesPublicMethodExist(\ReflectionClass $classReflection, $method)
+    {
+        return method_exists($classReflection->name, $method) && $classReflection->getMethod($method)->isPublic();
     }
 
     public function getValue($obj)
