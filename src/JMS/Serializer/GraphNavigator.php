@@ -28,6 +28,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use LogicException;
 
 /**
  * Handles traversal along the object graph.
@@ -138,8 +139,12 @@ final class GraphNavigator
 
             default:
                 // TODO: The rest of this method needs some refactoring.
+                
+                $this->assertObjectOrCustomHandlerForSerialization($data, $type, $context);
+                
                 if ($context instanceof SerializationContext) {
-                    if (null !== $data) {
+                    //If data is a primitive type with custom handler, do not trigger visiting.
+                    if (null !== $data && is_object($data)) {
                         if ($context->isVisiting($data)) {
                             return null;
                         }
@@ -148,7 +153,7 @@ final class GraphNavigator
 
                     // If we're serializing a polymorphic type, then we'll be interested in the
                     // metadata for the actual type of the object, not the base class.
-                    if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
+                    if (is_object($data) && class_exists($type['name'], false) || interface_exists($type['name'], false)) {
                         if (is_subclass_of($data, $type['name'], false)) {
                             $type = array('name' => get_class($data), 'params' => array());
                         }
@@ -181,7 +186,7 @@ final class GraphNavigator
 
                     return $rs;
                 }
-
+                
                 $exclusionStrategy = $context->getExclusionStrategy();
 
                 /** @var $metadata ClassMetadata */
@@ -283,6 +288,10 @@ final class GraphNavigator
     private function leaveScope(Context $context, $data)
     {
         if ($context instanceof SerializationContext) {
+            //Visiting does not exist for primitive types
+            if (!is_object($data) && $data !== null) {
+                return;
+            }
             $context->stopVisiting($data);
         } elseif ($context instanceof DeserializationContext) {
             $context->decreaseDepth();
@@ -313,5 +322,32 @@ final class GraphNavigator
         if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
             $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
         }
+    }
+    
+    /**
+     * Asserts during serialization, that provided data is either an object, or has custom handler registered.
+     * 
+     * @param mixed $data
+     * @param array $type
+     * @param \JMS\Serializer\Context $context
+     * @throws \LogicException Thrown, when a primitive type has no custom handler registered.
+     */
+    public function assertObjectOrCustomHandlerForSerialization($data, $type, Context $context)
+    {
+        //Ok during deserialization
+        if ($context->getDirection() === static::DIRECTION_DESERIALIZATION) {
+            return;
+        }
+        //Ok, if data is an object
+        if (is_object($data) || $data === null) {
+            return;
+        }
+        //Ok, if custom handler exists
+        if (null !== $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
+            return;
+        }
+        
+        //Not ok - throw an exception
+        throw new LogicException('Expected object but got '.gettype($data).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
     }
 }

@@ -77,6 +77,7 @@ use JMS\Serializer\Tests\Fixtures\InitializedObjectConstructor;
 use JMS\Serializer\Tests\Fixtures\InitializedBlogPostConstructor;
 use JMS\Serializer\Tests\Fixtures\Log;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
+use JMS\Serializer\Tests\Fixtures\ObjectWithPrimitiveCustomHandler;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -755,6 +756,30 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $object = $this->serializer->deserialize($serialized, 'CustomDeserializationObject', $this->getFormat());
         $this->assertEquals('customly_unserialized_value', $object->someProperty);
     }
+    
+    public function testCustomHandlerForPrimitive()
+    {
+        if ( ! $this->hasDeserializer()) {
+            return;
+        }
+
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'Integer', $this->getFormat(),
+            function(VisitorInterface $visitor, $object, array $type, Context $context) {
+                return $visitor->visitInteger($object, $type, $context);
+            }
+        );
+        
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'Integer', $this->getFormat(),
+            function() {
+                return "customly_unserialized_value";
+            }
+        );        
+
+        //This is itself a test - if serialization fails with a logic exception, custom handlers for primitive types does not work
+        $serialized = $this->serializer->serialize(new ObjectWithPrimitiveCustomHandler(), $this->getFormat());
+        $object = $this->serializer->deserialize($serialized, 'JMS\Serializer\Tests\Fixtures\ObjectWithPrimitiveCustomHandler', $this->getFormat());
+        $this->assertEquals('customly_unserialized_value', $object->intProperty);
+    }    
 
     public function testInput()
     {
