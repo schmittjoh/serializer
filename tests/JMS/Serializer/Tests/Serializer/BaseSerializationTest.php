@@ -240,6 +240,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testArrayEmpty()
+    {
+        if ('xml' === $this->getFormat()) {
+            $this->markTestSkipped('XML can\'t be tested for empty array');
+        }
+
+        $data = array('array' => []);
+        $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty')), 'array');
+        }
+    }
+
     public function testArrayFloats()
     {
         $data = array(1.34, 3.0, 6.42);
