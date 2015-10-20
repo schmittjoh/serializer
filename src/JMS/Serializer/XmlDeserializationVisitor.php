@@ -359,7 +359,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         if (null !== $child->internalSubset) {
             return str_replace(array("\n", "\r"), '', $child->internalSubset);
         }
-        
+
         $startPos = $endPos = stripos($data, '<!doctype');
         $braces = 0;
         do {
