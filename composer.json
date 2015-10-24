@@ -40,8 +40,13 @@
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
-        "psr-0": {
-            "JMS\\Serializer": "src/"
+        "psr-4": {
+            "JMS\\Serializer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JMS\\Serializer\\Tests\\": "tests/"
         }
     },
     "extra": {

@@ -7,7 +7,7 @@ if ( ! isset($_SERVER['argv'][1], $_SERVER['argv'][2])) {
 
 list(, $format, $iterations) = $_SERVER['argv'];
 
-require_once 'bootstrap.php';
+require_once '../vendor/autoload.php';
 
 function benchmark(\Closure $f, $times = 10)
 {

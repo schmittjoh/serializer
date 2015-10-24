@@ -23,8 +23,7 @@ call_user_func(function() {
         throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
     }
 
-    $loader = require $autoloadFile;
-    $loader->add('JMS\Serializer\Tests', __DIR__);
+    require $autoloadFile;
 
     AnnotationRegistry::registerLoader('class_exists');
     AnnotationRegistry::registerFile(__DIR__.'/../vendor/doctrine/phpcr-odm/lib/Doctrine/ODM/PHPCR/Mapping/Annotations/DoctrineAnnotations.php');
