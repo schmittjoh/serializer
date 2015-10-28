@@ -161,16 +161,17 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
         $name = $this->namingStrategy->translateName($metadata);
-
-        if (null === $data || ! array_key_exists($name, $data)) {
+        if (null === $data || (!array_key_exists($name, $data) && !$metadata->inline)) {
             return;
         }
+
+        $value = $metadata->inline ? $data : $data[$name];
 
         if ( ! $metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
+        $v = $value !== null ? $this->navigator->accept($value, $metadata->type, $context) : null;
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);
