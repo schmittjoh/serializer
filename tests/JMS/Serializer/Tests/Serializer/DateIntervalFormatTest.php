@@ -37,5 +37,9 @@ class DateIntervalFormatTest extends \PHPUnit_Framework_TestCase
         $iso8601DateIntervalString = $dtf->format(new \DateInterval('P2Y4DT6H8M16S'));
 
         $this->assertEquals($iso8601DateIntervalString, 'P2Y4DT6H8M16S');
+
+        $iso8601DateIntervalString = $dtf->format(new \DateInterval('P0D'));
+
+        $this->assertEquals($iso8601DateIntervalString, 'P0D');
     }
 }
