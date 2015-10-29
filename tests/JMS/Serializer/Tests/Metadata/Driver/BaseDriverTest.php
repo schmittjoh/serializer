@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
@@ -321,6 +322,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['qux']);
     }
 
+    public function testHandlerCallbacks()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks'));
+
+        $this->assertEquals('toJson', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['json']);
+        $this->assertEquals('toXml', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['xml']);
+    }
 
     /**
      * @return DriverInterface
