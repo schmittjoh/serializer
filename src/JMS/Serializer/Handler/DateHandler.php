@@ -69,7 +69,12 @@ class DateHandler implements SubscribingHandlerInterface
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
         }
-        return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
+        $format = $this->getFormat($type);
+        if("U"==$format){
+            return $visitor->visitInteger($date->format($format), $type, $context);
+        }else {
+            return $visitor->visitString($date->format($format), $type, $context);
+        }
     }
 
     public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
