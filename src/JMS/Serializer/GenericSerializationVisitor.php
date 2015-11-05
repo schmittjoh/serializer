@@ -105,7 +105,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            $rs[$k] = $v;
+            $rs[$k] = $rs !== $v ? $v : clone $v;
         }
 
         return $rs;
