@@ -24,6 +24,10 @@ use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
 {
+
+    /** @var int */
+    protected $maxRecursionDepth = 0;
+
     /** @var \SplObjectStorage */
     private $visitingSet;
 
@@ -36,22 +40,36 @@ class SerializationContext extends Context
     }
 
     /**
-     * @param string $format
+     * @param string                   $format
+     * @param VisitorInterface         $visitor
+     * @param GraphNavigator           $navigator
+     * @param MetadataFactoryInterface $factory
      */
-    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
-    {
+    public function initialize(
+        $format,
+        VisitorInterface $visitor,
+        GraphNavigator $navigator,
+        MetadataFactoryInterface $factory
+    ) {
         parent::initialize($format, $visitor, $navigator, $factory);
 
         $this->visitingSet = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();
     }
 
+    /**
+     * @param $object
+     */
     public function startVisiting($object)
     {
         $this->visitingSet->attach($object);
         $this->visitingStack->push($object);
     }
 
+    /**
+     * @param $object
+     * @throws RuntimeException
+     */
     public function stopVisiting($object)
     {
         $this->visitingSet->detach($object);
@@ -62,15 +80,32 @@ class SerializationContext extends Context
         }
     }
 
+    /**
+     * @param $object
+     * @return bool
+     */
     public function isVisiting($object)
     {
-        if ( ! is_object($object)) {
-            throw new LogicException('Expected object but got '.gettype($object).'. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?');
+        if (false ===  is_object($object)) {
+            throw new LogicException(
+                'Expected object but got ' .
+                gettype($object) .
+                '. Do you have the wrong @Type mapping or could this be a Doctrine many-to-many relation?'
+            );
         }
 
-        return $this->visitingSet->contains($object);
+        $isVisiting = $this->visitingSet->contains($object);
+
+        if ($isVisiting && $this->maxRecursionDepth != 0) {
+            return ($this->visitingStack->count() > $this->maxRecursionDepth);
+        }
+
+        return $isVisiting;
     }
 
+    /**
+     * @return null|string
+     */
     public function getPath()
     {
         $path = array();
@@ -85,28 +120,62 @@ class SerializationContext extends Context
         return implode(' -> ', $path);
     }
 
+    /**
+     * @return int
+     */
     public function getDirection()
     {
         return GraphNavigator::DIRECTION_SERIALIZATION;
     }
 
+    /**
+     * @return int
+     */
     public function getDepth()
     {
         return $this->visitingStack->count();
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getObject()
     {
-        return ! $this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
+        return (false === $this->visitingStack->isEmpty()) ? $this->visitingStack->top() : null;
     }
 
+    /**
+     * @return \SplStack
+     */
     public function getVisitingStack()
     {
         return $this->visitingStack;
     }
 
+    /**
+     * @return \SplObjectStorage
+     */
     public function getVisitingSet()
     {
         return $this->visitingSet;
+    }
+
+    /**
+     * @param int $maxRecursionDepth
+     * @return SerializationContext
+     */
+    public function setMaxRecursionDepth($maxRecursionDepth = 1)
+    {
+        $this->maxRecursionDepth = $maxRecursionDepth;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRecursionDepth()
+    {
+        return $this->maxRecursionDepth;
     }
 }
