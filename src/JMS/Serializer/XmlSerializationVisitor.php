@@ -184,7 +184,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if (null === $this->document) {
-            $this->document = $this->createDocument(null, null, false);
+            $this->document = $this->createDocument(null, null, false, $context->isFormatOutput());
             if ($metadata->xmlRootName) {
                 $rootName = $metadata->xmlRootName;
                 $rootNamespace = $metadata->xmlRootNamespace;
@@ -199,7 +199,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
             $this->document->appendChild($this->currentNode);
         }
-        
+
         $this->addNamespaceAttributes($metadata, $this->currentNode);
 
         $this->hasValue = false;
@@ -361,10 +361,10 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
-    public function createDocument($version = null, $encoding = null, $addRoot = true)
+    public function createDocument($version = null, $encoding = null, $addRoot = true, $formatOutput = true)
     {
         $doc = new \DOMDocument($version ?: $this->defaultVersion, $encoding ?: $this->defaultEncoding);
-        $doc->formatOutput = true;
+        $doc->formatOutput = $formatOutput;
 
         if ($addRoot) {
             if ($this->defaultRootNamespace) {
