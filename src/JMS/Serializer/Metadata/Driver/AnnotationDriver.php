@@ -140,6 +140,8 @@ class AnnotationDriver implements DriverInterface
                 $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
             }
 
+            // Avoiding overriding property on same name (basically, virtual property)
+            $alreadyRegister = [];
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
@@ -213,8 +215,10 @@ class AnnotationDriver implements DriverInterface
 
                 $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
-                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                if (((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
+                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose))
+                    && !in_array($propertyMetadata->name, $alreadyRegister)) {
+                    $alreadyRegister[] = $propertyMetadata->name;
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }
