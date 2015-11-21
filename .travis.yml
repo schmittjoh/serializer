@@ -16,8 +16,10 @@ matrix:
   allow_failures:
     - php: 7.0
 
-before_script:
+before_install:
     - composer self-update
+
+before_script:
     - composer install --dev
 
 script: vendor/bin/phpunit --coverage-clover clover
