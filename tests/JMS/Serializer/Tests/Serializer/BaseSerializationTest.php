@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\ExclusionGroupsObject;
+use JMS\Serializer\Tests\Fixtures\ExclusionGroupsParent;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
@@ -724,7 +725,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $exclusionGroupsObject = new ExclusionGroupsObject();
         $context = SerializationContext::create()->setExclusionGroups(array('testExclusionGroup1'));
-
         $this->assertEquals(
             $this->getContent('exclusion_groups_simple'),
             $this->serializer->serialize($exclusionGroupsObject, $this->getFormat(), $context)
@@ -733,7 +733,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testExclusionGroupsNoGroups() {
         $exclusionGroupsObject = new ExclusionGroupsObject();
-
         $context = SerializationContext::create();
         $this->assertEquals(
             $this->getContent('exclusion_groups_no_groups'),
@@ -743,10 +742,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testExclusionGroupsGroup2() {
         $exclusionGroupsObject = new ExclusionGroupsObject();
-
         $context = SerializationContext::create()->setExclusionGroups(array('testExclusionGroup2'));
         $this->assertEquals(
             $this->getContent('exclusion_groups_group2'),
+            $this->serializer->serialize($exclusionGroupsObject, $this->getFormat(), $context)
+        );
+    }
+
+    public function testExclusionGroupsClassExclusion() {
+        $exclusionGroupsObject = new ExclusionGroupsParent();
+        $context = SerializationContext::create()->setExclusionGroups(array('noClass'));
+        $this->assertEquals(
+            $this->getContent('exclusion_groups_no_class'),
             $this->serializer->serialize($exclusionGroupsObject, $this->getFormat(), $context)
         );
     }

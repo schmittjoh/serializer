@@ -86,8 +86,7 @@ class AnnotationDriver implements DriverInterface
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
                 $classMetadata->exclusionGroups = $annot->groups;
-                $annotationSource = $propertyMetadata->class.'->'.$propertyMetadata->name;
-                $this->sanitizeGroupNames($classMetadata->exclusionGroups, $annotationSource);
+                $this->sanitizeGroupNames($classMetadata->exclusionGroups, $classMetadata->name);
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
             } elseif ($annot instanceof ReadOnly) {
@@ -216,15 +215,14 @@ class AnnotationDriver implements DriverInterface
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                 $classMetadata->addPropertyMetadata($propertyMetadata);
             }
-
         }
 
         return $classMetadata;
     }
 
     /**
-     * @param $groups
-     * @param $annotationSource
+     * @param array $groups
+     * @param string $annotationSource
      */
     private function sanitizeGroupNames($groups, $annotationSource)
     {
