@@ -24,4 +24,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class Exclude
 {
+    /** @var array<string> */
+    public $groups;
 }

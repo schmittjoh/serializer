@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <foo><![CDATA[foo]]></foo>
+  <foo2><![CDATA[foo2]]></foo2>
+  <bar><![CDATA[bar]]></bar>
+</result>
