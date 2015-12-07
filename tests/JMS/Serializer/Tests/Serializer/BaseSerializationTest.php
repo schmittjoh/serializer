@@ -250,7 +250,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty')), 'array');
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'));
         }
     }
 
