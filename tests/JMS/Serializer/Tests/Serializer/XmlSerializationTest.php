@@ -54,7 +54,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testXMLBooleans($xmlBoolean, $boolean)
     {
         if ($this->hasDeserializer()) {
-            $this->assertSame($boolean, $this->deserialize('<result>' . $xmlBoolean . '</result>', 'boolean'));
+            $this->assertSame($boolean, $this->deserialize('<result>'.$xmlBoolean.'</result>', 'boolean'));
         }
     }
 
@@ -95,7 +95,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
             ]>
             <result>
                 &foo;
@@ -254,7 +254,7 @@ class XmlSerializationTest extends BaseSerializationTest
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
-        return (string)reset($nodes);
+        return (string) reset($nodes);
     }
 
     /**
@@ -262,7 +262,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     protected function getContent($key)
     {
-        if (!file_exists($file = __DIR__ . '/xml/' . $key . '.xml')) {
+        if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {
             throw new InvalidArgumentException(sprintf('The key "%s" is not supported.', $key));
         }
 
