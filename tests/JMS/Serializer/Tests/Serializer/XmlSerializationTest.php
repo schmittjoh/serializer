@@ -124,7 +124,7 @@ class XmlSerializationTest extends BaseSerializationTest
             <foo></foo>', 'stdClass', 'xml');
 
         $this->serializer->deserialize('<?xml version="1.0"?>
-            <!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>
+            <!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>
             <foo></foo>', 'stdClass', 'xml');
     }
 
