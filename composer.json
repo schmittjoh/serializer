@@ -25,7 +25,6 @@
     "suggest": {
         "symfony/yaml": "Required if you'd like to serialize data to YAML format."
     },
-    "minimum-stability": "stable",
     "require-dev": {
         "twig/twig": "~1.12|~2.0",
         "doctrine/orm": "~2.1",
