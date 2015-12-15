@@ -73,7 +73,9 @@ expose them via an API that is consumed by a third-party:
     ``@Until``, and ``@Since`` both accept a standardized PHP version number.
 
 If you have annotated your objects like above, you can serializing different
-versions like this::
+versions like this:
+
+.. code-block :: php
 
     use JMS\Serializer\SerializationContext;
 
@@ -109,7 +111,9 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
         private $createdAt;
     }
 
-You can then tell the serializer which groups to serialize in your controller::
+You can then tell the serializer which groups to serialize in your controller:
+
+.. code-block :: php
 
     use JMS\Serializer\SerializationContext;
 
@@ -120,7 +124,38 @@ You can then tell the serializer which groups to serialize in your controller::
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('Default', 'list')));
     
     //will output $id, $title, $nbComments and $createdAt.
+    
+In some cases you might want to go the other way around and serialize everything by default but exclude a property in a specific case. You can achive that by defining a exclusion group: 
 
+.. code-block :: php
+
+    use JMS\Serializer\Annotation\Exclude;
+    /**
+    * @ExclusionPolicy("none")
+    */
+    class BlogPost
+    {
+        private $id;
+        
+        private $title;
+        
+        /**
+         * @Exclude({"short-list"})
+         */
+        private $content;
+    }
+
+And then tell the serializer which groups to exclude:
+
+.. code-block :: php
+
+    use JMS\Serializer\SerializationContext;
+
+    $context = SerializationContext::create()->setExclusionGroups(array('short-list'));
+    $serializer->serialize(new BlogPost(), 'json', $context);
+    
+    //will output $id and $title
+    
 Limiting serialization depth of some properties
 -----------------------------------------------
 You can limit the depth of what will be serialized in a property with the
