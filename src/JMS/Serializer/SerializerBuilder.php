@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer;
 
-use Closure;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
@@ -41,6 +40,8 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -337,11 +338,11 @@ class SerializerBuilder
     }
 
     /**
-     * @param Closure $defaultSerializationContextFactory
+     * @param SerializationContextFactoryInterface $defaultSerializationContextFactory
      *
      * @return self
      */
-    public function setDefaultSerializationContextFactory(Closure $defaultSerializationContextFactory)
+    public function setDefaultSerializationContextFactory(SerializationContextFactoryInterface $defaultSerializationContextFactory)
     {
         $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
 
@@ -349,11 +350,11 @@ class SerializerBuilder
     }
 
     /**
-     * @param Closure $defaultDeserializationContextFactory
+     * @param DeserializationContextFactoryInterface $defaultDeserializationContextFactory
      *
      * @return self
      */
-    public function setDefaultDeserializationContextFactory(Closure $defaultDeserializationContextFactory)
+    public function setDefaultDeserializationContextFactory(DeserializationContextFactoryInterface $defaultDeserializationContextFactory)
     {
         $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
 

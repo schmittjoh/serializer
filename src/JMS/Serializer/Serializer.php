@@ -18,12 +18,15 @@
 
 namespace JMS\Serializer;
 
-use Closure;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
 
@@ -49,12 +52,12 @@ class Serializer implements SerializerInterface
     private $navigator;
 
     /**
-     * @var Closure
+     * @var SerializationContextFactoryInterface
      */
     private $defaultSerializationContextFactory;
 
     /**
-     * @var Closure
+     * @var DeserializationContextFactoryInterface
      */
     private $defaultDeserializationContextFactory;
 
@@ -81,20 +84,14 @@ class Serializer implements SerializerInterface
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
 
-        $this->defaultSerializationContextFactory = function () {
-            return new SerializationContext();
-        };
-
-        $this->defaultDeserializationContextFactory = function () {
-            return new DeserializationContext();
-        };
+        $this->defaultSerializationContextFactory = new DefaultSerializationContextFactory();
+        $this->defaultDeserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $factory = $this->defaultSerializationContextFactory;
-            $context = $factory();
+            $context = $this->defaultSerializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get($format)
@@ -110,8 +107,7 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $factory = $this->defaultDeseserializationContextFactory;
-            $context = $factory();
+            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -137,8 +133,7 @@ class Serializer implements SerializerInterface
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $factory = $this->defaultSerializationContextFactory;
-            $context = $factory();
+            $context = $this->defaultSerializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get('json')
@@ -171,8 +166,7 @@ class Serializer implements SerializerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $factory = $this->defaultDeserializationContextFactory;
-            $context = $factory();
+            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -232,11 +226,11 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @param Closure $defaultSerializationContextFactory
+     * @param SerializationContextFactoryInterface $defaultSerializationContextFactory
      *
      * @return self
      */
-    public function setDefaultSerializationContextFactory(Closure $defaultSerializationContextFactory)
+    public function setDefaultSerializationContextFactory(SerializationContextFactoryInterface $defaultSerializationContextFactory)
     {
         $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
 
@@ -244,11 +238,11 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @param Closure $defaultDeserializationContextFactory
+     * @param DeserializationContextFactoryInterface $defaultDeserializationContextFactory
      *
      * @return self
      */
-    public function setDefaultDeserializationContextFactory(Closure $defaultDeserializationContextFactory)
+    public function setDefaultDeserializationContextFactory(DeserializationContextFactoryInterface $defaultDeserializationContextFactory)
     {
         $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
 
