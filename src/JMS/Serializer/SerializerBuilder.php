@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use Closure;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
@@ -72,6 +73,8 @@ class SerializerBuilder
     private $annotationReader;
     private $includeInterfaceMetadata = false;
     private $driverFactory;
+    private $defaultSerializationContextFactory;
+    private $defaultDeserializationContextFactory;
 
     public static function create()
     {
@@ -333,6 +336,30 @@ class SerializerBuilder
         return $this;
     }
 
+    /**
+     * @param Closure $defaultSerializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultSerializationContextFactory(Closure $defaultSerializationContextFactory)
+    {
+        $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param Closure $defaultDeserializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultDeserializationContextFactory(Closure $defaultDeserializationContextFactory)
+    {
+        $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+
+        return $this;
+    }
+
     public function build()
     {
         $annotationReader = $this->annotationReader;
@@ -368,7 +395,7 @@ class SerializerBuilder
             $this->addDefaultDeserializationVisitors();
         }
 
-        return new Serializer(
+        $serializer = new Serializer(
             $metadataFactory,
             $this->handlerRegistry,
             $this->objectConstructor ?: new UnserializeObjectConstructor(),
@@ -376,6 +403,16 @@ class SerializerBuilder
             $this->deserializationVisitors,
             $this->eventDispatcher
         );
+
+        if (null !== $this->defaultSerializationContextFactory) {
+            $serializer->setDefaultSerializationContextFactory($this->defaultSerializationContextFactory);
+        }
+
+        if (null !== $this->defaultDeserializationContextFactory) {
+            $serializer->setDefaultDeserializationContextFactory($this->defaultDeserializationContextFactory);
+        }
+
+        return $serializer;
     }
 
     private function initializePropertyNamingStrategy()

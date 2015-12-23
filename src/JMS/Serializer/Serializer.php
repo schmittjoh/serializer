@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use Closure;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -48,6 +49,16 @@ class Serializer implements SerializerInterface
     private $navigator;
 
     /**
+     * @var Closure
+     */
+    private $defaultSerializationContextFactory;
+
+    /**
+     * @var Closure
+     */
+    private $defaultDeserializationContextFactory;
+
+    /**
      * Constructor.
      *
      * @param \Metadata\MetadataFactoryInterface $factory
@@ -69,12 +80,21 @@ class Serializer implements SerializerInterface
         $this->deserializationVisitors = $deserializationVisitors;
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+
+        $this->defaultSerializationContextFactory = function () {
+            return new SerializationContext();
+        };
+
+        $this->defaultDeserializationContextFactory = function () {
+            return new DeserializationContext();
+        };
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $factory = $this->defaultSerializationContextFactory;
+            $context = $factory();
         }
 
         return $this->serializationVisitors->get($format)
@@ -90,7 +110,8 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $factory = $this->defaultDeseserializationContextFactory;
+            $context = $factory();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -116,7 +137,8 @@ class Serializer implements SerializerInterface
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $factory = $this->defaultSerializationContextFactory;
+            $context = $factory();
         }
 
         return $this->serializationVisitors->get('json')
@@ -149,7 +171,8 @@ class Serializer implements SerializerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $factory = $this->defaultDeserializationContextFactory;
+            $context = $factory();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -206,5 +229,29 @@ class Serializer implements SerializerInterface
     public function getMetadataFactory()
     {
         return $this->factory;
+    }
+
+    /**
+     * @param Closure $defaultSerializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultSerializationContextFactory(Closure $defaultSerializationContextFactory)
+    {
+        $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param Closure $defaultDeserializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultDeserializationContextFactory(Closure $defaultDeserializationContextFactory)
+    {
+        $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+
+        return $this;
     }
 }
