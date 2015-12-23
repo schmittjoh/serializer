@@ -26,7 +26,7 @@ use JMS\Serializer\SerializationContext;
 class DefaultSerializationContextFactory implements SerializationContextFactoryInterface
 {
     /**
-     * @return SerializationContext
+     * {@InheritDoc}
      */
     public function createSerializationContext()
     {
