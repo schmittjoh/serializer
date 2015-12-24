@@ -19,10 +19,6 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\Tests\Fixtures\Author;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\Tests\Fixtures\Order;
-use JMS\Serializer\Tests\Fixtures\Price;
 use PhpCollection\Map;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Metadata\MetadataFactory;

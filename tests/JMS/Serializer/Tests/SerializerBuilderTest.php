@@ -23,6 +23,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\DeserializationContext;
 
 class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -112,6 +114,47 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
             $this->builder,
             $this->builder->includeInterfaceMetadata(true)
         );
+    }
+
+    public function testSetDefaultSerializationContext()
+    {
+        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+
+        $contextFactoryMock
+            ->expects($this->once())
+            ->method('createSerializationContext')
+            ->will($this->returnValue($context))
+        ;
+
+        $this->builder->setDefaultSerializationContextFactory($contextFactoryMock);
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->serialize(array('value' => null), 'json');
+
+        $this->assertEquals('{"value":null}', $result);
+    }
+
+    public function testSetDefaultDeserializationContext()
+    {
+        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
+        $context = new DeserializationContext();
+
+        $contextFactoryMock
+            ->expects($this->once())
+            ->method('createDeserializationContext')
+            ->will($this->returnValue($context))
+        ;
+
+        $this->builder->setDefaultDeserializationContextFactory($contextFactoryMock);
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->deserialize('{"value":null}', 'array', 'json');
+
+        $this->assertEquals(array('value' => null), $result);
     }
 
     protected function setUp()
