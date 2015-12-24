@@ -74,7 +74,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"value":null}', $result);
     }
 
-    public function testDeserializeUseProvidedSerializationContext()
+    public function testDeserializeUseProvidedDeserializationContext()
     {
         $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
         $context = new DeserializationContext();
@@ -88,6 +88,43 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $this->serializer->setDefaultDeserializationContextFactory($contextFactoryMock);
 
         $result = $this->serializer->deserialize('{"value":null}', 'array', 'json');
+
+        $this->assertEquals(array('value' => null), $result);
+    }
+
+    public function testToArrayUseProvidedSerializationContext()
+    {
+        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+
+        $contextFactoryMock
+            ->expects($this->once())
+            ->method('createSerializationContext')
+            ->will($this->returnValue($context))
+        ;
+
+        $this->serializer->setDefaultSerializationContextFactory($contextFactoryMock);
+
+        $result = $this->serializer->toArray(array('value' => null));
+
+        $this->assertEquals(array('value' => null), $result);
+    }
+
+    public function testFromArrayUseProvidedDeserializationContext()
+    {
+        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
+        $context = new DeserializationContext();
+
+        $contextFactoryMock
+            ->expects($this->once())
+            ->method('createDeserializationContext')
+            ->will($this->returnValue($context))
+        ;
+
+        $this->serializer->setDefaultDeserializationContextFactory($contextFactoryMock);
+
+        $result = $this->serializer->fromArray(array('value' => null), 'array');
 
         $this->assertEquals(array('value' => null), $result);
     }
