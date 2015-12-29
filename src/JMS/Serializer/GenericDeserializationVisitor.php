@@ -128,7 +128,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitArray($data, array $type, Context $context)
     {
-        if ( ! is_array($data) && !($data instanceof \ArrayObject)) {
+        if ( ! is_array($data) && ! ($data instanceof \ArrayObject)) {
             throw new DeserializeException($type, $data, $context);
         }
 
