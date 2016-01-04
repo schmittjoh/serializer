@@ -71,9 +71,9 @@ The serializer would expect the metadata files to be named like the fully qualif
 replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
 at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.
 
-Setting default SerializationContext factory
+Setting a default SerializationContext factory
 --------------------------------------------
-To avoid to creating a new instance of SerializationContext
+To avoid to pass an instance of SerializationContext
 every time you call method ``serialize()`` (or ``toArray()``),
 you can set a ``SerializationContextFactory`` to the Serializer.
 
@@ -95,7 +95,6 @@ a serialization context from your callable and use it.
 
 .. note ::
 
-    You can also set a DeserializationContextFactory with
-    ``->setDefaultDeserializationContextFactory(new MyDeserializationContextFactory())``
+    You can also set a default DeserializationContextFactory with
+    ``->setDefaultDeserializationContextFactory(function () { /* ... */ })``
     to be used with methods ``deserialize()`` and ``fromArray()``.
-    Your factory then implements ``JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface``.
