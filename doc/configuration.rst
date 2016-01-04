@@ -70,3 +70,40 @@ are located::
 The serializer would expect the metadata files to be named like the fully qualified class names where all ``\`` are
 replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
 at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.
+
+Setting default SerializationContext factory
+--------------------------------------------
+To avoid to creating a new instance of SerializationContext every time you call method ``serialize()`` (or ``toArray()``),
+you can set a ``SerializationContextFactory`` to the Serializer.
+
+Example using the SerializerBuilder::
+
+    $serializer = JMS\Serializer\SerializerBuilder::create()
+        ->setDefaultSerializationContextFactory(new MySerializationContextFactory())
+        ->build()
+    ;
+
+And ``MySerializationContextFactory`` must implements interface
+``JMS\Serializer\ContextFactory\SerializationContextFactoryInterface``::
+
+    use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
+    use JMS\Serializer\SerializationContext;
+
+    class MySerializationContextFactory implements SerializationContextFactoryInterface
+    {
+        public function createSerializationContext()
+        {
+            return SerializationContext::create()
+                ->setSerializeNull(true)
+            ;
+        }
+    }
+
+Then, calling ``$serializer->serialize($data, 'json');`` will use your SerializationContext.
+
+.. note ::
+
+    You can also set a DeserializationContextFactory with
+    ``->setDefaultDeserializationContextFactory(new MyDeserializationContextFactory())``
+    to be used with methods ``deserialize()`` and ``fromArray()``.
+    Your factory then implements ``JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface``.
