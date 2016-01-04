@@ -78,26 +78,16 @@ you can set a ``SerializationContextFactory`` to the Serializer.
 
 Example using the SerializerBuilder::
 
-    $serializer = JMS\Serializer\SerializerBuilder::create()
-        ->setDefaultSerializationContextFactory(new MySerializationContextFactory())
-        ->build()
-    ;
-
-And ``MySerializationContextFactory`` must implements interface
-``JMS\Serializer\ContextFactory\SerializationContextFactoryInterface``::
-
-    use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
     use JMS\Serializer\SerializationContext;
 
-    class MySerializationContextFactory implements SerializationContextFactoryInterface
-    {
-        public function createSerializationContext()
-        {
+    $serializer = JMS\Serializer\SerializerBuilder::create()
+        ->setDefaultSerializationContextFactory(function () {
             return SerializationContext::create()
                 ->setSerializeNull(true)
             ;
-        }
-    }
+        })
+        ->build()
+    ;
 
 Then, calling ``$serializer->serialize($data, 'json');`` will use your SerializationContext.
 

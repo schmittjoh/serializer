@@ -42,6 +42,8 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\CallableSerializationContextFactory;
+use JMS\Serializer\ContextFactory\CallableDeserializationContextFactory;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -338,25 +340,41 @@ class SerializerBuilder
     }
 
     /**
-     * @param SerializationContextFactoryInterface $defaultSerializationContextFactory
+     * @param SerializationContextFactoryInterface|callable $defaultSerializationContextFactory
      *
      * @return self
      */
-    public function setDefaultSerializationContextFactory(SerializationContextFactoryInterface $defaultSerializationContextFactory)
+    public function setDefaultSerializationContextFactory($defaultSerializationContextFactory)
     {
-        $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+        if ($defaultSerializationContextFactory instanceof SerializationContextFactoryInterface) {
+            $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+        } elseif (is_callable($defaultSerializationContextFactory)) {
+            $this->defaultSerializationContextFactory = new CallableSerializationContextFactory(
+                $defaultSerializationContextFactory
+            );
+        } else {
+            throw new InvalidArgumentException('expected SerializationContextFactoryInterface or callable.');
+        }
 
         return $this;
     }
 
     /**
-     * @param DeserializationContextFactoryInterface $defaultDeserializationContextFactory
+     * @param DeserializationContextFactoryInterface|callable $defaultDeserializationContextFactory
      *
      * @return self
      */
-    public function setDefaultDeserializationContextFactory(DeserializationContextFactoryInterface $defaultDeserializationContextFactory)
+    public function setDefaultDeserializationContextFactory($defaultDeserializationContextFactory)
     {
-        $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+        if ($defaultDeserializationContextFactory instanceof DeserializationContextFactoryInterface) {
+            $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+        } elseif (is_callable($defaultDeserializationContextFactory)) {
+            $this->defaultDeserializationContextFactory = new CallableDeserializationContextFactory(
+                $defaultDeserializationContextFactory
+            );
+        } else {
+            throw new InvalidArgumentException('expected DeserializationContextFactoryInterface or callable.');
+        }
 
         return $this;
     }

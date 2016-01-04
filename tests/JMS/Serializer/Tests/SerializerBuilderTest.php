@@ -157,6 +157,36 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('value' => null), $result);
     }
 
+    public function testSetCallbackSerializationContextWithSerializeNull()
+    {
+        $this->builder->setDefaultSerializationContextFactory(function () {
+            return SerializationContext::create()
+                ->setSerializeNull(true)
+            ;
+        });
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->serialize(array('value' => null), 'json');
+
+        $this->assertEquals('{"value":null}', $result);
+    }
+
+    public function testSetCallbackSerializationContextWithNotSerializeNull()
+    {
+        $this->builder->setDefaultSerializationContextFactory(function () {
+            return SerializationContext::create()
+                ->setSerializeNull(false)
+            ;
+        });
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->serialize(array('value' => null, 'not_null' => 'ok'), 'json');
+
+        $this->assertEquals('{"not_null":"ok"}', $result);
+    }
+
     protected function setUp()
     {
         $this->builder = SerializerBuilder::create();
