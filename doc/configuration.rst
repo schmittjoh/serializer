@@ -73,7 +73,8 @@ at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc
 
 Setting default SerializationContext factory
 --------------------------------------------
-To avoid to creating a new instance of SerializationContext every time you call method ``serialize()`` (or ``toArray()``),
+To avoid to creating a new instance of SerializationContext
+every time you call method ``serialize()`` (or ``toArray()``),
 you can set a ``SerializationContextFactory`` to the Serializer.
 
 Example using the SerializerBuilder::
@@ -89,7 +90,8 @@ Example using the SerializerBuilder::
         ->build()
     ;
 
-Then, calling ``$serializer->serialize($data, 'json');`` will use your SerializationContext.
+Then, calling ``$serializer->serialize($data, 'json');`` will generate
+a serialization context from your callable and use it.
 
 .. note ::
 
