@@ -116,7 +116,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author>',
             '<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">'));
 
         $this->serializer->deserialize('<?xml version="1.0"?>
