@@ -18,7 +18,9 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\DeserializeException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 
@@ -58,6 +60,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_scalar($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (string) $data;
 
         if (null === $this->result) {
@@ -69,6 +77,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_scalar($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (Boolean) $data;
 
         if (null === $this->result) {
@@ -80,6 +94,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_numeric($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (integer) $data;
 
         if (null === $this->result) {
@@ -91,6 +111,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_numeric($data)) {
+            throw new DeserializeException($type, $data, $context);
+        }
         $data = (double) $data;
 
         if (null === $this->result) {
@@ -102,8 +128,8 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitArray($data, array $type, Context $context)
     {
-        if ( ! is_array($data)) {
-            throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
+        if ( ! is_array($data) && ! ($data instanceof \ArrayObject)) {
+            throw new DeserializeException($type, $data, $context);
         }
 
         // If no further parameters were given, keys/values are just passed as is.
@@ -124,8 +150,10 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                     $this->result = &$result;
                 }
 
-                foreach ($data as $v) {
+                foreach ($data as $k => $v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[] = $this->navigator->accept($v, $listType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
@@ -139,7 +167,9 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 }
 
                 foreach ($data as $k => $v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[$this->navigator->accept($k, $keyType, $context)] = $this->navigator->accept($v, $entryType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
@@ -162,7 +192,14 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (null === $data || ! array_key_exists($name, $data)) {
+        if (null === $data) {
+            return;
+        }
+        if ( ! is_array($data)) {
+            $context->popPropertyMetadata();
+            throw new DeserializeException(array('name' => 'object', 'params' => array()), $data, $context);
+        }
+        if ( ! array_key_exists($name, $data)) {
             return;
         }
 

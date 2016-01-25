@@ -18,10 +18,12 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\DeserializeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Metadata\IndexMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 
@@ -109,7 +111,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         } elseif ('false' === $data || '0' === $data) {
             $data = false;
         } else {
-            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
+            throw new DeserializeException($type, $data, $context);
         }
 
         if (null === $this->result) {
@@ -163,8 +165,10 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     $this->result = &$result;
                 }
 
-                foreach ($data->$entryName as $v) {
+                foreach ($data->$entryName as $k=>$v) {
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
@@ -186,7 +190,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     }
 
                     $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
+                    $context->pushIndexMetadata(new IndexMetadata($k));
                     $result[$k] = $this->navigator->accept($v, $entryType, $context);
+                    $context->popIndexMetadata();
                 }
 
                 return $result;
