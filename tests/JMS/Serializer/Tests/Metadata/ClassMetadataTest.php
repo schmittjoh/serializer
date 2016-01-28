@@ -79,8 +79,7 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($getterName, $metadata->getter);
         $this->assertEquals($setterName, $metadata->setter);
 
-        // setter is not supported by setValue(), any idea?
-        $object->{$metadata->setter}('x');
+        $metadata->setValue($object, 'x');
 
         $this->assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
     }
