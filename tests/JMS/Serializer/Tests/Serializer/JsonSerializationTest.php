@@ -121,9 +121,12 @@ class JsonSerializationTest extends BaseSerializationTest
     }
 
 
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Invalid data "baz"(string), expected "JMS\Serializer\Tests\Fixtures\Author".
+     */
     public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
     {
-
         $content = $this->getContent('object_with_object_property_no_array_to_author');
         $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
         $this->assertEquals('bar', $object->getFoo());
