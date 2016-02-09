@@ -59,8 +59,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
+        if (!(string)$data) {
+            throw New InvalidArgumentException('Empty data not allowed.');
+        }
+
         $dom = new \DOMDocument();
         $dom->loadXML($data);
+        
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
                 $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
