@@ -247,7 +247,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('XML can\'t be tested for empty array');
         }
 
-        $data = array('array' => []);
+        $data = array('array' => array());
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -372,8 +372,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testTimestamp($key, $value)
     {
-        $test = $this->serialize($value);
-        $test2 = $this->getContent($key);
         $this->assertEquals($this->getContent($key), $this->serialize($value));
     }
 
