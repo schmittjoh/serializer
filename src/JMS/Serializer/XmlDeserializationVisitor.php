@@ -356,7 +356,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
      */
     private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
     {
-        if (null !== $child->internalSubset) {
+        if (null !== $child->internalSubset && stripos($child->internalSubset, "<!doctype") !== false) {
             return str_replace(array("\n", "\r"), '', $child->internalSubset);
         }
         
