@@ -39,6 +39,16 @@ class LazyHandlerRegistry extends HandlerRegistry
 
     public function getHandler($direction, $typeName, $format)
     {
+        do {
+            $handler = $this->resolveHandler($direction, $typeName, $format);
+            if(null !== $handler) {
+                return $handler;
+            }
+        } while ($typeName = get_parent_class($typeName));
+    }
+
+    private function resolveHandler($direction, $typeName, $format)
+    {
         if (isset($this->initializedHandlers[$direction][$typeName][$format])) {
             return $this->initializedHandlers[$direction][$typeName][$format];
         }
