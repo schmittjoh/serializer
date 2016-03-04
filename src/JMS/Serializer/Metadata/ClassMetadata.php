@@ -233,6 +233,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorCdata,
             parent::serialize(),
         ));
     }
@@ -254,6 +255,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorCdata,
             $parentStr
         ) = unserialize($str);
 
