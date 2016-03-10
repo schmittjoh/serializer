@@ -29,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
@@ -246,11 +247,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('XML can\'t be tested for empty array');
         }
 
-        $data = array('array' => []);
+        $data = array('array' => array());
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty')), 'array');
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'));
         }
     }
 
@@ -362,6 +363,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
+        );
+    }
+
+    /**
+     * @dataProvider getTimestamp
+     * @group datetime
+     */
+    public function testTimestamp($key, $value)
+    {
+        $this->assertEquals($this->getContent($key), $this->serialize($value));
+    }
+
+    public function getTimestamp()
+    {
+        return array(
+            array('timestamp', new Timestamp(new \DateTime('2016-02-11 00:00:00', new \DateTimeZone('UTC')))),
         );
     }
 
@@ -627,7 +644,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', 'template', array(), null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -635,8 +652,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', 'template', array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', 'template', array(), null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
