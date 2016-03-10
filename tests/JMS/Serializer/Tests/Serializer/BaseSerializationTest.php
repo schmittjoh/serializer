@@ -29,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
@@ -362,6 +363,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
+        );
+    }
+
+    /**
+     * @dataProvider getTimestamp
+     * @group datetime
+     */
+    public function testTimestamp($key, $value)
+    {
+        $this->assertEquals($this->getContent($key), $this->serialize($value));
+    }
+
+    public function getTimestamp()
+    {
+        return array(
+            array('timestamp', new Timestamp(new \DateTime('2016-02-11 00:00:00', new \DateTimeZone('UTC')))),
         );
     }
 
