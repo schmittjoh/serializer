@@ -719,6 +719,26 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testDiscriminatorGroups()
+    {
+        $vehicle = new Car(42);
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_correct'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('discriminator_group')))
+        );
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_incorrect'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('incorrect_group')))
+        );
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_default'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+        );
+    }
+
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
      * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?

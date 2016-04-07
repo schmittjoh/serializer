@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\Discriminator(field = "type", map = {
+ * @Serializer\Discriminator(field = "type", groups={"discriminator_group"}, map = {
  *    "car": "JMS\Serializer\Tests\Fixtures\Discriminator\Car",
  *    "moped": "JMS\Serializer\Tests\Fixtures\Discriminator\Moped",
  * })
