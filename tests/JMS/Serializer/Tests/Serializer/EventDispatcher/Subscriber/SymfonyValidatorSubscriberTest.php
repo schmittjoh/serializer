@@ -24,7 +24,6 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -63,7 +62,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->validator->expects($this->once())
             ->method('validate')
             ->with($obj, array('foo'))
-            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'foo', array(), 'a', 'b', 'c')))));
+            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'template', array(), 'a', 'b', 'c')))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
 
