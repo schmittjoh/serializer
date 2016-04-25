@@ -40,7 +40,8 @@
     },
     "autoload": {
         "psr-0": {
-            "JMS\\Serializer": "src/"
+            "JMS\\Serializer": "src/",
+            "JMS\\Serializer\\Tests": "tests/"
         }
     },
     "extra": {
