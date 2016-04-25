@@ -271,7 +271,7 @@ class ClassMetadata extends MergeableClassMetadata
                     $existsB = isset($order[$b]);
 
                     if ( ! $existsA && ! $existsB) {
-                        return 0;
+                        return strcmp($b, $a);
                     }
 
                     if ( ! $existsA) {
