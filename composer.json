@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
         "phpcollection/phpcollection": "~0.1",
@@ -28,7 +28,7 @@
     "require-dev": {
         "twig/twig": "~1.12|~2.0",
         "doctrine/orm": "~2.1",
-        "doctrine/phpcr-odm": "~1.0.1",
+        "doctrine/phpcr-odm": "1.*",
         "jackalope/jackalope-doctrine-dbal": "1.0.*",
         "propel/propel1": "~1.7",
         "symfony/yaml": "2.*",
