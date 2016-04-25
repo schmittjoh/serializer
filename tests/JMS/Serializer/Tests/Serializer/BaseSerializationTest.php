@@ -250,7 +250,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty')), 'array');
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'));
         }
     }
 
@@ -627,7 +627,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', 'template', array(), null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -635,8 +635,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', 'template', array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', 'template', array(), null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
@@ -716,6 +716,26 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             $this->getContent('groups_default'),
             $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+        );
+    }
+
+    public function testDiscriminatorGroups()
+    {
+        $vehicle = new Car(42);
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_correct'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('discriminator_group')))
+        );
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_incorrect'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('incorrect_group')))
+        );
+
+        static::assertEquals(
+            $this->getContent('discriminator_groups_default'),
+            $this->serializer->serialize($vehicle, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
         );
     }
 

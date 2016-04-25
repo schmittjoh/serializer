@@ -39,7 +39,7 @@ class Comment
     private $blogPost;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      */
     private $text;
 

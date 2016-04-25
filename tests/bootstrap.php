@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -24,8 +23,6 @@ call_user_func(function() {
     }
 
     $loader = require $autoloadFile;
-    $loader->add('JMS\Serializer\Tests', __DIR__);
 
     AnnotationRegistry::registerLoader('class_exists');
-    AnnotationRegistry::registerFile(__DIR__.'/../vendor/doctrine/phpcr-odm/lib/Doctrine/ODM/PHPCR/Mapping/Annotations/DoctrineAnnotations.php');
 });
