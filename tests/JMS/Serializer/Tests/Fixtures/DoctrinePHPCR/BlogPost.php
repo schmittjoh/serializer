@@ -39,13 +39,13 @@ class BlogPost
     protected $id;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      * @Groups({"comments","post"})
      */
     private $title;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      */
     protected $slug;
 
