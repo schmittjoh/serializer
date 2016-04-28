@@ -9,9 +9,8 @@ php:
 
 matrix:
   allow_failures:
-    - php: 
-        - 7.0
-        - hhvm
+    - php: 7.0
+    - php: hhvm
 
 before_script:
     - travis_retry composer self-update
