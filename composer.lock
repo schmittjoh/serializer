@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b90be7afd4e5e8fa50a92a50eba90c52",
-    "content-hash": "7ae1f2fe431c7d62a423faf523902fa0",
+    "hash": "c7d4e2da1c68d66508e13eb074a8a3d8",
+    "content-hash": "4614dcfb58512f1385004d7847eca873",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -370,32 +370,33 @@
     "packages-dev": [
         {
             "name": "doctrine/cache",
-            "version": "dev-master",
+            "version": "1.5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "4e3b8b9464d511eccbefe07cef94c275bce7e434"
+                "reference": "fb3f5917781cf95863d3fd4d2595da43da3686c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/4e3b8b9464d511eccbefe07cef94c275bce7e434",
-                "reference": "4e3b8b9464d511eccbefe07cef94c275bce7e434",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/fb3f5917781cf95863d3fd4d2595da43da3686c1",
+                "reference": "fb3f5917781cf95863d3fd4d2595da43da3686c1",
                 "shasum": ""
             },
             "require": {
-                "php": "~5.5|~7.0"
+                "php": ">=5.3.2"
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.8|~5.0",
-                "predis/predis": "~1.0"
+                "phpunit/phpunit": ">=3.7",
+                "predis/predis": "~1.0",
+                "satooshi/php-coveralls": "~0.6"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
@@ -435,7 +436,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-03-11 16:30:04"
+            "time": "2015-12-19 05:04:23"
         },
         {
             "name": "doctrine/collections",
@@ -2149,27 +2150,27 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "3.0.x-dev",
+            "version": "2.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "17b04e6b1ede45b57d3ad5146abe50df6c3968b4"
+                "reference": "81c4c51f7fd6d0d40961bd53dd60cade32db6ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/17b04e6b1ede45b57d3ad5146abe50df6c3968b4",
-                "reference": "17b04e6b1ede45b57d3ad5146abe50df6c3968b4",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/81c4c51f7fd6d0d40961bd53dd60cade32db6ed6",
+                "reference": "81c4c51f7fd6d0d40961bd53dd60cade32db6ed6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": ">=5.3.9"
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/config": "~2.8|~3.0",
-                "symfony/dependency-injection": "~2.8|~3.0",
-                "symfony/expression-language": "~2.8|~3.0",
-                "symfony/stopwatch": "~2.8|~3.0"
+                "symfony/config": "~2.0,>=2.0.5|~3.0.0",
+                "symfony/dependency-injection": "~2.6|~3.0.0",
+                "symfony/expression-language": "~2.6|~3.0.0",
+                "symfony/stopwatch": "~2.3|~3.0.0"
             },
             "suggest": {
                 "symfony/dependency-injection": "",
@@ -2178,7 +2179,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
@@ -2205,7 +2206,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2016-04-12 18:09:53"
+            "time": "2016-04-05 16:36:54"
         },
         {
             "name": "symfony/filesystem",
@@ -2332,24 +2333,25 @@
         },
         {
             "name": "symfony/intl",
-            "version": "3.0.x-dev",
+            "version": "2.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/intl.git",
-                "reference": "a602fe5a36cfc6367c5495b38a88c443570e75da"
+                "reference": "0ca1089d64b929fa999d709423f74d858bec11d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/intl/zipball/a602fe5a36cfc6367c5495b38a88c443570e75da",
-                "reference": "a602fe5a36cfc6367c5495b38a88c443570e75da",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/0ca1089d64b929fa999d709423f74d858bec11d4",
+                "reference": "0ca1089d64b929fa999d709423f74d858bec11d4",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
-                "symfony/polyfill-intl-icu": "~1.0"
+                "php": ">=5.3.9",
+                "symfony/polyfill-intl-icu": "~1.0",
+                "symfony/polyfill-php54": "~1.0"
             },
             "require-dev": {
-                "symfony/filesystem": "~2.8|~3.0"
+                "symfony/filesystem": "~2.1|~3.0.0"
             },
             "suggest": {
                 "ext-intl": "to use the component with locales other than \"en\""
@@ -2357,7 +2359,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
@@ -2403,7 +2405,7 @@
                 "l10n",
                 "localization"
             ],
-            "time": "2016-04-01 06:34:33"
+            "time": "2016-03-23 13:11:46"
         },
         {
             "name": "symfony/options-resolver",
@@ -2577,26 +2579,84 @@
             "time": "2016-04-15 07:04:29"
         },
         {
-            "name": "symfony/property-access",
-            "version": "3.0.x-dev",
+            "name": "symfony/polyfill-php54",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/property-access.git",
-                "reference": "d9deeca5d2f0dffd90f9547d3d9a2007bd6ee61b"
+                "url": "https://github.com/symfony/polyfill-php54.git",
+                "reference": "95e9a5cc46972bb8bd38dc7a960a3041c5813075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/d9deeca5d2f0dffd90f9547d3d9a2007bd6ee61b",
-                "reference": "d9deeca5d2f0dffd90f9547d3d9a2007bd6ee61b",
+                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/95e9a5cc46972bb8bd38dc7a960a3041c5813075",
+                "reference": "95e9a5cc46972bb8bd38dc7a960a3041c5813075",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": ">=5.3.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php54\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 5.4+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-03-29 10:16:13"
+        },
+        {
+            "name": "symfony/property-access",
+            "version": "2.8.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/property-access.git",
+                "reference": "1d6f0181fbddda4bb2e2a41f7a5928d590f06b34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/1d6f0181fbddda4bb2e2a41f7a5928d590f06b34",
+                "reference": "1d6f0181fbddda4bb2e2a41f7a5928d590f06b34",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
@@ -2634,7 +2694,7 @@
                 "property path",
                 "reflection"
             ],
-            "time": "2016-04-20 18:53:54"
+            "time": "2016-04-20 18:52:26"
         },
         {
             "name": "symfony/translation",
@@ -2824,21 +2884,20 @@
         },
         {
             "name": "twig/twig",
-            "version": "dev-master",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "0ddc3c6395f3d5d2781657d957be319190bfaf5d"
+                "reference": "f167cc0a65ab0a2a53558c9385b4a324c1a36b02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/0ddc3c6395f3d5d2781657d957be319190bfaf5d",
-                "reference": "0ddc3c6395f3d5d2781657d957be319190bfaf5d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f167cc0a65ab0a2a53558c9385b4a324c1a36b02",
+                "reference": "f167cc0a65ab0a2a53558c9385b4a324c1a36b02",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5",
-                "symfony/polyfill-mbstring": "~1.0"
+                "php": ">=5.2.7"
             },
             "require-dev": {
                 "symfony/debug": "~2.7",
@@ -2847,7 +2906,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.24-dev"
                 }
             },
             "autoload": {
@@ -2882,7 +2941,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-04-24 13:56:57"
+            "time": "2016-04-24 13:54:56"
         }
     ],
     "aliases": [],
@@ -2893,5 +2952,8 @@
     "platform": {
         "php": ">=5.4.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "5.4.0"
+    }
 }
