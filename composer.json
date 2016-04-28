@@ -11,6 +11,11 @@
             "email": "schmittjoh@gmail.com"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "5.4.0"
+        }
+    },
     "require": {
         "php": ">=5.4.0",
         "jms/metadata": "~1.1",
@@ -29,8 +34,8 @@
     "require-dev": {
         "twig/twig": "~1.12|~2.0",
         "doctrine/orm": "~2.1",
-        "doctrine/phpcr-odm": "~1.0.1",
-        "jackalope/jackalope-doctrine-dbal": "1.0.*",
+        "doctrine/phpcr-odm": "~1.3.0",
+        "jackalope/jackalope-doctrine-dbal": "1.2.*",
         "propel/propel1": "~1.7",
         "symfony/yaml": "2.*",
         "symfony/translation": "~2.0",
