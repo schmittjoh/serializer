@@ -32,7 +32,7 @@
         "doctrine/phpcr-odm": "~1.0.1",
         "jackalope/jackalope-doctrine-dbal": "1.0.*",
         "propel/propel1": "~1.7",
-        "symfony/yaml": "2.*",
+        "symfony/yaml": "~2.8.0",
         "symfony/translation": "~2.0",
         "symfony/validator": "~2.0",
         "symfony/form": "~2.1",
