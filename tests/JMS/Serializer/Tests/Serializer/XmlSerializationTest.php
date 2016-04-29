@@ -19,20 +19,20 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
-use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Tests\Fixtures\PersonCollection;
-use JMS\Serializer\Tests\Fixtures\PersonLocation;
-use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
-use JMS\Serializer\Tests\Fixtures\Input;
+use JMS\Serializer\Tests\Fixtures\Person;
+use JMS\Serializer\Tests\Fixtures\PersonCollection;
+use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 
@@ -89,7 +89,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
+     * @expectedExceptionMessage The document type "<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
@@ -113,9 +113,10 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
+
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
+            '<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">'));
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
