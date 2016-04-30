@@ -23,9 +23,12 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithStdClass;
+use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use stdClass;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -50,6 +53,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
+            $outputs['array_std_class'] = '{"std_class":{"foo":"23","bar":"42","anotherStdClass":{"test":"42"}}}';
             $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2013-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2013 00:00:00"]}';
             $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2013 00:00:00"}}';
             $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"}}';
@@ -199,11 +203,6 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         ini_set('display_errors', 0);
         $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
-    }
-
-    public function testSerializeArrayWithEmptyObject()
-    {
-        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
     }
 
     protected function getFormat()
