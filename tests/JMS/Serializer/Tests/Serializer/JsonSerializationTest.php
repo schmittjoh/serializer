@@ -23,6 +23,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -81,7 +82,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
-            $outputs['nullable'] = '{"foo":"bar","baz":null}';
+            $outputs['nullable'] = '{"foo":"bar","baz":null,"0":null}';
             $outputs['null'] = 'null';
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
             $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
@@ -95,7 +96,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
             $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"}]}';
-            $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
+            $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[null],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
         }
 
         if (!isset($outputs[$key])) {
