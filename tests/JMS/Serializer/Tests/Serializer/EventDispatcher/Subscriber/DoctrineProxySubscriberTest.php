@@ -40,13 +40,13 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($obj->__isInitialized());
     }
 
-    public function testDoesNotRewriteCustomType()
+    public function testProxyIsNotLoadedForCustomTypes()
     {
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => 'FakedName', 'params' => array()));
         $this->subscriber->onPreSerialize($event);
 
         $this->assertEquals(array('name' => 'FakedName', 'params' => array()), $event->getType());
-        $this->assertTrue($obj->__isInitialized());
+        $this->assertFalse($obj->__isInitialized());
     }
 
     protected function setUp()
