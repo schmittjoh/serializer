@@ -1,8 +1,10 @@
 language: php
 
-matrix:
-  allow_failures:
-    - php: hhvm
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 php:
   - 5.3
@@ -15,10 +17,11 @@ php:
 matrix:
   allow_failures:
     - php: 7.0
+    - php: hhvm
 
 before_script:
     - composer self-update
-    - composer install --dev
+    - composer install
 
 script: vendor/bin/phpunit --coverage-clover clover
 
