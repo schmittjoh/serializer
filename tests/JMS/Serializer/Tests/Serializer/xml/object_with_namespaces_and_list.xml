@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectWithNamespacesAndList xmlns="http://example.com/namespace" xmlns:x="http://example.com/namespace2">
+  <name><![CDATA[name]]></name>
+  <x:name><![CDATA[nameB]]></x:name>
+  <x:phones>
+    <x:phone><![CDATA[111]]></x:phone>
+    <x:phone><![CDATA[222]]></x:phone>
+  </x:phones>
+  <x:addresses>
+    <x:address id="A"><![CDATA[Street 1]]></x:address>
+    <x:address id="B"><![CDATA[Street 2]]></x:address>
+  </x:addresses>
+  <phone><![CDATA[555]]></phone>
+  <phone><![CDATA[666]]></phone>
+  <address id="A"><![CDATA[Street 5]]></address>
+  <address id="B"><![CDATA[Street 6]]></address>
+  <x:phone><![CDATA[777]]></x:phone>
+  <x:phone><![CDATA[888]]></x:phone>
+  <x:address id="A"><![CDATA[Street 7]]></x:address>
+  <x:address id="B"><![CDATA[Street 8]]></x:address>
+  <phones>
+    <phone><![CDATA[999]]></phone>
+    <phone><![CDATA[AAA]]></phone>
+  </phones>
+  <addresses>
+    <address id="A"><![CDATA[Street 9]]></address>
+    <address id="B"><![CDATA[Street A]]></address>
+  </addresses>
+</ObjectWithNamespacesAndList>
