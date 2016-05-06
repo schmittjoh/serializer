@@ -16,22 +16,27 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
 
-abstract class XmlCollection
-{
-    /**
-     * @var string
-     */
-    public $entry = 'entry';
+use JMS\Serializer\Annotation as JMS;
 
-    /**
-     * @var boolean
-     */
-    public $inline = false;
+
+/**
+ * @JMS\XmlRoot("tag")
+ * @JMS\XmlNamespace(uri="http://purl.org/dc/elements/1.1/", prefix="dc")
+ */
+class Tag {
 
     /**
-     * @var string
+     * @JMS\XmlElement(cdata=false)
+     * @JMS\Type("string")
      */
-    public $namespace;
-}
+    public $name;
+
+    function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+
+} 

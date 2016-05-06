@@ -475,6 +475,8 @@ Resulting XML:
         </comment>
     </post>
 
+You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``). 
+
 @XmlMap
 ~~~~~~~
 Similar to @XmlList, but the keys of the array are meaningful.

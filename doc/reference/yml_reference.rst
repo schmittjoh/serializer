@@ -44,10 +44,12 @@ YAML Reference
                 xml_list:
                     inline: true
                     entry_name: foo
+                    namespace: http://www.w3.org/2005/Atom
                 xml_map:
                     inline: true
                     key_attribute_name: foo
                     entry_name: bar
+                    namespace: http://www.w3.org/2005/Atom
                 xml_attribute_map: true
                 xml_element:
                     cdata: false
