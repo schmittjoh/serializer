@@ -110,7 +110,6 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
-            $this->xmlEntryNamespace,
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
@@ -124,11 +123,13 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             parent::serialize(),
+            'xmlEntryNamespace' => $this->xmlEntryNamespace,
         ));
     }
 
     public function unserialize($str)
     {
+        $unserialized = unserialize($str);
         list(
             $this->sinceVersion,
             $this->untilVersion,
@@ -152,7 +153,11 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             $parentStr
-        ) = unserialize($str);
+        ) = $unserialized;
+
+        if (isset($unserialized['xmlEntryNamespace'])){
+            $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
+        }
 
         parent::unserialize($parentStr);
     }
