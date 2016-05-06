@@ -61,17 +61,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
-        $dom = new \DOMDocument();
-        $dom->loadXML($data);
-        foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
-                if ( ! in_array($internalSubset, $this->doctypeWhitelist, true)) {
-                    throw new InvalidArgumentException(sprintf(
-                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
-                        $internalSubset
-                    ));
-                }
+        if (false !== stripos($data, '<!doctype')) {
+            $internalSubset = $this->getDomDocumentTypeEntitySubset($data);
+            if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                    $internalSubset
+                ));
             }
         }
 
@@ -363,12 +359,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
      * @param string $data
      * @return string
      */
-    private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+    private function getDomDocumentTypeEntitySubset($data)
     {
-        if (null !== $child->internalSubset) {
-            return str_replace(array("\n", "\r"), '', $child->internalSubset);
-        }
-
         $startPos = $endPos = stripos($data, '<!doctype');
         $braces = 0;
         do {
