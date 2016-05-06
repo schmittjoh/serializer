@@ -28,7 +28,16 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
+/**
+ * Tests with old symfony validator API.
+ *
+ * Symfony <2.5 BC
+ *
+ * @group legacy
+ *
+ * @author Sullivan Senechal <soullivaneuh@gmail.com>
+ */
+class SymfonyValidatorSubscriberLegacyTest extends \PHPUnit_Framework_TestCase
 {
     private $validator;
 
@@ -44,7 +53,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, null, array('foo'))
+            ->with($obj, array('foo'))
             ->will($this->returnValue(new ConstraintViolationList()));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
@@ -62,7 +71,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, null, array('foo'))
+            ->with($obj, array('foo'))
             ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'bar', array(), 'a', 'b', 'c')))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
@@ -82,7 +91,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), null, array('Foo'))
+            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), array('Foo'))
             ->will($this->returnValue(new ConstraintViolationList()));
 
         $subscriber = $this->subscriber;
@@ -103,7 +112,11 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->validator = $this->getMock('Symfony\Component\Validator\Validator\ValidatorInterface');
+        if (!interface_exists('Symfony\Component\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('Not existing old Symfony validator API.');
+        }
+
+        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
         $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
     }
 }
