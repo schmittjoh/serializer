@@ -45,8 +45,12 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('a'));
         $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
 
+        //We're not sure, in which order array will be sorted. 
+        //We only know, that it should contain both properties
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('foo', 'bar'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
+        $this->assertArrayHasKey('a', $metadata->propertyMetadata);
+        $this->assertArrayHasKey('b', $metadata->propertyMetadata);
+        $this->assertCount(2, $metadata->propertyMetadata);
     }
 
     /**

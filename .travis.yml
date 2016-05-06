@@ -1,11 +1,6 @@
 language: php
 
-matrix:
-  allow_failures:
-    - php: hhvm
-
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -15,10 +10,11 @@ php:
 matrix:
   allow_failures:
     - php: 7.0
+    - php: hhvm
 
 before_script:
-    - composer self-update
-    - composer install --dev
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source --dev
 
 script: vendor/bin/phpunit --coverage-clover clover
 

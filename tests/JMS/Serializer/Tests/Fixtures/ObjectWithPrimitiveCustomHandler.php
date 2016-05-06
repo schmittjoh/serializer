@@ -16,34 +16,16 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
+namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\SerializedName;
 
-use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
-
-/** @PHPCRODM\Document */
-class Author
+class ObjectWithPrimitiveCustomHandler
 {
     /**
-     * @PHPCRODM\Id()
+     *
+     * @var integer
+     * @Type("Integer") 
      */
-    protected $id;
-
-    /**
-     * @PHPCRODM\Field(type="string")
-     * @SerializedName("full_name")
-     */
-    private $name;
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
+    public $intProperty = 1;
 }

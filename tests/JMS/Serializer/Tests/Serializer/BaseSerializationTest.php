@@ -78,6 +78,7 @@ use JMS\Serializer\Tests\Fixtures\InitializedObjectConstructor;
 use JMS\Serializer\Tests\Fixtures\InitializedBlogPostConstructor;
 use JMS\Serializer\Tests\Fixtures\Log;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
+use JMS\Serializer\Tests\Fixtures\ObjectWithPrimitiveCustomHandler;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -247,7 +248,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('XML can\'t be tested for empty array');
         }
 
-        $data = array('array' => []);
+        $data = array('array' => array());
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -632,7 +633,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', "Message of violation", array(), null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -640,8 +641,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', "Message of violation", array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', "Message of another violation", array(), null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
@@ -774,6 +775,30 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $object = $this->serializer->deserialize($serialized, 'CustomDeserializationObject', $this->getFormat());
         $this->assertEquals('customly_unserialized_value', $object->someProperty);
     }
+    
+    public function testCustomHandlerForPrimitive()
+    {
+        if ( ! $this->hasDeserializer()) {
+            return;
+        }
+
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'Integer', $this->getFormat(),
+            function(VisitorInterface $visitor, $object, array $type, Context $context) {
+                return $visitor->visitInteger($object, $type, $context);
+            }
+        );
+        
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'Integer', $this->getFormat(),
+            function() {
+                return "customly_unserialized_value";
+            }
+        );        
+
+        //This is itself a test - if serialization fails with a logic exception, custom handlers for primitive types does not work
+        $serialized = $this->serializer->serialize(new ObjectWithPrimitiveCustomHandler(), $this->getFormat());
+        $object = $this->serializer->deserialize($serialized, 'JMS\Serializer\Tests\Fixtures\ObjectWithPrimitiveCustomHandler', $this->getFormat());
+        $this->assertEquals('customly_unserialized_value', $object->intProperty);
+    }    
 
     public function testInput()
     {
