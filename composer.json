@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
         "phpcollection/phpcollection": "~0.1",
