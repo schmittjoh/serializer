@@ -92,6 +92,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
@@ -367,20 +368,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @dataProvider getTimestamp
-     * @group datetime
-     */
-    public function testTimestamp($key, $value)
+    public function testTimestamp()
     {
-        $this->assertEquals($this->getContent($key), $this->serialize($value));
-    }
+        $value = new Timestamp(new \DateTime('2016-02-11 00:00:00', new \DateTimeZone('UTC')));
+        $this->assertEquals($this->getContent('timestamp'), $this->serialize($value));
 
-    public function getTimestamp()
-    {
-        return array(
-            array('timestamp', new Timestamp(new \DateTime('2016-02-11 00:00:00', new \DateTimeZone('UTC')))),
-        );
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('timestamp'), Timestamp::class);
+            $this->assertEquals($value, $deserialized);
+            $this->assertEquals($value->getTimestamp()->getTimestamp(), $deserialized->getTimestamp()->getTimestamp());
+
+            $deserialized = $this->deserialize($this->getContent('timestamp_prev'), Timestamp::class);
+            $this->assertEquals($value, $deserialized);
+            $this->assertEquals($value->getTimestamp()->getTimestamp(), $deserialized->getTimestamp()->getTimestamp());
+        }
     }
 
     public function testDateInterval()

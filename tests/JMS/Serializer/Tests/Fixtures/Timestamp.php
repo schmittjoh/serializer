@@ -31,4 +31,9 @@ class Timestamp
     {
         $this->timestamp = $timestamp;
     }
+
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
 }
