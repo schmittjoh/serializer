@@ -148,7 +148,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
     }
 
     /**
-     * @AccessorOrder("custom", custom = {"name", "SomeMethod" ,"id"})
+     * @AccessorOrder("custom", custom = {"name", "someMethod" ,"id"})
      *
      * Resulting Property Order: name, mood, id
      */
