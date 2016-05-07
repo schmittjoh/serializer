@@ -1,8 +1,12 @@
 language: php
+
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 php:
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
@@ -10,16 +14,15 @@ php:
 
 matrix:
   allow_failures:
-    - php: 7.0
     - php: hhvm
 
-before_install:
-    - composer self-update
-
 before_script:
-    - composer install --dev --prefer-dist --no-interaction
+    - composer self-update
+    - composer install
 
 script: vendor/bin/phpunit --coverage-clover clover
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover clover
+

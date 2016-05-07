@@ -39,24 +39,24 @@ class BlogPost
     protected $id;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      * @Groups({"comments","post"})
      */
     private $title;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      */
     protected $slug;
 
     /**
-     * @PHPCRODM\Date()
+     * @PHPCRODM\Field(type="date")
      * @XmlAttribute
      */
     private $createdAt;
 
     /**
-     * @PHPCRODM\Boolean()
+     * @PHPCRODM\Field(type="boolean")
      * @Type("integer")
      * This boolean to integer conversion is one of the few changes between this
      * and the standard BlogPost class. It's used to test the override behavior

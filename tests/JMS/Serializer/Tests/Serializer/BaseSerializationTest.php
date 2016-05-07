@@ -29,6 +29,8 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\Tag;
+use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
@@ -90,6 +92,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
@@ -250,7 +253,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty')), 'array');
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'));
         }
     }
 
@@ -365,6 +368,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testTimestamp()
+    {
+        $value = new Timestamp(new \DateTime('2016-02-11 00:00:00', new \DateTimeZone('UTC')));
+        $this->assertEquals($this->getContent('timestamp'), $this->serialize($value));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('timestamp'), Timestamp::class);
+            $this->assertEquals($value, $deserialized);
+            $this->assertEquals($value->getTimestamp()->getTimestamp(), $deserialized->getTimestamp()->getTimestamp());
+
+            $deserialized = $this->deserialize($this->getContent('timestamp_prev'), Timestamp::class);
+            $this->assertEquals($value, $deserialized);
+            $this->assertEquals($value->getTimestamp()->getTimestamp(), $deserialized->getTimestamp()->getTimestamp());
+        }
+    }
+
     public function testDateInterval()
     {
         $duration = new \DateInterval('PT45M');
@@ -377,6 +396,9 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
         $post->addComment($comment = new Comment($author, 'foo'));
 
+        $post->addTag($tag1 = New Tag("tag1"));
+        $post->addTag($tag2 = New Tag("tag2"));
+
         $this->assertEquals($this->getContent('blog_post'), $this->serialize($post));
 
         if ($this->hasDeserializer()) {
@@ -388,6 +410,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals(new Sequence(array($comment)), 'comments2', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
+            $this->assertAttributeEquals(array($tag1, $tag2), 'tag', $deserialized);
         }
     }
 

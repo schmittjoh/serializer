@@ -119,6 +119,10 @@ class YamlDriver extends AbstractFileDriver
                         if (isset($colConfig['entry_name'])) {
                             $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
                         }
+
+                        if (isset($colConfig['namespace'])) {
+                            $pMetadata->xmlEntryNamespace = (string) $colConfig['namespace'];
+                        }
                     }
 
                     if (isset($pConfig['xml_map'])) {
@@ -133,9 +137,14 @@ class YamlDriver extends AbstractFileDriver
                             $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
                         }
 
+                        if (isset($colConfig['namespace'])) {
+                            $pMetadata->xmlEntryNamespace = (string) $colConfig['namespace'];
+                        }
+
                         if (isset($colConfig['key_attribute_name'])) {
                             $pMetadata->xmlKeyAttribute = $colConfig['key_attribute_name'];
                         }
+
                     }
 
                     if (isset($pConfig['xml_element'])) {
