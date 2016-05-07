@@ -89,6 +89,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['object_when_null'] = '{"text":"foo"}';
             $outputs['object_when_null_and_serialized'] = '{"author":null,"text":"foo"}';
             $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
+            $outputs['timestamp'] = '{"timestamp":1455148800}';
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
