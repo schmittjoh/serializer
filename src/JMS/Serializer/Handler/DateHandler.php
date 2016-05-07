@@ -74,6 +74,7 @@ class DateHandler implements SubscribingHandlerInterface
         if ('U' === $format) {
             return $visitor->visitInteger($date->format($format), $type, $context);
         }
+
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
