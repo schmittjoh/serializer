@@ -310,28 +310,49 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlNamespace = "http://old.foo.example.org";
         $p->xmlAttribute = true;
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
-        $this->assertEquals($p, $m->propertyMetadata['foo']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['foo']);
 
         $p = new PropertyMetadata($m->name, 'bar');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://foo.example.org";
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
-        $this->assertEquals($p, $m->propertyMetadata['bar']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['bar']);
 
         $p = new PropertyMetadata($m->name, 'moo');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://better.foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['moo']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['moo']);
 
         $p = new PropertyMetadata($m->name, 'baz');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['baz']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['baz']);
 
         $p = new PropertyMetadata($m->name, 'qux');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://new.foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['qux']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['qux']);
+    }
+
+    private function assetMetadataEquals(PropertyMetadata $expected, PropertyMetadata $actual)
+    {
+        $expectedVars = get_object_vars($expected);
+        $actualVars = get_object_vars($actual);
+
+        $expectedReflection = (array)$expectedVars['reflection'];
+        $actualReflection = (array)$actualVars['reflection'];
+
+        // HHVM bug with class property
+        unset($expectedVars['reflection'], $actualVars['reflection']);
+        $this->assertEquals($expectedVars, $actualVars);
+
+        // HHVM bug with class property
+        if (isset($expectedReflection['info']) || isset($actualReflection['info'])){
+            $expectedReflection['class'] = $expectedReflection['info']['class'];
+            $actualReflection['class'] = $actualReflection['info']['class'];
+        }
+
+        $this->assertEquals($expectedReflection, $actualReflection);
     }
 
 

@@ -113,7 +113,7 @@ class XmlDriver extends AbstractFileDriver
         if ( ! $excludeAll) {
 
             foreach ($class->getProperties() as $property) {
-                if ($name !== $property->class) {
+                if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
                 }
 
