@@ -139,7 +139,6 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
-            $this->xmlEntryNamespace,
             $this->xmlKeyAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
