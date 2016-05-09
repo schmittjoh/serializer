@@ -34,6 +34,13 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function testSerialization()
+    {
+        $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
+        $restoredMeta = unserialize(serialize($meta));
+        $this->assertEquals($meta, $restoredMeta);
+    }
+
     /**
      * @dataProvider getAccessOrderCases
      */
