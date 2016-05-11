@@ -8,20 +8,20 @@ $className = 'JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties';
 
 $metadata = new ClassMetadata( $className );
 
-$pMetadata = new PropertyMetadata($className, 'existField');
+$pMetadata = new PropertyMetadata($className, 'realField');
 $metadata->addPropertyMetadata($pMetadata);
 
-$pMetadata = new VirtualPropertyMetadata($className, 'virtualValue');
-$pMetadata->getter = 'getVirtualValue';
+$pMetadata = new VirtualPropertyMetadata($className, 'virtualField');
+$pMetadata->getter = 'getVirtualField';
 $metadata->addPropertyMetadata($pMetadata);
 
-$pMetadata = new VirtualPropertyMetadata($className, 'virtualSerializedValue');
-$pMetadata->getter = 'getVirtualSerializedValue';
-$pMetadata->serializedName = 'test';
+$pMetadata = new VirtualPropertyMetadata($className, 'virtualFieldToBeRenamed');
+$pMetadata->getter = 'getVirtualFieldToBeRenamed';
+$pMetadata->serializedName = 'renamed_virtual_field';
 $metadata->addPropertyMetadata($pMetadata);
 
-$pMetadata = new VirtualPropertyMetadata($className, 'typedVirtualProperty');
-$pMetadata->getter = 'getTypedVirtualProperty';
+$pMetadata = new VirtualPropertyMetadata($className, 'typedVirtualField');
+$pMetadata->getter = 'getTypedVirtualField';
 $pMetadata->setType('integer');
 $metadata->addPropertyMetadata($pMetadata);
 

@@ -27,32 +27,40 @@ use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\Until;
 use JMS\Serializer\Annotation\VirtualProperty;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
 
 class ObjectWithVirtualXmlProperties
 {
 
     /**
-     *
-     * @VirtualProperty
-     * @SerializedName("foo")
+     * @SerializedName("real_attribute")
      * @Groups({"attributes"})
      * @XmlAttribute
      */
-    public function getVirualXmlAttributeValue()
+    public $realAttribute = 'real xml  attribute';
+
+    /**
+     *
+     * @VirtualProperty
+     * @SerializedName("vritual_attribute")
+     * @Groups({"attributes"})
+     * @XmlAttribute
+     */
+    public function getVirtualXmlAttribute()
     {
-        return 'bar';
+        return 'virtual xml attribute';
     }
 
     /**
      *
      * @VirtualProperty
-     * @SerializedName("xml-value")
+     * @SerializedName("virtual_value")
      * @Groups({"values"})
      * @XmlValue
      */
-    public function getVirualXmlValue()
+    public function getVirtualXmlValue()
     {
-        return 'xml-value';
+        return 'virtual xml value';
     }
 
     /**
@@ -62,7 +70,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"list"})
      * @XmlList(inline = true, entry = "val")
      */
-    public function getVirualXmlList()
+    public function getVirtualXmlList()
     {
         return array('One','Two');
     }
@@ -74,7 +82,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"map"})
      * @XmlMap(keyAttribute = "key")
      */
-    public function getVirualXmlMap()
+    public function getVirtualXmlMap()
     {
         return array(
             'key-one'   => 'One',
@@ -89,20 +97,19 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"versions"})
      * @Until("8")
      */
-    public function getVirualLowValue()
+    public function getVirtualLowValue()
     {
         return 1;
     }
 
     /**
      * @VirtualProperty
-     * @SerializedName("hight")
+     * @SerializedName("high")
      * @Groups({"versions"})
      * @Since("8")
      */
-    public function getVirualHighValue()
+    public function getVirtualHighValue()
     {
         return 8;
     }
-
 }

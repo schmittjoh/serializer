@@ -99,17 +99,17 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties'));
 
-        $this->assertArrayHasKey('existField', $m->propertyMetadata);
-        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
-        $this->assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
-        $this->assertArrayHasKey('typedVirtualProperty', $m->propertyMetadata);
+        $this->assertArrayHasKey('realField', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualField', $m->propertyMetadata);
+        $this->assertArrayHasKey('virtualFieldToBeRenamed', $m->propertyMetadata);
+        $this->assertArrayHasKey('typedVirtualField', $m->propertyMetadata);
 
-        $this->assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing' );
+        $this->assertEquals($m->propertyMetadata['virtualFieldToBeRenamed']->serializedName, 'renamed_virtual_field', 'Serialized name is missing' );
 
-        $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
-        $p->getter = 'getVirtualValue';
+        $p = new VirtualPropertyMetadata($m->name, 'virtualField');
+        $p->getter = 'getVirtualField';
 
-        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
+        $this->assertEquals($p, $m->propertyMetadata['virtualField']);
     }
 
     public function testXmlKeyValuePairs()

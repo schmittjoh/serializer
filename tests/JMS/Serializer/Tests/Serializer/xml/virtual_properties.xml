@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <exist_field><![CDATA[value]]></exist_field>
-  <virtual_value><![CDATA[value]]></virtual_value>
-  <test><![CDATA[other-name]]></test>
-  <typed_virtual_property>1</typed_virtual_property>
+  <real_field><![CDATA[real field value]]></real_field>
+  <virtual_field><![CDATA[virtual field value]]></virtual_field>
+  <renamed_virtual_field><![CDATA[renamed field value]]></renamed_virtual_field>
+  <typed_virtual_field>1</typed_virtual_field>
 </result>

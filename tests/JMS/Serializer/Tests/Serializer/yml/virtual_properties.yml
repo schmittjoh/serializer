@@ -1,4 +1,4 @@
-exist_field: value
-virtual_value: value
-test: other-name
-typed_virtual_property: 1
+real_field: 'real field value'
+virtual_field: 'virtual field value'
+renamed_virtual_field: 'renamed field value'
+typed_virtual_field: 1

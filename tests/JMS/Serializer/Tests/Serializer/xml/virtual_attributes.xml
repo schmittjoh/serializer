@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<result foo="bar"/>
+<result vritual_attribute="virtual xml attribute" real_attribute="real xml  attribute"/>

@@ -60,10 +60,10 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $obj = new \stdClass;
 
-        $this->validator->expects($this->once())
+        $this->validator->expects($this->any())
             ->method('validate')
             ->with($obj, array('foo'))
-            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'foo', array(), 'a', 'b', 'c')))));
+            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', '',  array(), 'a', 'b', 'c')))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
 
@@ -103,7 +103,13 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
+        if (interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            // Symfony 3.x
+            $this->validator = $this->getMock('Symfony\Component\Validator\Validator\ValidatorInterface');
+        } else {
+            // Symfony 2.x
+            $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
+        }
         $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
     }
 }
