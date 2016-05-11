@@ -26,5 +26,9 @@ call_user_func(function() {
     $loader = require $autoloadFile;
     $loader->add('JMS\Serializer\Tests', __DIR__);
 
+<<<<<<< 67f4fe6bba9e42528d56c8a87b83ee0b23e8697f
     AnnotationRegistry::registerLoader('class_exists');
+=======
+    AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+>>>>>>> Updated dependencies for Symfony 3.0
 });

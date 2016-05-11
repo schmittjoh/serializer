@@ -21,7 +21,7 @@ namespace JMS\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SymfonyValidatorSubscriber implements EventSubscriberInterface
 {
