@@ -1,0 +1,5 @@
+beginning_object:
+    foo: foo
+    bar: bar
+baz: baz
+qux: qux

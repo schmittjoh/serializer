@@ -16,11 +16,25 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\EventDispatcher;
+namespace JMS\Serializer\Tests\Fixtures;
 
-class PreSerializeEvent extends ObjectEvent
+use JMS\Serializer\Annotation\Type;
+
+class BeginWithThisObject
 {
 
+    /** @Type("string") */
+    private $foo = 'foo';
+    /** @Type("string") */
+    private $bar = 'bar';
 
+    public function getFoo()
+    {
+        return $this->foo;
+    }
 
+    public function getBar()
+    {
+        return $this->bar;
+    }
 }

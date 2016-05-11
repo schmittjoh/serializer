@@ -31,6 +31,21 @@ class ObjectEvent extends Event
         $this->object = $object;
     }
 
+    public function setObject($object, array $type = null)
+    {
+        $this->type = $type;
+        $this->object = $this->getVisitor()->prepare($object);
+    }
+
+    /**
+     * @param string $typeName
+     * @param array $params
+     */
+    public function setType($typeName, array $params = array())
+    {
+        $this->type = array('name' => $typeName, 'params' => $params);
+    }
+
     public function getObject()
     {
         return $this->object;

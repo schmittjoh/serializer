@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <beginning_object>
+    <foo><![CDATA[foo]]></foo>
+    <bar><![CDATA[bar]]></bar>
+  </beginning_object>
+  <baz><![CDATA[baz]]></baz>
+  <qux><![CDATA[qux]]></qux>
+</result>

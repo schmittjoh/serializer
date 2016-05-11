@@ -20,12 +20,17 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\BeginWithThisObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\EndUpWithThisObject;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
@@ -969,6 +974,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
     }
 
+    public function testSwapObjectPreSerialize()
+    {
+        $obj = new BeginWithThisObject();
+
+        $serialized = $this->serialize($obj);
+        $this->assertEquals($this->getContent('swap_object'), $serialized);
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -1024,6 +1037,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
+        $this->dispatcher->addSubscriber(new SwapObjectPreSerializeSubscriber());
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
@@ -1053,5 +1067,25 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $ref = new \ReflectionProperty($obj, $name);
         $ref->setAccessible(true);
         $ref->setValue($obj, $value);
+    }
+}
+
+class SwapObjectPreSerializeSubscriber implements EventSubscriberInterface
+{
+    private $wrapped = array();
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
+        );
+    }
+
+    public function onPreSerialize(PreSerializeEvent $event)
+    {
+        if ($event->getObject() instanceof BeginWithThisObject && !in_array($event->getObject(), $this->wrapped)) {
+            $this->wrapped[] = $event->getObject();
+            $event->setObject(new EndUpWithThisObject($event->getObject()));
+        }
     }
 }

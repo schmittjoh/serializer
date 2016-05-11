@@ -94,13 +94,7 @@ final class GraphNavigator
             if ($context instanceof DeserializationContext) {
                 throw new RuntimeException('The type must be given for all properties when deserializing.');
             }
-
-            $typeName = gettype($data);
-            if ('object' === $typeName) {
-                $typeName = get_class($data);
-            }
-
-            $type = array('name' => $typeName, 'params' => array());
+            $type = $this->determineType($data);
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
@@ -163,6 +157,12 @@ final class GraphNavigator
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
                         $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
                         $type = $event->getType();
+                        if ($data !== $event->getObject()) {
+                            // Lets the serialization context know to expect any changes made to the data
+                            $context->stopVisiting($data);
+                            $data = $event->getObject();
+                            $context->startVisiting($data);
+                        }
                     }
                 } elseif ($context instanceof DeserializationContext) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
@@ -170,6 +170,10 @@ final class GraphNavigator
                         $type = $event->getType();
                         $data = $event->getData();
                     }
+                }
+
+                if ($type === null) {
+                    $type = $this->determineType($data);
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
@@ -247,6 +251,16 @@ final class GraphNavigator
 
                 return $rs;
         }
+    }
+
+    protected function determineType($data)
+    {
+        $typeName = gettype($data);
+        if ('object' === $typeName) {
+            $typeName = get_class($data);
+        }
+
+        return array('name' => $typeName, 'params' => array());
     }
 
     private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)

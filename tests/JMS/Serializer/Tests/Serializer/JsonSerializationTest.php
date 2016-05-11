@@ -96,6 +96,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['car_without_type'] = '{"km":5}';
             $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"}]}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
+            $outputs['swap_object'] = '{"beginning_object":{"foo":"foo","bar":"bar"},"baz":"baz","qux":"qux"}';
         }
 
         if (!isset($outputs[$key])) {
