@@ -208,6 +208,14 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
     }
 
+    public function testSerializeArrayPreserveSequentialWhenSkipNull()
+    {
+        $this->assertEquals('[1]', $this->serialize(array(null, 1)));
+        $this->assertEquals('[1]', $this->serialize(array(null, 1 => 1)));
+        $this->assertEquals('{"2":1}', $this->serialize(array(null, 2 => 1)));
+        $this->assertEquals('{"a":1}', $this->serialize(array(null, "a" => 1)));
+    }
+
     protected function getFormat()
     {
         return 'json';

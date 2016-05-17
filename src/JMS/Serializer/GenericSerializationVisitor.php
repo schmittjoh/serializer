@@ -24,8 +24,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
+    /** @var GraphNavigator */
     private $navigator;
     private $root;
+    /** @var \SplStack */
     private $dataStack;
     private $data;
 
@@ -88,6 +90,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     /**
      * @param array $data
      * @param array $type
+     * @param Context $context
+     *
+     * @return array
      */
     public function visitArray($data, array $type, Context $context)
     {
@@ -98,14 +103,24 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
+        $i = 0;
+        $isHash = false;
         foreach ($data as $k => $v) {
+            if ($k !== $i++) {
+                $isHash = true;
+            }
+            
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
             if (null === $v && ( ! is_string($k) || ! $context->shouldSerializeNull())) {
                 continue;
             }
 
-            $rs[$k] = $v;
+            if ($isHash) {
+                $rs[$k] = $v;
+            } else {
+                $rs[] = $v;
+            }
         }
 
         return $rs;
