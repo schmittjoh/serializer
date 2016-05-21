@@ -29,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
@@ -277,6 +278,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testArrayListAndMapDifference()
+    {
+        $arrayData = array(0 => 1, 2 => 2, 3 => 3); // Misses key 1
+        $data = new ObjectWithIntListAndIntMap($arrayData, $arrayData);
+
+        $this->assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
+    }
 
     public function testDateTimeArrays()
     {
