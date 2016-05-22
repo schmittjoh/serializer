@@ -209,6 +209,15 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
     }
 
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Expected a string, but got an array: [1,3,4]
+     */
+    public function testDeserializingArrayToString()
+    {
+        $this->deserialize('[1, 3, 4]', 'string');
+    }
+
     protected function getFormat()
     {
         return 'json';
