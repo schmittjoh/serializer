@@ -215,7 +215,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pElem->attributes()->{'xml-attribute-map'})) {
-                        $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute-map'};
+                        $pMetadata->xmlAttributeMap = 'true' === (string) $pElem->attributes()->{'xml-attribute-map'};
                     }
 
                     if (isset($pElem->attributes()->{'xml-value'})) {
