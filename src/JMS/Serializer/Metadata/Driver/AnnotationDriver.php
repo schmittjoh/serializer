@@ -215,7 +215,7 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                if ($accessor[0] !== null && $accessor[1] !== null) {
+                if ($propertyMetadata->setter === null) {
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
