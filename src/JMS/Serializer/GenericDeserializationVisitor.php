@@ -162,12 +162,20 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (null === $data || ! array_key_exists($name, $data)) {
+        if (count($metadata->multiTypes) > 0) {
+            foreach ($metadata->multiTypes as $key => $value) {
+                if (array_key_exists($key, $data)) {
+                    $v = $this->navigator->accept($data[$key], $value, $context);
+                    $this->currentObject->{$metadata->setter}($key, $v);
+                }
+            }
+            return;
+        } elseif (null === $data || ! array_key_exists($name, $data)) {
             return;
         }
 
-        if ( ! $metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
+        if ( ! $metadata->type && count($metadata->multiTypes) === 0) {
+            throw new RuntimeException(sprintf('You must define a type or multiType for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
         $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
