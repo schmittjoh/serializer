@@ -164,8 +164,8 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
         if (count($metadata->multiTypes) > 0) {
             foreach ($metadata->multiTypes as $key => $value) {
-                if (array_key_exists($key, $data)) {
-                    $v = $this->navigator->accept($data[$key], $value, $context);
+                if (array_key_exists($key, $data[$name])) {
+                    $v = $this->navigator->accept($data[$name][$key], $value, $context);
                     $this->currentObject->{$metadata->setter}($key, $v);
                 }
             }
