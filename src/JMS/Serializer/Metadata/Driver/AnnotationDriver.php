@@ -164,8 +164,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
                     } elseif ($annot instanceof MultiType) {
-                        $propertyMetadata->addMultiType($annot->key, $annot->valueType);
-                        $propertyMetadata->setter = $annot->setter;
+                        $propertyMetadata->addMultiType($annot->key, $annot->valueType, $annot->setter);
                     } elseif ($annot instanceof XmlElement) {
                         $propertyMetadata->xmlAttribute = false;
                         $propertyMetadata->xmlElementCData = $annot->cdata;
