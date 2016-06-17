@@ -37,7 +37,7 @@
         "symfony/validator": "^2.2",
         "symfony/form": "~2.1",
         "symfony/filesystem": "^2.1",
-        "phpunit/phpunit": "^4.8|^5.0"
+        "phpunit/phpunit": "^5.0,<5.4.0|^4.8"
     },
     "autoload": {
         "psr-0": {
