@@ -29,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
@@ -346,6 +347,9 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group datetime
+     */
     public function testNamedDateTimeImmutableArrays()
     {
         $data = array(
@@ -353,7 +357,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             new \DateTimeImmutable('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
-        $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $object = new NamedDateTimeImmutableArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
         $serializedObject = $this->serialize( $object );
 
         $this->assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
@@ -366,7 +370,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             }
 
             /** @var NamedDateTimeArraysObject $deserializedObject */
-            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
