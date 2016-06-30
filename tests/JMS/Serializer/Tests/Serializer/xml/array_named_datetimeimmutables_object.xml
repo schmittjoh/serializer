@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <named_array_with_formatted_date>
+    <testdate1><![CDATA[01.01.2047 12:47:47]]></testdate1>
+    <testdate2><![CDATA[05.12.2013 00:00:00]]></testdate2>
+  </named_array_with_formatted_date>
+</result>
