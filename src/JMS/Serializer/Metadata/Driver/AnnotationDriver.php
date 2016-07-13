@@ -148,68 +148,71 @@ class AnnotationDriver implements DriverInterface
 
             $propertyAnnotations = $propertiesAnnotations[$propertyKey];
 
-            foreach ($propertyAnnotations as $annot) {
-                if ($annot instanceof Since) {
-                    $propertyMetadata->sinceVersion = $annot->version;
-                } elseif ($annot instanceof Until) {
-                    $propertyMetadata->untilVersion = $annot->version;
-                } elseif ($annot instanceof SerializedName) {
-                    $propertyMetadata->serializedName = $annot->name;
-                } elseif ($annot instanceof Expose) {
-                    $isExpose = true;
-                } elseif ($annot instanceof Type) {
-                    $propertyMetadata->setType($annot->name);
-                } elseif ($annot instanceof XmlElement) {
-                    $propertyMetadata->xmlAttribute = false;
-                    $propertyMetadata->xmlElementCData = $annot->cdata;
-                    $propertyMetadata->xmlNamespace = $annot->namespace;
-                } elseif ($annot instanceof XmlList) {
-                    $propertyMetadata->xmlCollection = true;
-                    $propertyMetadata->xmlCollectionInline = $annot->inline;
-                    $propertyMetadata->xmlEntryName = $annot->entry;
-                } elseif ($annot instanceof XmlMap) {
-                    $propertyMetadata->xmlCollection = true;
-                    $propertyMetadata->xmlCollectionInline = $annot->inline;
-                    $propertyMetadata->xmlEntryName = $annot->entry;
-                    $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
-                } elseif ($annot instanceof XmlKeyValuePairs) {
-                    $propertyMetadata->xmlKeyValuePairs = true;
-                } elseif ($annot instanceof XmlAttribute) {
-                    $propertyMetadata->xmlAttribute = true;
-                    $propertyMetadata->xmlNamespace = $annot->namespace;
-                } elseif ($annot instanceof XmlValue) {
-                    $propertyMetadata->xmlValue = true;
-                    $propertyMetadata->xmlElementCData = $annot->cdata;
-                } elseif ($annot instanceof XmlElement) {
-                    $propertyMetadata->xmlElementCData = $annot->cdata;
-                } elseif ($annot instanceof AccessType) {
-                    $accessType = $annot->type;
-                } elseif ($annot instanceof ReadOnly) {
-                    $propertyMetadata->readOnly = $annot->readOnly;
-                } elseif ($annot instanceof Accessor) {
-                    $accessor = array($annot->getter, $annot->setter);
-                } elseif ($annot instanceof Exclude) {
-                    if (!empty($annot->groups)) {
-                        $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
-                        $this->sanitizeGroupNames($annot->groups, $annotationSource);
-                        $propertyMetadata->exclusionGroups = $annot->groups;
-                    } else {
-                        $exclude = true;
-                    }
+                foreach ($propertyAnnotations as $annot) {
+                    if ($annot instanceof Since) {
+                        $propertyMetadata->sinceVersion = $annot->version;
+                    } elseif ($annot instanceof Until) {
+                        $propertyMetadata->untilVersion = $annot->version;
+                    } elseif ($annot instanceof SerializedName) {
+                        $propertyMetadata->serializedName = $annot->name;
+                    } elseif ($annot instanceof Expose) {
+                        $isExpose = true;
+                    } elseif ($annot instanceof Type) {
+                        $propertyMetadata->setType($annot->name);
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlAttribute = false;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
+                    } elseif ($annot instanceof XmlList) {
+                        $propertyMetadata->xmlCollection = true;
+                        $propertyMetadata->xmlCollectionInline = $annot->inline;
+                        $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlEntryNamespace = $annot->namespace;
+                    } elseif ($annot instanceof XmlMap) {
+                        $propertyMetadata->xmlCollection = true;
+                        $propertyMetadata->xmlCollectionInline = $annot->inline;
+                        $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlEntryNamespace = $annot->namespace;
+                        $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
+                    } elseif ($annot instanceof XmlKeyValuePairs) {
+                        $propertyMetadata->xmlKeyValuePairs = true;
+                    } elseif ($annot instanceof XmlAttribute) {
+                        $propertyMetadata->xmlAttribute = true;
+                        $propertyMetadata->xmlNamespace = $annot->namespace;
+                    } elseif ($annot instanceof XmlValue) {
+                        $propertyMetadata->xmlValue = true;
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof XmlElement) {
+                        $propertyMetadata->xmlElementCData = $annot->cdata;
+                    } elseif ($annot instanceof AccessType) {
+                        $accessType = $annot->type;
+                    } elseif ($annot instanceof ReadOnly) {
+                        $propertyMetadata->readOnly = $annot->readOnly;
+                    } elseif ($annot instanceof Accessor) {
+                        $accessor = array($annot->getter, $annot->setter);
+                    } elseif ($annot instanceof Exclude) {
+                        if (!empty($annot->groups)) {
+                            $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
+                            $this->sanitizeGroupNames($annot->groups, $annotationSource);
+                            $propertyMetadata->exclusionGroups = $annot->groups;
+                        } else {
+                            $exclude = true;
+                        }
 
-                } elseif ($annot instanceof Groups) {
-                    $propertyMetadata->groups = $annot->groups;
-                    $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
-                    $this->sanitizeGroupNames($propertyMetadata->groups, $annotationSource);
-                } elseif ($annot instanceof Inline) {
-                    $propertyMetadata->inline = true;
-                } elseif ($annot instanceof XmlAttributeMap) {
-                    $propertyMetadata->xmlAttributeMap = true;
-                } elseif ($annot instanceof MaxDepth) {
-                    $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof Groups) {
+                        $propertyMetadata->groups = $annot->groups;
+                        $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
+                        $this->sanitizeGroupNames($propertyMetadata->groups, $annotationSource);
+                    } elseif ($annot instanceof Inline) {
+                        $propertyMetadata->inline = true;
+                    } elseif ($annot instanceof XmlAttributeMap) {
+                        $propertyMetadata->xmlAttributeMap = true;
+                    } elseif ($annot instanceof MaxDepth) {
+                        $propertyMetadata->maxDepth = $annot->depth;
+                    }
                 }
-            }
-            $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+
+                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
             if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $exclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

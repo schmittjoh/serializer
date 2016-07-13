@@ -19,3 +19,8 @@ author:
     full_name: 'Foo Bar'
 publisher:
     pub_name: 'Bar Foo'
+tag:
+    -
+        name: tag1
+    -
+        name: tag2

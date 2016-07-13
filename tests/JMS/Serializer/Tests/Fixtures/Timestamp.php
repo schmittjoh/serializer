@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
 
-abstract class XmlCollection
+use JMS\Serializer\Annotation\Type;
+
+class Timestamp
 {
     /**
-     * @var string
+     * @Type("DateTime<'U'>")
      */
-    public $entry = 'entry';
+    private $timestamp;
 
-    /**
-     * @var boolean
-     */
-    public $inline = false;
+    public function __construct($timestamp)
+    {
+        $this->timestamp = $timestamp;
+    }
 
-    /**
-     * @var string
-     */
-    public $namespace;
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
 }

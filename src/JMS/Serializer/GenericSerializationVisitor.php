@@ -98,6 +98,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
+        $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
+
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
@@ -105,7 +107,11 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            $rs[$k] = $v;
+            if ($isList) {
+                $rs[] = $v;
+            } else {
+                $rs[$k] = $v;
+            }
         }
 
         return $rs;
