@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <comment><![CDATA[not_empty_inline]]></comment>
+  <empty_not_inline/>
+  <not_empty_not_inline>
+    <comment><![CDATA[not_empty_not_inline]]></comment>
+  </not_empty_not_inline>
+</result>

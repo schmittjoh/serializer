@@ -303,8 +303,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($element->hasChildNodes() || $element->hasAttributes()
-                || (isset($metadata->type['name']) && $metadata->type['name'] === 'array' && isset($metadata->type['params'][1]))) {
+            if ($element->hasChildNodes() || $element->hasAttributes() || ($node === null && $v !== null && !$context->isVisiting($v))) {
                 $this->currentNode->appendChild($element);
             }
         }
