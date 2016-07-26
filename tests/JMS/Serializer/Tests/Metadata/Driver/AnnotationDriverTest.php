@@ -20,11 +20,25 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 
 class AnnotationDriverTest extends BaseDriverTest
 {
     protected function getDriver()
     {
         return new AnnotationDriver(new AnnotationReader());
+    }
+
+    public function testVirtualPropertyHasPriority()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\VitualPropertyIsPriority'));
+
+        $this->assertNotNull($m);
+
+        $p = new VirtualPropertyMetadata($m->name, 'id');
+        $p->groups = array('testing_group');
+        $p->getter = 'getId';
+        $p->serializedName = 'id';
+        $this->assertEquals($p, $m->propertyMetadata['id']);
     }
 }
