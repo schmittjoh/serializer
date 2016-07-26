@@ -95,6 +95,19 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['price']);
     }
 
+    public function testXMLListAbsentNode()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode'));
+        
+        $this->assertArrayHasKey('absent', $m->propertyMetadata);
+        $this->assertArrayHasKey('present', $m->propertyMetadata);
+        $this->assertArrayHasKey('skipDefault', $m->propertyMetadata);
+
+        $this->assertTrue($m->propertyMetadata['absent']->xmlCollectionSkipWhenEmpty);
+        $this->assertTrue($m->propertyMetadata['skipDefault']->xmlCollectionSkipWhenEmpty);
+        $this->assertFalse($m->propertyMetadata['present']->xmlCollectionSkipWhenEmpty);
+    }
+
     public function testVirtualProperty()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties'));

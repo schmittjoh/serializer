@@ -303,13 +303,17 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($element->hasChildNodes() || $element->hasAttributes()
-                || (isset($metadata->type['name']) && $metadata->type['name'] === 'array' && isset($metadata->type['params'][1]))) {
+            if ($this->nodeNotEmpty($element) || ((!$metadata->xmlCollection || !$metadata->xmlCollectionSkipWhenEmpty) && $node === null && $v !== null && !$context->isVisiting($v))) {
                 $this->currentNode->appendChild($element);
             }
         }
 
         $this->hasValue = false;
+    }
+
+    private function nodeNotEmpty(\DOMElement $element)
+    {
+        return $element->hasChildNodes() || $element->hasAttributes();
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
@@ -439,21 +443,17 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     private function createElement($tagName, $namespace = null)
     {
-        if (null !== $namespace) {
-
-            if ($this->currentNode->isDefaultNamespace($namespace)) {
-                return $this->document->createElementNS($namespace, $tagName);
-            } else {
-                if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
-                    $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
-                }
-                return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
-            }
-
-
-        } else {
+        if (null === $namespace) {
             return $this->document->createElement($tagName);
         }
+        if ($this->currentNode->isDefaultNamespace($namespace)) {
+            return $this->document->createElementNS($namespace, $tagName);
+        }
+        if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
+            $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
+            return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
+        }
+        return $this->document->createElement($prefix . ':' . $tagName);
     }
 
     private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)

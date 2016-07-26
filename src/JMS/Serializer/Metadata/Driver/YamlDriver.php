@@ -113,11 +113,17 @@ class YamlDriver extends AbstractFileDriver
 
                         $colConfig = $pConfig['xml_list'];
                         if (isset($colConfig['inline'])) {
-                            $pMetadata->xmlCollectionInline = (Boolean) $colConfig['inline'];
+                            $pMetadata->xmlCollectionInline = (Boolean)$colConfig['inline'];
                         }
 
                         if (isset($colConfig['entry_name'])) {
-                            $pMetadata->xmlEntryName = (string) $colConfig['entry_name'];
+                            $pMetadata->xmlEntryName = (string)$colConfig['entry_name'];
+                        }
+
+                        if (isset($colConfig['skip_when_empty'])) {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = (Boolean)$colConfig['skip_when_empty'];
+                        } else {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = true;
                         }
 
                         if (isset($colConfig['namespace'])) {
