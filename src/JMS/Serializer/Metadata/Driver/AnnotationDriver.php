@@ -171,7 +171,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
                         $propertyMetadata->xmlEntryName = $annot->entry;
                         $propertyMetadata->xmlEntryNamespace = $annot->namespace;
-                        $propertyMetadata->xmlCollectionSkipWhenEmpty = $annot->skip_when_empty;
+                        $propertyMetadata->xmlCollectionSkipWhenEmpty = $annot->skipWhenEmpty;
                     } elseif ($annot instanceof XmlMap) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;

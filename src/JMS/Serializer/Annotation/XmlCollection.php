@@ -38,5 +38,5 @@ abstract class XmlCollection
     /**
      * @var boolean
      */
-    public $skip_when_empty = true;
+    public $skipWhenEmpty = true;
 }

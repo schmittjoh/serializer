@@ -23,12 +23,12 @@ use JMS\Serializer\Annotation as Serializer;
 class ObjectWithAbsentXmlListNode
 {
     /**
-     * @Serializer\XmlList(inline=false, entry="comment", skip_when_empty=true)
+     * @Serializer\XmlList(inline=false, entry="comment", skipWhenEmpty=true)
      * @Serializer\Type("array<string>")
      */
     public $absent;
     /**
-     * @Serializer\XmlList(inline=false, entry="comment", skip_when_empty=false)
+     * @Serializer\XmlList(inline=false, entry="comment", skipWhenEmpty=false)
      * @Serializer\Type("array<string>")
      */
     public $present;
