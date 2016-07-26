@@ -443,21 +443,17 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     private function createElement($tagName, $namespace = null)
     {
-        if (null !== $namespace) {
-
-            if ($this->currentNode->isDefaultNamespace($namespace)) {
-                return $this->document->createElementNS($namespace, $tagName);
-            } else {
-                if (!$prefix = $this->currentNode->lookupPrefix($namespace)) {
-                    $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
-                }
-                return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
-            }
-
-
-        } else {
+        if (null === $namespace) {
             return $this->document->createElement($tagName);
         }
+        if ($this->currentNode->isDefaultNamespace($namespace)) {
+            return $this->document->createElementNS($namespace, $tagName);
+        }
+        if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
+            $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
+            return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
+        }
+        return $this->document->createElement($prefix . ':' . $tagName);
     }
 
     private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
