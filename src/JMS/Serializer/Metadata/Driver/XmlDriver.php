@@ -162,6 +162,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pElem->{'xml-list'})) {
+
                         $pMetadata->xmlCollection = true;
 
                         $colConfig = $pElem->{'xml-list'};
@@ -171,6 +172,12 @@ class XmlDriver extends AbstractFileDriver
 
                         if (isset($colConfig->attributes()->{'entry-name'})) {
                             $pMetadata->xmlEntryName = (string) $colConfig->attributes()->{'entry-name'};
+                        }
+                        
+                        if (isset($colConfig->attributes()->{'skip-when-empty'})) {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = 'true' === (string) $colConfig->attributes()->{'skip-when-empty'};
+                        } else {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = true;
                         }
 
                         if (isset($colConfig->attributes()->namespace)) {

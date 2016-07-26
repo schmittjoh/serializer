@@ -16,27 +16,26 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
 
-abstract class XmlCollection
+use JMS\Serializer\Annotation as Serializer;
+
+class ObjectWithAbsentXmlListNode
 {
     /**
-     * @var string
+     * @Serializer\XmlList(inline=false, entry="comment", skip_when_empty=true)
+     * @Serializer\Type("array<string>")
      */
-    public $entry = 'entry';
+    public $absent;
+    /**
+     * @Serializer\XmlList(inline=false, entry="comment", skip_when_empty=false)
+     * @Serializer\Type("array<string>")
+     */
+    public $present;
 
     /**
-     * @var boolean
+     * @Serializer\XmlList(inline=false, entry="comment")
+     * @Serializer\Type("array<string>")
      */
-    public $inline = false;
-
-    /**
-     * @var string
-     */
-    public $namespace;
-
-    /**
-     * @var boolean
-     */
-    public $skip_when_empty = true;
+    public $skipDefault;
 }
