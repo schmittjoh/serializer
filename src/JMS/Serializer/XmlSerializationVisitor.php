@@ -303,12 +303,17 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($element->hasChildNodes() || $element->hasAttributes() || ($node === null && $v !== null && !$context->isVisiting($v))) {
+            if ($this->nodeNotEmpty($element) || ((!$metadata->xmlCollection || !$metadata->xmlCollectionSkipWhenEmpty) && $node === null && $v !== null && !$context->isVisiting($v))) {
                 $this->currentNode->appendChild($element);
             }
         }
 
         $this->hasValue = false;
+    }
+
+    private function nodeNotEmpty(\DOMElement $element)
+    {
+        return $element->hasChildNodes() || $element->hasAttributes();
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)

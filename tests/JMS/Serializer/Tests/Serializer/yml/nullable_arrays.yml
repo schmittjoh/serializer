@@ -4,3 +4,6 @@ not_empty_inline:
 empty_not_inline: []
 not_empty_not_inline:
     - not_empty_not_inline
+empty_not_inline_skip: []
+not_empty_not_inline_skip:
+    - not_empty_not_inline_skip

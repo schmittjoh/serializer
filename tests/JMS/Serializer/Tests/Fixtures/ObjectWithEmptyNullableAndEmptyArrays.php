@@ -53,10 +53,28 @@ class ObjectWithEmptyNullableAndEmptyArrays
      */
     public $empty_not_inline = [];
 
-
     /**
-     * @Serializer\XmlList(inline = false, entry = "comment")
+     * @Serializer\XmlList(inline = false, entry = "comment", skip_when_empty=false)
      * @Serializer\Type("array")
      */
     public $not_empty_not_inline = ['not_empty_not_inline'];
+
+    /**
+     * @Serializer\XmlList(inline = false, entry = "comment", skip_when_empty=false)
+     * @Serializer\Type("array")
+     */
+    public $null_not_inline_skip = null;
+
+    /**
+     * @Serializer\XmlList(inline = false, entry = "comment", skip_when_empty=false)
+     * @Serializer\Type("array")
+     */
+    public $empty_not_inline_skip = [];
+
+
+    /**
+     * @Serializer\XmlList(inline = false, entry = "comment", skip_when_empty=false)
+     * @Serializer\Type("array")
+     */
+    public $not_empty_not_inline_skip = ['not_empty_not_inline_skip'];
 }
