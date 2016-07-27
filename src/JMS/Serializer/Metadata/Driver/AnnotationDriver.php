@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\MultiType;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -162,6 +163,8 @@ class AnnotationDriver implements DriverInterface
                         $isExclude = true;
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
+                    } elseif ($annot instanceof MultiType) {
+                        $propertyMetadata->addMultiType($annot->key, $annot->valueType, $annot->setter);
                     } elseif ($annot instanceof XmlElement) {
                         $propertyMetadata->xmlAttribute = false;
                         $propertyMetadata->xmlElementCData = $annot->cdata;
@@ -214,8 +217,9 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
-
+                if ($propertyMetadata->setter === null) {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
                     $classMetadata->addPropertyMetadata($propertyMetadata);

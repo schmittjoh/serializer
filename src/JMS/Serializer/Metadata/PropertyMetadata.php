@@ -32,6 +32,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $groups;
     public $serializedName;
     public $type;
+    public $multiType;
     public $xmlCollection = false;
     public $xmlCollectionInline = false;
     public $xmlCollectionSkipWhenEmpty = true;
@@ -49,6 +50,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $readOnly = false;
     public $xmlAttributeMap = false;
     public $maxDepth = null;
+    public $multiTypes = array();
 
     private static $typeParser;
 
@@ -110,6 +112,15 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->type = self::$typeParser->parse($type);
     }
 
+    public function addMultiType($key, $valueType)
+    {
+        if (null === self::$typeParser) {
+            self::$typeParser = new TypeParser();
+        }
+
+        $this->multiTypes[$key] =  self::$typeParser->parse($valueType);
+    }
+
     public function serialize()
     {
         return serialize(array(
@@ -118,6 +129,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->multiType,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
@@ -148,6 +160,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->multiType,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
