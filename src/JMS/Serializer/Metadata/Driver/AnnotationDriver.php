@@ -133,7 +133,7 @@ class AnnotationDriver implements DriverInterface
 
         if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
-                if ($property->class !== $name) {
+                if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
                 }
                 $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
