@@ -51,16 +51,11 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function __construct($namingStrategy)
     {
         parent::__construct($namingStrategy);
-        $this->objectMetadataStack = new \SplStack;
-    }
-
-    public function __construct($namingStrategy)
-    {
-        parent::__construct($namingStrategy);
         $this->navigatorStack = new \SplStack;
         $this->documentStack = new \SplStack;
         $this->stackStack = new \SplStack;
         $this->metadataStackStack = new \SplStack;
+        $this->objectMetadataStack = new \SplStack;
     }
 
     public function setDefaultRootName($name, $namespace = null)
