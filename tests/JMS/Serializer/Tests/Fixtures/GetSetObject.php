@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\AccessType;
+use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\ReadOnly;
 
@@ -35,6 +36,12 @@ class GetSetObject
      * @ReadOnly
      */
     private $readOnlyProperty = 42;
+
+    /**
+     * This property should be exlcluded
+     * @Exclude()
+     */
+    private $excludedProperty;
 
     public function getId()
     {
