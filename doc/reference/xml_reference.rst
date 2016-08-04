@@ -18,6 +18,7 @@ XML Reference
                       since-version="1.0"
                       until-version="1.1"
                       xml-attribute="true"
+                      xml-value="true"
                       access-type="public_method"
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
