@@ -123,6 +123,40 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
     }
 
+    public function testRemoveFullNameToOutput()
+    {
+        $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+        $this->dispatcher->addSubscriber(new LinkRemovingSubscriber());
+
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+            }
+        );
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('[{"full_name":"foo"},{"full_name":"bar"}]', $this->serialize($list));
+    }
+
+    public function testReplaceAuthorToOutput()
+    {
+        $this->dispatcher->addSubscriber(new AuthorReplacingSubscriber());
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+            }
+        );
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('["foo","bar"]', $this->serialize($list));
+    }
+
     public function getPrimitiveTypes()
     {
         return array(
@@ -216,7 +250,17 @@ class JsonSerializationTest extends BaseSerializationTest
     }
 }
 
-class LinkAddingSubscriber implements EventSubscriberInterface
+abstract class AbstractSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
+        );
+    }
+}
+
+class LinkAddingSubscriber extends AbstractSubscriber
 {
     public function onPostSerialize(Event $event)
     {
@@ -227,11 +271,23 @@ class LinkAddingSubscriber implements EventSubscriberInterface
             'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
         ));
     }
+}
 
-    public static function getSubscribedEvents()
+class LinkRemovingSubscriber extends AbstractSubscriber
+{
+    public function onPostSerialize(Event $event)
     {
-        return array(
-            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
-        );
+        $event->getVisitor()->removeData('_links');
+    }
+}
+
+class AuthorReplacingSubscriber extends AbstractSubscriber
+{
+    public function onPostSerialize(Event $event)
+    {
+        $visitor = $event->getVisitor();
+        $data = $visitor->getData();
+
+        $visitor->setData($data['full_name']);
     }
 }

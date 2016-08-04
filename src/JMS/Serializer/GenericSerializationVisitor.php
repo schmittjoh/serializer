@@ -160,6 +160,22 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     }
 
     /**
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Allows you to add additional data to the current object/root element.
      *
      * @param string $key
@@ -175,6 +191,17 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $this->data[$key] = $value;
     }
 
+    /**
+     * @param string $key
+     */
+    public function removeData($key)
+    {
+        unset($this->data[$key]);
+    }
+
+    /**
+     * @return array|\ArrayObject
+     */
     public function getRoot()
     {
         return $this->root;
