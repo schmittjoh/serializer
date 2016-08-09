@@ -23,7 +23,7 @@ namespace JMS\Serializer\Metadata;
  *
  * @author Ivan Borzenkov <ivan.borzenkov@gmail.com>
  */
-class IndexMetadata implements \Serializable
+class IndexMetadata
 {
     public $index;
 
@@ -41,19 +41,4 @@ class IndexMetadata implements \Serializable
     {
         return $this->index;
     }
-
-    public function serialize()
-    {
-        return serialize(array(
-            $this->index,
-        ));
-    }
-
-    public function unserialize($str)
-    {
-        list(
-            $this->index,
-            ) = unserialize($str);
-    }
-
 }
