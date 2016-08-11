@@ -188,7 +188,7 @@ final class GraphNavigator
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($context, $data, $metadata);
+                    $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -249,7 +249,7 @@ final class GraphNavigator
         }
     }
 
-    private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
+    private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
             case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
