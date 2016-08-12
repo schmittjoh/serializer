@@ -30,7 +30,7 @@ interface NormalizerInterface
      * This is useful when the data needs to be passed on to other methods which expect array data.
      *
      * @param mixed $data anything that converts to an array, typically an object or an array of objects
-     * @param SerializationContext $context
+     * @param SerializationContext|null $context
      *
      * @return array
      */
@@ -41,7 +41,7 @@ interface NormalizerInterface
      *
      * @param array $data
      * @param string $type
-     * @param DeserializationContext $context
+     * @param DeserializationContext|null $context
      *
      * @return mixed this returns whatever the passed type is, typically an object or an array of objects
      */
