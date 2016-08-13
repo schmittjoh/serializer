@@ -174,6 +174,17 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
         $this->data[$key] = $value;
     }
+    
+    /**
+     * Checks if some data key exists.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasData($key)
+    {
+        return isset($this->data[$key]);
+    }
 
     public function getRoot()
     {
