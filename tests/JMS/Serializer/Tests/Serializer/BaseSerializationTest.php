@@ -105,6 +105,10 @@ use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
     protected $factory;
+
+    /**
+     * @var EventDispatcher
+     */
     protected $dispatcher;
 
     /** @var Serializer */

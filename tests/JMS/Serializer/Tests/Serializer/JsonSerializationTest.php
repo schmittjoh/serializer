@@ -111,7 +111,16 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testAddLinksToOutput()
     {
+        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+            $this->assertFalse($event->getVisitor()->hasData('_links'));
+        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+
+        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+            $this->assertTrue($event->getVisitor()->hasData('_links'));
+        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
             function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
