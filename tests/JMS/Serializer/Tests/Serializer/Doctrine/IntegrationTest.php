@@ -23,8 +23,9 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class IntegrationTest extends \PHPUnit_Framework_TestCase
+class IntegrationTest extends BaseTestCase
 {
     /** @var ManagerRegistry */
     private $registry;

@@ -22,8 +22,9 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
+class DoctrineProxySubscriberTest extends BaseTestCase
 {
     /** @var VisitorInterface */
     private $visitor;
@@ -52,7 +53,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();
-        $this->visitor = $this->getMock('JMS\Serializer\Context');
+        $this->visitor = $this->createMock('JMS\Serializer\Context');
     }
 
     private function createEvent($object, array $type)

@@ -33,8 +33,9 @@ use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class ArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayTest extends BaseTestCase
 {
     protected $serializer;
 

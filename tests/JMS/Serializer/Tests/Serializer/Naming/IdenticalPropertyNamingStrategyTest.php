@@ -19,8 +19,9 @@
 namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class IdenticalPropertyNamingStrategyTest extends \PHPUnit_Framework_TestCase
+class IdenticalPropertyNamingStrategyTest extends BaseTestCase
 {
     public function providePropertyNames()
     {

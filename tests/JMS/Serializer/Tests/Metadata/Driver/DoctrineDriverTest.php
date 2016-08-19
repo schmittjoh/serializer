@@ -24,8 +24,9 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
+class DoctrineDriverTest extends BaseTestCase
 {
     public function getMetadata()
     {
@@ -124,7 +125,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
     protected function getDoctrineDriver()
     {
-        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $registry = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
         $registry->expects($this->atLeastOnce())
              ->method('getManagerForClass')
              ->will($this->returnValue($this->getEntityManager()));
