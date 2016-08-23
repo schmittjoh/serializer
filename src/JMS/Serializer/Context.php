@@ -52,7 +52,7 @@ abstract class Context
     private $exclusionStrategy;
 
     /** @var boolean */
-    private $serializeNull = false;
+    private $serializeNull;
 
     private $initialized = false;
 
