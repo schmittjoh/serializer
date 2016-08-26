@@ -221,7 +221,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         $v = $metadata->getValue($object);
 
-        if (null === $v && ! $context->shouldSerializeNull()) {
+        if (null === $v && $context->shouldSerializeNull() !== true) {
             return;
         }
 
