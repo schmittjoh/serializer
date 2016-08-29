@@ -169,4 +169,22 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($context->isVisiting($scalar));
         $context->stopVisiting($scalar);
     }
+
+    public function testSerializeNullOption()
+    {
+        $context = SerializationContext::create();
+        $this->assertNull($context->shouldSerializeNull());
+
+        $context->setSerializeNull(false);
+        $this->assertFalse($context->shouldSerializeNull());
+
+        $context->setSerializeNull(true);
+        $this->assertTrue($context->shouldSerializeNull());
+
+        $context->setSerializeNull("foo");
+        $this->assertTrue($context->shouldSerializeNull());
+
+        $context->setSerializeNull("0");
+        $this->assertFalse($context->shouldSerializeNull());
+    }
 }
