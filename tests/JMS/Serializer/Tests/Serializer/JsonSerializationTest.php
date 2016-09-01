@@ -46,13 +46,15 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_strings'] = '["foo","bar"]';
             $outputs['array_booleans'] = '[true,false]';
             $outputs['array_integers'] = '[1,3,4]';
+            $outputs['array_empty'] = '{"array":[]}';
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
+            $outputs['array_list_and_map_difference'] = '{"list":[1,2,3],"map":{"0":1,"2":2,"3":3}}';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
             $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2013-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2013 00:00:00"]}';
             $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2013 00:00:00"}}';
-            $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"}}';
-            $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null}';
+            $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"},"tag":[{"name":"tag1"},{"name":"tag2"}]}';
+            $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null,"tag":null}';
             $outputs['price'] = '{"price":3}';
             $outputs['currency_aware_price'] = '{"currency":"EUR","amount":2.34}';
             $outputs['order'] = '{"cost":{"price":12.34}}';
@@ -76,7 +78,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
-            $outputs['virtual_properties'] = '{"exist_field":"value","test":"other-name","virtual_value":"value","typed_virtual_property":1}';
+            $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
@@ -88,11 +90,16 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['object_when_null'] = '{"text":"foo"}';
             $outputs['object_when_null_and_serialized'] = '{"author":null,"text":"foo"}';
             $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
+            $outputs['timestamp'] = '{"timestamp":1455148800}';
+            $outputs['timestamp_prev'] = '{"timestamp":"1455148800"}';
             $outputs['date_interval'] = '"PT45M"';
             $outputs['car'] = '{"km":5,"type":"car"}';
             $outputs['car_without_type'] = '{"km":5}';
             $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"}]}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
+            $outputs['nullable_arrays'] = '{"empty_inline":[],"not_empty_inline":["not_empty_inline"],"empty_not_inline":[],"not_empty_not_inline":["not_empty_not_inline"],"empty_not_inline_skip":[],"not_empty_not_inline_skip":["not_empty_not_inline_skip"]}';
+            $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
+            $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -104,7 +111,16 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testAddLinksToOutput()
     {
+        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+            $this->assertFalse($event->getVisitor()->hasData('_links'));
+        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
+
+        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+            $this->assertTrue($event->getVisitor()->hasData('_links'));
+        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
             function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
@@ -132,6 +148,27 @@ class JsonSerializationTest extends BaseSerializationTest
         $list->add(new Author('bar'));
 
         $this->assertEquals('[{"full_name":"new name"},{"full_name":"new name"}]', $this->serialize($list));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Invalid data "baz"(string), expected "JMS\Serializer\Tests\Fixtures\Author".
+     */
+    public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
+    {
+        $content = $this->getContent('object_with_object_property_no_array_to_author');
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
+        $this->assertEquals('bar', $object->getFoo());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+    }
+
+    public function testDeserializingObjectWithObjectProperty()
+    {
+        $content = $this->getContent('object_with_object_property');
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
+        $this->assertEquals('bar', $object->getFoo());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+        $this->assertEquals('baz', $object->getAuthor()->getName());
     }
 
     public function getPrimitiveTypes()

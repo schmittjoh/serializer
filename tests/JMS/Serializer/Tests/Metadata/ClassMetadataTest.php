@@ -23,7 +23,39 @@ use JMS\Serializer\Metadata\ClassMetadata;
 
 class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSetAccessorOrder()
+    public function getAccessOrderCases()
+    {
+        return [
+            [array('b', 'a'), array('b', 'a')],
+            [array('a', 'b'), array('a', 'b')],
+            [array('b'), array('b', 'a')],
+            [array('a'), array('a', 'b')],
+            [array('foo', 'bar'), array('b', 'a')],
+        ];
+    }
+
+    public function testSerialization()
+    {
+        $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
+        $restoredMeta = unserialize(serialize($meta));
+        $this->assertEquals($meta, $restoredMeta);
+    }
+
+    /**
+     * @dataProvider getAccessOrderCases
+     */
+    public function testSetAccessorOrderCustom(array $order, array $expected)
+    {
+        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
+        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
+        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
+        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
+
+        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, $order);
+        $this->assertEquals($expected, array_keys($metadata->propertyMetadata));
+    }
+
+    public function testSetAccessorOrderAlphabetical()
     {
         $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
@@ -32,21 +64,6 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
         $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('b', 'a'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('a', 'b'));
-        $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('b'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('a'));
-        $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('foo', 'bar'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
     }
 
     /**
@@ -62,8 +79,7 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($getterName, $metadata->getter);
         $this->assertEquals($setterName, $metadata->setter);
 
-        // setter is not supported by setValue(), any idea?
-        $object->{$metadata->setter}('x');
+        $metadata->setValue($object, 'x');
 
         $this->assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
     }

@@ -29,6 +29,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 {
     private $objectStack;
     private $metadataStack;
+    private $objectMetadataStack;
     private $currentObject;
     private $currentMetadata;
     private $result;
@@ -46,6 +47,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
+        $this->objectMetadataStack = new \SplStack;
         $this->result = null;
     }
 
@@ -59,21 +61,18 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
-        $dom = new \DOMDocument();
-        $dom->loadXML($data);
-        foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                $internalSubset = $this->getDomDocumentTypeEntitySubset($child, $data);
-                if ( ! in_array($internalSubset, $this->doctypeWhitelist, true)) {
-                    throw new InvalidArgumentException(sprintf(
-                        'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
-                        $internalSubset
-                    ));
-                }
+        if (false !== stripos($data, '<!doctype')) {
+            $internalSubset = $this->getDomDocumentTypeEntitySubset($data);
+            if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
+                    $internalSubset
+                ));
             }
         }
 
         $doc = simplexml_load_string($data);
+
         libxml_use_internal_errors($previous);
         libxml_disable_entity_loader($previousEntityLoaderState);
 
@@ -144,8 +143,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function visitArray($data, array $type, Context $context)
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
+        $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
-        if ( ! isset($data->$entryName)) {
+        if ($namespace === null && $this->objectMetadataStack->count()) {
+            $classMetadata = $this->objectMetadataStack->top();
+            $namespace = isset($classMetadata->xmlNamespaces[''])?$classMetadata->xmlNamespaces['']:$namespace;
+        }
+
+        if ( ! isset($data->$entryName) ) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -159,11 +164,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
             case 1:
                 $result = array();
+
                 if (null === $this->result) {
                     $this->result = &$result;
                 }
 
-                foreach ($data->$entryName as $v) {
+                $nodes = $data->children($namespace)->$entryName;
+                foreach ($nodes as $v) {
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
                 }
 
@@ -180,12 +187,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     $this->result = &$result;
                 }
 
-                foreach ($data->$entryName as $v) {
-                    if ( ! isset($v[$this->currentMetadata->xmlKeyAttribute])) {
+                $nodes = $data->children($namespace)->$entryName;
+                foreach ($nodes as $v) {
+                    $attrs = $v->attributes();
+                    if ( ! isset($attrs[$this->currentMetadata->xmlKeyAttribute])) {
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
-                    $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
+                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
                     $result[$k] = $this->navigator->accept($v, $entryType, $context);
                 }
 
@@ -199,7 +208,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->setCurrentObject($object);
-
+        $this->objectMetadataStack->push($metadata);
         if (null === $this->result) {
             $this->result = $this->currentObject;
         }
@@ -213,22 +222,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-        if ($metadata->xmlAttribute) {
-            if ('' !== $namespace = (string) $metadata->xmlNamespace) {
-                $registeredNamespaces = $data->getDocNamespaces();
-                if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
-                    $prefix = uniqid('ns-');
-                    $data->registerXPathNamespace($prefix, $namespace);
-                }
-                $attributeName = ($prefix === '') ? $name : $prefix.':'.$name;
-                $nodes = $data->xpath('./@'.$attributeName);
-                if ( ! empty($nodes)) {
-                    $v = (string) reset($nodes);
-                    $metadata->reflection->setValue($this->currentObject, $v);
-                }
+       if ($metadata->xmlAttribute) {
 
-            } elseif (isset($data[$name])) {
-                $v = $this->navigator->accept($data[$name], $metadata->type, $context);
+            $attributes = $data->attributes($metadata->xmlNamespace);
+            if (isset($attributes[$name])) {
+                $v = $this->navigator->accept($attributes[$name], $metadata->type, $context);
                 $metadata->reflection->setValue($this->currentObject, $v);
             }
 
@@ -244,8 +242,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         if ($metadata->xmlCollection) {
             $enclosingElem = $data;
-            if ( ! $metadata->xmlCollectionInline && isset($data->$name)) {
-                $enclosingElem = $data->$name;
+            if (!$metadata->xmlCollectionInline) {
+                $enclosingElem = $data->children($metadata->xmlNamespace)->$name;
             }
 
             $this->setCurrentMetadata($metadata);
@@ -256,39 +254,37 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if ('' !== $namespace = (string) $metadata->xmlNamespace) {
-            $registeredNamespaces = $data->getDocNamespaces();
-            if (false === $prefix = array_search($namespace, $registeredNamespaces)) {
-                $prefix = uniqid('ns-');
-                $data->registerXPathNamespace($prefix, $namespace);
+        if ($metadata->xmlNamespace) {
+            $node = $data->children($metadata->xmlNamespace)->$name;
+            if (!$node->count()) {
+                return;
             }
-            $elementName = ($prefix === '') ? $name : $prefix.':'.$name;
-            $nodes = $data->xpath('./'.$elementName);
+        } else {
+
+            $namespaces = $data->getDocNamespaces();
+
+            if (isset($namespaces[''])) {
+                $prefix = uniqid('ns-');
+                $data->registerXPathNamespace($prefix, $namespaces['']);
+                $nodes = $data->xpath('./'.$prefix. ':'.$name );
+            } else {
+                $nodes = $data->xpath('./'. $name );
+            }
             if (empty($nodes)) {
                 return;
             }
             $node = reset($nodes);
-        } else {
-            if ( ! isset($data->$name)) {
-                return;
-            }
-            $node = $data->$name;
         }
 
         $v = $this->navigator->accept($node, $metadata->type, $context);
 
-        if (null === $metadata->setter) {
-            $metadata->reflection->setValue($this->currentObject, $v);
-
-            return;
-        }
-
-        $this->currentObject->{$metadata->setter}($v);
+        $metadata->setValue($this->currentObject, $v);
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $rs = $this->currentObject;
+        $this->objectMetadataStack->pop();
         $this->revertCurrentObject();
 
         return $rs;
@@ -354,12 +350,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
      * @param string $data
      * @return string
      */
-    private function getDomDocumentTypeEntitySubset(\DOMDocumentType $child, $data)
+    private function getDomDocumentTypeEntitySubset($data)
     {
-        if (null !== $child->internalSubset) {
-            return str_replace(array("\n", "\r"), '', $child->internalSubset);
-        }
-        
         $startPos = $endPos = stripos($data, '<!doctype');
         $braces = 0;
         do {

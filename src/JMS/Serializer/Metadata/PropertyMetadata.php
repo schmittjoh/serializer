@@ -34,7 +34,9 @@ class PropertyMetadata extends BasePropertyMetadata
     public $type;
     public $xmlCollection = false;
     public $xmlCollectionInline = false;
+    public $xmlCollectionSkipWhenEmpty = true;
     public $xmlEntryName;
+    public $xmlEntryNamespace;
     public $xmlKeyAttribute;
     public $xmlAttribute = false;
     public $xmlValue = false;
@@ -89,6 +91,16 @@ class PropertyMetadata extends BasePropertyMetadata
         return $obj->{$this->getter}();
     }
 
+    public function setValue($obj, $value)
+    {
+        if (null === $this->setter) {
+            parent::setValue($obj, $value);
+            return;
+        }
+
+        $obj->{$this->setter}($value);
+    }
+
     public function setType($type)
     {
         if (null === self::$typeParser) {
@@ -122,11 +134,14 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             parent::serialize(),
+            'xmlEntryNamespace' => $this->xmlEntryNamespace,
+            'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
         ));
     }
 
     public function unserialize($str)
     {
+        $unserialized = unserialize($str);
         list(
             $this->sinceVersion,
             $this->untilVersion,
@@ -149,7 +164,15 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             $parentStr
-        ) = unserialize($str);
+        ) = $unserialized;
+
+        if (isset($unserialized['xmlEntryNamespace'])){
+            $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
+        }
+        if (isset($unserialized['xmlCollectionSkipWhenEmpty'])){
+            $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
+        }
+        
 
         parent::unserialize($parentStr);
     }

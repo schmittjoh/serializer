@@ -113,7 +113,7 @@ class XmlDriver extends AbstractFileDriver
         if ( ! $excludeAll) {
 
             foreach ($class->getProperties() as $property) {
-                if ($name !== $property->class) {
+                if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
                 }
 
@@ -162,6 +162,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pElem->{'xml-list'})) {
+
                         $pMetadata->xmlCollection = true;
 
                         $colConfig = $pElem->{'xml-list'};
@@ -171,6 +172,16 @@ class XmlDriver extends AbstractFileDriver
 
                         if (isset($colConfig->attributes()->{'entry-name'})) {
                             $pMetadata->xmlEntryName = (string) $colConfig->attributes()->{'entry-name'};
+                        }
+                        
+                        if (isset($colConfig->attributes()->{'skip-when-empty'})) {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = 'true' === (string) $colConfig->attributes()->{'skip-when-empty'};
+                        } else {
+                            $pMetadata->xmlCollectionSkipWhenEmpty = true;
+                        }
+
+                        if (isset($colConfig->attributes()->namespace)) {
+                            $pMetadata->xmlEntryNamespace = (string) $colConfig->attributes()->namespace;
                         }
                     }
 
@@ -184,6 +195,10 @@ class XmlDriver extends AbstractFileDriver
 
                         if (isset($colConfig->attributes()->{'entry-name'})) {
                             $pMetadata->xmlEntryName = (string) $colConfig->attributes()->{'entry-name'};
+                        }
+
+                        if (isset($colConfig->attributes()->namespace)) {
+                            $pMetadata->xmlEntryNamespace = (string) $colConfig->attributes()->namespace;
                         }
 
                         if (isset($colConfig->attributes()->{'key-attribute-name'})) {
@@ -207,7 +222,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pElem->attributes()->{'xml-attribute-map'})) {
-                        $pMetadata->xmlAttribute = 'true' === (string) $pElem->attributes()->{'xml-attribute-map'};
+                        $pMetadata->xmlAttributeMap = 'true' === (string) $pElem->attributes()->{'xml-attribute-map'};
                     }
 
                     if (isset($pElem->attributes()->{'xml-value'})) {
