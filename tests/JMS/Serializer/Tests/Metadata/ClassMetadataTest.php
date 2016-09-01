@@ -23,47 +23,35 @@ use JMS\Serializer\Metadata\ClassMetadata;
 
 class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 {
-    public function getAccessOrderCases()
-    {
-        return [
-            [array('b', 'a'), array('b', 'a')],
-            [array('a', 'b'), array('a', 'b')],
-            [array('b'), array('b', 'a')],
-            [array('a'), array('a', 'b')],
-            [array('foo', 'bar'), array('b', 'a')],
-        ];
-    }
-
-    public function testSerialization()
-    {
-        $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
-        $restoredMeta = unserialize(serialize($meta));
-        $this->assertEquals($meta, $restoredMeta);
-    }
-
     /**
-     * @dataProvider getAccessOrderCases
+     * @dataProvider setAccessorOrderDataProvider
      */
-    public function testSetAccessorOrderCustom(array $order, array $expected)
+    public function testSetAccessorOrder($order, array $customOrder, $expected, $message)
     {
-        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
+        $class = 'JMS\Serializer\Tests\Metadata\PropertyMetadataOrder'; // Note: defined in this file below ClassMetadataTest
+        $metadata = new ClassMetadata($class);
+        $metadata->addPropertyMetadata(new PropertyMetadata($class, 'z'));
+        $metadata->addPropertyMetadata(new PropertyMetadata($class, 'a'));
+        $metadata->addPropertyMetadata(new PropertyMetadata($class, 'b'));
+        $metadata->addPropertyMetadata(new PropertyMetadata($class, 'c'));
 
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, $order);
-        $this->assertEquals($expected, array_keys($metadata->propertyMetadata));
+        if ($order) {
+            $metadata->setAccessorOrder($order, $customOrder);
+        }
+        $this->assertEquals($expected, array_keys($metadata->propertyMetadata), $message);
     }
 
-    public function testSetAccessorOrderAlphabetical()
+    public function setAccessorOrderDataProvider()
     {
-        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
-
-        $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
-        $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
+        return array(
+            array(null, array(), array('z', 'a', 'b', 'c'), 'Default order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL, array(), array('a', 'b', 'c', 'z'), 'Alphabetical order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('b', 'a'), array('b', 'a', 'z', 'c'), 'Custom (b,a) order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('a', 'b'), array('a', 'b', 'z', 'c'), 'Custom (a,b) order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('b'), array('b', 'z', 'a', 'c'), 'Custom (b) order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('a'), array('a', 'z', 'b', 'c'), 'Custom (a) order incorrect'),
+            array(ClassMetadata::ACCESSOR_ORDER_CUSTOM, array('foo', 'bar'), array('z', 'a', 'b', 'c'), 'Custom (foo,bar) order incorrect'),
+        );
     }
 
     /**
@@ -119,7 +107,7 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 
 class PropertyMetadataOrder
 {
-    private $b, $a;
+    private $z, $a, $b, $c;
 }
 
 class PropertyMetadataPublicMethod

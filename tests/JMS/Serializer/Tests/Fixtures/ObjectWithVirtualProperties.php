@@ -25,7 +25,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Exclude;
 
 /**
- * @AccessorOrder("custom", custom = {"prop_name", "existField", "foo" })
+ * @AccessorOrder("custom", custom = {"realField", "virtualField", "renamedVirtualField", "typedVirtualProperty", "foo" })
  */
 class ObjectWithVirtualProperties
 {
@@ -33,31 +33,31 @@ class ObjectWithVirtualProperties
     /**
      * @Type("string")
      */
-    protected $existField = 'value';
+    protected $realField = 'real field value';
 
     /**
      *
      * @VirtualProperty
      */
-    public function getVirtualValue()
+    public function getVirtualField()
     {
-        return 'value';
+        return 'virtual field value';
     }
 
     /**
      * @VirtualProperty
-     * @SerializedName("test")
+     * @SerializedName("renamed_virtual_field")
      */
-    public function getVirtualSerializedValue()
+    public function getVirtualFieldToBeRenamed()
     {
-        return 'other-name';
+        return 'renamed field value';
     }
 
     /**
      * @VirtualProperty
      * @Type("integer")
      */
-    public function getTypedVirtualProperty()
+    public function getTypedVirtualField()
     {
         return '1';
     }

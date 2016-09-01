@@ -95,6 +95,7 @@ use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints\Time;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use PhpCollection\Map;
@@ -259,7 +260,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'));
+            $this->assertEquals($data, $this->deserialize($this->getContent('array_empty'), 'array'), 'array');
         }
     }
 
@@ -652,7 +653,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $fooConfig = $formConfigBuilder->getFormConfig();
 
         $form = new Form($fooConfig);
-        $form->add('save', 'submit');
+        $form->add('save', SubmitType::class);
 
         try {
             $this->serialize($form);
@@ -663,7 +664,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', 'Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', '', array(), null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -671,8 +672,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', 'Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', 'Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', '', array(), null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', '', array(), null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }

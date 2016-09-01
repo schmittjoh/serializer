@@ -1,10 +1,11 @@
 JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties:
     properties:
-        existField:
+        realField:
             type: string
     virtual_properties:
-        getVirtualValue: ~
-        getVirtualSerializedValue:
-            serialized_name: test
-        getTypedVirtualProperty:
+        getVirtualField: ~
+        getVirtualFieldToBeRenamed:
+            serialized_name: renamed_virtual_field
+        getTypedVirtualField:
+            serialized_name: typed_virtual_field
             type: integer

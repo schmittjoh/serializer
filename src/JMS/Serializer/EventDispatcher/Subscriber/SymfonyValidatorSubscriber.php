@@ -21,14 +21,19 @@ namespace JMS\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\Validator\ValidatorInterface;
 
 class SymfonyValidatorSubscriber implements EventSubscriberInterface
 {
     private $validator;
 
-    public function __construct(ValidatorInterface $validator)
+    public function __construct($validator)
     {
+        if (!$validator instanceof \Symfony\Component\Validator\Validator\ValidatorInterface // 3.x
+            && !$validator instanceof \Symfony\Component\Validator\ValidatorInterface // 2.x
+        ) {
+            throw new InvalidArgumentException("Expected object of type ValidatorInterface.");
+        }
+
         $this->validator = $validator;
     }
 
