@@ -3,8 +3,9 @@
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class PropelCollectionHandlerTest extends \PHPUnit_Framework_TestCase
+class PropelCollectionHandlerTest extends BaseTestCase
 {
     /** @var  $serializer \JMS\Serializer\Serializer */
     private $serializer;

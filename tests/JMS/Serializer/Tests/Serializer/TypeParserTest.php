@@ -19,8 +19,9 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\TypeParser;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class TypeParserTest extends \PHPUnit_Framework_TestCase
+class TypeParserTest extends BaseTestCase
 {
     private $parser;
 

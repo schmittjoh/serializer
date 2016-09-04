@@ -23,8 +23,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
+class SerializerBuilderTest extends BaseTestCase
 {
     /** @var SerializerBuilder */
     private $builder;

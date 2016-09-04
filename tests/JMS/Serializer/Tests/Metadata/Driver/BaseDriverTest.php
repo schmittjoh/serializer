@@ -23,8 +23,9 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
+use JMS\Serializer\Tests\BaseTestCase;
 
-abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
+abstract class BaseDriverTest extends BaseTestCase
 {
     public function testLoadBlogPostMetadata()
     {
@@ -99,7 +100,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
     public function testXMLListAbsentNode()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode'));
-        
+
         $this->assertArrayHasKey('absent', $m->propertyMetadata);
         $this->assertArrayHasKey('present', $m->propertyMetadata);
         $this->assertArrayHasKey('skipDefault', $m->propertyMetadata);

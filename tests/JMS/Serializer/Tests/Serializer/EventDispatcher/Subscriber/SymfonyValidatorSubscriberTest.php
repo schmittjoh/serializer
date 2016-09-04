@@ -27,8 +27,9 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use JMS\Serializer\Tests\BaseTestCase;
 
-class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
+class SymfonyValidatorSubscriberTest extends BaseTestCase
 {
     private $validator;
 
@@ -103,7 +104,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
+        $this->validator = $this->createMock('Symfony\Component\Validator\ValidatorInterface');
         $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
     }
 }

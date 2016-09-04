@@ -101,8 +101,9 @@ use PhpCollection\Map;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
+use JMS\Serializer\Tests\BaseTestCase;
 
-abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
+abstract class BaseSerializationTest extends BaseTestCase
 {
     protected $factory;
 
@@ -613,11 +614,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testNestedFormErrors()
     {
-        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
         $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
         $formConfigBuilder->setCompound(true);
-        $formConfigBuilder->setDataMapper($this->getMock('Symfony\Component\Form\DataMapperInterface'));
+        $formConfigBuilder->setDataMapper($this->createMock('Symfony\Component\Form\DataMapperInterface'));
         $fooConfig = $formConfigBuilder->getFormConfig();
 
         $form = new Form($fooConfig);
@@ -638,7 +639,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
         }
 
-        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
         $factoryBuilder = new FormFactoryBuilder();
         $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\SubmitType);
@@ -648,7 +649,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
         $formConfigBuilder->setFormFactory($factory);
         $formConfigBuilder->setCompound(true);
-        $formConfigBuilder->setDataMapper($this->getMock('Symfony\Component\Form\DataMapperInterface'));
+        $formConfigBuilder->setDataMapper($this->createMock('Symfony\Component\Form\DataMapperInterface'));
         $fooConfig = $formConfigBuilder->getFormConfig();
 
         $form = new Form($fooConfig);
