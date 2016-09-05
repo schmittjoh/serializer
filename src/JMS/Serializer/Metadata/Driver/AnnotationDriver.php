@@ -168,6 +168,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
                         $propertyMetadata->xmlEntryName = $annot->entry;
                         $propertyMetadata->xmlEntryNamespace = $annot->namespace;
+                        $propertyMetadata->xmlCollectionSkipWhenEmpty = $annot->skipWhenEmpty;
                     } elseif ($annot instanceof XmlMap) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
@@ -212,7 +213,6 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
             if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $exclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {

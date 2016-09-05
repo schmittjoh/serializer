@@ -267,16 +267,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespaces['']);
                 $nodes = $data->xpath('./'.$prefix. ':'.$name );
-                if (empty($nodes)) {
-                    return;
-                }
-                $node = reset($nodes);
             } else {
-                if (!isset($data->$name)) {
-                    return;
-                }
-                $node = $data->$name;
+                $nodes = $data->xpath('./'. $name );
             }
+            if (empty($nodes)) {
+                return;
+            }
+            $node = reset($nodes);
         }
 
         $v = $this->navigator->accept($node, $metadata->type, $context);

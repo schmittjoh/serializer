@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode">
+        <property name="absent">
+            <type>array</type>
+            <xml-list skip-when-empty="true"/>
+        </property>
+        <property name="present">
+            <type>array</type>
+            <xml-list skip-when-empty="false"/>
+        </property>
+        <property name="skipDefault">
+            <type>array</type>
+        </property>
+    </class>
+</serializer>

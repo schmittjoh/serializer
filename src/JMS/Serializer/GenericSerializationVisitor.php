@@ -103,7 +103,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
-            if (null === $v && ( ! is_string($k) || ! $context->shouldSerializeNull())) {
+            if (null === $v && ( ! is_string($k) || $context->shouldSerializeNull() !== true)) {
                 continue;
             }
 
@@ -144,7 +144,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $v = $metadata->getValue($data);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if (null === $v && ! $context->shouldSerializeNull()) {
+        if (null === $v && $context->shouldSerializeNull() !== true) {
             return;
         }
 
@@ -163,8 +163,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      * Allows you to add additional data to the current object/root element.
      *
      * @param string $key
-     * @param scalar|array $value This value must either be a regular scalar, or an array.
-     *                            It must not contain any objects anymore.
+     * @param integer|float|boolean|string|array $value This value must either be a regular scalar, or an array.
+     *                                                  It must not contain any objects anymore.
      */
     public function addData($key, $value)
     {
@@ -173,6 +173,17 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         }
 
         $this->data[$key] = $value;
+    }
+    
+    /**
+     * Checks if some data key exists.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasData($key)
+    {
+        return isset($this->data[$key]);
     }
 
     public function getRoot()
