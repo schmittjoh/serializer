@@ -132,7 +132,7 @@ class AnnotationDriver implements DriverInterface
         }
 
         foreach ($class->getProperties() as $property) {
-            if ($property->class !== $name) {
+            if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                 continue;
             }
             $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
@@ -216,6 +216,7 @@ class AnnotationDriver implements DriverInterface
 
             if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $exclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                 $classMetadata->addPropertyMetadata($propertyMetadata);
             }
         }
