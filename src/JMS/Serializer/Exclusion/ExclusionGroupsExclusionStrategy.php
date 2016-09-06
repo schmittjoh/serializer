@@ -51,7 +51,7 @@ class ExclusionGroupsExclusionStrategy implements ExclusionStrategyInterface
         if (false === $metadataGroups) {
             return false;
         }
-        if (is_array($metadataGroups) && empty($metadataGroups)) {
+        if (is_array($metadataGroups) && 0 == count($metadataGroups)) {
             return true;
         }
         if (!empty($this->groups) && array_intersect(array_keys($this->groups), $metadataGroups)) {
