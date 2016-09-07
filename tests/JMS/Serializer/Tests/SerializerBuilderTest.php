@@ -114,6 +114,39 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testDefaultHandlersAreSet()
+    {
+        // default behavior
+        $builderMock = $this->getMockBuilder('JMS\Serializer\SerializerBuilder')
+            ->setMethods(array('addDefaultHandlers'))
+            ->getMock();
+
+        $builderMock->expects($this->never())
+            ->method('addDefaultHandlers');
+
+        $builderMock->configureHandlers(
+            function (\JMS\Serializer\Handler\HandlerRegistry $registry) {}
+        );
+
+        $builderMock->build();
+
+        // adding defaults
+        $builderMock = $this->getMockBuilder('JMS\Serializer\SerializerBuilder')
+            ->setMethods(array('addDefaultHandlers'))
+            ->getMock();
+
+        $builderMock->expects($this->once())
+            ->method('addDefaultHandlers')
+            ->will($this->returnSelf());
+
+        $builderMock->configureHandlers(
+            function (\JMS\Serializer\Handler\HandlerRegistry $registry) {},
+            true
+        );
+
+        $builderMock->build();
+    }
+
     protected function setUp()
     {
         $this->builder = SerializerBuilder::create();

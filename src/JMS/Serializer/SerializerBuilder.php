@@ -126,9 +126,9 @@ class SerializerBuilder
         return $this;
     }
 
-    public function configureHandlers(\Closure $closure)
+    public function configureHandlers(\Closure $closure, $addDefaults = false)
     {
-        $this->handlersConfigured = true;
+        $this->handlersConfigured = !$addDefaults;
         $closure($this->handlerRegistry);
 
         return $this;
