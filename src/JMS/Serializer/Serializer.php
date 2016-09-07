@@ -31,7 +31,7 @@ use PhpCollection\MapInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Serializer implements SerializerInterface
+class Serializer implements SerializerInterface, NormalizerInterface
 {
     private $factory;
     private $handlerRegistry;
