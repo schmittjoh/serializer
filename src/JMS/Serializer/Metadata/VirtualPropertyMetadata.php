@@ -67,7 +67,8 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->inline,
             $this->readOnly,
             $this->class,
-            $this->name
+            $this->name,
+            $this->recursionGroups
         ));
     }
 
@@ -95,7 +96,8 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->inline,
             $this->readOnly,
             $this->class,
-            $this->name
+            $this->name,
+            $this->recursionGroups
         ) = unserialize($str);
     }
 }
