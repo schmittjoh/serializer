@@ -186,6 +186,63 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return isset($this->data[$key]);
     }
 
+    /**
+     * Allows replacing an existing data on the current object/root element.
+     *
+     * @param $key
+     * @param $value
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    public function replaceData($key, $value)
+    {
+        if (!isset($this->data[$key])) {
+            throw new InvalidArgumentException(sprintf('There is no data for "%s".', $key));
+        }
+
+        $this->data[$key] = $value;
+    }
+
+    /**
+     * Allows setting data on the current object/root element. Adds if doesn't exist, replaces otherwise.
+     *
+     * @param $key
+     * @param $data
+     */
+    public function setData($key, $data)
+    {
+        $this->data[$key] = $data;
+    }
+
+    /**
+     * Allows retrieving data from current object/root element.
+     *
+     * @param $key
+     *
+     * @throws Exception\InvalidArgumentException
+     * @return mixed
+     */
+    public function getData($key)
+    {
+        if ($this->data[$key]) {
+            return $this->data[$key];
+        } else {
+            throw new InvalidArgumentException(sprintf('There is no data for "%s".', $key));
+        }
+    }
+
+    /**
+     * Check if data is set on current object/root element
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    public function hasData($key)
+    {
+        return isset($this->data[$key]);
+    }
+
     public function getRoot()
     {
         return $this->root;
