@@ -35,7 +35,8 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
         ) {
             $classMetadata->setDiscriminator(
                 $doctrineMetadata->discriminatorColumn['name'],
-                $doctrineMetadata->discriminatorMap
+                $doctrineMetadata->discriminatorMap,
+                null
             );
         }
     }

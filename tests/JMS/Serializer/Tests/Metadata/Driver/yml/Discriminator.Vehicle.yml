@@ -4,6 +4,7 @@ JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle:
         map:
             car: JMS\Serializer\Tests\Fixtures\Discriminator\Car
             moped: JMS\Serializer\Tests\Fixtures\Discriminator\Moped
+        default: JMS\Serializer\Tests\Fixtures\Discriminator\Car
 
     properties:
         km:

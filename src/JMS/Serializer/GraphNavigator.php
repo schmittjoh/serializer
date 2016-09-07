@@ -268,16 +268,20 @@ final class GraphNavigator
                 ));
         }
 
-        if ( ! isset($metadata->discriminatorMap[$typeValue])) {
-            throw new \LogicException(sprintf(
-                'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
-                $typeValue,
-                $metadata->name,
-                implode(', ', array_keys($metadata->discriminatorMap))
-            ));
+        if ( isset($metadata->discriminatorMap[$typeValue]) ) {
+            return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
         }
 
-        return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
+        if ( ! is_null($metadata->discriminatorDefault) ) {
+            return $this->metadataFactory->getMetadataForClass($metadata->discriminatorDefault);
+        }
+
+        throw new \LogicException(sprintf(
+            'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
+            $typeValue,
+            $metadata->name,
+            implode(', ', array_keys($metadata->discriminatorMap))
+        ));
     }
 
     private function leaveScope(Context $context, $data)
