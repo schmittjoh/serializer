@@ -90,7 +90,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
+     * @expectedExceptionMessage The document type "<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">" is not allowed. If it is safe, you may add it to the whitelist configuration.
      */
     public function testExternalEntitiesAreDisabledByDefault()
     {
@@ -287,6 +287,8 @@ class XmlSerializationTest extends BaseSerializationTest
 
     /**
      * @param string $key
+     * @throw InvalidArgumentException
+     * @return string
      */
     protected function getContent($key)
     {
@@ -300,5 +302,22 @@ class XmlSerializationTest extends BaseSerializationTest
     protected function getFormat()
     {
         return 'xml';
+    }
+
+    /**
+     * @author Ayrton Ricardo<ayrton@voxtecnologia.com.br>
+     */
+    public function testWithoutFormattingOutputByContext()
+    {
+        $object = new SimpleClassObject;
+        $object->foo = 'foo';
+        $object->bar = 'bar';
+        $object->moo = 'moo';
+
+        $context = \JMS\Serializer\SerializationContext::create()
+            ->setSerializeNull(true)
+            ->setFormatOutput(false);
+
+        $this->assertEquals($this->getContent('simple_class_object_minified'), $this->serialize($object, $context));
     }
 }

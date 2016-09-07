@@ -59,6 +59,9 @@ abstract class Context
     /** @var \SplStack */
     private $metadataStack;
 
+    /** @var boolean */
+    private $formatOutput = true;
+
     public function __construct()
     {
         $this->attributes = new Map();
@@ -257,4 +260,24 @@ abstract class Context
      * @return integer
      */
     abstract public function getDirection();
+
+    /**
+     * @author Ayrton Ricardo<ayrton@voxtecnologia.com.br>
+     * @param boolean $formatOutput
+     * @return Context
+     */
+    public function setFormatOutput($formatOutput)
+    {
+        $this->formatOutput = (boolean)$formatOutput;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFormatOutput()
+    {
+        return $this->formatOutput;
+    }
 }
