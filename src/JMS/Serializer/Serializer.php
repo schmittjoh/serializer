@@ -74,7 +74,7 @@ class Serializer implements SerializerInterface
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = SerializationContext::create()->enableMaxDepthChecks();
         }
 
         return $this->serializationVisitors->get($format)
@@ -149,7 +149,7 @@ class Serializer implements SerializerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = DeserializationContext::create()->enableMaxDepthChecks();
         }
 
         return $this->deserializationVisitors->get('json')
