@@ -279,6 +279,25 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
     }
 
+    /**
+     * @author Ayrton Ricardo<ayrton@voxtecnologia.com.br>
+     */
+    public function testWithoutFormatOutputByContext()
+    {
+        $object = new SimpleClassObject;
+        $object->foo = 'foo';
+        $object->bar = 'bar';
+        $object->moo = 'moo';
+
+        $context = \JMS\Serializer\SerializationContext::create()
+            ->setSerializeNull(true)
+            ->setFormatOutput(false)
+        ;
+
+        $stringXml = $this->serialize($object, $context);
+        $this->assertXmlStringEqualsXmlString($this->getContent('simple_class_object_minified'), $stringXml);
+    }
+
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
