@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -119,5 +120,13 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->serializer->toArray($list);
         $this->assertSame(array('authors' => array(array())), $result);
+    }
+
+    public function testNullArraySerialization()
+    {
+        $context = SerializationContext::create();
+        $context->setSerializeNull(true);
+        $array = [0, null, 'a'];
+        $this->assertSame($array, $this->serializer->toArray($array, $context));
     }
 }
