@@ -134,6 +134,21 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
     }
 
+    public function testReplaceNameInOutput()
+    {
+        $this->dispatcher->addSubscriber(new ReplaceNameSubscriber());
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+            }
+        );
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('[{"full_name":"new name"},{"full_name":"new name"}]', $this->serialize($list));
+    }
 
     /**
      * @expectedException RuntimeException
@@ -259,6 +274,21 @@ class LinkAddingSubscriber implements EventSubscriberInterface
             'details' => 'http://foo.bar/details/'.$author->getName(),
             'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
         ));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
+        );
+    }
+}
+
+class ReplaceNameSubscriber implements EventSubscriberInterface
+{
+    public function onPostSerialize(Event $event)
+    {
+        $event->getVisitor()->replaceData('full_name', 'new name');
     }
 
     public static function getSubscribedEvents()
