@@ -23,6 +23,10 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
 
@@ -48,6 +52,16 @@ class Serializer implements SerializerInterface
     private $navigator;
 
     /**
+     * @var SerializationContextFactoryInterface
+     */
+    private $defaultSerializationContextFactory;
+
+    /**
+     * @var DeserializationContextFactoryInterface
+     */
+    private $defaultDeserializationContextFactory;
+
+    /**
      * Constructor.
      *
      * @param \Metadata\MetadataFactoryInterface $factory
@@ -69,12 +83,15 @@ class Serializer implements SerializerInterface
         $this->deserializationVisitors = $deserializationVisitors;
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+
+        $this->defaultSerializationContextFactory = new DefaultSerializationContextFactory();
+        $this->defaultDeserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = $this->defaultSerializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get($format)
@@ -90,7 +107,7 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -116,7 +133,7 @@ class Serializer implements SerializerInterface
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = $this->defaultSerializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get('json')
@@ -149,7 +166,7 @@ class Serializer implements SerializerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -206,5 +223,29 @@ class Serializer implements SerializerInterface
     public function getMetadataFactory()
     {
         return $this->factory;
+    }
+
+    /**
+     * @param SerializationContextFactoryInterface $defaultSerializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultSerializationContextFactory(SerializationContextFactoryInterface $defaultSerializationContextFactory)
+    {
+        $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param DeserializationContextFactoryInterface $defaultDeserializationContextFactory
+     *
+     * @return self
+     */
+    public function setDefaultDeserializationContextFactory(DeserializationContextFactoryInterface $defaultDeserializationContextFactory)
+    {
+        $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+
+        return $this;
     }
 }
