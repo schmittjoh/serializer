@@ -51,6 +51,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     {
         parent::__construct($namingStrategy);
         $this->objectMetadataStack = new \SplStack;
+        $this->formatOutput = true;
     }
 
     public function setDefaultRootName($name, $namespace = null)

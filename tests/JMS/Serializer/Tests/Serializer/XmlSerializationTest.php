@@ -21,6 +21,8 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
@@ -36,6 +38,8 @@ use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
+use JMS\Serializer\XmlSerializationVisitor;
+use PhpCollection\Map;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -275,26 +279,34 @@ class XmlSerializationTest extends BaseSerializationTest
         $childObject->baz = 'baz';
         $childObject->qux = 'qux';
 
-
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
     }
 
-    /**
-     * @author Ayrton Ricardo<ayrton@voxtecnologia.com.br>
-     */
-    public function testWithoutFormatOutputByContext()
+    public function testWithoutFormatedOutputByXmlSerializationVisitor()
     {
+        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+        $xmlVisitor = new XmlSerializationVisitor($namingStrategy);
+        $xmlVisitor->setFormatOutput(false);
+
+        $visitors = new Map(array(
+            'xml'  => new XmlSerializationVisitor($namingStrategy),
+        ));
+
+        $serializer = new Serializer(
+            $this->factory,
+            $this->handlerRegistry,
+            new UnserializeObjectConstructor(),
+            $visitors,
+            $this->deserializationVisitors,
+            $this->dispatcher
+        );
+
         $object = new SimpleClassObject;
         $object->foo = 'foo';
         $object->bar = 'bar';
         $object->moo = 'moo';
 
-        $context = \JMS\Serializer\SerializationContext::create()
-            ->setSerializeNull(true)
-            ->setFormatOutput(false)
-        ;
-
-        $stringXml = $this->serialize($object, $context);
+        $stringXml = $serializer->serialize($object, $this->getFormat());
         $this->assertXmlStringEqualsXmlString($this->getContent('simple_class_object_minified'), $stringXml);
     }
 
