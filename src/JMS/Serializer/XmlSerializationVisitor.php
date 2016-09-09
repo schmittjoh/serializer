@@ -44,6 +44,9 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $nullWasVisited;
     private $objectMetadataStack;
 
+    /** @var boolean */
+    private $formatOutput;
+
     public function __construct($namingStrategy)
     {
         parent::__construct($namingStrategy);
@@ -194,7 +197,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->objectMetadataStack->push($metadata);
 
         if (null === $this->document) {
-            $this->document = $this->createDocument(null, null, false, true, $context->isFormatOutput());
+            $this->document = $this->createDocument(null, null, false);
             if ($metadata->xmlRootName) {
                 $rootName = $metadata->xmlRootName;
                 $rootNamespace = $metadata->xmlRootNamespace?:$this->getClassDefaultNamespace($metadata);
@@ -363,10 +366,10 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
-    public function createDocument($version = null, $encoding = null, $addRoot = true, $formatOutput = true)
+    public function createDocument($version = null, $encoding = null, $addRoot = true)
     {
         $doc = new \DOMDocument($version ?: $this->defaultVersion, $encoding ?: $this->defaultEncoding);
-        $doc->formatOutput = $formatOutput;
+        $doc->formatOutput = $this->isFormatOutput();
 
         if ($addRoot) {
             if ($this->defaultRootNamespace) {
@@ -475,4 +478,19 @@ class XmlSerializationVisitor extends AbstractVisitor
         return (isset($metadata->xmlNamespaces[''])?$metadata->xmlNamespaces['']:null);
     }
 
+    /**
+     * @return bool
+     */
+    public function isFormatOutput()
+    {
+        return $this->formatOutput;
+    }
+
+    /**
+     * @param bool $formatOutput
+     */
+    public function setFormatOutput($formatOutput)
+    {
+        $this->formatOutput = (boolean) $formatOutput;
+    }
 }
