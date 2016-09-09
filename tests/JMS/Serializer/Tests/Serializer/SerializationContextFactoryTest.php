@@ -63,7 +63,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->serializer->setDefaultSerializationContextFactory($contextFactoryMock);
+        $this->serializer->setSerializationContextFactory($contextFactoryMock);
 
         $result = $this->serializer->serialize(array('value' => null), 'json');
 
@@ -81,7 +81,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->serializer->setDefaultDeserializationContextFactory($contextFactoryMock);
+        $this->serializer->setDeserializationContextFactory($contextFactoryMock);
 
         $result = $this->serializer->deserialize('{"value":null}', 'array', 'json');
 
@@ -100,7 +100,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->serializer->setDefaultSerializationContextFactory($contextFactoryMock);
+        $this->serializer->setSerializationContextFactory($contextFactoryMock);
 
         $result = $this->serializer->toArray(array('value' => null));
 
@@ -118,7 +118,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->serializer->setDefaultDeserializationContextFactory($contextFactoryMock);
+        $this->serializer->setDeserializationContextFactory($contextFactoryMock);
 
         $result = $this->serializer->fromArray(array('value' => null), 'array');
 

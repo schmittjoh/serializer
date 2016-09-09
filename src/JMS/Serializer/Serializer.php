@@ -54,12 +54,12 @@ class Serializer implements SerializerInterface
     /**
      * @var SerializationContextFactoryInterface
      */
-    private $defaultSerializationContextFactory;
+    private $serializationContextFactory;
 
     /**
      * @var DeserializationContextFactoryInterface
      */
-    private $defaultDeserializationContextFactory;
+    private $deserializationContextFactory;
 
     /**
      * Constructor.
@@ -84,14 +84,14 @@ class Serializer implements SerializerInterface
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
 
-        $this->defaultSerializationContextFactory = new DefaultSerializationContextFactory();
-        $this->defaultDeserializationContextFactory = new DefaultDeserializationContextFactory();
+        $this->serializationContextFactory = new DefaultSerializationContextFactory();
+        $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->defaultSerializationContextFactory->createSerializationContext();
+            $context = $this->serializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get($format)
@@ -107,7 +107,7 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
+            $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -133,7 +133,7 @@ class Serializer implements SerializerInterface
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->defaultSerializationContextFactory->createSerializationContext();
+            $context = $this->serializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get('json')
@@ -166,7 +166,7 @@ class Serializer implements SerializerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = $this->defaultDeserializationContextFactory->createDeserializationContext();
+            $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -226,25 +226,25 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @param SerializationContextFactoryInterface $defaultSerializationContextFactory
+     * @param SerializationContextFactoryInterface $serializationContextFactory
      *
      * @return self
      */
-    public function setDefaultSerializationContextFactory(SerializationContextFactoryInterface $defaultSerializationContextFactory)
+    public function setSerializationContextFactory(SerializationContextFactoryInterface $serializationContextFactory)
     {
-        $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
+        $this->serializationContextFactory = $serializationContextFactory;
 
         return $this;
     }
 
     /**
-     * @param DeserializationContextFactoryInterface $defaultDeserializationContextFactory
+     * @param DeserializationContextFactoryInterface $deserializationContextFactory
      *
      * @return self
      */
-    public function setDefaultDeserializationContextFactory(DeserializationContextFactoryInterface $defaultDeserializationContextFactory)
+    public function setDeserializationContextFactory(DeserializationContextFactoryInterface $deserializationContextFactory)
     {
-        $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
+        $this->deserializationContextFactory = $deserializationContextFactory;
 
         return $this;
     }

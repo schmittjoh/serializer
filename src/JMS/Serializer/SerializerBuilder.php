@@ -77,8 +77,8 @@ class SerializerBuilder
     private $annotationReader;
     private $includeInterfaceMetadata = false;
     private $driverFactory;
-    private $defaultSerializationContextFactory;
-    private $defaultDeserializationContextFactory;
+    private $serializationContextFactory;
+    private $deserializationContextFactory;
 
     public static function create()
     {
@@ -341,17 +341,17 @@ class SerializerBuilder
     }
 
     /**
-     * @param SerializationContextFactoryInterface|callable $defaultSerializationContextFactory
+     * @param SerializationContextFactoryInterface|callable $serializationContextFactory
      *
      * @return self
      */
-    public function setDefaultSerializationContextFactory($defaultSerializationContextFactory)
+    public function setSerializationContextFactory($serializationContextFactory)
     {
-        if ($defaultSerializationContextFactory instanceof SerializationContextFactoryInterface) {
-            $this->defaultSerializationContextFactory = $defaultSerializationContextFactory;
-        } elseif (is_callable($defaultSerializationContextFactory)) {
-            $this->defaultSerializationContextFactory = new CallableSerializationContextFactory(
-                $defaultSerializationContextFactory
+        if ($serializationContextFactory instanceof SerializationContextFactoryInterface) {
+            $this->serializationContextFactory = $serializationContextFactory;
+        } elseif (is_callable($serializationContextFactory)) {
+            $this->serializationContextFactory = new CallableSerializationContextFactory(
+                $serializationContextFactory
             );
         } else {
             throw new InvalidArgumentException('expected SerializationContextFactoryInterface or callable.');
@@ -361,17 +361,17 @@ class SerializerBuilder
     }
 
     /**
-     * @param DeserializationContextFactoryInterface|callable $defaultDeserializationContextFactory
+     * @param DeserializationContextFactoryInterface|callable $deserializationContextFactory
      *
      * @return self
      */
-    public function setDefaultDeserializationContextFactory($defaultDeserializationContextFactory)
+    public function setDeserializationContextFactory($deserializationContextFactory)
     {
-        if ($defaultDeserializationContextFactory instanceof DeserializationContextFactoryInterface) {
-            $this->defaultDeserializationContextFactory = $defaultDeserializationContextFactory;
-        } elseif (is_callable($defaultDeserializationContextFactory)) {
-            $this->defaultDeserializationContextFactory = new CallableDeserializationContextFactory(
-                $defaultDeserializationContextFactory
+        if ($deserializationContextFactory instanceof DeserializationContextFactoryInterface) {
+            $this->deserializationContextFactory = $deserializationContextFactory;
+        } elseif (is_callable($deserializationContextFactory)) {
+            $this->deserializationContextFactory = new CallableDeserializationContextFactory(
+                $deserializationContextFactory
             );
         } else {
             throw new InvalidArgumentException('expected DeserializationContextFactoryInterface or callable.');
@@ -425,12 +425,12 @@ class SerializerBuilder
             $this->eventDispatcher
         );
 
-        if (null !== $this->defaultSerializationContextFactory) {
-            $serializer->setDefaultSerializationContextFactory($this->defaultSerializationContextFactory);
+        if (null !== $this->serializationContextFactory) {
+            $serializer->setSerializationContextFactory($this->serializationContextFactory);
         }
 
-        if (null !== $this->defaultDeserializationContextFactory) {
-            $serializer->setDefaultDeserializationContextFactory($this->defaultDeserializationContextFactory);
+        if (null !== $this->deserializationContextFactory) {
+            $serializer->setDeserializationContextFactory($this->deserializationContextFactory);
         }
 
         return $serializer;

@@ -116,7 +116,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSetDefaultSerializationContext()
+    public function testSetSerializationContext()
     {
         $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
         $context = new SerializationContext();
@@ -128,7 +128,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->builder->setDefaultSerializationContextFactory($contextFactoryMock);
+        $this->builder->setSerializationContextFactory($contextFactoryMock);
 
         $serializer = $this->builder->build();
 
@@ -137,7 +137,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"value":null}', $result);
     }
 
-    public function testSetDefaultDeserializationContext()
+    public function testSetDeserializationContext()
     {
         $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
         $context = new DeserializationContext();
@@ -148,7 +148,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($context))
         ;
 
-        $this->builder->setDefaultDeserializationContextFactory($contextFactoryMock);
+        $this->builder->setDeserializationContextFactory($contextFactoryMock);
 
         $serializer = $this->builder->build();
 
@@ -159,7 +159,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCallbackSerializationContextWithSerializeNull()
     {
-        $this->builder->setDefaultSerializationContextFactory(function () {
+        $this->builder->setSerializationContextFactory(function () {
             return SerializationContext::create()
                 ->setSerializeNull(true)
             ;
@@ -174,7 +174,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCallbackSerializationContextWithNotSerializeNull()
     {
-        $this->builder->setDefaultSerializationContextFactory(function () {
+        $this->builder->setSerializationContextFactory(function () {
             return SerializationContext::create()
                 ->setSerializeNull(false)
             ;
