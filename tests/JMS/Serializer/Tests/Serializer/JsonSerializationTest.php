@@ -78,6 +78,10 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
+            $outputs['exclusion_groups_simple'] = '{"bar":"bar"}';
+            $outputs['exclusion_groups_no_groups'] = '{"foo":"foo","foo2":"foo2","bar":"bar"}';
+            $outputs['exclusion_groups_no_class'] = '{}';
+            $outputs['exclusion_groups_group2'] = '{"foo2":"foo2","bar":"bar"}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';

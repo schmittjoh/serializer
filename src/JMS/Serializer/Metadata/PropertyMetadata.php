@@ -30,6 +30,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $sinceVersion;
     public $untilVersion;
     public $groups;
+    public $exclusionGroups = false;
     public $serializedName;
     public $type;
     public $xmlCollection = false;
@@ -136,6 +137,7 @@ class PropertyMetadata extends BasePropertyMetadata
             parent::serialize(),
             'xmlEntryNamespace' => $this->xmlEntryNamespace,
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
+            'exclusionGroups' => $this->exclusionGroups,
         ));
     }
 
@@ -172,7 +174,9 @@ class PropertyMetadata extends BasePropertyMetadata
         if (isset($unserialized['xmlCollectionSkipWhenEmpty'])){
             $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
         }
-        
+        if (isset($unserialized['exclusionGroups'])){
+            $this->exclusionGroups = $unserialized['exclusionGroups'];
+        }
 
         parent::unserialize($parentStr);
     }

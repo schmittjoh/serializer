@@ -74,7 +74,6 @@ class AnnotationDriver implements DriverInterface
         $propertiesAnnotations = array();
 
         $exclusionPolicy = 'NONE';
-        $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
@@ -86,7 +85,8 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlNamespace) {
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
-                $excludeAll = true;
+                $classMetadata->exclusionGroups = $annot->groups;
+                $this->sanitizeGroupNames($classMetadata->exclusionGroups, $classMetadata->name);
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
             } elseif ($annot instanceof ReadOnly) {
@@ -131,23 +131,22 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if ( ! $excludeAll) {
-            foreach ($class->getProperties() as $property) {
-                if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
-                    continue;
-                }
-                $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
-                $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
+        foreach ($class->getProperties() as $property) {
+            if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
+                continue;
             }
+            $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
+            $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
+        }
 
-            foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
-                $isExclude = false;
-                $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
-                $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
-                $accessType = $classAccessType;
-                $accessor = array(null, null);
+        foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
+            $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata;
+            $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
+            $accessType = $classAccessType;
+            $accessor = array(null, null);
+            $exclude = false;
 
-                $propertyAnnotations = $propertiesAnnotations[$propertyKey];
+            $propertyAnnotations = $propertiesAnnotations[$propertyKey];
 
                 foreach ($propertyAnnotations as $annot) {
                     if ($annot instanceof Since) {
@@ -158,8 +157,6 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->serializedName = $annot->name;
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
-                    } elseif ($annot instanceof Exclude) {
-                        $isExclude = true;
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
                     } elseif ($annot instanceof XmlElement) {
@@ -194,17 +191,19 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
+                    } elseif ($annot instanceof Exclude) {
+                        if (!empty($annot->groups)) {
+                            $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
+                            $this->sanitizeGroupNames($annot->groups, $annotationSource);
+                            $propertyMetadata->exclusionGroups = $annot->groups;
+                        } else {
+                            $exclude = true;
+                        }
+
                     } elseif ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
-                        foreach ((array) $propertyMetadata->groups as $groupName) {
-                            if (false !== strpos($groupName, ',')) {
-                                throw new InvalidArgumentException(sprintf(
-                                    'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
-                                    implode(', ', $propertyMetadata->groups),
-                                    $propertyMetadata->class.'->'.$propertyMetadata->name
-                                ));
-                            }
-                        }
+                        $annotationSource = $propertyMetadata->class . '->' . $propertyMetadata->name;
+                        $this->sanitizeGroupNames($propertyMetadata->groups, $annotationSource);
                     } elseif ($annot instanceof Inline) {
                         $propertyMetadata->inline = true;
                     } elseif ($annot instanceof XmlAttributeMap) {
@@ -215,14 +214,29 @@ class AnnotationDriver implements DriverInterface
                 }
 
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
-                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
-                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
-                    $classMetadata->addPropertyMetadata($propertyMetadata);
-                }
+            if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $exclude)
+                || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                $classMetadata->addPropertyMetadata($propertyMetadata);
             }
         }
 
         return $classMetadata;
+    }
+
+    /**
+     * @param array $groups
+     * @param string $annotationSource
+     */
+    private function sanitizeGroupNames($groups, $annotationSource)
+    {
+        foreach ((array)$groups as $groupName) {
+            if (false !== strpos($groupName, ',')) {
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
+                    implode(', ', $groups), $annotationSource
+                ));
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
+use JMS\Serializer\Exclusion\ExclusionGroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
@@ -72,13 +73,13 @@ abstract class Context
         if ($this->initialized) {
             throw new \LogicException('This context was already initialized, and cannot be re-used.');
         }
-
-        $this->initialized = true;
         $this->format = $format;
         $this->visitor = $visitor;
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
+        $this->addExclusionStrategy(new ExclusionGroupsExclusionStrategy(array()));
+        $this->initialized = true;
     }
 
     public function accept($data, array $type = null)
@@ -174,6 +175,20 @@ abstract class Context
         $this->attributes->set('groups', (array) $groups);
         $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
 
+        return $this;
+    }
+
+    /**
+     * @param array $exclusionGroups
+     */
+    public function setExclusionGroups($exclusionGroups)
+    {
+        if (empty($exclusionGroups)) {
+            throw new \LogicException('The exclusion groups must not be empty.');
+        }
+
+        $this->attributes->set('exclusionGroups', (array) $exclusionGroups);
+        $this->addExclusionStrategy(new ExclusionGroupsExclusionStrategy((array) $exclusionGroups));
         return $this;
     }
 
