@@ -19,10 +19,11 @@
 namespace JMS\Serializer;
 
 /**
- * Interface NormalizerInterface
+ * Interface for array transformation.
+ *
  * @author Daniel Bojdo <daniel@bojdo.eu>
  */
-interface NormalizerInterface
+interface ArrayTransformerInterface
 {
     /**
      * Converts objects to an array structure.
