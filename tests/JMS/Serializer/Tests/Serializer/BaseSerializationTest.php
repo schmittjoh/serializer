@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -296,7 +296,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
         $object = new DateTimeArraysObject($data, $data);
@@ -325,7 +325,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
         $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
