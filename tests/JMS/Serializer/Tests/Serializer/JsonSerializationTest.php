@@ -289,7 +289,7 @@ class ReplaceNameSubscriber implements EventSubscriberInterface
 {
     public function onPostSerialize(Event $event)
     {
-        $event->getVisitor()->replaceData('full_name', 'new name');
+        $event->getVisitor()->setData('full_name', 'new name');
     }
 
     public static function getSubscribedEvents()
