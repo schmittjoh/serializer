@@ -27,6 +27,7 @@
         "symfony/yaml": "Required if you'd like to serialize data to YAML format."
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "twig/twig": "~1.12|~2.0",
         "doctrine/orm": "~2.1",
         "jackalope/jackalope-doctrine-dbal": "^1.1.5",
