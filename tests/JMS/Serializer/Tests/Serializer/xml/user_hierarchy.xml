@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <entry>
+    <hours>3</hours>
+    <type><![CDATA[chief]]></type>
+  </entry>
+  <entry>
+    <hours>1</hours>
+    <type><![CDATA[employee]]></type>
+  </entry>
+</result>
