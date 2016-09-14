@@ -102,6 +102,8 @@ use PhpCollection\Map;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorMiddle\Chief;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorMiddle\Employee;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -951,6 +953,28 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group polymorphic
+     */
+    public function testNestedMiddlePolymorphicObjects()
+    {
+        $garage = array(new Chief(3), new Employee(1));
+        $this->assertEquals(
+                $this->getContent('user_hierarchy'),
+                $this->serialize($garage)
+                );
+    
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                    $garage,
+                    $this->deserialize(
+                            $this->getContent('user_hierarchy'),
+                            'array<JMS\Serializer\Tests\Fixtures\DiscriminatorMiddle\User>'
+                            )
+                    );
+        }
+    }
+    
     /**
      * @group polymorphic
      */
