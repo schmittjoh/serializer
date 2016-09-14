@@ -958,21 +958,21 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testNestedMiddlePolymorphicObjects()
     {
-    	$garage = array(new Chief(3), new Employee(1));
-    	$this->assertEquals(
-    			$this->getContent('user_hierarchy'),
-    			$this->serialize($garage)
-    			);
+        $garage = array(new Chief(3), new Employee(1));
+        $this->assertEquals(
+                $this->getContent('user_hierarchy'),
+                $this->serialize($garage)
+                );
     
-    	if ($this->hasDeserializer()) {
-    		$this->assertEquals(
-    				$garage,
-    				$this->deserialize(
-    						$this->getContent('user_hierarchy'),
-    						'array<JMS\Serializer\Tests\Fixtures\DiscriminatorMiddle\User>'
-    						)
-    				);
-    	}
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                    $garage,
+                    $this->deserialize(
+                            $this->getContent('user_hierarchy'),
+                            'array<JMS\Serializer\Tests\Fixtures\DiscriminatorMiddle\User>'
+                            )
+                    );
+        }
     }
     
     /**
