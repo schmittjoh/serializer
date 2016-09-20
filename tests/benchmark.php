@@ -31,7 +31,8 @@ function createCollection()
 
 function createObject()
 {
-    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime);
+    $p = new \JMS\Serializer\Tests\Fixtures\Publisher('bar');
+    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime, $p);
     for ($i=0; $i<10; $i++) {
         $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
     }

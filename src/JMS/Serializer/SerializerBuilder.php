@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer;
 
+use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
@@ -42,7 +44,6 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\FileCacheReader;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -341,7 +342,8 @@ class SerializerBuilder
 
             if (null !== $this->cacheDir) {
                 $this->createDir($this->cacheDir.'/annotations');
-                $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir.'/annotations', $this->debug);
+                $annotationsCache = new FilesystemCache($this->cacheDir.'/annotations');
+                $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
             }
         }
 

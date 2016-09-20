@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
+use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
@@ -295,7 +296,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
         $object = new DateTimeArraysObject($data, $data);
@@ -324,7 +325,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
         $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
@@ -752,6 +753,62 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             $this->getContent('groups_default'),
             $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+        );
+
+        $this->assertEquals(
+            $this->getContent('groups_default'),
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+        );
+    }
+
+    public function testAdvancedGroups()
+    {
+        $adrien = new GroupsUser(
+            'John',
+            new GroupsUser(
+                'John Manager',
+                null,
+                array(
+                    new GroupsUser(
+                        'John Manager friend 1',
+                        new GroupsUser('John Manager friend 1 manager')
+                    ),
+                    new GroupsUser('John Manager friend 2'),
+                )
+            ),
+            array(
+                new GroupsUser(
+                    'John friend 1',
+                    new GroupsUser('John friend 1 manager')
+                ),
+                new GroupsUser(
+                    'John friend 2',
+                    new GroupsUser('John friend 2 manager')
+                )
+            )
+        );
+
+        $this->assertEquals(
+            $this->getContent('groups_advanced'),
+            $this->serializer->serialize(
+                $adrien,
+                $this->getFormat(),
+                SerializationContext::create()->setGroups(array(
+                    'Default',
+                    'manager_group',
+                    'friends_group',
+
+                    'manager' => array(
+                        'Default',
+                        'friends_group',
+
+                        'friends' => array('nickname_group'),
+                    ),
+                    'friends' => array(
+                        'manager_group'
+                    )
+                ))
+            )
         );
     }
 

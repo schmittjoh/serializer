@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_list_and_map_difference'] = '{"list":[1,2,3],"map":{"0":1,"2":2,"3":3}}';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
-            $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2013-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2013 00:00:00"]}';
-            $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2013 00:00:00"}}';
+            $outputs['array_datetimes_object'] = '{"array_with_default_date_time":["2047-01-01T12:47:47+0000","2016-12-05T00:00:00+0000"],"array_with_formatted_date_time":["01.01.2047 12:47:47","05.12.2016 00:00:00"]}';
+            $outputs['array_named_datetimes_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2016 00:00:00"}}';
             $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"},"tag":[{"name":"tag1"},{"name":"tag2"}]}';
             $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null,"tag":null}';
             $outputs['price'] = '{"price":3}';
@@ -78,6 +78,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
+            $outputs['groups_advanced'] = '{"name":"John","manager":{"name":"John Manager","friends":[{"nickname":"nickname"},{"nickname":"nickname"}]},"friends":[{"manager":{"name":"John friend 1 manager"}},{"manager":{"name":"John friend 2 manager"}}]}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
@@ -134,6 +135,21 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals('[{"full_name":"foo","_links":{"details":"http:\/\/foo.bar\/details\/foo","comments":"http:\/\/foo.bar\/details\/foo\/comments"}},{"full_name":"bar","_links":{"details":"http:\/\/foo.bar\/details\/bar","comments":"http:\/\/foo.bar\/details\/bar\/comments"}}]', $this->serialize($list));
     }
 
+    public function testReplaceNameInOutput()
+    {
+        $this->dispatcher->addSubscriber(new ReplaceNameSubscriber());
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+            }
+        );
+
+        $list = new AuthorList();
+        $list->add(new Author('foo'));
+        $list->add(new Author('bar'));
+
+        $this->assertEquals('[{"full_name":"new name"},{"full_name":"new name"}]', $this->serialize($list));
+    }
 
     /**
      * @expectedException RuntimeException
@@ -259,6 +275,21 @@ class LinkAddingSubscriber implements EventSubscriberInterface
             'details' => 'http://foo.bar/details/'.$author->getName(),
             'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
         ));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
+        );
+    }
+}
+
+class ReplaceNameSubscriber implements EventSubscriberInterface
+{
+    public function onPostSerialize(Event $event)
+    {
+        $event->getVisitor()->replaceData('full_name', 'new name');
     }
 
     public static function getSubscribedEvents()

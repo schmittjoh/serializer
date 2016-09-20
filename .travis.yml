@@ -32,7 +32,11 @@ before_script:
     - composer self-update
     - composer update $COMPOSER_FLAGS
 
-script: vendor/bin/phpunit $PHPUNIT_FLAGS
+script:
+    - vendor/bin/phpunit $PHPUNIT_FLAGS
+    - php tests/benchmark.php json 10
+    - php tests/benchmark.php yml 10
+    - php tests/benchmark.php xml 10
 
 after_success:
     - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi

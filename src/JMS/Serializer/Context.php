@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -250,6 +250,22 @@ abstract class Context
     {
         return $this->metadataStack;
     }
+
+    /**
+     * @return array
+     */
+    public function getCurrentPath()
+    {
+        $paths = array();
+        foreach ($this->metadataStack as $metadata) {
+            if ($metadata instanceof PropertyMetadata) {
+                array_unshift($paths, $metadata->name);
+            }
+        }
+
+        return $paths;
+    }
+
 
     abstract public function getDepth();
 
