@@ -140,6 +140,8 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
+        $data = filter_var($data, FILTER_VALIDATE_BOOLEAN);
+
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
             $this->currentNode->appendChild($this->document->createTextNode($data ? 'true' : 'false'));
