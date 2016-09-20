@@ -110,7 +110,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $this->result = $data;
         }
 
-        return $this->result;
+        return $data;
     }
 
     public function visitInteger($data, array $type, Context $context)
