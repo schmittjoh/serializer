@@ -1,0 +1,8 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks:
+    properties:
+        name:
+            type: string
+    handler_callbacks:
+        serialization:
+            xml: toXml
+            json: toJson

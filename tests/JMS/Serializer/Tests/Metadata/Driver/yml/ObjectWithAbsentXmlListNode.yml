@@ -1,0 +1,14 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode:
+    properties:
+        absent:
+            type: array
+            xml_list:
+              skip_when_empty: true
+        present:
+            type: array
+            xml_list:
+              skip_when_empty: false
+        skipDefault:
+            type: array
+            xml_list:
+              inline: false

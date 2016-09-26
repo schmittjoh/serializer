@@ -48,7 +48,7 @@ PHP's ``version_compare`` function.
 
 @Groups
 ~~~~~~~
-This annotation can be defined on a property to specifiy to if the property
+This annotation can be defined on a property to specify if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
@@ -211,7 +211,7 @@ the object has been deserialized.
 @HandlerCallback
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method if serialization/deserialization is handled
-by the object iself.
+by the object itself.
 
 .. code-block :: php
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -267,16 +267,13 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespaces['']);
                 $nodes = $data->xpath('./'.$prefix. ':'.$name );
-                if (empty($nodes)) {
-                    return;
-                }
-                $node = reset($nodes);
             } else {
-                if (!isset($data->$name)) {
-                    return;
-                }
-                $node = $data->$name;
+                $nodes = $data->xpath('./'. $name );
             }
+            if (empty($nodes)) {
+                return;
+            }
+            $node = reset($nodes);
         }
 
         $v = $this->navigator->accept($node, $metadata->type, $context);

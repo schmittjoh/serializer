@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks">
+        <property name="name" type="string"/>
+        <callback-method name="toJson" type="handler" direction="serialization" format="json" />
+        <callback-method name="toXml" type="handler" direction="serialization" format="xml" />
+    </class>
+</serializer>

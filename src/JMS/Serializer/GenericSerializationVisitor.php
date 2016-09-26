@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
-            if (null === $v && ( ! is_string($k) || ! $context->shouldSerializeNull())) {
+            if (null === $v && ( ! is_string($k) || $context->shouldSerializeNull() !== true)) {
                 continue;
             }
 
@@ -144,7 +144,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $v = $metadata->getValue($data);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if (null === $v && ! $context->shouldSerializeNull()) {
+        if (null === $v && $context->shouldSerializeNull() !== true) {
             return;
         }
 
@@ -163,8 +163,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      * Allows you to add additional data to the current object/root element.
      *
      * @param string $key
-     * @param scalar|array $value This value must either be a regular scalar, or an array.
-     *                            It must not contain any objects anymore.
+     * @param integer|float|boolean|string|array|null $value This value must either be a regular scalar, or an array.
+     *                                                       It must not contain any objects anymore.
      */
     public function addData($key, $value)
     {
@@ -172,6 +172,29 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             throw new InvalidArgumentException(sprintf('There is already data for "%s".', $key));
         }
 
+        $this->data[$key] = $value;
+    }
+
+    /**
+     * Checks if some data key exists.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasData($key)
+    {
+        return isset($this->data[$key]);
+    }
+
+    /**
+     * Allows you to replace existing data on the current object/root element.
+     *
+     * @param string $key
+     * @param integer|float|boolean|string|array|null $value This value must either be a regular scalar, or an array.
+     *                                                       It must not contain any objects anymore.
+     */
+    public function replaceData($key, $value)
+    {
         $this->data[$key] = $value;
     }
 
