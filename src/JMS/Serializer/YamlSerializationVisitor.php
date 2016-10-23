@@ -85,7 +85,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             || array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v && ( ! is_string($k) || $context->shouldSerializeNull() !== true)) {
+            if (null === $v && ( ! is_scalar($k) || $context->shouldSerializeNull() !== true)) {
                 continue;
             }
 
