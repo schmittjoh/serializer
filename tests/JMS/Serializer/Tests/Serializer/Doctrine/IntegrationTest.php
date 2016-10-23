@@ -24,6 +24,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,6 +39,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $school = new School();
         $json = $this->serializer->serialize($school, 'json');
         $this->assertEquals('{"type":"school"}', $json);
+
+        $deserialized = $this->serializer->deserialize($json, Organization::class, 'json');
+        $this->assertEquals($school, $deserialized);
     }
 
     public function testDiscriminatorIsInferredForGenericBaseClass()
@@ -45,6 +49,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $student = new Student();
         $json = $this->serializer->serialize($student, 'json');
         $this->assertEquals('{"type":"student"}', $json);
+
+        $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
+        $this->assertEquals($student, $deserialized);
     }
 
     public function testDiscriminatorIsInferredFromDoctrine()

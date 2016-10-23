@@ -167,6 +167,12 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorDisabled = $object->discriminatorDisabled;
         }
 
+        if ($object->discriminatorMap) {
+            $this->discriminatorFieldName = $object->discriminatorFieldName;
+            $this->discriminatorMap = $object->discriminatorMap;
+            $this->discriminatorBaseClass = $object->discriminatorBaseClass;
+        }
+
         if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
                 throw new \LogicException(sprintf(
