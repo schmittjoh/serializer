@@ -82,7 +82,7 @@ Example using the SerializerBuilder::
     use JMS\Serializer\SerializationContext;
 
     $serializer = JMS\Serializer\SerializerBuilder::create()
-        ->setDefaultSerializationContextFactory(function () {
+        ->setSerializationContextFactory(function () {
             return SerializationContext::create()
                 ->setSerializeNull(true)
             ;
@@ -96,5 +96,5 @@ a serialization context from your callable and use it.
 .. note ::
 
     You can also set a default DeserializationContextFactory with
-    ``->setDefaultDeserializationContextFactory(function () { /* ... */ })``
+    ``->setDeserializationContextFactory(function () { /* ... */ })``
     to be used with methods ``deserialize()`` and ``fromArray()``.
