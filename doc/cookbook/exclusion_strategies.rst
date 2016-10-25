@@ -86,7 +86,9 @@ Another default exclusion strategy is to create different views of your objects.
 Let's say you would like to serialize your object in a different view depending
 whether it is displayed in a list view or in a details view.
 
-You can achieve that by using the ``@Groups`` annotation on your properties.
+You can achieve that by using the ``@Groups`` annotation on your properties. Any
+property without an explicit ``@Groups`` annotation will be included in a
+``Default`` group, which can be used when specifying groups in the serializer.
 
 .. code-block :: php
 
