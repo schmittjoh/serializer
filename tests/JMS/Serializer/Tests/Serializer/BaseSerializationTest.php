@@ -274,6 +274,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testArrayNulls()
+    {
+        $arr = array(null, null);
+
+        $this->assertEquals(
+            $this->getContent('array_nulls'),
+            $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeInArrayNull(true))
+        );
+    }
+
     public function testArrayObjects()
     {
         $data = array(new SimpleObject('foo', 'bar'), new SimpleObject('baz', 'boo'));

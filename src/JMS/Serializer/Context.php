@@ -54,6 +54,9 @@ abstract class Context
     /** @var boolean|null */
     private $serializeNull;
 
+    /** @var boolean */
+    private $serializeInArrayNull = false;
+
     private $initialized = false;
 
     /** @var \SplStack */
@@ -208,6 +211,35 @@ abstract class Context
     public function shouldSerializeNull()
     {
         return $this->serializeNull;
+    }
+
+    /**
+     * Set if NULLs in arrays should be presented (TRUE) or skipped (FALSE)
+     *
+     * @param bool $bool
+     * @return $this
+     */
+    public function setSerializeInArrayNull($bool)
+    {
+        $this->serializeInArrayNull = (boolean) $bool;
+
+        return $this;
+    }
+
+    /**
+     * Returns TRUE when NULLs in arrays should be presented
+     * Returns FALSE when NULLs in arrays should be skipped
+     *
+     * @return bool
+     */
+    public function shouldSerializeInArrayNull()
+    {
+        return $this->serializeInArrayNull;
+    }
+
+    public function shouldSerializeNullForKey($key)
+    {
+        return is_string($key) ? $this->shouldSerializeNull() : $this->shouldSerializeInArrayNull();
     }
 
     /**
