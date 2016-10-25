@@ -88,7 +88,8 @@ whether it is displayed in a list view or in a details view.
 
 You can achieve that by using the ``@Groups`` annotation on your properties. Any
 property without an explicit ``@Groups`` annotation will be included in a
-``Default`` group, which can be used when specifying groups in the serializer.
+``Default`` group, which can be used when specifying groups in the serialization
+context.
 
 .. code-block :: php
 
