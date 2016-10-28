@@ -23,6 +23,10 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
 
@@ -48,6 +52,16 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $navigator;
 
     /**
+     * @var SerializationContextFactoryInterface
+     */
+    private $serializationContextFactory;
+
+    /**
+     * @var DeserializationContextFactoryInterface
+     */
+    private $deserializationContextFactory;
+
+    /**
      * Constructor.
      *
      * @param \Metadata\MetadataFactoryInterface $factory
@@ -69,12 +83,15 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->deserializationVisitors = $deserializationVisitors;
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+
+        $this->serializationContextFactory = new DefaultSerializationContextFactory();
+        $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = $this->serializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get($format)
@@ -90,7 +107,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get($format)
@@ -110,7 +127,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function toArray($data, SerializationContext $context = null)
     {
         if (null === $context) {
-            $context = new SerializationContext();
+            $context = $this->serializationContextFactory->createSerializationContext();
         }
 
         return $this->serializationVisitors->get('json')
@@ -138,7 +155,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function fromArray(array $data, $type, DeserializationContext $context = null)
     {
         if (null === $context) {
-            $context = new DeserializationContext();
+            $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
         return $this->deserializationVisitors->get('json')
@@ -195,5 +212,29 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function getMetadataFactory()
     {
         return $this->factory;
+    }
+
+    /**
+     * @param SerializationContextFactoryInterface $serializationContextFactory
+     *
+     * @return self
+     */
+    public function setSerializationContextFactory(SerializationContextFactoryInterface $serializationContextFactory)
+    {
+        $this->serializationContextFactory = $serializationContextFactory;
+
+        return $this;
+    }
+
+    /**
+     * @param DeserializationContextFactoryInterface $deserializationContextFactory
+     *
+     * @return self
+     */
+    public function setDeserializationContextFactory(DeserializationContextFactoryInterface $deserializationContextFactory)
+    {
+        $this->deserializationContextFactory = $deserializationContextFactory;
+
+        return $this;
     }
 }
