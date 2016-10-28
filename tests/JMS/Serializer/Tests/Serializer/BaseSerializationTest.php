@@ -128,6 +128,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSerializeNullArrayExcludingNulls()
+    {
+        $arr = array('foo' => 'bar', 'baz' => null, null);
+
+        $this->assertEquals(
+            $this->getContent('nullable_skip'),
+            $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeNull(false))
+        );
+    }
+
     public function testSerializeNullObject()
     {
         $obj = new ObjectWithNullProperty('foo', 'bar');

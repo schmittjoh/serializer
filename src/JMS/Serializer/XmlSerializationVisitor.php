@@ -175,6 +175,11 @@ class XmlSerializationVisitor extends AbstractVisitor
         $namespace = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryNamespace) ? $this->currentMetadata->xmlEntryNamespace : null;
 
         foreach ($data as $k => $v) {
+
+            if (null === $v && $context->shouldSerializeNull() !== true) {
+                continue;
+            }
+
             $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
 
             $entryNode = $this->createElement($tagName, $namespace);
