@@ -36,7 +36,7 @@ class Person
     public $name;
 
     /**
-     * @Type("integer")
+     * @Type("int")
      * @XmlAttribute
      */
     public $age;

@@ -115,6 +115,7 @@ final class GraphNavigator
             case 'string':
                 return $visitor->visitString($data, $type, $context);
 
+            case 'int':
             case 'integer':
                 return $visitor->visitInteger($data, $type, $context);
 
