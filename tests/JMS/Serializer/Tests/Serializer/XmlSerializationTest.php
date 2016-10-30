@@ -68,6 +68,26 @@ class XmlSerializationTest extends BaseSerializationTest
         return array(array('true', true), array('false', false), array('1', true), array('0', false));
     }
 
+    public function testAccessorSetterDeserialization()
+    {
+        /** @var \JMS\Serializer\Tests\Fixtures\AccessorSetter $object */
+        $object = $this->deserialize('<?xml version="1.0"?>
+            <AccessorSetter>
+                <element attribute="attribute">element</element>
+                <collection>
+                    <entry>collectionEntry</entry>
+                </collection>
+            </AccessorSetter>',
+            'JMS\Serializer\Tests\Fixtures\AccessorSetter'
+        );
+
+        $this->assertInstanceOf('stdClass', $object->getElement());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\AccessorSetterElement', $object->getElement()->element);
+        $this->assertEquals('attribute-different', $object->getElement()->element->getAttribute());
+        $this->assertEquals('element-different', $object->getElement()->element->getElement());
+        $this->assertEquals(['collectionEntry' => 'collectionEntry'], $object->getCollection());
+    }
+ 
     public function testPropertyIsObjectWithAttributeAndValue()
     {
         $personCollection = new PersonLocation;
