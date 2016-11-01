@@ -52,12 +52,41 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
+        /* 
+         * Walk the metadata stack to determine the active groups.
+         * TODO: There should be some sort of caching
+         */
+        $groups = $this->groups;
+        if ($navigatorContext->getMetadataStack()) {
+            $groupModifiers = array();
+            foreach ($navigatorContext->getMetadataStack() as $metadata) {
+                if ($metadata instanceof PropertyMetadata && is_array($metadata->recursionGroups)) {
+                    $groupModifiers[] = $metadata->recursionGroups;
+                }
+            }
+            foreach (array_reverse($groupModifiers) as $modifier) {
+                if (isset($modifier['set'])) {
+                    $groups = $modifier['set'];
+                }
+                if (isset($modifier['add'])) {
+                    foreach ($modifier['add'] as $group) {
+                        $groups[$group] = true;
+                    }
+                }
+                if (isset($modifier['remove'])) {
+                    foreach ($modifier['remove'] as $group) {
+                        unset($groups[$group]);
+                    }
+                }
+            }
+        }
+
         if ( ! $property->groups) {
-            return ! isset($this->groups[self::DEFAULT_GROUP]);
+            return ! isset($groups[self::DEFAULT_GROUP]);
         }
 
         foreach ($property->groups as $group) {
-            if (isset($this->groups[$group])) {
+            if (isset($groups[$group])) {
                 return false;
             }
         }

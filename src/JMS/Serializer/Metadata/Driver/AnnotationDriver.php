@@ -55,6 +55,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Annotation\XmlAttributeMap;
 use Metadata\Driver\DriverInterface;
 use JMS\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation\RecursionGroups;
 
 class AnnotationDriver implements DriverInterface
 {
@@ -208,6 +209,22 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlAttributeMap = true;
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof RecursionGroups) {
+                        $modifier = array();
+                        if (is_array($annot->set)) {
+                            $set = array();
+                            foreach ($annot->set as $group) {
+                                $set[$group] = true;
+                            }
+                            $modifier['set'] = $set;
+                        }
+                        if (is_array($annot->add)) {
+                            $modifier['add'] = $annot->add;
+                        }
+                        if (is_array($annot->remove)) {
+                            $modifier['remove'] = $annot->remove;
+                        }
+                        $propertyMetadata->recursionGroups = $modifier;
                     }
                 }
 

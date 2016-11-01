@@ -241,6 +241,19 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
 
+                    $recursionGroups = array();
+                    if (null !== $set = $pElem->attributes()->{'recursion-groups-set'}) {
+                        $recursionGroups['set'] =  preg_split('/\s*,\s*/', (string) $set);
+                    }
+                    if (null !== $add = $pElem->attributes()->{'recursion-groups-add'}) {
+                        $recursionGroups['add'] =  preg_split('/\s*,\s*/', (string) $add);
+                    }
+                    if (null !== $remove = $pElem->attributes()->{'recursion-groups-remove'}) {
+                        $recursionGroups['remove'] =  preg_split('/\s*,\s*/', (string) $remove);
+                    }
+                    if (count($recursionGroups)) {
+                        $pMetadata->recursionGroups = $recursionGroups;
+                    }
                 }
 
                 if ((ExclusionPolicy::NONE === (string) $exclusionPolicy && ! $isExclude)
