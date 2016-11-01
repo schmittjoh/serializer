@@ -47,7 +47,7 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.1.0-dev",
-            "recursion-groups": "1.1.1-dev"
+            "dev-recursion-groups": "1.1.1-dev"
         }
     }
 }
