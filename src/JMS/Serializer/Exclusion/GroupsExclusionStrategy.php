@@ -65,17 +65,9 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
                 }
             }
             foreach (array_reverse($groupModifiers) as $modifier) {
-                if (isset($modifier['set'])) {
-                    $groups = $modifier['set'];
-                }
-                if (isset($modifier['add'])) {
-                    foreach ($modifier['add'] as $group) {
-                        $groups[$group] = true;
-                    }
-                }
-                if (isset($modifier['remove'])) {
-                    foreach ($modifier['remove'] as $group) {
-                        unset($groups[$group]);
+                foreach ($modifier as $ifGroup => $withGroups) {
+                    if (isset($groups[$ifGroup])) {
+                        $groups = $withGroups;
                     }
                 }
             }

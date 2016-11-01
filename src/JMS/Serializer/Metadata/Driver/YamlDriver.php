@@ -185,7 +185,8 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['max_depth'])) {
                         $pMetadata->maxDepth = (int) $pConfig['max_depth'];
                     }
-                    
+
+                    // TODO: fix this if needed, now outdated, see AnnotationDriver
                     if (isset($pConfig['recursion_groups'])) {
                         $modifier = array();
                         if (isset($pConfig['recursion_groups']['set'])) {

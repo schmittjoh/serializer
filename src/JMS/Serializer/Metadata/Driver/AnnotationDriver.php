@@ -210,21 +210,14 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
                     } elseif ($annot instanceof RecursionGroups) {
-                        $modifier = array();
-                        if (is_array($annot->set)) {
-                            $set = array();
-                            foreach ($annot->set as $group) {
-                                $set[$group] = true;
-                            }
-                            $modifier['set'] = $set;
+                        $propertyMetadata->groups = empty($propertyMetadata->groups) ?
+                            $annot->ifGroups : array_merge($propertyMetadata->groups, $annot->ifGroups);
+                        $withGroups = [];
+                        foreach ($annot->ifGroups as $ifGroup) {
+                            $withGroups[$ifGroup] = array_fill_keys($annot->withGroups, true);
                         }
-                        if (is_array($annot->add)) {
-                            $modifier['add'] = $annot->add;
-                        }
-                        if (is_array($annot->remove)) {
-                            $modifier['remove'] = $annot->remove;
-                        }
-                        $propertyMetadata->recursionGroups = $modifier;
+                        $propertyMetadata->recursionGroups = empty($propertyMetadata->recursionGroups) ?
+                            $withGroups : array_merge($propertyMetadata->recursionGroups, $withGroups);
                     }
                 }
 

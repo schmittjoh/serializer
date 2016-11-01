@@ -241,6 +241,7 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
 
+                    // TODO: fix this if needed, now outdated, see AnnotationDriver
                     $recursionGroups = array();
                     if (null !== $set = $pElem->attributes()->{'recursion-groups-set'}) {
                         $recursionGroups['set'] =  preg_split('/\s*,\s*/', (string) $set);

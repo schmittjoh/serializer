@@ -25,11 +25,8 @@ namespace JMS\Serializer\Annotation;
 final class RecursionGroups
 {
     /** @var array<string> */
-    public $set;
+    public $ifGroups;
 
     /** @var array<string> */
-    public $add;
-
-    /** @var array<string> */
-    public $remove;
+    public $withGroups;
 }
