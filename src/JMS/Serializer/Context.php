@@ -256,6 +256,10 @@ abstract class Context
      */
     public function getCurrentPath()
     {
+        if (!$this->metadataStack) {
+            return array();
+        }
+
         $paths = array();
         foreach ($this->metadataStack as $metadata) {
             if ($metadata instanceof PropertyMetadata) {
