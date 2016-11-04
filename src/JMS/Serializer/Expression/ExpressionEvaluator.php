@@ -33,6 +33,7 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
     /**
      * @param string $expression
      * @param array $data
+     * @return bool
      */
     public function evaluate($expression, array $data = [])
     {
