@@ -49,6 +49,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $readOnly = false;
     public $xmlAttributeMap = false;
     public $maxDepth = null;
+    public $excludeIfExpression = null;
 
     private static $typeParser;
 
@@ -136,6 +137,8 @@ class PropertyMetadata extends BasePropertyMetadata
             parent::serialize(),
             'xmlEntryNamespace' => $this->xmlEntryNamespace,
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
+            'excludeIfExpression' => $this->excludeIfExpression,
+
         ));
     }
 
@@ -172,7 +175,9 @@ class PropertyMetadata extends BasePropertyMetadata
         if (isset($unserialized['xmlCollectionSkipWhenEmpty'])){
             $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
         }
-        
+        if (isset($unserialized['excludeIfExpression'])){
+            $this->excludeIfExpression = $unserialized['excludeIfExpression'];
+        }
 
         parent::unserialize($parentStr);
     }

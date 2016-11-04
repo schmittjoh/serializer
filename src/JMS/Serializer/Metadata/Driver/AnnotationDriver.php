@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\ExcludeIf;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\AccessorOrder;
@@ -160,6 +161,8 @@ class AnnotationDriver implements DriverInterface
                         $isExpose = true;
                     } elseif ($annot instanceof Exclude) {
                         $isExclude = true;
+                    } elseif ($annot instanceof ExcludeIf) {
+                        $propertyMetadata->excludeIfExpression = $annot->exp;
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
                     } elseif ($annot instanceof XmlElement) {
