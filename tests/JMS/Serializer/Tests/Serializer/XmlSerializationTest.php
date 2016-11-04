@@ -184,6 +184,22 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('map')))
         );
     }
+
+    public function testUnserializeMissingArray()
+    {
+        $xml = '<result></result>';
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $this->assertEquals($object->absentAndNs, array());
+
+        $xml = '<result xmlns:x="http://www.example.com">
+                    <absent_and_ns>
+                        <x:entry>foo</x:entry>
+                    </absent_and_ns>
+                  </result>';
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $this->assertEquals($object->absentAndNs, array("foo"));
+    }
+
     public function testObjectWithNamespacesAndList()
     {
         $object = new ObjectWithNamespacesAndList();
