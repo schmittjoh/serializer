@@ -32,7 +32,7 @@ class PersonSecret
 
     /**
      * @Type("string")
-     * @ExcludeIf("variable")
+     * @ExcludeIf("hide_data")
      */
     public $gender;
 }

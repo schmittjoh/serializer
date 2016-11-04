@@ -11,7 +11,7 @@ $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\PersonSecret', 'gender');
 $pMetadata->setType('string');
-$pMetadata->excludeIfExpression = "variable";
+$pMetadata->excludeIfExpression = "hide_data";
 $metadata->addPropertyMetadata($pMetadata);
 
 return $metadata;
