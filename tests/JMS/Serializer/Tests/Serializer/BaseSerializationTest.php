@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -33,11 +34,13 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -180,6 +183,37 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $this->assertEquals('foo', $this->deserialize($this->getContent('string'), 'string'));
         }
+    }
+
+    public function testExpressionExclusionNotConfigured()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+        $this->assertEquals($this->getContent('person_secret_show'), $this->serialize($person));
+    }
+
+    public function testExpressionExclusion()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $objectConstructor = new UnserializeObjectConstructor();
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $language = new ExpressionLanguage();
+
+        $evaluator = new ExpressionEvaluator($language);
+        $evaluator->addContextVariable('hide_data', true);
+        $serializer->setExpressionEvaluator($evaluator);
+
+        $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
+
+        $evaluator = new ExpressionEvaluator($language);
+        $evaluator->addContextVariable('hide_data', false);
+        $serializer->setExpressionEvaluator($evaluator);
+
+        $this->assertEquals($this->getContent('person_secret_show'), $serializer->serialize($person, $this->getFormat()));
     }
 
     /**

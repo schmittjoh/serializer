@@ -88,6 +88,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
             $outputs['nullable'] = '{"foo":"bar","baz":null,"0":null}';
             $outputs['nullable_skip'] = '{"foo":"bar"}';
+            $outputs['person_secret_show'] = '{"name":"mike","gender":"f"}';
+            $outputs['person_secret_hide'] = '{"name":"mike"}';
             $outputs['null'] = 'null';
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
             $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';

@@ -38,6 +38,7 @@
         "symfony/validator": "^2.2",
         "symfony/form": "~2.1",
         "symfony/filesystem": "^2.1",
+        "symfony/expression-language": "^2.7|^3.0",
         "phpunit/phpunit": "^4.8|^5.0"
     },
     "autoload": {
