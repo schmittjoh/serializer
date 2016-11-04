@@ -22,6 +22,7 @@ use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
@@ -79,6 +80,7 @@ class SerializerBuilder
     private $driverFactory;
     private $serializationContextFactory;
     private $deserializationContextFactory;
+    private $expressionEvaluator;
 
     public static function create()
     {
@@ -306,6 +308,11 @@ class SerializerBuilder
 
         return $this;
     }
+    
+    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
+    {
+        $this->expressionEvaluator = $expressionEvaluator;
+    }
 
     /**
      * Similar to addMetadataDir(), but overrides an existing entry.
@@ -424,6 +431,10 @@ class SerializerBuilder
             $this->deserializationVisitors,
             $this->eventDispatcher
         );
+
+        if (null !== $this->expressionEvaluator){
+            $serializer->setExpressionEvaluator($this->expressionEvaluator);
+        }
 
         if (null !== $this->serializationContextFactory) {
             $serializer->setSerializationContextFactory($this->serializationContextFactory);
