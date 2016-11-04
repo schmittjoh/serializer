@@ -150,7 +150,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $namespace = isset($classMetadata->xmlNamespaces[''])?$classMetadata->xmlNamespaces['']:$namespace;
         }
 
-        $hasNode = null !== $namespace ? isset($data->children($namespace)->$entryName) : isset($data->$entryName);
+        $hasNode = null !== $namespace ? 
+                !empty($data) && !empty($data->children($namespace)) && isset($data->children($namespace)->$entryName) : 
+                !empty($data) && isset($data->$entryName);
         if (false === $hasNode) {
             if (null === $this->result) {
                 return $this->result = array();
