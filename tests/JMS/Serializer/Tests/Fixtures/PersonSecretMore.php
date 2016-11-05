@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,26 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
+
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Type;
 
 /**
- * @Annotation
- * @Target({"PROPERTY"})
+ * @Serializer\ExclusionPolicy("ALL")
  */
-final class ExcludeIf
+class PersonSecretMore
 {
+    /**
+     * @Type("string")
+     * @Expose()
+     */
+    public $name;
 
-    public $exp;
+    /**
+     * @Type("string")
+     * @Expose(if="show_data")
+     */
+    public $gender;
 }

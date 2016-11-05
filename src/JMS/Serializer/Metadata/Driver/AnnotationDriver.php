@@ -159,10 +159,15 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->serializedName = $annot->name;
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
+                        if (null !== $annot->if){
+                            $propertyMetadata->excludeIf = "!" . $annot->if;
+                        }
                     } elseif ($annot instanceof Exclude) {
-                        $isExclude = true;
-                    } elseif ($annot instanceof ExcludeIf) {
-                        $propertyMetadata->excludeIfExpression = $annot->exp;
+                        if (null !== $annot->if){
+                            $propertyMetadata->excludeIf = $annot->if;
+                        } else {
+                            $isExclude = true;
+                        }
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
                     } elseif ($annot instanceof XmlElement) {

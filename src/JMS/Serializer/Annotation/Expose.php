@@ -24,4 +24,5 @@ namespace JMS\Serializer\Annotation;
  */
 final class Expose
 {
+    public $if;
 }

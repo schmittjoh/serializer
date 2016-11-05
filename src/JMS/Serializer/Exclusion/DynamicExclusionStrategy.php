@@ -34,7 +34,7 @@ class DynamicExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
-        if (null === $property->excludeIfExpression) {
+        if (null === $property->excludeIf) {
             return false;
         }
 
@@ -45,6 +45,6 @@ class DynamicExclusionStrategy implements ExclusionStrategyInterface
             $variables['object'] = $navigatorContext->getObject();
         }
 
-        return $this->expressionEvaluator->evaluate($property->excludeIfExpression, $variables);
+        return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
     }
 }

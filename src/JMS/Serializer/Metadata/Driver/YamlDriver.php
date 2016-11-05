@@ -97,7 +97,11 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pConfig['exclude_if'])) {
-                        $pMetadata->excludeIfExpression = (string) $pConfig['exclude_if'];
+                        $pMetadata->excludeIf = (string) $pConfig['exclude_if'];
+                    }
+
+                    if (isset($pConfig['expose_if'])) {
+                        $pMetadata->excludeIf = "!" . $pConfig['expose_if'];
                     }
 
                     if (isset($pConfig['serialized_name'])) {
