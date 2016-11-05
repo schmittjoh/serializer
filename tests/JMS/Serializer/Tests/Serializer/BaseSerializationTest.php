@@ -35,6 +35,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
+use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
@@ -214,6 +215,29 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $serializer->setExpressionEvaluator($evaluator);
 
         $this->assertEquals($this->getContent('person_secret_show'), $serializer->serialize($person, $this->getFormat()));
+    }
+
+    public function testExpressionExpose()
+    {
+        $person = new PersonSecretMore();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $objectConstructor = new UnserializeObjectConstructor();
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $language = new ExpressionLanguage();
+
+        $evaluator = new ExpressionEvaluator($language);
+        $evaluator->addContextVariable('show_data', true);
+        $serializer->setExpressionEvaluator($evaluator);
+
+        $this->assertEquals($this->getContent('person_secret_show'), $serializer->serialize($person, $this->getFormat()));
+
+        $evaluator = new ExpressionEvaluator($language);
+        $evaluator->addContextVariable('show_data', false);
+        $serializer->setExpressionEvaluator($evaluator);
+
+        $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
     }
 
     /**

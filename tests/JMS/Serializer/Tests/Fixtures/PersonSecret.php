@@ -18,10 +18,13 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\ExcludeIf;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Type;
 
 /**
+ * @Serializer\ExclusionPolicy("NONE")
  */
 class PersonSecret
 {
@@ -32,7 +35,13 @@ class PersonSecret
 
     /**
      * @Type("string")
-     * @ExcludeIf("hide_data")
+     * @Exclude(if="hide_data")
      */
     public $gender;
+
+    /**
+     * @Type("string")
+     * @Expose(if="hide_data")
+     */
+    public $age;
 }
