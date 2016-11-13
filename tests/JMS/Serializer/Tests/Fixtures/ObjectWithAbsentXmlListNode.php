@@ -38,4 +38,10 @@ class ObjectWithAbsentXmlListNode
      * @Serializer\Type("array<string>")
      */
     public $skipDefault;
+
+    /**
+     * @Serializer\XmlList(inline=false, namespace="http://www.example.com")
+     * @Serializer\Type("array<string>")
+     */
+    public $absentAndNs;
 }
