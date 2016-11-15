@@ -79,10 +79,14 @@ class XmlDriver extends AbstractFileDriver
             $discriminatorMap[(string) $entry->attributes()->value] = (string) $entry;
         }
 
+        if (null !== $discriminatorCdata = strtolower($elem->attributes()->{'discriminator-cdata'})) {
+            $discriminatorCdata='true';
+        }
+
         if ('true' === (string) $elem->attributes()->{'discriminator-disabled'}) {
             $metadata->discriminatorDisabled = true;
         } elseif ( ! empty($discriminatorFieldName) || ! empty($discriminatorMap)) {
-            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap);
+            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap, $discriminatorCdata==='true');
         }
 
         foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {

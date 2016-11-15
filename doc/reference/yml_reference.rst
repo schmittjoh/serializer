@@ -13,6 +13,7 @@ YAML Reference
         accessor_order: custom
         custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
         discriminator:
+            cdata: true
             field_name: type
             map:
                 some-value: ClassName

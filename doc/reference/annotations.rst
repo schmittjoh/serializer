@@ -245,6 +245,20 @@ to the least super type::
     class Car extends Vehicle { }
     class Moped extends Vehicle { }
 
+By default, an XML serialization would use CDATA for discriminator field, for example::
+
+    <type><![CDATA[car]]></type>
+  
+You can indicate you don't require CDATA with an additional `cdata=false` in the annotation. So, annotating like this::
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, cdata=false)
+     */
+
+Would produce XML like this::
+
+    <type>car</type>
+
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.

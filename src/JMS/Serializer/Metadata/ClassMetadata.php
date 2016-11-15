@@ -56,8 +56,9 @@ class ClassMetadata extends MergeableClassMetadata
     public $discriminatorFieldName;
     public $discriminatorValue;
     public $discriminatorMap = array();
+    public $discriminatorCdata = true;
 
-    public function setDiscriminator($fieldName, array $map)
+    public function setDiscriminator($fieldName, array $map, $cdata = true)
     {
         if (empty($fieldName)) {
             throw new \InvalidArgumentException('The $fieldName cannot be empty.');
@@ -70,6 +71,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorBaseClass = $this->name;
         $this->discriminatorFieldName = $fieldName;
         $this->discriminatorMap = $map;
+        $this->discriminatorCdata = $cdata;
     }
 
     /**
@@ -200,6 +202,7 @@ class ClassMetadata extends MergeableClassMetadata
                 $typeValue
             );
             $discriminatorProperty->serializedName = $this->discriminatorFieldName;
+            $discriminatorProperty->xmlElementCData = $this->discriminatorCdata;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
@@ -243,6 +246,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorCdata,
             parent::serialize(),
         ));
     }
@@ -264,6 +268,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorCdata,
             $parentStr
         ) = unserialize($str);
 
