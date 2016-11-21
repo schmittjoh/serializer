@@ -196,18 +196,18 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                new ExpressionFunction('show_data', function ($field) {
-                    return "$field == 'gender'";
-                }, function ($variables, $field) {
-                    return $field == 'gender';
+                new ExpressionFunction('show_data', function () {
+                    return "true";
+                }, function () {
+                    return true;
                 }),
                 '{"name":"mike"}'
             ],
             [
-                new ExpressionFunction('show_data', function ($field) {
-                    return "$field != 'gender'";
-                }, function ($variables, $field) {
-                    return $field != 'gender';
+                new ExpressionFunction('show_data', function () {
+                    return "false";
+                }, function () {
+                    return false;
                 }),
                 '{"name":"mike","gender":"f"}'
             ]
