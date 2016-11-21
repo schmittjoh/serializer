@@ -16,7 +16,7 @@ $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\PersonSecret', 'age');
 $pMetadata->setType('string');
-$pMetadata->excludeIf = "!hide_data";
+$pMetadata->excludeIf = "!(hide_data)";
 $metadata->addPropertyMetadata($pMetadata);
 
 return $metadata;
