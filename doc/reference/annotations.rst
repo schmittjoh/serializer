@@ -21,10 +21,16 @@ that should be used for the class.
 This annotation can be defined on a property to indicate that the property should
 not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
+If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
+be possible to use `@Exclude(if="expression")` to exclude dynamically a property.
+
 @Expose
 ~~~~~~~
 This annotation can be defined on a property to indicate that the property should
 be serialized/unserialized. Works only in combination with AllExclusionPolicy.
+
+If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
+be possible to use `@Expose(if="expression")` to expose dynamically a property.
 
 @SerializedName
 ~~~~~~~~~~~~~~~

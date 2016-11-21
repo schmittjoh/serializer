@@ -16,6 +16,8 @@ XML Reference
             <property name="some-property"
                       exclude="true"
                       expose="true"
+                      exclude-if="expr"
+                      expose-if="expr"
                       type="string"
                       serialized-name="foo"
                       since-version="1.0"
