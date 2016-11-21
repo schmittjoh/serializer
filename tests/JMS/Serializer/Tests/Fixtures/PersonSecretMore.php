@@ -19,23 +19,22 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Type;
 
 /**
  * @Serializer\ExclusionPolicy("ALL")
+ * @Serializer\AccessorOrder("custom",custom = {"name", "gender"})
  */
 class PersonSecretMore
 {
     /**
-     * @Type("string")
-     * @Expose()
+     * @Serializer\Type("string")
+     * @Serializer\Expose()
      */
     public $name;
 
     /**
-     * @Type("string")
-     * @Expose(if="show_data('gender')")
+     * @Serializer\Type("string")
+     * @Serializer\Expose(if="show_data('gender')")
      */
     public $gender;
 }

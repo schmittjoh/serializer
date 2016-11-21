@@ -21,25 +21,26 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\ExclusionPolicy("NONE")
- * @Serializer\AccessorOrder("custom",custom = {"name", "gender" ,"age"})
+ * @Serializer\ExclusionPolicy("ALL")
+ * @Serializer\AccessorOrder("custom",custom = {"name", "gender"})
  */
-class PersonSecret
+class PersonSecretMoreVirtual
 {
     /**
      * @Serializer\Type("string")
+     * @Serializer\Expose()
      */
     public $name;
 
-    /**
-     * @Serializer\Type("string")
-     * @Serializer\Exclude(if="show_data('gender')")
-     */
     public $gender;
 
     /**
+     * @Serializer\VirtualProperty()
      * @Serializer\Type("string")
-     * @Serializer\Expose(if="show_data('age')")
+     * @Serializer\Expose(if="show_data('gender')")
      */
-    public $age;
+    public function getGender()
+    {
+        return $this->gender;
+    }
 }

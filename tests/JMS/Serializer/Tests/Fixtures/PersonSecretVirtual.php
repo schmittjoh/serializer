@@ -22,9 +22,9 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Serializer\ExclusionPolicy("NONE")
- * @Serializer\AccessorOrder("custom",custom = {"name", "gender" ,"age"})
+ * @Serializer\AccessorOrder("custom",custom = {"name", "gender", "age"})
  */
-class PersonSecret
+class PersonSecretVirtual
 {
     /**
      * @Serializer\Type("string")
@@ -32,8 +32,7 @@ class PersonSecret
     public $name;
 
     /**
-     * @Serializer\Type("string")
-     * @Serializer\Exclude(if="show_data('gender')")
+     * @Serializer\Exclude()
      */
     public $gender;
 
@@ -42,4 +41,14 @@ class PersonSecret
      * @Serializer\Expose(if="show_data('age')")
      */
     public $age;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\Type("string")
+     * @Serializer\Exclude(if="show_data('gender')")
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
 }
