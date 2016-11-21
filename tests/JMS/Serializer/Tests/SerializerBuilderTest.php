@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Tests;
 
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
-use JMS\Serializer\Exclusion\DynamicExclusionStrategy;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -224,7 +224,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $language = new ExpressionLanguage();
         $language->addFunction($function);
         $serializationContextFactory = new DefaultSerializationContextFactory();
-        $serializationContextFactory->addDefaultExclusionStrategy(new DynamicExclusionStrategy($language));
+        $serializationContextFactory->addDefaultExclusionStrategy(new ExpressionLanguageExclusionStrategy($language));
 
         $this->builder->setSerializationContextFactory($serializationContextFactory);
         $serializer = $this->builder->build();

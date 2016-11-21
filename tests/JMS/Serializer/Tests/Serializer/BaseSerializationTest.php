@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
-use JMS\Serializer\Exclusion\DynamicExclusionStrategy;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -254,7 +254,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $language->addFunction($function);
 
         $serializationContextFactory = new DefaultSerializationContextFactory();
-        $serializationContextFactory->addDefaultExclusionStrategy(new DynamicExclusionStrategy($language));
+        $serializationContextFactory->addDefaultExclusionStrategy(new ExpressionLanguageExclusionStrategy($language));
 
         $this->serializer->setSerializationContextFactory($serializationContextFactory);
 

@@ -9,7 +9,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-class DynamicExclusionStrategy implements ExclusionStrategyInterface
+class ExpressionLanguageExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
      * @var ExpressionLanguage
