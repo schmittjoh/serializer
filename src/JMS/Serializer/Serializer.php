@@ -20,7 +20,6 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
