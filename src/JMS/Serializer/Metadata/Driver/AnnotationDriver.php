@@ -149,7 +149,6 @@ class AnnotationDriver implements DriverInterface
                 $accessor = array(null, null);
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
-
                 foreach ($propertyAnnotations as $annot) {
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
@@ -159,8 +158,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->serializedName = $annot->name;
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
-                        if (null !== $annot->if){
-                            $propertyMetadata->excludeIf = "!" . $annot->if;
+                        if (null !== $annot->if) {
+                            $propertyMetadata->excludeIf = "!(" . $annot->if . ")";
                         }
                     } elseif ($annot instanceof Exclude) {
                         if (null !== $annot->if){
