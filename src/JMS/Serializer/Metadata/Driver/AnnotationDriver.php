@@ -162,7 +162,7 @@ class AnnotationDriver implements DriverInterface
                             $propertyMetadata->excludeIf = "!(" . $annot->if . ")";
                         }
                     } elseif ($annot instanceof Exclude) {
-                        if (null !== $annot->if){
+                        if (null !== $annot->if) {
                             $propertyMetadata->excludeIf = $annot->if;
                         } else {
                             $isExclude = true;
