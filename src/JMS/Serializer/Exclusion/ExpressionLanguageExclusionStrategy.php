@@ -16,9 +16,20 @@ class ExpressionLanguageExclusionStrategy implements ExclusionStrategyInterface
      */
     private $expressionLanguage;
 
+    private $context = array();
+
     public function __construct(ExpressionLanguage $expressionLanguage)
     {
         $this->expressionLanguage = $expressionLanguage;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function addContextVariable($name, $value)
+    {
+        $this->context[$name] = $value;
     }
 
     /**
@@ -45,6 +56,6 @@ class ExpressionLanguageExclusionStrategy implements ExclusionStrategyInterface
             $variables['object'] = $navigatorContext->getObject();
         }
 
-        return $this->expressionLanguage->evaluate($property->excludeIf, $variables);
+        return $this->expressionLanguage->evaluate($property->excludeIf, array_merge($variables, $this->context));
     }
 }
