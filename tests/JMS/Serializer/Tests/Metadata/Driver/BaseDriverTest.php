@@ -392,12 +392,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $p = new PropertyMetadata($class, 'gender');
         $p->type = array('name' => 'string', 'params' => array());
-        $p->excludeIf = "hide_data";
+        $p->excludeIf = "show_data('gender')";
         $this->assertEquals($p, $m->propertyMetadata['gender']);
 
         $p = new PropertyMetadata($class, 'age');
         $p->type = array('name' => 'string', 'params' => array());
-        $p->excludeIf = "!(hide_data)";
+        $p->excludeIf = "!(show_data('age'))";
         $this->assertEquals($p, $m->propertyMetadata['age']);
     }
 

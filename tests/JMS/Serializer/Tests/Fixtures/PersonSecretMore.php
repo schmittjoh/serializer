@@ -35,7 +35,7 @@ class PersonSecretMore
 
     /**
      * @Type("string")
-     * @Expose(if="show_data")
+     * @Expose(if="show_data('gender')")
      */
     public $gender;
 }

@@ -20,7 +20,8 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\Exclusion\DynamicExclusionStrategy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -41,6 +42,7 @@ use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
@@ -194,50 +196,69 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('person_secret_show'), $this->serialize($person));
     }
 
-    public function testExpressionExclusion()
+    public function expressionFunctionProvider()
     {
         $person = new PersonSecret();
         $person->gender = 'f';
         $person->name = 'mike';
 
-        $objectConstructor = new UnserializeObjectConstructor();
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
-        $language = new ExpressionLanguage();
+        $personMoreSecret = new PersonSecretMore();
+        $personMoreSecret->gender = 'f';
+        $personMoreSecret->name = 'mike';
 
-        $evaluator = new ExpressionEvaluator($language);
-        $evaluator->addContextVariable('hide_data', true);
-        $serializer->setExpressionEvaluator($evaluator);
+        $showGender = new ExpressionFunction('show_data', function () {
+            return "true";
+        }, function () {
+            return true;
+        });
 
-        $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
+        $hideGender = new ExpressionFunction('show_data', function () {
+            return "false";
+        }, function () {
+            return false;
+        });
 
-        $evaluator = new ExpressionEvaluator($language);
-        $evaluator->addContextVariable('hide_data', false);
-        $serializer->setExpressionEvaluator($evaluator);
-
-        $this->assertEquals($this->getContent('person_secret_show'), $serializer->serialize($person, $this->getFormat()));
+        return [
+            [
+                $person,
+                $showGender,
+                'person_secret_hide'
+            ],
+            [
+                $person,
+                $hideGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecret,
+                $showGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecret,
+                $hideGender,
+                'person_secret_hide'
+            ]
+        ];
     }
 
-    public function testExpressionExpose()
+    /**
+     * @dataProvider expressionFunctionProvider
+     * @param PersonSecret|PersonSecretMore $person
+     * @param ExpressionFunction $function
+     * @param $json
+     */
+    public function testExpressionExclusion($person, ExpressionFunction $function, $json)
     {
-        $person = new PersonSecretMore();
-        $person->gender = 'f';
-        $person->name = 'mike';
-
-        $objectConstructor = new UnserializeObjectConstructor();
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
         $language = new ExpressionLanguage();
+        $language->addFunction($function);
 
-        $evaluator = new ExpressionEvaluator($language);
-        $evaluator->addContextVariable('show_data', true);
-        $serializer->setExpressionEvaluator($evaluator);
+        $serializationContextFactory = new DefaultSerializationContextFactory();
+        $serializationContextFactory->addDefaultExclusionStrategy(new DynamicExclusionStrategy($language));
 
-        $this->assertEquals($this->getContent('person_secret_show'), $serializer->serialize($person, $this->getFormat()));
+        $this->serializer->setSerializationContextFactory($serializationContextFactory);
 
-        $evaluator = new ExpressionEvaluator($language);
-        $evaluator->addContextVariable('show_data', false);
-        $serializer->setExpressionEvaluator($evaluator);
-
-        $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
+        $this->assertEquals($this->getContent($json), $this->serialize($person));
     }
 
     /**

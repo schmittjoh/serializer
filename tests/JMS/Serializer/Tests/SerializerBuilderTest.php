@@ -18,9 +18,11 @@
 
 namespace JMS\Serializer\Tests;
 
-use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\Exclusion\DynamicExclusionStrategy;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -190,23 +192,48 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"not_null":"ok"}', $result);
     }
 
-    public function testExpressionEngine()
+    public function expressionFunctionProvider()
+    {
+        return [
+            [
+                new ExpressionFunction('show_data', function ($field) {
+                    return "$field == 'gender'";
+                }, function ($variables, $field) {
+                    return $field == 'gender';
+                }),
+                '{"name":"mike"}'
+            ],
+            [
+                new ExpressionFunction('show_data', function ($field) {
+                    return "$field != 'gender'";
+                }, function ($variables, $field) {
+                    return $field != 'gender';
+                }),
+                '{"name":"mike","gender":"f"}'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider expressionFunctionProvider
+     * @param ExpressionFunction $function
+     * @param $json
+     */
+    public function testExpressionEngine(ExpressionFunction $function, $json)
     {
         $language = new ExpressionLanguage();
-        $evaluator = new ExpressionEvaluator($language);
+        $language->addFunction($function);
+        $serializationContextFactory = new DefaultSerializationContextFactory();
+        $serializationContextFactory->addDefaultExclusionStrategy(new DynamicExclusionStrategy($language));
 
-        $this->builder->setExpressionEvaluator($evaluator);
+        $this->builder->setSerializationContextFactory($serializationContextFactory);
         $serializer = $this->builder->build();
 
         $person = new PersonSecret();
         $person->gender = 'f';
         $person->name = 'mike';
 
-        $evaluator->addContextVariable('hide_data', true);
-        $this->assertEquals('{"name":"mike"}', $serializer->serialize($person, 'json'));
-
-        $evaluator->addContextVariable('hide_data', false);
-        $this->assertEquals('{"name":"mike","gender":"f"}', $serializer->serialize($person, 'json'));
+        $this->assertEquals($json, $serializer->serialize($person, 'json'));
     }
 
     protected function setUp()

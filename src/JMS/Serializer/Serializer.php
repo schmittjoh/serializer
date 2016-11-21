@@ -21,7 +21,6 @@ namespace JMS\Serializer;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DynamicExclusionStrategy;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
@@ -50,11 +49,6 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
-
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
-    private $expressionEvaluator;
 
     private $navigator;
 
@@ -93,11 +87,6 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $this->serializationContextFactory = new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
-    }
-
-    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
-    {
-        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
@@ -182,9 +171,6 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
     {
-        if (null !== $this->expressionEvaluator) {
-            $context->addExclusionStrategy(new DynamicExclusionStrategy($this->expressionEvaluator));
-        }
         $context->initialize(
             $format,
             $visitor,

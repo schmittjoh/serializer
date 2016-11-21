@@ -4,21 +4,21 @@
 namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class DynamicExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
-     * @var ExpressionEvaluatorInterface
+     * @var ExpressionLanguage
      */
-    private $expressionEvaluator;
+    private $expressionLanguage;
 
-    public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)
+    public function __construct(ExpressionLanguage $expressionLanguage)
     {
-        $this->expressionEvaluator = $expressionEvaluator;
+        $this->expressionLanguage = $expressionLanguage;
     }
 
     /**
@@ -45,6 +45,6 @@ class DynamicExclusionStrategy implements ExclusionStrategyInterface
             $variables['object'] = $navigatorContext->getObject();
         }
 
-        return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
+        return $this->expressionLanguage->evaluate($property->excludeIf, $variables);
     }
 }

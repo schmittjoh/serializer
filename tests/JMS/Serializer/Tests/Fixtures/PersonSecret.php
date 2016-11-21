@@ -35,13 +35,13 @@ class PersonSecret
 
     /**
      * @Type("string")
-     * @Exclude(if="hide_data")
+     * @Exclude(if="show_data('gender')")
      */
     public $gender;
 
     /**
      * @Type("string")
-     * @Expose(if="hide_data")
+     * @Expose(if="show_data('age')")
      */
     public $age;
 }
