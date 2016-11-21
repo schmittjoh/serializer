@@ -264,3 +264,49 @@ You need to tell the serializer to take into account MaxDepth checks::
     use JMS\Serializer\SerializationContext;
 
     $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
+
+
+Dynamic exclusion strategy
+--------------------------
+
+If the previous exclusion strategies are not enough, is possible to use the `ExpressionLanguageExclusionStrategy`
+that uses the `symfony expression language<https://github.com/symfony/expression-language>`_ to
+allow a more sophisticated exclusion strategies using `@Exclude(if="expression")` and `@Expose(if="expression")` methods.
+
+
+.. code-block :: php
+
+    <?php
+
+    class MyObject
+    {
+        /**
+         * @Exclude(if="true")
+         */
+        private $name;
+
+       /**
+         * @Expose(if="true")
+         */
+        private $name2;
+    }
+
+.. note ::
+
+    ``true`` is just a generic expression, you can use any expression allowed by the Symfony Expression Language
+
+If you have annotated your objects like above, you can serializing different
+versions like this::
+
+    use JMS\Serializer\SerializationContext;
+
+    $context = SerializationContext::create();
+
+    $language = new ExpressionLanguage();
+
+    $context = new SerializationContext();
+    $context->addExclusionStrategy(new ExpressionLanguageExclusionStrategy($language));
+
+    $serializer->serialize(new MyObject(), 'json', $context);
+
+
