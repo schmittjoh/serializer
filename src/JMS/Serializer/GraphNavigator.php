@@ -21,8 +21,10 @@ namespace JMS\Serializer;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -187,6 +189,10 @@ final class GraphNavigator
 
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+
+                if ($metadata->usingExpression && !$context->hasExclusionStrategy(ExpressionLanguageExclusionStrategy::class)) {
+                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy");
+                }
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($data, $metadata);

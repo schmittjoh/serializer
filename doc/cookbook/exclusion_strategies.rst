@@ -309,9 +309,3 @@ versions like this::
 
     $serializer->serialize(new MyObject(), 'json', $context);
 
-
-.. warning ::
-
-    If you do not add the exclusion strategy to the context, the `if` condition eventually present in
-    `@Exclude(if="expression")` and `@Expose(if="expression")` will be ignored,
-    and will be interpreted as `@Exclude()` and `@Expose()`.

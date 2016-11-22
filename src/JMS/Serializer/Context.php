@@ -51,6 +51,8 @@ abstract class Context
     /** @var ExclusionStrategyInterface */
     private $exclusionStrategy;
 
+    private $hasExclusionStrategy = array();
+
     /** @var boolean|null */
     private $serializeNull;
 
@@ -104,6 +106,37 @@ abstract class Context
     public function getExclusionStrategy()
     {
         return $this->exclusionStrategy;
+    }
+
+    /**
+     * @param string $class
+     * @return bool
+     */
+    public function hasExclusionStrategy($class)
+    {
+        if (isset($this->hasExclusionStrategy[$class])) {
+            return $class;
+        }
+        $strategies = array();
+        if ($this->exclusionStrategy) {
+            $strategies[] = $this->exclusionStrategy;
+        }
+
+        while (count($strategies)>0) {
+            $strategy = array_shift($strategies);
+
+            if ($strategy instanceof $class) {
+                return $this->hasExclusionStrategy[$class] = true;
+            } elseif ($strategy instanceof DisjunctExclusionStrategy) {
+                $ref = new \ReflectionProperty($strategy, 'delegates');
+                $ref->setAccessible(true);
+                foreach ($ref->getValue($strategy) as $delegate) {
+                    $strategies[] = $delegate;
+                }
+            }
+        }
+
+        return $this->hasExclusionStrategy[$class] = false;
     }
 
     public function setAttribute($key, $value)

@@ -21,6 +21,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
@@ -190,12 +191,37 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy
+     */
     public function testExpressionExclusionNotConfigured()
     {
         $person = new PersonSecret();
         $person->gender = 'f';
         $person->name = 'mike';
-        $this->assertEquals($this->getContent('person_secret_show'), $this->serialize($person));
+        $this->serialize($person);
+    }
+
+
+    public function testExpressionExclusionConfiguredWithDisjunctStrategy()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $language = new ExpressionLanguage();
+        $language->addFunction(new ExpressionFunction('show_data', function () {
+            return "true";
+        }, function () {
+            return true;
+        }));
+        $serializationContextFactory = new DefaultSerializationContextFactory();
+        $serializationContextFactory->addDefaultExclusionStrategy(new DisjunctExclusionStrategy([new ExpressionLanguageExclusionStrategy($language)]));
+
+        $this->serializer->setSerializationContextFactory($serializationContextFactory);
+
+        $this->assertEquals($this->getContent('person_secret_hide'), $this->serialize($person));
     }
 
     public function expressionFunctionProvider()
