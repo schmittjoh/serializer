@@ -105,6 +105,9 @@ class ClassMetadata extends MergeableClassMetadata
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
+        if ($metadata instanceof PropertyMetadata && $metadata->excludeIf) {
+            $this->usingExpression = true;
+        }
     }
 
     public function addPreSerializeMethod(MethodMetadata $method)
