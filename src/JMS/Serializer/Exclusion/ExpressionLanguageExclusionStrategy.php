@@ -56,6 +56,6 @@ class ExpressionLanguageExclusionStrategy implements ExclusionStrategyInterface
             $variables['object'] = $navigatorContext->getObject();
         }
 
-        return $this->expressionLanguage->evaluate($property->excludeIf, array_merge($variables, $this->context));
+        return $this->expressionLanguage->evaluate($property->excludeIf, $variables + $this->context);
     }
 }
