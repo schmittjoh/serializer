@@ -20,6 +20,8 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\ArrayDeserializationVisitor;
+use Symfony\Component\Yaml\Inline;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
@@ -37,7 +39,7 @@ class DateHandler implements SubscribingHandlerInterface
         $methods = array();
         $types = array('DateTime', 'DateInterval');
 
-        foreach (array('json', 'xml', 'yml') as $format) {
+        foreach (array('json', 'xml', 'yml', 'array') as $format) {
             $methods[] = array(
                 'type' => 'DateTime',
                 'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
@@ -100,6 +102,15 @@ class DateHandler implements SubscribingHandlerInterface
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    {
+        if (null === $data) {
+            return null;
+        }
+
+        return $this->parseDateTime($data, $type);
+    }
+
+    public function deserializeDateTimeFromArray(ArrayDeserializationVisitor $visitor, $data, $type)
     {
         if (null === $data) {
             return null;

@@ -19,6 +19,8 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\ArrayDeserializationVisitor;
+use JMS\Serializer\ArraySerializationVisitor;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\XmlDeserializationVisitor;
 use Symfony\Component\Yaml\Inline;
@@ -48,6 +50,12 @@ class Article
         $visitor->setRoot(array($this->element => $this->value));
     }
 
+    /** @HandlerCallback("array", direction = "serialization") */
+    public function serializeToArray(ArraySerializationVisitor $visitor)
+    {
+        $visitor->setRoot(array($this->element => $this->value));
+    }
+
     /** @HandlerCallback("yml", direction = "serialization") */
     public function serializeToYml(YamlSerializationVisitor $visitor)
     {
@@ -63,6 +71,13 @@ class Article
 
     /** @HandlerCallback("json", direction = "deserialization") */
     public function deserializeFromJson(JsonDeserializationVisitor $visitor, array $data)
+    {
+        $this->element = key($data);
+        $this->value = reset($data);
+    }
+
+    /** @HandlerCallback("array", direction = "deserialization") */
+    public function deserializeFromArray(ArrayDeserializationVisitor $visitor, array $data)
     {
         $this->element = key($data);
         $this->value = reset($data);
