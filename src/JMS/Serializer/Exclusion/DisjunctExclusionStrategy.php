@@ -48,6 +48,14 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->delegates = $delegates;
     }
 
+    /**
+     * @return ExclusionStrategyInterface[]|Sequence|SequenceInterface
+     */
+    public function getDelegates()
+    {
+        return $this->delegates;
+    }
+
     public function addStrategy(ExclusionStrategyInterface $strategy)
     {
         $this->delegates->add($strategy);

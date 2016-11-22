@@ -115,7 +115,7 @@ abstract class Context
     public function hasExclusionStrategy($class)
     {
         if (isset($this->hasExclusionStrategy[$class])) {
-            return $class;
+            return $this->hasExclusionStrategy[$class];
         }
         $strategies = array();
         if ($this->exclusionStrategy) {
@@ -128,9 +128,7 @@ abstract class Context
             if ($strategy instanceof $class) {
                 return $this->hasExclusionStrategy[$class] = true;
             } elseif ($strategy instanceof DisjunctExclusionStrategy) {
-                $ref = new \ReflectionProperty($strategy, 'delegates');
-                $ref->setAccessible(true);
-                foreach ($ref->getValue($strategy) as $delegate) {
+                foreach ($strategy->getDelegates() as $delegate) {
                     $strategies[] = $delegate;
                 }
             }
