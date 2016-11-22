@@ -253,12 +253,13 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorGroups,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
+            'usingExpression' => $this->usingExpression,
         ));
     }
 
     public function unserialize($str)
     {
-        $deserializedData = unserialize($str);
+        $unserialized = unserialize($str);
 
         list(
             $this->preSerializeMethods,
@@ -277,10 +278,13 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $parentStr
-        ) = $deserializedData;
+        ) = $unserialized;
 
-        if (isset($deserializedData['discriminatorGroups'])) {
-            $this->discriminatorGroups = $deserializedData['discriminatorGroups'];
+        if (isset($unserialized['discriminatorGroups'])) {
+            $this->discriminatorGroups = $unserialized['discriminatorGroups'];
+        }
+        if (isset($unserialized['usingExpression'])) {
+            $this->usingExpression = $unserialized['usingExpression'];
         }
 
         parent::unserialize($parentStr);

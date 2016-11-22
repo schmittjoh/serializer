@@ -190,8 +190,8 @@ final class GraphNavigator
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && !$context->hasExclusionStrategy(ExpressionLanguageExclusionStrategy::class)) {
-                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy");
+                if ($context instanceof SerializationContext && $metadata->usingExpression && !$context->hasExclusionStrategy(ExpressionLanguageExclusionStrategy::class)) {
+                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy in $metadata->name");
                 }
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
