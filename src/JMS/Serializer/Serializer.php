@@ -237,4 +237,20 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         return $this;
     }
+
+    /**
+     * @return SerializationContextFactoryInterface
+     */
+    public function getSerializationContextFactory()
+    {
+        return $this->serializationContextFactory;
+    }
+
+    /**
+     * @return SerializationContextFactoryInterface
+     */
+    public function getDeserializationContextFactory()
+    {
+        return $this->deserializationContextFactory;
+    }
 }

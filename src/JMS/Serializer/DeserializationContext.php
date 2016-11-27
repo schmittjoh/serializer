@@ -22,6 +22,10 @@ class DeserializationContext extends Context
 {
     private $depth = 0;
 
+    /**
+     * @deprecated Use DeserializationContextFactoryInterface instead
+     * @return DeserializationContext
+     */
     public static function create()
     {
         return new self();
