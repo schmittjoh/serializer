@@ -34,6 +34,7 @@ class ClassMetadata extends MergeableClassMetadata
     const ACCESSOR_ORDER_UNDEFINED = 'undefined';
     const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
     const ACCESSOR_ORDER_CUSTOM = 'custom';
+    const COUNT_PARAMS = 16;
 
     /** @var \ReflectionMethod[] */
     public $preSerializeMethods = array();
@@ -56,8 +57,9 @@ class ClassMetadata extends MergeableClassMetadata
     public $discriminatorFieldName;
     public $discriminatorValue;
     public $discriminatorMap = array();
+    public $discriminatorGroups = array();
 
-    public function setDiscriminator($fieldName, array $map)
+    public function setDiscriminator($fieldName, array $map, array $groups = array())
     {
         if (empty($fieldName)) {
             throw new \InvalidArgumentException('The $fieldName cannot be empty.');
@@ -70,6 +72,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorBaseClass = $this->name;
         $this->discriminatorFieldName = $fieldName;
         $this->discriminatorMap = $map;
+        $this->discriminatorGroups = $groups;
     }
 
     /**
@@ -197,7 +200,8 @@ class ClassMetadata extends MergeableClassMetadata
             $discriminatorProperty = new StaticPropertyMetadata(
                 $this->name,
                 $this->discriminatorFieldName,
-                $typeValue
+                $typeValue,
+                $this->discriminatorGroups
             );
             $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
@@ -243,12 +247,20 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorGroups,
             parent::serialize(),
         ));
     }
 
     public function unserialize($str)
     {
+        $deserializedData = unserialize($str);
+
+        // If an invalid cache gets deserialized, fail with an Exception to prevent further errors.
+        if(count($deserializedData) !== self::COUNT_PARAMS) {
+            throw new \RuntimeException('The jms serializer cache is invalid. Clear the cache.');
+        }
+
         list(
             $this->preSerializeMethods,
             $this->postSerializeMethods,
@@ -264,8 +276,9 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
+            $this->discriminatorGroups,
             $parentStr
-        ) = unserialize($str);
+        ) = $deserializedData;
 
         parent::unserialize($parentStr);
     }
