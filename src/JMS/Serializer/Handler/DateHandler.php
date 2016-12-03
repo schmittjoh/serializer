@@ -39,6 +39,7 @@ class DateHandler implements SubscribingHandlerInterface
         $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
 
         foreach (array('json', 'xml', 'yml') as $format) {
+
             foreach ($deserialisationTypes as $type) {
                 $methods[] = [
                     'type'      => $type,
@@ -67,7 +68,7 @@ class DateHandler implements SubscribingHandlerInterface
         $this->xmlCData = $xmlCData;
     }
 
-    public function serializeDateTimeInterface(
+    private function serializeDateTimeInterface(
         VisitorInterface $visitor,
         \DateTimeInterface $date,
         array $type,
@@ -112,10 +113,15 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
 
-    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    private function isDataXmlNull($data)
     {
         $attributes = $data->attributes('xsi', true);
-        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+        return isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true';
+    }
+
+    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    {
+        if ($this->isDataXmlNull($data)) {
             return null;
         }
 
@@ -124,12 +130,11 @@ class DateHandler implements SubscribingHandlerInterface
 
     public function deserializeDateTimeImmutableFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
-        $attributes = $data->attributes('xsi', true);
-        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+        if ($this->isDataXmlNull($data)) {
             return null;
         }
 
-        return $this->parseDateTimeImmutable($data, $type);
+        return $this->parseDateTime($data, $type, true);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
@@ -147,26 +152,20 @@ class DateHandler implements SubscribingHandlerInterface
             return null;
         }
 
-        return $this->parseDateTimeImmutable($data, $type);
+        return $this->parseDateTime($data, $type, true);
     }
 
-    private function parseDateTime($data, array $type)
+    private function parseDateTime($data, array $type, $immutable = false)
     {
         $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
-        $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
-        if (false === $datetime) {
-            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
+
+        if ($immutable){
+            $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
+        } else{
+            $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         }
 
-        return $datetime;
-    }
-
-    private function parseDateTimeImmutable($data, array $type)
-    {
-        $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
-        $format = $this->getFormat($type);
-        $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
         if (false === $datetime) {
             throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
