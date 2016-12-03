@@ -10,6 +10,9 @@ XML Reference
             access-type="public_method" discriminator-field-name="type"  read-only="false">
             <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
             <discriminator-class value="some-value">ClassName</discriminator-class>
+            <discriminator-groups>
+                <group>foo</group>
+            </discriminator-groups>
             <property name="some-property"
                       exclude="true"
                       expose="true"

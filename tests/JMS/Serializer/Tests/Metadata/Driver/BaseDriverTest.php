@@ -171,6 +171,23 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testLoadDiscriminatorWithGroup()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Vehicle'));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals(array('foo'), $m->discriminatorGroups);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'
+            ),
+            $m->discriminatorMap
+        );
+    }
+
     public function testLoadDiscriminatorSubClass()
     {
         /** @var $m ClassMetadata */
