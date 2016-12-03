@@ -10,6 +10,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\Forms;
 use Symfony\Component\Translation\Translator;
 
 class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
@@ -69,6 +70,32 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
                 'error!',
             ),
         )), $json);
+    }
+
+
+    public function testSerializeChildElements()
+    {
+        $formFactory = Forms::createFormFactory();
+        $form = $formFactory->createBuilder()
+            ->add('child')
+            ->add('date')
+            ->getForm();
+
+        $form->addError(new FormError('error!'));
+        $form->get('date')->addError(new FormError('child-error'));
+
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+
+        $this->assertSame(json_encode(array(
+            'errors' => array(
+                'error!',
+            ),
+            'children' => [
+                'child' => new \stdClass(),
+                'date' => ['errors' => ['child-error']]
+            ]
+        )), $json);
+
     }
 
     /**
