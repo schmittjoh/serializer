@@ -20,7 +20,6 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
-use RuntimeException;
 
 class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 {
@@ -115,26 +114,6 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
             array(null, 'setx', 'a public getE method, nor a public isE method, nor a public hasE method in class'),
             array('getx', null, 'no public setE method in class'),
         );
-    }
-
-    /**
-     * Test if it is possible to serialize & deserialize a ClassMetadata instance
-     */
-    public function testSerializeValid()
-    {
-        $classMetadata = new ClassMetadata(PropertyMetadataOrder::class);
-        unserialize(serialize($classMetadata));
-    }
-
-    /**
-     * Test if an older cache generates the right exception if it gets deserialized.
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The jms serializer cache is invalid. Clear the cache
-     */
-    public function testSerializeInvalid()
-    {
-        unserialize('C:37:"JMS\Serializer\Metadata\ClassMetadata":251:{a:15:{i:0;a:0:{}i:1;a:0:{}i:2;a:0:{}i:3;N;i:4;N;i:5;a:0:{}i:6;N;i:7;N;i:8;a:0:{}i:9;b:0;i:10;N;i:11;N;i:12;N;i:13;a:0:{}i:14;s:116:"a:5:{i:0;s:51:"JMS\Serializer\Tests\Metadata\PropertyMetadataOrder";i:1;a:0:{}i:2;a:0:{}i:3;a:0:{}i:4;i:1463051331;}";}}');
     }
 }
 

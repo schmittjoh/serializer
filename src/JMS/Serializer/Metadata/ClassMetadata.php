@@ -34,7 +34,6 @@ class ClassMetadata extends MergeableClassMetadata
     const ACCESSOR_ORDER_UNDEFINED = 'undefined';
     const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
     const ACCESSOR_ORDER_CUSTOM = 'custom';
-    const COUNT_PARAMS = 16;
 
     /** @var \ReflectionMethod[] */
     public $preSerializeMethods = array();
@@ -249,17 +248,13 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             parent::serialize(),
+            'discriminatorGroups' => $this->discriminatorGroups,
         ));
     }
 
     public function unserialize($str)
     {
         $deserializedData = unserialize($str);
-
-        // If an invalid cache gets deserialized, fail with an Exception to prevent further errors.
-        if(count($deserializedData) !== self::COUNT_PARAMS) {
-            throw new \RuntimeException('The jms serializer cache is invalid. Clear the cache.');
-        }
 
         list(
             $this->preSerializeMethods,
@@ -279,6 +274,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorGroups,
             $parentStr
         ) = $deserializedData;
+
+        if (isset($deserializedData['discriminatorGroups'])) {
+            $this->discriminatorGroups = $deserializedData['discriminatorGroups'];
+        }
 
         parent::unserialize($parentStr);
     }

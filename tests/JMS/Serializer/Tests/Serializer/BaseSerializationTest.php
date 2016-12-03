@@ -902,6 +902,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     /**
      * @group polymorphic
      */
+    public function testPolymorphicObjectsWithGroup()
+    {
+        $context = SerializationContext::create();
+        $context->setGroups(array("foo"));
+
+        $this->assertEquals(
+            $this->getContent('car'),
+            $this->serialize(new \JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car(5), $context)
+        );
+    }
+
+    /**
+     * @group polymorphic
+     */
     public function testPolymorphicObjects()
     {
         $this->assertEquals(
