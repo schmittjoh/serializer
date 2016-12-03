@@ -31,6 +31,7 @@ use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
+use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
@@ -362,6 +363,38 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group datetime
+     */
+    public function testNamedDateTimeImmutableArrays()
+    {
+        $data = array(
+            new \DateTimeImmutable('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
+            new \DateTimeImmutable('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
+        );
+
+        $object = new NamedDateTimeImmutableArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $serializedObject = $this->serialize($object);
+
+        $this->assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
+
+        if ($this->hasDeserializer()) {
+
+            if ('xml' == $this->getFormat()) {
+                $this->markTestSkipped("XML deserialization does not support key-val pairs mode");
+            }
+            /** @var NamedDateTimeArraysObject $deserializedObject */
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
+
+            /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
+            foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
+                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            }
+
+            $this->assertEquals($object, $deserializedObject);
+        }
+    }
+
 
     public function testArrayMixed()
     {
@@ -389,6 +422,30 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
+        );
+    }
+
+    /**
+     * @dataProvider getDateTimeImmutable
+     * @group datetime
+     */
+    public function testDateTimeImmutable($key, $value, $type)
+    {
+        $this->assertEquals($this->getContent($key), $this->serialize($value));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent($key), $type);
+
+            $this->assertTrue(is_object($deserialized));
+            $this->assertEquals(get_class($value), get_class($deserialized));
+            $this->assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
+        }
+    }
+
+    public function getDateTimeImmutable()
+    {
+        return array(
+            array('date_time_immutable', new \DateTimeImmutable('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTimeImmutable'),
         );
     }
 

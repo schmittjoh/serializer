@@ -249,6 +249,21 @@ class XmlSerializationTest extends BaseSerializationTest
     }
 
     /**
+     * @dataProvider getDateTimeImmutable
+     * @group datetime
+     */
+    public function testDateTimeImmutableNoCData($key, $value, $type)
+    {
+        $handlerRegistry = new HandlerRegistry();
+        $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ISO8601, 'UTC', false));
+        $objectConstructor = new UnserializeObjectConstructor();
+
+        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors);
+
+        $this->assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
+    }
+
+    /**
      * @expectedException JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object
      */

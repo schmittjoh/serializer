@@ -259,42 +259,51 @@ force a certain format to be used for DateTime types.
 
 Available Types:
 
-+---------------------------+--------------------------------------------------+
-| Type                      | Description                                      |
-+===========================+==================================================+
-| boolean                   | Primitive boolean                                |
-+---------------------------+--------------------------------------------------+
-| integer                   | Primitive integer                                |
-+---------------------------+--------------------------------------------------+
-| double                    | Primitive double                                 |
-+---------------------------+--------------------------------------------------+
-| string                    | Primitive string                                 |
-+---------------------------+--------------------------------------------------+
-| array                     | An array with arbitrary keys, and values.        |
-+---------------------------+--------------------------------------------------+
-| array<T>                  | A list of type T (T can be any available type).  |
-|                           | Examples:                                        |
-|                           | array<string>, array<MyNamespace\MyObject>, etc. |
-+---------------------------+--------------------------------------------------+
-| array<K, V>               | A map of keys of type K to values of type V.     |
-|                           | Examples: array<string, string>,                 |
-|                           | array<string, MyNamespace\MyObject>, etc.        |
-+---------------------------+--------------------------------------------------+
-| DateTime                  | PHP's DateTime object (default format/timezone)  |
-+---------------------------+--------------------------------------------------+
-| DateTime<'format'>        | PHP's DateTime object (custom format/default     |
-|                           | timezone)                                        |
-+---------------------------+--------------------------------------------------+
-| DateTime<'format', 'zone'>| PHP's DateTime object (custom format/timezone)   |
-+---------------------------+--------------------------------------------------+
-| T                         | Where T is a fully qualified class name.         |
-+---------------------------+--------------------------------------------------+
-| ArrayCollection<T>        | Similar to array<T>, but will be deserialized    |
-|                           | into Doctrine's ArrayCollection class.           |
-+---------------------------+--------------------------------------------------+
-| ArrayCollection<K, V>     | Similar to array<K, V>, but will be deserialized |
-|                           | into Doctrine's ArrayCollection class.           |
-+---------------------------+--------------------------------------------------+
++-------------------------------------+--------------------------------------------------+
+| Type                                | Description                                      |
++=====================================+==================================================+
+| boolean                             | Primitive boolean                                |
++-------------------------------------+--------------------------------------------------+
+| integer                             | Primitive integer                                |
++-------------------------------------+--------------------------------------------------+
+| double                              | Primitive double                                 |
++-------------------------------------+--------------------------------------------------+
+| string                              | Primitive string                                 |
++-------------------------------------+--------------------------------------------------+
+| array                               | An array with arbitrary keys, and values.        |
++-------------------------------------+--------------------------------------------------+
+| array<T>                            | A list of type T (T can be any available type).  |
+|                                     | Examples:                                        |
+|                                     | array<string>, array<MyNamespace\MyObject>, etc. |
++-------------------------------------+--------------------------------------------------+
+| array<K, V>                         | A map of keys of type K to values of type V.     |
+|                                     | Examples: array<string, string>,                 |
+|                                     | array<string, MyNamespace\MyObject>, etc.        |
++-------------------------------------+--------------------------------------------------+
+| DateTime                            | PHP's DateTime object (default format/timezone)  |
++-------------------------------------+--------------------------------------------------+
+| DateTime<'format'>                  | PHP's DateTime object (custom format/default     |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone'>          | PHP's DateTime object (custom format/timezone)   |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable                   | PHP's DateTimeImmutable object (default format/  |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format'>         | PHP's DateTimeImmutable object (custom format/   |
+|                                     | default timezone)                                |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone'> | PHP's DateTimeImmutable object (custom format/   |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| T                                   | Where T is a fully qualified class name.         |
++-------------------------------------+--------------------------------------------------+
+| ArrayCollection<T>                  | Similar to array<T>, but will be deserialized    |
+|                                     | into Doctrine's ArrayCollection class.           |
++-------------------------------------+--------------------------------------------------+
+| ArrayCollection<K, V>               | Similar to array<K, V>, but will be deserialized |
+|                                     | into Doctrine's ArrayCollection class.           |
++-------------------------------------+--------------------------------------------------+
 
 Examples:
 
@@ -326,10 +335,20 @@ Examples:
         /**
          * @Type("DateTime")
          */
-        private $createdAt;
+        private $startAt;
 
         /**
          * @Type("DateTime<'Y-m-d'>")
+         */
+        private $endAt;
+
+        /**
+         * @Type("DateTimeImmutable")
+         */
+        private $createdAt;
+
+        /**
+         * @Type("DateTimeImmutable<'Y-m-d'>")
          */
         private $updatedAt;
 
@@ -480,7 +499,7 @@ Resulting XML:
         </comment>
     </post>
 
-You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``). 
+You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``).
 
 @XmlMap
 ~~~~~~~
