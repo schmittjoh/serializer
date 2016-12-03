@@ -97,7 +97,7 @@ class AnnotationDriver implements DriverInterface
                 if ($annot->disabled) {
                     $classMetadata->discriminatorDisabled = true;
                 } else {
-                    $classMetadata->setDiscriminator($annot->field, $annot->map);
+                    $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups);
                 }
             }
         }

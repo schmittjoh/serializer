@@ -16,23 +16,8 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures\DiscriminatorGroup;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-class Discriminator
+class Car extends Vehicle
 {
-    /** @var array<string> */
-    public $map;
-
-    /** @var string */
-    public $field = 'type';
-
-    /** @var boolean */
-    public $disabled = false;
-
-    /** @var string[] */
-    public $groups = array();
 }

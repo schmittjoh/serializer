@@ -16,23 +16,25 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures\DiscriminatorGroup;
+
+use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Annotation
- * @Target("CLASS")
+ * @Serializer\Discriminator(field = "type", groups={"foo"}, map = {
+ *    "car": "JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car"
+ * })
  */
-class Discriminator
+abstract class Vehicle
 {
-    /** @var array<string> */
-    public $map;
+    /**
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"foo"})
+     */
+    public $km;
 
-    /** @var string */
-    public $field = 'type';
-
-    /** @var boolean */
-    public $disabled = false;
-
-    /** @var string[] */
-    public $groups = array();
+    public function __construct($km)
+    {
+        $this->km = (integer) $km;
+    }
 }
