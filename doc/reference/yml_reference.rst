@@ -16,6 +16,7 @@ YAML Reference
             field_name: type
             map:
                 some-value: ClassName
+            groups: [foo, bar]
         virtual_properties:
             getSomeProperty:
                 serialized_name: foo
