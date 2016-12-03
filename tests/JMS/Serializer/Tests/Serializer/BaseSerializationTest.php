@@ -370,21 +370,19 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             new \DateTimeImmutable('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTimeImmutable('2013-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTimeImmutable('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
         );
 
         $object = new NamedDateTimeImmutableArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
-        $serializedObject = $this->serialize( $object );
+        $serializedObject = $this->serialize($object);
 
         $this->assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
 
         if ($this->hasDeserializer()) {
 
-            // skip XML deserialization
-            if ($this->getFormat() === 'xml') {
-                return;
+            if ('xml' == $this->getFormat()) {
+                $this->markTestSkipped("XML deserialization does not support key-val pairs mode");
             }
-
             /** @var NamedDateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
 

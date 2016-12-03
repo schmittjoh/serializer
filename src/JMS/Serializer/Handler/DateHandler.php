@@ -160,9 +160,9 @@ class DateHandler implements SubscribingHandlerInterface
         $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
 
-        if ($immutable){
+        if ($immutable) {
             $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
-        } else{
+        } else {
             $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         }
 
