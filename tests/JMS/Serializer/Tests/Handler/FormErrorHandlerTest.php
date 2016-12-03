@@ -71,6 +71,32 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
         )), $json);
     }
 
+
+    public function testSerializeChildElements()
+    {
+        $formFactory = Forms::createFormFactory();
+
+        $form = $formFactory->createBuilder()
+            ->add('child', TextType::class)
+            ->add('date', DateTimeType::class, ['widget' => 'single_text', 'format' => 'dd.MM.yyyy'])
+            ->getForm();
+        $form->addError(new FormError('error!'));
+        $form->get('date')->addError(new FormError('child-error'));
+
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+
+        $this->assertSame(json_encode(array(
+            'errors' => array(
+                'error!',
+            ),
+            'children' => [
+                'child' => new \stdClass(),
+                'date' => ['errors' => ['child-error']]
+            ]
+        )), $json);
+
+    }
+
     /**
      * @param string                   $name
      * @param EventDispatcherInterface $dispatcher
