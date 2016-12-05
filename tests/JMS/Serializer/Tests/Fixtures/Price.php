@@ -28,7 +28,7 @@ use JMS\Serializer\Annotation\XmlRoot;
 class Price
 {
     /**
-     * @Type("double")
+     * @Type("float")
      * @XmlValue
      */
     private $price;
