@@ -48,10 +48,6 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         // so it must be loaded if its a real class.
         $virtualType = ! class_exists($type['name'], false);
 
-        if ($this->skipVirtualTypeInit && $virtualType) {
-            return;
-        }
-
         if ($object instanceof PersistentCollection
             || $object instanceof MongoDBPersistentCollection
             || $object instanceof PHPCRPersistentCollection
@@ -63,7 +59,9 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+        if (($this->skipVirtualTypeInit && $virtualType) ||
+            (!$object instanceof Proxy && !$object instanceof ORMProxy)
+        ) {
             return;
         }
 
