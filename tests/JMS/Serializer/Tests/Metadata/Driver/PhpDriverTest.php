@@ -18,12 +18,13 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\ExclusionPolicy;
 use Metadata\Driver\FileLocator;
 use JMS\Serializer\Metadata\Driver\PhpDriver;
 
 class PhpDriverTest extends BaseDriverTest
 {
-    protected function getDriver()
+    protected function getDriver($exclusionPolicy = ExclusionPolicy::NONE)
     {
         return new PhpDriver(new FileLocator(array(
             'JMS\Serializer\Tests\Fixtures' => __DIR__.'/php',

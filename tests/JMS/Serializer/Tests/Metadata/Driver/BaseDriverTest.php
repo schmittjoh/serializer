@@ -18,8 +18,10 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\Driver\PhpDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
@@ -373,6 +375,27 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedReflection, $actualReflection);
     }
 
+    public function testDifferentExclusionPolicy()
+    {
+        if ($this->getDriver() instanceof PhpDriver) {
+            $this->markTestSkipped("Can not test alternative exclusion policies for the PHP driver");
+        }
+        $m = $this->getDriver(ExclusionPolicy::ALL)->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DefaultExclusionPolicyObject'));
+
+        $this->assertNotNull($m);
+        $this->assertCount(1, $m->propertyMetadata);
+
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DefaultExclusionPolicyObject'));
+
+        $this->assertNotNull($m);
+        $this->assertCount(2, $m->propertyMetadata);
+
+        $m = $this->getDriver(ExclusionPolicy::NONE)->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DefaultExclusionPolicyObject'));
+
+        $this->assertNotNull($m);
+        $this->assertCount(2, $m->propertyMetadata);
+    }
+
     public function testHandlerCallbacks()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks'));
@@ -382,7 +405,8 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $exclusionPolicy
      * @return DriverInterface
      */
-    abstract protected function getDriver();
+    abstract protected function getDriver($exclusionPolicy = ExclusionPolicy::NONE);
 }
