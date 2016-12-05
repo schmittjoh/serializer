@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Asmir Mustafic <goetas@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,16 @@
 
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
+use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
+class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     private $validator;
 
@@ -41,7 +40,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, array('foo'))
+            ->with($obj, null, array('foo'))
             ->will($this->returnValue(new ConstraintViolationList()));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
@@ -50,7 +49,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JMS\Serializer\Exception\ValidationFailedException
+     * @expectedException \JMS\Serializer\Exception\ValidationFailedException
      * @expectedExceptionMessage Validation failed with 1 error(s).
      */
     public function testValidateThrowsExceptionWhenListIsNotEmpty()
@@ -59,7 +58,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, array('foo'))
+            ->with($obj, null, array('foo'))
             ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'foo', array(), 'a', 'b', 'c')))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
@@ -79,12 +78,12 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), array('Foo'))
+            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), null, array('Foo'))
             ->will($this->returnValue(new ConstraintViolationList()));
 
         $subscriber = $this->subscriber;
         $list = SerializerBuilder::create()
-            ->configureListeners(function(EventDispatcher $dispatcher) use ($subscriber) {
+            ->configureListeners(function (EventDispatcher $dispatcher) use ($subscriber) {
                 $dispatcher->addSubscriber($subscriber);
             })
             ->build()
@@ -100,11 +99,11 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!interface_exists('Symfony\Component\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('Symfony\Component\Validator\ValidatorInterface is not available');
+        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('Symfony\Component\Validator\Validator\ValidatorInterface ^2.6|^3.0 is not available');
         }
 
-        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
-        $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
+        $this->validator = $this->getMock('Symfony\Component\Validator\Validator\ValidatorInterface');
+        $this->subscriber = new SymfonyValidatorValidatorSubscriber($this->validator);
     }
 }
