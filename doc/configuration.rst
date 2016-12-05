@@ -79,14 +79,21 @@ you can set a ``SerializationContextFactory`` to the Serializer.
 
 Example using the SerializerBuilder::
 
+    class MySerializationContextFactory extends DefaultSerializationContextFactory
+    {
+        public function createSerializationContext()
+        {
+            $context = parent::createSerializationContext();
+            $context->setSerializeNull(true);
+
+            return $context;
+        }
+    }
+
     use JMS\Serializer\SerializationContext;
 
     $serializer = JMS\Serializer\SerializerBuilder::create()
-        ->setSerializationContextFactory(function () {
-            return SerializationContext::create()
-                ->setSerializeNull(true)
-            ;
-        })
+        ->setSerializationContextFactory(new MySerializationContextFactory())
         ->build()
     ;
 
@@ -96,5 +103,5 @@ a serialization context from your callable and use it.
 .. note ::
 
     You can also set a default DeserializationContextFactory with
-    ``->setDeserializationContextFactory(function () { /* ... */ })``
+    ``->setDeserializationContextFactory()``
     to be used with methods ``deserialize()`` and ``fromArray()``.
