@@ -28,6 +28,16 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineProxySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var bool
+     */
+    private $skipVirtualTypeInit = false;
+
+    public function __construct($skipVirtualTypeInit = false)
+    {
+        $this->skipVirtualTypeInit = $skipVirtualTypeInit;
+    }
+
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
@@ -36,7 +46,9 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         // If the set type name is not an actual class, but a faked type for which a custom handler exists, we do not
         // modify it with this subscriber. Also, we forgo autoloading here as an instance of this type is already created,
         // so it must be loaded if its a real class.
-        if (! class_exists($type['name'], false)) {
+        $virtualType = ! class_exists($type['name'], false);
+
+        if ($this->skipVirtualTypeInit && $virtualType) {
             return;
         }
 
@@ -44,7 +56,10 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             || $object instanceof MongoDBPersistentCollection
             || $object instanceof PHPCRPersistentCollection
         ) {
-            $event->setType('ArrayCollection');
+            if ( ! $virtualType) {
+                $event->setType('ArrayCollection');
+            }
+
             return;
         }
 
@@ -53,7 +68,10 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         $object->__load();
-        $event->setType(get_parent_class($object));
+
+        if ( ! $virtualType) {
+            $event->setType(get_parent_class($object));
+        }
     }
 
     public static function getSubscribedEvents()
