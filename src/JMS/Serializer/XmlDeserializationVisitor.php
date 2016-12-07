@@ -58,6 +58,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function prepare($data)
     {
+        $data = $this->emptyStringToSpaceCharacter($data);
+
         $previous = libxml_use_internal_errors(true);
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
@@ -81,6 +83,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         return $doc;
+    }
+
+    private function emptyStringToSpaceCharacter($data)
+    {
+        return $data === '' ? ' ' : $data;
     }
 
     public function visitNull($data, array $type, Context $context)
