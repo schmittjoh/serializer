@@ -59,6 +59,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
     public function prepare($data)
     {
         $previous = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+
         $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
 
         if (false !== stripos($data, '<!doctype')) {

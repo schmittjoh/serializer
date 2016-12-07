@@ -361,6 +361,14 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertXmlStringEqualsXmlString($this->getContent('simple_class_object_minified'), $stringXml);
     }
 
+    /**
+     * @expectedException \JMS\Serializer\Exception\XmlErrorException
+     */
+    public function testDeserializeEmptyString()
+    {
+        $this->deserialize('', 'stdClass');
+    }
+
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
