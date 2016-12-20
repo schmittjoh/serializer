@@ -463,9 +463,8 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
         if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
             $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
-            return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
         }
-        return $this->document->createElement($prefix . ':' . $tagName);
+        return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
     private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
