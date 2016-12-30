@@ -49,6 +49,17 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($obj->__isInitialized());
     }
 
+    public function testProxyLoadingCanBeSkippedForVirtualTypes()
+    {
+        $subscriber = new DoctrineProxySubscriber(true);
+
+        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => 'FakedName', 'params' => array()));
+        $subscriber->onPreSerialize($event);
+
+        $this->assertEquals(array('name' => 'FakedName', 'params' => array()), $event->getType());
+        $this->assertFalse($obj->__isInitialized());
+    }
+
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();

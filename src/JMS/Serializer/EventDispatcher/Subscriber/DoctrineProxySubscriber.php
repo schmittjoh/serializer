@@ -28,6 +28,16 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineProxySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var bool
+     */
+    private $skipVirtualTypeInit = false;
+
+    public function __construct($skipVirtualTypeInit = false)
+    {
+        $this->skipVirtualTypeInit = $skipVirtualTypeInit;
+    }
+
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
@@ -49,7 +59,9 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+        if (($this->skipVirtualTypeInit && $virtualType) ||
+            (!$object instanceof Proxy && !$object instanceof ORMProxy)
+        ) {
             return;
         }
 
