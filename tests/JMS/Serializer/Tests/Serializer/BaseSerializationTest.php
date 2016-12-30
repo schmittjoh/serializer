@@ -720,7 +720,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $fooConfig = $formConfigBuilder->getFormConfig();
 
         $form = new Form($fooConfig);
-        $form->add('save', 'submit');
+        $form->add('save', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class);
 
         try {
             $this->serialize($form);
