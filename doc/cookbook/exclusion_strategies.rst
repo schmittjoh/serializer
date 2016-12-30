@@ -77,10 +77,7 @@ versions like this::
 
     use JMS\Serializer\SerializationContext;
 
-    $context = $serializer->getSerializationContextFactory()->createSerializationContext();
-    $context->setVersion(1);
-
-    $serializer->serialize(new VersionObject(), 'json', $context);
+    $serializer->serialize(new VersionObject(), 'json', SerializationContext::create()->setVersion(1));
 
 
 Creating Different Views of Your Objects
@@ -111,7 +108,7 @@ context.
 
         /** @Groups({"details"}) */
         private $comments;
-        
+
         private $createdAt;
     }
 
@@ -119,17 +116,12 @@ You can then tell the serializer which groups to serialize in your controller::
 
     use JMS\Serializer\SerializationContext;
 
-    $context = $serializer->getSerializationContextFactory()->createSerializationContext();
-    $context->setGroups(array('list'));
-
-    $serializer->serialize(new BlogPost(), 'json', $context);
-
-    $context = $serializer->getSerializationContextFactory()->createSerializationContext();
-    $context->setGroups(array('Default', 'list'));
+    $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
 
     //will output $id, $title and $nbComments.
-    $serializer->serialize(new BlogPost(), 'json', $context);
-    
+
+    $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('Default', 'list')));
+
     //will output $id, $title, $nbComments and $createdAt.
 
 Overriding Groups of Deeper Branches of the Graph
@@ -185,9 +177,8 @@ And the following object graph::
 You can override groups on specific paths::
 
     use JMS\Serializer\SerializationContext;
-    $context = $serializer->getSerializationContextFactory()->createSerializationContext();
 
-    $context->setGroups(array(
+    $context = SerializationContext::create()->setGroups(array(
         'Default', // Serialize John's name
         'manager_group', // Serialize John's manager
         'friends_group', // Serialize John's friends
@@ -272,10 +263,7 @@ You need to tell the serializer to take into account MaxDepth checks::
 
     use JMS\Serializer\SerializationContext;
 
-    $context = $serializer->getSerializationContextFactory()->createSerializationContext();
-    $context->enableMaxDepthChecks();
-
-    $serializer->serialize($data, 'json', $context);
+    $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
 
 
 Dynamic exclusion strategy
@@ -306,5 +294,3 @@ allow a more sophisticated exclusion strategies using `@Exclude(if="expression")
 .. note ::
 
     ``true`` is just a generic expression, you can use any expression allowed by the Symfony Expression Language
-
-
