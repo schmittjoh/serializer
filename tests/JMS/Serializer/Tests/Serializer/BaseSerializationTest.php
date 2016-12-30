@@ -191,7 +191,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     * @expectedExceptionMessage To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy
+     * @expectedExceptionMessage To use conditional exclude/expose in JMS\Serializer\Tests\Fixtures\PersonSecret you must configure the expression language.
      */
     public function testExpressionExclusionNotConfigured()
     {
