@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\ContextFactory;
 
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\SerializationContext;
 
 /**
@@ -27,26 +26,10 @@ use JMS\Serializer\SerializationContext;
 class DefaultSerializationContextFactory implements SerializationContextFactoryInterface
 {
     /**
-     * @var array|ExclusionStrategyInterface[]
-     */
-    private $exclusionStrategy = array();
-
-    /**
      * {@InheritDoc}
      */
     public function createSerializationContext()
     {
-        $context = new SerializationContext();
-
-        foreach ($this->exclusionStrategy as $strategy) {
-            $context->addExclusionStrategy($strategy);
-        }
-
-        return $context;
-    }
-
-    public function addDefaultExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy)
-    {
-        $this->exclusionStrategy[] = $exclusionStrategy;
+        return new SerializationContext();
     }
 }

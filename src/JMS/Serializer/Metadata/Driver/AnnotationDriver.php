@@ -149,6 +149,7 @@ class AnnotationDriver implements DriverInterface
                 $accessor = array(null, null);
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
+
                 foreach ($propertyAnnotations as $annot) {
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;

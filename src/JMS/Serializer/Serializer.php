@@ -29,6 +29,7 @@ use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
 use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * Serializer Implementation.
@@ -71,8 +72,18 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @param \PhpCollection\MapInterface $deserializationVisitors of VisitorInterface
      * @param EventDispatcher\EventDispatcherInterface $dispatcher
      * @param TypeParser $typeParser
+     * @param ExpressionLanguage $expressionLanguage
      */
-    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null)
+    public function __construct(
+        MetadataFactoryInterface $factory,
+        HandlerRegistryInterface $handlerRegistry,
+        ObjectConstructorInterface $objectConstructor,
+        MapInterface $serializationVisitors,
+        MapInterface $deserializationVisitors,
+        EventDispatcherInterface $dispatcher = null,
+        TypeParser $typeParser = null,
+        ExpressionLanguage $expressionLanguage = null
+    )
     {
         $this->factory = $factory;
         $this->handlerRegistry = $handlerRegistry;
@@ -82,7 +93,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
-        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher, $expressionLanguage);
 
         $this->serializationContextFactory = new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
@@ -236,21 +247,5 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->deserializationContextFactory = $deserializationContextFactory;
 
         return $this;
-    }
-
-    /**
-     * @return SerializationContextFactoryInterface
-     */
-    public function getSerializationContextFactory()
-    {
-        return $this->serializationContextFactory;
-    }
-
-    /**
-     * @return SerializationContextFactoryInterface
-     */
-    public function getDeserializationContextFactory()
-    {
-        return $this->deserializationContextFactory;
     }
 }

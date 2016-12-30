@@ -138,7 +138,6 @@ class PropertyMetadata extends BasePropertyMetadata
             'xmlEntryNamespace' => $this->xmlEntryNamespace,
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
             'excludeIf' => $this->excludeIf,
-
         ));
     }
 

@@ -21,15 +21,16 @@ namespace JMS\Serializer;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
-use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
-use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * Handles traversal along the object graph.
@@ -43,6 +44,11 @@ final class GraphNavigator
 {
     const DIRECTION_SERIALIZATION = 1;
     const DIRECTION_DESERIALIZATION = 2;
+
+    /**
+     * @var ExpressionLanguageExclusionStrategy
+     */
+    private $expressionExclusionStrategy;
 
     private $dispatcher;
     private $metadataFactory;
@@ -70,12 +76,21 @@ final class GraphNavigator
         }
     }
 
-    public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null)
+    public function __construct(
+        MetadataFactoryInterface $metadataFactory,
+        HandlerRegistryInterface $handlerRegistry,
+        ObjectConstructorInterface $objectConstructor,
+        EventDispatcherInterface $dispatcher = null,
+        ExpressionLanguage $expressionLanguage = null
+    )
     {
         $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
+        if ($expressionLanguage) {
+            $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionLanguage);
+        }
     }
 
     /**
@@ -83,7 +98,7 @@ final class GraphNavigator
      *
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     *
+     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public function accept($data, array $type = null, Context $context)
@@ -190,7 +205,7 @@ final class GraphNavigator
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($context instanceof SerializationContext && $metadata->usingExpression && !$context->hasExclusionStrategy(ExpressionLanguageExclusionStrategy::class)) {
+                if ($context instanceof SerializationContext && $metadata->usingExpression && !$this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose you must activate the ExpressionLanguageExclusionStrategy exclusion strategy in $metadata->name");
                 }
 
@@ -231,6 +246,10 @@ final class GraphNavigator
                 $visitor->startVisitingObject($metadata, $object, $type, $context);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                        continue;
+                    }
+
+                    if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
                         continue;
                     }
 

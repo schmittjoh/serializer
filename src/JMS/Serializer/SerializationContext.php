@@ -30,10 +30,6 @@ class SerializationContext extends Context
     /** @var \SplStack */
     private $visitingStack;
 
-    /**
-     * @deprecated Use SerializationContextFactoryInterface instead
-     * @return SerializationContext
-     */
     public static function create()
     {
         return new self();
