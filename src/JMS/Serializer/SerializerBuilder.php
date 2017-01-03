@@ -51,7 +51,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
 /**
  * Builder for serializer instances.
@@ -82,9 +82,9 @@ class SerializerBuilder
     private $deserializationContextFactory;
 
     /**
-     * @var ExpressionLanguage
+     * @var ExpressionEvaluatorInterface
      */
-    private $expressionLanguage;
+    private $expressionEvaluator;
 
     public static function create()
     {
@@ -100,9 +100,9 @@ class SerializerBuilder
         $this->deserializationVisitors = new Map();
     }
 
-    public function setExpressionLanguage(ExpressionLanguage $expressionLanguage)
+    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
     {
-        $this->expressionLanguage = $expressionLanguage;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     public function setAnnotationReader(Reader $reader)
@@ -435,7 +435,7 @@ class SerializerBuilder
             $this->deserializationVisitors,
             $this->eventDispatcher,
             null,
-            $this->expressionLanguage
+            $this->expressionEvaluator
         );
 
         if (null !== $this->serializationContextFactory) {

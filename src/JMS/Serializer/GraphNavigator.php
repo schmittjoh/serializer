@@ -30,7 +30,7 @@ use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
 /**
  * Handles traversal along the object graph.
@@ -81,15 +81,15 @@ final class GraphNavigator
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         EventDispatcherInterface $dispatcher = null,
-        ExpressionLanguage $expressionLanguage = null
+        ExpressionEvaluatorInterface $expressionEvaluator = null
     )
     {
         $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
-        if ($expressionLanguage) {
-            $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionLanguage);
+        if ($expressionEvaluator) {
+            $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
     }
 

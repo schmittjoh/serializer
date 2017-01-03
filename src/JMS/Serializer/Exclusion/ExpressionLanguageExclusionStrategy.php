@@ -21,7 +21,7 @@ namespace JMS\Serializer\Exclusion;
 use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
 /**
  * Exposes an exclusion strategy based on the Symfony's expression language.
@@ -34,24 +34,15 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 class ExpressionLanguageExclusionStrategy
 {
     /**
-     * @var ExpressionLanguage
+     * @var ExpressionEvaluatorInterface
      */
-    private $expressionLanguage;
+    private $expressionEvaluator;
 
     private $context = array();
 
-    public function __construct(ExpressionLanguage $expressionLanguage)
+    public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)
     {
-        $this->expressionLanguage = $expressionLanguage;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     */
-    public function addContextVariable($name, $value)
-    {
-        $this->context[$name] = $value;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     /**
@@ -70,6 +61,6 @@ class ExpressionLanguageExclusionStrategy
             $variables['object'] = $navigatorContext->getObject();
         }
 
-        return $this->expressionLanguage->evaluate($property->excludeIf, $variables + $this->context);
+        return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
     }
 }
