@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -222,7 +223,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $language = new ExpressionLanguage();
         $language->addFunction($function);
 
-        $this->builder->setExpressionLanguage($language);
+        $this->builder->setExpressionEvaluator(new ExpressionEvaluator($language));
 
         $serializer = $this->builder->build();
 
