@@ -419,6 +419,33 @@ Resulting XML:
         <name><![CDATA[Johannes]]></name>
     </result>
 
+
+@XmlDiscriminatorAttribute
+~~~~~~~~~~~~~
+This, used in conjunction with @Discriminator, allows you to use an attribute of the root node as discriminator
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\Serializer\Annotation\Discriminator;
+    use JMS\Serializer\Annotation\XmlDiscriminatorAttribute;
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
+     * @XmlDiscriminatorAttribute
+     */
+    abstract class Vehicle { }
+    class Car extends Vehicle { }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <vehicle type="car">
+    </result>
+
+
 @XmlValue
 ~~~~~~~~~
 This allows you to mark properties which should be set as the value of the

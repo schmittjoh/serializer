@@ -261,6 +261,11 @@ final class GraphNavigator
                 $typeValue = (string) $data->{$metadata->discriminatorFieldName};
                 break;
 
+            // Check XML attribute for discriminatorFieldName
+            case is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
+                $typeValue = (string) $data[$metadata->discriminatorFieldName];
+                break;
+
             default:
                 throw new \LogicException(sprintf(
                     'The discriminator field name "%s" for base-class "%s" was not found in input data.',

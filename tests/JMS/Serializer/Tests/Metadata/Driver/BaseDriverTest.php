@@ -22,6 +22,8 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use Metadata\Driver\DriverInterface;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
@@ -169,6 +171,23 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             ),
             $m->discriminatorMap
         );
+    }
+
+    public function testLoadXmlDiscriminator()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlAttributeDiscriminatorParent::class));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'child' => ObjectWithXmlAttributeDiscriminatorChild::class,
+            ),
+            $m->discriminatorMap
+        );
+        $this->assertTrue($m->xmlDiscriminatorAttribute);
     }
 
     public function testLoadDiscriminatorWithGroup()

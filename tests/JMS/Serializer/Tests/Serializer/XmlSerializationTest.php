@@ -25,6 +25,7 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
@@ -40,6 +41,7 @@ use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\XmlSerializationVisitor;
 use PhpCollection\Map;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -359,6 +361,20 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $stringXml = $serializer->serialize($object, $this->getFormat());
         $this->assertXmlStringEqualsXmlString($this->getContent('simple_class_object_minified'), $stringXml);
+    }
+
+    public function testDiscriminatorAsXmlAttribute()
+    {
+        $xml = simplexml_load_string($this->serialize(new ObjectWithXmlAttributeDiscriminatorChild()));
+        $this->assertEquals('type="child"', trim($xml->xpath('//result/@type')[0]->saveXML()));
+
+        $this->assertInstanceOf(
+            ObjectWithXmlAttributeDiscriminatorChild::class,
+            $this->deserialize(
+                $xml->asXML(),
+                ObjectWithXmlAttributeDiscriminatorParent::class
+            )
+        );
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
