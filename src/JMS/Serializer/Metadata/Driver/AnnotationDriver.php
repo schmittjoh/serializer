@@ -101,8 +101,8 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups);
                 }
             } elseif ($annot instanceof XmlDiscriminator) {
-                $classMetadata->xmlDiscriminatorAttribute = $annot->attribute;
-                $classMetadata->xmlDiscriminatorCData = $annot->cdata;
+                $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
+                $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
             }
         }
 
