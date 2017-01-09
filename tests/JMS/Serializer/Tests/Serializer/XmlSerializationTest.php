@@ -365,13 +365,12 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testDiscriminatorAsXmlAttribute()
     {
-        $xml = simplexml_load_string($this->serialize(new ObjectWithXmlAttributeDiscriminatorChild()));
-        $this->assertEquals('type="child"', trim($xml->xpath('//result/@type')[0]->saveXML()));
-
+        $xml = $this->serialize(new ObjectWithXmlAttributeDiscriminatorChild());
+        $this->assertEquals($this->getContent('xml_discriminator_attribute'), $xml);
         $this->assertInstanceOf(
             ObjectWithXmlAttributeDiscriminatorChild::class,
             $this->deserialize(
-                $xml->asXML(),
+                $xml,
                 ObjectWithXmlAttributeDiscriminatorParent::class
             )
         );

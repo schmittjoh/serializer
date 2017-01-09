@@ -7,9 +7,6 @@ YAML Reference
         exclusion_policy: ALL
         xml_root_name: foobar
         xml_root_namespace: http://your.default.namespace
-        xml_discriminator:
-            attribute: true
-            cdata: false
         exclude: true
         read_only: false
         access_type: public_method # defaults to property
@@ -20,6 +17,9 @@ YAML Reference
             map:
                 some-value: ClassName
             groups: [foo, bar]
+            xml_attribute: true
+            xml_element:
+                cdata: false
         virtual_properties:
             getSomeProperty:
                 serialized_name: foo

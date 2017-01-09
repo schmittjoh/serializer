@@ -3,6 +3,6 @@ JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorP
         field_name: type
         map:
             child: JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild
-    xml_discriminator:
-        attribute: true
-        cdata: false
+        xml_attribute: true
+        xml_element:
+            cdata: false

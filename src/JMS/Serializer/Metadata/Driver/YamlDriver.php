@@ -257,15 +257,6 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootNamespace = (string) $config['xml_root_namespace'];
         }
 
-        if (isset($config['xml_discriminator'])) {
-            if (isset($config['xml_discriminator']['attribute'])) {
-                $metadata->xmlDiscriminatorAttribute = (bool) $config['xml_discriminator']['attribute'];
-            }
-            if (isset($config['xml_discriminator']['cdata'])) {
-                $metadata->xmlDiscriminatorCData = (bool) $config['xml_discriminator']['cdata'];
-            }
-        }
-
         if (array_key_exists('xml_namespaces', $config)) {
 
             foreach ($config['xml_namespaces'] as $prefix => $uri) {
@@ -287,6 +278,17 @@ class YamlDriver extends AbstractFileDriver
                 }
                 $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : array();
                 $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
+
+
+                if (isset($config['discriminator']['xml_attribute'])) {
+                    $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
+                }
+                if (isset($config['discriminator']['xml_element'])) {
+                    if (isset($config['discriminator']['xml_element']['cdata'])) {
+                        $metadata->xmlDiscriminatorCData = (bool) $config['discriminator']['xml_element']['cdata'];
+                    }
+                }
+
             }
         }
     }
