@@ -257,10 +257,11 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootNamespace = (string) $config['xml_root_namespace'];
         }
 
-        if (isset($config['xml_discriminator_attribute'])) {
-            $metadata->setXmlDiscriminator($config['xml_discriminator_attribute']);
+        if (isset($config['xml_discriminator'])) {
+            if (isset($config['xml_discriminator']['attribute'])) {
+                $metadata->xmlDiscriminatorAttribute = $config['xml_discriminator']['attribute'];
+            }
         }
-
 
         if (array_key_exists('xml_namespaces', $config)) {
 

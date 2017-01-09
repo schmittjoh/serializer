@@ -3,4 +3,5 @@ JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorP
         field_name: type
         map:
             child: JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild
-    xml_discriminator_attribute: true
+    xml_discriminator:
+        attribute: true

@@ -7,6 +7,6 @@ $metadata = new ClassMetadata('JMS\Serializer\Tests\Fixtures\Discriminator\Objec
 $metadata->setDiscriminator('type', array(
     'child' => 'JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild'
 ));
-$metadata->setXmlDiscriminator(true);
+$metadata->xmlDiscriminatorAttribute = true;
 
 return $metadata;

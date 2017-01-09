@@ -24,7 +24,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @Serializer\Discriminator(field = "type", map = {
  *    "child": "JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild"
  * })
- * @Serializer\XmlDiscriminatorAttribute
+ * @Serializer\XmlDiscriminator(attribute=true)
  */
 class ObjectWithXmlAttributeDiscriminatorParent
 {

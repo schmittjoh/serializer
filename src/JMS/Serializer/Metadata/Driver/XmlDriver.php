@@ -67,10 +67,6 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootNamespace = (string) $xmlRootNamespace;
         }
 
-        if (null !== $xmlDiscriminatorAttribute = $elem->attributes()->{'xml-discriminator-attribute'}) {
-            $metadata->setXmlDiscriminator('true' == (string) $xmlDiscriminatorAttribute);
-        }
-
         $readOnlyClass = 'true' === strtolower($elem->attributes()->{'read-only'});
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
@@ -106,6 +102,12 @@ class XmlDriver extends AbstractFileDriver
             }
 
             $metadata->registerNamespace((string) $xmlNamespace->attributes()->uri, $prefix);
+        }
+
+        foreach ($elem->xpath('./xml-discriminator') as $xmlDiscriminator) {
+            if (isset($xmlDiscriminator->attributes()->attribute)) {
+                $metadata->xmlDiscriminatorAttribute = (string) $xmlDiscriminator->attributes()->attribute === 'true';
+            }
         }
 
         foreach ($elem->xpath('./virtual-property') as $method) {

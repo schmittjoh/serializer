@@ -76,10 +76,6 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorGroups = $groups;
     }
 
-    public function setXmlDiscriminator($attribute = false) {
-        $this->xmlDiscriminatorAttribute = $attribute;
-    }
-
     /**
      * Sets the order of properties in the class.
      *
@@ -256,6 +252,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorGroups,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
+            'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
         ));
     }
 
@@ -284,6 +281,10 @@ class ClassMetadata extends MergeableClassMetadata
 
         if (isset($deserializedData['discriminatorGroups'])) {
             $this->discriminatorGroups = $deserializedData['discriminatorGroups'];
+        }
+
+        if (isset($deserializedData['xmlDiscriminatorAttribute'])) {
+            $this->xmlDiscriminatorAttribute = $deserializedData['xmlDiscriminatorAttribute'];
         }
 
         parent::unserialize($parentStr);

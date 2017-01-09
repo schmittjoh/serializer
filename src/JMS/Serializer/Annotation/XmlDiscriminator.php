@@ -23,10 +23,10 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
-class XmlDiscriminatorAttribute
+class XmlDiscriminator
 {
     /**
      * @var boolean
      */
-    public $attribute = true;
+    public $attribute = false;
 }

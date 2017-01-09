@@ -420,20 +420,20 @@ Resulting XML:
     </result>
 
 
-@XmlDiscriminatorAttribute
-~~~~~~~~~~~~~
-This, used in conjunction with @Discriminator, allows you to use an attribute of the root node as discriminator
+@XmlDiscriminator
+~~~~~~~~~~~~~~~~~
+This annotation allows to modify the behaviour of @Discriminator regarding handling of XML.
 
 .. code-block :: php
 
     <?php
 
     use JMS\Serializer\Annotation\Discriminator;
-    use JMS\Serializer\Annotation\XmlDiscriminatorAttribute;
+    use JMS\Serializer\Annotation\XmlDiscriminator;
 
     /**
      * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
-     * @XmlDiscriminatorAttribute
+     * @XmlDiscriminator(attribute=true)
      */
     abstract class Vehicle { }
     class Car extends Vehicle { }
@@ -442,9 +442,7 @@ Resulting XML:
 
 .. code-block :: xml
 
-    <vehicle type="car">
-    </result>
-
+    <vehicle type="car" />
 
 @XmlValue
 ~~~~~~~~~
