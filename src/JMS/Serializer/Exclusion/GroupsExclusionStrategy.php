@@ -78,7 +78,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
                 if ($index > 0) {
-                    $groups = array('Default');
+                    $groups = array(self::DEFAULT_GROUP);
                 }
 
                 break;

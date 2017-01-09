@@ -48,21 +48,21 @@ class GroupsExclusionStrategyTest extends \PHPUnit_Framework_TestCase
             [['foo'], ['bar'], true],
             [['bar'], ['foo'], true],
 
-            [['foo', 'Default'], [], false],
+            [['foo', GroupsExclusionStrategy::DEFAULT_GROUP], [], false],
             [['foo', 'bar'], [], true],
-            [['foo', 'bar'], ['Default'], true],
+            [['foo', 'bar'], [GroupsExclusionStrategy::DEFAULT_GROUP], true],
             [['foo', 'bar'], ['foo'], false],
 
-            [['foo', 'Default'], ['test'], true],
-            [['foo', 'Default', 'test'], ['test'], false],
+            [['foo', GroupsExclusionStrategy::DEFAULT_GROUP], ['test'], true],
+            [['foo', GroupsExclusionStrategy::DEFAULT_GROUP, 'test'], ['test'], false],
 
-            [['foo'], ['Default'], true],
-            [['Default'], [], false],
-            [[], ['Default'], false],
-            [['Default'], ['Default'], false],
-            [['Default', 'foo'], ['Default'], false],
-            [['Default'], ['Default','foo'], false],
-            [['foo'], ['Default','foo'], false],
+            [['foo'], [GroupsExclusionStrategy::DEFAULT_GROUP], true],
+            [[GroupsExclusionStrategy::DEFAULT_GROUP], [], false],
+            [[], [GroupsExclusionStrategy::DEFAULT_GROUP], false],
+            [[GroupsExclusionStrategy::DEFAULT_GROUP], [GroupsExclusionStrategy::DEFAULT_GROUP], false],
+            [[GroupsExclusionStrategy::DEFAULT_GROUP, 'foo'], [GroupsExclusionStrategy::DEFAULT_GROUP], false],
+            [[GroupsExclusionStrategy::DEFAULT_GROUP], [GroupsExclusionStrategy::DEFAULT_GROUP, 'foo'], false],
+            [['foo'], [GroupsExclusionStrategy::DEFAULT_GROUP, 'foo'], false],
         ];
     }
 }
