@@ -424,6 +424,18 @@ Resulting XML:
 ~~~~~~~~~~~~~~~~~
 This annotation allows to modify the behaviour of @Discriminator regarding handling of XML.
 
+
+Available Options:
+
++-------------------------------------+--------------------------------------------------+
+| Type                                | Description                                      |
++=====================================+==================================================+
+| attribute                           | use an attribute instead of a child node         |
++-------------------------------------+--------------------------------------------------+
+| cdata                               | render child node content with or without cdata  |
++-------------------------------------+--------------------------------------------------+
+
+Example for "attribute":
 .. code-block :: php
 
     <?php
@@ -443,6 +455,31 @@ Resulting XML:
 .. code-block :: xml
 
     <vehicle type="car" />
+
+
+Example for "cdata":
+
+.. code-block :: php
+    <?php
+
+    use JMS\Serializer\Annotation\Discriminator;
+    use JMS\Serializer\Annotation\XmlDiscriminator;
+
+
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
+     * @XmlDiscriminator(attribute=true)
+     */
+    abstract class Vehicle { }
+    class Car extends Vehicle { }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <vehicle><type>car</type></vehicle>
+
 
 @XmlValue
 ~~~~~~~~~

@@ -5,3 +5,4 @@ JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorP
             child: JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild
     xml_discriminator:
         attribute: true
+        cdata: false

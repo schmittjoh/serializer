@@ -261,6 +261,9 @@ class YamlDriver extends AbstractFileDriver
             if (isset($config['xml_discriminator']['attribute'])) {
                 $metadata->xmlDiscriminatorAttribute = $config['xml_discriminator']['attribute'];
             }
+            if (isset($config['xml_discriminator']['cdata'])) {
+                $metadata->xmlDiscriminatorCData = $config['xml_discriminator']['cdata'];
+            }
         }
 
         if (array_key_exists('xml_namespaces', $config)) {

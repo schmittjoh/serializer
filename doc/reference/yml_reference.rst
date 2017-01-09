@@ -9,6 +9,7 @@ YAML Reference
         xml_root_namespace: http://your.default.namespace
         xml_discriminator:
             attribute: true
+            cdata: false
         exclude: true
         read_only: false
         access_type: public_method # defaults to property

@@ -5,6 +5,6 @@
            xml-discriminator-attribute="true"
     >
         <discriminator-class value="child">JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild</discriminator-class>
-        <xml-discriminator attribute="true" />
+        <xml-discriminator attribute="true" cdata="false" />
     </class>
 </serializer>

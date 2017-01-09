@@ -188,6 +188,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             $m->discriminatorMap
         );
         $this->assertTrue($m->xmlDiscriminatorAttribute);
+        $this->assertFalse($m->xmlDiscriminatorCData);
     }
 
     public function testLoadDiscriminatorWithGroup()

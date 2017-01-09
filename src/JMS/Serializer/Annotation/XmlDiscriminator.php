@@ -29,4 +29,9 @@ class XmlDiscriminator
      * @var boolean
      */
     public $attribute = false;
+
+    /**
+     * @var boolean
+     */
+    public $cdata = true;
 }
