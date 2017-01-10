@@ -279,7 +279,6 @@ class YamlDriver extends AbstractFileDriver
                 $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : array();
                 $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
 
-
                 if (isset($config['discriminator']['xml_attribute'])) {
                     $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
                 }
