@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -819,12 +820,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $this->getContent('groups_default'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array(GroupsExclusionStrategy::DEFAULT_GROUP)))
         );
 
         $this->assertEquals(
             $this->getContent('groups_default'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('Default')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array(GroupsExclusionStrategy::DEFAULT_GROUP)))
         );
     }
 
@@ -861,12 +862,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 $adrien,
                 $this->getFormat(),
                 SerializationContext::create()->setGroups(array(
-                    'Default',
+                    GroupsExclusionStrategy::DEFAULT_GROUP,
                     'manager_group',
                     'friends_group',
 
                     'manager' => array(
-                        'Default',
+                        GroupsExclusionStrategy::DEFAULT_GROUP,
                         'friends_group',
 
                         'friends' => array('nickname_group'),
