@@ -17,6 +17,9 @@ YAML Reference
             map:
                 some-value: ClassName
             groups: [foo, bar]
+            xml_attribute: true
+            xml_element:
+                cdata: false
         virtual_properties:
             getSomeProperty:
                 serialized_name: foo

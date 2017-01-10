@@ -104,6 +104,15 @@ class XmlDriver extends AbstractFileDriver
             $metadata->registerNamespace((string) $xmlNamespace->attributes()->uri, $prefix);
         }
 
+        foreach ($elem->xpath('./xml-discriminator') as $xmlDiscriminator) {
+            if (isset($xmlDiscriminator->attributes()->attribute)) {
+                $metadata->xmlDiscriminatorAttribute = (string) $xmlDiscriminator->attributes()->attribute === 'true';
+            }
+            if (isset($xmlDiscriminator->attributes()->cdata)) {
+                $metadata->xmlDiscriminatorCData = (string) $xmlDiscriminator->attributes()->cdata === 'true';
+            }
+        }
+
         foreach ($elem->xpath('./virtual-property') as $method) {
             if ( ! isset($method->attributes()->method)) {
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
