@@ -207,6 +207,7 @@ class ClassMetadata extends MergeableClassMetadata
             );
             $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $discriminatorProperty->xmlAttribute = $this->xmlDiscriminatorAttribute;
+            $discriminatorProperty->xmlElementCData = $this->xmlDiscriminatorCData;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 

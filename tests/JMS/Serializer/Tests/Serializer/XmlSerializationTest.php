@@ -26,6 +26,8 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorChild;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
@@ -372,6 +374,19 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->deserialize(
                 $xml,
                 ObjectWithXmlAttributeDiscriminatorParent::class
+            )
+        );
+    }
+
+    public function testDiscriminatorAsNotCData()
+    {
+        $xml = $this->serialize(new ObjectWithXmlNotCDataDiscriminatorChild());
+        $this->assertEquals($this->getContent('xml_discriminator_not_cdata'), $xml);
+        $this->assertInstanceOf(
+            ObjectWithXmlNotCDataDiscriminatorChild::class,
+            $this->deserialize(
+                $xml,
+                ObjectWithXmlNotCDataDiscriminatorParent::class
             )
         );
     }
