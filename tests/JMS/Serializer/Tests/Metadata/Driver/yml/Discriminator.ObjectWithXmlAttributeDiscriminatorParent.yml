@@ -1,0 +1,8 @@
+JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent:
+    discriminator:
+        field_name: type
+        map:
+            child: JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild
+        xml_attribute: true
+        xml_element:
+            cdata: false
