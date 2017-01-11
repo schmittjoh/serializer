@@ -14,6 +14,7 @@ YAML Reference
         custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
         discriminator:
             field_name: type
+            disabled: false
             map:
                 some-value: ClassName
             groups: [foo, bar]
