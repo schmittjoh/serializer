@@ -229,6 +229,32 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertInternalType($primitiveType, $result);
     }
 
+    public function testSerializeRootArrayWithDefinedKeys()
+    {
+        $author1 = new Author("Jim");
+        $author2 = new Author("Mark");
+
+        $data = array(
+            'jim' => $author1,
+            'mark' => $author2,
+        );
+
+        $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), null, 'array<JMS\Serializer\Tests\Fixtures\Author>'));
+        $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), null, 'array<string,JMS\Serializer\Tests\Fixtures\Author>'));
+        $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), null, 'array'));
+
+        //$this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), null, 'array<int, NULL>')); // autodetect type for each element
+
+        $data = array(
+            $author1,
+            $author2,
+        );
+        $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), null, 'array<int,JMS\Serializer\Tests\Fixtures\Author>'));
+        //$this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), null, 'array<int,NULL>')); // autodetect type for each element
+        $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), null, 'array<int,JMS\Serializer\Tests\Fixtures\Author>'));
+        $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), null, 'array<string,JMS\Serializer\Tests\Fixtures\Author>'));
+    }
+
     /**
      * @group empty-object
      */
