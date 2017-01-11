@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -70,9 +71,9 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @param \PhpCollection\MapInterface $serializationVisitors of VisitorInterface
      * @param \PhpCollection\MapInterface $deserializationVisitors of VisitorInterface
      * @param EventDispatcher\EventDispatcherInterface $dispatcher
-     * @param TypeParser $typeParser
+     * @param AbstractParser $typeParser
      */
-    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null)
+    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, AbstractParser $typeParser = null)
     {
         $this->factory = $factory;
         $this->handlerRegistry = $handlerRegistry;
