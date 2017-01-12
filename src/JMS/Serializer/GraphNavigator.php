@@ -28,6 +28,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\UnsupportedFormatException;
 
 /**
  * Handles traversal along the object graph.
@@ -177,10 +178,19 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
 
-                    return $rs;
+                    try {
+                        // We will call custom handler, however, if custom handler would like to skip
+                        // serialization/deserialization handling and fall back to default serialization/deserialization
+                        // process, it should throw \JMS\Serializer\Exception\UnsupportedFormatException
+                        $rs = call_user_func($handler, $visitor, $data, $type, $context);
+                        $this->leaveScope($context, $data);
+
+                        return $rs;
+
+                    } catch (UnsupportedFormatException $e) {
+                        // noop
+                    }
                 }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
