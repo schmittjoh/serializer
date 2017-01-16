@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,12 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use Metadata\Driver\DriverInterface;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
@@ -90,9 +93,22 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
 
         $p = new PropertyMetadata($m->name, 'price');
-        $p->type = array('name' => 'double', 'params' => array());
+        $p->type = array('name' => 'float', 'params' => array());
         $p->xmlValue = true;
         $this->assertEquals($p, $m->propertyMetadata['price']);
+    }
+
+    public function testXMLListAbsentNode()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode'));
+
+        $this->assertArrayHasKey('absent', $m->propertyMetadata);
+        $this->assertArrayHasKey('present', $m->propertyMetadata);
+        $this->assertArrayHasKey('skipDefault', $m->propertyMetadata);
+
+        $this->assertTrue($m->propertyMetadata['absent']->xmlCollectionSkipWhenEmpty);
+        $this->assertTrue($m->propertyMetadata['skipDefault']->xmlCollectionSkipWhenEmpty);
+        $this->assertFalse($m->propertyMetadata['present']->xmlCollectionSkipWhenEmpty);
     }
 
     public function testVirtualProperty()
@@ -152,6 +168,41 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             array(
                 'car' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Car',
                 'moped' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Moped',
+            ),
+            $m->discriminatorMap
+        );
+    }
+
+    public function testLoadXmlDiscriminator()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlAttributeDiscriminatorParent::class));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'child' => ObjectWithXmlAttributeDiscriminatorChild::class,
+            ),
+            $m->discriminatorMap
+        );
+        $this->assertTrue($m->xmlDiscriminatorAttribute);
+        $this->assertFalse($m->xmlDiscriminatorCData);
+    }
+
+    public function testLoadDiscriminatorWithGroup()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Vehicle'));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals(array('foo'), $m->discriminatorGroups);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'
             ),
             $m->discriminatorMap
         );
@@ -297,30 +348,58 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlNamespace = "http://old.foo.example.org";
         $p->xmlAttribute = true;
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
-        $this->assertEquals($p, $m->propertyMetadata['foo']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['foo']);
 
         $p = new PropertyMetadata($m->name, 'bar');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://foo.example.org";
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
-        $this->assertEquals($p, $m->propertyMetadata['bar']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['bar']);
 
         $p = new PropertyMetadata($m->name, 'moo');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://better.foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['moo']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['moo']);
 
         $p = new PropertyMetadata($m->name, 'baz');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['baz']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['baz']);
 
         $p = new PropertyMetadata($m->name, 'qux');
         $p->type = array('name' => 'string', 'params' => array());
         $p->xmlNamespace = "http://new.foo.example.org";
-        $this->assertEquals($p, $m->propertyMetadata['qux']);
+        $this->assetMetadataEquals($p, $m->propertyMetadata['qux']);
     }
 
+    private function assetMetadataEquals(PropertyMetadata $expected, PropertyMetadata $actual)
+    {
+        $expectedVars = get_object_vars($expected);
+        $actualVars = get_object_vars($actual);
+
+        $expectedReflection = (array)$expectedVars['reflection'];
+        $actualReflection = (array)$actualVars['reflection'];
+
+        // HHVM bug with class property
+        unset($expectedVars['reflection'], $actualVars['reflection']);
+        $this->assertEquals($expectedVars, $actualVars);
+
+        // HHVM bug with class property
+        if (isset($expectedReflection['info']) || isset($actualReflection['info'])){
+            $expectedReflection['class'] = $expectedReflection['info']['class'];
+            $actualReflection['class'] = $actualReflection['info']['class'];
+        }
+
+        $this->assertEquals($expectedReflection, $actualReflection);
+    }
+
+    public function testHandlerCallbacks()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks'));
+
+        $this->assertEquals('toJson', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['json']);
+        $this->assertEquals('toXml', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['xml']);
+    }
 
     /**
      * @return DriverInterface

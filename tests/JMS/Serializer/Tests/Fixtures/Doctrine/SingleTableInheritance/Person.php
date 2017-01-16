@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     "teacher" = "JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher",
  * })
  */
-abstract class Person
+abstract class Person extends AbstractModel
 {
     /** @ORM\Id @ORM\GeneratedValue(strategy = "AUTO") @ORM\Column(type = "integer") */
     private $id;

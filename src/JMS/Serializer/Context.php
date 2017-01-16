@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ abstract class Context
     /** @var ExclusionStrategyInterface */
     private $exclusionStrategy;
 
-    /** @var boolean */
+    /** @var boolean|null */
     private $serializeNull;
 
     private $initialized = false;
@@ -184,6 +184,12 @@ abstract class Context
         return $this;
     }
 
+    /**
+     * Set if NULLs should be serialized (TRUE) ot not (FALSE)
+     *
+     * @param bool $bool
+     * @return $this
+     */
     public function setSerializeNull($bool)
     {
         $this->serializeNull = (boolean) $bool;
@@ -191,6 +197,14 @@ abstract class Context
         return $this;
     }
 
+    /**
+     * Returns TRUE when NULLs should be serialized
+     * Returns FALSE when NULLs should not be serialized
+     * Returns NULL when NULLs should not be serialized,
+     * but the user has not explicitly decided to use this policy
+     *
+     * @return bool|null
+     */
     public function shouldSerializeNull()
     {
         return $this->serializeNull;
@@ -236,6 +250,26 @@ abstract class Context
     {
         return $this->metadataStack;
     }
+
+    /**
+     * @return array
+     */
+    public function getCurrentPath()
+    {
+        if (!$this->metadataStack) {
+            return array();
+        }
+
+        $paths = array();
+        foreach ($this->metadataStack as $metadata) {
+            if ($metadata instanceof PropertyMetadata) {
+                array_unshift($paths, $metadata->name);
+            }
+        }
+
+        return $paths;
+    }
+
 
     abstract public function getDepth();
 

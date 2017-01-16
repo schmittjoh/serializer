@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\XmlDiscriminator;
 use JMS\Serializer\Annotation\XmlStylesheet;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Annotation\HandlerCallback;
@@ -100,8 +101,11 @@ class AnnotationDriver implements DriverInterface
                 if ($annot->disabled) {
                     $classMetadata->discriminatorDisabled = true;
                 } else {
-                    $classMetadata->setDiscriminator($annot->field, $annot->map);
+                    $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups);
                 }
+            } elseif ($annot instanceof XmlDiscriminator) {
+                $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
+                $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
             }
         }
 
@@ -136,7 +140,7 @@ class AnnotationDriver implements DriverInterface
 
         if ( ! $excludeAll) {
             foreach ($class->getProperties() as $property) {
-                if ($property->class !== $name) {
+                if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
                 }
                 $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
@@ -173,10 +177,13 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
                         $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlEntryNamespace = $annot->namespace;
+                        $propertyMetadata->xmlCollectionSkipWhenEmpty = $annot->skipWhenEmpty;
                     } elseif ($annot instanceof XmlMap) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
                         $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlEntryNamespace = $annot->namespace;
                         $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
                     } elseif ($annot instanceof XmlKeyValuePairs) {
                         $propertyMetadata->xmlKeyValuePairs = true;
@@ -214,10 +221,10 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
 
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }

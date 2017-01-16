@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,16 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineProxySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var bool
+     */
+    private $skipVirtualTypeInit = false;
+
+    public function __construct($skipVirtualTypeInit = false)
+    {
+        $this->skipVirtualTypeInit = $skipVirtualTypeInit;
+    }
+
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $object = $event->getObject();
@@ -49,7 +59,9 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+        if (($this->skipVirtualTypeInit && $virtualType) ||
+            (!$object instanceof Proxy && !$object instanceof ORMProxy)
+        ) {
             return;
         }
 

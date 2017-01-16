@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class Author
     protected $id;
 
     /**
-     * @PHPCRODM\String()
+     * @PHPCRODM\Field(type="string")
      * @SerializedName("full_name")
      */
     private $name;

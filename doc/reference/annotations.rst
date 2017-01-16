@@ -48,7 +48,7 @@ PHP's ``version_compare`` function.
 
 @Groups
 ~~~~~~~
-This annotation can be defined on a property to specifiy to if the property
+This annotation can be defined on a property to specify if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
@@ -148,7 +148,7 @@ default the order is undefined, but you may change it to either "alphabetical", 
     }
 
     /**
-     * @AccessorOrder("custom", custom = {"name", "SomeMethod" ,"id"})
+     * @AccessorOrder("custom", custom = {"name", "someMethod" ,"id"})
      *
      * Resulting Property Order: name, mood, id
      */
@@ -211,7 +211,7 @@ the object has been deserialized.
 @HandlerCallback
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method if serialization/deserialization is handled
-by the object iself.
+by the object itself.
 
 .. code-block :: php
 
@@ -239,11 +239,16 @@ where a common base class exists. The ``@Discriminator`` annotation has to be ap
 to the least super type::
 
     /**
-     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"})
+     * @Discriminator(field = "type", disabled = false, map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
      */
     abstract class Vehicle { }
     class Car extends Vehicle { }
     class Moped extends Vehicle { }
+
+
+.. note ::
+
+    `groups` is optional and is used as exclusion policy.
 
 @Type
 ~~~~~
@@ -254,42 +259,51 @@ force a certain format to be used for DateTime types.
 
 Available Types:
 
-+---------------------------+--------------------------------------------------+
-| Type                      | Description                                      |
-+===========================+==================================================+
-| boolean                   | Primitive boolean                                |
-+---------------------------+--------------------------------------------------+
-| integer                   | Primitive integer                                |
-+---------------------------+--------------------------------------------------+
-| double                    | Primitive double                                 |
-+---------------------------+--------------------------------------------------+
-| string                    | Primitive string                                 |
-+---------------------------+--------------------------------------------------+
-| array                     | An array with arbitrary keys, and values.        |
-+---------------------------+--------------------------------------------------+
-| array<T>                  | A list of type T (T can be any available type).  |
-|                           | Examples:                                        |
-|                           | array<string>, array<MyNamespace\MyObject>, etc. |
-+---------------------------+--------------------------------------------------+
-| array<K, V>               | A map of keys of type K to values of type V.     |
-|                           | Examples: array<string, string>,                 |
-|                           | array<string, MyNamespace\MyObject>, etc.        |
-+---------------------------+--------------------------------------------------+
-| DateTime                  | PHP's DateTime object (default format/timezone)  |
-+---------------------------+--------------------------------------------------+
-| DateTime<'format'>        | PHP's DateTime object (custom format/default     |
-|                           | timezone)                                        |
-+---------------------------+--------------------------------------------------+
-| DateTime<'format', 'zone'>| PHP's DateTime object (custom format/timezone)   |
-+---------------------------+--------------------------------------------------+
-| T                         | Where T is a fully qualified class name.         |
-+---------------------------+--------------------------------------------------+
-| ArrayCollection<T>        | Similar to array<T>, but will be deserialized    |
-|                           | into Doctrine's ArrayCollection class.           |
-+---------------------------+--------------------------------------------------+
-| ArrayCollection<K, V>     | Similar to array<K, V>, but will be deserialized |
-|                           | into Doctrine's ArrayCollection class.           |
-+---------------------------+--------------------------------------------------+
++-------------------------------------+--------------------------------------------------+
+| Type                                | Description                                      |
++=====================================+==================================================+
+| boolean                             | Primitive boolean                                |
++-------------------------------------+--------------------------------------------------+
+| integer or int                      | Primitive integer                                |
++-------------------------------------+--------------------------------------------------+
+| double or float                     | Primitive double                                 |
++-------------------------------------+--------------------------------------------------+
+| string                              | Primitive string                                 |
++-------------------------------------+--------------------------------------------------+
+| array                               | An array with arbitrary keys, and values.        |
++-------------------------------------+--------------------------------------------------+
+| array<T>                            | A list of type T (T can be any available type).  |
+|                                     | Examples:                                        |
+|                                     | array<string>, array<MyNamespace\MyObject>, etc. |
++-------------------------------------+--------------------------------------------------+
+| array<K, V>                         | A map of keys of type K to values of type V.     |
+|                                     | Examples: array<string, string>,                 |
+|                                     | array<string, MyNamespace\MyObject>, etc.        |
++-------------------------------------+--------------------------------------------------+
+| DateTime                            | PHP's DateTime object (default format/timezone)  |
++-------------------------------------+--------------------------------------------------+
+| DateTime<'format'>                  | PHP's DateTime object (custom format/default     |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone'>          | PHP's DateTime object (custom format/timezone)   |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable                   | PHP's DateTimeImmutable object (default format/  |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format'>         | PHP's DateTimeImmutable object (custom format/   |
+|                                     | default timezone)                                |
++-------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone'> | PHP's DateTimeImmutable object (custom format/   |
+|                                     | timezone)                                        |
++-------------------------------------+--------------------------------------------------+
+| T                                   | Where T is a fully qualified class name.         |
++-------------------------------------+--------------------------------------------------+
+| ArrayCollection<T>                  | Similar to array<T>, but will be deserialized    |
+|                                     | into Doctrine's ArrayCollection class.           |
++-------------------------------------+--------------------------------------------------+
+| ArrayCollection<K, V>               | Similar to array<K, V>, but will be deserialized |
+|                                     | into Doctrine's ArrayCollection class.           |
++-------------------------------------+--------------------------------------------------+
 
 Examples:
 
@@ -321,10 +335,20 @@ Examples:
         /**
          * @Type("DateTime")
          */
-        private $createdAt;
+        private $startAt;
 
         /**
          * @Type("DateTime<'Y-m-d'>")
+         */
+        private $endAt;
+
+        /**
+         * @Type("DateTimeImmutable")
+         */
+        private $createdAt;
+
+        /**
+         * @Type("DateTimeImmutable<'Y-m-d'>")
          */
         private $updatedAt;
 
@@ -394,6 +418,68 @@ Resulting XML:
     <result id="1">
         <name><![CDATA[Johannes]]></name>
     </result>
+
+
+@XmlDiscriminator
+~~~~~~~~~~~~~~~~~
+This annotation allows to modify the behaviour of @Discriminator regarding handling of XML.
+
+
+Available Options:
+
++-------------------------------------+--------------------------------------------------+
+| Type                                | Description                                      |
++=====================================+==================================================+
+| attribute                           | use an attribute instead of a child node         |
++-------------------------------------+--------------------------------------------------+
+| cdata                               | render child node content with or without cdata  |
++-------------------------------------+--------------------------------------------------+
+
+Example for "attribute":
+.. code-block :: php
+
+    <?php
+
+    use JMS\Serializer\Annotation\Discriminator;
+    use JMS\Serializer\Annotation\XmlDiscriminator;
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
+     * @XmlDiscriminator(attribute=true)
+     */
+    abstract class Vehicle { }
+    class Car extends Vehicle { }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <vehicle type="car" />
+
+
+Example for "cdata":
+
+.. code-block :: php
+    <?php
+
+    use JMS\Serializer\Annotation\Discriminator;
+    use JMS\Serializer\Annotation\XmlDiscriminator;
+
+
+
+    /**
+     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
+     * @XmlDiscriminator(attribute=true)
+     */
+    abstract class Vehicle { }
+    class Car extends Vehicle { }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <vehicle><type>car</type></vehicle>
+
 
 @XmlValue
 ~~~~~~~~~
@@ -474,6 +560,8 @@ Resulting XML:
             <text><![CDATA[Bar]]></text>
         </comment>
     </post>
+
+You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``).
 
 @XmlMap
 ~~~~~~~

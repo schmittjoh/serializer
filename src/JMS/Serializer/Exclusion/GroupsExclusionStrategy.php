@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
             $groups = array(self::DEFAULT_GROUP);
         }
 
-        foreach ($groups as $group) {
-            $this->groups[$group] = true;
-        }
+        $this->groups = $groups;
     }
 
     /**
@@ -52,16 +50,43 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
+        $groups = $this->getGroupsFor($navigatorContext);
+
         if ( ! $property->groups) {
-            return ! isset($this->groups[self::DEFAULT_GROUP]);
+            return ! in_array(self::DEFAULT_GROUP, $groups);
         }
 
+        return $this->shouldSkipUsingGroups($property, $groups);
+    }
+
+    private function shouldSkipUsingGroups(PropertyMetadata $property, $groups)
+    {
         foreach ($property->groups as $group) {
-            if (isset($this->groups[$group])) {
+            if (in_array($group, $groups)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private function getGroupsFor(Context $navigatorContext)
+    {
+        $paths = $navigatorContext->getCurrentPath();
+
+        $groups = $this->groups;
+        foreach ($paths as $index => $path) {
+            if (!array_key_exists($path, $groups)) {
+                if ($index > 0) {
+                    $groups = array(self::DEFAULT_GROUP);
+                }
+
+                break;
+            }
+
+            $groups = $groups[$path];
+        }
+
+        return $groups;
     }
 }

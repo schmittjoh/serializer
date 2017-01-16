@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,5 +146,45 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
         $serializer = SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
+    }
+
+    public function getScalars()
+    {
+        return array(
+            array("string"),
+            array(5),
+            array(5.5),
+            array(array())
+        );
+    }
+    
+    /**
+     * @dataProvider getScalars
+     */
+    public function testCanVisitScalars($scalar)
+    {
+        $context = SerializationContext::create();
+
+        $context->startVisiting($scalar);
+        $this->assertFalse($context->isVisiting($scalar));
+        $context->stopVisiting($scalar);
+    }
+
+    public function testSerializeNullOption()
+    {
+        $context = SerializationContext::create();
+        $this->assertNull($context->shouldSerializeNull());
+
+        $context->setSerializeNull(false);
+        $this->assertFalse($context->shouldSerializeNull());
+
+        $context->setSerializeNull(true);
+        $this->assertTrue($context->shouldSerializeNull());
+
+        $context->setSerializeNull("foo");
+        $this->assertTrue($context->shouldSerializeNull());
+
+        $context->setSerializeNull("0");
+        $this->assertFalse($context->shouldSerializeNull());
     }
 }

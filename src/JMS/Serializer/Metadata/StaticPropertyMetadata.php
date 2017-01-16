@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ class StaticPropertyMetadata extends PropertyMetadata
 {
     private $value;
 
-    public function __construct($className, $fieldName, $fieldValue)
+    public function __construct($className, $fieldName, $fieldValue, array $groups = array())
     {
         $this->class = $className;
         $this->name = $fieldName;
         $this->value = $fieldValue;
         $this->readOnly = true;
+        $this->groups = $groups;
     }
 
     public function getValue($obj)
