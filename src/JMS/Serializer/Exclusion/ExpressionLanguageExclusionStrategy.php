@@ -38,8 +38,6 @@ class ExpressionLanguageExclusionStrategy
      */
     private $expressionEvaluator;
 
-    private $context = array();
-
     public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)
     {
         $this->expressionEvaluator = $expressionEvaluator;
