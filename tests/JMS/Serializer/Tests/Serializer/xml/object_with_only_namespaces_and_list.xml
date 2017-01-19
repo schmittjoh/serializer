@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectWithNamespacesAndList xmlns="http://example.com/namespace" xmlns:x="http://example.com/namespace2">
+  <x:phone><![CDATA[777]]></x:phone>
+  <x:phone><![CDATA[888]]></x:phone>
+  <x:address id="A"><![CDATA[Street 7]]></x:address>
+  <x:address id="B"><![CDATA[Street 8]]></x:address>
+</ObjectWithNamespacesAndList>
