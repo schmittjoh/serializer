@@ -46,7 +46,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->writer = new Writer();
     }
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->writer->reset();

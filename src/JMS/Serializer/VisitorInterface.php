@@ -126,7 +126,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function setNavigator(GraphNavigator $navigator);
+    public function setNavigator(GraphNavigatorInterface $navigator);
 
     /**
      * @deprecated use Context::getNavigator/Context::accept instead
