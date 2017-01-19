@@ -49,6 +49,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlNamespaces = array();
     public $accessorOrder;
     public $customOrder;
+    public $usingExpression = false;
     public $handlerCallbacks = array();
 
     public $discriminatorDisabled = false;
@@ -107,6 +108,9 @@ class ClassMetadata extends MergeableClassMetadata
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
+        if ($metadata instanceof PropertyMetadata && $metadata->excludeIf) {
+            $this->usingExpression = true;
+        }
     }
 
     public function addPreSerializeMethod(MethodMetadata $method)
@@ -256,12 +260,13 @@ class ClassMetadata extends MergeableClassMetadata
             'discriminatorGroups' => $this->discriminatorGroups,
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
+            'usingExpression' => $this->usingExpression,
         ));
     }
 
     public function unserialize($str)
     {
-        $deserializedData = unserialize($str);
+        $unserialized = unserialize($str);
 
         list(
             $this->preSerializeMethods,
@@ -280,10 +285,13 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $parentStr
-        ) = $deserializedData;
+        ) = $unserialized;
 
-        if (isset($deserializedData['discriminatorGroups'])) {
-            $this->discriminatorGroups = $deserializedData['discriminatorGroups'];
+        if (isset($unserialized['discriminatorGroups'])) {
+            $this->discriminatorGroups = $unserialized['discriminatorGroups'];
+        }
+        if (isset($unserialized['usingExpression'])) {
+            $this->usingExpression = $unserialized['usingExpression'];
         }
 
         if (isset($deserializedData['xmlDiscriminatorAttribute'])) {

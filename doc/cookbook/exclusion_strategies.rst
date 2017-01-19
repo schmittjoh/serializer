@@ -108,7 +108,7 @@ context.
 
         /** @Groups({"details"}) */
         private $comments;
-        
+
         private $createdAt;
     }
 
@@ -117,11 +117,11 @@ You can then tell the serializer which groups to serialize in your controller::
     use JMS\Serializer\SerializationContext;
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('list')));
-    
+
     //will output $id, $title and $nbComments.
 
     $serializer->serialize(new BlogPost(), 'json', SerializationContext::create()->setGroups(array('Default', 'list')));
-    
+
     //will output $id, $title, $nbComments and $createdAt.
 
 Overriding Groups of Deeper Branches of the Graph
@@ -264,3 +264,33 @@ You need to tell the serializer to take into account MaxDepth checks::
     use JMS\Serializer\SerializationContext;
 
     $serializer->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks());
+
+
+Dynamic exclusion strategy
+--------------------------
+
+If the previous exclusion strategies are not enough, is possible to use the `ExpressionLanguageExclusionStrategy`
+that uses the `symfony expression language<https://github.com/symfony/expression-language>`_ to
+allow a more sophisticated exclusion strategies using `@Exclude(if="expression")` and `@Expose(if="expression")` methods.
+
+
+.. code-block :: php
+
+    <?php
+
+    class MyObject
+    {
+        /**
+         * @Exclude(if="true")
+         */
+        private $name;
+
+       /**
+         * @Expose(if="true")
+         */
+        private $name2;
+    }
+
+.. note ::
+
+    ``true`` is just a generic expression, you can use any expression allowed by the Symfony Expression Language

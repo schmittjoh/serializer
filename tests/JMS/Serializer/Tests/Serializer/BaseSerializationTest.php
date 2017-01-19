@@ -21,6 +21,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
@@ -34,11 +35,17 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\PersonSecret;
+use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
+use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
+use JMS\Serializer\Tests\Fixtures\PersonSecretVirtual;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use PhpCollection\Sequence;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -119,6 +126,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     protected $handlerRegistry;
     protected $serializationVisitors;
     protected $deserializationVisitors;
+    protected $objectConstructor;
 
     public function testSerializeNullArray()
     {
@@ -181,6 +189,126 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $this->assertEquals('foo', $this->deserialize($this->getContent('string'), 'string'));
         }
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage To use conditional exclude/expose in JMS\Serializer\Tests\Fixtures\PersonSecret you must configure the expression language.
+     */
+    public function testExpressionExclusionNotConfigured()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+        $this->serialize($person);
+    }
+
+
+    public function testExpressionExclusionConfiguredWithDisjunctStrategy()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $language = new ExpressionLanguage();
+        $language->addFunction(new ExpressionFunction('show_data', function () {
+            return "true";
+        }, function () {
+            return true;
+        }));
+
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, new ExpressionEvaluator($language));
+
+        $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
+    }
+
+    public function expressionFunctionProvider()
+    {
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $personMoreSecret = new PersonSecretMore();
+        $personMoreSecret->gender = 'f';
+        $personMoreSecret->name = 'mike';
+
+        $personVirtual = new PersonSecretVirtual();
+        $personVirtual->gender = 'f';
+        $personVirtual->name = 'mike';
+
+        $personMoreSecretVirtual = new PersonSecretMoreVirtual();
+        $personMoreSecretVirtual->gender = 'f';
+        $personMoreSecretVirtual->name = 'mike';
+
+        $showGender = new ExpressionFunction('show_data', function () {
+            return "true";
+        }, function () {
+            return true;
+        });
+
+        $hideGender = new ExpressionFunction('show_data', function () {
+            return "false";
+        }, function () {
+            return false;
+        });
+
+        return [
+            [
+                $person,
+                $showGender,
+                'person_secret_hide'
+            ],
+            [
+                $person,
+                $hideGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecret,
+                $showGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecret,
+                $hideGender,
+                'person_secret_hide'
+            ],
+            [
+                $personVirtual,
+                $showGender,
+                'person_secret_hide'
+            ],
+            [
+                $personVirtual,
+                $hideGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecretVirtual,
+                $showGender,
+                'person_secret_show'
+            ],
+            [
+                $personMoreSecretVirtual,
+                $hideGender,
+                'person_secret_hide'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider expressionFunctionProvider
+     * @param PersonSecret|PersonSecretMore $person
+     * @param ExpressionFunction $function
+     * @param $json
+     */
+    public function testExpressionExclusion($person, ExpressionFunction $function, $json)
+    {
+        $language = new ExpressionLanguage();
+        $language->addFunction($function);
+
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, new ExpressionEvaluator($language));
+        $this->assertEquals($this->getContent($json), $serializer->serialize($person, $this->getFormat()));
     }
 
     /**
@@ -1184,7 +1312,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $objectConstructor = new UnserializeObjectConstructor();
+        $this->objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = new Map(array(
             'json' => new JsonSerializationVisitor($namingStrategy),
             'xml'  => new XmlSerializationVisitor($namingStrategy),
@@ -1195,7 +1323,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlDeserializationVisitor($namingStrategy),
         ));
 
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
     }
 
     protected function getField($obj, $name)

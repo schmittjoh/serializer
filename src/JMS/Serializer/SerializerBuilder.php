@@ -51,6 +51,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
 /**
  * Builder for serializer instances.
@@ -80,6 +81,11 @@ class SerializerBuilder
     private $serializationContextFactory;
     private $deserializationContextFactory;
 
+    /**
+     * @var ExpressionEvaluatorInterface
+     */
+    private $expressionEvaluator;
+
     public static function create()
     {
         return new static();
@@ -92,6 +98,11 @@ class SerializerBuilder
         $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = new Map();
         $this->deserializationVisitors = new Map();
+    }
+
+    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
+    {
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     public function setAnnotationReader(Reader $reader)
@@ -422,7 +433,9 @@ class SerializerBuilder
             $this->objectConstructor ?: new UnserializeObjectConstructor(),
             $this->serializationVisitors,
             $this->deserializationVisitors,
-            $this->eventDispatcher
+            $this->eventDispatcher,
+            null,
+            $this->expressionEvaluator
         );
 
         if (null !== $this->serializationContextFactory) {

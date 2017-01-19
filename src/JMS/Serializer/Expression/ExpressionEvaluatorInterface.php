@@ -16,13 +16,17 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Expression;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "CLASS", "METHOD"})
+ * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class Exclude
+interface ExpressionEvaluatorInterface
 {
-    public $if;
+    /**
+     * @param  string $expression
+     * @param  array $data
+     * @return mixed
+     */
+    public function evaluate($expression, array $data = array());
 }

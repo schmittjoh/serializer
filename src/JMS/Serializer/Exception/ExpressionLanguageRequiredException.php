@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Exception;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "CLASS", "METHOD"})
+ * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class Exclude
+class ExpressionLanguageRequiredException extends LogicException
 {
-    public $if;
 }

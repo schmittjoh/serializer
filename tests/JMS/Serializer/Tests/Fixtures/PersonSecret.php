@@ -16,13 +16,30 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures;
+
+use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "CLASS", "METHOD"})
+ * @Serializer\ExclusionPolicy("NONE")
+ * @Serializer\AccessorOrder("custom",custom = {"name", "gender" ,"age"})
  */
-final class Exclude
+class PersonSecret
 {
-    public $if;
+    /**
+     * @Serializer\Type("string")
+     */
+    public $name;
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Exclude(if="show_data('gender')")
+     */
+    public $gender;
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Expose(if="show_data('age')")
+     */
+    public $age;
 }

@@ -18,7 +18,11 @@
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\PersonSecret;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -185,6 +189,49 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $result = $serializer->serialize(array('value' => null, 'not_null' => 'ok'), 'json');
 
         $this->assertEquals('{"not_null":"ok"}', $result);
+    }
+
+    public function expressionFunctionProvider()
+    {
+        return [
+            [
+                new ExpressionFunction('show_data', function () {
+                    return "true";
+                }, function () {
+                    return true;
+                }),
+                '{"name":"mike"}'
+            ],
+            [
+                new ExpressionFunction('show_data', function () {
+                    return "false";
+                }, function () {
+                    return false;
+                }),
+                '{"name":"mike","gender":"f"}'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider expressionFunctionProvider
+     * @param ExpressionFunction $function
+     * @param $json
+     */
+    public function testExpressionEngine(ExpressionFunction $function, $json)
+    {
+        $language = new ExpressionLanguage();
+        $language->addFunction($function);
+
+        $this->builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+
+        $serializer = $this->builder->build();
+
+        $person = new PersonSecret();
+        $person->gender = 'f';
+        $person->name = 'mike';
+
+        $this->assertEquals($json, $serializer->serialize($person, 'json'));
     }
 
     protected function setUp()

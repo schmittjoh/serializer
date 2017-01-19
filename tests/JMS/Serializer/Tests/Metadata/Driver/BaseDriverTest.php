@@ -401,6 +401,27 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('toXml', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['xml']);
     }
 
+    public function testExclusionIf()
+    {
+        $class = 'JMS\Serializer\Tests\Fixtures\PersonSecret';
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+
+        $p = new PropertyMetadata($class, 'name');
+        $p->type = array('name' => 'string', 'params' => array());
+        $this->assertEquals($p, $m->propertyMetadata['name']);
+
+        $p = new PropertyMetadata($class, 'gender');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->excludeIf = "show_data('gender')";
+        $this->assertEquals($p, $m->propertyMetadata['gender']);
+
+        $p = new PropertyMetadata($class, 'age');
+        $p->type = array('name' => 'string', 'params' => array());
+        $p->excludeIf = "!(show_data('age'))";
+        $this->assertEquals($p, $m->propertyMetadata['age']);
+    }
+
+
     /**
      * @return DriverInterface
      */
