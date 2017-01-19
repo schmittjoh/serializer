@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,12 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\EventDispatcher;
+namespace JMS\Serializer\Exception;
 
-abstract class Events
+/**
+ * @author Kinn Coelho Julião <kinncj@gmail.com>
+ * @author Juti Noppornpitak <shiroyuki@gmail.com>
+ */
+class SkipStepException extends RuntimeException
 {
-    const PRE_SERIALIZE = 'serializer.pre_serialize';
-    const POST_SERIALIZE = 'serializer.post_serialize';
-    const PRE_DESERIALIZE = 'serializer.pre_deserialize';
-    const POST_DESERIALIZE = 'serializer.post_deserialize';
-    const CIRCULAR_SERIALIZATION = 'serializer.circular_serialization';
-
-    final private function __construct() { }
 }

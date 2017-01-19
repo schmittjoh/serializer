@@ -44,6 +44,22 @@ class LazyHandlerRegistry extends HandlerRegistry
         }
 
         if ( ! isset($this->handlers[$direction][$typeName][$format])) {
+            $matchedParent = $this->matchParent($typeName, $direction, $format);
+
+            if (false !== $matchedParent) {
+                $matchedParent[0] = $this->container->get($matchedParent[0]);
+
+                return $this->initializedHandlers[$direction][$typeName][$format] = $matchedParent;
+            }
+
+            $matchedInterface = $this->matchInterface($typeName, $direction, $format);
+
+            if (false !== $matchedInterface) {
+                $matchedInterface[0] = $this->container->get($matchedInterface[0]);
+
+                return $this->initializedHandlers[$direction][$typeName][$format] = $matchedInterface;
+            }
+
             return null;
         }
 
@@ -53,5 +69,80 @@ class LazyHandlerRegistry extends HandlerRegistry
         }
 
         return $this->initializedHandlers[$direction][$typeName][$format] = $handler;
+    }
+
+    /**
+     * Match a parent class
+     *
+     * @param string $typeName
+     * @param string $direction
+     * @param string $format
+     *
+     * @return mixed
+     */
+    protected function matchParent($typeName, $direction, $format)
+    {
+        try {
+            $class   = new \ReflectionClass($typeName);
+            $parents = array();
+
+            while ($parent = $class->getParentClass()) {
+                $parentClassName = $parent->getName();
+
+                foreach ($this->handlers[$direction] as $knownTypeName => $formatMap) {
+                    if ($knownTypeName === $parentClassName) {
+
+                        return $formatMap[$format];
+                    }
+                }
+
+                $matchedInterface = $this->matchInterface($parentClassName, $direction, $format);
+
+                if (false !== $matchedInterface) {
+                    return $matchedInterface;
+                }
+
+                $class = $parent;
+            }
+        } catch (\ReflectionException $e) {}
+
+        return false;
+    }
+
+    /**
+     * Match an interface
+     *
+     * @param string $typeName
+     * @param string $direction
+     * @param string $format
+     *
+     * @return mixed
+     */
+    protected function matchInterface($typeName, $direction, $format)
+    {
+        try {
+            $class         = new \ReflectionClass($typeName);
+            $parents       = array();
+            $interfaceList = $class->getInterfaces();
+
+            foreach ($interfaceList as $reflectedClass) {
+                $interfaceName = $reflectedClass->getName();
+
+                $matchedParent = $this->matchParent($interfaceName, $direction, $format);
+
+                if (false !== $matchedParent) {
+                    return $matchedParent;
+                }
+
+                foreach ($this->handlers[$direction] as $knownTypeName => $formatMap) {
+                    if ($knownTypeName === $interfaceName) {
+
+                        return $formatMap[$format];
+                    }
+                }
+            }
+        } catch (\ReflectionException $e) {}
+
+        return false;
     }
 }

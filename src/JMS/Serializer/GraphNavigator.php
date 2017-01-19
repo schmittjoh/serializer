@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\EventDispatcher\CircularSerializationEvent;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
@@ -28,6 +29,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\SkipStepException;
 
 /**
  * Handles traversal along the object graph.
@@ -142,8 +144,20 @@ final class GraphNavigator
                 if ($context instanceof SerializationContext) {
                     if (null !== $data) {
                         if ($context->isVisiting($data)) {
+                            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.circular_serialization', $type['name'], $context->getFormat())) {
+                                $this->dispatcher->dispatch(
+                                    'serializer.circular_serialization',
+                                    $type['name'],
+                                    $context->getFormat(),
+                                    $event = new CircularSerializationEvent($context, $data, $type)
+                                );
+
+                                return $this->accept($event->getReplacement(), null, $context);
+                            }
+
                             return null;
                         }
+
                         $context->startVisiting($data);
                     }
 
@@ -162,7 +176,18 @@ final class GraphNavigator
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($context instanceof SerializationContext) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                        $event = new PreSerializeEvent($context, $data, $type);
+
+                        try {
+                            $classReflection = new \ReflectionClass($type['name']);
+
+                            if ($classReflection->isInterface()) {
+                                $event->setType(get_class($event->getObject()));
+                            }
+                        } catch (\ReflectionException $exception) {
+                        }
+
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event);
                         $type = $event->getType();
                     }
                 } elseif ($context instanceof DeserializationContext) {
@@ -177,10 +202,12 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
+                    try {
+                        $rs = call_user_func($handler, $visitor, $data, $type, $context);
+                        $this->leaveScope($context, $data);
 
-                    return $rs;
+                        return $rs;
+                    } catch (SkipStepException $e) {}
                 }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
