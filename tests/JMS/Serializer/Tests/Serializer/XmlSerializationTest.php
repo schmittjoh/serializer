@@ -280,6 +280,31 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
 
+    public function testObjectWithOnlyNamespacesAndList()
+    {
+        $object = new ObjectWithNamespacesAndList();
+
+        $object->phones = array();
+        $object->addresses = array();
+
+        $object->phonesAlternativeB = array();
+        $object->addressesAlternativeB = array();
+
+        $object->phonesAlternativeC = array('777', '888');
+        $object->addressesAlternativeC = array('A'=>'Street 7', 'B'=>'Street 8');
+
+        $object->phonesAlternativeD = array();
+        $object->addressesAlternativeD = array();
+
+        $this->assertEquals(
+            $this->getContent('object_with_only_namespaces_and_list'),
+            $this->serialize($object, SerializationContext::create())
+        );
+
+        $deserialized = $this->deserialize($this->getContent('object_with_only_namespaces_and_list'), get_class($object));
+        $this->assertEquals($object, $deserialized);
+    }
+
     public function testDeserializingNull()
     {
         $this->markTestSkipped('Not supported in XML.');

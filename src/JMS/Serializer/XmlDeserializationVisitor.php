@@ -150,13 +150,15 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $namespace = isset($classMetadata->xmlNamespaces[''])?$classMetadata->xmlNamespaces['']:$namespace;
         }
 
-        if (0 === $data->count()){
-            $hasNode = false;
+        if (null !== $namespace) {
+            $prefix = uniqid('ns-');
+            $data->registerXPathNamespace($prefix, $namespace);
+            $nodes = $data->xpath("$prefix:$entryName");
         } else {
-            $hasNode = null !== $namespace ? isset($data->children($namespace)->$entryName) : isset($data->$entryName);
+            $nodes = $data->xpath($entryName);
         }
 
-        if (false === $hasNode) {
+        if (!count($nodes)) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -175,7 +177,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     $this->result = &$result;
                 }
 
-                $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
                 }
