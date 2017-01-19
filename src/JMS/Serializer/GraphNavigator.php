@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,6 +115,7 @@ final class GraphNavigator
             case 'string':
                 return $visitor->visitString($data, $type, $context);
 
+            case 'int':
             case 'integer':
                 return $visitor->visitInteger($data, $type, $context);
 
@@ -188,7 +189,7 @@ final class GraphNavigator
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($context, $data, $metadata);
+                    $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -249,7 +250,7 @@ final class GraphNavigator
         }
     }
 
-    private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
+    private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
             case is_array($data) && isset($data[$metadata->discriminatorFieldName]):

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <list>
+    <entry>1</entry>
+    <entry>2</entry>
+    <entry>3</entry>
+  </list>
+  <map>
+    <entry _key="0">1</entry>
+    <entry _key="2">2</entry>
+    <entry _key="3">3</entry>
+  </map>
+</result>

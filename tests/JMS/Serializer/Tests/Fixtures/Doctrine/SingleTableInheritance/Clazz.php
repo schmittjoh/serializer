@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\Serializer\Tests\Fixture\Doctrine\SingleTableInheritance;
+namespace JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +9,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 /**
  * @ORM\Entity
  */
-class Clazz
+class Clazz extends AbstractModel
 {
     /** @ORM\Id @ORM\GeneratedValue(strategy = "AUTO") @ORM\Column(type = "integer") */
     private $id;

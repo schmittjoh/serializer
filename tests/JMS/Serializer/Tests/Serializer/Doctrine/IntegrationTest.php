@@ -18,11 +18,13 @@ use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use JMS\Serializer\Tests\Fixture\Doctrine\SingleTableInheritance\Clazz;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,6 +33,26 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     /** @var Serializer */
     private $serializer;
+
+    public function testDiscriminatorIsInferredForEntityBaseClass()
+    {
+        $school = new School();
+        $json = $this->serializer->serialize($school, 'json');
+        $this->assertEquals('{"type":"school"}', $json);
+
+        $deserialized = $this->serializer->deserialize($json, Organization::class, 'json');
+        $this->assertEquals($school, $deserialized);
+    }
+
+    public function testDiscriminatorIsInferredForGenericBaseClass()
+    {
+        $student = new Student();
+        $json = $this->serializer->serialize($student, 'json');
+        $this->assertEquals('{"type":"student"}', $json);
+
+        $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
+        $this->assertEquals($student, $deserialized);
+    }
 
     public function testDiscriminatorIsInferredFromDoctrine()
     {

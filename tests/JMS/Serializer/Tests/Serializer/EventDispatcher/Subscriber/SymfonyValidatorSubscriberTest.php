@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->validator->expects($this->once())
             ->method('validate')
             ->with($obj, array('foo'))
-            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', array(), 'a', 'b', 'c')))));
+            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'foo', array(), 'a', 'b', 'c')))));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
 

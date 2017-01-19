@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,12 @@ class DateHandler implements SubscribingHandlerInterface
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
         }
+
+        $format = $this->getFormat($type);
+        if ('U' === $format) {
+            return $visitor->visitInteger($date->format($format), $type, $context);
+        }
+
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 

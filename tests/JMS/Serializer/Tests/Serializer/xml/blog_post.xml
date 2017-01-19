@@ -23,4 +23,10 @@
   <publisher xmlns:ns2="http://example.com/namespace2">
     <ns2:pub_name><![CDATA[Bar Foo]]></ns2:pub_name>
   </publisher>
+  <dc:tag xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <name>tag1</name>
+  </dc:tag>
+  <dc:tag xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <name>tag2</name>
+  </dc:tag>
 </blog-post>

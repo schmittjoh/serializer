@@ -70,3 +70,31 @@ are located::
 The serializer would expect the metadata files to be named like the fully qualified class names where all ``\`` are
 replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
 at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.
+
+Setting a default SerializationContext factory
+--------------------------------------------
+To avoid to pass an instance of SerializationContext
+every time you call method ``serialize()`` (or ``toArray()``),
+you can set a ``SerializationContextFactory`` to the Serializer.
+
+Example using the SerializerBuilder::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer = JMS\Serializer\SerializerBuilder::create()
+        ->setSerializationContextFactory(function () {
+            return SerializationContext::create()
+                ->setSerializeNull(true)
+            ;
+        })
+        ->build()
+    ;
+
+Then, calling ``$serializer->serialize($data, 'json');`` will generate
+a serialization context from your callable and use it.
+
+.. note ::
+
+    You can also set a default DeserializationContextFactory with
+    ``->setDeserializationContextFactory(function () { /* ... */ })``
+    to be used with methods ``deserialize()`` and ``fromArray()``.

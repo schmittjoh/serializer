@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2013 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
@@ -36,6 +38,9 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
+use JMS\Serializer\XmlSerializationVisitor;
+use PhpCollection\Map;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -64,6 +69,26 @@ class XmlSerializationTest extends BaseSerializationTest
         return array(array('true', true), array('false', false), array('1', true), array('0', false));
     }
 
+    public function testAccessorSetterDeserialization()
+    {
+        /** @var \JMS\Serializer\Tests\Fixtures\AccessorSetter $object */
+        $object = $this->deserialize('<?xml version="1.0"?>
+            <AccessorSetter>
+                <element attribute="attribute">element</element>
+                <collection>
+                    <entry>collectionEntry</entry>
+                </collection>
+            </AccessorSetter>',
+            'JMS\Serializer\Tests\Fixtures\AccessorSetter'
+        );
+
+        $this->assertInstanceOf('stdClass', $object->getElement());
+        $this->assertInstanceOf('JMS\Serializer\Tests\Fixtures\AccessorSetterElement', $object->getElement()->element);
+        $this->assertEquals('attribute-different', $object->getElement()->element->getAttribute());
+        $this->assertEquals('element-different', $object->getElement()->element->getElement());
+        $this->assertEquals(['collectionEntry' => 'collectionEntry'], $object->getCollection());
+    }
+ 
     public function testPropertyIsObjectWithAttributeAndValue()
     {
         $personCollection = new PersonLocation;
@@ -161,6 +186,49 @@ class XmlSerializationTest extends BaseSerializationTest
         );
     }
 
+    public function testUnserializeMissingArray()
+    {
+        $xml = '<result></result>';
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $this->assertEquals($object->absentAndNs, array());
+
+        $xml = '<result xmlns:x="http://www.example.com">
+                    <absent_and_ns>
+                        <x:entry>foo</x:entry>
+                    </absent_and_ns>
+                  </result>';
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $this->assertEquals($object->absentAndNs, array("foo"));
+    }
+
+    public function testObjectWithNamespacesAndList()
+    {
+        $object = new ObjectWithNamespacesAndList();
+        $object->name = 'name';
+        $object->nameAlternativeB = 'nameB';
+
+        $object->phones = array('111', '222');
+        $object->addresses = array('A'=>'Street 1', 'B'=>'Street 2');
+
+        $object->phonesAlternativeB = array('555', '666');
+        $object->addressesAlternativeB = array('A'=>'Street 5', 'B'=>'Street 6');
+
+        $object->phonesAlternativeC = array('777', '888');
+        $object->addressesAlternativeC = array('A'=>'Street 7', 'B'=>'Street 8');
+
+        $object->phonesAlternativeD = array('999', 'AAA');
+        $object->addressesAlternativeD = array('A'=>'Street 9', 'B'=>'Street A');
+
+        $this->assertEquals(
+            $this->getContent('object_with_namespaces_and_list'),
+            $this->serialize($object, SerializationContext::create())
+        );
+        $this->assertEquals(
+            $object,
+            $this->deserialize($this->getContent('object_with_namespaces_and_list'), get_class($object))
+        );
+    }
+
     public function testArrayKeyValues()
     {
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
@@ -248,7 +316,6 @@ class XmlSerializationTest extends BaseSerializationTest
         $childObject->baz = 'baz';
         $childObject->qux = 'qux';
 
-
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
     }
 
@@ -257,7 +324,34 @@ class XmlSerializationTest extends BaseSerializationTest
         $object = new ObjectWithXmlStylesheets('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
         $serialized = $this->serialize($object);
         $this->assertEquals($this->getContent('object_with_xml_stylesheet'), $this->serialize($object));
+    }
 
+    public function testWithoutFormatedOutputByXmlSerializationVisitor()
+    {
+        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+        $xmlVisitor = new XmlSerializationVisitor($namingStrategy);
+        $xmlVisitor->setFormatOutput(false);
+
+        $visitors = new Map(array(
+            'xml'  => new XmlSerializationVisitor($namingStrategy),
+        ));
+
+        $serializer = new Serializer(
+            $this->factory,
+            $this->handlerRegistry,
+            new UnserializeObjectConstructor(),
+            $visitors,
+            $this->deserializationVisitors,
+            $this->dispatcher
+        );
+
+        $object = new SimpleClassObject;
+        $object->foo = 'foo';
+        $object->bar = 'bar';
+        $object->moo = 'moo';
+
+        $stringXml = $serializer->serialize($object, $this->getFormat());
+        $this->assertXmlStringEqualsXmlString($this->getContent('simple_class_object_minified'), $stringXml);
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
