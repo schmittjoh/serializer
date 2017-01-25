@@ -20,6 +20,9 @@ namespace JMS\Serializer;
 
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\FilesystemCache;
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
@@ -86,6 +89,11 @@ class SerializerBuilder
      */
     private $expressionEvaluator;
 
+    /**
+     * @var AccessorStrategyInterface
+     */
+    private $accessorStrategy;
+
     public static function create()
     {
         return new static();
@@ -98,6 +106,23 @@ class SerializerBuilder
         $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = new Map();
         $this->deserializationVisitors = new Map();
+    }
+
+    public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy)
+    {
+        $this->accessorStrategy = $accessorStrategy;
+    }
+
+    protected function getAccessorStrategy()
+    {
+        if (!$this->accessorStrategy) {
+            $this->accessorStrategy = new DefaultAccessorStrategy();
+
+            if ($this->expressionEvaluator) {
+                $this->accessorStrategy = new ExpressionAccessorStrategy($this->expressionEvaluator, $this->accessorStrategy);
+            }
+        }
+        return $this->accessorStrategy;
     }
 
     public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
@@ -204,9 +229,9 @@ class SerializerBuilder
 
         $this->visitorsAdded = true;
         $this->serializationVisitors->setAll(array(
-            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy),
-            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy),
+            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
         ));
 
         return $this;

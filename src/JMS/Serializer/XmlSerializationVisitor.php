@@ -18,9 +18,11 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * XmlSerializationVisitor.
@@ -47,9 +49,9 @@ class XmlSerializationVisitor extends AbstractVisitor
     /** @var boolean */
     private $formatOutput;
 
-    public function __construct($namingStrategy)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
     {
-        parent::__construct($namingStrategy);
+        parent::__construct($namingStrategy, $accessorStrategy);
         $this->objectMetadataStack = new \SplStack;
         $this->formatOutput = true;
     }
@@ -228,7 +230,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $object, Context $context)
     {
-        $v = $metadata->getValue($object);
+        $v = $this->accessor->getValue($object, $metadata);
 
         if (null === $v && $context->shouldSerializeNull() !== true) {
             return;

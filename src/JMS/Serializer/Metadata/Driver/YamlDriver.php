@@ -21,6 +21,7 @@ namespace JMS\Serializer\Metadata\Driver;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use Metadata\MethodMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
@@ -51,12 +52,17 @@ class YamlDriver extends AbstractFileDriver
         $propertiesMetadata = array();
         if (array_key_exists('virtual_properties', $config)) {
             foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
-                if ( ! $class->hasMethod($methodName)) {
-                    throw new RuntimeException('The method '.$methodName.' not found in class '.$class->name);
+                if (isset($propertySettings['exp'])) {
+                    $virtualPropertyMetadata = new ExpressionPropertyMetadata( $name, $methodName, $propertySettings['exp']);
+                    unset($propertySettings['exp']);
+
+                } else {
+
+                    if ( ! $class->hasMethod($methodName)) {
+                        throw new RuntimeException('The method '.$methodName.' not found in class '.$class->name);
+                    }
+                    $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 }
-
-                $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
-
                 $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
                 $config['properties'][$methodName] = $propertySettings;
             }

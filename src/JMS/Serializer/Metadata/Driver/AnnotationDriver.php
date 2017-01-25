@@ -38,6 +38,7 @@ use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Type;
@@ -104,6 +105,10 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlDiscriminator) {
                 $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
                 $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
+            } elseif ($annot instanceof VirtualProperty) {
+                $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $annot->name, $annot->exp);
+                $propertiesMetadata[] = $virtualPropertyMetadata;
+                $propertiesAnnotations[] = $annot->options;
             }
         }
 
