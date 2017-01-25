@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
@@ -25,6 +27,7 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
@@ -645,6 +648,25 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
             $this->assertEquals(null, $this->getField($deserialized, 'author'));
         }
+    }
+
+    public function testExpressionAuthor()
+    {
+        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+
+        $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+        $accessor = new ExpressionAccessorStrategy($evaluator, new DefaultAccessorStrategy());
+
+        $this->serializationVisitors = new Map(array(
+            'json' => new JsonSerializationVisitor($namingStrategy, $accessor),
+            'xml'  => new XmlSerializationVisitor($namingStrategy, $accessor),
+            'yml'  => new YamlSerializationVisitor($namingStrategy, $accessor),
+        ));
+
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, $evaluator);
+
+        $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
+        $this->assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
     }
 
     public function testReadOnly()
