@@ -156,6 +156,15 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($m);
     }
 
+    public function testExpressionVirtualProperty()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess'));
+
+        $keys = array_keys($m->propertyMetadata);
+        $this->assertEquals(['firstName', 'lastName', 'id'], $keys);
+    }
+
     public function testLoadDiscriminator()
     {
         /** @var $m ClassMetadata */
