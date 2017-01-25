@@ -15,6 +15,7 @@ YAML Reference
         discriminator:
             field_name: type
             disabled: false
+            default: DefaultClassName
             map:
                 some-value: ClassName
             groups: [foo, bar]

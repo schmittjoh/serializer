@@ -5,3 +5,6 @@ vehicles:
     -
         km: 1
         type: moped
+    -
+        km: 1
+        type: JMS\Serializer\Tests\Fixtures\Discriminator\Other
