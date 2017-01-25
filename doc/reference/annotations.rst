@@ -180,6 +180,56 @@ default the order is undefined, but you may change it to either "alphabetical", 
 This annotation can be defined on a method to indicate that the data returned by
 the method should appear like a property of the object.
 
+A virtual property can be defined for a method of an object to serialize and can be
+also defined at class level exposing data using the Symfony Expression Language.
+
+.. code-block :: php
+
+    /**
+     * @Serializer\VirtualProperty(
+     *     "firstName",
+     *     exp="object.getFirstName()",
+     *     options={@Serializer\SerializedName("my_first_name")}
+     *  )
+     */
+    class Author
+    {
+        /**
+         * @Serializer\Expose()
+         */
+        private $id;
+
+        /**
+         * @Serializer\Exclude()
+         */
+        private $firstName;
+
+        /**
+         * @Serializer\Exclude()
+         */
+        private $lastName;
+
+        /**
+         * @Serializer\VirtualProperty()
+         */
+        public function getLastName()
+        {
+            return $this->lastName;
+        }
+
+        public function getFirstName()
+        {
+            return $this->firstName;
+        }
+    }
+
+In this example:
+
+- ``id`` is exposed using the object reflection.
+- ``lastName`` is exposed using the ``getLastName`` getter method.
+- ``id`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
+
+
 **Note**: This only works for serialization and is completely ignored during
 deserialization.
 

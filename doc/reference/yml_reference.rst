@@ -25,6 +25,10 @@ YAML Reference
             getSomeProperty:
                 serialized_name: foo
                 type: integer
+            expression_prop:
+                exp: object.getName()
+                serialized_name: foo
+                type: integer
         xml_namespaces:
             "": http://your.default.namespace
             atom: http://www.w3.org/2005/Atom
