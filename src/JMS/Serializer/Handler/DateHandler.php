@@ -68,7 +68,7 @@ class DateHandler implements SubscribingHandlerInterface
         $this->xmlCData = $xmlCData;
     }
 
-    private function serializeDateTimeInterface(
+    protected function serializeDateTimeInterface(
         VisitorInterface $visitor,
         \DateTimeInterface $date,
         array $type,
@@ -113,7 +113,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
 
-    private function isDataXmlNull($data)
+    protected function isDataXmlNull($data)
     {
         $attributes = $data->attributes('xsi', true);
         return isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true';
@@ -155,7 +155,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type, true);
     }
 
-    private function parseDateTime($data, array $type, $immutable = false)
+    protected function parseDateTime($data, array $type, $immutable = false)
     {
         $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
@@ -177,7 +177,7 @@ class DateHandler implements SubscribingHandlerInterface
      * @return string
      * @param array $type
      */
-    private function getFormat(array $type)
+    protected function getFormat(array $type)
     {
         return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
     }
