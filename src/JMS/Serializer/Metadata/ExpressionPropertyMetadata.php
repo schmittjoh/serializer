@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Metadata;
 
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+
 /**
  * @Annotation
  * @Target("METHOD")
@@ -49,12 +51,12 @@ class ExpressionPropertyMetadata extends PropertyMetadata
      */
     public function getValue($object)
     {
-        throw new \LogicException('This property requires the expression evaluator to be enabled.');
+        throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression evaluator to be enabled.', $this->name, $this->class));
     }
 
     public function setValue($obj, $value)
     {
-        throw new \LogicException('This property requires the expression evaluator to be enabled.');
+        throw new \LogicException('ExpressionPropertyMetadata is immutable.');
     }
 
     public function serialize()
