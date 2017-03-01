@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectWithNamespacesAndListInList xmlns="http://example.com/namespace">
+  <lists>
+    <list>
+      <children>
+        <child>
+          <foo><![CDATA[test]]></foo>
+          <moo><![CDATA[test]]></moo>
+          <camel_case><![CDATA[boo]]></camel_case>
+        </child>
+      </children>
+      <list>
+        <children>
+          <child>
+            <foo><![CDATA[test]]></foo>
+            <moo><![CDATA[test]]></moo>
+            <camel_case><![CDATA[boo]]></camel_case>
+          </child>
+        </children>
+      </list>
+    </list>
+  </lists>
+</ObjectWithNamespacesAndListInList>
