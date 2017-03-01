@@ -33,9 +33,12 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndListInListObjectList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyVirtual;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndListInList;
+use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
@@ -235,6 +238,24 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals(
             $object,
             $this->deserialize($this->getContent('object_with_namespaces_and_list'), get_class($object))
+        );
+    }
+
+    public function testObjectWithNamespacesAndListInList()
+    {
+        $object = new ObjectWithNamespacesAndListInList();
+
+        $list1 = new ObjectWithNamespacesAndListInListObjectList([
+            new SimpleObject('test', 'test')
+        ]);
+        $list2 = new ObjectWithNamespacesAndListInListObjectList([
+            new SimpleObject('test', 'test'),
+        ], $list1);
+        $object->lists[] = $list2;
+
+        $this->assertEquals(
+            $object,
+            $this->deserialize($this->getContent('object_with_namespaces_and_list_in_list'), get_class($object))
         );
     }
 

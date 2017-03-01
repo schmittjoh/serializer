@@ -155,7 +155,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
         if ($namespace === null && $this->objectMetadataStack->count()) {
-            $classMetadata = $this->objectMetadataStack->top();
+            $classMetadata = $this->objectMetadataStack->bottom();
             $namespace = isset($classMetadata->xmlNamespaces[''])?$classMetadata->xmlNamespaces['']:$namespace;
         }
 
