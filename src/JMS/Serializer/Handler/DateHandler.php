@@ -35,7 +35,7 @@ class DateHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        $deserialisationTypes = array('DateTime', 'DateTimeImmutable');
+        $deserialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
         $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
 
         foreach (array('json', 'xml', 'yml') as $format) {
@@ -137,6 +137,15 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type, true);
     }
 
+    public function deserializeDateIntervalFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    {
+        if ($this->isDataXmlNull($data)) {
+            return null;
+        }
+
+        return $this->parseDateInterval($data);
+    }
+
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
@@ -155,6 +164,15 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type, true);
     }
 
+    public function deserializeDateIntervalFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    {
+        if (null === $data) {
+            return null;
+        }
+
+        return $this->parseDateInterval($data);
+    }
+
     private function parseDateTime($data, array $type, $immutable = false)
     {
         $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
@@ -171,6 +189,18 @@ class DateHandler implements SubscribingHandlerInterface
         }
 
         return $datetime;
+    }
+
+    private function parseDateInterval($data)
+    {
+        $dateInterval = null;
+        try {
+            $dateInterval = new \DateInterval($data);
+        } catch (\Exception $e) {
+            throw new RuntimeException(sprintf('Invalid dateinterval "%s", expected ISO 8601 format', $data));
+        }
+
+        return $dateInterval;
     }
 
     /**
