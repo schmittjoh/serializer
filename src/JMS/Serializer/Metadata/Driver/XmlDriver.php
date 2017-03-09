@@ -24,12 +24,22 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 
 class XmlDriver extends AbstractFileDriver
 {
+    private $defaultExclusionPolicy;
+
+    public function __construct(FileLocatorInterface $locator, $defaultExclusionPolicy = ExclusionPolicy::NONE)
+    {
+        parent::__construct($locator);
+        $this->defaultExclusionPolicy = $defaultExclusionPolicy;
+    }
+
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $path)
     {
         $previous = libxml_use_internal_errors(true);
@@ -50,7 +60,7 @@ class XmlDriver extends AbstractFileDriver
 
         $metadata->fileResources[] = $path;
         $metadata->fileResources[] = $class->getFileName();
-        $exclusionPolicy = strtoupper($elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
+        $exclusionPolicy = strtoupper($elem->attributes()->{'exclusion-policy'}) ?: $this->defaultExclusionPolicy;
         $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower($exclude) : false;
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
