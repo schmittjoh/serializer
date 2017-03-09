@@ -295,7 +295,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             if (null !== $metadata->xmlNamespace) {
                 $element = $this->createElement($elementName, $metadata->xmlNamespace);
             } else {
-                $defaultNamespace = $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+                $defaultNamespace = $this->getClassDefaultNamespace($this->objectMetadataStack->bottom());
                 $element = $this->createElement($elementName, $defaultNamespace);
             }
             $this->setCurrentNode($element);
@@ -454,7 +454,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
     private function createElement($tagName, $namespace = null)
     {
-        if (null === $namespace) {
+        if (null === $namespace || $this->document->isDefaultNamespace($namespace)) {
             return $this->document->createElement($tagName);
         }
         if ($this->currentNode->isDefaultNamespace($namespace)) {
