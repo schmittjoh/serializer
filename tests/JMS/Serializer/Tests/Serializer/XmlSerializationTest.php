@@ -30,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlStylesheets;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
@@ -360,6 +361,13 @@ class XmlSerializationTest extends BaseSerializationTest
         $childObject->qux = 'qux';
 
         $this->assertEquals($this->getContent('simple_subclass_object'), $this->serialize($childObject));
+    }
+
+    public function testObjectWithXmlStylesheet()
+    {
+        $object = new ObjectWithXmlStylesheets('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
+        $serialized = $this->serialize($object);
+        $this->assertEquals($this->getContent('object_with_xml_stylesheet'), $this->serialize($object));
     }
 
     public function testWithoutFormatedOutputByXmlSerializationVisitor()

@@ -204,6 +204,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, false);
+            $this->addStylesheets($metadata, $this->document);
             if ($metadata->xmlRootName) {
                 $rootName = $metadata->xmlRootName;
                 $rootNamespace = $metadata->xmlRootNamespace?:$this->getClassDefaultNamespace($metadata);
@@ -430,6 +431,28 @@ class XmlSerializationVisitor extends AbstractVisitor
                 'http://www.w3.org/2001/XMLSchema-instance'
             );
             $this->nullWasVisited = true;
+        }
+    }
+
+
+    /**
+     * Adds XML Stylesheet to the document
+     *
+     * @param ClassMetadata $metadata
+     * @param \DOMDocument $document
+     */
+    private function addStylesheets(ClassMetadata $metadata, \DOMDocument $document)
+    {
+        foreach ($metadata->xmlStylesheets as $stylesheet) {
+            $dataString ='';
+            foreach($stylesheet as $key => $data) {
+                if ($dataString != '') {
+                    $dataString .=' ';
+                }
+                $dataString .= $key.'='.'"'.$data.'"';
+            }
+            $xslt = $document->createProcessingInstruction('xml-stylesheet', $dataString);
+            $document->appendChild($xslt);
         }
     }
 

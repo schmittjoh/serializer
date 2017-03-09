@@ -47,6 +47,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlRootName;
     public $xmlRootNamespace;
     public $xmlNamespaces = array();
+    public $xmlStylesheets = array();
     public $accessorOrder;
     public $customOrder;
     public $usingExpression = false;
@@ -151,6 +152,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->xmlRootName = $object->xmlRootName;
         $this->xmlRootNamespace = $object->xmlRootNamespace;
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
+        $this->xmlStylesheets = array_merge($this->xmlStylesheets, $object->xmlStylesheets);
 
         // Handler methods are taken from the outer class completely.
         $this->handlerCallbacks = $object->handlerCallbacks;
@@ -218,6 +220,47 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
+    /**
+     * Register a new xml-stylesheet
+     *
+     * @param string $href Address of the referenced style sheet
+     * @param string $type Advisory media type for the referenced style sheet
+     * @param string|null $title Title of the referenced style sheet in a style sheet set
+     * @param string|null $media Media for which the referenced style sheet applies
+     * @param string|null $charset Advisory character encoding for the referenced style sheet
+     * @param string|null $alternate (yes/no) If the value is "yes", it indicates that the referenced
+     *                      style sheet is an alternative style sheet, and documents must also
+     *                      specify the title pseudo-attribute with a non-empty value
+     */
+    public function registerStylesheet($href, $type, $title = null, $media = null, $charset = null, $alternate = null)
+    {
+        if ( ! is_string($href)) {
+            throw new InvalidArgumentException(sprintf('$href is expected to be a strings, but got value %s.', json_encode($href)));
+        }
+
+        if ( ! is_string($type)) {
+            throw new InvalidArgumentException(sprintf('$type is expected to be a strings, but got value %s.', json_encode($type)));
+        }
+
+        $data = array(
+            'href' => $href,
+            'type' => $type,
+        );
+        if ($title) {
+            $data['title'] = $title;
+        }
+        if ($media) {
+            $data['media'] = $media;
+        }
+        if ($charset) {
+            $data['charset'] = $charset;
+        }
+        if ($alternate) {
+            $data['alt'] = $alternate;
+        }
+        $this->xmlStylesheets[] = $data;
+    }
+
     public function registerNamespace($uri, $prefix = null)
     {
         if ( ! is_string($uri)) {
@@ -247,6 +290,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->xmlRootNamespace,
             $this->xmlNamespaces,
+            $this->xmlStylesheets,
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
@@ -275,6 +319,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->xmlRootNamespace,
             $this->xmlNamespaces,
+            $this->xmlStylesheets,
             $this->accessorOrder,
             $this->customOrder,
             $this->handlerCallbacks,
