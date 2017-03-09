@@ -416,6 +416,14 @@ class XmlSerializationTest extends BaseSerializationTest
         );
     }
 
+    /**
+     * @expectedException \JMS\Serializer\Exception\XmlErrorException
+     */
+    public function testDeserializeEmptyString()
+    {
+        $this->deserialize('', 'stdClass');
+    }
+
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
