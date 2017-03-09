@@ -248,6 +248,10 @@ class DateHandler implements SubscribingHandlerInterface
             $format .= $dateInterval->s.'S';
         }
 
+        if ($format === 'P') {
+            $format = 'P0DT0S';
+        }
+
         return $format;
     }
 }

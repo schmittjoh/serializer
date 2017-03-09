@@ -26,6 +26,12 @@ class DateIntervalFormatTest extends \PHPUnit_Framework_TestCase
     {
         $dtf = new DateHandler();
 
+        $iso8601DateIntervalString = $dtf->format(new \DateInterval('P0D'));
+        $this->assertEquals($iso8601DateIntervalString, 'P0DT0S');
+
+        $iso8601DateIntervalString = $dtf->format(new \DateInterval('P0DT0S'));
+        $this->assertEquals($iso8601DateIntervalString, 'P0DT0S');
+
         $iso8601DateIntervalString = $dtf->format(new \DateInterval('PT45M'));
 
         $this->assertEquals($iso8601DateIntervalString, 'PT45M');
