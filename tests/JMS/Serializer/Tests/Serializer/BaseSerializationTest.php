@@ -599,6 +599,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $duration = new \DateInterval('PT45M');
 
         $this->assertEquals($this->getContent('date_interval'), $this->serializer->serialize($duration, $this->getFormat()));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('date_interval'), \DateInterval::class);
+            $this->assertEquals($duration, $deserialized);
+            $this->assertEquals($duration->i, $deserialized->i);
+        }
     }
 
     public function testBlogPost()
