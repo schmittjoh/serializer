@@ -302,6 +302,8 @@ Available Types:
 | DateTimeImmutable<'format', 'zone'> | PHP's DateTimeImmutable object (custom format/   |
 |                                     | timezone)                                        |
 +-------------------------------------+--------------------------------------------------+
+| DateInterval                        | PHP's DateInterval object using ISO 8601 format  |
++-------------------------------------+--------------------------------------------------+
 | T                                   | Where T is a fully qualified class name.         |
 +-------------------------------------+--------------------------------------------------+
 | ArrayCollection<T>                  | Similar to array<T>, but will be deserialized    |
