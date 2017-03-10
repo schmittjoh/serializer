@@ -91,6 +91,28 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals('element-different', $object->getElement()->element->getElement());
         $this->assertEquals(['collectionEntry' => 'collectionEntry'], $object->getCollection());
     }
+
+    public function testXMLListDeserialization()
+    {
+        /**
+         * @var \JMS\Serializer\Tests\Fixtures\XMLListDeserialization
+         */
+        $object = $this->deserialize('<?xml version="1.0"?>
+            <result>
+                <lines>
+                        <line>
+                            <type>1</type>
+                            <code>8671018402</code>
+                         </line>
+                </lines>
+            </result>',
+            'JMS\Serializer\Tests\Fixtures\XMLListDeserialization'
+        );
+
+        $this->assertCount(1, $object->lines);
+        $this->assertEquals(1, $object->lines[0]->type);
+        $this->assertEquals(8671018402, $object->lines[0]->code);
+    }
  
     public function testPropertyIsObjectWithAttributeAndValue()
     {
