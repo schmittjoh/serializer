@@ -289,15 +289,15 @@ class XmlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        if ($addEnclosingElement = ( ! $metadata->xmlCollection || ! $metadata->xmlCollectionInline) && ! $metadata->inline) {
+        if ($addEnclosingElement = !$this->isInLineCollection($metadata) && ! $metadata->inline) {
             $elementName = $this->namingStrategy->translateName($metadata);
 
-            if (null !== $metadata->xmlNamespace) {
-                $element = $this->createElement($elementName, $metadata->xmlNamespace);
-            } else {
-                $defaultNamespace = $this->getClassDefaultNamespace($this->objectMetadataStack->top());
-                $element = $this->createElement($elementName, $defaultNamespace);
-            }
+            $namespace = null !== $metadata->xmlNamespace
+                ? $metadata->xmlNamespace
+                : $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+
+            $element = $this->createElement($elementName, $namespace);
+            $this->currentNode->appendChild($element);
             $this->setCurrentNode($element);
         }
 
@@ -312,17 +312,27 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($this->nodeNotEmpty($element) || ((!$metadata->xmlCollection || !$metadata->xmlCollectionSkipWhenEmpty) && $node === null && $v !== null && !$context->isVisiting($v))) {
-                $this->currentNode->appendChild($element);
+            if ($this->isElementEmpty($element) && ($this->isSkippableCollection($metadata) || $v === null || $context->isVisiting($v))) {
+                $this->currentNode->removeChild($element);
             }
         }
 
         $this->hasValue = false;
     }
 
-    private function nodeNotEmpty(\DOMElement $element)
+    private function isInLineCollection(PropertyMetadata $metadata)
     {
-        return $element->hasChildNodes() || $element->hasAttributes();
+        return $metadata->xmlCollection && $metadata->xmlCollectionInline;
+    }
+
+    private function isSkippableCollection(PropertyMetadata $metadata)
+    {
+        return $metadata->xmlCollection && $metadata->xmlCollectionSkipWhenEmpty;
+    }
+
+    private function isElementEmpty(\DOMElement $element)
+    {
+        return !$element->hasChildNodes() && !$element->hasAttributes();
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
@@ -462,9 +472,8 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
         if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
             $prefix = 'ns-'.  substr(sha1($namespace), 0, 8);
-            return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
         }
-        return $this->document->createElement($prefix . ':' . $tagName);
+        return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
     private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)

@@ -19,10 +19,13 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Context;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
@@ -30,6 +33,9 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyVirtual;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\Person;
@@ -91,7 +97,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals('element-different', $object->getElement()->element->getElement());
         $this->assertEquals(['collectionEntry' => 'collectionEntry'], $object->getCollection());
     }
- 
+
     public function testPropertyIsObjectWithAttributeAndValue()
     {
         $personCollection = new PersonLocation;
@@ -335,6 +341,37 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertAttributeSame('en', 'language', $deserialized);
         $this->assertAttributeEquals('Foo Bar', 'author', $deserialized);
 
+    }
+
+    public function testObjectWithXmlNamespacesAndBackReferencedNamespaces()
+    {
+        $author = new ObjectWithXmlNamespacesAndObjectPropertyAuthor('mr', 'smith');
+        $object = new ObjectWithXmlNamespacesAndObjectProperty('This is a nice title.', $author);
+
+        $serialized = $this->serialize($object);
+        $this->assertEquals($this->getContent('object_with_xml_namespaces_and_object_property'), $serialized);
+    }
+
+    public function testObjectWithXmlNamespacesAndBackReferencedNamespacesWithListeners()
+    {
+        $author = new ObjectWithXmlNamespacesAndObjectPropertyAuthor('mr', 'smith');
+        $object = new ObjectWithXmlNamespacesAndObjectPropertyVirtual('This is a nice title.', new \stdClass());
+
+        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual', $this->getFormat(),
+            function(XmlSerializationVisitor $visitor, $data, $type, Context $context) use($author) {
+                $factory = $context->getMetadataFactory(get_class($author));
+                $classMetadata = $factory->getMetadataForClass(get_class($author));
+
+                $metadata = new StaticPropertyMetadata(get_class($author), 'foo', $author);
+                $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
+                $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
+
+                $visitor->visitProperty($metadata, $author, $context);
+            }
+        );
+
+        $serialized = $this->serialize($object);
+        $this->assertEquals($this->getContent('object_with_xml_namespaces_and_object_property_virtual'), $serialized);
     }
 
     public function testObjectWithXmlRootNamespace()

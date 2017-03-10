@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<property:test-object xmlns:property="http://example.com/namespace-property">
+  <property:title><![CDATA[This is a nice title.]]></property:title>
+  <property:author xmlns="http://example.com/namespace-author">
+    <ns-ac3651ed:author xmlns:ns-ac3651ed="http://example.com/namespace-modified"><![CDATA[smith]]></ns-ac3651ed:author>
+    <info><![CDATA[hidden-info]]></info>
+    <property:name><![CDATA[mr]]></property:name>
+  </property:author>
+</property:test-object>
