@@ -24,7 +24,8 @@
         "twig/twig": "<1.12"
     },
     "suggest": {
-        "symfony/yaml": "Required if you'd like to serialize data to YAML format."
+        "symfony/yaml": "Required if you'd like to serialize data to YAML format.",
+        "doctrine/cache": "Required if you like to use cache functionality."
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
