@@ -464,7 +464,7 @@ class SerializerBuilder
             return;
         }
 
-        if (false === @mkdir($dir, 0777, true)) {
+        if (false === @mkdir($dir, 0777, true) && false === is_dir($dir)) {
             throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
         }
     }
