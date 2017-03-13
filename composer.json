@@ -25,6 +25,7 @@
     },
     "suggest": {
         "symfony/yaml": "Required if you'd like to serialize data to YAML format.",
+        "doctrine/collections": "Required if you like to use doctrine collection types as ArrayCollection.",
         "doctrine/cache": "Required if you like to use cache functionality."
     },
     "require-dev": {
