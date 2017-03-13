@@ -21,6 +21,7 @@ namespace JMS\Serializer\Metadata\Driver;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Annotation\ExclusionPolicy;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
@@ -30,6 +31,15 @@ use Metadata\Driver\AbstractFileDriver;
 
 class YamlDriver extends AbstractFileDriver
 {
+    private $defaultExclusionPolicy;
+
+    public function __construct(FileLocatorInterface $locator, $defaultExclusionPolicy = ExclusionPolicy::NONE)
+    {
+        parent::__construct($locator);
+        $this->defaultExclusionPolicy = $defaultExclusionPolicy;
+    }
+
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $config = Yaml::parse(file_get_contents($file));
@@ -42,7 +52,7 @@ class YamlDriver extends AbstractFileDriver
         $metadata = new ClassMetadata($name);
         $metadata->fileResources[] = $file;
         $metadata->fileResources[] = $class->getFileName();
-        $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
+        $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : $this->defaultExclusionPolicy;
         $excludeAll = isset($config['exclude']) ? (Boolean) $config['exclude'] : false;
         $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = isset($config['read_only']) ? (Boolean) $config['read_only'] : false;
@@ -190,7 +200,7 @@ class YamlDriver extends AbstractFileDriver
 
                     //we need read_only before setter and getter set, because that method depends on flag being set
                     if (isset($pConfig['read_only'])) {
-                          $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
+                        $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
                     } else {
                         $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
                     }

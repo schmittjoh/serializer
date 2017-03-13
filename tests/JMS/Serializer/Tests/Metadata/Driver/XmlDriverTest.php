@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\ExclusionPolicy;
 use Metadata\Driver\FileLocator;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
@@ -39,7 +40,7 @@ class XmlDriverTest extends BaseDriverTest
 
     public function testBlogPostExcludeAllStrategy()
     {
-        $m = $this->getDriver('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $this->assertArrayHasKey('title', $m->propertyMetadata);
 
@@ -51,7 +52,7 @@ class XmlDriverTest extends BaseDriverTest
 
     public function testBlogPostExcludeNoneStrategy()
     {
-        $m = $this->getDriver('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $this->assertArrayNotHasKey('title', $m->propertyMetadata);
 
@@ -63,7 +64,7 @@ class XmlDriverTest extends BaseDriverTest
 
     public function testBlogPostCaseInsensitive()
     {
-        $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        $m = $this->getDriverForSubDir('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = array('name' => 'string', 'params' => array());
@@ -82,15 +83,18 @@ class XmlDriverTest extends BaseDriverTest
         $this->assertEquals($p, $m->propertyMetadata['name']);
     }
 
-    protected function getDriver()
+    protected function getDriverForSubDir($dir = null, $exclusionPolicy = ExclusionPolicy::NONE)
     {
-        $append = '';
-        if (func_num_args() == 1) {
-            $append = '/'.func_get_arg(0);
+        if ($dir) {
+            $dir = '/'.$dir;
         }
 
         return new XmlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/xml'.$append,
-        )));
+            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/xml'.$dir,
+        )), $exclusionPolicy);
+    }
+    protected function getDriver($exclusionPolicy = ExclusionPolicy::NONE)
+    {
+        return $this->getDriverForSubDir(null, $exclusionPolicy);
     }
 }

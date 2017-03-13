@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2016 Asmir Mustafic <goetas@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Metadata\Driver;
+namespace JMS\Serializer\Tests\Fixtures;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Annotation as Serializer;
 
-class AnnotationDriverTest extends BaseDriverTest
+class DefaultExclusionPolicyObject
 {
-    protected function getDriver($exclusionPolicy = ExclusionPolicy::NONE)
-    {
-        return new AnnotationDriver(new AnnotationReader(), $exclusionPolicy);
-    }
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
+     */
+    public $name;
+
+    public $age;
 }

@@ -1,0 +1,4 @@
+JMS\Serializer\Tests\Fixtures\DefaultExclusionPolicyObject:
+    properties:
+        name:
+            type: string

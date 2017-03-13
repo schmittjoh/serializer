@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\ExclusionPolicy;
 use Metadata\Driver\FileLocator;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -83,15 +84,15 @@ class YamlDriverTest extends BaseDriverTest
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
-    private function getDriverForSubDir($subDir = null)
+    private function getDriverForSubDir($subDir = null, $exclusionPolicy = ExclusionPolicy::NONE)
     {
         return new YamlDriver(new FileLocator(array(
             'JMS\Serializer\Tests\Fixtures' => __DIR__.'/yml' . ($subDir ? '/'.$subDir : ''),
-        )));
+        )), $exclusionPolicy);
     }
 
-    protected function getDriver()
+    protected function getDriver($exclusionPolicy = ExclusionPolicy::NONE)
     {
-        return $this->getDriverForSubDir();
+        return $this->getDriverForSubDir(null, $exclusionPolicy);
     }
 }
