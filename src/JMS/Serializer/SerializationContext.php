@@ -121,17 +121,24 @@ class SerializationContext extends Context
         return $this->visitingSet;
     }
 
+    /**
+     * @param string $type
+     * @return $this
+     */
     public function setInitialType($type)
     {
         $this->initialType = $type;
+        $this->attributes->set('initial_type', $type);
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getInitialType()
     {
-        return $this->initialType;
+        return $this->initialType
+            ? $this->initialType
+            : $this->attributes->containsKey('initial_type') ? $this->attributes->get('initial_type')->get() : null;
     }
 }
