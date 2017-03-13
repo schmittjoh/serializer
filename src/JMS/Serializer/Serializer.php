@@ -209,7 +209,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     private function convertArrayObjects($data)
     {
-        if ($data instanceof \ArrayObject) {
+        if ($data instanceof \ArrayObject || $data instanceof \stdClass) {
             $data = (array) $data;
         }
         if (is_array($data)) {
