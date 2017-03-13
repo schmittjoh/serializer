@@ -96,10 +96,10 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $isHash = isset($type['params'][1]);
 
         if (null === $this->root) {
-            $this->root = $isHash ? new \stdClass() : array();
+            $this->root = $isHash ? new \ArrayObject() : array();
             $rs = &$this->root;
         } else {
-            $rs = $isHash ? new \stdClass() : array();
+            $rs = $isHash ? new \ArrayObject() : array();
         }
 
         $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
@@ -111,9 +111,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            if ($isHash) {
-                $rs->$k = $v;
-            } elseif ($isList) {
+            if ($isList) {
                 $rs[] = $v;
             } else {
                 $rs[$k] = $v;
