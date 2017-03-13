@@ -28,6 +28,7 @@ use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Handler\StdClassHandler;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -162,6 +163,7 @@ class SerializerBuilder
     {
         $this->handlersConfigured = true;
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
