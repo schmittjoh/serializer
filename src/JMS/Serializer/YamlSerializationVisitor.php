@@ -80,6 +80,8 @@ class YamlSerializationVisitor extends AbstractVisitor
      */
     public function visitArray($data, array $type, Context $context)
     {
+        $isHash = isset($type['params'][1]);
+
         $count = $this->writer->changeCount;
         $isList = (isset($type['params'][0]) && ! isset($type['params'][1]))
             || array_keys($data) === range(0, count($data) - 1);
@@ -89,7 +91,7 @@ class YamlSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            if ($isList) {
+            if ($isList && !$isHash) {
                 $this->writer->writeln('-');
             } else {
                 $this->writer->writeln(Inline::dump($k).':');

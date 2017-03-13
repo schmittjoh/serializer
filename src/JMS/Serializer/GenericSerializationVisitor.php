@@ -91,11 +91,13 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      */
     public function visitArray($data, array $type, Context $context)
     {
+        $isHash = isset($type['params'][1]);
+
         if (null === $this->root) {
-            $this->root = array();
+            $this->root = $isHash ? new \stdClass() : array();
             $rs = &$this->root;
         } else {
-            $rs = array();
+            $rs = $isHash ? new \stdClass() : array();
         }
 
         $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
@@ -107,7 +109,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
-            if ($isList) {
+            if ($isHash) {
+                $rs->$k = $v;
+            } elseif ($isList) {
                 $rs[] = $v;
             } else {
                 $rs[$k] = $v;
