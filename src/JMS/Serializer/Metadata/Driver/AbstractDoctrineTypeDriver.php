@@ -22,6 +22,9 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -92,7 +95,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
             /** @var $propertyMetadata PropertyMetadata */
 
             // If the inner driver provides a type, don't guess anymore.
-            if ($propertyMetadata->type) {
+            if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
                 continue;
             }
 
@@ -104,6 +107,13 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         }
 
         return $classMetadata;
+    }
+
+    private function isVirtualProperty(PropertyMetadata $propertyMetadata)
+    {
+        return $propertyMetadata instanceof VirtualPropertyMetadata
+            || $propertyMetadata instanceof StaticPropertyMetadata
+            || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 
     /**
