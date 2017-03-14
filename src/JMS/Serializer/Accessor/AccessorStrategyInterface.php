@@ -16,13 +16,27 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Accessor;
+
+use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "CLASS", "METHOD", "ANNOTATION"})
+ * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class Exclude
+interface AccessorStrategyInterface
 {
-    public $if;
+    /**
+     * @param object $object
+     * @param PropertyMetadata $metadata
+     * @return mixed
+     */
+    public function getValue($object, PropertyMetadata $metadata);
+
+    /**
+     * @param object $object
+     * @param mixed $value
+     * @param PropertyMetadata $metadata
+     * @return void
+     */
+    public function setValue($object, $value, PropertyMetadata $metadata);
 }

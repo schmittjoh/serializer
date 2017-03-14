@@ -67,6 +67,25 @@ XML Reference
                       xml-attribute-map="true"
                       max-depth="2"
             >
+            <virtual-property expression="object.getName()"
+                      name="some-property"
+                      exclude="true"
+                      expose="true"
+                      type="string"
+                      serialized-name="foo"
+                      since-version="1.0"
+                      until-version="1.1"
+                      xml-attribute="true"
+                      access-type="public_method"
+                      accessor-getter="getSomeProperty"
+                      accessor-setter="setSomeProperty"
+                      inline="true"
+                      read-only="true"
+                      groups="foo,bar"
+                      xml-key-value-pairs="true"
+                      xml-attribute-map="true"
+                      max-depth="2"
+            >
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
                 <type><![CDATA[]]></type>

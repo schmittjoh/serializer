@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess">
+        <property name="id"/>
+        <virtual-property name="firstName" expression="object.getFirstName()"/>
+        <virtual-property name="lastName" method="getLastName"/>
+    </class>
+</serializer>

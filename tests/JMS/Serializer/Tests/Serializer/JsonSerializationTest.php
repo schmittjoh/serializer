@@ -108,6 +108,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['nullable_arrays'] = '{"empty_inline":[],"not_empty_inline":["not_empty_inline"],"empty_not_inline":[],"not_empty_not_inline":["not_empty_not_inline"],"empty_not_inline_skip":[],"not_empty_not_inline_skip":["not_empty_not_inline_skip"]}';
             $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
             $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
+            $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
         }
 
         if (!isset($outputs[$key])) {

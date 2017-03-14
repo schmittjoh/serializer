@@ -16,13 +16,23 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Accessor;
+
+use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
- * @Annotation
- * @Target({"PROPERTY", "CLASS", "METHOD", "ANNOTATION"})
+ * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class Exclude
+class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
-    public $if;
+
+    public function getValue($object, PropertyMetadata $metadata)
+    {
+        return $metadata->getValue($object);
+    }
+
+    public function setValue($object, $value, PropertyMetadata $metadata)
+    {
+        $metadata->setValue($object, $value);
+    }
 }
