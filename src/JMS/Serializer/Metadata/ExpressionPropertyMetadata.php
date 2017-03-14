@@ -51,7 +51,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
      */
     public function getValue($object)
     {
-        throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression evaluator to be enabled.', $this->name, $this->class));
+        throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $this->name, $this->class));
     }
 
     public function setValue($obj, $value)
