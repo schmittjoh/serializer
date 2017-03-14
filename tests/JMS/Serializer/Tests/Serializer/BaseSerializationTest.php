@@ -675,6 +675,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
     }
 
+    /**
+     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage The property firstName on JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess requires the expression accessor strategy to be enabled.
+     */
+    public function testExpressionAccessorStrategNotEnabled()
+    {
+        $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
+        $this->assertEquals($this->getContent('author_expression'), $this->serialize($author));
+    }
+
     public function testReadOnly()
     {
         $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
