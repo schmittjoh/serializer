@@ -80,9 +80,9 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         ObjectConstructorInterface $objectConstructor,
         MapInterface $serializationVisitors,
         MapInterface $deserializationVisitors,
-        EventDispatcherInterface $dispatcher = null,
-        TypeParser $typeParser = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        EventDispatcherInterface|null $dispatcher = null,
+        TypeParser|null $typeParser = null,
+        ExpressionEvaluatorInterface|null $expressionEvaluator = null
     )
     {
         $this->factory = $factory;
