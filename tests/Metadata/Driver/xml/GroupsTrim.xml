@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\GroupsTrim"
+           exclusion-policy="all"
+           read-only="true"
+    >
+        <virtual-property method="getAmount" type="integer" serialized-name="amount" groups="
+            first.test.group
+        "
+        />
+        <virtual-property method="getCurrency" type="string" serialized-name="currency" groups="
+            first.test.group,
+            second.test.group
+        "
+        />
+    </class>
+</serializer>
