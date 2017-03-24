@@ -1,7 +1,34 @@
 # Change Log
 
-## [Unreleased](https://github.com/schmittjoh/serializer/tree/HEAD)
+## [1.6.0](https://github.com/schmittjoh/serializer/tree/1.6.0)
 
+**Implemented enhancements:**
+
+- Add DateTimeImmutable support to DateHandler [\#543](https://github.com/schmittjoh/serializer/issues/543)
+
+**Fixed bugs:**
+
+- Virtual property having type overriden by doctrine metadata [\#276](https://github.com/schmittjoh/serializer/issues/276)
+
+**Closed issues:**
+
+- Serialize a subclass [\#735](https://github.com/schmittjoh/serializer/issues/735)
+- How to handle Doctrine not found entity ? [\#731](https://github.com/schmittjoh/serializer/issues/731)
+- Regression with 1.5.0 =\> Undefined offset 15 [\#715](https://github.com/schmittjoh/serializer/issues/715)
+- detect serialisation without groups set [\#546](https://github.com/schmittjoh/serializer/issues/546)
+- Introducing the NormalizerInterface [\#537](https://github.com/schmittjoh/serializer/issues/537)
+- How to set JSON serialization options? [\#535](https://github.com/schmittjoh/serializer/issues/535)
+- @MaxDepth doesn't seem to be working [\#522](https://github.com/schmittjoh/serializer/issues/522)
+- max\_depth in YML config is ignored [\#498](https://github.com/schmittjoh/serializer/issues/498)
+- Dynamic property type  annotation [\#436](https://github.com/schmittjoh/serializer/issues/436)
+- How to deserialize JSON if property might have a list of subobjects? [\#355](https://github.com/schmittjoh/serializer/issues/355)
+- Object to array normalization [\#354](https://github.com/schmittjoh/serializer/issues/354)
+- Serialize Doctrine object without references [\#353](https://github.com/schmittjoh/serializer/issues/353)
+- Post\_serialize doesn't serialize relation! [\#236](https://github.com/schmittjoh/serializer/issues/236)
+- parsing string to date [\#217](https://github.com/schmittjoh/serializer/issues/217)
+- Discriminator is not exposed when using a group exclusion strategy [\#157](https://github.com/schmittjoh/serializer/issues/157)
+
+## [1.6.0-RC1](https://github.com/schmittjoh/serializer/tree/1.6.0-RC1) (2017-03-14)
 **Implemented enhancements:**
 
 - Add symfony expression in exclusions/expositions [\#406](https://github.com/schmittjoh/serializer/issues/406)
