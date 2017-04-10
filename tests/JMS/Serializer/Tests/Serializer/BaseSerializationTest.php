@@ -86,6 +86,7 @@ use JMS\Serializer\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh236Foo;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
 use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\IndexedCommentsBlogPost;
@@ -1256,6 +1257,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
+    }
+    
+    public function testMaxDepthWithSkippableObject()
+    {
+        $data = new Gh236Foo();
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        $this->assertEquals($this->getContent('maxdepth_skippabe_object'), $serialized);
     }
 
     public function testDeserializingIntoExistingObject()
