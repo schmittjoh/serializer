@@ -1,7 +1,30 @@
 # Change Log
 
-## [1.6.0](https://github.com/schmittjoh/serializer/tree/1.6.0)
+## [1.6.1](https://github.com/schmittjoh/serializer/tree/1.6.1) (2017-04-12)
+**Fixed bugs:**
 
+- Do not output the XML node when the object will be emtpy [\#744](https://github.com/schmittjoh/serializer/pull/744) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- XmlList not working since version 1.5.0 with xmlns attributes [\#742](https://github.com/schmittjoh/serializer/issues/742)
+- DoctrineObjectConstructor: how to use it without Symfony, in a PHP project [\#741](https://github.com/schmittjoh/serializer/issues/741)
+- Outdated docs site [\#733](https://github.com/schmittjoh/serializer/issues/733)
+- Allow data access to Property naming strategy [\#717](https://github.com/schmittjoh/serializer/issues/717)
+- Can't hint interface using @Type to trigger custom handler [\#631](https://github.com/schmittjoh/serializer/issues/631)
+- JSON/YAML encoding changes [\#617](https://github.com/schmittjoh/serializer/issues/617)
+- Why do we need this check inside SerializedName constructor, if there is name? [\#558](https://github.com/schmittjoh/serializer/issues/558)
+- Is it possible to deserialize Collection from Json [\#534](https://github.com/schmittjoh/serializer/issues/534)
+- PhpCollection 0.4 [\#531](https://github.com/schmittjoh/serializer/issues/531)
+- Possible mismatch of xml-attribute-map and $pMetadata-\>xmlAttribute in XmlDriver.php [\#422](https://github.com/schmittjoh/serializer/issues/422)
+- Access level propose for Handler/DateHandler.php [\#386](https://github.com/schmittjoh/serializer/issues/386)
+- Type DateTime and Timestamp \(U format\) [\#343](https://github.com/schmittjoh/serializer/issues/343)
+
+**Merged pull requests:**
+
+- Update PHPDocs [\#736](https://github.com/schmittjoh/serializer/pull/736) ([gnat42](https://github.com/gnat42))
+
+## [1.6.0](https://github.com/schmittjoh/serializer/tree/1.6.0) (2017-03-24)
 **Implemented enhancements:**
 
 - Add DateTimeImmutable support to DateHandler [\#543](https://github.com/schmittjoh/serializer/issues/543)
