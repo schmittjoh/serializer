@@ -362,12 +362,16 @@ class XmlDeserializationVisitor extends AbstractVisitor
     /**
      * Retrieves internalSubset even in bugfixed php versions
      *
-     * @param \DOMDocumentType $child
-     * @param string $data
+     * @param mixed $data
+     *
      * @return string
      */
     private function getDomDocumentTypeEntitySubset($data)
     {
+        if (!is_string($data)) {
+            $data = (string) $data;
+        }
+
         $startPos = $endPos = stripos($data, '<!doctype');
         $braces = 0;
         do {
