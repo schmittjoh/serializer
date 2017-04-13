@@ -29,23 +29,33 @@ use JMS\Serializer\Exception\RuntimeException;
  */
 class Writer
 {
-    public $indentationSpaces = 4;
+    public $indentationUnit = '    ';
     public $indentationLevel = 0;
     public $content = '';
     public $changeCount = 0;
 
     private $changes = array();
 
-    public function indent()
+    /**
+     * @param integer $amount
+     * 
+     * @return $this
+     */
+    public function indent($amount = 1)
     {
-        $this->indentationLevel += 1;
+        $this->indentationLevel += $amount;
 
         return $this;
     }
 
-    public function outdent()
+    /**
+     * @param integer $amount
+     * 
+     * @return $this
+     */
+    public function outdent($amount = 1)
     {
-        $this->indentationLevel -= 1;
+        $this->indentationLevel -= $amount;
 
         if ($this->indentationLevel < 0) {
             throw new RuntimeException('The identation level cannot be less than zero.');
@@ -87,7 +97,7 @@ class Writer
             if ($this->indentationLevel > 0
                 && !empty($lines[$i])
                 && ((empty($addition) && "\n" === substr($this->content, -1)) || "\n" === substr($addition, -1))) {
-                $addition .= str_repeat(' ', $this->indentationLevel * $this->indentationSpaces);
+                $addition .= str_repeat($this->indentationUnit, $this->indentationLevel);
             }
 
             $addition .= $lines[$i];
@@ -133,5 +143,23 @@ class Writer
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function __get($name)
+    {
+        if ($name === 'indentationSpaces') {
+            return strlen($this->indentationUnit);
+        }
+        
+        return $this->{$name};
+    }
+
+    public function __set($name, $value)
+    {
+        if ($name === 'indentationSpaces') {
+            $this->indentationUnit = str_repeat(' ', $value);
+        }
+        
+        $this->{$name} = $value;
     }
 }
