@@ -30,6 +30,12 @@ class SerializationContext extends Context
     /** @var \SplStack */
     private $visitingStack;
 
+    /**
+     * True if the Type annotation must be ignored when it is an abstract class.
+     * @var boolean
+     */
+    private $abstractClassTypeIgnored = false;
+
     public static function create()
     {
         return new self();
@@ -114,5 +120,15 @@ class SerializationContext extends Context
     public function getVisitingSet()
     {
         return $this->visitingSet;
+    }
+
+    public function setAbstractClassTypeIgnored($abstractClassTypeIgnored)
+    {
+        $this->abstractClassTypeIgnored = $abstractClassTypeIgnored;
+    }
+
+    public function isAbstractClassTypeIgnored()
+    {
+        return $this->abstractClassTypeIgnored;
     }
 }

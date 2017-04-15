@@ -105,6 +105,15 @@ final class GraphNavigator
     {
         $visitor = $context->getVisitor();
 
+        // When serializing, if the type is an abstract class, check the option in the context to
+        // know if this annotation must be ignored
+        if ($context instanceof SerializationContext && gettype($data) === 'object' && $type !== null) {
+            $rc = new \ReflectionClass($type['name']);
+            if ($rc->isAbstract() && $context->isAbstractClassTypeIgnored()) {
+                $type = null;
+            }
+        }
+
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
