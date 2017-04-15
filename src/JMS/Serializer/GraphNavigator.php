@@ -143,6 +143,7 @@ final class GraphNavigator
             case 'float':
                 return $visitor->visitDouble($data, $type, $context);
 
+            case 'ArrayIterator':
             case 'array':
                 return $visitor->visitArray($data, $type, $context);
 
