@@ -154,6 +154,12 @@ final class GraphNavigator
 
                 throw new RuntimeException($msg);
 
+            case 'int':
+                throw new RuntimeException('Use integer as type instead of int.');
+
+            case 'bool':
+                throw new RuntimeException('Use boolean as type instead of bool.');
+
             default:
                 // TODO: The rest of this method needs some refactoring.
                 if ($context instanceof SerializationContext) {

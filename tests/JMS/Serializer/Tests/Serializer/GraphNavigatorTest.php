@@ -49,6 +49,33 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->navigator->accept(STDIN, null, $this->context);
     }
 
+    /**
+     * @expectedException JMS\Serializer\Exception\RuntimeException
+     * @expectedExceptionMessage Use integer as type instead of int.
+     */
+    public function testTypeIntThrowsException()
+    {
+        $this->context->expects($this->any())
+            ->method('getDirection')
+            ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
+
+        $this->navigator->accept(10, ['name' => 'int'], $this->context);
+    }
+
+    /**
+     * @expectedException JMS\Serializer\Exception\RuntimeException
+     * @expectedExceptionMessage Use boolean as type instead of bool.
+     */
+    public function testTypeBoolThrowsException()
+    {
+        $this->context->expects($this->any())
+            ->method('getDirection')
+            ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
+
+        $this->navigator->accept(true, ['name' => 'bool'], $this->context);
+    }
+
+
     public function testNavigatorPassesInstanceOnSerialization()
     {
         $object = new SerializableClass;
