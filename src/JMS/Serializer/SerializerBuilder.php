@@ -77,6 +77,7 @@ class SerializerBuilder
     private $visitorsAdded = false;
     private $propertyNamingStrategy;
     private $debug = false;
+    private $jsonBigIntAsString = false;
     private $cacheDir;
     private $annotationReader;
     private $includeInterfaceMetadata = false;
@@ -140,6 +141,13 @@ class SerializerBuilder
     public function setDebug($bool)
     {
         $this->debug = (boolean) $bool;
+
+        return $this;
+    }
+
+    public function setUseJsonBigIntAsString($bool)
+    {
+        $this->jsonBigIntAsString = (boolean) $bool;
 
         return $this;
     }
@@ -244,7 +252,7 @@ class SerializerBuilder
         $this->visitorsAdded = true;
         $this->deserializationVisitors->setAll(array(
             'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
+            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy, $this->jsonBigIntAsString),
         ));
 
         return $this;
