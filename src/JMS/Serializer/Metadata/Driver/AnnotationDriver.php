@@ -119,6 +119,10 @@ class AnnotationDriver implements DriverInterface
 
             $methodAnnotations = $this->reader->getMethodAnnotations($method);
 
+            if (!is_array($methodAnnotations)) {
+                continue;
+            }
+
             foreach ($methodAnnotations as $annot) {
                 if ($annot instanceof PreSerialize) {
                     $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->name));
