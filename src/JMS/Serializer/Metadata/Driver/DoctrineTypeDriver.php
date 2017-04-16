@@ -30,13 +30,24 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
 {
     protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata)
     {
-        if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
-            && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
-        ) {
-            $classMetadata->setDiscriminator(
-                $doctrineMetadata->discriminatorColumn['name'],
-                $doctrineMetadata->discriminatorMap
-            );
+        if (method_exists($doctrineMetadata, 'mapField')) {
+            if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
+                && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isMappedSuperclass
+            ) {
+                $classMetadata->setDiscriminator(
+                    $doctrineMetadata->discriminatorField['name'],
+                    $doctrineMetadata->discriminatorMap
+                );
+            }
+        } else {
+            if (empty($classMetadata->discriminatorMap) && ! $classMetadata->discriminatorDisabled
+                && ! empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
+            ) {
+                $classMetadata->setDiscriminator(
+                    $doctrineMetadata->discriminatorColumn['name'],
+                    $doctrineMetadata->discriminatorMap
+                );
+            }
         }
     }
 
