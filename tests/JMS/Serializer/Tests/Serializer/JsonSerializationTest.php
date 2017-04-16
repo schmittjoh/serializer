@@ -265,7 +265,8 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testSerializeArrayWithEmptyObject()
     {
-        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('{"a":[{}]}', $this->serialize(array('a' => array(new \stdClass()))));
     }
 
     protected function getFormat()
