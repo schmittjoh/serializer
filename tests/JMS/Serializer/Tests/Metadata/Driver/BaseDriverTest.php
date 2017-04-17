@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
@@ -134,6 +135,17 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('array', $m->propertyMetadata);
         $this->assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
+    }
+
+    public function testExpressionVirtualPropertyWithExcludeAll()
+    {
+        $a = new \JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll();
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));;
+
+        $this->assertArrayHasKey('virtualValue', $m->propertyMetadata);
+
+        $p = new ExpressionPropertyMetadata($m->name, 'virtualValue', 'object.getVirtualValue()');
+        $this->assertEquals($p, $m->propertyMetadata['virtualValue']);
     }
 
     public function testVirtualPropertyWithExcludeAll()
