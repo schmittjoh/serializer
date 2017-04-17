@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.6.2](https://github.com/schmittjoh/serializer/tree/1.6.2) (2017-04-17)
+**Fixed bugs:**
+
+- @VirtualProperty "exp" does not play nice with @ExclusionPolicy\("ALL"\) [\#746](https://github.com/schmittjoh/serializer/issues/746)
+
 ## [1.6.1](https://github.com/schmittjoh/serializer/tree/1.6.1) (2017-04-12)
 **Fixed bugs:**
 
