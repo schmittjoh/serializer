@@ -26,6 +26,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Util\String;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
@@ -158,6 +159,9 @@ final class GraphNavigator
                 // TODO: The rest of this method needs some refactoring.
                 if ($context instanceof SerializationContext) {
                     if (null !== $data) {
+	                    if(is_string($data)) {
+		                    $data = new String($data);
+	                    }
                         if ($context->isVisiting($data)) {
                             return null;
                         }
