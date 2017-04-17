@@ -82,7 +82,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (float) $data;
+        return sprintf('%f', $data);
     }
 
     /**
