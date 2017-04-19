@@ -229,6 +229,19 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testStrictDiscriminator()
+    {
+        /** @var $m ClassMetadata */
+        $m_strict = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Car'));
+        $m_weak = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser'));
+
+        $this->assertNotNull($m_strict);
+        $this->assertNotNull($m_weak);
+
+        $this->assertTrue($m_strict->discriminatorStrictDeserialize);
+        $this->assertFalse($m_weak->discriminatorStrictDeserialize);
+    }
+
     public function testLoadDiscriminatorSubClass()
     {
         /** @var $m ClassMetadata */
