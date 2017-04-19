@@ -284,6 +284,10 @@ class YamlDriver extends AbstractFileDriver
             if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
                 $metadata->discriminatorDisabled = true;
             } else {
+                if (isset($config['discriminator']['strict_deserialize'])) {
+                    $metadata->discriminatorStrictDeserialize = $config['discriminator']['strict_deserialize'];
+                }
+
                 if ( ! isset($config['discriminator']['field_name'])) {
                     throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
                 }

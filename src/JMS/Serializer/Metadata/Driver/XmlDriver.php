@@ -82,6 +82,10 @@ class XmlDriver extends AbstractFileDriver
             $discriminatorMap[(string) $entry->attributes()->value] = (string) $entry;
         }
 
+        if ('false' === (string) $elem->attributes()->{'discriminator-strict-deserialize'}) {
+            $metadata->discriminatorStrictDeserialize = false;
+        }
+
         if ('true' === (string) $elem->attributes()->{'discriminator-disabled'}) {
             $metadata->discriminatorDisabled = true;
         } elseif ( ! empty($discriminatorFieldName) || ! empty($discriminatorMap)) {

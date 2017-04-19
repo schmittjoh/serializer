@@ -35,4 +35,7 @@ class Discriminator
 
     /** @var string[] */
     public $groups = array();
+
+    /** @var boolean */
+    public $strictdeserialize = true;
 }

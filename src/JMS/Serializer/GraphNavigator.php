@@ -210,7 +210,13 @@ final class GraphNavigator
                 }
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($data, $metadata);
+                    try {
+                        $metadata = $this->resolveMetadata($data, $metadata);
+                    } catch(\LogicException $e) {
+                        if($metadata->discriminatorStrictDeserialize) {
+                            throw $e;
+                        }
+                    }
                 }
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
