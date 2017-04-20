@@ -31,6 +31,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\User;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
@@ -1174,6 +1175,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                     'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
                 ),
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
+
+            $this->assertEquals(
+                new User('john doe'),
+                $this->deserialize(
+                    $this->getContent('user'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser'
+                ),
+                'Class is resolved correctly when least supertype is used.'
             );
         }
     }

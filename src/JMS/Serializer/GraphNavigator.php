@@ -210,13 +210,7 @@ final class GraphNavigator
                 }
 
                 if ($context instanceof DeserializationContext && ! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    try {
-                        $metadata = $this->resolveMetadata($data, $metadata);
-                    } catch(\LogicException $e) {
-                        if($metadata->discriminatorStrictDeserialize) {
-                            throw $e;
-                        }
-                    }
+                    $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -298,20 +292,28 @@ final class GraphNavigator
                 break;
 
             default:
-                throw new \LogicException(sprintf(
-                    'The discriminator field name "%s" for base-class "%s" was not found in input data.',
-                    $metadata->discriminatorFieldName,
-                    $metadata->name
-                ));
+                if($metadata->discriminatorStrictDeserialize) {
+                    throw new \LogicException( sprintf(
+                        'The discriminator field name "%s" for base-class "%s" was not found in input data.',
+                        $metadata->discriminatorFieldName,
+                        $metadata->name
+                    ) );
+                } else {
+                    $typeValue = null;
+                }
         }
 
-        if ( ! isset($metadata->discriminatorMap[$typeValue])) {
+        if ( $typeValue && ! isset($metadata->discriminatorMap[$typeValue])) {
             throw new \LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
                 $metadata->name,
                 implode(', ', array_keys($metadata->discriminatorMap))
             ));
+        }
+
+        if(null == $typeValue && ! $metadata->discriminatorStrictDeserialize) {
+            return $metadata;
         }
 
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
