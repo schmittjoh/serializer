@@ -99,15 +99,19 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
     }
 
-    public function serialize($data, $format, SerializationContext $context = null)
+    public function serialize($data, $format, SerializationContext $context = null, $type = null)
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
+        if (null !== $type) {
+            $type = $this->typeParser->parse($type);
+        }
+
         return $this->serializationVisitors->get($format)
-            ->map(function(VisitorInterface $visitor) use ($context, $data, $format) {
-                $this->visit($visitor, $context, $visitor->prepare($data), $format);
+            ->map(function(VisitorInterface $visitor) use ($context, $data, $format, $type) {
+                $this->visit($visitor, $context, $visitor->prepare($data), $format, $type);
 
                 return $visitor->getResult();
             })
