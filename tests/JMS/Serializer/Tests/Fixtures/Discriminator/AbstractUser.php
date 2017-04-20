@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\Discriminator(field = "type", strictdeserialize = false, map = {
+ * @Serializer\Discriminator(field = "type", strictDeserialize = false, map = {
  *    "user": "JMS\Serializer\Tests\Fixtures\Discriminator\User",
  *    "contact": "JMS\Serializer\Tests\Fixtures\Discriminator\Contact",
  * })

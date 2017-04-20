@@ -37,5 +37,5 @@ class Discriminator
     public $groups = array();
 
     /** @var boolean */
-    public $strictdeserialize = true;
+    public $strictDeserialize = true;
 }

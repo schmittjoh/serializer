@@ -292,18 +292,18 @@ final class GraphNavigator
                 break;
 
             default:
-                if($metadata->discriminatorStrictDeserialize) {
+                if ($metadata->discriminatorStrictDeserialize) {
                     throw new \LogicException( sprintf(
                         'The discriminator field name "%s" for base-class "%s" was not found in input data.',
                         $metadata->discriminatorFieldName,
                         $metadata->name
                     ) );
                 } else {
-                    $typeValue = null;
+                    return $metadata;
                 }
         }
-
-        if ( $typeValue && ! isset($metadata->discriminatorMap[$typeValue])) {
+        
+        if (! isset($metadata->discriminatorMap[$typeValue])) {
             throw new \LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
@@ -311,11 +311,7 @@ final class GraphNavigator
                 implode(', ', array_keys($metadata->discriminatorMap))
             ));
         }
-
-        if(null == $typeValue && ! $metadata->discriminatorStrictDeserialize) {
-            return $metadata;
-        }
-
+        
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 

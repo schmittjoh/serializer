@@ -63,7 +63,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlDiscriminatorAttribute = false;
     public $xmlDiscriminatorCData = true;
 
-    public function setDiscriminator($fieldName, array $map, array $groups = array(), $strictdeserialize = true)
+    public function setDiscriminator($fieldName, array $map, array $groups = array(), $strictDeserialize = true)
     {
         if (empty($fieldName)) {
             throw new \InvalidArgumentException('The $fieldName cannot be empty.');
@@ -77,7 +77,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorFieldName = $fieldName;
         $this->discriminatorMap = $map;
         $this->discriminatorGroups = $groups;
-        $this->discriminatorStrictDeserialize = $strictdeserialize;
+        $this->discriminatorStrictDeserialize = (boolean)$strictDeserialize;
     }
 
     /**

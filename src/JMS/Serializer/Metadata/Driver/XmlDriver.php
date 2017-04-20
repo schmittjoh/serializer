@@ -82,7 +82,7 @@ class XmlDriver extends AbstractFileDriver
             $discriminatorMap[(string) $entry->attributes()->value] = (string) $entry;
         }
 
-        $strict_deserialize = 'false' == (string)$elem->attributes()->{'discriminator-strict-deserialize'} ? false : true;
+        $strictDeserialize = 'false' !== (string)$elem->attributes()->{'discriminator-strict-deserialize'};
 
         if ('true' === (string) $elem->attributes()->{'discriminator-disabled'}) {
             $metadata->discriminatorDisabled = true;
@@ -92,7 +92,7 @@ class XmlDriver extends AbstractFileDriver
             foreach ($elem->xpath('./discriminator-groups/group') as $entry) {
                 $discriminatorGroups[] = (string) $entry;
             }
-            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap, $discriminatorGroups, $strict_deserialize);
+            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap, $discriminatorGroups, $strictDeserialize);
         }
 
         foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {
