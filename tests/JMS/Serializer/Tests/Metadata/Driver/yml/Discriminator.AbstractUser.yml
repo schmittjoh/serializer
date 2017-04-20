@@ -1,0 +1,11 @@
+JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser:
+    discriminator:
+        field_name: type
+        strict_deserialize: false
+        map:
+            user: JMS\Serializer\Tests\Fixtures\Discriminator\User
+            contact: JMS\Serializer\Tests\Fixtures\Discriminator\Contact
+
+    properties:
+        name:
+            type: string

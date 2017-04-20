@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser" discriminator-field-name="type" discriminator-strict-deserialize="false">
+        <discriminator-class value="user">JMS\Serializer\Tests\Fixtures\Discriminator\User</discriminator-class>
+        <discriminator-class value="contact">JMS\Serializer\Tests\Fixtures\Discriminator\Contact</discriminator-class>
+        <property name="name" type="string" />
+    </class>
+</serializer>

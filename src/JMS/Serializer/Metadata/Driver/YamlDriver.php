@@ -284,10 +284,6 @@ class YamlDriver extends AbstractFileDriver
             if (isset($config['discriminator']['disabled']) && true === $config['discriminator']['disabled']) {
                 $metadata->discriminatorDisabled = true;
             } else {
-                if (isset($config['discriminator']['strict_deserialize'])) {
-                    $metadata->discriminatorStrictDeserialize = $config['discriminator']['strict_deserialize'];
-                }
-
                 if ( ! isset($config['discriminator']['field_name'])) {
                     throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
                 }
@@ -296,7 +292,9 @@ class YamlDriver extends AbstractFileDriver
                     throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
                 }
                 $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : array();
-                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
+                $strict_deserialize = isset($config['discriminator']['strict_deserialize']) ? $config['discriminator']['strict_deserialize'] : true;
+
+                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups, $strict_deserialize);
 
                 if (isset($config['discriminator']['xml_attribute'])) {
                     $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
