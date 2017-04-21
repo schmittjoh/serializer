@@ -1,5 +1,31 @@
 # Change Log
 
+## [Unreleased](https://github.com/schmittjoh/serializer/tree/HEAD)
+
+**Implemented enhancements:**
+
+- Added stdClass serialization handler [\#749](https://github.com/schmittjoh/serializer/pull/749) ([goetas](https://github.com/goetas))
+- Allow to typehint for the type \(array/hash\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Array gets serialized as object, not as array, depending on order. [\#709](https://github.com/schmittjoh/serializer/issues/709)
+- Fix stdClass inconsistencies when serializing to JSON [\#730](https://github.com/schmittjoh/serializer/pull/730) ([goetas](https://github.com/goetas))
+- Allow to typehint for the type \\(array/hash\\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Array serialized as JSON object [\#706](https://github.com/schmittjoh/serializer/issues/706)
+- The purpose of "Force JSON output to "{}" instead of "\[\]" if it contains either no properties or all properties are null" [\#248](https://github.com/schmittjoh/serializer/issues/248)
+- Json array serialisation [\#242](https://github.com/schmittjoh/serializer/issues/242)
+- Request Annotation for Array Data [\#234](https://github.com/schmittjoh/serializer/issues/234)
+- JSON recursion when first object in root list is empty [\#61](https://github.com/schmittjoh/serializer/issues/61)
+- Can't serialize an array with an empty object [\#59](https://github.com/schmittjoh/serializer/issues/59)
+
+**Merged pull requests:**
+
+- Added runtime twig extension support \(significant performance improvements\) [\#747](https://github.com/schmittjoh/serializer/pull/747) ([goetas](https://github.com/goetas))
+
 ## [1.6.2](https://github.com/schmittjoh/serializer/tree/1.6.2) (2017-04-17)
 **Fixed bugs:**
 
