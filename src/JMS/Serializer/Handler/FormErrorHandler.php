@@ -21,7 +21,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\GenericSerializationVisitor;
+use JMS\Serializer\VisitorInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -125,7 +125,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
     }
 
-    private function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
+    private function convertFormToArray(VisitorInterface $visitor, Form $data)
     {
         $isRoot = null === $visitor->getRoot();
 

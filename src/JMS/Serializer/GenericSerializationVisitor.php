@@ -22,6 +22,9 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
+/**
+ * @deprecated
+ */
 abstract class GenericSerializationVisitor extends AbstractVisitor
 {
     private $navigator;

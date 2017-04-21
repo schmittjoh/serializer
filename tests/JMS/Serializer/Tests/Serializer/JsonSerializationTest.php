@@ -267,7 +267,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testSerializeArrayWithEmptyObject()
     {
-        $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
     }
 
     public function testSerializeRootArrayWithDefinedKeys()
@@ -349,6 +349,8 @@ class JsonSerializationTest extends BaseSerializationTest
         $c3->foo = $tag;
 
         return [
+
+            [[$c1], '[{}]', SerializationContext::create()->setInitialType('array<stdClass>')],
 
             [[$c2], '[{"foo":"bar"}]', SerializationContext::create()->setInitialType('array<stdClass>')],
 
