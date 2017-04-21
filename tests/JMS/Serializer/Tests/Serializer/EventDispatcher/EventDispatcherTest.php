@@ -68,10 +68,10 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->dispatcher->addListener('pre', array($b, 'foo'), 'Foo');
         $this->dispatcher->addListener('pre', array($b, 'all'));
 
-        $b->bar($this->event);
-        $b->all($this->event);
-        $b->foo($this->event);
-        $b->all($this->event);
+        $b->bar($this->event, 'pre', 'bar', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'bar', 'json', $this->dispatcher);
+        $b->foo($this->event, 'pre', 'foo', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'foo', 'json', $this->dispatcher);
         $b->_replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');
