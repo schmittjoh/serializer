@@ -26,6 +26,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\SerializationContext;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -266,6 +267,73 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeArrayWithEmptyObject()
     {
         $this->assertEquals('{"0":{}}', $this->serialize(array(new \stdClass())));
+    }
+
+    public function testSerializeRootArrayWithDefinedKeys()
+    {
+        $author1 = new Author("Jim");
+        $author2 = new Author("Mark");
+
+        $data = array(
+            'jim' => $author1,
+            'mark' => $author2,
+        );
+
+        $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array')));
+        $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<JMS\Serializer\Tests\Fixtures\Author>')));
+        $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
+
+        $data = array(
+            $author1,
+            $author2,
+        );
+        $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array')));
+        $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<int,JMS\Serializer\Tests\Fixtures\Author>')));
+        $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
+    }
+
+    public function getTypeHintedArrays()
+    {
+        return [
+
+            [[1, 2], '[1,2]', null],
+            [['a', 'b'], '["a","b"]', null],
+            [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', null],
+            
+            [[], '[]', null],
+            [[], '[]', SerializationContext::create()->setInitialType('array')],
+            [[], '[]', SerializationContext::create()->setInitialType('array<integer>')],
+            [[], '{}', SerializationContext::create()->setInitialType('array<string,integer>')],
+
+
+            [[1, 2], '[1,2]', SerializationContext::create()->setInitialType('array')],
+            [[1 => 1, 2 => 2], '{"1":1,"2":2}', SerializationContext::create()->setInitialType('array')],
+            [[1 => 1, 2 => 2], '[1,2]', SerializationContext::create()->setInitialType('array<integer>')],
+            [['a', 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
+
+            [[1 => 'a', 2 => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
+            [['a' => 'a', 'b' => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
+
+
+            [[1,2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<integer,integer>')],
+            [[1,2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<string,integer>')],
+            [[1,2], '{"0":"1","1":"2"}', SerializationContext::create()->setInitialType('array<string,string>')],
+
+
+            [['a', 'b'], '{"0":"a","1":"b"}', SerializationContext::create()->setInitialType('array<integer,string>')],
+            [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', SerializationContext::create()->setInitialType('array<string,string>')],
+        ];
+    }
+
+    /**
+     * @dataProvider getTypeHintedArrays
+     * @param array $array
+     * @param string $expected
+     * @param SerializationContext|null $context
+     */
+    public function testTypeHintedArraySerialization(array $array, $expected, $context = null)
+    {
+        $this->assertEquals($expected, $this->serialize($array, $context));
     }
 
     protected function getFormat()

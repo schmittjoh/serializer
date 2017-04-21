@@ -91,11 +91,15 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
      */
     public function visitArray($data, array $type, Context $context)
     {
+        $this->dataStack->push($data);
+
+        $isHash = isset($type['params'][1]);
+
         if (null === $this->root) {
-            $this->root = array();
+            $this->root = $isHash ? new \ArrayObject() : array();
             $rs = &$this->root;
         } else {
-            $rs = array();
+            $rs = $isHash ? new \ArrayObject() : array();
         }
 
         $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
@@ -113,6 +117,8 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
                 $rs[$k] = $v;
             }
         }
+
+        $this->dataStack->pop();
 
         return $rs;
     }
