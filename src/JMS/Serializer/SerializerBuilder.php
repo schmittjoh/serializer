@@ -25,6 +25,7 @@ use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
+use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxyTypeSubscriber;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
@@ -168,6 +169,7 @@ class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
+
         return $this;
     }
 
@@ -182,6 +184,7 @@ class SerializerBuilder
     public function addDefaultListeners()
     {
         $this->listenersConfigured = true;
+        $this->eventDispatcher->addSubscriber(new DoctrineProxyTypeSubscriber());
         $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         return $this;
