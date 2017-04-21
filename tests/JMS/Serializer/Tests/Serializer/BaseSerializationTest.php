@@ -1308,6 +1308,36 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
     }
 
+    public function testDeserializingIntoExistingObjectWithoutType()
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
+        $serializer = new Serializer(
+            $this->factory, $this->handlerRegistry, $objectConstructor,
+            $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher
+        );
+
+        $user = new User();
+        $user->id = "112233";
+        $user->name = "john doe";
+
+        $context = new DeserializationContext();
+        $context->attributes->set('target', $user);
+
+        $deseralizedUser = $serializer->deserialize(
+            $this->getContent('user_no_type'),
+            'JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser',
+            $this->getFormat(),
+            $context
+        );
+
+        $this->assertSame($user, $deseralizedUser);
+        $this->assertEquals($user->name, $deseralizedUser->name);
+    }
+
     public function testObjectWithNullableArrays()
     {
         $object = new ObjectWithEmptyNullableAndEmptyArrays();

@@ -28,10 +28,14 @@ use JMS\Serializer\Annotation as Serializer;
  */
 abstract class AbstractUser
 {
+
+    /** @Serializer\Type("string") */
+    public $id;
+
     /** @Serializer\Type("string") */
     public $name;
 
-    public function __construct($name)
+    public function __construct($name = null)
     {
         $this->name = (string) $name;
     }
