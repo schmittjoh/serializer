@@ -23,6 +23,7 @@ use Doctrine\ODM\MongoDB\PersistentCollection as MongoDBPersistentCollection;
 use Doctrine\ODM\PHPCR\PersistentCollection as PHPCRPersistentCollection;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
+use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
@@ -72,9 +73,30 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         }
     }
 
+    public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher)
+    {
+        $object = $event->getObject();
+        if ($object instanceof Proxy) {
+            $parentClassName = get_parent_class($object);
+
+            // check if this is already a re-dispatch
+            if (strtolower($class) !== strtolower($parentClassName)) {
+                $event->stopPropagation();
+                $previousType = $event->getType();
+                $newEvent = new PreSerializeEvent($event->getContext(), $object, array('name' => $parentClassName, 'params' => $previousType['params']));
+                $dispatcher->dispatch($eventName, $parentClassName, $format, $newEvent);
+
+                // update the type in case some listener changed it
+                $newType = $newEvent->getType();
+                $event->setType($newType['name'], $newType['params']);
+            }
+        }
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy'),
             array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
         );
     }
