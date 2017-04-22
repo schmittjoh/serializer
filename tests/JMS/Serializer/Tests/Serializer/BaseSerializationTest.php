@@ -1360,7 +1360,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->dispatcher = new EventDispatcher();
-
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());

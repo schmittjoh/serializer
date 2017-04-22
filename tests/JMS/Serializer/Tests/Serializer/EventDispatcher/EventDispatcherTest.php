@@ -23,9 +23,6 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
-use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxyTypeSubscriber;
-use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 
 class EventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
