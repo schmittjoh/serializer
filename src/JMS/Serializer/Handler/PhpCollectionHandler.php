@@ -58,9 +58,17 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
 
     public function serializeMap(VisitorInterface $visitor, Map $map, array $type, Context $context)
     {
-        $type['name'] = 'array';
+        //  Pop ourselves out of the context not to be counted as a depth level
+        $context->stopVisiting($map);
 
-        return $visitor->visitArray(iterator_to_array($map), $type, $context);
+        // We change the base type, and pass through possible parameters.
+        $type['name'] = 'array';
+        $result = $visitor->visitArray(iterator_to_array($map), $type, $context);
+
+        //  Push ourselves back in, so we can be popped after leaving the handler
+        $context->startVisiting($map);
+
+        return $result;
     }
 
     public function deserializeMap(VisitorInterface $visitor, $data, array $type, Context $context)
@@ -72,10 +80,17 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
 
     public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, array $type, Context $context)
     {
+        //  Pop ourselves out of the context not to be counted as a depth level
+        $context->stopVisiting($sequence);
+
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
+        $result = $visitor->visitArray($sequence->all(), $type, $context);
 
-        return $visitor->visitArray($sequence->all(), $type, $context);
+        //  Push ourselves back in, so we can be popped after leaving the handler
+        $context->startVisiting($sequence);
+
+        return $result;
     }
 
     public function deserializeSequence(VisitorInterface $visitor, $data, array $type, Context $context)
