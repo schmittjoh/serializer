@@ -148,7 +148,7 @@ class DateHandler implements SubscribingHandlerInterface
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
     {
-        if (null === $data) {
+        if (null == $data) {
             return null;
         }
 
