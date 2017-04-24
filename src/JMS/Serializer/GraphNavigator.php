@@ -25,6 +25,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\Handler\SkipCommandObject;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -195,9 +196,12 @@ final class GraphNavigator
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
                     $rs = call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
+                    if (! $rs instanceof SkipCommandObject)
+                    {
+                        $this->leaveScope($context, $data);
 
-                    return $rs;
+                        return $rs;
+                    }
                 }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
