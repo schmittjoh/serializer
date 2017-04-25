@@ -199,6 +199,18 @@ final class GraphNavigator
 
                     return $rs;
                 }
+                
+                if(class_exists($type['name'])) {
+                    $parentClass = class_parents($type['name']);
+                    foreach($parentClass as $class) {
+                        if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $class, $context->getFormat())) {
+                            $type['name'] = $class;
+                            $rs = call_user_func($handler, $visitor, $data, $type, $context);
+                            $this->leaveScope($context, $data);
+                            return $rs;
+                        }
+                    }
+                }
 
                 $exclusionStrategy = $context->getExclusionStrategy();
 
