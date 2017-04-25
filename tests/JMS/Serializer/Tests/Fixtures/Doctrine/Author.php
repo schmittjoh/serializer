@@ -37,9 +37,10 @@ class Author
      */
     private $name;
 
-    public function __construct($name)
+    public function __construct($name, $id = null)
     {
         $this->name = $name;
+        $this->id = $id;
     }
 
     public function getName()
