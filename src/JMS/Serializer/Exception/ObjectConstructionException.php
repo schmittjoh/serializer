@@ -16,35 +16,13 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures\Doctrine;
+namespace JMS\Serializer\Exception;
 
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\SerializedName;
-
-use Doctrine\ORM\Mapping as ORM;
-
-/** @ORM\Entity */
-class Author
+/**
+ * InvalidArgumentException for the Serializer.
+ *
+ * @author Asmir Mustafic <goetas@gmail.com>
+ */
+class ObjectConstructionException extends RuntimeException implements Exception
 {
-    /**
-     * @ORM\Id @ORM\Column(type="integer")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column(type="string")
-     * @SerializedName("full_name")
-     */
-    private $name;
-
-    public function __construct($name, $id = null)
-    {
-        $this->name = $name;
-        $this->id = $id;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
 }
