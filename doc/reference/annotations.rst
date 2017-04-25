@@ -119,6 +119,11 @@ be called to retrieve, or set the value of the given property:
             $this->name = $name;
         }
     }
+    
+.. note ::
+
+    If you need only to serialize your data, you can avoid providing a setter by
+    setting the property as read-only using the ``@ReadOnly`` annotation.
 
 @AccessorOrder
 ~~~~~~~~~~~~~~
