@@ -20,11 +20,15 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
 class EventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var EventDispatcher
+     */
     private $dispatcher;
     private $event;
 
@@ -61,14 +65,71 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->dispatcher->addListener('pre', array($b, 'foo'), 'Foo');
         $this->dispatcher->addListener('pre', array($b, 'all'));
 
-        $b->bar($this->event);
-        $b->all($this->event);
-        $b->foo($this->event);
-        $b->all($this->event);
+        $b->bar($this->event, 'pre', 'bar', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'bar', 'json', $this->dispatcher);
+        $b->foo($this->event, 'pre', 'foo', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'foo', 'json', $this->dispatcher);
         $b->_replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');
         $b->_verify();
+    }
+
+    public function testListenerCanStopPropagation()
+    {
+        $listener1 = false;
+        $listener2 = false;
+
+        $this->dispatcher->addListener('pre', function (Event $event) use(&$listener1) {
+            $event->stopPropagation();
+            $listener1 = true;
+        });
+
+        $this->dispatcher->addListener('pre', function () use(&$listener2) {
+            $listener2 = true;
+        });
+
+        $this->dispatch('pre');
+
+        $this->assertTrue($listener1);
+        $this->assertFalse($listener2);
+    }
+
+    public function testListenerCanDispatchEvent()
+    {
+        $listener1 = false;
+        $listener2 = false;
+        $listener3 = false;
+
+        $this->dispatcher->addListener('pre', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use(&$listener1) {
+            $listener1 = true;
+
+            $event = new Event($event->getContext(), $event->getType());
+
+            $this->assertSame('pre', $eventName);
+            $this->assertSame('json', $format);
+            $this->assertSame('foo', $loweredClass);
+
+            $dispatcher->dispatch('post', 'Blah', 'xml', $event);
+        });
+
+        $this->dispatcher->addListener('pre', function () use(&$listener2) {
+            $listener2 = true;
+        });
+
+        $this->dispatcher->addListener('post', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use(&$listener3) {
+            $listener3 = true;
+
+            $this->assertSame('post', $eventName);
+            $this->assertSame('xml', $format);
+            $this->assertSame('blah', $loweredClass);
+        });
+
+        $this->dispatch('pre');
+
+        $this->assertTrue($listener1);
+        $this->assertTrue($listener2);
+        $this->assertTrue($listener3);
     }
 
     public function testAddSubscriber()

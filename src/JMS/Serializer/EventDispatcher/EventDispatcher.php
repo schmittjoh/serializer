@@ -95,7 +95,12 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         foreach ($this->classListeners[$eventName][$loweredClass][$format] as $listener) {
-            call_user_func($listener, $event);
+
+            if ($event->isPropagationStopped()) {
+                break;
+            }
+
+            call_user_func($listener, $event, $eventName, $loweredClass, $format, $this);
         }
     }
 
