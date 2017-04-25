@@ -20,8 +20,11 @@ namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ClassMetadata as JMSClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use \Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
+use PhpOption\None;
 
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.
@@ -30,6 +33,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
     private $managerRegistry;
     private $fallbackConstructor;
+    private $annotationDriver;
 
     /**
      * Constructor.
@@ -41,6 +45,30 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     {
         $this->managerRegistry     = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
+    }
+
+    public function setAnnotationDriver(AnnotationDriver $annotationDriver)
+    {
+        $this->annotationDriver = $annotationDriver;
+    }
+
+    protected function getPropertyGroups(JMSClassMetadata $metadata, $property)
+    {
+        $classMetadata = $this->annotationDriver->loadMetadataForClass($metadata->reflection);
+
+        // up to the hierarchy
+        while ($classMetadata) {
+            // limit case
+            if (array_key_exists($property, $classMetadata->propertyMetadata)) {
+                $propertyGroups = $classMetadata->propertyMetadata[$property]->groups ?? array();
+                return $propertyGroups;
+            }
+
+            $parent = $classMetadata->reflection->getParentClass();
+            $classMetadata = $this->annotationDriver->loadMetadataForClass($parent);
+        }
+
+        return array();
     }
 
     /**
@@ -71,11 +99,26 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Fallback to default constructor if missing identifier(s)
+        /** @var DoctrineClassMetadata $classMetadata*/
         $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
+        /** @var array $deserializingGroups */
+        $deserializingGroups = ($context->attributes->get('groups') instanceof None)? array() : $context->attributes->get('groups')->get();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if ( ! array_key_exists($name, $data)) {
+            $propertyGroups = $this->getPropertyGroups($metadata, $name);
+
+            $useFallback = true;
+
+            // group list match on at least one group?
+            foreach($deserializingGroups as $deserializingGroup) {
+                if(in_array($deserializingGroup, $propertyGroups)) {
+                    $useFallback = false;
+                    break;
+                }
+            }
+
+            if ( ! array_key_exists($name, $data) || $useFallback ) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 
