@@ -106,6 +106,39 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($author, $authorFetched);
     }
 
+    public function testMissingNotManaged()
+    {
+        $author = new \JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author('foo');
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = array('name' => Author::class, 'params' => array());
+        $class = new ClassMetadata(Author::class);
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
+        $this->assertSame($author, $authorFetched);
+    }
+
+    public function testReference()
+    {
+        $em = $this->registry->getManager();
+
+        $author = new Author('John', 5);
+        $em->persist($author);
+        $em->flush();
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+
+        $type = array('name' => Author::class, 'params' => array());
+        $class = new ClassMetadata(Author::class);
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
+        $this->assertSame($author, $authorFetched);
+    }
+
     /**
      * @expectedException \JMS\Serializer\Exception\ObjectConstructionException
      */
