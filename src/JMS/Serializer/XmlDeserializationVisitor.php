@@ -89,7 +89,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     private function emptyStringToSpaceCharacter($data)
     {
-        return $data === '' ? ' ' : $data;
+        return $data === '' ? ' ' : (string) $data;
     }
 
     public function visitNull($data, array $type, Context $context)
