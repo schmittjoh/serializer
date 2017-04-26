@@ -497,6 +497,8 @@ Available Options:
 +-------------------------------------+--------------------------------------------------+
 | cdata                               | render child node content with or without cdata  |
 +-------------------------------------+--------------------------------------------------+
+| namespace                           | render child node using the specified namespace  |
++-------------------------------------+--------------------------------------------------+
 
 Example for "attribute":
 .. code-block :: php

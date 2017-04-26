@@ -21,6 +21,7 @@ YAML Reference
             xml_attribute: true
             xml_element:
                 cdata: false
+                namespace: http://www.w3.org/2005/Atom
         virtual_properties:
             getSomeProperty:
                 serialized_name: foo
