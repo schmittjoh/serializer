@@ -232,7 +232,7 @@ In this example:
 
 - ``id`` is exposed using the object reflection.
 - ``lastName`` is exposed using the ``getLastName`` getter method.
-- ``id`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
+- ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
 **Note**: This only works for serialization and is completely ignored during
