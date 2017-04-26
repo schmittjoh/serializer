@@ -61,6 +61,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $xmlDiscriminatorAttribute = false;
     public $xmlDiscriminatorCData = true;
+    public $xmlDiscriminatorNamespace;
 
     public function setDiscriminator($fieldName, array $map, array $groups = array())
     {
@@ -212,6 +213,7 @@ class ClassMetadata extends MergeableClassMetadata
             $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $discriminatorProperty->xmlAttribute = $this->xmlDiscriminatorAttribute;
             $discriminatorProperty->xmlElementCData = $this->xmlDiscriminatorCData;
+            $discriminatorProperty->xmlNamespace = $this->xmlDiscriminatorNamespace;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
@@ -261,6 +263,7 @@ class ClassMetadata extends MergeableClassMetadata
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
             'usingExpression' => $this->usingExpression,
+            'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
         ));
     }
 
@@ -296,6 +299,10 @@ class ClassMetadata extends MergeableClassMetadata
 
         if (isset($deserializedData['xmlDiscriminatorAttribute'])) {
             $this->xmlDiscriminatorAttribute = $deserializedData['xmlDiscriminatorAttribute'];
+        }
+
+        if (isset($deserializedData['xmlDiscriminatorNamespace'])) {
+            $this->xmlDiscriminatorNamespace = $deserializedData['xmlDiscriminatorNamespace'];
         }
 
         if (isset($deserializedData['xmlDiscriminatorCData'])) {

@@ -105,6 +105,7 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlDiscriminator) {
                 $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
                 $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
+                $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string) $annot->namespace : null;
             } elseif ($annot instanceof VirtualProperty) {
                 $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $annot->name, $annot->exp);
                 $propertiesMetadata[] = $virtualPropertyMetadata;

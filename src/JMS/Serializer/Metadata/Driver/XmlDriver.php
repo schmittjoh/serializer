@@ -114,6 +114,9 @@ class XmlDriver extends AbstractFileDriver
             if (isset($xmlDiscriminator->attributes()->cdata)) {
                 $metadata->xmlDiscriminatorCData = (string) $xmlDiscriminator->attributes()->cdata === 'true';
             }
+            if (isset($xmlDiscriminator->attributes()->namespace)) {
+                $metadata->xmlDiscriminatorNamespace = (string) $xmlDiscriminator->attributes()->namespace;
+            }
         }
 
         foreach ($elem->xpath('./virtual-property') as $method) {
