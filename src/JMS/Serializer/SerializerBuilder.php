@@ -129,6 +129,8 @@ class SerializerBuilder
     public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
     {
         $this->expressionEvaluator = $expressionEvaluator;
+        
+        return $this;
     }
 
     public function setAnnotationReader(Reader $reader)
