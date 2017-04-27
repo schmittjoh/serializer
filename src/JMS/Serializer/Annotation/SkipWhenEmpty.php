@@ -16,20 +16,12 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer\Annotation;
 
-use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Type;
-
-class InlineChild
+/**
+ * @Annotation
+ * @Target({"PROPERTY","METHOD","ANNOTATION"})
+ */
+final class SkipWhenEmpty
 {
-    /**
-     * @Type("string")
-     */
-    public $a = 'a';
-
-    /**
-     * @Type("string")
-     */
-    public $b = 'b';
 }

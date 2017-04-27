@@ -95,6 +95,10 @@ class YamlDriver extends AbstractFileDriver
                         $isExpose = (Boolean) $pConfig['expose'];
                     }
 
+                    if (isset($pConfig['skip_when_empty'])) {
+                        $pMetadata->skipWhenEmpty = (Boolean) $pConfig['skip_when_empty'];
+                    }
+
                     if (isset($pConfig['since_version'])) {
                         $pMetadata->sinceVersion = (string) $pConfig['since_version'];
                     }

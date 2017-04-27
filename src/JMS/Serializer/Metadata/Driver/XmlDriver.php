@@ -165,6 +165,10 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->excludeIf =$excludeIf;
                     }
 
+                    if (null !== $skip = $pElem->attributes()->{'skip-when-empty'}) {
+                        $pMetadata->skipWhenEmpty = 'true' === strtolower($skip);
+                    }
+
                     if (null !== $excludeIf = $pElem->attributes()->{'expose-if'}) {
                         $pMetadata->excludeIf = "!(" . $excludeIf .")";
                         $isExpose = true;
