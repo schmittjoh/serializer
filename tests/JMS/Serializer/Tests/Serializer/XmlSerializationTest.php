@@ -33,6 +33,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyVirtual;
@@ -45,6 +46,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
+use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -314,6 +316,15 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializingNull()
     {
         $this->markTestSkipped('Not supported in XML.');
+    }
+
+    public function testDeserializeWithObjectWithToStringMethod()
+    {
+        $input = new ObjectWithToString($this->getContent('simple_object'));
+
+        $object = $this->deserialize($input, SimpleObject::class);
+
+        $this->assertInstanceOf(SimpleObject::class, $object);
     }
 
     public function testObjectWithXmlNamespaces()
