@@ -16,27 +16,8 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 
-
-/**
- * @Annotation
- * @Target("CLASS")
- */
-class XmlDiscriminator
+class ObjectWithXmlNamespaceDiscriminatorChild extends ObjectWithXmlNamespaceDiscriminatorParent
 {
-    /**
-     * @var boolean
-     */
-    public $attribute = false;
-
-    /**
-     * @var boolean
-     */
-    public $cdata = true;
-
-    /**
-     * @var string
-     */
-    public $namespace;
 }

@@ -1,0 +1,7 @@
+JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent:
+    discriminator:
+        field_name: type
+        map:
+            child: JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild
+        xml_element:
+            namespace: http://example.com/

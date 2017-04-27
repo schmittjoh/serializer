@@ -301,6 +301,9 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($config['discriminator']['xml_element']['cdata'])) {
                         $metadata->xmlDiscriminatorCData = (bool) $config['discriminator']['xml_element']['cdata'];
                     }
+                    if (isset($config['discriminator']['xml_element']['namespace'])) {
+                        $metadata->xmlDiscriminatorNamespace = (string) $config['discriminator']['xml_element']['namespace'];
+                    }
                 }
 
             }

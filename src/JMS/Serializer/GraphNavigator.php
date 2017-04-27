@@ -287,6 +287,12 @@ final class GraphNavigator
                 $typeValue = (string) $data[$metadata->discriminatorFieldName];
                 break;
 
+            // Check XML element with namespace for discriminatorFieldName
+            case is_object($data) && !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace  && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
+                $typeValue = (string) $data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+                break;
+
+            // Check XML element for discriminatorFieldName
             case is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
                 $typeValue = (string) $data->{$metadata->discriminatorFieldName};
                 break;
