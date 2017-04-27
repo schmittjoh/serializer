@@ -39,6 +39,8 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\ParentDoNotSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
@@ -787,6 +789,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('inline_child_empty'), $result);
 
         // no deserialization support
+    }
+
+    public function testEmptyChild()
+    {
+        $inline = new ParentDoNotSkipWithEmptyChild(new InlineChildEmpty());
+        $this->assertEquals($this->getContent('empty_child'), $this->serialize($inline));
+    }
+
+    public function testSkipEmptyChild()
+    {
+        $inline = new ParentSkipWithEmptyChild(new InlineChildEmpty());
+        $this->assertEquals($this->getContent('empty_child_skip'), $this->serialize($inline));
     }
 
     /**
