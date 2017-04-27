@@ -170,6 +170,7 @@ class ClassMetadata extends MergeableClassMetadata
         } elseif ( ! $this->discriminatorFieldName && $object->discriminatorFieldName) {
             $this->discriminatorFieldName = $object->discriminatorFieldName;
             $this->discriminatorMap = $object->discriminatorMap;
+            $this->discriminatorBaseClass = $object->name;
         }
 
         if ($object->discriminatorDisabled !== null) {
