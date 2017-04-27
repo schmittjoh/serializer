@@ -110,13 +110,8 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
-        $data = (string) $data;
-
-        if ('true' === $data || '1' === $data) {
-            $data = true;
-        } elseif ('false' === $data || '0' === $data) {
-            $data = false;
-        } else {
+        $data = filter_var($data, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if (null === $data) {
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
         }
 

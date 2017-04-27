@@ -62,7 +62,6 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->serialize($obj);
     }
 
-
     /**
      * @dataProvider getXMLBooleans
      */
