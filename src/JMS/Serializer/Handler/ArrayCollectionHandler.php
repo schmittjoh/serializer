@@ -26,6 +26,16 @@ use Doctrine\Common\Collections\Collection;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
+    /**
+     * @var bool
+     */
+    private $initializeExcluded = true;
+
+    public function __construct($initializeExcluded = true)
+    {
+        $this->initializeExcluded = $initializeExcluded;
+    }
+
     public static function getSubscribingMethods()
     {
         $methods = array();
@@ -63,6 +73,13 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
     {
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
+
+        if ($this->initializeExcluded === false) {
+            $exclusionStrategy = $context->getExclusionStrategy();
+            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(get_class($collection)), $context)) {
+                return $visitor->visitArray([], $type, $context);
+            }
+        }
 
         return $visitor->visitArray($collection->toArray(), $type, $context);
     }

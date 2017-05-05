@@ -34,9 +34,15 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
      */
     private $skipVirtualTypeInit = false;
 
-    public function __construct($skipVirtualTypeInit = false)
+    /**
+     * @var bool
+     */
+    private $initializeExcluded = true;
+
+    public function __construct($skipVirtualTypeInit = false, $initializeExcluded = true)
     {
-        $this->skipVirtualTypeInit = $skipVirtualTypeInit;
+        $this->skipVirtualTypeInit = (bool)$skipVirtualTypeInit;
+        $this->initializeExcluded = (bool)$initializeExcluded;
     }
 
     public function onPreSerialize(PreSerializeEvent $event)
@@ -64,6 +70,15 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             (!$object instanceof Proxy && !$object instanceof ORMProxy)
         ) {
             return;
+        }
+
+        // do not initialize the proxy if is going to be excluded by-class by some exclusion strategy
+        if ($this->initializeExcluded === false && !$virtualType) {
+            $context = $event->getContext();
+            $exclusionStrategy = $context->getExclusionStrategy();
+            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(get_parent_class($object)), $context)) {
+                return;
+            }
         }
 
         $object->__load();
