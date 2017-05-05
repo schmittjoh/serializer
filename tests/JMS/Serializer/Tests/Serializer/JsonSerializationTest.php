@@ -377,6 +377,15 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->assertEquals($expected, $this->serialize($array, $context));
     }
 
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Expected a string, but got an array: [1,3,4]
+     */
+    public function testDeserializingArrayToString()
+    {
+        $this->deserialize('[1, 3, 4]', 'string');
+    }
+
     protected function getFormat()
     {
         return 'json';

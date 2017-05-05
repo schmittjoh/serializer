@@ -58,6 +58,10 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
+        if (is_array($data)) {
+            throw new RuntimeException(sprintf('Expected a string, but got an array: %s', json_encode($data)));
+        }
+
         $data = (string) $data;
 
         if (null === $this->result) {
