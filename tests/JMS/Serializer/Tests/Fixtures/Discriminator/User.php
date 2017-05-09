@@ -16,26 +16,8 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-class Discriminator
+class User extends AbstractUser
 {
-    /** @var array<string> */
-    public $map;
-
-    /** @var string */
-    public $field = 'type';
-
-    /** @var boolean */
-    public $disabled = false;
-
-    /** @var string[] */
-    public $groups = array();
-
-    /** @var boolean */
-    public $strictDeserialize = true;
 }

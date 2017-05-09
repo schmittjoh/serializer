@@ -32,6 +32,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\User;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
@@ -1176,6 +1177,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 ),
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
             );
+
+            $this->assertEquals(
+                new User('john doe'),
+                $this->deserialize(
+                    $this->getContent('user'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser'
+                ),
+                'Class is resolved correctly when least supertype is used.'
+            );
         }
     }
 
@@ -1297,6 +1307,36 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($order, $deseralizedOrder);
         $this->assertEquals(new Order(new Price(12.34)), $deseralizedOrder);
         $this->assertAttributeInstanceOf('JMS\Serializer\Tests\Fixtures\Price', 'cost', $deseralizedOrder);
+    }
+
+    public function testDeserializingIntoExistingObjectWithoutType()
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
+        $serializer = new Serializer(
+            $this->factory, $this->handlerRegistry, $objectConstructor,
+            $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher
+        );
+
+        $user = new User();
+        $user->id = "112233";
+        $user->name = "john doe";
+
+        $context = new DeserializationContext();
+        $context->attributes->set('target', $user);
+
+        $deseralizedUser = $serializer->deserialize(
+            $this->getContent('user_no_type'),
+            'JMS\Serializer\Tests\Fixtures\Discriminator\AbstractUser',
+            $this->getFormat(),
+            $context
+        );
+
+        $this->assertSame($user, $deseralizedUser);
+        $this->assertEquals($user->name, $deseralizedUser->name);
     }
 
     public function testObjectWithNullableArrays()

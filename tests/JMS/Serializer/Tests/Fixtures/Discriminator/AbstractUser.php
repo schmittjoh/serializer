@@ -16,26 +16,27 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Annotation;
+namespace JMS\Serializer\Tests\Fixtures\Discriminator;
+
+use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Annotation
- * @Target("CLASS")
+ * @Serializer\Discriminator(field = "type", strictDeserialize = false, map = {
+ *    "user": "JMS\Serializer\Tests\Fixtures\Discriminator\User",
+ *    "contact": "JMS\Serializer\Tests\Fixtures\Discriminator\Contact",
+ * })
  */
-class Discriminator
+abstract class AbstractUser
 {
-    /** @var array<string> */
-    public $map;
 
-    /** @var string */
-    public $field = 'type';
+    /** @Serializer\Type("string") */
+    public $id;
 
-    /** @var boolean */
-    public $disabled = false;
+    /** @Serializer\Type("string") */
+    public $name;
 
-    /** @var string[] */
-    public $groups = array();
-
-    /** @var boolean */
-    public $strictDeserialize = true;
+    public function __construct($name = null)
+    {
+        $this->name = (string) $name;
+    }
 }
