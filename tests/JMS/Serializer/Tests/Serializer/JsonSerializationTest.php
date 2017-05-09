@@ -23,6 +23,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
@@ -121,6 +122,13 @@ class JsonSerializationTest extends BaseSerializationTest
         }
 
         return $outputs[$key];
+    }
+
+    public function testSkipEmptyArrayAndHash()
+    {
+        $object = new ObjectWithEmptyArrayAndHash();
+
+        $this->assertEquals('{}', $this->serialize($object));
     }
 
     public function testAddLinksToOutput()
