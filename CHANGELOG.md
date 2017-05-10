@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.7.0](https://github.com/schmittjoh/serializer/tree/1.7.0) (2017-05-10)
+**Closed issues:**
+
+- Error deserializing a map of \(nullable\) objects [\#762](https://github.com/schmittjoh/serializer/issues/762)
+- Add data using setData produces hashes instead of arrays [\#761](https://github.com/schmittjoh/serializer/issues/761)
+
 ## [1.7.0-RC2](https://github.com/schmittjoh/serializer/tree/1.7.0-RC2) (2017-05-05)
 **Fixed bugs:**
 
