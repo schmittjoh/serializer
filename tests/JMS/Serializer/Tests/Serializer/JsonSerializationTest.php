@@ -23,6 +23,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
@@ -79,6 +80,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['accessor_order_methods'] = '{"foo":"c","b":"b","a":"a"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
             $outputs['inline_child_empty'] = '{"c":"c","d":"d"}';
+            $outputs['empty_child'] = '{"c":"c","d":"d","child":{}}';
+            $outputs['empty_child_skip'] = '{"c":"c","d":"d"}';
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
@@ -119,6 +122,13 @@ class JsonSerializationTest extends BaseSerializationTest
         }
 
         return $outputs[$key];
+    }
+
+    public function testSkipEmptyArrayAndHash()
+    {
+        $object = new ObjectWithEmptyArrayAndHash();
+
+        $this->assertEquals('{}', $this->serialize($object));
     }
 
     public function testAddLinksToOutput()

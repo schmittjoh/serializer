@@ -1,14 +1,22 @@
 # Change Log
 
-## [Unreleased](https://github.com/schmittjoh/serializer/tree/HEAD)
+## [1.7.0](https://github.com/schmittjoh/serializer/tree/1.7.0) (2017-05-10)
+**Closed issues:**
 
-**Implemented enhancements:**
+- Error deserializing a map of \(nullable\) objects [\#762](https://github.com/schmittjoh/serializer/issues/762)
+- Add data using setData produces hashes instead of arrays [\#761](https://github.com/schmittjoh/serializer/issues/761)
 
-- Allow to configure the doctrine object constructor [\#751](https://github.com/schmittjoh/serializer/pull/751) ([goetas](https://github.com/goetas))
-- Trigger doctrine events on doctrine proxies [\#750](https://github.com/schmittjoh/serializer/pull/750) ([goetas](https://github.com/goetas))
-- Added stdClass serialization handler [\#749](https://github.com/schmittjoh/serializer/pull/749) ([goetas](https://github.com/goetas))
-- Allow to typehint for the type \(array/hash\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
+## [1.7.0-RC2](https://github.com/schmittjoh/serializer/tree/1.7.0-RC2) (2017-05-05)
+**Fixed bugs:**
 
+- Allow to skip "empty serialization result" when serializing [\#757](https://github.com/schmittjoh/serializer/pull/757) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Is it possible to use @XmlNamespace & @XmlRoot in a class at same time ? [\#759](https://github.com/schmittjoh/serializer/issues/759)
+- Serializes FOS:User datas with ExclusionPolicy\("all"\)  [\#599](https://github.com/schmittjoh/serializer/issues/599)
+
+## [1.7.0-RC1](https://github.com/schmittjoh/serializer/tree/1.7.0-RC1) (2017-04-25)
 **Fixed bugs:**
 
 - Array gets serialized as object, not as array, depending on order. [\#709](https://github.com/schmittjoh/serializer/issues/709)

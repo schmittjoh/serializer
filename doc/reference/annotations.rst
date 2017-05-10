@@ -21,16 +21,23 @@ that should be used for the class.
 This annotation can be defined on a property to indicate that the property should
 not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
-If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
-be possible to use `@Exclude(if="expression")` to exclude dynamically a property.
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
+be possible to use ``@Exclude(if="expression")`` to exclude dynamically a property.
 
 @Expose
 ~~~~~~~
 This annotation can be defined on a property to indicate that the property should
 be serialized/unserialized. Works only in combination with AllExclusionPolicy.
 
-If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
-be possible to use `@Expose(if="expression")` to expose dynamically a property.
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
+be possible to use ``@Expose(if="expression")`` to expose dynamically a property.
+
+@SkipWhenEmpty
+~~~~~~~~~~~~~~
+This annotation can be defined on a property to indicate that the property should
+not be serialized if the result will be "empty".
+
+Works option works only when serializing.
 
 @SerializedName
 ~~~~~~~~~~~~~~~
@@ -235,8 +242,9 @@ In this example:
 - ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
-**Note**: This only works for serialization and is completely ignored during
-deserialization.
+.. note ::
+
+    This only works for serialization and is completely ignored during deserialization.
 
 @Inline
 ~~~~~~~

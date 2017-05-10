@@ -19,17 +19,27 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Type;
 
-class InlineChild
+class ObjectWithEmptyArrayAndHash
 {
     /**
-     * @Type("string")
+     * @Serializer\Type("array<string,string>")
+     * @Serializer\SkipWhenEmpty()
      */
-    public $a = 'a';
+    private $hash = array();
+    /**
+     * @Serializer\Type("array<string>")
+     * @Serializer\SkipWhenEmpty()
+     */
+    private $array = array();
 
     /**
-     * @Type("string")
+     * @Serializer\SkipWhenEmpty()
      */
-    public $b = 'b';
+    private $object = array();
+
+    public function __construct()
+    {
+        $this->object = new InlineChildEmpty();
+    }
 }

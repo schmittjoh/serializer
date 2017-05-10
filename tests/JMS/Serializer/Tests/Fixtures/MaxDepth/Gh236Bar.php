@@ -13,6 +13,7 @@ class Gh236Bar
 
     /**
      * @Serializer\Expose()
+     * @Serializer\SkipWhenEmpty()
      */
     public $inner;
 }

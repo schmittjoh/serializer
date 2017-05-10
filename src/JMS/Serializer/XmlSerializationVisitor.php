@@ -314,7 +314,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($this->isElementEmpty($element) && ($v === null || $this->isSkippableCollection($metadata) || $this->isEmptyObject($node, $metadata) || $this->isCircularRef($context, $v))) {
+            if ($this->isElementEmpty($element) && ($v === null || $this->isSkippableCollection($metadata) || $this->isSkippableEmptyObject($node, $metadata) || $this->isCircularRef($context, $v))) {
                 $this->currentNode->removeChild($element);
             }
         }
@@ -332,9 +332,9 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $context->isVisiting($v);
     }
 
-    private function isEmptyObject($node, PropertyMetadata $metadata)
+    private function isSkippableEmptyObject($node, PropertyMetadata $metadata)
     {
-        return $node === null && !$metadata->xmlCollection;
+        return $node === null && !$metadata->xmlCollection && $metadata->skipWhenEmpty;
     }
 
     private function isSkippableCollection(PropertyMetadata $metadata)

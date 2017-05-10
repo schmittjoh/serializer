@@ -158,7 +158,9 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $v = $this->accessor->getValue($data, $metadata);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if (null === $v && $context->shouldSerializeNull() !== true) {
+        if ((null === $v && $context->shouldSerializeNull() !== true)
+            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || is_array($v)) && 0 === count($v))
+        ) {
             return;
         }
 

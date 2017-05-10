@@ -34,11 +34,15 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GroupsUser;
+use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
+use JMS\Serializer\Tests\Fixtures\InlineChildWithGroups;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\ParentDoNotSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
@@ -787,6 +791,44 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('inline_child_empty'), $result);
 
         // no deserialization support
+    }
+
+    public function testEmptyChild()
+    {
+        // by empty object
+        $inline = new ParentDoNotSkipWithEmptyChild(new InlineChildEmpty());
+        $this->assertEquals($this->getContent('empty_child'), $this->serialize($inline));
+
+        // by nulls
+        $inner = new InlineChild();
+        $inner->a = null;
+        $inner->b = null;
+        $inline = new ParentDoNotSkipWithEmptyChild($inner);
+        $this->assertEquals($this->getContent('empty_child'), $this->serialize($inline));
+
+        // by exclusion strategy
+        $context = SerializationContext::create()->setGroups(['Default']);
+        $inline = new ParentDoNotSkipWithEmptyChild(new InlineChildWithGroups());
+        $this->assertEquals($this->getContent('empty_child'), $this->serialize($inline, $context));
+    }
+
+    public function testSkipEmptyChild()
+    {
+        // by empty object
+        $inline = new ParentSkipWithEmptyChild(new InlineChildEmpty());
+        $this->assertEquals($this->getContent('empty_child_skip'), $this->serialize($inline));
+
+        // by nulls
+        $inner = new InlineChild();
+        $inner->a = null;
+        $inner->b = null;
+        $inline = new ParentSkipWithEmptyChild($inner);
+        $this->assertEquals($this->getContent('empty_child_skip'), $this->serialize($inline));
+
+        // by exclusion strategy
+        $context = SerializationContext::create()->setGroups(['Default']);
+        $inline = new ParentSkipWithEmptyChild(new InlineChildWithGroups());
+        $this->assertEquals($this->getContent('empty_child_skip'), $this->serialize($inline, $context));
     }
 
     /**

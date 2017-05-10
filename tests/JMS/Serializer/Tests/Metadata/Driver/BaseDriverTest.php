@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscrimina
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
@@ -246,6 +247,21 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             ),
             $m->discriminatorMap
         );
+    }
+
+    public function testSkipWhenEmptyOption()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ParentSkipWithEmptyChild::class));
+
+        $this->assertNotNull($m);
+
+        $this->assertInstanceOf(PropertyMetadata::class, $m->propertyMetadata['c']);
+        $this->assertInstanceOf(PropertyMetadata::class, $m->propertyMetadata['d']);
+        $this->assertInstanceOf(PropertyMetadata::class, $m->propertyMetadata['child']);
+        $this->assertFalse($m->propertyMetadata['c']->skipWhenEmpty);
+        $this->assertFalse($m->propertyMetadata['d']->skipWhenEmpty);
+        $this->assertTrue($m->propertyMetadata['child']->skipWhenEmpty);
     }
 
     public function testLoadDiscriminatorSubClass()
