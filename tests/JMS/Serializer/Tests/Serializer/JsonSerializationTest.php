@@ -42,6 +42,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['boolean_true'] = 'true';
             $outputs['boolean_false'] = 'false';
             $outputs['integer'] = '1';
+            $outputs['big_integer'] = '1000007546090751';
             $outputs['float'] = '4.533';
             $outputs['float_trailing_zero'] = '1';
             $outputs['simple_object'] = '{"foo":"foo","moo":"bar","camel_case":"boo"}';
@@ -385,6 +386,13 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testTypeHintedArrayAndStdClassSerialization(array $array, $expected, $context = null)
     {
         $this->assertEquals($expected, $this->serialize($array, $context));
+    }
+
+    public function testDeserializeBigInteger()
+    {
+        if ($this->hasDeserializer()) {
+            $this->assertEquals("1000007546090751", $this->deserialize($this->getContent('big_integer'), 'string'));
+        }
     }
 
     protected function getFormat()
