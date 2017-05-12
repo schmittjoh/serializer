@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\EventDispatcher\CircularSerializationEvent;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
@@ -159,8 +160,20 @@ final class GraphNavigator
                 if ($context instanceof SerializationContext) {
                     if (null !== $data) {
                         if ($context->isVisiting($data)) {
+                            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.circular_serialization', $type['name'], $context->getFormat())) {
+                                $this->dispatcher->dispatch(
+                                    'serializer.circular_serialization',
+                                    $type['name'],
+                                    $context->getFormat(),
+                                    $event = new CircularSerializationEvent($context, $data, $type)
+                                );
+
+                                return $this->accept($event->getReplacement(), null, $context);
+                            }
+
                             return null;
                         }
+
                         $context->startVisiting($data);
                     }
 
@@ -179,7 +192,17 @@ final class GraphNavigator
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($context instanceof SerializationContext) {
                     if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                        $event = new PreSerializeEvent($context, $data, $type);
+
+                        try {
+                            $classReflection = new \ReflectionClass($type['name']);
+
+                            if ($classReflection->isInterface()) {
+                                $event->setType(get_class($event->getObject()));
+                            }
+                        } catch (\ReflectionException $exception) {}
+
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event);
                         $type = $event->getType();
                     }
                 } elseif ($context instanceof DeserializationContext) {
