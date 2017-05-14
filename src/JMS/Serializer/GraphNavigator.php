@@ -168,7 +168,12 @@ final class GraphNavigator
                     // metadata for the actual type of the object, not the base class.
                     if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
                         if (is_subclass_of($data, $type['name'], false)) {
-                            $type = array('name' => get_class($data), 'params' => array());
+                            if (in_array('Doctrine\Common\Proxy\Proxy', class_implements($data), true)) {
+                                $name = get_parent_class($data);
+                            } else {
+                                $name = get_class($data);
+                            }
+                            $type = array('name' => $name, 'params' => array());
                         }
                     }
                 } elseif ($context instanceof DeserializationContext) {
