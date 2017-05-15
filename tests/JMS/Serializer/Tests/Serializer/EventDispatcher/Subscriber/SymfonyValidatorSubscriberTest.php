@@ -102,7 +102,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Symfony\Component\Validator\ValidatorInterface is not available');
         }
 
-        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
+        $this->validator = $this->getMockBuilder('Symfony\Component\Validator\ValidatorInterface')->getMock();
         $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
     }
 }
