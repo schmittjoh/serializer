@@ -9,7 +9,11 @@
         {
             "name": "Johannes M. Schmitt",
             "email": "schmittjoh@gmail.com"
-        }
+        },
+        {
+            "name": "Asmir Mustafic",
+            "email": "goetas@gmail.com"
+        }        
     ],
     "require": {
         "php": ">=5.5.0",
