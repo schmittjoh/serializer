@@ -1,7 +1,7 @@
 <?php
-
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
+ * Copyright 2017 Viacheslav Sychov <viacheslav.sychov@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,9 @@
  * limitations under the License.
  */
 
+
 namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 
-use JMS\Serializer\Annotation as Serializer;
-
-/**
- * @Serializer\Discriminator(field = "type", map = {
- *    "car": "JMS\Serializer\Tests\Fixtures\Discriminator\Car",
- *    "moped": "JMS\Serializer\Tests\Fixtures\Discriminator\Moped",
- * }, default="JMS\Serializer\Tests\Fixtures\Discriminator\Other")
- */
-abstract class Vehicle
+class Other extends Vehicle implements VehicleInterface
 {
-    /** @Serializer\Type("integer") */
-    public $km;
-
-    public function __construct($km)
-    {
-        $this->km = (integer) $km;
-    }
 }

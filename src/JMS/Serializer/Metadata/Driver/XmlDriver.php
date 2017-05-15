@@ -73,6 +73,7 @@ class XmlDriver extends AbstractFileDriver
         $readOnlyClass = 'true' === strtolower($elem->attributes()->{'read-only'});
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
+        $discriminatorDefaultClass = (string) $elem->attributes()->{'discriminator-default-class'};
         $discriminatorMap = array();
         foreach ($elem->xpath('./discriminator-class') as $entry) {
             if ( ! isset($entry->attributes()->value)) {
@@ -85,12 +86,16 @@ class XmlDriver extends AbstractFileDriver
         if ('true' === (string) $elem->attributes()->{'discriminator-disabled'}) {
             $metadata->discriminatorDisabled = true;
         } elseif ( ! empty($discriminatorFieldName) || ! empty($discriminatorMap)) {
-
             $discriminatorGroups = array();
             foreach ($elem->xpath('./discriminator-groups/group') as $entry) {
                 $discriminatorGroups[] = (string) $entry;
             }
-            $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap, $discriminatorGroups);
+            $metadata->setDiscriminator(
+                $discriminatorFieldName,
+                $discriminatorMap,
+                $discriminatorGroups,
+                ! empty($discriminatorDefaultClass) ? $discriminatorDefaultClass : null
+            );
         }
 
         foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {

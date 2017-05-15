@@ -9,5 +9,9 @@
       <km>1</km>
       <type><![CDATA[moped]]></type>
     </entry>
+    <entry>
+      <km>1</km>
+      <type><![CDATA[JMS\Serializer\Tests\Fixtures\Discriminator\Other]]></type>
+    </entry>
   </vehicles>
 </result>

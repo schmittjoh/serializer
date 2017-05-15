@@ -54,6 +54,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
+    public $discriminatorDefaultClass;
     public $discriminatorFieldName;
     public $discriminatorValue;
     public $discriminatorMap = array();
@@ -63,7 +64,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlDiscriminatorCData = true;
     public $xmlDiscriminatorNamespace;
 
-    public function setDiscriminator($fieldName, array $map, array $groups = array())
+    public function setDiscriminator($fieldName, array $map, array $groups = array(), $defaultClass = null)
     {
         if (empty($fieldName)) {
             throw new \InvalidArgumentException('The $fieldName cannot be empty.');
@@ -74,6 +75,7 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         $this->discriminatorBaseClass = $this->name;
+        $this->discriminatorDefaultClass = $defaultClass;
         $this->discriminatorFieldName = $fieldName;
         $this->discriminatorMap = $map;
         $this->discriminatorGroups = $groups;
@@ -185,11 +187,15 @@ class ClassMetadata extends MergeableClassMetadata
 
         if ($this->discriminatorMap && ! $this->reflection->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
-                throw new \LogicException(sprintf(
-                    'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
-                    $this->name,
-                    $this->discriminatorBaseClass
-                ));
+                if (! empty($this->discriminatorDefaultClass)) {
+                    $typeValue = $this->discriminatorDefaultClass;
+                } else {
+                    throw new \LogicException(sprintf(
+                        'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
+                        $this->name,
+                        $this->discriminatorBaseClass
+                    ));
+                }
             }
 
             $this->discriminatorValue = $typeValue;
