@@ -12,7 +12,7 @@ class PropelCollectionHandlerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serializer = SerializerBuilder::create()
-            ->addDefaultHandlers() //load PropelCollectionHandler
+            ->addDefaultHandlers()//load PropelCollectionHandler
             ->build();
     }
 

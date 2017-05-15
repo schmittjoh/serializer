@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Tests\Fixtures\Doctrine;
 
-use JMS\Serializer\Annotation\Type;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 

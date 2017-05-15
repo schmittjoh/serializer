@@ -41,7 +41,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
      */
     public function __construct($delegates)
     {
-        if ( ! $delegates instanceof SequenceInterface) {
+        if (!$delegates instanceof SequenceInterface) {
             $delegates = new Sequence($delegates);
         }
 

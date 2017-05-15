@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /** @XmlRoot("order") */
 class CurrencyAwareOrder

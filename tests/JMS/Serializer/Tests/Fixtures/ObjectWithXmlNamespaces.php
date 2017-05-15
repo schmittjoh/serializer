@@ -19,10 +19,10 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlNamespace;
-use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlElement;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @XmlRoot("test-object", namespace="http://example.com/namespace")
@@ -55,7 +55,7 @@ class ObjectWithXmlNamespaces
      * @XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     private $author;
-    
+
     /**
      * @Type("string")
      * @XmlAttribute(namespace="http://purl.org/dc/elements/1.1/");

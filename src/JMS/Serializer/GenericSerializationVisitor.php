@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -58,7 +58,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (string) $data;
+        return (string)$data;
     }
 
     public function visitBoolean($data, array $type, Context $context)
@@ -67,7 +67,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (boolean) $data;
+        return (boolean)$data;
     }
 
     public function visitInteger($data, array $type, Context $context)
@@ -76,7 +76,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (int) $data;
+        return (int)$data;
     }
 
     public function visitDouble($data, array $type, Context $context)
@@ -85,7 +85,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (float) $data;
+        return (float)$data;
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = $isHash ? new \ArrayObject() : array();
         }
 
-        $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
+        $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);

@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * @ExclusionPolicy("all")

@@ -19,9 +19,9 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Exclude;
-use JMS\Serializer\Annotation\PreSerialize;
-use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PostDeserialize;
+use JMS\Serializer\Annotation\PostSerialize;
+use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\Type;
 
 class ObjectWithLifecycleCallbacks
@@ -52,7 +52,7 @@ class ObjectWithLifecycleCallbacks
      */
     private function prepareForSerialization()
     {
-        $this->name = $this->firstname.' '.$this->lastname;
+        $this->name = $this->firstname . ' ' . $this->lastname;
     }
 
     /**

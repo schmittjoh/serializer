@@ -2,11 +2,10 @@
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 
 $className = 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode';
 
-$metadata = new ClassMetadata( $className );
+$metadata = new ClassMetadata($className);
 
 $pMetadata = new PropertyMetadata($className, 'absent');
 $pMetadata->xmlCollectionSkipWhenEmpty = true;

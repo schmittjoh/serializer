@@ -19,8 +19,8 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\PostDeserialize;
+use JMS\Serializer\Annotation\Type;
 
 /** No annotation */
 class CircularReferenceParent

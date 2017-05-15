@@ -25,7 +25,8 @@ use JMS\Serializer\Annotation as JMS;
  * @JMS\XmlRoot("tag")
  * @JMS\XmlNamespace(uri="http://purl.org/dc/elements/1.1/", prefix="dc")
  */
-class Tag {
+class Tag
+{
 
     /**
      * @JMS\XmlElement(cdata=false)

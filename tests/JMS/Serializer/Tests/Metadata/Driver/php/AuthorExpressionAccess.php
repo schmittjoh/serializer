@@ -1,9 +1,9 @@
 <?php
 
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
-use \JMS\Serializer\Metadata\ExpressionPropertyMetadata;
-use \JMS\Serializer\Metadata\PropertyMetadata;
 
 $metadata = new ClassMetadata('JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess');
 

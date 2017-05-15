@@ -19,16 +19,16 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Tests\Fixtures\Author;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\SerializationContext;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -144,7 +144,7 @@ class JsonSerializationTest extends BaseSerializationTest
         }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
 
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
-            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+            function (VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
             }
         );
@@ -160,7 +160,7 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $this->dispatcher->addSubscriber(new ReplaceNameSubscriber());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
-            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+            function (VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
             }
         );
@@ -238,7 +238,7 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $visitor = $this->serializationVisitors->get('json')->get();
         $functionToCall = 'visit' . ucfirst($primitiveType);
-        $result = $visitor->$functionToCall($data, array(), $this->getMock('JMS\Serializer\Context'));
+        $result = $visitor->$functionToCall($data, array(), $this->getMockBuilder('JMS\Serializer\Context')->getMock());
         if ($primitiveType == 'double') {
             $primitiveType = 'float';
         }
@@ -261,7 +261,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', 1);
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 
     /**
@@ -272,7 +272,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
         ini_set('display_errors', 0);
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 
     public function testSerializeArrayWithEmptyObject()
@@ -326,9 +326,9 @@ class JsonSerializationTest extends BaseSerializationTest
             [['a' => 'a', 'b' => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
 
 
-            [[1,2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<integer,integer>')],
-            [[1,2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<string,integer>')],
-            [[1,2], '{"0":"1","1":"2"}', SerializationContext::create()->setInitialType('array<string,string>')],
+            [[1, 2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<integer,integer>')],
+            [[1, 2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<string,integer>')],
+            [[1, 2], '{"0":"1","1":"2"}', SerializationContext::create()->setInitialType('array<string,string>')],
 
 
             [['a', 'b'], '{"0":"a","1":"b"}', SerializationContext::create()->setInitialType('array<integer,string>')],
@@ -400,8 +400,8 @@ class LinkAddingSubscriber implements EventSubscriberInterface
         $author = $event->getObject();
 
         $event->getVisitor()->addData('_links', array(
-            'details' => 'http://foo.bar/details/'.$author->getName(),
-            'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
+            'details' => 'http://foo.bar/details/' . $author->getName(),
+            'comments' => 'http://foo.bar/details/' . $author->getName() . '/comments',
         ));
     }
 

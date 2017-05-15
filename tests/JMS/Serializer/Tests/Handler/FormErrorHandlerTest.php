@@ -2,8 +2,8 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Handler\FormErrorHandler;
+use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -40,7 +40,7 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler = new FormErrorHandler(new Translator('en'));
         $this->visitor = new JsonSerializationVisitor(new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy()));
         $this->dispatcher = new EventDispatcher();
-        $this->factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
+        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
     }
 
     protected function tearDown()
@@ -99,9 +99,9 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string                   $name
+     * @param string $name
      * @param EventDispatcherInterface $dispatcher
-     * @param string                   $dataClass
+     * @param string $dataClass
      *
      * @return FormBuilder
      */
@@ -117,8 +117,8 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockForm($name = 'name')
     {
-        $form = $this->getMock('Symfony\Component\Form\Test\FormInterface');
-        $config = $this->getMock('Symfony\Component\Form\FormConfigInterface');
+        $form = $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
+        $config = $this->getMockBuilder('Symfony\Component\Form\FormConfigInterface')->getMock();
 
         $form->expects($this->any())
             ->method('getName')

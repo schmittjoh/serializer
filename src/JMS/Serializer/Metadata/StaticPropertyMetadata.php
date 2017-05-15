@@ -96,6 +96,6 @@ class StaticPropertyMetadata extends PropertyMetadata
             $this->class,
             $this->name,
             $this->value
-        ) = unserialize($str);
+            ) = unserialize($str);
     }
 }

@@ -37,11 +37,11 @@ class LazyEventDispatcher extends EventDispatcher
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);
 
         foreach ($listeners as &$listener) {
-            if ( ! is_array($listener) || ! is_string($listener[0])) {
+            if (!is_array($listener) || !is_string($listener[0])) {
                 continue;
             }
 
-            if ( ! $this->container->has($listener[0])) {
+            if (!$this->container->has($listener[0])) {
                 continue;
             }
 

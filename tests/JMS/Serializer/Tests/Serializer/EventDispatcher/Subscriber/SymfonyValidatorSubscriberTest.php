@@ -18,13 +18,11 @@
 
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\AuthorList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -84,7 +82,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $subscriber = $this->subscriber;
         $list = SerializerBuilder::create()
-            ->configureListeners(function(EventDispatcher $dispatcher) use ($subscriber) {
+            ->configureListeners(function (EventDispatcher $dispatcher) use ($subscriber) {
                 $dispatcher->addSubscriber($subscriber);
             })
             ->build()
@@ -104,7 +102,7 @@ class SymfonyValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Symfony\Component\Validator\ValidatorInterface is not available');
         }
 
-        $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
+        $this->validator = $this->getMockBuilder('Symfony\Component\Validator\ValidatorInterface')->getMock();
         $this->subscriber = new SymfonyValidatorSubscriber($this->validator);
     }
 }

@@ -13,13 +13,13 @@ $metadata->registerNamespace('http://purl.org/dc/elements/1.1/', 'dc');
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'id');
 $pMetadata->setType('string');
-$pMetadata->groups = array('comments','post');
+$pMetadata->groups = array('comments', 'post');
 $pMetadata->xmlElementCData = false;
 $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'title');
 $pMetadata->setType('string');
-$pMetadata->groups = array('comments','post');
+$pMetadata->groups = array('comments', 'post');
 $pMetadata->xmlNamespace = "http://purl.org/dc/elements/1.1/";
 $metadata->addPropertyMetadata($pMetadata);
 
@@ -54,7 +54,7 @@ $metadata->addPropertyMetadata($pMetadata);
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'author');
 $pMetadata->setType('JMS\Serializer\Tests\Fixtures\Author');
 $pMetadata->groups = array('post');
-$pMetadata->xmlNamespace  = 'http://www.w3.org/2005/Atom';
+$pMetadata->xmlNamespace = 'http://www.w3.org/2005/Atom';
 
 $metadata->addPropertyMetadata($pMetadata);
 

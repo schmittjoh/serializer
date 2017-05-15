@@ -115,12 +115,12 @@ class ExpressionPropertyMetadata extends PropertyMetadata
             $this->readOnly,
             $this->class,
             $this->name
-        ) = $unserialized;
+            ) = $unserialized;
 
-        if (isset($unserialized['excludeIf'])){
+        if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];
         }
-        if (isset($unserialized['expression'])){
+        if (isset($unserialized['expression'])) {
             $this->expression = $unserialized['expression'];
         }
     }

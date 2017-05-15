@@ -18,10 +18,10 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlList;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @XmlRoot("person_collection")

@@ -13,7 +13,7 @@ class DefaultDriverFactory implements DriverFactoryInterface
 {
     public function createDriver(array $metadataDirs, Reader $annotationReader)
     {
-        if ( ! empty($metadataDirs)) {
+        if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
 
             return new DriverChain(array(

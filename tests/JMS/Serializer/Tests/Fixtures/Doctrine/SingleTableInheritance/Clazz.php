@@ -4,7 +4,6 @@ namespace JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 
 /**
  * @ORM\Entity

@@ -43,7 +43,7 @@ class LazyHandlerRegistry extends HandlerRegistry
             return $this->initializedHandlers[$direction][$typeName][$format];
         }
 
-        if ( ! isset($this->handlers[$direction][$typeName][$format])) {
+        if (!isset($this->handlers[$direction][$typeName][$format])) {
             return null;
         }
 

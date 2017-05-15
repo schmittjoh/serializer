@@ -18,12 +18,12 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 
 class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,7 +40,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name'=> 'DateTime', 'params' => array()),
+            array('name' => 'DateTime', 'params' => array()),
             $metadata->propertyMetadata['createdAt']->type
         );
     }
@@ -49,7 +49,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name'=> 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
+            array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -59,7 +59,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name'=> 'ArrayCollection', 'params' => array(
+            array('name' => 'ArrayCollection', 'params' => array(
                 array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => array()))
             ),
             $metadata->propertyMetadata['comments']->type
@@ -72,7 +72,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals(
-            array('name'=> 'integer', 'params' => array()),
+            array('name' => 'integer', 'params' => array()),
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -112,7 +112,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
         $config->setMetadataDriverImpl(
-            new DoctrineDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/Doctrine')
+            new DoctrineDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
         );
 
         $conn = array(
@@ -130,10 +130,10 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
     protected function getDoctrineDriver()
     {
-        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
         $registry->expects($this->atLeastOnce())
-             ->method('getManagerForClass')
-             ->will($this->returnValue($this->getEntityManager()));
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->getEntityManager()));
 
         return new DoctrineTypeDriver(
             $this->getAnnotationDriver(),

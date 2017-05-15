@@ -18,17 +18,17 @@
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
-use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\DeserializationContext;
 
 class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,8 +60,8 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->builder->build();
 
         $this->assertFileExists($this->tmpDir);
-        $this->assertFileExists($this->tmpDir.'/annotations');
-        $this->assertFileExists($this->tmpDir.'/metadata');
+        $this->assertFileExists($this->tmpDir . '/annotations');
+        $this->assertFileExists($this->tmpDir . '/metadata');
 
         $factory = $this->getField($serializer, 'factory');
         $this->assertAttributeSame(false, 'debug', $factory);
@@ -77,7 +77,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
     {
-        $this->assertSame($this->builder, $this->builder->configureHandlers(function(HandlerRegistry $registry) {
+        $this->assertSame($this->builder, $this->builder->configureHandlers(function (HandlerRegistry $registry) {
         }));
 
         $this->assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
@@ -129,8 +129,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->builder->setSerializationContextFactory($contextFactoryMock);
 
@@ -149,8 +148,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->builder->setDeserializationContextFactory($contextFactoryMock);
 
@@ -165,8 +163,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->builder->setSerializationContextFactory(function () {
             return SerializationContext::create()
-                ->setSerializeNull(true)
-            ;
+                ->setSerializeNull(true);
         });
 
         $serializer = $this->builder->build();
@@ -180,8 +177,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->builder->setSerializationContextFactory(function () {
             return SerializationContext::create()
-                ->setSerializeNull(false)
-            ;
+                ->setSerializeNull(false);
         });
 
         $serializer = $this->builder->build();
@@ -239,7 +235,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->builder = SerializerBuilder::create();
         $this->fs = new Filesystem();
 
-        $this->tmpDir = sys_get_temp_dir().'/serializer';
+        $this->tmpDir = sys_get_temp_dir() . '/serializer';
         $this->fs->remove($this->tmpDir);
         clearstatcache();
     }

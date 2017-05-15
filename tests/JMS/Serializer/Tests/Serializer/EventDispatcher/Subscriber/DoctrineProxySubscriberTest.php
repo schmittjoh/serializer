@@ -21,11 +21,11 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
-use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
-use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
+use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
+use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
@@ -133,7 +133,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();
-        $this->visitor = $this->getMock('JMS\Serializer\Context');
+        $this->visitor = $this->getMockBuilder('JMS\Serializer\Context')->getMock();
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->subscriber);
