@@ -22,7 +22,6 @@ use \PropelCollection;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
 class PropelCollectionHandler implements SubscribingHandlerInterface
 {
