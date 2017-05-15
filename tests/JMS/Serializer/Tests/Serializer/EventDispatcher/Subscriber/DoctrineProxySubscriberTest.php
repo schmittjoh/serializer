@@ -120,6 +120,16 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['name' => 'foo', 'params' => ['bar']], $event->getType());
     }
 
+    public function testListenersDoNotChangeTypeOnProxiesAndVirtualTypes()
+    {
+        $proxy = new SimpleObjectProxy('foo', 'bar');
+
+        $event = $this->createEvent($proxy, ['name' => 'foo', 'params' => []]);
+        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
+
+        $this->assertSame(['name' => 'foo', 'params' => []], $event->getType());
+    }
+
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();

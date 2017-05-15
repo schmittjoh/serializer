@@ -90,6 +90,12 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
 
     public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher)
     {
+        $type = $event->getType();
+        // is a virtual type? then there is no need to change the event name
+        if (!class_exists($type['name'], false)) {
+            return;
+        }
+
         $object = $event->getObject();
         if ($object instanceof Proxy) {
             $parentClassName = get_parent_class($object);
@@ -97,8 +103,7 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             // check if this is already a re-dispatch
             if (strtolower($class) !== strtolower($parentClassName)) {
                 $event->stopPropagation();
-                $previousType = $event->getType();
-                $newEvent = new PreSerializeEvent($event->getContext(), $object, array('name' => $parentClassName, 'params' => $previousType['params']));
+                $newEvent = new PreSerializeEvent($event->getContext(), $object, array('name' => $parentClassName, 'params' => $type['params']));
                 $dispatcher->dispatch($eventName, $parentClassName, $format, $newEvent);
 
                 // update the type in case some listener changed it
