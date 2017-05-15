@@ -72,7 +72,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $serializer = $this->builder->build();
 
-        $this->assertEquals('"2020-04-16T00:00:00+0000"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
+        $this->assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
     }
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
