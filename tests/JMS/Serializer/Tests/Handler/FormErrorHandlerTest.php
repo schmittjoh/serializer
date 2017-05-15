@@ -2,8 +2,8 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Handler\FormErrorHandler;
+use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -99,9 +99,9 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string                   $name
+     * @param string $name
      * @param EventDispatcherInterface $dispatcher
-     * @param string                   $dataClass
+     * @param string $dataClass
      *
      * @return FormBuilder
      */

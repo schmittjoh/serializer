@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Tests\Metadata;
 
-use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 
 class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 {

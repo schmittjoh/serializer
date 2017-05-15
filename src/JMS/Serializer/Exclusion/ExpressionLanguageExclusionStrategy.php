@@ -19,9 +19,9 @@
 namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
 /**
  * Exposes an exclusion strategy based on the Symfony's expression language.

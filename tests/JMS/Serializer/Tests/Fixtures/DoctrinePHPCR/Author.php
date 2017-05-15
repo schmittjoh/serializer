@@ -18,10 +18,8 @@
 
 namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
 
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\SerializedName;
-
 use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
+use JMS\Serializer\Annotation\SerializedName;
 
 /** @PHPCRODM\Document */
 class Author

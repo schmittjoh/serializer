@@ -35,20 +35,25 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testHasListeners()
     {
         $this->assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
-        $this->dispatcher->addListener('foo', function() { });
+        $this->dispatcher->addListener('foo', function () {
+        });
         $this->assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
 
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, 'Foo');
+        $this->dispatcher->addListener('bar', function () {
+        }, 'Foo');
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, 'Bar', 'xml');
+        $this->dispatcher->addListener('bar', function () {
+        }, 'Bar', 'xml');
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, null, 'json');
+        $this->dispatcher->addListener('bar', function () {
+        }, null, 'json');
         $this->assertTrue($this->dispatcher->hasListeners('bar', 'Baz', 'json'));
         $this->assertTrue($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
 
         $this->assertFalse($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
-        $this->dispatcher->addListener('baz', function() { }, 'Bar');
+        $this->dispatcher->addListener('baz', function () {
+        }, 'Bar');
         $this->assertTrue($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
         $this->assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
     }
@@ -80,12 +85,12 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $listener1 = false;
         $listener2 = false;
 
-        $this->dispatcher->addListener('pre', function (Event $event) use(&$listener1) {
+        $this->dispatcher->addListener('pre', function (Event $event) use (&$listener1) {
             $event->stopPropagation();
             $listener1 = true;
         });
 
-        $this->dispatcher->addListener('pre', function () use(&$listener2) {
+        $this->dispatcher->addListener('pre', function () use (&$listener2) {
             $listener2 = true;
         });
 
@@ -101,7 +106,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $listener2 = false;
         $listener3 = false;
 
-        $this->dispatcher->addListener('pre', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use(&$listener1) {
+        $this->dispatcher->addListener('pre', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use (&$listener1) {
             $listener1 = true;
 
             $event = new Event($event->getContext(), $event->getType());
@@ -113,11 +118,11 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
             $dispatcher->dispatch('post', 'Blah', 'xml', $event);
         });
 
-        $this->dispatcher->addListener('pre', function () use(&$listener2) {
+        $this->dispatcher->addListener('pre', function () use (&$listener2) {
             $listener2 = true;
         });
 
-        $this->dispatcher->addListener('post', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use(&$listener3) {
+        $this->dispatcher->addListener('post', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use (&$listener3) {
             $listener3 = true;
 
             $this->assertSame('post', $eventName);
@@ -181,7 +186,7 @@ class MockListener
 
     public function __call($method, array $args = array())
     {
-        if ( ! $this->wasReplayed) {
+        if (!$this->wasReplayed) {
             $this->expected[] = array($method, $args);
 
             return;

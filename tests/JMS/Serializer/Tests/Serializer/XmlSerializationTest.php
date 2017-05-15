@@ -20,40 +20,40 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
-use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
-use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
-use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
-use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyVirtual;
-use JMS\Serializer\Tests\Fixtures\PersonCollection;
-use JMS\Serializer\Tests\Fixtures\PersonLocation;
-use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyVirtual;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
-use JMS\Serializer\Tests\Fixtures\Input;
+use JMS\Serializer\Tests\Fixtures\Person;
+use JMS\Serializer\Tests\Fixtures\PersonCollection;
+use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
-use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\XmlSerializationVisitor;
 use PhpCollection\Map;
-use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -73,7 +73,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testXMLBooleans($xmlBoolean, $boolean)
     {
         if ($this->hasDeserializer()) {
-            $this->assertSame($boolean, $this->deserialize('<result>'.$xmlBoolean.'</result>', 'boolean'));
+            $this->assertSame($boolean, $this->deserialize('<result>' . $xmlBoolean . '</result>', 'boolean'));
         }
     }
 
@@ -134,7 +134,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
             <result>
                 &foo;
@@ -154,7 +154,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>'));
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
@@ -162,7 +162,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
             <foo></foo>', 'stdClass', 'xml');
     }
@@ -221,16 +221,16 @@ class XmlSerializationTest extends BaseSerializationTest
         $object->nameAlternativeB = 'nameB';
 
         $object->phones = array('111', '222');
-        $object->addresses = array('A'=>'Street 1', 'B'=>'Street 2');
+        $object->addresses = array('A' => 'Street 1', 'B' => 'Street 2');
 
         $object->phonesAlternativeB = array('555', '666');
-        $object->addressesAlternativeB = array('A'=>'Street 5', 'B'=>'Street 6');
+        $object->addressesAlternativeB = array('A' => 'Street 5', 'B' => 'Street 6');
 
         $object->phonesAlternativeC = array('777', '888');
-        $object->addressesAlternativeC = array('A'=>'Street 7', 'B'=>'Street 8');
+        $object->addressesAlternativeC = array('A' => 'Street 7', 'B' => 'Street 8');
 
         $object->phonesAlternativeD = array('999', 'AAA');
-        $object->addressesAlternativeD = array('A'=>'Street 9', 'B'=>'Street A');
+        $object->addressesAlternativeD = array('A' => 'Street 9', 'B' => 'Street A');
 
         $this->assertEquals(
             $this->getContent('object_with_namespaces_and_list'),
@@ -301,7 +301,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $object->addressesAlternativeB = array();
 
         $object->phonesAlternativeC = array('777', '888');
-        $object->addressesAlternativeC = array('A'=>'Street 7', 'B'=>'Street 8');
+        $object->addressesAlternativeC = array('A' => 'Street 7', 'B' => 'Street 8');
 
         $object->phonesAlternativeD = array();
         $object->addressesAlternativeD = array();
@@ -371,7 +371,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $object = new ObjectWithXmlNamespacesAndObjectPropertyVirtual('This is a nice title.', new \stdClass());
 
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual', $this->getFormat(),
-            function(XmlSerializationVisitor $visitor, $data, $type, Context $context) use($author) {
+            function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
                 $factory = $context->getMetadataFactory(get_class($author));
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
 
@@ -419,7 +419,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $xmlVisitor->setFormatOutput(false);
 
         $visitors = new Map(array(
-            'xml'  => new XmlSerializationVisitor($namingStrategy),
+            'xml' => new XmlSerializationVisitor($namingStrategy),
         ));
 
         $serializer = new Serializer(
@@ -491,7 +491,7 @@ class XmlSerializationTest extends BaseSerializationTest
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
-        return (string) reset($nodes);
+        return (string)reset($nodes);
     }
 
     /**
@@ -499,7 +499,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     protected function getContent($key)
     {
-        if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {
+        if (!file_exists($file = __DIR__ . '/xml/' . $key . '.xml')) {
             throw new InvalidArgumentException(sprintf('The key "%s" is not supported.', $key));
         }
 

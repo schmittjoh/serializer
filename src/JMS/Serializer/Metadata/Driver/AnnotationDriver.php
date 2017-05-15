@@ -18,47 +18,47 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use JMS\Serializer\Annotation\Discriminator;
-use JMS\Serializer\Annotation\ExcludeIf;
-use JMS\Serializer\Annotation\SkipWhenEmpty;
-use JMS\Serializer\Annotation\XmlDiscriminator;
-use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\Annotation\HandlerCallback;
-use JMS\Serializer\Annotation\AccessorOrder;
-use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\AccessType;
-use JMS\Serializer\Annotation\XmlMap;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlNamespace;
-use JMS\Serializer\Annotation\XmlAttribute;
-use JMS\Serializer\Annotation\XmlList;
-use JMS\Serializer\Annotation\XmlValue;
-use JMS\Serializer\Annotation\XmlKeyValuePairs;
-use JMS\Serializer\Annotation\XmlElement;
-use JMS\Serializer\Annotation\PostSerialize;
-use JMS\Serializer\Annotation\PostDeserialize;
-use JMS\Serializer\Annotation\PreSerialize;
-use JMS\Serializer\Annotation\VirtualProperty;
-use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
-use Metadata\MethodMetadata;
 use Doctrine\Common\Annotations\Reader;
-use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\AccessorOrder;
+use JMS\Serializer\Annotation\AccessType;
+use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\Annotation\Exclude;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\Until;
-use JMS\Serializer\Annotation\Since;
+use JMS\Serializer\Annotation\ExcludeIf;
 use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\Inline;
+use JMS\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation\PostDeserialize;
+use JMS\Serializer\Annotation\PostSerialize;
+use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Since;
+use JMS\Serializer\Annotation\SkipWhenEmpty;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Until;
+use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlAttributeMap;
+use JMS\Serializer\Annotation\XmlDiscriminator;
+use JMS\Serializer\Annotation\XmlElement;
+use JMS\Serializer\Annotation\XmlKeyValuePairs;
+use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlMap;
+use JMS\Serializer\Annotation\XmlNamespace;
+use JMS\Serializer\Annotation\XmlRoot;
+use JMS\Serializer\Annotation\XmlValue;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
-use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Annotation\XmlAttributeMap;
 use Metadata\Driver\DriverInterface;
-use JMS\Serializer\Annotation\MaxDepth;
+use Metadata\MethodMetadata;
 
 class AnnotationDriver implements DriverInterface
 {
@@ -104,9 +104,9 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups);
                 }
             } elseif ($annot instanceof XmlDiscriminator) {
-                $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
-                $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
-                $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string) $annot->namespace : null;
+                $classMetadata->xmlDiscriminatorAttribute = (bool)$annot->attribute;
+                $classMetadata->xmlDiscriminatorCData = (bool)$annot->cdata;
+                $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string)$annot->namespace : null;
             } elseif ($annot instanceof VirtualProperty) {
                 $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $annot->name, $annot->exp);
                 $propertiesMetadata[] = $virtualPropertyMetadata;
@@ -143,7 +143,7 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if ( ! $excludeAll) {
+        if (!$excludeAll) {
             foreach ($class->getProperties() as $property) {
                 if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
@@ -218,12 +218,12 @@ class AnnotationDriver implements DriverInterface
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
-                        foreach ((array) $propertyMetadata->groups as $groupName) {
+                        foreach ((array)$propertyMetadata->groups as $groupName) {
                             if (false !== strpos($groupName, ',')) {
                                 throw new InvalidArgumentException(sprintf(
                                     'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
                                     implode(', ', $propertyMetadata->groups),
-                                    $propertyMetadata->class.'->'.$propertyMetadata->name
+                                    $propertyMetadata->class . '->' . $propertyMetadata->name
                                 ));
                             }
                         }
@@ -237,8 +237,9 @@ class AnnotationDriver implements DriverInterface
                 }
 
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && ! $isExclude)
-                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
+                if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
+                ) {
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }

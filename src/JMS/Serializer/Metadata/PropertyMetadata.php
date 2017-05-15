@@ -18,14 +18,14 @@
 
 namespace JMS\Serializer\Metadata;
 
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\TypeParser;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
-use JMS\Serializer\Exception\RuntimeException;
 
 class PropertyMetadata extends BasePropertyMetadata
 {
-    const ACCESS_TYPE_PROPERTY        = 'property';
-    const ACCESS_TYPE_PUBLIC_METHOD   = 'public_method';
+    const ACCESS_TYPE_PROPERTY = 'property';
+    const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
     public $sinceVersion;
     public $untilVersion;
@@ -60,22 +60,22 @@ class PropertyMetadata extends BasePropertyMetadata
             $class = $this->reflection->getDeclaringClass();
 
             if (empty($getter)) {
-                if ($class->hasMethod('get'.$this->name) && $class->getMethod('get'.$this->name)->isPublic()) {
-                    $getter = 'get'.$this->name;
-                } elseif ($class->hasMethod('is'.$this->name) && $class->getMethod('is'.$this->name)->isPublic()) {
-                    $getter = 'is'.$this->name;
-                } elseif ($class->hasMethod('has'.$this->name) && $class->getMethod('has'.$this->name)->isPublic()) {
-                    $getter = 'has'.$this->name;
+                if ($class->hasMethod('get' . $this->name) && $class->getMethod('get' . $this->name)->isPublic()) {
+                    $getter = 'get' . $this->name;
+                } elseif ($class->hasMethod('is' . $this->name) && $class->getMethod('is' . $this->name)->isPublic()) {
+                    $getter = 'is' . $this->name;
+                } elseif ($class->hasMethod('has' . $this->name) && $class->getMethod('has' . $this->name)->isPublic()) {
+                    $getter = 'has' . $this->name;
                 } else {
-                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get'.ucfirst($this->name), 'is'.ucfirst($this->name), 'has'.ucfirst($this->name), $this->class, $this->name));
+                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get' . ucfirst($this->name), 'is' . ucfirst($this->name), 'has' . ucfirst($this->name), $this->class, $this->name));
                 }
             }
 
-            if (empty($setter) && ! $this->readOnly) {
-                if ($class->hasMethod('set'.$this->name) && $class->getMethod('set'.$this->name)->isPublic()) {
-                    $setter = 'set'.$this->name;
+            if (empty($setter) && !$this->readOnly) {
+                if ($class->hasMethod('set' . $this->name) && $class->getMethod('set' . $this->name)->isPublic()) {
+                    $setter = 'set' . $this->name;
                 } else {
-                    throw new RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set'.ucfirst($this->name), $this->class, $this->name));
+                    throw new RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set' . ucfirst($this->name), $this->class, $this->name));
                 }
             }
         }
@@ -168,18 +168,18 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             $parentStr
-        ) = $unserialized;
+            ) = $unserialized;
 
-        if (isset($unserialized['xmlEntryNamespace'])){
+        if (isset($unserialized['xmlEntryNamespace'])) {
             $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
         }
-        if (isset($unserialized['xmlCollectionSkipWhenEmpty'])){
+        if (isset($unserialized['xmlCollectionSkipWhenEmpty'])) {
             $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
         }
-        if (isset($unserialized['excludeIf'])){
+        if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];
         }
-        if (isset($unserialized['skipWhenEmpty'])){
+        if (isset($unserialized['skipWhenEmpty'])) {
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
         }
 

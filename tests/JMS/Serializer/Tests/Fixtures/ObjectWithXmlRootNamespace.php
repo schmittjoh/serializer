@@ -19,10 +19,8 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlNamespace;
-use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @XmlRoot("test-object", namespace="http://example.com/namespace")
@@ -50,7 +48,7 @@ class ObjectWithXmlRootNamespace
      * @Type("string")
      */
     private $author;
-    
+
     /**
      * @Type("string")
      * @XmlAttribute

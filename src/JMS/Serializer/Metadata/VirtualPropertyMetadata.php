@@ -98,9 +98,9 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->readOnly,
             $this->class,
             $this->name
-        ) = $unserialized;
+            ) = $unserialized;
 
-        if (isset($unserialized['excludeIf'])){
+        if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];
         }
     }

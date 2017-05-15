@@ -6,7 +6,7 @@ use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 
 $className = 'JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties';
 
-$metadata = new ClassMetadata( $className );
+$metadata = new ClassMetadata($className);
 
 $pMetadata = new PropertyMetadata($className, 'existField');
 $metadata->addPropertyMetadata($pMetadata);

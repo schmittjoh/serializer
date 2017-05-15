@@ -29,7 +29,7 @@ $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces', 'author');
 $pMetadata->setType('string');
-$pMetadata->xmlNamespace  = 'http://www.w3.org/2005/Atom';
+$pMetadata->xmlNamespace = 'http://www.w3.org/2005/Atom';
 $metadata->addPropertyMetadata($pMetadata);
 
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces', 'language');

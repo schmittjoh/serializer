@@ -14,13 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlMap;
-use JMS\Serializer\Annotation\XmlList;
-use JMS\Serializer\Annotation\XmlKeyValuePairs;
 
 
 class DateTimeArraysObject
@@ -40,8 +37,8 @@ class DateTimeArraysObject
 
     function __construct($arrayWithDefaultDateTime, $arrayWithFormattedDateTime)
     {
-        $this->arrayWithDefaultDateTime    = $arrayWithDefaultDateTime;
-        $this->arrayWithFormattedDateTime  = $arrayWithFormattedDateTime;
+        $this->arrayWithDefaultDateTime = $arrayWithDefaultDateTime;
+        $this->arrayWithFormattedDateTime = $arrayWithFormattedDateTime;
     }
 
     /**

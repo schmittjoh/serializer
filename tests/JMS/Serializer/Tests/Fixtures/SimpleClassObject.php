@@ -18,10 +18,10 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlElement;
+use JMS\Serializer\Annotation\XmlNamespace;
 
 /**
  * @XmlNamespace(prefix="old_foo", uri="http://old.foo.example.org");
@@ -35,7 +35,7 @@ class SimpleClassObject
      * @XmlAttribute(namespace="http://old.foo.example.org")
      */
     public $foo;
-    
+
     /**
      * @Type("string")
      * @XmlElement(namespace="http://foo.example.org")

@@ -9,22 +9,22 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMException;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
+use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -80,11 +80,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $connection    = $this->createConnection();
+        $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);
 
         $this->registry = $registry = new SimpleManagerRegistry(
-            function($id) use($connection, $entityManager) {
+            function ($id) use ($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
                         return $connection;
@@ -100,14 +100,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function(array $metadataDirs, Reader $annotationReader) use($registry) {
+                function (array $metadataDirs, Reader $annotationReader) use ($registry) {
                     $defaultFactory = new DefaultDriverFactory();
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
-            ->build()
-        ;
+            ->build();
 
         $this->prepareDatabase();
     }
@@ -135,11 +134,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $cfg = new Configuration();
         $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
-            __DIR__.'/../../Fixtures/Doctrine/SingleTableInheritance',
+            __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
         )));
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
-        $cfg->setProxyDir(sys_get_temp_dir().'/serializer-test-proxies');
+        $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
         $em = EntityManager::create($con, $cfg);
 
@@ -155,15 +154,15 @@ class SimpleManagerRegistry extends AbstractManagerRegistry
     public function __construct($serviceCreator, $name = 'anonymous', array $connections = array('default' => 'default_connection'), array $managers = array('default' => 'default_manager'), $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
     {
         if (null === $defaultConnection) {
-            list($defaultConnection, ) = each($connections);
+            list($defaultConnection,) = each($connections);
         }
         if (null === $defaultManager) {
-            list($defaultManager, ) = each($managers);
+            list($defaultManager,) = each($managers);
         }
 
         parent::__construct($name, $connections, $managers, $defaultConnection, $defaultManager, $proxyInterface);
 
-        if ( ! is_callable($serviceCreator)) {
+        if (!is_callable($serviceCreator)) {
             throw new \InvalidArgumentException('$serviceCreator must be a valid callable.');
         }
         $this->serviceCreator = $serviceCreator;

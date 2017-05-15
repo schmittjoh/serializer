@@ -42,9 +42,9 @@ class DateHandler implements SubscribingHandlerInterface
 
             foreach ($deserialisationTypes as $type) {
                 $methods[] = [
-                    'type'      => $type,
+                    'type' => $type,
                     'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
-                    'format'    => $format,
+                    'format' => $format,
                 ];
             }
 
@@ -53,7 +53,7 @@ class DateHandler implements SubscribingHandlerInterface
                     'type' => $type,
                     'format' => $format,
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                    'method' => 'serialize'.$type,
+                    'method' => 'serialize' . $type,
                 );
             }
         }
@@ -116,7 +116,7 @@ class DateHandler implements SubscribingHandlerInterface
     private function isDataXmlNull($data)
     {
         $attributes = $data->attributes('xsi', true);
-        return isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true';
+        return isset($attributes['nil'][0]) && (string)$attributes['nil'][0] === 'true';
     }
 
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
@@ -179,9 +179,9 @@ class DateHandler implements SubscribingHandlerInterface
         $format = $this->getFormat($type);
 
         if ($immutable) {
-            $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
+            $datetime = \DateTimeImmutable::createFromFormat($format, (string)$data, $timezone);
         } else {
-            $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+            $datetime = \DateTime::createFromFormat($format, (string)$data, $timezone);
         }
 
         if (false === $datetime) {
@@ -221,15 +221,15 @@ class DateHandler implements SubscribingHandlerInterface
         $format = 'P';
 
         if (0 < $dateInterval->y) {
-            $format .= $dateInterval->y.'Y';
+            $format .= $dateInterval->y . 'Y';
         }
 
         if (0 < $dateInterval->m) {
-            $format .= $dateInterval->m.'M';
+            $format .= $dateInterval->m . 'M';
         }
 
         if (0 < $dateInterval->d) {
-            $format .= $dateInterval->d.'D';
+            $format .= $dateInterval->d . 'D';
         }
 
         if (0 < $dateInterval->h || 0 < $dateInterval->i || 0 < $dateInterval->s) {
@@ -237,15 +237,15 @@ class DateHandler implements SubscribingHandlerInterface
         }
 
         if (0 < $dateInterval->h) {
-            $format .= $dateInterval->h.'H';
+            $format .= $dateInterval->h . 'H';
         }
 
         if (0 < $dateInterval->i) {
-            $format .= $dateInterval->i.'M';
+            $format .= $dateInterval->i . 'M';
         }
 
         if (0 < $dateInterval->s) {
-            $format .= $dateInterval->s.'S';
+            $format .= $dateInterval->s . 'S';
         }
 
         if ($format === 'P') {

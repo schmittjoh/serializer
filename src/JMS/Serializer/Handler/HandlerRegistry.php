@@ -18,9 +18,9 @@
 
 namespace JMS\Serializer\Handler;
 
-use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\GraphNavigator;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
@@ -34,10 +34,10 @@ class HandlerRegistry implements HandlerRegistryInterface
 
         switch ($direction) {
             case GraphNavigator::DIRECTION_DESERIALIZATION:
-                return 'deserialize'.$type.'From'.$format;
+                return 'deserialize' . $type . 'From' . $format;
 
             case GraphNavigator::DIRECTION_SERIALIZATION:
-                return 'serialize'.$type.'To'.$format;
+                return 'serialize' . $type . 'To' . $format;
 
             default:
                 throw new LogicException(sprintf('The direction %s does not exist; see GraphNavigator::DIRECTION_??? constants.', json_encode($direction)));
@@ -52,7 +52,7 @@ class HandlerRegistry implements HandlerRegistryInterface
     public function registerSubscribingHandler(SubscribingHandlerInterface $handler)
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
-            if ( ! isset($methodData['type'], $methodData['format'])) {
+            if (!isset($methodData['type'], $methodData['format'])) {
                 throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), get_class($handler)));
             }
 
@@ -79,7 +79,7 @@ class HandlerRegistry implements HandlerRegistryInterface
 
     public function getHandler($direction, $typeName, $format)
     {
-        if ( ! isset($this->handlers[$direction][$typeName][$format])) {
+        if (!isset($this->handlers[$direction][$typeName][$format])) {
             return null;
         }
 

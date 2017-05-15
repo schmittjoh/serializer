@@ -18,9 +18,9 @@
 
 namespace JMS\Serializer\Exclusion;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Context;
 
 /**
  * Interface for exclusion strategies.

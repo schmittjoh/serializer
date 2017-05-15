@@ -18,14 +18,14 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
+use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\XmlDeserializationVisitor;
-use Symfony\Component\Yaml\Inline;
-use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\Annotation\HandlerCallback;
+use JMS\Serializer\YamlSerializationVisitor;
+use Symfony\Component\Yaml\Inline;
 
 class Article
 {
@@ -51,14 +51,14 @@ class Article
     /** @HandlerCallback("yml", direction = "serialization") */
     public function serializeToYml(YamlSerializationVisitor $visitor)
     {
-        $visitor->writer->writeln(Inline::dump($this->element).': '.Inline::dump($this->value));
+        $visitor->writer->writeln(Inline::dump($this->element) . ': ' . Inline::dump($this->value));
     }
 
     /** @HandlerCallback("xml", direction = "deserialization") */
     public function deserializeFromXml(XmlDeserializationVisitor $visitor, \SimpleXMLElement $data)
     {
         $this->element = $data->getName();
-        $this->value = (string) $data;
+        $this->value = (string)$data;
     }
 
     /** @HandlerCallback("json", direction = "deserialization") */

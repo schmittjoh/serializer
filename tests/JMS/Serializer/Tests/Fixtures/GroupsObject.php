@@ -42,16 +42,16 @@ class GroupsObject
      */
     private $bar;
 
-     /**
+    /**
      * @Type("string")
      */
     private $none;
 
     public function __construct()
     {
-        $this->foo  = "foo";
+        $this->foo = "foo";
         $this->bar = "bar";
-        $this->foobar  = "foobar";
+        $this->foobar = "foobar";
         $this->none = "none";
     }
 }

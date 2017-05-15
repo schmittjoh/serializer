@@ -18,13 +18,12 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
-use JMS\Serializer\SerializerBuilder;
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
@@ -157,7 +156,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             array(array())
         );
     }
-    
+
     /**
      * @dataProvider getScalars
      */

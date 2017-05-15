@@ -62,6 +62,7 @@ class Event
     {
         return $this->propagationStopped;
     }
+
     /**
      * Stops the propagation of the event to further event listeners.
      *

@@ -49,7 +49,7 @@ class SymfonyValidatorSubscriber implements EventSubscriberInterface
 
         $validator = $this->validator;
         $context->attributes->get('validation_groups')->map(
-            function(array $groups) use ($event, $validator) {
+            function (array $groups) use ($event, $validator) {
                 $list = $validator->validate($event->getObject(), $groups);
 
                 if ($list->count() > 0) {

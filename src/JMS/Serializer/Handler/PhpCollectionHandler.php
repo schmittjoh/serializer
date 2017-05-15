@@ -41,14 +41,14 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
-                    'method' => 'serialize'.$shortName,
+                    'method' => 'serialize' . $shortName,
                 );
 
                 $methods[] = array(
                     'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
                     'type' => $type,
                     'format' => $format,
-                    'method' => 'deserialize'.$shortName,
+                    'method' => 'deserialize' . $shortName,
                 );
             }
         }

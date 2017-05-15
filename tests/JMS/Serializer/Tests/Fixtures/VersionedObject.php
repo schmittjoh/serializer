@@ -37,7 +37,7 @@ class VersionedObject
 
     public function __construct($name, $name2)
     {
-        $this->name  = $name;
+        $this->name = $name;
         $this->name2 = $name2;
     }
 }

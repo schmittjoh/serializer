@@ -18,10 +18,8 @@
 
 namespace JMS\Serializer\Tests\Fixtures\Doctrine;
 
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\SerializedName;
-
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\SerializedName;
 
 /** @ORM\Entity */
 class Author

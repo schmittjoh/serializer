@@ -18,19 +18,19 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use JMS\Serializer\Handler\HandlerRegistry;
-use PhpCollection\Map;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use Metadata\MetadataFactory;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
+use Metadata\MetadataFactory;
+use PhpCollection\Map;
 
 class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,8 +60,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->serializer->setSerializationContextFactory($contextFactoryMock);
 
@@ -78,8 +77,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->serializer->setDeserializationContextFactory($contextFactoryMock);
 
@@ -97,8 +95,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->serializer->setSerializationContextFactory($contextFactoryMock);
 
@@ -115,8 +112,7 @@ class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context))
-        ;
+            ->will($this->returnValue($context));
 
         $this->serializer->setDeserializationContextFactory($contextFactoryMock);
 

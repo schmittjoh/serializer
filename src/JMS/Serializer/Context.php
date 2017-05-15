@@ -116,7 +116,7 @@ abstract class Context
 
     private function assertMutable()
     {
-        if ( ! $this->initialized) {
+        if (!$this->initialized) {
             return;
         }
 
@@ -171,8 +171,8 @@ abstract class Context
             throw new \LogicException('The groups must not be empty.');
         }
 
-        $this->attributes->set('groups', (array) $groups);
-        $this->addExclusionStrategy(new GroupsExclusionStrategy((array) $groups));
+        $this->attributes->set('groups', (array)$groups);
+        $this->addExclusionStrategy(new GroupsExclusionStrategy((array)$groups));
 
         return $this;
     }
@@ -192,7 +192,7 @@ abstract class Context
      */
     public function setSerializeNull($bool)
     {
-        $this->serializeNull = (boolean) $bool;
+        $this->serializeNull = (boolean)$bool;
 
         return $this;
     }
@@ -232,7 +232,7 @@ abstract class Context
     {
         $metadata = $this->metadataStack->pop();
 
-        if ( ! $metadata instanceof PropertyMetadata) {
+        if (!$metadata instanceof PropertyMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
     }
@@ -241,7 +241,7 @@ abstract class Context
     {
         $metadata = $this->metadataStack->pop();
 
-        if ( ! $metadata instanceof ClassMetadata) {
+        if (!$metadata instanceof ClassMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
     }

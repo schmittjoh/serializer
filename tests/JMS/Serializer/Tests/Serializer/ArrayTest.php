@@ -18,21 +18,21 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
-use PhpCollection\Map;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Metadata\MetadataFactory;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use PhpCollection\Map;
 
 class ArrayTest extends \PHPUnit_Framework_TestCase
 {

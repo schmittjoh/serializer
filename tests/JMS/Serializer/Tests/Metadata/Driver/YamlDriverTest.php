@@ -18,9 +18,9 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use Metadata\Driver\FileLocator;
-use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
+use JMS\Serializer\Metadata\PropertyMetadata;
+use Metadata\Driver\FileLocator;
 
 class YamlDriverTest extends BaseDriverTest
 {
@@ -86,7 +86,7 @@ class YamlDriverTest extends BaseDriverTest
     private function getDriverForSubDir($subDir = null)
     {
         return new YamlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/yml' . ($subDir ? '/'.$subDir : ''),
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
         )));
     }
 

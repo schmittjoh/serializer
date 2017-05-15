@@ -19,10 +19,10 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\XmlList;
-use JMS\Serializer\Annotation\XmlAttribute;
 
 /** @XmlRoot("post") */
 class IndexedCommentsBlogPost

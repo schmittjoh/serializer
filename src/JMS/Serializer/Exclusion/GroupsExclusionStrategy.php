@@ -18,9 +18,9 @@
 
 namespace JMS\Serializer\Exclusion;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Context;
 
 class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
@@ -52,8 +52,8 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     {
         $groups = $this->getGroupsFor($navigatorContext);
 
-        if ( ! $property->groups) {
-            return ! in_array(self::DEFAULT_GROUP, $groups);
+        if (!$property->groups) {
+            return !in_array(self::DEFAULT_GROUP, $groups);
         }
 
         return $this->shouldSkipUsingGroups($property, $groups);
