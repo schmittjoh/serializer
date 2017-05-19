@@ -26,6 +26,7 @@ use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -52,6 +53,7 @@ use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
+use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use PhpCollection\Map;
 
@@ -486,6 +488,15 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializeEmptyString()
     {
         $this->deserialize('', 'stdClass');
+    }
+
+    public function testIsNullDataWithXSINilLabeledElement()
+    {
+        $namingStrategy = $this->getMockBuilder(PropertyNamingStrategyInterface::class)->getMock();
+        $visitor = new XmlDeserializationVisitor($namingStrategy);
+        $element = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
+
+        $this->assertTrue($visitor->isNullData($element));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

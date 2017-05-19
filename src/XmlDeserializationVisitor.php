@@ -387,4 +387,26 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         return $internalSubset;
     }
+
+    /**
+     * Consider xml element value null if the xsi:nil attribute is set and therefore can't have a value
+     * @see https://www.w3.org/TR/xmlschema-1/#xsi_nil
+     *
+     * @param $data
+     *
+     * @return bool
+     */
+    public function isNullData($data)
+    {
+        if ($data instanceof \SimpleXMLElement) {
+            $xsiAttributes = $data->attributes('http://www.w3.org/2001/XMLSchema-instance');
+
+            //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
+            if (@isset($xsiAttributes['nil']) && (string) $xsiAttributes['nil'] === 'true') {
+                return true;
+            }
+        }
+
+        return $data === null;
+    }
 }

@@ -138,4 +138,14 @@ interface VisitorInterface
      * @return object|array|scalar
      */
     public function getResult();
+
+    /**
+     * Determine if the value evaluates to null.
+     * Used by the navigator to determine the correct data type.
+     *
+     * @param mixed $data
+     *
+     * @return bool
+     */
+    public function isNullData($data);
 }
