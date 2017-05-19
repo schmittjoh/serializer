@@ -303,7 +303,7 @@ by the object itself.
 .. versionadded : 0.12
     @Discriminator was added
 
-This annotation allows deserialization of relations which are polymorphic, but
+This annotation allows serialization/deserialization of relations which are polymorphic, but
 where a common base class exists. The ``@Discriminator`` annotation has to be applied
 to the least super type::
 
