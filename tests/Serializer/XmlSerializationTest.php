@@ -490,13 +490,14 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->deserialize('', 'stdClass');
     }
 
-    public function testIsNullDataWithXSINilLabeledElement()
+    public function testEvaluatesToNull()
     {
         $namingStrategy = $this->getMockBuilder(PropertyNamingStrategyInterface::class)->getMock();
         $visitor = new XmlDeserializationVisitor($namingStrategy);
         $element = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
 
-        $this->assertTrue($visitor->isNullData($element));
+        $this->assertTrue($visitor->evaluatesToNull($element));
+        $this->assertTrue($visitor->evaluatesToNull(null));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

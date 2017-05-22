@@ -119,10 +119,18 @@ final class GraphNavigator
 
             $type = array('name' => $typeName, 'params' => array());
         }
-
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-        if ($visitor instanceof VisitorInterface && true === $visitor->isNullData($data)) {
+        else if ($context instanceof SerializationContext && null === $data) {
+            $type = array('name' => 'NULL', 'params' => array());
+        }
+
+        // Sometimes data can convey null but is not of a null type.
+        // Visitors can have the power to add this custom null evaluation
+        if ($visitor instanceof VisitorInterface
+            && $visitor instanceof NullEvaluatorInterface
+            && $visitor->evaluatesToNull($data) === true
+        ) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 

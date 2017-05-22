@@ -62,14 +62,4 @@ abstract class AbstractVisitor implements VisitorInterface
             return $typeArray['params'][0];
         }
     }
-
-    /**
-     * @param mixed $data
-     *
-     * @return bool
-     */
-    public function isNullData($data)
-    {
-        return $data === null;
-    }
 }

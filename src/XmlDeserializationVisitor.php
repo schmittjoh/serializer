@@ -25,7 +25,7 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class XmlDeserializationVisitor extends AbstractVisitor
+class XmlDeserializationVisitor extends AbstractVisitor implements NullEvaluatorInterface
 {
     private $objectStack;
     private $metadataStack;
@@ -389,17 +389,14 @@ class XmlDeserializationVisitor extends AbstractVisitor
     }
 
     /**
-     * Consider xml element value null if the xsi:nil attribute is set and therefore can't have a value
-     * @see https://www.w3.org/TR/xmlschema-1/#xsi_nil
-     *
-     * @param $data
+     * @param mixed $value
      *
      * @return bool
      */
-    public function isNullData($data)
+    public function evaluatesToNull($value)
     {
-        if ($data instanceof \SimpleXMLElement) {
-            $xsiAttributes = $data->attributes('http://www.w3.org/2001/XMLSchema-instance');
+        if ($value instanceof \SimpleXMLElement) {
+            $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
 
             //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
             if (@isset($xsiAttributes['nil']) && (string) $xsiAttributes['nil'] === 'true') {
@@ -407,6 +404,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
             }
         }
 
-        return $data === null;
+        return $value === null;
     }
 }

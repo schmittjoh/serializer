@@ -1364,19 +1364,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('nullable_arrays'), $this->serializer->serialize($object, $this->getFormat()));
     }
 
-    public function testIsNullDataWithNull()
-    {
-        /** @var VisitorInterface $visitor */
-        foreach ($this->serializationVisitors as $visitor) {
-            $this->assertTrue($visitor->isNullData(null));
-        }
-
-        /** @var VisitorInterface $visitor */
-        foreach ($this->deserializationVisitors as $visitor) {
-            $this->assertTrue($visitor->isNullData(null));
-        }
-    }
-
     abstract protected function getContent($key);
 
     abstract protected function getFormat();
