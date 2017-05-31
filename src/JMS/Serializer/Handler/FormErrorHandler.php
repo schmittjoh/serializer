@@ -31,6 +31,8 @@ class FormErrorHandler implements SubscribingHandlerInterface
 {
     private $translator;
 
+    private $translationDomain;
+
     public static function getSubscribingMethods()
     {
         $methods = array();
@@ -50,9 +52,10 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, $translationDomain = 'validators')
     {
         $this->translator = $translator;
+        $this->translationDomain = $translationDomain;
     }
 
     public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type)
@@ -119,10 +122,10 @@ class FormErrorHandler implements SubscribingHandlerInterface
     private function getErrorMessage(FormError $error)
     {
         if (null !== $error->getMessagePluralization()) {
-            return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), 'validators');
+            return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), $this->translationDomain);
         }
 
-        return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
+        return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), $this->translationDomain);
     }
 
     private function convertFormToArray(VisitorInterface $visitor, Form $data)
