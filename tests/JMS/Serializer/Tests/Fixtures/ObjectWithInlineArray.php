@@ -19,6 +19,4 @@ final class ObjectWithInlineArray
     {
         $this->array = $array;
     }
-
-
 }
