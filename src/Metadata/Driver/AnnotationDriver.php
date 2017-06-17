@@ -22,6 +22,7 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
+use JMS\Serializer\Annotation\DeserializeType;
 use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\ExcludeIf;
@@ -184,6 +185,8 @@ class AnnotationDriver implements DriverInterface
                         }
                     } elseif ($annot instanceof Type) {
                         $propertyMetadata->setType($annot->name);
+                    } else if ($annot instanceof DeserializeType) {
+                        $propertyMetadata->setDeserializeType($annot->name);
                     } elseif ($annot instanceof XmlElement) {
                         $propertyMetadata->xmlAttribute = false;
                         $propertyMetadata->xmlElementCData = $annot->cdata;

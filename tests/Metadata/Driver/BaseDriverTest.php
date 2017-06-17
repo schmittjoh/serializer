@@ -65,6 +65,12 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->xmlAttribute = true;
         $this->assertEquals($p, $m->propertyMetadata['createdAt']);
 
+        $p = new PropertyMetadata($m->name, 'updatedAt');
+        $p->type = array('name' => 'DateTime', 'params' => array('Y-m-d'));
+        $p->deserializeType = array('name' => 'DateTime', 'params' => array('Y-m-d|'));
+        $p->xmlAttribute = true;
+        $this->assertEquals($p, $m->propertyMetadata['updatedAt']);
+
         $p = new PropertyMetadata($m->name, 'published');
         $p->type = array('name' => 'boolean', 'params' => array());
         $p->serializedName = 'is_published';

@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\DeserializeType;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\XmlList;
@@ -59,6 +60,13 @@ class BlogPost
      * @XmlAttribute
      */
     private $createdAt;
+
+    /**
+     * @Type("DateTime<'Y-m-d'>")
+     * @DeserializeType("DateTime<'Y-m-d|'>")
+     * @XmlAttribute
+     */
+    private $updatedAt;
 
     /**
      * @Type("boolean")
@@ -124,6 +132,7 @@ class BlogPost
         $this->metadata = new Map();
         $this->metadata->set('foo', 'bar');
         $this->createdAt = $createdAt;
+        $this->updatedAt = $createdAt;
         $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
     }
 

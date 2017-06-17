@@ -234,15 +234,15 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
+        if (!$metadata->type && !$metadata->deserializeType) {
+            throw new RuntimeException(sprintf('You must define a type or deserializateType for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
         if ($metadata->xmlAttribute) {
 
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
-                $v = $this->navigator->accept($attributes[$name], $metadata->type, $context);
+                $v = $this->navigator->accept($attributes[$name], $metadata->deserializeType ? $metadata->deserializeType : $metadata->type, $context);
                 $this->accessor->setValue($this->currentObject, $v, $metadata);
             }
 
@@ -250,7 +250,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlValue) {
-            $v = $this->navigator->accept($data, $metadata->type, $context);
+            $v = $this->navigator->accept($data, $metadata->deserializeType ? $metadata->deserializeType : $metadata->type, $context);
             $this->accessor->setValue($this->currentObject, $v, $metadata);
 
             return;
@@ -263,7 +263,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             }
 
             $this->setCurrentMetadata($metadata);
-            $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
+            $v = $this->navigator->accept($enclosingElem, $metadata->deserializeType ? $metadata->deserializeType : $metadata->type, $context);
             $this->revertCurrentMetadata();
             $this->accessor->setValue($this->currentObject, $v, $metadata);
 
@@ -292,7 +292,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             $node = reset($nodes);
         }
 
-        $v = $this->navigator->accept($node, $metadata->type, $context);
+        $v = $this->navigator->accept($node, $metadata->deserializeType ? $metadata->deserializeType : $metadata->type, $context);
 
         $this->accessor->setValue($this->currentObject, $v, $metadata);
     }
