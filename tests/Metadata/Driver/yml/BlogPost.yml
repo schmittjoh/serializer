@@ -19,6 +19,10 @@ JMS\Serializer\Tests\Fixtures\BlogPost:
         createdAt:
             type: DateTime
             xml_attribute: true
+        updatedAt:
+            type: DateTime<'Y-m-d'>
+            deserializeType: DateTime<'Y-m-d|'>
+            xml_attribute: true
         published:
             type: boolean
             serialized_name: is_published

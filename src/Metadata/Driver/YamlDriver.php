@@ -123,6 +123,10 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->setType((string)$pConfig['type']);
                     }
 
+                    if (isset($pConfig['deserializeType'])) {
+                        $pMetadata->setDeserializeType((string)$pConfig['deserializeType']);
+                    }
+
                     if (isset($pConfig['groups'])) {
                         $pMetadata->groups = $pConfig['groups'];
                     }

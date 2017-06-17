@@ -174,11 +174,11 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
+        if (!$metadata->type && !$metadata->deserializeType) {
+            throw new RuntimeException(sprintf('You must define a type or deserializeType for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $context) : null;
+        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->deserializeType ? $metadata->deserializeType : $metadata->type, $context) : null;
 
         $this->accessor->setValue($this->currentObject, $v, $metadata);
 

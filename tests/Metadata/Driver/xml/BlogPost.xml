@@ -12,6 +12,7 @@
             <xml-element namespace="http://purl.org/dc/elements/1.1/"/>
         </property>
         <property name="createdAt" xml-attribute="true" type="DateTime"/>
+        <property name="updatedAt" xml-attribute="true" type="DateTime&lt;&apos;Y-m-d&apos;&gt;" deserializeType="DateTime&lt;&apos;Y-m-d|&apos;&gt;"/>
         <property name="published" type="boolean" serialized-name="is_published" xml-attribute="true" groups="post" />
         <property name="etag" type="string" xml-attribute="true" groups="post">
             <xml-element namespace="http://schemas.google.com/g/2005"/>

@@ -28,6 +28,12 @@ $pMetadata->setType('DateTime');
 $pMetadata->xmlAttribute = true;
 $metadata->addPropertyMetadata($pMetadata);
 
+$pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'updatedAt');
+$pMetadata->setType('DateTime<\'Y-m-d\'>');
+$pMetadata->setDeserializeType('DateTime<\'Y-m-d|\'>');
+$pMetadata->xmlAttribute = true;
+$metadata->addPropertyMetadata($pMetadata);
+
 $pMetadata = new PropertyMetadata('JMS\Serializer\Tests\Fixtures\BlogPost', 'published');
 $pMetadata->setType('boolean');
 $pMetadata->serializedName = 'is_published';

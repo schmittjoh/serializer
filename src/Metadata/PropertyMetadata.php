@@ -32,6 +32,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $groups;
     public $serializedName;
     public $type;
+    public $deserializeType;
     public $xmlCollection = false;
     public $xmlCollectionInline = false;
     public $xmlCollectionSkipWhenEmpty = true;
@@ -112,6 +113,15 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->type = self::$typeParser->parse($type);
     }
 
+    public function setDeserializeType($type)
+    {
+        if (null === self::$typeParser) {
+            self::$typeParser = new TypeParser();
+        }
+
+        $this->deserializeType = self::$typeParser->parse($type);
+    }
+
     public function serialize()
     {
         return serialize(array(
@@ -120,6 +130,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->deserializeType,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,
@@ -152,6 +163,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->serializedName,
             $this->type,
+            $this->deserializeType,
             $this->xmlCollection,
             $this->xmlCollectionInline,
             $this->xmlEntryName,

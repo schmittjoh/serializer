@@ -195,6 +195,12 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->setType((string)$pElem->type);
                     }
 
+                    if (null !== $deserializeType = $pElem->attributes()->deserializeType) {
+                        $pMetadata->setDeserializeType((string)$deserializeType);
+                    } elseif (isset($pElem->deserializeType)) {
+                        $pMetadata->setType((string)$pElem->deserializeType);
+                    }
+
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups = preg_split('/\s*,\s*/', (string) trim($groups));
                     } elseif (isset($pElem->groups)) {
@@ -202,7 +208,6 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pElem->{'xml-list'})) {
-
                         $pMetadata->xmlCollection = true;
 
                         $colConfig = $pElem->{'xml-list'};

@@ -434,6 +434,12 @@ Examples:
         private $keyValueStore;
     }
 
+@DeserializeType
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a property to specify the deserialization type
+of that property, which overrides the normal Type. They options of this type are
+the same.
+
 @XmlRoot
 ~~~~~~~~
 This allows you to specify the name of the top-level element.
