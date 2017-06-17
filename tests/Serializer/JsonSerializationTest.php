@@ -27,6 +27,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
+use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\VisitorInterface;
 
@@ -278,6 +279,13 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeArrayWithEmptyObject()
     {
         $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
+    }
+
+    public function testInlineArray()
+    {
+        $object = new ObjectWithInlineArray(['a' => 'b', 'c' => 'd']);
+
+        $this->assertEquals('{"a":"b","c":"d"}', $this->serialize($object));
     }
 
     public function testSerializeRootArrayWithDefinedKeys()

@@ -167,8 +167,8 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $k = $this->namingStrategy->translateName($metadata);
 
         if ($metadata->inline) {
-            if (is_array($v)) {
-                $this->data = array_merge($this->data, $v);
+            if (is_array($v) || ($v instanceof \ArrayObject)) {
+                $this->data = array_merge($this->data, (array) $v);
             }
         } else {
             $this->data[$k] = $v;
