@@ -357,7 +357,9 @@ Available Types:
 | DateTime<'format', 'zone'>                               | PHP's DateTime object (custom format/timezone)   |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTime<'format', 'zone', 'deserializeFormat'>          | PHP's DateTime object (custom format/timezone,   |
-|                                                          | deserialize format)                              |
+|                                                          | deserialize format). If you do not want to       |
+|                                                          | specify a specific timezone, use an empty        |
+|                                                          | string ('').                                     |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTimeImmutable                                        | PHP's DateTimeImmutable object (default format/  |
 |                                                          | timezone)                                        |
@@ -369,7 +371,9 @@ Available Types:
 |                                                          | timezone)                                        |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTimeImmutable<'format', 'zone', 'deserializeFormat'> | PHP's DateTimeImmutable object (custom format/   |
-|                                                          | timezone/deserialize format)                     |
+|                                                          | timezone/deserialize format). If you do not want |
+|                                                          | to specify a specific timezone, use an empty     |
+|                                                          | string ('').                                     |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateInterval                                             | PHP's DateInterval object using ISO 8601 format  |
 +----------------------------------------------------------+--------------------------------------------------+
