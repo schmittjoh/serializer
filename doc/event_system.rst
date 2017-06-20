@@ -18,7 +18,13 @@ on the other hand, can be simple callables and do not require a dedicated class.
         public static function getSubscribedEvents()
         {
             return array(
-                array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
+                array(
+                    'event' => 'serializer.pre_serialize',
+                    'method' => 'onPreSerialize',
+                    'class' => 'AppBundle\\Entity\\SpecificClass', // if no class, subscribe to every serialization
+                    'format' => 'json', // optional format
+                    'priority' => 0, // optional priority
+                ),
             );
         }
 
