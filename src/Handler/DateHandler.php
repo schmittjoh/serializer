@@ -35,12 +35,12 @@ class DateHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        $deserialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
+        $deserializationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
         $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
 
         foreach (array('json', 'xml', 'yml') as $format) {
 
-            foreach ($deserialisationTypes as $type) {
+            foreach ($deserializationTypes as $type) {
                 $methods[] = [
                     'type' => $type,
                     'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
