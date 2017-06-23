@@ -2,73 +2,92 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\VisitorInterface;
-use Metadata\MetadataFactoryInterface;
 
 class DateHandlerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var DateHandler
+     */
+    private $handler;
+    /**
+     * @var \DateTimeZone
+     */
+    private $timezone;
 
-    private $date = '2017-06-18';
-
-    public function testSerializeDate()
+    public function setUp()
     {
-        $handler = new DateHandler();
-        $timezone = new \DateTimeZone('UTC');
-        $datetime = \DateTime::createFromFormat('Y-m-d|', $this->date, $timezone);
-
-        $visitor = $this->getMockBuilder(VisitorInterface::class)->getMock();
-        $visitor->method('visitString')->with($this->date)->willReturn($this->date);
-        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
-
-        // Test with type only
-        $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
-        $this->assertEquals(
-            $this->date,
-            $handler->serializeDateTime($visitor, $datetime, $type, $context)
-        );
-
-        // Test with deserialize type and empty timezone
-        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
-        $this->assertEquals(
-            $this->date,
-            $handler->serializeDateTime($visitor, $datetime, $type, $context)
-        );
-
-        // Test with other deserialize type and empty timezone
-        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y']];
-        $this->assertEquals(
-            $this->date,
-            $handler->serializeDateTime($visitor, $datetime, $type, $context)
-        );
+        $this->handler = new DateHandler();
+        $this->timezone = new \DateTimeZone('UTC');
     }
 
-    public function testDeserializeDate()
+    public function getParams()
     {
-        $handler = new DateHandler();
-        $timezone = new \DateTimeZone('UTC');
-        $datetime = \DateTime::createFromFormat('Y-m-d|', $this->date, $timezone);
+        return [
+            [['Y-m-d']],
+            [['Y-m-d', '', 'Y-m-d|']],
+            [['Y-m-d', '', 'Y']],
+        ];
+    }
 
+    /**
+     * @dataProvider getParams
+     * @param array $params
+     */
+    public function testSerializeDate(array $params)
+    {
+        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
+
+        $visitor = $this->getMockBuilder(VisitorInterface::class)->getMock();
+        $visitor->method('visitString')->with('2017-06-18');
+
+        $datetime = new \DateTime('2017-06-18 14:30:59', $this->timezone);
+        $type = ['name' => 'DateTime', 'params' => $params];
+        $this->handler->serializeDateTime($visitor, $datetime, $type, $context);
+    }
+
+    public function testTimePartGetsRemoved()
+    {
         $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Test with type only
-        // Might fail if the time is exactly 00:00:00.0000
-        $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
-        $this->assertNotEquals(
-            $datetime,
-            $handler->deserializeDateTimeFromJson($visitor, $this->date, $type)
-        );
-
-        // Test with deserialize type and empty timezone
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
         $this->assertEquals(
-            $datetime,
-            $handler->deserializeDateTimeFromJson($visitor, $this->date, $type)
+            \DateTime::createFromFormat('Y-m-d|', '2017-06-18', $this->timezone),
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
+        );
+    }
+
+    public function testTimePartGetsPreserved()
+    {
+        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
+        // if the test is executed exactly at midnight, it might not detect a possible failure since the time component will be "00:00:00
+        // I know, this is a bit paranoid
+        if ($expectedDateTime->format("H:i:s") === "00:00:00") {
+            sleep(1);
+            $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
+        }
+
+        // no custom deserialization format specified
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
+        $this->assertEquals(
+            $expectedDateTime,
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
+        );
+
+        // custom deserialization format specified
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d']];
+        $this->assertEquals(
+            $expectedDateTime,
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
         );
     }
 }
