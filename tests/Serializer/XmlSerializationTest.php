@@ -496,8 +496,8 @@ class XmlSerializationTest extends BaseSerializationTest
         $visitor = new XmlDeserializationVisitor($namingStrategy);
         $element = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
 
-        $this->assertTrue($visitor->evaluatesToNull($element));
-        $this->assertTrue($visitor->evaluatesToNull(null));
+        $this->assertTrue($visitor->isNull($element));
+        $this->assertTrue($visitor->isNull(null));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

@@ -25,7 +25,7 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class XmlDeserializationVisitor extends AbstractVisitor implements NullEvaluatorInterface
+class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface
 {
     private $objectStack;
     private $metadataStack;
@@ -393,7 +393,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullEvaluator
      *
      * @return bool
      */
-    public function evaluatesToNull($value)
+    public function isNull($value)
     {
         if ($value instanceof \SimpleXMLElement) {
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
