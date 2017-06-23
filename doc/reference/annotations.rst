@@ -322,9 +322,11 @@ to the least super type::
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.
-For deserialization, this annotation must be defined. For serialization, you may
-define it in order to enhance the produced output; for example, you may want to
-force a certain (deserialize)format to be used for DateTime types.
+For deserialization, this annotation must be defined.
+The ``@Type`` annotation can have parameters and parameters can be used by serialization/deserialization
+handlers to enhance the serialization or deserialization result; for example, you may want to
+force a certain format to be used for serializing DateTime types and specifying at the same time a different format
+used when deserializing them.
 
 Available Types:
 
