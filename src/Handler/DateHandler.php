@@ -176,7 +176,7 @@ class DateHandler implements SubscribingHandlerInterface
     private function parseDateTime($data, array $type, $immutable = false)
     {
         $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
-        $format = $this->getFormat($type, true);
+        $format = $this->getDeserializationFormat($type);
 
         if ($immutable) {
             $datetime = \DateTimeImmutable::createFromFormat($format, (string)$data, $timezone);
@@ -204,15 +204,26 @@ class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @return string
      * @param array $type
-     * @param bool $deserialize
+     *  @return string
      */
-    private function getFormat(array $type, $deserialize = false)
+    private function getDeserializationFormat(array $type)
     {
-        if ($deserialize && isset($type['params'][2])) {
+        if (isset($type['params'][2])) {
             return $type['params'][2];
         }
+        if (isset($type['params'][0])) {
+            return $type['params'][0];
+        }
+        return $this->defaultFormat;
+    }
+
+    /**
+     * @return string
+     * @param array $type
+     */
+    private function getFormat(array $type)
+    {
         return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
     }
 
