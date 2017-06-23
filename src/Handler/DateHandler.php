@@ -35,12 +35,12 @@ class DateHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        $deserialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
+        $deserializationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
         $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
 
         foreach (array('json', 'xml', 'yml') as $format) {
 
-            foreach ($deserialisationTypes as $type) {
+            foreach ($deserializationTypes as $type) {
                 $methods[] = [
                     'type' => $type,
                     'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
@@ -175,8 +175,8 @@ class DateHandler implements SubscribingHandlerInterface
 
     private function parseDateTime($data, array $type, $immutable = false)
     {
-        $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
-        $format = $this->getFormat($type);
+        $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
+        $format = $this->getDeserializationFormat($type);
 
         if ($immutable) {
             $datetime = \DateTimeImmutable::createFromFormat($format, (string)$data, $timezone);
@@ -201,6 +201,21 @@ class DateHandler implements SubscribingHandlerInterface
         }
 
         return $dateInterval;
+    }
+
+    /**
+     * @param array $type
+     *  @return string
+     */
+    private function getDeserializationFormat(array $type)
+    {
+        if (isset($type['params'][2])) {
+            return $type['params'][2];
+        }
+        if (isset($type['params'][0])) {
+            return $type['params'][0];
+        }
+        return $this->defaultFormat;
     }
 
     /**
