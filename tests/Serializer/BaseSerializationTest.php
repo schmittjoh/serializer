@@ -166,6 +166,25 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testDeserializeNullObject()
+    {
+        if (!$this->hasDeserializer()) {
+            $this->markTestSkipped(sprintf('No deserializer available for format `%s`', $this->getFormat()));
+        }
+
+        $obj = new ObjectWithNullProperty('foo', 'bar');
+
+        /** @var ObjectWithNullProperty $dObj */
+        $dObj = $this->serializer->deserialize(
+            $this->getContent('simple_object_nullable'),
+            ObjectWithNullProperty::class,
+            $this->getFormat()
+        );
+
+        $this->assertEquals($obj, $dObj);
+        $this->assertNull($dObj->getNullProperty());
+    }
+
     /**
      * @dataProvider getTypes
      */

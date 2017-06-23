@@ -62,5 +62,4 @@ abstract class AbstractVisitor implements VisitorInterface
             return $typeArray['params'][0];
         }
     }
-
 }

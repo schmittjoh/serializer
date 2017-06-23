@@ -125,6 +125,15 @@ final class GraphNavigator
             $type = array('name' => 'NULL', 'params' => array());
         }
 
+        // Sometimes data can convey null but is not of a null type.
+        // Visitors can have the power to add this custom null evaluation
+        if ($visitor instanceof VisitorInterface
+            && $visitor instanceof NullEvaluatorInterface
+            && $visitor->evaluatesToNull($data) === true
+        ) {
+            $type = array('name' => 'NULL', 'params' => array());
+        }
+
         switch ($type['name']) {
             case 'NULL':
                 return $visitor->visitNull($data, $type, $context);
