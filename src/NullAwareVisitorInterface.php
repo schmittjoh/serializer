@@ -16,23 +16,17 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer;
 
-use JMS\Serializer\Annotation\Type;
-
-class ObjectWithNullProperty extends SimpleObject
+interface NullAwareVisitorInterface extends VisitorInterface
 {
     /**
-     * @var null
-     * @Type("string")
+     * Determine if a value conveys a null value.
+     * An example could be an xml element (Dom, SimpleXml, ...) that is tagged with a xsi:nil attribute
+     *
+     * @param mixed $value
+     *
+     * @return bool
      */
-    private $nullProperty = null;
-
-    /**
-     * @return null
-     */
-    public function getNullProperty()
-    {
-        return $this->nullProperty;
-    }
+    public function isNull($value);
 }

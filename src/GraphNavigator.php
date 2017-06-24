@@ -124,6 +124,11 @@ final class GraphNavigator
         else if ($context instanceof SerializationContext && null === $data) {
             $type = array('name' => 'NULL', 'params' => array());
         }
+        // Sometimes data can convey null but is not of a null type.
+        // Visitors can have the power to add this custom null evaluation
+        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data) === true) {
+            $type = array('name' => 'NULL', 'params' => array());
+        }
 
         switch ($type['name']) {
             case 'NULL':

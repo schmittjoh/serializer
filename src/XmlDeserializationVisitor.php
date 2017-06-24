@@ -25,7 +25,7 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class XmlDeserializationVisitor extends AbstractVisitor
+class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface
 {
     private $objectStack;
     private $metadataStack;
@@ -386,5 +386,24 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
 
         return $internalSubset;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function isNull($value)
+    {
+        if ($value instanceof \SimpleXMLElement) {
+            $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
+
+            //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
+            if (@isset($xsiAttributes['nil']) && (string) $xsiAttributes['nil'] === 'true') {
+                return true;
+            }
+        }
+
+        return $value === null;
     }
 }
