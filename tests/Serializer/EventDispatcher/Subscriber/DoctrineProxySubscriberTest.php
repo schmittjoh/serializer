@@ -130,6 +130,17 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['name' => 'foo', 'params' => []], $event->getType());
     }
 
+    public function testOnPreSerializeMaintainsParams()
+    {
+        $object = new SimpleObjectProxy('foo', 'bar');
+        $type = ['name' => SimpleObjectProxy::class, 'params' => ['baz']];
+
+        $event = $this->createEvent($object, $type);
+        $this->subscriber->onPreSerialize($event);
+
+        $this->assertSame(['name' => SimpleObject::class, 'params' => ['baz']], $event->getType());
+    }
+
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();
