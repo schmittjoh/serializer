@@ -2,6 +2,7 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
+use JMS\Serializer\AbstractVisitor;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
@@ -64,7 +65,7 @@ class DateHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testTimePartGetsPreserved()
     {
-        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
+        $visitor = $this->getMockBuilder(AbstractVisitor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
