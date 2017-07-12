@@ -18,12 +18,11 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\AbstractVisitor;
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class DateHandler implements SubscribingHandlerInterface
@@ -119,7 +118,7 @@ class DateHandler implements SubscribingHandlerInterface
         return isset($attributes['nil'][0]) && (string)$attributes['nil'][0] === 'true';
     }
 
-    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeFromXml(AbstractVisitor $visitor, $data, array $type)
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -128,7 +127,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type);
     }
 
-    public function deserializeDateTimeImmutableFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeImmutableFromXml(AbstractVisitor $visitor, $data, array $type)
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -137,7 +136,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type, true);
     }
 
-    public function deserializeDateIntervalFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateIntervalFromXml(AbstractVisitor $visitor, $data, array $type)
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -146,7 +145,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateInterval($data);
     }
 
-    public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeFromJson(AbstractVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
             return null;
@@ -155,7 +154,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type);
     }
 
-    public function deserializeDateTimeImmutableFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeImmutableFromJson(AbstractVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
             return null;
@@ -164,7 +163,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type, true);
     }
 
-    public function deserializeDateIntervalFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateIntervalFromJson(AbstractVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
             return null;
