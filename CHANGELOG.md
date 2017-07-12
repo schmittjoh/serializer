@@ -1,5 +1,35 @@
 # Change Log
 
+## [1.8.0](https://github.com/schmittjoh/serializer/tree/1.8.0) (2017-07-12)
+**Implemented enhancements:**
+
+- Detect XML xsi:nil="true" to null when deserializing [\#790](https://github.com/schmittjoh/serializer/pull/790) ([goetas](https://github.com/goetas))
+- Added support for a third deserialize parameter for the DateTime type [\#788](https://github.com/schmittjoh/serializer/pull/788) ([bobvandevijver](https://github.com/bobvandevijver))
+- Added trim to xml metadata reader for groups parameter, and added support for groups element [\#781](https://github.com/schmittjoh/serializer/pull/781) ([mrosiu](https://github.com/mrosiu))
+- Add propertyMetdata to dynamic expression variables [\#778](https://github.com/schmittjoh/serializer/pull/778) ([goetas](https://github.com/goetas))
+- Fix xml deserialization when xsi:nil="true" is set [\#771](https://github.com/schmittjoh/serializer/pull/771) ([Bouwdie](https://github.com/Bouwdie))
+
+**Fixed bugs:**
+
+- do not disappear type params in DoctrineProxySubscriber [\#793](https://github.com/schmittjoh/serializer/pull/793) ([kriswallsmith](https://github.com/kriswallsmith))
+- \#784 fix with inline array of type array\<K, V\> [\#785](https://github.com/schmittjoh/serializer/pull/785) ([aviortm](https://github.com/aviortm))
+
+**Closed issues:**
+
+- inline array with type array\<K, V\> not serialized [\#784](https://github.com/schmittjoh/serializer/issues/784)
+- \[2.0\] \[Feature-request\] Provide InitializedObjectConstructor as default [\#775](https://github.com/schmittjoh/serializer/issues/775)
+- Allow access to PropertyMetadata in Dynamic Exclusion strategies [\#772](https://github.com/schmittjoh/serializer/issues/772)
+- Overriding groups at runtime does not work, or? [\#767](https://github.com/schmittjoh/serializer/issues/767)
+- DateTime format and control characters [\#94](https://github.com/schmittjoh/serializer/issues/94)
+
+**Merged pull requests:**
+
+- Missing features of the compiler pass [\#789](https://github.com/schmittjoh/serializer/pull/789) ([mikemix](https://github.com/mikemix))
+- Updated documentation related to PR \#778 [\#780](https://github.com/schmittjoh/serializer/pull/780) ([bblue](https://github.com/bblue))
+- \[RFC\] Move to PSR 4 [\#770](https://github.com/schmittjoh/serializer/pull/770) ([goetas](https://github.com/goetas))
+- Re-formatted code for better PSR compliance [\#769](https://github.com/schmittjoh/serializer/pull/769) ([goetas](https://github.com/goetas))
+- Proposing some guidelines for contributing [\#763](https://github.com/schmittjoh/serializer/pull/763) ([goetas](https://github.com/goetas))
+
 ## [1.7.1](https://github.com/schmittjoh/serializer/tree/1.7.1) (2017-05-15)
 **Fixed bugs:**
 
