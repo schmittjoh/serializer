@@ -39,7 +39,7 @@ XML Reference
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
                 <type><![CDATA[]]></type>
-                <xml-list inline="true" entry-name="foobar" />
+                <xml-list inline="true" entry-name="foobar" namespace="http://www.w3.org/2005/Atom" skip-when-empty="true" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" namespace="http://www.w3.org/2005/Atom" />
                 <xml-element cdata="false" namespace="http://www.w3.org/2005/Atom"/>
                 <groups>
@@ -99,8 +99,8 @@ XML Reference
                     <value>foo</value>
                     <value>bar</value>
                 </groups>
-                <xml-list inline="true" entry-name="foobar" />
-                <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
+                <xml-list inline="true" entry-name="foobar" namespace="http://www.w3.org/2005/Atom" skip-when-empty="true" />
+                <xml-map inline="true" key-attribute-name="foo" entry-name="bar" namespace="http://www.w3.org/2005/Atom" />
             </virtual-property>
             
         </class>
