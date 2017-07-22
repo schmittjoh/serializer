@@ -494,9 +494,11 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $namingStrategy = $this->getMockBuilder(PropertyNamingStrategyInterface::class)->getMock();
         $visitor = new XmlDeserializationVisitor($namingStrategy);
-        $element = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
+        $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
+        $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 
-        $this->assertTrue($visitor->isNull($element));
+        $this->assertTrue($visitor->isNull($xsdNilAsTrueElement));
+        $this->assertTrue($visitor->isNull($xsdNilAsOneElement));
         $this->assertTrue($visitor->isNull(null));
     }
 
