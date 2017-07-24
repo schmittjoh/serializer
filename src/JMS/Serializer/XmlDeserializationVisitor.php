@@ -399,7 +399,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
 
             //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
-            if (@isset($xsiAttributes['nil']) && (string) $xsiAttributes['nil'] === 'true') {
+            if (@isset($xsiAttributes['nil'])
+                && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
+            ) {
                 return true;
             }
         }
