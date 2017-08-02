@@ -41,6 +41,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'string' => 'string',
         'text' => 'string',
         'blob' => 'string',
+        'guid' => 'string',
 
         'integer' => 'integer',
         'smallint' => 'integer',
