@@ -35,7 +35,7 @@ use JMS\Serializer\Annotation\XmlRoot;
 class BlogPost
 {
     /**
-     * @ORM\Id @ORM\Column(type="integer")
+     * @ORM\Id @ORM\Column(type="guid") @ORM\GeneratedValue(strategy="UUID")
      */
     protected $id;
 
