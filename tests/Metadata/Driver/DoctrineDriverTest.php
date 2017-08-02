@@ -106,6 +106,16 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($doctrineMetadata->propertyMetadata['ref']->type);
     }
 
+    public function testGuidPropertyIsGivenStringType()
+    {
+        $metadata = $this->getMetadata();
+
+        $this->assertEquals(
+            array('name' => 'string', 'params' => array()),
+            $metadata->propertyMetadata['id']->type
+        );
+    }
+
     protected function getEntityManager()
     {
         $config = new Configuration();
