@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\RequiredPropertyException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
@@ -158,6 +159,11 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $v = $this->accessor->getValue($data, $metadata);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
+
+        if (null === $v && $metadata->required) {
+            throw new RequiredPropertyException($metadata->name . ' is a required field.');
+        }
+
         if ((null === $v && $context->shouldSerializeNull() !== true)
             || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || is_array($v)) && 0 === count($v))
         ) {

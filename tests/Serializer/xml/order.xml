@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <order>
+  <required_var>1</required_var>
   <cost>12.34</cost>
 </order>

@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Exception\RequiredPropertyException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -161,8 +162,14 @@ class YamlSerializationVisitor extends AbstractVisitor
     {
         $v = $this->accessor->getValue($data, $metadata);
 
-        if (null === $v && $context->shouldSerializeNull() !== true) {
-            return;
+        if (null === $v) {
+            if ($metadata->required) {
+                throw new RequiredPropertyException($metadata->name . ' is a required field.');
+            }
+
+            if ($context->shouldSerializeNull() !== true) {
+                return;
+            }
         }
 
         $name = $this->namingStrategy->translateName($metadata);

@@ -56,6 +56,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $order = new Order(new Price(5));
 
         $expected = array(
+            'required_var' => 1,
             'cost' => array(
                 'price' => 5
             )
@@ -94,6 +95,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     public function testFromArray()
     {
         $data = array(
+            'required_var' => 1,
             'cost' => array(
                 'price' => 2.5
             )

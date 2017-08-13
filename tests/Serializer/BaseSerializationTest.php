@@ -27,6 +27,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\Exception\RequiredPropertyException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -752,6 +753,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $this->assertEquals($order, $this->deserialize($this->getContent('order'), get_class($order)));
         }
+    }
+
+    public function testOrderRequiredProperty()
+    {
+        $exception = null;
+        try {
+            $order = new Order(new Price(12.34), null);
+
+            $this->serialize($order);
+        } catch (RequiredPropertyException $e) {
+            $exception = $e;
+        }
+
+        $this->assertInstanceOf(RequiredPropertyException::class, $exception);
     }
 
     public function testCurrencyAwarePrice()
