@@ -35,6 +35,7 @@ use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\Required;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;
@@ -214,6 +215,8 @@ class AnnotationDriver implements DriverInterface
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
                         $propertyMetadata->readOnly = $annot->readOnly;
+                    } elseif ($annot instanceof Required) {
+                        $propertyMetadata->required = true;
                     } elseif ($annot instanceof Accessor) {
                         $accessor = array($annot->getter, $annot->setter);
                     } elseif ($annot instanceof Groups) {

@@ -16,30 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer\Exception;
 
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlRoot;
-use JMS\Serializer\Annotation\Required;
 
-/** @XmlRoot("order") */
-class Order
+
+class RequiredPropertyException extends RuntimeException implements Exception
 {
-    /**
-     * @Required
-     * @Type("int")
-     */
-    private $requiredVar;
-
-    /**
-     * @Required
-     * @Type("JMS\Serializer\Tests\Fixtures\Price")
-     */
-    private $cost;
-
-    public function __construct(Price $price = null, $requiredVar = 1)
-    {
-        $this->cost = $price ?: new Price(5);
-        $this->requiredVar = $requiredVar;
-    }
 }

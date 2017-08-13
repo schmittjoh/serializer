@@ -64,7 +64,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"etag":"1edf9bf60a32d89afbb85b2be849e3ceed5f5b10","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null,"tag":null}';
             $outputs['price'] = '{"price":3}';
             $outputs['currency_aware_price'] = '{"currency":"EUR","amount":2.34}';
-            $outputs['order'] = '{"cost":{"price":12.34}}';
+            $outputs['order'] = '{"required_var":1,"cost":{"price":12.34}}';
             $outputs['order_with_currency_aware_price'] = '{"cost":{"currency":"EUR","amount":1.23}}';
             $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';

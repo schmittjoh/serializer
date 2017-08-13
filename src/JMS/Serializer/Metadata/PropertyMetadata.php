@@ -48,6 +48,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $inline = false;
     public $skipWhenEmpty = false;
     public $readOnly = false;
+    public $required = false;
     public $xmlAttributeMap = false;
     public $maxDepth = null;
     public $excludeIf = null;
