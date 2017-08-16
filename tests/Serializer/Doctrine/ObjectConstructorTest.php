@@ -106,6 +106,21 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($author, $authorFetched);
     }
 
+    public function testMissingIdentifierFallback()
+    {
+        $author = new Author('John');
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = array('name' => Author::class, 'params' => array());
+        $class = new ClassMetadata(Author::class);
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => null], $type, $this->context);
+        $this->assertSame($author, $authorFetched);
+    }
+
     public function testMissingNotManaged()
     {
         $author = new \JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author('foo');
