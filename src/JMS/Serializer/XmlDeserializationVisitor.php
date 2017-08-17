@@ -187,9 +187,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         if (null !== $namespace) {
             $prefix = uniqid('ns-');
             $data->registerXPathNamespace($prefix, $namespace);
-            $nodes = $data->xpath("$prefix:$entryName");
+            if($this->currentMetadata->xmlKeyValuePairs){
+                $nodes = $data->xpath("$prefix:*");
+            }else {
+                $nodes = $data->xpath("$prefix:$entryName");
+            }
         } else {
-            $nodes = $data->xpath($entryName);
+            if($this->currentMetadata->xmlKeyValuePairs){
+                $nodes = $data->xpath("*");
+            }else {
+                $nodes = $data->xpath($entryName);
+            }
         }
 
         if (!\count($nodes)) {
@@ -212,8 +220,11 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $context);
-                }
+                    if($this->currentMetadata->xmlKeyValuePairs){
+                        $result[$v->getName()] = $this->navigator->accept($v, $type['params'][0], $context);
+                    }else {
+                        $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    }                }
 
                 return $result;
 
@@ -287,7 +298,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
         if ($metadata->xmlCollection) {
             $enclosingElem = $data;
-            if (!$metadata->xmlCollectionInline) {
+            if (!$metadata->xmlCollectionInline  && !$metadata->xmlKeyValuePairs) {
                 $enclosingElem = $data->children($metadata->xmlNamespace)->$name;
             }
 
