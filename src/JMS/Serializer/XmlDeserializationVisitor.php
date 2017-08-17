@@ -184,21 +184,15 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             }
         }
 
+        $nsName = "";
         if (null !== $namespace) {
             $prefix = uniqid('ns-');
             $data->registerXPathNamespace($prefix, $namespace);
-            if($this->currentMetadata->xmlKeyValuePairs){
-                $nodes = $data->xpath("$prefix:*");
-            }else {
-                $nodes = $data->xpath("$prefix:$entryName");
-            }
-        } else {
-            if($this->currentMetadata->xmlKeyValuePairs){
-                $nodes = $data->xpath("*");
-            }else {
-                $nodes = $data->xpath($entryName);
-            }
-        }
+            $nsName = $prefix . ':':
+		}
+        $nsName .=  $this->currentMetadata->xmlKeyValuePairs ? '*' : $entryName
+        $nodes = $data->xpath($nsName);
+
 
         if (!\count($nodes)) {
             if (null === $this->result) {
@@ -220,11 +214,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 foreach ($nodes as $v) {
-                    if($this->currentMetadata->xmlKeyValuePairs){
-                        $result[$v->getName()] = $this->navigator->accept($v, $type['params'][0], $context);
-                    }else {
-                        $result[] = $this->navigator->accept($v, $type['params'][0], $context);
-                    }                }
+					$key = $this->currentMetadata->xmlKeyValuePairs ? $v->getName() : count($result);
+                    $result[$key] = $this->navigator->accept($v, $type['params'][0], $context);
+                }
 
                 return $result;
 
