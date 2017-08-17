@@ -190,7 +190,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $data->registerXPathNamespace($prefix, $namespace);
             $nsName = $prefix . ':':
 		}
-        $nsName .=  $this->currentMetadata->xmlKeyValuePairs ? '*' : $entryName
+        $nsName .=  (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) ? '*' : $entryName
         $nodes = $data->xpath($nsName);
 
 
@@ -214,7 +214,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 foreach ($nodes as $v) {
-					$key = $this->currentMetadata->xmlKeyValuePairs ? $v->getName() : count($result);
+                    $key = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) ? $v->getName() : count($result);
                     $result[$key] = $this->navigator->accept($v, $type['params'][0], $context);
                 }
 
