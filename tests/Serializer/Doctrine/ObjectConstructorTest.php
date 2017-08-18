@@ -192,7 +192,16 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingObjectWithContextGroupsNotIncludingIDs()
     {
-        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
+        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')
+//            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $context->method('getMetadataFactory')->willReturn('prova');
+
+//        die(var_dump($context->getMetadataFactory()));
+
         $context->attributes->set('groups', array('non_id_group'));
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
@@ -200,7 +209,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $class = new ClassMetadata(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
-        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $this->context);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context);
 
         $this->assertEquals(\Doctrine\ORM\UnitOfWork::STATE_NEW, $this->registry->getManager()->getUnitOfWork()->getEntityState($authorFetched));
         $this->assertNull($this->accessProtected($authorFetched, 'id'));

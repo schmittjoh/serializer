@@ -22,6 +22,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use Metadata\Driver\DriverInterface;
 use PhpOption\None;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\ClassMetadata as JMSClassMetadata;
@@ -50,12 +51,12 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $this->fallbackConstructor = $fallbackConstructor;
     }
 
-    public function setAnnotationDriver (AnnotationDriver $annotationDriver)
-    {
-        $this->annotationDriver = $annotationDriver;
-    }
+//    public function setAnnotationDriver (DriverInterface $annotationDriver)
+//    {
+//        $this->annotationDriver = $annotationDriver;
+//    }
 
-    protected function getPropertyGroups(JMSClassMetadata $metadata, $property)
+    protected function getPropertyGroups(JMSClassMetadata $metadata, $property, DeserializationContext $context)
     {
         $classMetadata = $this->annotationDriver->loadMetadataForClass($metadata->reflection);
 
@@ -63,7 +64,12 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         while ($classMetadata) {
             // limit case
             if (array_key_exists($property, $classMetadata->propertyMetadata)) {
-                $propertyGroups = $classMetadata->propertyMetadata[$property]->groups ?? array();
+                $propertyGroups = $classMetadata->propertyMetadata[$property]->groups;
+
+                if (null === $propertyGroups) {
+                    $propertyGroups = array();
+                }
+
                 return $propertyGroups;
             }
 
@@ -109,7 +115,10 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $deserializingGroups = ($context->attributes->get('groups') instanceof None)? array() : $context->attributes->get('groups')->get();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            $propertyGroups = $this->getPropertyGroups($metadata, $name);
+            die(var_dump($context->getMetadataFactory()));
+            $propertyGroups = $context->getMetadataFactory()->getMetadataForClass($type['name']);
+            die(var_dump($propertyGroups));
+//            $propertyGroups = $this->getPropertyGroups($metadata, $name, $context);
 
             $useFallback = true;
 
