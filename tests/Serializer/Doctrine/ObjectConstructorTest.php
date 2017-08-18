@@ -25,6 +25,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
+use ReflectionClass;
 
 class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,6 +40,13 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     /** @var DeserializationContext */
     private $context;
+
+    private function accessProtected($obj, $prop) {
+        $reflection = new ReflectionClass($obj);
+        $property = $reflection->getProperty($prop);
+        $property->setAccessible(true);
+        return $property->getValue($obj);
+    }
 
     public function testFindEntity()
     {
@@ -180,6 +188,23 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
         $this->assertSame($author, $authorFetched);
+    }
+
+    public function testDeserializingObjectWithContextGroupsNotIncludingIDs()
+    {
+        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
+        $context->attributes->set('groups', array('non_id_group'));
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+
+        $type = array('name' => Author::class, 'params' => array());
+        $class = new ClassMetadata(Author::class);
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $this->context);
+
+        $this->assertEquals(\Doctrine\ORM\UnitOfWork::STATE_NEW, $this->registry->getManager()->getUnitOfWork()->getEntityState($authorFetched));
+        $this->assertNull($this->accessProtected($authorFetched, 'id'));
+        $this->assertEquals('Name to deserialize', $this->accessProtected($authorFetched, 'name'));
     }
 
     protected function setUp()

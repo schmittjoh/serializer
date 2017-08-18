@@ -20,18 +20,21 @@ namespace JMS\Serializer\Tests\Fixtures\Doctrine;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Groups;
 
 /** @ORM\Entity */
 class Author
 {
     /**
      * @ORM\Id @ORM\Column(type="integer")
+     * @Groups({"id_group"})
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string")
      * @SerializedName("full_name")
+     * @Groups({"non_id_group"})
      */
     private $name;
 
@@ -44,5 +47,10 @@ class Author
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }
