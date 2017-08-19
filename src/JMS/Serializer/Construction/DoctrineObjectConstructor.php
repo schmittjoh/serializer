@@ -121,11 +121,10 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
         /** @var array $deserializingGroups */
-        $deserializingGroups = ($context->getGroups() instanceof None)? array() : $context->getGroups();
+        $deserializingGroups = $context->getGroups()->getOrElse(array());
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            $this->getPropertyGroups($context, $type['name'], $name);
-            $propertyGroups = $this->getPropertyGroups($context, $type['name'], $name);
+            $propertyGroups = $this->getPropertyGroups($context, $metadata->name, $name);
 
             $useFallback = true;
 
