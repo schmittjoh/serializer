@@ -135,20 +135,23 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         /** @var array $deserializingGroups */
         $deserializingGroups = $context->getGroups()->getOrElse(array());
 
-        // Avoid calling objectManager->find if the deserialization context groups do exclude identification properties
+        // Avoid calling objectManager->find if the deserialization context groups exclude identification properties
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
             $missingIdentifier = !array_key_exists($name, $data);
 
-            if (0 < count($deserializingGroups)) {
+            if (0 < count($deserializingGroups) && false === $missingIdentifier) {
                 $propertyGroups = $this->getPropertyGroups($context, $metadata->name, $name);
+                $groupForIdentFound = false;
 
                 // group list match on at least one group?
                 foreach ($deserializingGroups as $deserializingGroup) {
                     if (in_array($deserializingGroup, $propertyGroups)) {
-                        $missingIdentifier = false;
+                        $groupForIdentFound = true;
                         break;
                     }
                 }
+
+                $missingIdentifier = $missingIdentifier || (!$groupForIdentFound);
             }
 
             if (true === $missingIdentifier) {

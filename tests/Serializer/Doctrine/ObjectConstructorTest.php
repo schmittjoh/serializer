@@ -57,7 +57,6 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     public function testFindEntity()
     {
-        $this->context->method('getGroups')->willReturn(None::create());
         $em = $this->registry->getManager();
 
         $author = new Author('John', 5);
@@ -198,37 +197,10 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($author, $authorFetched);
     }
 
-    public function testDeserializingWithContextGroupsNotIncludingIDsCallsFallbackConstructor()
+    public function testContextGroupsIncludesIDsCallsObjectManager()
     {
-        $authorToRet = new Author('Author to return fallback', 1);
-        $metadataClass = new ClassMetadata(Author::class);
-        $metadataFactory = $this->createMock(MetadataFactory::class);
-        $metadataFactory
-            ->method('getMetadataForClass')
-            ->with(Author::class)
-            ->willReturn($metadataClass);
+        $authorToReturn = new Author('Name before deserializing', 5);
 
-        $context = $this->createMock('JMS\Serializer\DeserializationContext');
-        $context
-            ->method('getGroups')
-            ->willReturn(new Some(array('non_id_group')));
-        $context
-            ->method('getMetadataFactory')
-            ->willReturn($metadataFactory);
-
-        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
-        $fallback->expects($this->once())->method('construct')->willReturn($authorToRet);
-
-        $type = array('name' => Author::class, 'params' => array());
-        $class = new ClassMetadata(Author::class);
-
-        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
-        $ret = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
-        $this->assertSame($authorToRet, $ret);
-    }
-
-    public function testDeserializingWithContextGroupsNotIncludingIDsCallsDoctrineFind()
-    {
         $metadataClass = new ClassMetadata(Author::class);
         $pMetadata = new PropertyMetadata(Author::class, 'id');
         $pMetadata->setType('integer');
@@ -249,7 +221,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $context = $this->createMock('JMS\Serializer\DeserializationContext');
         $context
             ->method('getGroups')
-            ->willReturn(new Some(array('non_id_group', 'id_group')));
+            ->willReturn(new Some(array('id_group', 'non_id_group')));
         $context
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
@@ -275,12 +247,9 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->with(Author::class)
             ->willReturn($classMetadata);
 
-        $authorToReturn = new Author('Author to return', 5);
-
         $entityManager
             ->expects($this->once())
             ->method('find')
-            ->with(Author::class, array('id' => 5))
             ->willReturn($authorToReturn);
 
         $managerRegistry = $this->createMock(ManagerRegistry::class);
@@ -290,7 +259,82 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->willReturn($entityManager);
 
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
-        $fallback->expects($this->never())->method('construct');
+        $fallback
+            ->expects($this->never())
+            ->method('construct');
+
+        $type = array('name' => Author::class, 'params' => array());
+        $class = new ClassMetadata(Author::class);
+
+        $constructor = new DoctrineObjectConstructor($managerRegistry, $fallback);
+        $deserializedObj = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $this->assertSame($authorToReturn, $deserializedObj);
+    }
+
+    public function testContextGroupsExcludeIDsCallsFallback()
+    {
+        $authorToReturn = new Author('Author to return, not in DB', 0);
+
+        $metadataClass = new ClassMetadata(Author::class);
+        $pMetadata = new PropertyMetadata(Author::class, 'id');
+        $pMetadata->setType('integer');
+        $pMetadata->groups = array('id_group');
+        $metadataClass->addPropertyMetadata($pMetadata);
+
+        $pMetadata = new PropertyMetadata(Author::class, 'name');
+        $pMetadata->setType('string');
+        $pMetadata->serializedName = 'full_name';
+        $pMetadata->groups = array('non_id_group');
+        $metadataClass->addPropertyMetadata($pMetadata);
+
+        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory
+            ->method('getMetadataForClass')
+            ->with(Author::class)
+            ->willReturn($metadataClass);
+
+        $context = $this->createMock('JMS\Serializer\DeserializationContext');
+        $context
+            ->method('getGroups')
+            ->willReturn(new Some(array('non_id_group')));
+        $context
+            ->method('getMetadataFactory')
+            ->willReturn($metadataFactory);
+
+        $classMetadataFactory = $this->createMock(ClassMetadataFactory::class);
+        $classMetadataFactory
+            ->method('isTransient')
+            ->with(Author::class)
+            ->willReturn(false);
+
+        $classMetadata = $this->createMock(DoctrineClassMetadata::class);
+        $classMetadata
+            ->method('getIdentifierFieldNames')
+            ->willReturn(array('id'));
+
+        $entityManager = $this->createMock(ObjectManager::class);
+        $entityManager
+            ->method('getMetadataFactory')
+            ->willReturn($classMetadataFactory);
+        $entityManager
+            ->method('getClassMetadata')
+            ->with(Author::class)
+            ->willReturn($classMetadata);
+        $entityManager
+            ->expects($this->never())
+            ->method('find');
+
+        $managerRegistry = $this->createMock(ManagerRegistry::class);
+        $managerRegistry
+            ->method('getManagerForClass')
+            ->with(Author::class)
+            ->willReturn($entityManager);
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback
+            ->expects($this->once())
+            ->method('construct')
+            ->willReturn($authorToReturn);
 
         $type = array('name' => Author::class, 'params' => array());
         $class = new ClassMetadata(Author::class);
