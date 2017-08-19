@@ -25,6 +25,8 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
+use Metadata\MetadataFactory;
+use PhpOption\Some;
 use ReflectionClass;
 
 class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
@@ -192,28 +194,34 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingObjectWithContextGroupsNotIncludingIDs()
     {
-        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')
-//            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $context->method('getMetadataFactory')->willReturn('prova');
+        $metadataClass = new ClassMetadata(Author::class);
+        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory
+            ->method('getMetadataForClass')
+            ->with(Author::class)
+            ->willReturn($metadataClass);
 
-//        die(var_dump($context->getMetadataFactory()));
+        $context = $this->createMock('JMS\Serializer\DeserializationContext');
+        $context
+            ->method('getGroups')
+            ->willReturn(new Some(array('non_id_group')));
+        $context->method('getMetadataFactory')
+            ->willReturn($metadataFactory);
+//        $context->attributes = $this->createMock(\PhpCollection\Map::class);
+//        $context->attributes->method('get')->with('groups')
 
-        $context->attributes->set('groups', array('non_id_group'));
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct');
 
         $type = array('name' => Author::class, 'params' => array());
         $class = new ClassMetadata(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
-        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context);
+        $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context);
 
-        $this->assertEquals(\Doctrine\ORM\UnitOfWork::STATE_NEW, $this->registry->getManager()->getUnitOfWork()->getEntityState($authorFetched));
-        $this->assertNull($this->accessProtected($authorFetched, 'id'));
-        $this->assertEquals('Name to deserialize', $this->accessProtected($authorFetched, 'name'));
+//        $this->assertEquals(\Doctrine\ORM\UnitOfWork::STATE_NEW, $this->registry->getManager()->getUnitOfWork()->getEntityState($authorFetched));
+//        $this->assertNull($this->accessProtected($authorFetched, 'id'));
+//        $this->assertEquals('Name to deserialize', $this->accessProtected($authorFetched, 'name'));
     }
 
     protected function setUp()

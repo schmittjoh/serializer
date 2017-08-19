@@ -177,6 +177,14 @@ abstract class Context
         return $this;
     }
 
+    /**
+     * @return \PhpOption\None|\PhpOption\Option|\PhpOption\Some
+     */
+    public function getGroups()
+    {
+        return $this->attributes->get('groups');
+    }
+
     public function enableMaxDepthChecks()
     {
         $this->addExclusionStrategy(new DepthExclusionStrategy());

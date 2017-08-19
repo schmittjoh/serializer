@@ -19,9 +19,11 @@
 namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use JMS\Serializer\Context;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use Metadata\ClassHierarchyMetadata;
 use Metadata\Driver\DriverInterface;
 use PhpOption\None;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -51,17 +53,20 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $this->fallbackConstructor = $fallbackConstructor;
     }
 
-//    public function setAnnotationDriver (DriverInterface $annotationDriver)
-//    {
-//        $this->annotationDriver = $annotationDriver;
-//    }
-
-    protected function getPropertyGroups(JMSClassMetadata $metadata, $property, DeserializationContext $context)
+    protected function getPropertyGroups(Context $context, $className, $property)
     {
-        $classMetadata = $this->annotationDriver->loadMetadataForClass($metadata->reflection);
+        $classMetadataHierarchy = $context->getMetadataFactory()->getMetadataForClass($className);
+
+        if (true === $classMetadataHierarchy instanceof ClassHierarchyMetadata) {
+            $isClassMetadataHierarchy = true;
+            $classMetadata = current($classMetadataHierarchy->classMetadata);
+        } else {
+            $classMetadata = $classMetadataHierarchy;
+            $isClassMetadataHierarchy = false;
+        }
 
         // up to the hierarchy
-        while ($classMetadata) {
+        while (null !== $classMetadata && false !== $classMetadata) {
             // limit case
             if (array_key_exists($property, $classMetadata->propertyMetadata)) {
                 $propertyGroups = $classMetadata->propertyMetadata[$property]->groups;
@@ -73,8 +78,12 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
                 return $propertyGroups;
             }
 
-            $parent = $classMetadata->reflection->getParentClass();
-            $classMetadata = $this->annotationDriver->loadMetadataForClass($parent);
+            if (true === $isClassMetadataHierarchy) {
+                $classMetadata = next($classMetadataHierarchy->classMetadata);
+            } else {
+                $parent = $classMetadata->reflection->getParentClass();
+                $classMetadata = ($parent)? $context->getMetadataFactory()->getMetadataForClass($parent->getName()) : null;
+            }
         }
 
         return array();
@@ -112,13 +121,11 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
         /** @var array $deserializingGroups */
-        $deserializingGroups = ($context->attributes->get('groups') instanceof None)? array() : $context->attributes->get('groups')->get();
+        $deserializingGroups = ($context->getGroups() instanceof None)? array() : $context->getGroups();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            die(var_dump($context->getMetadataFactory()));
-            $propertyGroups = $context->getMetadataFactory()->getMetadataForClass($type['name']);
-            die(var_dump($propertyGroups));
-//            $propertyGroups = $this->getPropertyGroups($metadata, $name, $context);
+            $this->getPropertyGroups($context, $type['name'], $name);
+            $propertyGroups = $this->getPropertyGroups($context, $type['name'], $name);
 
             $useFallback = true;
 
