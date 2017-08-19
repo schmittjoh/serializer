@@ -29,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactory;
+use PhpOption\None;
 use PhpOption\Some;
 use ReflectionClass;
 use \Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
@@ -56,6 +57,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     public function testFindEntity()
     {
+        $this->context->method('getGroups')->willReturn(None::create());
         $em = $this->registry->getManager();
 
         $author = new Author('John', 5);
@@ -198,6 +200,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     public function testDeserializingWithContextGroupsNotIncludingIDsCallsFallbackConstructor()
     {
+        $authorToRet = new Author('Author to return fallback', 1);
         $metadataClass = new ClassMetadata(Author::class);
         $metadataFactory = $this->createMock(MetadataFactory::class);
         $metadataFactory
@@ -214,13 +217,14 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->willReturn($metadataFactory);
 
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
-        $fallback->expects($this->once())->method('construct');
+        $fallback->expects($this->once())->method('construct')->willReturn($authorToRet);
 
         $type = array('name' => Author::class, 'params' => array());
         $class = new ClassMetadata(Author::class);
 
-        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
-        $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context);
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $ret = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $this->assertSame($authorToRet, $ret);
     }
 
     public function testDeserializingWithContextGroupsNotIncludingIDsCallsDoctrineFind()
@@ -292,7 +296,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $class = new ClassMetadata(Author::class);
 
         $constructor = new DoctrineObjectConstructor($managerRegistry, $fallback);
-        $deserializedObj = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context);
+        $deserializedObj = $constructor->construct($this->visitor, $class, ['id' => 5, 'full_name' => 'Name to deserialize'], $type, $context, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $this->assertSame($authorToReturn, $deserializedObj);
     }
 
@@ -300,6 +304,29 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
     {
         $this->visitor = $this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock();
         $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
+
+        $metadataClass = new ClassMetadata(Author::class);
+        $pMetadata = new PropertyMetadata(Author::class, 'id');
+        $pMetadata->setType('integer');
+        $pMetadata->groups = array('id_group');
+        $metadataClass->addPropertyMetadata($pMetadata);
+
+        $pMetadata = new PropertyMetadata(Author::class, 'name');
+        $pMetadata->setType('string');
+        $pMetadata->serializedName = 'full_name';
+        $pMetadata->groups = array('non_id_group');
+        $metadataClass->addPropertyMetadata($pMetadata);
+
+        $this->context->method('getGroups')->willReturn(None::create());
+        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory
+            ->method('getMetadataForClass')
+            ->with(Author::class)
+            ->willReturn($metadataClass);
+
+        $this->context
+            ->method('getMetadataFactory')
+            ->willReturn($metadataFactory);
 
         $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);

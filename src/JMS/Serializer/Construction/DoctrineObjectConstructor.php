@@ -20,9 +20,11 @@ namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\Context;
-use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\ObjectConstructionException;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\VisitorInterface;
 use Metadata\ClassHierarchyMetadata;
 use Metadata\Driver\DriverInterface;
 use PhpOption\None;
@@ -35,6 +37,14 @@ use \Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
  */
 class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
+    const ON_MISSING_NULL = 'null';
+    const ON_MISSING_EXCEPTION = 'exception';
+    const ON_MISSING_FALLBACK = 'fallback';
+    /**
+     * @var string
+     */
+    private $fallbackStrategy;
+
     private $managerRegistry;
     private $fallbackConstructor;
 
@@ -44,13 +54,15 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * Constructor.
      *
-     * @param ManagerRegistry            $managerRegistry     Manager registry
+     * @param ManagerRegistry $managerRegistry Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
+     * @param string $fallbackStrategy
      */
-    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor)
+    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, $fallbackStrategy = self::ON_MISSING_NULL)
     {
-        $this->managerRegistry     = $managerRegistry;
+        $this->managerRegistry = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
+        $this->fallbackStrategy = $fallbackStrategy;
     }
 
     protected function getPropertyGroups(Context $context, $className, $property)
@@ -97,7 +109,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);
 
-        if (! $objectManager) {
+        if (!$objectManager) {
             // No ObjectManager found, proceed with normal deserialization
             return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
         }
@@ -111,7 +123,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (! is_array($data)) {
+        if (!is_array($data)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
@@ -123,20 +135,23 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         /** @var array $deserializingGroups */
         $deserializingGroups = $context->getGroups()->getOrElse(array());
 
+        // Avoid calling objectManager->find if the deserialization context groups do exclude identification properties
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            $propertyGroups = $this->getPropertyGroups($context, $metadata->name, $name);
+            $missingIdentifier = !array_key_exists($name, $data);
 
-            $useFallback = true;
+            if (0 < count($deserializingGroups)) {
+                $propertyGroups = $this->getPropertyGroups($context, $metadata->name, $name);
 
-            // group list match on at least one group?
-            foreach ($deserializingGroups as $deserializingGroup) {
-                if(in_array($deserializingGroup, $propertyGroups)) {
-                    $useFallback = false;
-                    break;
+                // group list match on at least one group?
+                foreach ($deserializingGroups as $deserializingGroup) {
+                    if (in_array($deserializingGroup, $propertyGroups)) {
+                        $missingIdentifier = false;
+                        break;
+                    }
                 }
             }
 
-            if (! array_key_exists($name, $data) || $useFallback ) {
+            if (true === $missingIdentifier) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 
@@ -146,9 +161,17 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         // Entity update, load it from database
         $object = $objectManager->find($metadata->name, $identifierList);
 
-        if (! is_object($object)) {
-            // Entity with that identifier didn't exist, create a new Entity
-            return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+        if (null === $object) {
+            switch ($this->fallbackStrategy) {
+                case self::ON_MISSING_NULL:
+                    return null;
+                case self::ON_MISSING_EXCEPTION:
+                    throw new ObjectConstructionException(sprintf("Entity %s can not be found", $metadata->name));
+                case self::ON_MISSING_FALLBACK:
+                    return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+                default:
+                    throw new InvalidArgumentException("The provided fallback strategy for the object constructor is not valid");
+            }
         }
 
         $objectManager->initializeObject($object);
