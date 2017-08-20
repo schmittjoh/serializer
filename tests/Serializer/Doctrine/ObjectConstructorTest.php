@@ -28,7 +28,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
-use Metadata\AdvancedMetadataFactoryInterface;
+use Metadata\MetadataFactoryInterface;
 use Metadata\MetadataFactory;
 use PhpOption\None;
 use PhpOption\Some;
@@ -214,11 +214,12 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(MetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
             ->willReturn($metadataClass);
+
         $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->disableOriginalConstructor()->getMock();
         $context
             ->method('getGroups')
@@ -288,7 +289,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(MetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
@@ -363,7 +364,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $metadataClass->addPropertyMetadata($pMetadata);
 
         $this->context->method('getGroups')->willReturn(None::create());
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(MetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
