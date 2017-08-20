@@ -28,6 +28,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
+use Metadata\AdvancedMetadataFactoryInterface;
 use Metadata\MetadataFactory;
 use PhpOption\None;
 use PhpOption\Some;
@@ -213,7 +214,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory = $this->createMock(AdvancedMetadataFactoryInterface::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
@@ -287,7 +288,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory = $this->createMock(AdvancedMetadataFactoryInterface::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
@@ -362,7 +363,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $metadataClass->addPropertyMetadata($pMetadata);
 
         $this->context->method('getGroups')->willReturn(None::create());
-        $metadataFactory = $this->createMock(MetadataFactory::class);
+        $metadataFactory = $this->createMock(AdvancedMetadataFactoryInterface::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
