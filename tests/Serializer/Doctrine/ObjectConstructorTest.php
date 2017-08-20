@@ -28,7 +28,6 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
-use Metadata\AdvancedMetadataFactoryInterface;
 use Metadata\MetadataFactory;
 use PhpOption\None;
 use PhpOption\Some;
@@ -214,12 +213,12 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->createMock(MetadataFactory::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
             ->willReturn($metadataClass);
-        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->disableOriginalConstructor()->getMock();
+        $context = $this->createMock('JMS\Serializer\DeserializationContext');
         $context
             ->method('getGroups')
             ->willReturn(new Some(array('id_group', 'non_id_group')));
@@ -227,18 +226,18 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
 
-        $classMetadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $classMetadataFactory = $this->createMock(ClassMetadataFactory::class);
         $classMetadataFactory
             ->method('isTransient')
             ->with(Author::class)
             ->willReturn(false);
 
-        $entityManager = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
+        $entityManager = $this->createMock(ObjectManager::class);
         $entityManager
             ->method('getMetadataFactory')
             ->willReturn($classMetadataFactory);
 
-        $classMetadata = $this->getMockBuilder(DoctrineClassMetadata::class)->disableOriginalConstructor()->getMock();
+        $classMetadata = $this->createMock(DoctrineClassMetadata::class);
         $classMetadata
             ->method('getIdentifierFieldNames')
             ->willReturn(array('id'));
@@ -253,7 +252,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->method('find')
             ->willReturn($authorToReturn);
 
-        $managerRegistry = $this->getMockBuilder(ManagerRegistry::class)->disableOriginalConstructor()->getMock();
+        $managerRegistry = $this->createMock(ManagerRegistry::class);
         $managerRegistry
             ->method('getManagerForClass')
             ->with(Author::class)
@@ -288,13 +287,13 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->createMock(MetadataFactory::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
             ->willReturn($metadataClass);
 
-        $context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->disableOriginalConstructor()->getMock();
+        $context = $this->createMock('JMS\Serializer\DeserializationContext');
         $context
             ->method('getGroups')
             ->willReturn(new Some(array('non_id_group')));
@@ -302,18 +301,18 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
 
-        $classMetadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $classMetadataFactory = $this->createMock(ClassMetadataFactory::class);
         $classMetadataFactory
             ->method('isTransient')
             ->with(Author::class)
             ->willReturn(false);
 
-        $classMetadata = $this->getMockBuilder(DoctrineClassMetadata::class)->disableOriginalConstructor()->getMock();
+        $classMetadata = $this->createMock(DoctrineClassMetadata::class);
         $classMetadata
             ->method('getIdentifierFieldNames')
             ->willReturn(array('id'));
 
-        $entityManager = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
+        $entityManager = $this->createMock(ObjectManager::class);
         $entityManager
             ->method('getMetadataFactory')
             ->willReturn($classMetadataFactory);
@@ -325,7 +324,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('find');
 
-        $managerRegistry = $this->getMockBuilder(ManagerRegistry::class)->disableOriginalConstructor()->getMock();
+        $managerRegistry = $this->createMock(ManagerRegistry::class);
         $managerRegistry
             ->method('getManagerForClass')
             ->with(Author::class)
@@ -363,7 +362,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $metadataClass->addPropertyMetadata($pMetadata);
 
         $this->context->method('getGroups')->willReturn(None::create());
-        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->createMock(MetadataFactory::class);
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
