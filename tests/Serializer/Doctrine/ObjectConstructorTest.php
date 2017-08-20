@@ -28,6 +28,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
+use Metadata\AdvancedMetadataFactoryInterface;
 use Metadata\MetadataFactory;
 use PhpOption\None;
 use PhpOption\Some;
@@ -213,7 +214,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(MetadataFactory::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
@@ -226,7 +227,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
 
-        $classMetadataFactory = $this->getMockBuilder(ClassMetadataFactory::class)->disableOriginalConstructor()->getMock();
+        $classMetadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $classMetadataFactory
             ->method('isTransient')
             ->with(Author::class)
@@ -287,7 +288,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $pMetadata->groups = array('non_id_group');
         $metadataClass->addPropertyMetadata($pMetadata);
 
-        $metadataFactory = $this->getMockBuilder(MetadataFactory::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
@@ -301,7 +302,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
 
-        $classMetadataFactory = $this->getMockBuilder(ClassMetadataFactory::class)->disableOriginalConstructor()->getMock();
+        $classMetadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $classMetadataFactory
             ->method('isTransient')
             ->with(Author::class)
@@ -362,7 +363,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $metadataClass->addPropertyMetadata($pMetadata);
 
         $this->context->method('getGroups')->willReturn(None::create());
-        $metadataFactory = $this->getMockBuilder(MetadataFactory::class)->disableOriginalConstructor()->getMock();
+        $metadataFactory = $this->getMockBuilder(AdvancedMetadataFactoryInterface::class)->disableOriginalConstructor()->getMock();
         $metadataFactory
             ->method('getMetadataForClass')
             ->with(Author::class)
