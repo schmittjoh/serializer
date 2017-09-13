@@ -141,6 +141,7 @@ final class GraphNavigator
             case 'integer':
                 return $visitor->visitInteger($data, $type, $context);
 
+            case 'bool':
             case 'boolean':
                 return $visitor->visitBoolean($data, $type, $context);
 

@@ -69,6 +69,14 @@ class BlogPost
     private $published;
 
     /**
+     * @Type("bool")
+     * @SerializedName("is_reviewed")
+     * @XmlAttribute
+     * @Groups({"post"})
+     */
+    private $reviewed;
+
+    /**
      * @Type("string")
      * @XmlAttribute(namespace="http://schemas.google.com/g/2005")
      * @Groups({"post"})
@@ -119,6 +127,7 @@ class BlogPost
         $this->author = $author;
         $this->publisher = $publisher;
         $this->published = false;
+        $this->reviewed = false;
         $this->comments = new ArrayCollection();
         $this->comments2 = new Sequence();
         $this->metadata = new Map();
