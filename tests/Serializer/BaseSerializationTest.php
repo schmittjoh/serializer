@@ -649,6 +649,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             $this->assertAttributeSame(false, 'published', $deserialized);
+            $this->assertAttributeSame(false, 'reviewed', $deserialized);
             $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
             $this->assertAttributeEquals(new Sequence(array($comment)), 'comments2', $deserialized);
@@ -675,6 +676,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             $this->assertAttributeSame(false, 'published', $deserialized);
+            $this->assertAttributeSame(false, 'reviewed', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
             $this->assertEquals(null, $this->getField($deserialized, 'author'));
         }
