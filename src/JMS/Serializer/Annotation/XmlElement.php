@@ -28,7 +28,7 @@ final class XmlElement
      * @var boolean
      */
     public $cdata = true;
-    
+
     /**
      * @var string
      */

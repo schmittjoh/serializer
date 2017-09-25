@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 class JsonSerializationVisitor extends GenericSerializationVisitor
@@ -57,7 +57,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $this->root = $data;
         }
 
-        return (string) $data;
+        return (string)$data;
     }
 
     public function visitBoolean($data, array $type, Context $context)
@@ -66,7 +66,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $this->root = $data;
         }
 
-        return (boolean) $data;
+        return (boolean)$data;
     }
 
     public function visitInteger($data, array $type, Context $context)
@@ -75,7 +75,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $this->root = $data;
         }
 
-        return (int) $data;
+        return (int)$data;
     }
 
     public function visitDouble($data, array $type, Context $context)
@@ -84,7 +84,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $this->root = $data;
         }
 
-        return (float) $data;
+        return (float)$data;
     }
 
     /**
@@ -106,7 +106,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $rs = $isHash ? new \ArrayObject() : array();
         }
 
-        $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
+        $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
@@ -158,15 +158,17 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $v = $this->accessor->getValue($data, $metadata);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if (null === $v && $context->shouldSerializeNull() !== true) {
+        if ((null === $v && $context->shouldSerializeNull() !== true)
+            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || is_array($v)) && 0 === count($v))
+        ) {
             return;
         }
 
         $k = $this->namingStrategy->translateName($metadata);
 
         if ($metadata->inline) {
-            if (is_array($v)) {
-                $this->data = array_merge($this->data, $v);
+            if (is_array($v) || ($v instanceof \ArrayObject)) {
+                $this->data = array_merge($this->data, (array) $v);
             }
         } else {
             $this->data[$k] = $v;
@@ -249,6 +251,6 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function setOptions($options)
     {
-        $this->options = (integer) $options;
+        $this->options = (integer)$options;
     }
 }

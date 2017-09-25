@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blog-post xmlns="http://example.com/namespace" xmlns:gd="http://schemas.google.com/g/2005" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" created_at="2011-07-30T00:00:00+0000" is_published="false" is_reviewed="false" gd:etag="1edf9bf60a32d89afbb85b2be849e3ceed5f5b10">
+  <id>what_a_nice_id</id>
+  <dc:title><![CDATA[This is a nice title.]]></dc:title>
+  <comment>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[foo]]></text>
+  </comment>
+  <comment2>
+    <author>
+      <full_name><![CDATA[Foo Bar]]></full_name>
+    </author>
+    <text><![CDATA[foo]]></text>
+  </comment2>
+  <metadata>
+    <entry key="foo"><![CDATA[bar]]></entry>
+  </metadata>
+  <atom:author>
+    <full_name><![CDATA[Foo Bar]]></full_name>
+  </atom:author>
+  <publisher xmlns:ns2="http://example.com/namespace2">
+    <ns2:pub_name><![CDATA[Bar Foo]]></ns2:pub_name>
+  </publisher>
+  <dc:tag xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <name>tag1</name>
+  </dc:tag>
+  <dc:tag xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <name>tag2</name>
+  </dc:tag>
+</blog-post>

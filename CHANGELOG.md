@@ -1,7 +1,79 @@
 # Change Log
 
-## [Unreleased](https://github.com/schmittjoh/serializer/tree/HEAD)
+## [1.8.0](https://github.com/schmittjoh/serializer/tree/1.8.0) (2017-07-12)
+**Implemented enhancements:**
 
+- Detect XML xsi:nil="true" to null when deserializing [\#790](https://github.com/schmittjoh/serializer/pull/790) ([goetas](https://github.com/goetas))
+- Added support for a third deserialize parameter for the DateTime type [\#788](https://github.com/schmittjoh/serializer/pull/788) ([bobvandevijver](https://github.com/bobvandevijver))
+- Added trim to xml metadata reader for groups parameter, and added support for groups element [\#781](https://github.com/schmittjoh/serializer/pull/781) ([mrosiu](https://github.com/mrosiu))
+- Add propertyMetdata to dynamic expression variables [\#778](https://github.com/schmittjoh/serializer/pull/778) ([goetas](https://github.com/goetas))
+- Fix xml deserialization when xsi:nil="true" is set [\#771](https://github.com/schmittjoh/serializer/pull/771) ([Bouwdie](https://github.com/Bouwdie))
+
+**Fixed bugs:**
+
+- do not disappear type params in DoctrineProxySubscriber [\#793](https://github.com/schmittjoh/serializer/pull/793) ([kriswallsmith](https://github.com/kriswallsmith))
+- \#784 fix with inline array of type array\<K, V\> [\#785](https://github.com/schmittjoh/serializer/pull/785) ([aviortm](https://github.com/aviortm))
+
+**Closed issues:**
+
+- inline array with type array\<K, V\> not serialized [\#784](https://github.com/schmittjoh/serializer/issues/784)
+- \[2.0\] \[Feature-request\] Provide InitializedObjectConstructor as default [\#775](https://github.com/schmittjoh/serializer/issues/775)
+- Allow access to PropertyMetadata in Dynamic Exclusion strategies [\#772](https://github.com/schmittjoh/serializer/issues/772)
+- Overriding groups at runtime does not work, or? [\#767](https://github.com/schmittjoh/serializer/issues/767)
+- DateTime format and control characters [\#94](https://github.com/schmittjoh/serializer/issues/94)
+
+**Merged pull requests:**
+
+- Missing features of the compiler pass [\#789](https://github.com/schmittjoh/serializer/pull/789) ([mikemix](https://github.com/mikemix))
+- Updated documentation related to PR \#778 [\#780](https://github.com/schmittjoh/serializer/pull/780) ([bblue](https://github.com/bblue))
+- \[RFC\] Move to PSR 4 [\#770](https://github.com/schmittjoh/serializer/pull/770) ([goetas](https://github.com/goetas))
+- Re-formatted code for better PSR compliance [\#769](https://github.com/schmittjoh/serializer/pull/769) ([goetas](https://github.com/goetas))
+- Proposing some guidelines for contributing [\#763](https://github.com/schmittjoh/serializer/pull/763) ([goetas](https://github.com/goetas))
+
+## [1.7.1](https://github.com/schmittjoh/serializer/tree/1.7.1) (2017-05-15)
+**Fixed bugs:**
+
+- Custom type handlers does not work with doctrine proxies anymore [\#765](https://github.com/schmittjoh/serializer/issues/765)
+- Doctrine listener should not change the type on proxies with virtual type [\#768](https://github.com/schmittjoh/serializer/pull/768) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Missing bool type in graphNavigator.php in method accept\(\) [\#764](https://github.com/schmittjoh/serializer/issues/764)
+- The sub-class "Proxy-Class" is not listed in the discriminator of the base class "DiscriminatorClass" [\#459](https://github.com/schmittjoh/serializer/issues/459)
+- Configure whether serializing empty array. [\#124](https://github.com/schmittjoh/serializer/issues/124)
+
+## [1.7.0](https://github.com/schmittjoh/serializer/tree/1.7.0) (2017-05-10)
+**Implemented enhancements:**
+
+- Skip doctrine proxy initializations when exclusion strategy will exclude it  [\#760](https://github.com/schmittjoh/serializer/pull/760) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Error deserializing a map of \(nullable\) objects [\#762](https://github.com/schmittjoh/serializer/issues/762)
+- Add data using setData produces hashes instead of arrays [\#761](https://github.com/schmittjoh/serializer/issues/761)
+
+## [1.7.0-RC2](https://github.com/schmittjoh/serializer/tree/1.7.0-RC2) (2017-05-05)
+**Implemented enhancements:**
+
+- Make sure input is always a string [\#755](https://github.com/schmittjoh/serializer/pull/755) ([goetas](https://github.com/goetas))
+- Allow namespaced XML element discriminator [\#753](https://github.com/schmittjoh/serializer/pull/753) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Allow to skip "empty serialization result" when serializing [\#757](https://github.com/schmittjoh/serializer/pull/757) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Is it possible to use @XmlNamespace & @XmlRoot in a class at same time ? [\#759](https://github.com/schmittjoh/serializer/issues/759)
+- Serializes FOS:User datas with ExclusionPolicy\("all"\)  [\#599](https://github.com/schmittjoh/serializer/issues/599)
+
+**Merged pull requests:**
+
+- Add a quick reference for how to enable expression evaluator [\#758](https://github.com/schmittjoh/serializer/pull/758) ([chasen](https://github.com/chasen))
+- Allow for setExpressionEvaluator usage to be chainable [\#756](https://github.com/schmittjoh/serializer/pull/756) ([chasen](https://github.com/chasen))
+- Fix typo in annotation docs [\#754](https://github.com/schmittjoh/serializer/pull/754) ([JustBlackBird](https://github.com/JustBlackBird))
+
+## [1.7.0-RC1](https://github.com/schmittjoh/serializer/tree/1.7.0-RC1) (2017-04-25)
 **Implemented enhancements:**
 
 - Allow to configure the doctrine object constructor [\#751](https://github.com/schmittjoh/serializer/pull/751) ([goetas](https://github.com/goetas))
@@ -31,7 +103,6 @@
 - Deserialization of sub entites with non existing id [\#492](https://github.com/schmittjoh/serializer/issues/492)
 - \[Question\] Handler/Converter for specific field [\#476](https://github.com/schmittjoh/serializer/issues/476)
 - getClassName regex may incorrectly retrieve a false class name from comments above the class. [\#460](https://github.com/schmittjoh/serializer/issues/460)
-- The sub-class "Proxy-Class" is not listed in the discriminator of the base class "DiscriminatorClass" [\#459](https://github.com/schmittjoh/serializer/issues/459)
 - Multiple types for property? [\#445](https://github.com/schmittjoh/serializer/issues/445)
 - Allow non-qualified XML serialization when XML namespaces are part of the metadata [\#413](https://github.com/schmittjoh/serializer/issues/413)
 - Discriminator field name [\#412](https://github.com/schmittjoh/serializer/issues/412)

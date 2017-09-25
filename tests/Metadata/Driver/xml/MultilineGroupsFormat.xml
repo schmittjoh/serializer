@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\MultilineGroupsFormat"
+           exclusion-policy="all"
+           read-only="true"
+    >
+        <virtual-property method="getAmount" type="integer" serialized-name="amount">
+            <groups>
+                <value>first.test.group</value>
+            </groups>
+        </virtual-property>
+        <virtual-property method="getCurrency" type="string" serialized-name="currency">
+            <groups>
+                <value>first.test.group</value>
+                <value>second.test.group</value>
+            </groups>
+        </virtual-property>
+    </class>
+</serializer>

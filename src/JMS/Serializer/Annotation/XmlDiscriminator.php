@@ -34,4 +34,9 @@ class XmlDiscriminator
      * @var boolean
      */
     public $cdata = true;
+
+    /**
+     * @var string
+     */
+    public $namespace;
 }

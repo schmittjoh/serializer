@@ -21,16 +21,23 @@ that should be used for the class.
 This annotation can be defined on a property to indicate that the property should
 not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
-If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
-be possible to use `@Exclude(if="expression")` to exclude dynamically a property.
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
+be possible to use ``@Exclude(if="expression")`` to exclude dynamically a property.
 
 @Expose
 ~~~~~~~
 This annotation can be defined on a property to indicate that the property should
 be serialized/unserialized. Works only in combination with AllExclusionPolicy.
 
-If the `ExpressionLanguageExclusionStrategy` exclusion strategy is enabled, will
-be possible to use `@Expose(if="expression")` to expose dynamically a property.
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
+be possible to use ``@Expose(if="expression")`` to expose dynamically a property.
+
+@SkipWhenEmpty
+~~~~~~~~~~~~~~
+This annotation can be defined on a property to indicate that the property should
+not be serialized if the result will be "empty".
+
+Works option works only when serializing.
 
 @SerializedName
 ~~~~~~~~~~~~~~~
@@ -235,8 +242,9 @@ In this example:
 - ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
-**Note**: This only works for serialization and is completely ignored during
-deserialization.
+.. note ::
+
+    This only works for serialization and is completely ignored during deserialization.
 
 @Inline
 ~~~~~~~
@@ -295,7 +303,7 @@ by the object itself.
 .. versionadded : 0.12
     @Discriminator was added
 
-This annotation allows deserialization of relations which are polymorphic, but
+This annotation allows serialization/deserialization of relations which are polymorphic, but
 where a common base class exists. The ``@Discriminator`` annotation has to be applied
 to the least super type::
 
@@ -314,59 +322,71 @@ to the least super type::
 @Type
 ~~~~~
 This annotation can be defined on a property to specify the type of that property.
-For deserialization, this annotation must be defined. For serialization, you may
-define it in order to enhance the produced output; for example, you may want to
-force a certain format to be used for DateTime types.
+For deserialization, this annotation must be defined.
+The ``@Type`` annotation can have parameters and parameters can be used by serialization/deserialization
+handlers to enhance the serialization or deserialization result; for example, you may want to
+force a certain format to be used for serializing DateTime types and specifying at the same time a different format
+used when deserializing them.
 
 Available Types:
 
-+-------------------------------------+--------------------------------------------------+
-| Type                                | Description                                      |
-+=====================================+==================================================+
-| boolean                             | Primitive boolean                                |
-+-------------------------------------+--------------------------------------------------+
-| integer or int                      | Primitive integer                                |
-+-------------------------------------+--------------------------------------------------+
-| double or float                     | Primitive double                                 |
-+-------------------------------------+--------------------------------------------------+
-| string                              | Primitive string                                 |
-+-------------------------------------+--------------------------------------------------+
-| array                               | An array with arbitrary keys, and values.        |
-+-------------------------------------+--------------------------------------------------+
-| array<T>                            | A list of type T (T can be any available type).  |
-|                                     | Examples:                                        |
-|                                     | array<string>, array<MyNamespace\MyObject>, etc. |
-+-------------------------------------+--------------------------------------------------+
-| array<K, V>                         | A map of keys of type K to values of type V.     |
-|                                     | Examples: array<string, string>,                 |
-|                                     | array<string, MyNamespace\MyObject>, etc.        |
-+-------------------------------------+--------------------------------------------------+
-| DateTime                            | PHP's DateTime object (default format/timezone)  |
-+-------------------------------------+--------------------------------------------------+
-| DateTime<'format'>                  | PHP's DateTime object (custom format/default     |
-|                                     | timezone)                                        |
-+-------------------------------------+--------------------------------------------------+
-| DateTime<'format', 'zone'>          | PHP's DateTime object (custom format/timezone)   |
-+-------------------------------------+--------------------------------------------------+
-| DateTimeImmutable                   | PHP's DateTimeImmutable object (default format/  |
-|                                     | timezone)                                        |
-+-------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'format'>         | PHP's DateTimeImmutable object (custom format/   |
-|                                     | default timezone)                                |
-+-------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'format', 'zone'> | PHP's DateTimeImmutable object (custom format/   |
-|                                     | timezone)                                        |
-+-------------------------------------+--------------------------------------------------+
-| DateInterval                        | PHP's DateInterval object using ISO 8601 format  |
-+-------------------------------------+--------------------------------------------------+
-| T                                   | Where T is a fully qualified class name.         |
-+-------------------------------------+--------------------------------------------------+
-| ArrayCollection<T>                  | Similar to array<T>, but will be deserialized    |
-|                                     | into Doctrine's ArrayCollection class.           |
-+-------------------------------------+--------------------------------------------------+
-| ArrayCollection<K, V>               | Similar to array<K, V>, but will be deserialized |
-|                                     | into Doctrine's ArrayCollection class.           |
-+-------------------------------------+--------------------------------------------------+
++----------------------------------------------------------+--------------------------------------------------+
+| Type                                                     | Description                                      |
++==========================================================+==================================================+
+| boolean or bool                                          | Primitive boolean                                |
++----------------------------------------------------------+--------------------------------------------------+
+| integer or int                                           | Primitive integer                                |
++----------------------------------------------------------+--------------------------------------------------+
+| double or float                                          | Primitive double                                 |
++----------------------------------------------------------+--------------------------------------------------+
+| string                                                   | Primitive string                                 |
++----------------------------------------------------------+--------------------------------------------------+
+| array                                                    | An array with arbitrary keys, and values.        |
++----------------------------------------------------------+--------------------------------------------------+
+| array<T>                                                 | A list of type T (T can be any available type).  |
+|                                                          | Examples:                                        |
+|                                                          | array<string>, array<MyNamespace\MyObject>, etc. |
++----------------------------------------------------------+--------------------------------------------------+
+| array<K, V>                                              | A map of keys of type K to values of type V.     |
+|                                                          | Examples: array<string, string>,                 |
+|                                                          | array<string, MyNamespace\MyObject>, etc.        |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTime                                                 | PHP's DateTime object (default format/timezone)  |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format'>                                       | PHP's DateTime object (custom format/default     |
+|                                                          | timezone)                                        |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone'>                               | PHP's DateTime object (custom format/timezone)   |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone', 'deserializeFormat'>          | PHP's DateTime object (custom format/timezone,   |
+|                                                          | deserialize format). If you do not want to       |
+|                                                          | specify a specific timezone, use an empty        |
+|                                                          | string ('').                                     |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable                                        | PHP's DateTimeImmutable object (default format/  |
+|                                                          | timezone)                                        |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format'>                              | PHP's DateTimeImmutable object (custom format/   |
+|                                                          | default timezone)                                |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone'>                      | PHP's DateTimeImmutable object (custom format/   |
+|                                                          | timezone)                                        |
++----------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone', 'deserializeFormat'> | PHP's DateTimeImmutable object (custom format/   |
+|                                                          | timezone/deserialize format). If you do not want |
+|                                                          | to specify a specific timezone, use an empty     |
+|                                                          | string ('').                                     |
++----------------------------------------------------------+--------------------------------------------------+
+| DateInterval                                             | PHP's DateInterval object using ISO 8601 format  |
++----------------------------------------------------------+--------------------------------------------------+
+| T                                                        | Where T is a fully qualified class name.         |
++----------------------------------------------------------+--------------------------------------------------+
+| ArrayCollection<T>                                       | Similar to array<T>, but will be deserialized    |
+|                                                          | into Doctrine's ArrayCollection class.           |
++----------------------------------------------------------+--------------------------------------------------+
+| ArrayCollection<K, V>                                    | Similar to array<K, V>, but will be deserialized |
+|                                                          | into Doctrine's ArrayCollection class.           |
++----------------------------------------------------------+--------------------------------------------------+
 
 Examples:
 
@@ -496,6 +516,8 @@ Available Options:
 | attribute                           | use an attribute instead of a child node         |
 +-------------------------------------+--------------------------------------------------+
 | cdata                               | render child node content with or without cdata  |
++-------------------------------------+--------------------------------------------------+
+| namespace                           | render child node using the specified namespace  |
 +-------------------------------------+--------------------------------------------------+
 
 Example for "attribute":

@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Twig;
 
-use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * Serializer helper twig extension

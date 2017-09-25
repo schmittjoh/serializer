@@ -19,10 +19,10 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use JMS\Serializer\Metadata\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
@@ -38,26 +38,27 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @var array
      */
     protected $fieldMapping = array(
-        'string'       => 'string',
-        'text'         => 'string',
-        'blob'         => 'string',
+        'string' => 'string',
+        'text' => 'string',
+        'blob' => 'string',
+        'guid' => 'string',
 
-        'integer'      => 'integer',
-        'smallint'     => 'integer',
-        'bigint'       => 'integer',
+        'integer' => 'integer',
+        'smallint' => 'integer',
+        'bigint' => 'integer',
 
-        'datetime'     => 'DateTime',
-        'datetimetz'   => 'DateTime',
-        'time'         => 'DateTime',
-        'date'         => 'DateTime',
+        'datetime' => 'DateTime',
+        'datetimetz' => 'DateTime',
+        'time' => 'DateTime',
+        'date' => 'DateTime',
 
-        'float'        => 'float',
-        'decimal'      => 'float',
+        'float' => 'float',
+        'decimal' => 'float',
 
-        'boolean'      => 'boolean',
+        'boolean' => 'boolean',
 
-        'array'        => 'array',
-        'json_array'   => 'array',
+        'array' => 'array',
+        'json_array' => 'array',
         'simple_array' => 'array<string>',
     );
 
@@ -83,7 +84,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
-        if ( ! $doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
+        if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
             return $classMetadata;
         }
 
@@ -148,7 +149,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      */
     protected function tryLoadingDoctrineMetadata($className)
     {
-        if ( ! $manager = $this->registry->getManagerForClass($className)) {
+        if (!$manager = $this->registry->getManagerForClass($className)) {
             return null;
         }
 
@@ -164,7 +165,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      */
     protected function normalizeFieldType($type)
     {
-        if ( ! isset($this->fieldMapping[$type])) {
+        if (!isset($this->fieldMapping[$type])) {
             return;
         }
 

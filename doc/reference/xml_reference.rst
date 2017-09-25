@@ -9,7 +9,7 @@ XML Reference
             accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
             access-type="public_method" discriminator-field-name="type" discriminator-disabled="false" read-only="false">
             <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
-            <xml-discriminator attribute="true" cdata="false"/>
+            <xml-discriminator attribute="true" cdata="false" namespace=""/>
             <discriminator-class value="some-value">ClassName</discriminator-class>
             <discriminator-groups>
                 <group>foo</group>
@@ -19,6 +19,7 @@ XML Reference
                       expose="true"
                       exclude-if="expr"
                       expose-if="expr"
+                      skip-when-empty="false"
                       type="string"
                       serialized-name="foo"
                       since-version="1.0"
@@ -38,9 +39,13 @@ XML Reference
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
                 <type><![CDATA[]]></type>
-                <xml-list inline="true" entry-name="foobar" />
+                <xml-list inline="true" entry-name="foobar" namespace="http://www.w3.org/2005/Atom" skip-when-empty="true" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" namespace="http://www.w3.org/2005/Atom" />
                 <xml-element cdata="false" namespace="http://www.w3.org/2005/Atom"/>
+                <groups>
+                    <value>foo</value>
+                    <value>bar</value>
+                </groups>
             </property>
             <callback-method name="foo" type="pre-serialize" />
             <callback-method name="bar" type="post-serialize" />
@@ -52,6 +57,7 @@ XML Reference
                       name="some-property"
                       exclude="true"
                       expose="true"
+                      skip-when-empty="false"
                       type="string"
                       serialized-name="foo"
                       since-version="1.0"
@@ -89,8 +95,12 @@ XML Reference
                 <!-- You can also specify the type as element which is necessary if
                      your type contains "<" or ">" characters. -->
                 <type><![CDATA[]]></type>
-                <xml-list inline="true" entry-name="foobar" />
-                <xml-map inline="true" key-attribute-name="foo" entry-name="bar" />
+                <groups>
+                    <value>foo</value>
+                    <value>bar</value>
+                </groups>
+                <xml-list inline="true" entry-name="foobar" namespace="http://www.w3.org/2005/Atom" skip-when-empty="true" />
+                <xml-map inline="true" key-attribute-name="foo" entry-name="bar" namespace="http://www.w3.org/2005/Atom" />
             </virtual-property>
             
         </class>

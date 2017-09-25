@@ -269,9 +269,9 @@ You need to tell the serializer to take into account MaxDepth checks::
 Dynamic exclusion strategy
 --------------------------
 
-If the previous exclusion strategies are not enough, is possible to use the `ExpressionLanguageExclusionStrategy`
-that uses the `symfony expression language<https://github.com/symfony/expression-language>`_ to
-allow a more sophisticated exclusion strategies using `@Exclude(if="expression")` and `@Expose(if="expression")` methods.
+If the previous exclusion strategies are not enough, is possible to use the ``ExpressionLanguageExclusionStrategy``
+that uses the `symfony expression language`_ to
+allow a more sophisticated exclusion strategies using ``@Exclude(if="expression")`` and ``@Expose(if="expression")`` methods.
 
 
 .. code-block :: php
@@ -294,3 +294,37 @@ allow a more sophisticated exclusion strategies using `@Exclude(if="expression")
 .. note ::
 
     ``true`` is just a generic expression, you can use any expression allowed by the Symfony Expression Language
+
+To enable this feature you have to set the Expression Evaluator when initializing the serializer. 
+
+.. code-block :: php
+
+    <?php
+    use JMS\Serializer\Expression\ExpressionEvaluator;
+    use JMS\Serializer\Expression\SerializerBuilder;
+    use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+    
+    $serializer = SerializerBuilder::create()
+        ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
+        ->build();
+
+.. _symfony expression language: https://github.com/symfony/expression-language
+
+By default the serializer exposes three variables (`object`, `context` and `property_metadata` for use in an expression. This enables you to create custom exclusion strategies similar to i.e. the [GroupExclusionStrategy](https://github.com/schmittjoh/serializer/blob/master/src/Exclusion/GroupsExclusionStrategy.php). In the below example, `someMethod` would receive all three variables.
+
+.. code-block :: php
+
+        <?php
+
+    class MyObject
+    {
+        /**
+         * @Exclude(if="someMethod(object, context, property_metadata)")
+         */
+        private $name;
+
+       /**
+         * @Exclude(if="someMethod(object, context, property_metadata)")
+         */
+        private $name2;
+    }

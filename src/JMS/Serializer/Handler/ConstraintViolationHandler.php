@@ -19,12 +19,12 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\YamlSerializationVisitor;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\XmlSerializationVisitor;
+use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use JMS\Serializer\XmlSerializationVisitor;
 
 class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
@@ -40,7 +40,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
-                    'method' => $method.'To'.$format,
+                    'method' => $method . 'To' . $format,
                 );
             }
         }

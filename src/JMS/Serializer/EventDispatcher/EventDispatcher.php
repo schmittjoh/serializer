@@ -17,6 +17,7 @@
  */
 
 namespace JMS\Serializer\EventDispatcher;
+
 use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
@@ -34,7 +35,7 @@ class EventDispatcher implements EventDispatcherInterface
 
     public static function getDefaultMethodName($eventName)
     {
-        return 'on'.str_replace(array('_', '.'), '', $eventName);
+        return 'on' . str_replace(array('_', '.'), '', $eventName);
     }
 
     /**
@@ -57,7 +58,7 @@ class EventDispatcher implements EventDispatcherInterface
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         foreach ($subscriber->getSubscribedEvents() as $eventData) {
-            if ( ! isset($eventData['event'])) {
+            if (!isset($eventData['event'])) {
                 throw new InvalidArgumentException(sprintf('Each event must have a "event" key.'));
             }
 
@@ -71,12 +72,12 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function hasListeners($eventName, $class, $format)
     {
-        if ( ! isset($this->listeners[$eventName])) {
+        if (!isset($this->listeners[$eventName])) {
             return false;
         }
 
         $loweredClass = strtolower($class);
-        if ( ! isset($this->classListeners[$eventName][$loweredClass][$format])) {
+        if (!isset($this->classListeners[$eventName][$loweredClass][$format])) {
             $this->classListeners[$eventName][$loweredClass][$format] = $this->initializeListeners($eventName, $loweredClass, $format);
         }
 
@@ -85,12 +86,12 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function dispatch($eventName, $class, $format, Event $event)
     {
-        if ( ! isset($this->listeners[$eventName])) {
+        if (!isset($this->listeners[$eventName])) {
             return;
         }
 
         $loweredClass = strtolower($class);
-        if ( ! isset($this->classListeners[$eventName][$loweredClass][$format])) {
+        if (!isset($this->classListeners[$eventName][$loweredClass][$format])) {
             $this->classListeners[$eventName][$loweredClass][$format] = $this->initializeListeners($eventName, $loweredClass, $format);
         }
 

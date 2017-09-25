@@ -19,11 +19,11 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use Symfony\Component\Yaml\Inline;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Util\Writer;
+use Symfony\Component\Yaml\Inline;
 
 /**
  * Serialization Visitor for the YAML format.
@@ -84,7 +84,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $isHash = isset($type['params'][1]);
 
         $count = $this->writer->changeCount;
-        $isList = (isset($type['params'][0]) && ! isset($type['params'][1]))
+        $isList = (isset($type['params'][0]) && !isset($type['params'][1]))
             || array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
@@ -95,7 +95,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             if ($isList && !$isHash) {
                 $this->writer->writeln('-');
             } else {
-                $this->writer->writeln(Inline::dump($k).':');
+                $this->writer->writeln(Inline::dump($k) . ':');
             }
 
             $this->writer->indent();
@@ -103,8 +103,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             if (null !== $v = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->writer
                     ->rtrim(false)
-                    ->writeln(' '.$v)
-                ;
+                    ->writeln(' ' . $v);
             }
 
             $this->writer->outdent();
@@ -113,13 +112,11 @@ class YamlSerializationVisitor extends AbstractVisitor
         if ($count === $this->writer->changeCount && isset($type['params'][1])) {
             $this->writer
                 ->rtrim(false)
-                ->writeln(' {}')
-            ;
+                ->writeln(' {}');
         } elseif (empty($data)) {
             $this->writer
                 ->rtrim(false)
-                ->writeln(' []')
-            ;
+                ->writeln(' []');
         }
     }
 
@@ -136,7 +133,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
-        $v = (string) $data;
+        $v = (string)$data;
 
         if ('' === $this->writer->content) {
             $this->writer->writeln($v);
@@ -147,7 +144,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
-        $v = (string) $data;
+        $v = (string)$data;
 
         if ('' === $this->writer->content) {
             $this->writer->writeln($v);
@@ -170,10 +167,10 @@ class YamlSerializationVisitor extends AbstractVisitor
 
         $name = $this->namingStrategy->translateName($metadata);
 
-        if ( ! $metadata->inline) {
+        if (!$metadata->inline) {
             $this->writer
-                 ->writeln(Inline::dump($name).':')
-                 ->indent();
+                ->writeln(Inline::dump($name) . ':')
+                ->indent();
         }
 
         $this->setCurrentMetadata($metadata);
@@ -183,13 +180,12 @@ class YamlSerializationVisitor extends AbstractVisitor
         if (null !== $v = $this->navigator->accept($v, $metadata->type, $context)) {
             $this->writer
                 ->rtrim(false)
-                ->writeln(' '.$v)
-            ;
-        } elseif ($count === $this->writer->changeCount && ! $metadata->inline) {
+                ->writeln(' ' . $v);
+        } elseif ($count === $this->writer->changeCount && !$metadata->inline) {
             $this->writer->revert();
         }
 
-        if ( ! $metadata->inline) {
+        if (!$metadata->inline) {
             $this->writer->outdent();
         }
         $this->revertCurrentMetadata();

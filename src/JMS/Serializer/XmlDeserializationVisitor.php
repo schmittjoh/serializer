@@ -18,14 +18,14 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\XmlErrorException;
-use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 
-class XmlDeserializationVisitor extends AbstractVisitor
+class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface
 {
     private $objectStack;
     private $metadataStack;
@@ -89,7 +89,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     private function emptyStringToSpaceCharacter($data)
     {
-        return $data === '' ? ' ' : $data;
+        return $data === '' ? ' ' : (string)$data;
     }
 
     public function visitNull($data, array $type, Context $context)
@@ -99,7 +99,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
-        $data = (string) $data;
+        $data = (string)$data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -110,7 +110,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
-        $data = (string) $data;
+        $data = (string)$data;
 
         if ('true' === $data || '1' === $data) {
             $data = true;
@@ -129,7 +129,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitInteger($data, array $type, Context $context)
     {
-        $data = (integer) $data;
+        $data = (integer)$data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -140,7 +140,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
     public function visitDouble($data, array $type, Context $context)
     {
-        $data = (double) $data;
+        $data = (double)$data;
 
         if (null === $this->result) {
             $this->result = $data;
@@ -156,7 +156,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
         if ($namespace === null && $this->objectMetadataStack->count()) {
             $classMetadata = $this->objectMetadataStack->top();
-            $namespace = isset($classMetadata->xmlNamespaces[''])?$classMetadata->xmlNamespaces['']:$namespace;
+            $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
         }
 
         if (null !== $namespace) {
@@ -206,7 +206,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
                     $attrs = $v->attributes();
-                    if ( ! isset($attrs[$this->currentMetadata->xmlKeyAttribute])) {
+                    if (!isset($attrs[$this->currentMetadata->xmlKeyAttribute])) {
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
@@ -234,11 +234,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
     {
         $name = $this->namingStrategy->translateName($metadata);
 
-        if ( ! $metadata->type) {
+        if (!$metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-       if ($metadata->xmlAttribute) {
+        if ($metadata->xmlAttribute) {
 
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
@@ -282,9 +282,9 @@ class XmlDeserializationVisitor extends AbstractVisitor
             if (isset($namespaces[''])) {
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespaces['']);
-                $nodes = $data->xpath('./'.$prefix. ':'.$name );
+                $nodes = $data->xpath('./' . $prefix . ':' . $name);
             } else {
-                $nodes = $data->xpath('./'. $name );
+                $nodes = $data->xpath('./' . $name);
             }
             if (empty($nodes)) {
                 return;
@@ -344,7 +344,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
     }
 
     /**
-     * @param array<string> $doctypeWhitelist
+     * @param array <string> $doctypeWhitelist
      */
     public function setDoctypeWhitelist(array $doctypeWhitelist)
     {
@@ -386,5 +386,26 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
 
         return $internalSubset;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function isNull($value)
+    {
+        if ($value instanceof \SimpleXMLElement) {
+            $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
+
+            //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
+            if (@isset($xsiAttributes['nil'])
+                && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
+            ) {
+                return true;
+            }
+        }
+
+        return $value === null;
     }
 }

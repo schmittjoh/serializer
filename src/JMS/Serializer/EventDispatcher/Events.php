@@ -25,5 +25,7 @@ abstract class Events
     const PRE_DESERIALIZE = 'serializer.pre_deserialize';
     const POST_DESERIALIZE = 'serializer.post_deserialize';
 
-    final private function __construct() { }
+    final private function __construct()
+    {
+    }
 }
