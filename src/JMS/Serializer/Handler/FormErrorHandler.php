@@ -52,7 +52,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function __construct(TranslatorInterface $translator, $translationDomain = 'validators')
+    public function __construct(TranslatorInterface $translator = null, $translationDomain = 'validators')
     {
         $this->translator = $translator;
         $this->translationDomain = $translationDomain;
@@ -121,6 +121,11 @@ class FormErrorHandler implements SubscribingHandlerInterface
 
     private function getErrorMessage(FormError $error)
     {
+
+        if ($this->translator === null){
+            return $error->getMessage();
+        }
+
         if (null !== $error->getMessagePluralization()) {
             return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), $this->translationDomain);
         }
