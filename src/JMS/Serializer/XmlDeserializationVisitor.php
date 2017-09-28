@@ -396,10 +396,16 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     public function isNull($value)
     {
         if ($value instanceof \SimpleXMLElement) {
-            $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
+            // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
+            // If the "name" is empty means that we are on an not-existent node and subsequent operations on the object will trigger the warning:
+            // "Node no longer exists"
+            if ($value->getName() === "") {
+                // @todo should be "true", but for collections needs a default collection value. maybe something for the 2.0
+                return false;
+            }
 
-            //We have to keep the isset quiet, some tests give error: `Node no longer exists`; even though it evaluates to false
-            if (@isset($xsiAttributes['nil'])
+            $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
+            if (isset($xsiAttributes['nil'])
                 && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
             ) {
                 return true;
