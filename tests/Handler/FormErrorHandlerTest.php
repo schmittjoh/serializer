@@ -59,6 +59,20 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('{}', $json);
     }
 
+    public function testErrorHandlerWithoutTranslator()
+    {
+        $this->handler = new FormErrorHandler();
+        $form = $this->createForm();
+        $form->addError(new FormError('error!'));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+
+        $this->assertSame(json_encode(array(
+            'errors' => array(
+                'error!',
+            ),
+        )), $json);
+    }
+
     public function testSerializeHasFormError()
     {
         $form = $this->createForm();
