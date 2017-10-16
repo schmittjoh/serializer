@@ -58,6 +58,8 @@ class ExpressionLanguageExclusionStrategy
         ];
         if ($navigatorContext instanceof SerializationContext) {
             $variables['object'] = $navigatorContext->getObject();
+        } else {
+            $variables['object'] = null;
         }
 
         return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
