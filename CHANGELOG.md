@@ -1,7 +1,20 @@
 # Change Log
 
-## [1.9.0](https://github.com/schmittjoh/serializer/tree/1.9.0)
+## [1.9.1](https://github.com/schmittjoh/serializer/tree/1.9.1)
 
+**Fixed bugs:**
+
+- Dynamic exclusion strategy, Variable "object" is not valid [\#826](https://github.com/schmittjoh/serializer/issues/826)
+
+**Closed issues:**
+
+- Allow DateTime or Null [\#779](https://github.com/schmittjoh/serializer/issues/779)
+
+**Merged pull requests:**
+
+- Alow to use "object" var in expressions when deserializing [\#827](https://github.com/schmittjoh/serializer/pull/827) ([goetas](https://github.com/goetas))
+
+## [1.9.0](https://github.com/schmittjoh/serializer/tree/1.9.0) (2017-09-28)
 **Implemented enhancements:**
 
 - Doctrine LazyCriteriaCollection not supported [\#814](https://github.com/schmittjoh/serializer/issues/814)
@@ -11,6 +24,7 @@
 
 **Fixed bugs:**
 
+-  Node no longer exists - Deserialize Error [\#817](https://github.com/schmittjoh/serializer/issues/817)
 - Serializer fails if there is no AnnotationDriver in the DriverChain instance [\#815](https://github.com/schmittjoh/serializer/issues/815)
 - Evaluate XML xsi:nil="1" to null  [\#799](https://github.com/schmittjoh/serializer/pull/799) ([Bouwdie](https://github.com/Bouwdie))
 
