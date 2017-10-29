@@ -90,4 +90,26 @@ class DateHandlerTest extends \PHPUnit_Framework_TestCase
             $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
         );
     }
+
+    public function testTimeZoneGetsPreserved()
+    {
+        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+
+        $timestamp = time();
+        $timezone = 'Europe/Brussels';
+        $type = ['name' => 'DateTime', 'params' => ['U', $timezone]];
+
+        $expectedDateTime = \DateTime::createFromFormat('U', $timestamp);
+        $expectedDateTime->setTimezone(new \DateTimeZone($timezone));
+
+        $actualDateTime = $this->handler->deserializeDateTimeFromJson($visitor, $timestamp, $type);
+
+        $this->assertEquals(
+            $expectedDateTime->format(\DateTime::RFC3339),
+            $actualDateTime->format(\DateTime::RFC3339)
+        );
+    }
 }
