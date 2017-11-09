@@ -188,7 +188,9 @@ class DateHandler implements SubscribingHandlerInterface
             throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
 
-        $datetime->setTimezone($timezone);
+        if ($format === 'U') {
+            $datetime = $datetime->setTimezone($timezone);
+        }
 
         return $datetime;
     }
