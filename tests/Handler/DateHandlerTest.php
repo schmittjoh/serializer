@@ -91,7 +91,7 @@ class DateHandlerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testTimeZoneGetsPreserved()
+    public function testTimeZoneGetsPreservedWithUnixTimestamp()
     {
         $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
             ->disableOriginalConstructor()
