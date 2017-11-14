@@ -351,7 +351,7 @@ Available Types:
 |                                                          | Examples: array<string, string>,                 |
 |                                                          | array<string, MyNamespace\MyObject>, etc.        |
 +----------------------------------------------------------+--------------------------------------------------+
-| DateTime                                                 | PHP's DateTime object (default format/timezone)  |
+| DateTime                                                 | PHP's DateTime object (default format*/timezone)  |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTime<'format'>                                       | PHP's DateTime object (custom format/default     |
 |                                                          | timezone)                                        |
@@ -363,7 +363,7 @@ Available Types:
 |                                                          | specify a specific timezone, use an empty        |
 |                                                          | string ('').                                     |
 +----------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable                                        | PHP's DateTimeImmutable object (default format/  |
+| DateTimeImmutable                                        | PHP's DateTimeImmutable object (default format*/  |
 |                                                          | timezone)                                        |
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTimeImmutable<'format'>                              | PHP's DateTimeImmutable object (custom format/   |
@@ -387,6 +387,8 @@ Available Types:
 | ArrayCollection<K, V>                                    | Similar to array<K, V>, but will be deserialized |
 |                                                          | into Doctrine's ArrayCollection class.           |
 +----------------------------------------------------------+--------------------------------------------------+
+
+*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in [configuration](https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0).
 
 Examples:
 
