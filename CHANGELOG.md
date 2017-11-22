@@ -1,7 +1,22 @@
 # Change Log
 
-## [1.9.1](https://github.com/schmittjoh/serializer/tree/1.9.1)
+## [1.9.2](https://github.com/schmittjoh/serializer/tree/1.9.2) (2017-11-22)
 
+**Fixed bugs:**
+
+- Missing ClassMetadata deserialization data [\#841](https://github.com/schmittjoh/serializer/pull/841) ([TristanMogwai](https://github.com/TristanMogwai))
+
+**Closed issues:**
+
+- DateTime format documentation [\#836](https://github.com/schmittjoh/serializer/issues/836)
+- Deserialization not working with camelCase [\#831](https://github.com/schmittjoh/serializer/issues/831)
+
+**Merged pull requests:**
+
+- Fix documentation syntax errors on available types [\#839](https://github.com/schmittjoh/serializer/pull/839) ([andy-morgan](https://github.com/andy-morgan))
+- Improve documentation about default DateTime format [\#838](https://github.com/schmittjoh/serializer/pull/838) ([enumag](https://github.com/enumag))
+
+## [1.9.1](https://github.com/schmittjoh/serializer/tree/1.9.1) (2017-10-27)
 **Fixed bugs:**
 
 - Dynamic exclusion strategy, Variable "object" is not valid [\#826](https://github.com/schmittjoh/serializer/issues/826)
