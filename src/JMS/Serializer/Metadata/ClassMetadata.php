@@ -298,16 +298,16 @@ class ClassMetadata extends MergeableClassMetadata
             $this->usingExpression = $unserialized['usingExpression'];
         }
 
-        if (isset($deserializedData['xmlDiscriminatorAttribute'])) {
-            $this->xmlDiscriminatorAttribute = $deserializedData['xmlDiscriminatorAttribute'];
+        if (isset($unserialized['xmlDiscriminatorAttribute'])) {
+            $this->xmlDiscriminatorAttribute = $unserialized['xmlDiscriminatorAttribute'];
         }
 
-        if (isset($deserializedData['xmlDiscriminatorNamespace'])) {
-            $this->xmlDiscriminatorNamespace = $deserializedData['xmlDiscriminatorNamespace'];
+        if (isset($unserialized['xmlDiscriminatorNamespace'])) {
+            $this->xmlDiscriminatorNamespace = $unserialized['xmlDiscriminatorNamespace'];
         }
 
-        if (isset($deserializedData['xmlDiscriminatorCData'])) {
-            $this->xmlDiscriminatorCData = $deserializedData['xmlDiscriminatorCData'];
+        if (isset($unserialized['xmlDiscriminatorCData'])) {
+            $this->xmlDiscriminatorCData = $unserialized['xmlDiscriminatorCData'];
         }
 
         parent::unserialize($parentStr);
