@@ -32,7 +32,7 @@ class ObjectWithXmlKeyValuePairsWithType
 
     /**
      * @var array
-     * @Type("array")
+     * @Type("array<string>")
      */
     private $list2;
 
