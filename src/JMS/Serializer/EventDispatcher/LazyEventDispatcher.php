@@ -18,14 +18,19 @@
 
 namespace JMS\Serializer\EventDispatcher;
 
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LazyEventDispatcher extends EventDispatcher
 {
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct($container)
     {
+        if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {
+            throw new \InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, is_object($container) ? get_class($container) : gettype($container)));
+        }
+
         $this->container = $container;
     }
 

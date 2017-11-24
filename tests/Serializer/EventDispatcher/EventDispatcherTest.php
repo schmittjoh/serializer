@@ -29,8 +29,8 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EventDispatcher
      */
-    private $dispatcher;
-    private $event;
+    protected $dispatcher;
+    protected $event;
 
     public function testHasListeners()
     {
@@ -158,11 +158,16 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher = $this->createEventDispatcher();
         $this->event = new ObjectEvent($this->getMockBuilder('JMS\Serializer\Context')->getMock(), new \stdClass(), array('name' => 'foo', 'params' => array()));
     }
 
-    private function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)
+    protected function createEventDispatcher()
+    {
+        return new EventDispatcher();
+    }
+
+    protected function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)
     {
         $this->dispatcher->dispatch($eventName, $class, $format, $event ?: $this->event);
     }
