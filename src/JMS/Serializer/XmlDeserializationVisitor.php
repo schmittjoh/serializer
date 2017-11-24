@@ -151,13 +151,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
     public function visitArray($data, array $type, Context $context)
     {
-        $metadata = null;
-        if (null === $this->currentMetadata && $context->getMetadataStack()->count()) {
-            if ($metadata = $context->getMetadataStack()->top()) {
-                $this->setCurrentMetadata($metadata);
-            }
-        }
-
         // handle key-value-pairs
         if (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) {
             if (2 !== count($type['params'])) {
@@ -170,10 +163,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             foreach ($data as $key => $v) {
                 $k = $this->navigator->accept($key, $keyType, $context);
                 $result[$k] = $this->navigator->accept($v, $entryType, $context);
-            }
-
-            if($metadata) {
-                $this->revertCurrentMetadata();
             }
 
             return $result;
@@ -196,10 +185,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if (!count($nodes)) {
-            if($metadata) {
-                $this->revertCurrentMetadata();
-            }
-
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -220,10 +205,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
                 foreach ($nodes as $v) {
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
-                }
-
-                if($metadata) {
-                    $this->revertCurrentMetadata();
                 }
 
                 return $result;
@@ -248,10 +229,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
                     $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
                     $result[$k] = $this->navigator->accept($v, $entryType, $context);
-                }
-
-                if($metadata) {
-                    $this->revertCurrentMetadata();
                 }
 
                 return $result;

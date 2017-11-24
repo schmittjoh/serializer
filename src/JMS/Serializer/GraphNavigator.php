@@ -150,6 +150,15 @@ final class GraphNavigator
                 return $visitor->visitDouble($data, $type, $context);
 
             case 'array':
+                $metadata = $context->getMetadataStack()->count() ? $context->getMetadataStack()->top() : null;
+                if ($visitor instanceof XmlDeserializationVisitor && null !== $metadata && $metadata->xmlKeyValuePairs) {
+                    $visitor->setCurrentMetadata($metadata);
+                    $result = $visitor->visitArray($data, $type, $context);
+                    $visitor->revertCurrentMetadata();
+
+                    return $result;
+                }
+
                 return $visitor->visitArray($data, $type, $context);
 
             case 'resource':
