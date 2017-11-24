@@ -30,9 +30,16 @@ class ObjectWithXmlKeyValuePairsWithType
      */
     private $list;
 
-    public function __construct(array $list)
+    /**
+     * @var array
+     * @Type("array")
+     */
+    private $list2;
+
+    public function __construct(array $list, array $list2 = [])
     {
         $this->list = $list;
+        $this->list2 = $list2;
     }
 
     public static function create1()
@@ -52,6 +59,9 @@ class ObjectWithXmlKeyValuePairsWithType
                 'key_01' => 'One',
                 'key_02' => 'Two',
                 'key_03' => 'Three',
+            ],
+            [
+                'Four',
             ]
         );
     }

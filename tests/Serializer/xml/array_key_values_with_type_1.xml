@@ -4,4 +4,5 @@
     <key-one><![CDATA[foo]]></key-one>
     <key-two><![CDATA[bar]]></key-two>
   </list>
+  <list2></list2>
 </result>
