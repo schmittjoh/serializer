@@ -1,7 +1,18 @@
 # Change Log
 
-## [1.9.2](https://github.com/schmittjoh/serializer/tree/1.9.2) (2017-11-22)
+## [1.10.0](https://github.com/schmittjoh/serializer/tree/1.10.0)
 
+**Implemented enhancements:**
+
+- support PSR-11 compatible DI containers [\#844](https://github.com/schmittjoh/serializer/pull/844) ([xabbuh](https://github.com/xabbuh))
+
+**Closed issues:**
+
+- Serialize using jsonSerialize\(\) if object implements JsonSerializable [\#846](https://github.com/schmittjoh/serializer/issues/846)
+- ExclusionStrategy backward compatibility break [\#843](https://github.com/schmittjoh/serializer/issues/843)
+- @MaxDepth jms/serializer-bundle 2.2 [\#842](https://github.com/schmittjoh/serializer/issues/842)
+
+## [1.9.2](https://github.com/schmittjoh/serializer/tree/1.9.2) (2017-11-22)
 **Fixed bugs:**
 
 - Missing ClassMetadata deserialization data [\#841](https://github.com/schmittjoh/serializer/pull/841) ([TristanMogwai](https://github.com/TristanMogwai))
