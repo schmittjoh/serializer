@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectWithNamespacesAndNestedList xmlns="http://example.com/namespace" xmlns:x="http://example.com/namespace2">
+  <person_collection>
+    <person age="11">AAA</person>
+    <person age="22">BBB</person>
+  </person_collection>
+</ObjectWithNamespacesAndNestedList>

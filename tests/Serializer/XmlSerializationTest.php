@@ -39,6 +39,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
@@ -241,6 +242,33 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->assertEquals(
             $object,
             $this->deserialize($this->getContent('object_with_namespaces_and_list'), get_class($object))
+        );
+    }
+
+    public function testObjectWithNamespaceAndNestedList()
+    {
+        $object = new ObjectWithNamespacesAndNestedList();
+        $personCollection = new PersonCollection();
+        $personA = new Person();
+        $personA->age = 11;
+        $personA->name = 'AAA';
+
+        $personB = new Person();
+        $personB->age = 22;
+        $personB->name = 'BBB';
+
+        $personCollection->persons->add($personA);
+        $personCollection->persons->add($personB);
+
+        $object->personCollection = $personCollection;
+
+        $this->assertEquals(
+            $this->getContent('object_with_namespaces_and_nested_list'),
+            $this->serialize($object, SerializationContext::create())
+        );
+        $this->assertEquals(
+            $object,
+            $this->deserialize($this->getContent('object_with_namespaces_and_nested_list'), get_class($object))
         );
     }
 
