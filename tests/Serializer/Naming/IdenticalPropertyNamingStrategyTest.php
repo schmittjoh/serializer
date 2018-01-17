@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\SerializationContext;
 
 class IdenticalPropertyNamingStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,6 +41,7 @@ class IdenticalPropertyNamingStrategyTest extends \PHPUnit_Framework_TestCase
         $mockProperty->name = $propertyName;
 
         $strategy = new IdenticalPropertyNamingStrategy();
-        $this->assertEquals($propertyName, $strategy->translateName($mockProperty, null));
+        $context = new SerializationContext();
+        $this->assertEquals($propertyName, $strategy->translateName($mockProperty, $context));
     }
 }
