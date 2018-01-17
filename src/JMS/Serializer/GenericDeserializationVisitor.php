@@ -160,7 +160,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $name = $this->namingStrategy->translateName($metadata);
+        $name = $this->namingStrategy->translateName($metadata, $context);
 
         if (null === $data) {
             return;

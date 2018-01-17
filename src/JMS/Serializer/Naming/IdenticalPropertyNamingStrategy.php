@@ -18,11 +18,12 @@
 
 namespace JMS\Serializer\Naming;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 class IdenticalPropertyNamingStrategy implements PropertyNamingStrategyInterface
 {
-    public function translateName(PropertyMetadata $property)
+    public function translateName(PropertyMetadata $property, Context $context)
     {
         return $property->name;
     }

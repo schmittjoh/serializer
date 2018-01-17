@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Naming;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -39,7 +40,7 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function translateName(PropertyMetadata $property)
+    public function translateName(PropertyMetadata $property, Context $context)
     {
         $name = preg_replace('/[A-Z]/', $this->separator . '\\0', $property->name);
 

@@ -164,7 +164,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             return;
         }
 
-        $k = $this->namingStrategy->translateName($metadata);
+        $k = $this->namingStrategy->translateName($metadata, $context);
 
         if ($metadata->inline) {
             if (is_array($v) || ($v instanceof \ArrayObject)) {
