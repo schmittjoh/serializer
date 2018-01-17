@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Naming;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -37,5 +38,5 @@ interface PropertyNamingStrategyInterface
      *
      * @return string
      */
-    public function translateName(PropertyMetadata $property);
+    public function translateName(PropertyMetadata $property, Context $context);
 }

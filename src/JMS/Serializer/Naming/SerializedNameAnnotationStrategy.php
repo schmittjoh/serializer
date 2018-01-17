@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Naming;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -37,12 +38,12 @@ class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterfac
     /**
      * {@inheritDoc}
      */
-    public function translateName(PropertyMetadata $property)
+    public function translateName(PropertyMetadata $property, Context $context)
     {
         if (null !== $name = $property->serializedName) {
             return $name;
         }
 
-        return $this->delegate->translateName($property);
+        return $this->delegate->translateName($property, $context);
     }
 }

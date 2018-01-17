@@ -157,7 +157,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        $k = $this->namingStrategy->translateName($metadata);
+        $k = $this->namingStrategy->translateName($metadata, $context);
 
         if ($metadata->inline) {
             if (is_array($v)) {

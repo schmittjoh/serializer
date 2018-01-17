@@ -165,7 +165,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        $name = $this->namingStrategy->translateName($metadata);
+        $name = $this->namingStrategy->translateName($metadata, $context);
 
         if (!$metadata->inline) {
             $this->writer

@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Naming;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 class CacheNamingStrategy implements PropertyNamingStrategyInterface
@@ -31,12 +32,12 @@ class CacheNamingStrategy implements PropertyNamingStrategyInterface
         $this->cache = new \SplObjectStorage();
     }
 
-    public function translateName(PropertyMetadata $property)
+    public function translateName(PropertyMetadata $property, Context $context)
     {
         if (isset($this->cache[$property])) {
             return $this->cache[$property];
         }
 
-        return $this->cache[$property] = $this->delegate->translateName($property);
+        return $this->cache[$property] = $this->delegate->translateName($property, $context);
     }
 }
