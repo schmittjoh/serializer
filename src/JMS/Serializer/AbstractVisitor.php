@@ -20,6 +20,7 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class AbstractVisitor implements VisitorInterface
@@ -31,10 +32,19 @@ abstract class AbstractVisitor implements VisitorInterface
      */
     protected $accessor;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
-    {
+    /**
+     * @var AdvancedNamingStrategyInterface
+     */
+    protected $advancedNamingStrategy;
+
+    public function __construct(
+        PropertyNamingStrategyInterface $namingStrategy,
+        AccessorStrategyInterface $accessorStrategy = null,
+        AdvancedNamingStrategyInterface $advancedNamingStrategy = null
+    ) {
         $this->namingStrategy = $namingStrategy;
         $this->accessor = $accessorStrategy ?: new DefaultAccessorStrategy();
+        $this->advancedNamingStrategy = $advancedNamingStrategy;
     }
 
     public function getNamingStrategy()
@@ -61,5 +71,13 @@ abstract class AbstractVisitor implements VisitorInterface
         } else {
             return $typeArray['params'][0];
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasAdvancedNamingStrategy()
+    {
+        return null !== $this->advancedNamingStrategy;
     }
 }

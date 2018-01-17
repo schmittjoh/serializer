@@ -233,6 +233,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
         $name = $this->namingStrategy->translateName($metadata);
+        if ($this->hasAdvancedNamingStrategy()) {
+            $name = $this->advancedNamingStrategy->translateName($metadata, $context);
+        }
 
         if (!$metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));

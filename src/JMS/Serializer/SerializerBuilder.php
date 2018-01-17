@@ -44,6 +44,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -71,6 +72,7 @@ class SerializerBuilder
     private $deserializationVisitors;
     private $visitorsAdded = false;
     private $propertyNamingStrategy;
+    private $advancedNamingStrategy;
     private $debug = false;
     private $cacheDir;
     private $annotationReader;
@@ -205,6 +207,13 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setAdvancedNamingStrategy(AdvancedNamingStrategyInterface $advancedNamingStrategy)
+    {
+        $this->advancedNamingStrategy = $advancedNamingStrategy;
+
+        return $this;
+    }
+
     public function setSerializationVisitor($format, VisitorInterface $visitor)
     {
         $this->visitorsAdded = true;
@@ -227,9 +236,21 @@ class SerializerBuilder
 
         $this->visitorsAdded = true;
         $this->serializationVisitors->setAll(array(
-            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
-            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
-            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'xml' => new XmlSerializationVisitor(
+                $this->propertyNamingStrategy,
+                $this->getAccessorStrategy(),
+                $this->advancedNamingStrategy
+            ),
+            'yml' => new YamlSerializationVisitor(
+                $this->propertyNamingStrategy,
+                $this->getAccessorStrategy(),
+                $this->advancedNamingStrategy
+            ),
+            'json' => new JsonSerializationVisitor(
+                $this->propertyNamingStrategy,
+                $this->getAccessorStrategy(),
+                $this->advancedNamingStrategy
+            ),
         ));
 
         return $this;
@@ -241,8 +262,16 @@ class SerializerBuilder
 
         $this->visitorsAdded = true;
         $this->deserializationVisitors->setAll(array(
-            'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
+            'xml' => new XmlDeserializationVisitor(
+                $this->propertyNamingStrategy,
+                null,
+                $this->advancedNamingStrategy
+            ),
+            'json' => new JsonDeserializationVisitor(
+                $this->propertyNamingStrategy,
+                null,
+                $this->advancedNamingStrategy
+            ),
         ));
 
         return $this;
