@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Serializer\Naming;
+namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
@@ -35,6 +35,6 @@ class ContextualNamingStrategy implements AdvancedNamingStrategyInterface
         if ($context->getDirection() == GraphNavigator::DIRECTION_SERIALIZATION) {
             return strtoupper($property->name);
         }
-        return strtolower($property->name);
+        return ucfirst($property->name);
     }
 }
