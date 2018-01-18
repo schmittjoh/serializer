@@ -41,12 +41,9 @@ class YamlSerializationVisitor extends AbstractVisitor
     private $metadataStack;
     private $currentMetadata;
 
-    public function __construct(
-        PropertyNamingStrategyInterface $namingStrategy,
-        AccessorStrategyInterface $accessorStrategy = null,
-        AdvancedNamingStrategyInterface $advancedNamingStrategy = null
-    ) {
-        parent::__construct($namingStrategy, $accessorStrategy, $advancedNamingStrategy);
+    public function __construct($namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    {
+        parent::__construct($namingStrategy, $accessorStrategy);
 
         $this->writer = new Writer();
     }
@@ -169,9 +166,10 @@ class YamlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        $name = $this->namingStrategy->translateName($metadata);
-        if ($this->hasAdvancedNamingStrategy()) {
-            $name = $this->advancedNamingStrategy->translateName($metadata, $context);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $name = $this->namingStrategy->translateName($metadata, $context);
+        } else {
+            $name = $this->namingStrategy->translateName($metadata);
         }
 
         if (!$metadata->inline) {

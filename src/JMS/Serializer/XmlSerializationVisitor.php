@@ -50,12 +50,9 @@ class XmlSerializationVisitor extends AbstractVisitor
     /** @var boolean */
     private $formatOutput;
 
-    public function __construct(
-        PropertyNamingStrategyInterface $namingStrategy,
-        AccessorStrategyInterface $accessorStrategy = null,
-        AdvancedNamingStrategyInterface $advancedNamingStrategy = null
-    ) {
-        parent::__construct($namingStrategy, $accessorStrategy, $advancedNamingStrategy);
+    public function __construct($namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    {
+        parent::__construct($namingStrategy, $accessorStrategy);
         $this->objectMetadataStack = new \SplStack;
         $this->formatOutput = true;
     }
@@ -248,9 +245,10 @@ class XmlSerializationVisitor extends AbstractVisitor
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute for %s. Expected character data, but got %s.', $metadata->name, json_encode($v)));
             }
-            $attributeName = $this->namingStrategy->translateName($metadata);
-            if ($this->hasAdvancedNamingStrategy()) {
-                $attributeName = $this->advancedNamingStrategy->translateName($metadata, $context);
+            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+                $attributeName = $this->namingStrategy->translateName($metadata, $context);
+            } else {
+                $attributeName = $this->namingStrategy->translateName($metadata);
             }
             $this->setAttributeOnNode($this->currentNode, $attributeName, $node->nodeValue, $metadata->xmlNamespace);
 
@@ -300,9 +298,10 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-            $elementName = $this->namingStrategy->translateName($metadata);
-            if ($this->hasAdvancedNamingStrategy()) {
-                $elementName = $this->advancedNamingStrategy->translateName($metadata, $context);
+            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+                $elementName = $this->namingStrategy->translateName($metadata, $context);
+            } else {
+                $elementName = $this->namingStrategy->translateName($metadata);
             }
 
             $namespace = null !== $metadata->xmlNamespace

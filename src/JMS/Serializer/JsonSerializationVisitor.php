@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
@@ -164,9 +165,10 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             return;
         }
 
-        $k = $this->namingStrategy->translateName($metadata);
-        if ($this->hasAdvancedNamingStrategy()) {
-            $k = $this->advancedNamingStrategy->translateName($metadata, $context);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $k = $this->namingStrategy->translateName($metadata, $context);
+        } else {
+            $k = $this->namingStrategy->translateName($metadata);
         }
 
         if ($metadata->inline) {

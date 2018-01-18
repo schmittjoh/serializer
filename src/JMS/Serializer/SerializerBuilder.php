@@ -72,7 +72,6 @@ class SerializerBuilder
     private $deserializationVisitors;
     private $visitorsAdded = false;
     private $propertyNamingStrategy;
-    private $advancedNamingStrategy;
     private $debug = false;
     private $cacheDir;
     private $annotationReader;
@@ -209,7 +208,7 @@ class SerializerBuilder
 
     public function setAdvancedNamingStrategy(AdvancedNamingStrategyInterface $advancedNamingStrategy)
     {
-        $this->advancedNamingStrategy = $advancedNamingStrategy;
+        $this->propertyNamingStrategy = $advancedNamingStrategy;
 
         return $this;
     }
@@ -236,21 +235,9 @@ class SerializerBuilder
 
         $this->visitorsAdded = true;
         $this->serializationVisitors->setAll(array(
-            'xml' => new XmlSerializationVisitor(
-                $this->propertyNamingStrategy,
-                $this->getAccessorStrategy(),
-                $this->advancedNamingStrategy
-            ),
-            'yml' => new YamlSerializationVisitor(
-                $this->propertyNamingStrategy,
-                $this->getAccessorStrategy(),
-                $this->advancedNamingStrategy
-            ),
-            'json' => new JsonSerializationVisitor(
-                $this->propertyNamingStrategy,
-                $this->getAccessorStrategy(),
-                $this->advancedNamingStrategy
-            ),
+            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
         ));
 
         return $this;
@@ -262,16 +249,8 @@ class SerializerBuilder
 
         $this->visitorsAdded = true;
         $this->deserializationVisitors->setAll(array(
-            'xml' => new XmlDeserializationVisitor(
-                $this->propertyNamingStrategy,
-                null,
-                $this->advancedNamingStrategy
-            ),
-            'json' => new JsonDeserializationVisitor(
-                $this->propertyNamingStrategy,
-                null,
-                $this->advancedNamingStrategy
-            ),
+            'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
+            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
         ));
 
         return $this;

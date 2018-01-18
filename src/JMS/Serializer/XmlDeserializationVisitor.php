@@ -24,6 +24,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
 class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface
 {
@@ -232,9 +233,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $name = $this->namingStrategy->translateName($metadata);
-        if ($this->hasAdvancedNamingStrategy()) {
-            $name = $this->advancedNamingStrategy->translateName($metadata, $context);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $name = $this->namingStrategy->translateName($metadata, $context);
+        } else {
+            $name = $this->namingStrategy->translateName($metadata);
         }
 
         if (!$metadata->type) {

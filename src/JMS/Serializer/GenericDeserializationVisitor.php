@@ -21,6 +21,8 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * Generic Deserialization Visitor.
@@ -160,9 +162,10 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $name = $this->namingStrategy->translateName($metadata);
-        if ($this->hasAdvancedNamingStrategy()) {
-            $name = $this->advancedNamingStrategy->translateName($metadata, $context);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $name = $this->namingStrategy->translateName($metadata, $context);
+        } else {
+            $name = $this->namingStrategy->translateName($metadata);
         }
 
         if (null === $data) {

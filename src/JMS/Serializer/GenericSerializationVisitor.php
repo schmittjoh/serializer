@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
 /**
  * @deprecated
@@ -157,9 +158,10 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        $k = $this->namingStrategy->translateName($metadata);
-        if ($this->hasAdvancedNamingStrategy()) {
-            $k = $this->advancedNamingStrategy->translateName($metadata, $context);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $k = $this->namingStrategy->translateName($metadata, $context);
+        } else {
+            $k = $this->namingStrategy->translateName($metadata);
         }
 
         if ($metadata->inline) {
