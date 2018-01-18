@@ -264,10 +264,10 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
     public function __construct($serviceCreator, $name = 'anonymous', array $connections = array('default' => 'default_connection'), array $managers = array('default' => 'default_manager'), $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
     {
         if (null === $defaultConnection) {
-            list($defaultConnection,) = each($connections);
+            $defaultConnection = key($connections);
         }
         if (null === $defaultManager) {
-            list($defaultManager,) = each($managers);
+            $defaultManager = key($managers);
         }
 
         parent::__construct($name, $connections, $managers, $defaultConnection, $defaultManager, $proxyInterface);
