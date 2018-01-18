@@ -157,6 +157,12 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         if ($namespace === null && $this->objectMetadataStack->count()) {
             $classMetadata = $this->objectMetadataStack->top();
             $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
+            if ($namespace === null) {
+                $namespaces = $data->getDocNamespaces();
+                if (isset($namespaces[''])) {
+                    $namespace = $namespaces[''];
+                }
+            }
         }
 
         if (null !== $namespace) {
