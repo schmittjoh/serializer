@@ -246,7 +246,7 @@ class XmlSerializationVisitor extends AbstractVisitor
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute for %s. Expected character data, but got %s.', $metadata->name, json_encode($v)));
             }
             if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
-                $attributeName = $this->namingStrategy->translateName($metadata, $context);
+                $attributeName = $this->namingStrategy->getPropertyName($metadata, $context);
             } else {
                 $attributeName = $this->namingStrategy->translateName($metadata);
             }
@@ -299,7 +299,7 @@ class XmlSerializationVisitor extends AbstractVisitor
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
             if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
-                $elementName = $this->namingStrategy->translateName($metadata, $context);
+                $elementName = $this->namingStrategy->getPropertyName($metadata, $context);
             } else {
                 $elementName = $this->namingStrategy->translateName($metadata);
             }

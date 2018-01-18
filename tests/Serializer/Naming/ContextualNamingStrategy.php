@@ -16,28 +16,25 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Naming;
+namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
 /**
- * Interface for advanced property naming strategies.
+ * Class ContextualNamingStrategy
  *
- * Implementations translate the property name to a serialized name that is
- * displayed. It allows advanced strategy thanks to context parameter.
- *
- * @author Vincent Rasquier <vincent.rsbs@gmail.com>
+ * Only use this class for testing purpose
  */
-interface AdvancedNamingStrategyInterface
+class ContextualNamingStrategy implements AdvancedNamingStrategyInterface
 {
-    /**
-     * Translates the name of the property to the serialized version.
-     *
-     * @param PropertyMetadata $property
-     * @param Context $context
-     *
-     * @return string
-     */
-    public function getPropertyName(PropertyMetadata $property, Context $context);
+    public function getPropertyName(PropertyMetadata $property, Context $context)
+    {
+        if ($context->getDirection() == GraphNavigator::DIRECTION_SERIALIZATION) {
+            return strtoupper($property->name);
+        }
+        return strtolower($property->name);
+    }
 }

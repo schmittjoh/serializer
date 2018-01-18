@@ -166,7 +166,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         }
 
         if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
-            $k = $this->namingStrategy->translateName($metadata, $context);
+            $k = $this->namingStrategy->getPropertyName($metadata, $context);
         } else {
             $k = $this->namingStrategy->translateName($metadata);
         }
