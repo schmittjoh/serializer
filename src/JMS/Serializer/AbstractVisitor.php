@@ -56,7 +56,7 @@ abstract class AbstractVisitor implements VisitorInterface
             return null;
         }
 
-        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1])) {
+        if (isset($typeArray['params'][1]) && \is_array($typeArray['params'][1])) {
             return $typeArray['params'][1];
         } else {
             return $typeArray['params'][0];

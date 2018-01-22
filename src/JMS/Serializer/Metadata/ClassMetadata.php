@@ -95,7 +95,7 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         foreach ($customOrder as $name) {
-            if (!is_string($name)) {
+            if (!\is_string($name)) {
                 throw new InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
             }
         }
@@ -223,12 +223,12 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function registerNamespace($uri, $prefix = null)
     {
-        if (!is_string($uri)) {
+        if (!\is_string($uri)) {
             throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
         if ($prefix !== null) {
-            if (!is_string($prefix)) {
+            if (!\is_string($prefix)) {
                 throw new InvalidArgumentException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }
         } else {
@@ -322,7 +322,7 @@ class ClassMetadata extends MergeableClassMetadata
 
             case self::ACCESSOR_ORDER_CUSTOM:
                 $order = $this->customOrder;
-                $currentSorting = $this->propertyMetadata ? array_combine(array_keys($this->propertyMetadata), range(1, count($this->propertyMetadata))) : [];
+                $currentSorting = $this->propertyMetadata ? array_combine(array_keys($this->propertyMetadata), range(1, \count($this->propertyMetadata))) : [];
                 uksort($this->propertyMetadata, function ($a, $b) use ($order, $currentSorting) {
                     $existsA = isset($order[$a]);
                     $existsB = isset($order[$b]);

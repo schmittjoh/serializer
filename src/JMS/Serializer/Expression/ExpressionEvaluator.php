@@ -64,7 +64,7 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
      */
     public function evaluate($expression, array $data = array())
     {
-        if (!is_string($expression)) {
+        if (!\is_string($expression)) {
             return $expression;
         }
 

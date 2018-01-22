@@ -70,7 +70,7 @@ class Writer
     {
         $change = array_pop($this->changes);
         $this->changeCount -= 1;
-        $this->content = substr($this->content, 0, -1 * strlen($change));
+        $this->content = substr($this->content, 0, -1 * \strlen($change));
     }
 
     /**
@@ -83,7 +83,7 @@ class Writer
         $addition = '';
 
         $lines = explode("\n", $content);
-        for ($i = 0, $c = count($lines); $i < $c; $i++) {
+        for ($i = 0, $c = \count($lines); $i < $c; $i++) {
             if ($this->indentationLevel > 0
                 && !empty($lines[$i])
                 && ((empty($addition) && "\n" === substr($this->content, -1)) || "\n" === substr($addition, -1))

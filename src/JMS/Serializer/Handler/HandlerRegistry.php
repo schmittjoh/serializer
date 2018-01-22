@@ -53,7 +53,7 @@ class HandlerRegistry implements HandlerRegistryInterface
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
             if (!isset($methodData['type'], $methodData['format'])) {
-                throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), get_class($handler)));
+                throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), \get_class($handler)));
             }
 
             $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
@@ -70,7 +70,7 @@ class HandlerRegistry implements HandlerRegistryInterface
 
     public function registerHandler($direction, $typeName, $format, $handler)
     {
-        if (is_string($direction)) {
+        if (\is_string($direction)) {
             $direction = GraphNavigator::parseDirection($direction);
         }
 
