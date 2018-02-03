@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <list>
+    <key_01><![CDATA[One]]></key_01>
+    <key_02><![CDATA[Two]]></key_02>
+    <key_03><![CDATA[Three]]></key_03>
+  </list>
+  <list2>
+    <entry><![CDATA[Four]]></entry>
+  </list2>
+</result>
