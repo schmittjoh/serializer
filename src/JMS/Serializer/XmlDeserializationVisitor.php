@@ -156,6 +156,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             if (2 !== count($type['params'])) {
                 throw new RuntimeException('The array type must be specified as "array<K,V>" for Key-Value-Pairs.');
             }
+            $this->revertCurrentMetadata();
 
             list($keyType, $entryType) = $type['params'];
 
@@ -313,6 +314,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 return;
             }
             $node = reset($nodes);
+        }
+
+        if ($metadata->xmlKeyValuePairs) {
+            $this->setCurrentMetadata($metadata);
         }
 
         $v = $this->navigator->accept($node, $metadata->type, $context);
