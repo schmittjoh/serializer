@@ -11,14 +11,6 @@ cache:
 
 matrix:
     include:
-        - php: hhvm
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: hhvm-nightly
-          sudo: required
-          dist: trusty
-          group: edge
         - php: 5.5
         - php: 5.6
         - php: 7.0
@@ -29,8 +21,8 @@ matrix:
     fast_finish: true
 
 before_script:
-    - if [[ $TRAVIS_PHP_VERSION  = '5.6' ]]; then PHPUNIT_FLAGS="--coverage-clover clover"; else PHPUNIT_FLAGS=""; fi
-    - if [[ $TRAVIS_PHP_VERSION != '5.6' &&  ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
+    - if [[ $TRAVIS_PHP_VERSION  = '7.0' ]]; then PHPUNIT_FLAGS="--coverage-clover clover"; else PHPUNIT_FLAGS=""; fi
+    - if [[ $TRAVIS_PHP_VERSION != '7.0' ]]; then phpenv config-rm xdebug.ini; fi
     - composer self-update
     - composer update $COMPOSER_FLAGS
 
@@ -41,6 +33,6 @@ script:
     - php tests/benchmark.php xml 10
 
 after_success:
-    - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-    - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then php ocular.phar code-coverage:upload --format=php-clover clover; fi
+    - if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+    - if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then php ocular.phar code-coverage:upload --format=php-clover clover; fi
 
