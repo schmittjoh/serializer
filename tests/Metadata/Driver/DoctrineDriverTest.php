@@ -100,6 +100,15 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plainMetadata, $doctrineMetadata);
     }
 
+    public function testExcludePropertyNoPublicAccessorException()
+    {
+        $first = $this->getAnnotationDriver()
+            ->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));
+
+        $this->assertArrayHasKey('id', $first->propertyMetadata);
+        $this->assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
+    }
+
     public function testVirtualPropertiesAreNotModified()
     {
         $doctrineMetadata = $this->getMetadata();
