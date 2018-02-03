@@ -91,6 +91,10 @@ class YamlDriver extends AbstractFileDriver
                         $isExclude = (Boolean)$pConfig['exclude'];
                     }
 
+                    if ($isExclude) {
+                        continue;
+                    }
+
                     if (isset($pConfig['expose'])) {
                         $isExpose = (Boolean)$pConfig['expose'];
                     }

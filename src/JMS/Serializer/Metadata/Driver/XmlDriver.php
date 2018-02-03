@@ -160,6 +160,10 @@ class XmlDriver extends AbstractFileDriver
                         $isExclude = 'true' === strtolower($exclude);
                     }
 
+                    if ($isExclude) {
+                        continue;
+                    }
+
                     if (null !== $expose = $pElem->attributes()->expose) {
                         $isExpose = 'true' === strtolower($expose);
                     }

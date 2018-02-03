@@ -477,6 +477,17 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $m->propertyMetadata['age']);
     }
 
+    public function testExcludePropertyNoPublicAccessorException()
+    {
+        $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));
+
+        if ($this instanceof PhpDriverTest) {
+            return;
+        }
+        $this->assertArrayHasKey('id', $first->propertyMetadata);
+        $this->assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
+    }
+
 
     /**
      * @return DriverInterface
