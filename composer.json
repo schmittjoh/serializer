@@ -25,7 +25,6 @@
         "doctrine/instantiator": "^1.0.3"
     },
     "conflict": {
-        "jms/serializer-bundle": "<1.2.1",
         "twig/twig": "<1.12"
     },
     "suggest": {
