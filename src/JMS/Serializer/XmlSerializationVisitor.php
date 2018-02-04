@@ -22,6 +22,7 @@ use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
@@ -49,7 +50,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     /** @var boolean */
     private $formatOutput;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    public function __construct($namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
     {
         parent::__construct($namingStrategy, $accessorStrategy);
         $this->objectMetadataStack = new \SplStack;
@@ -244,7 +245,11 @@ class XmlSerializationVisitor extends AbstractVisitor
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute for %s. Expected character data, but got %s.', $metadata->name, json_encode($v)));
             }
-            $attributeName = $this->namingStrategy->translateName($metadata);
+            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+                $attributeName = $this->namingStrategy->getPropertyName($metadata, $context);
+            } else {
+                $attributeName = $this->namingStrategy->translateName($metadata);
+            }
             $this->setAttributeOnNode($this->currentNode, $attributeName, $node->nodeValue, $metadata->xmlNamespace);
 
             return;
@@ -293,7 +298,11 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-            $elementName = $this->namingStrategy->translateName($metadata);
+            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+                $elementName = $this->namingStrategy->getPropertyName($metadata, $context);
+            } else {
+                $elementName = $this->namingStrategy->translateName($metadata);
+            }
 
             $namespace = null !== $metadata->xmlNamespace
                 ? $metadata->xmlNamespace
