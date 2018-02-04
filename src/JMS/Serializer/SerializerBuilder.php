@@ -44,6 +44,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -201,6 +202,13 @@ class SerializerBuilder
     public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy)
     {
         $this->propertyNamingStrategy = $propertyNamingStrategy;
+
+        return $this;
+    }
+
+    public function setAdvancedNamingStrategy(AdvancedNamingStrategyInterface $advancedNamingStrategy)
+    {
+        $this->propertyNamingStrategy = $advancedNamingStrategy;
 
         return $this;
     }

@@ -25,6 +25,8 @@ use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -247,6 +249,22 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
         $object = $serializer->deserialize($serialized, PersonSecretWithVariables::class, 'json');
         $this->assertEquals($person, $object);
+    }
+
+    public function testAdvancedNamingStrategy()
+    {
+        $this->builder->setAdvancedNamingStrategy(new ContextualNamingStrategy());
+        $serializer = $this->builder->build();
+
+        $person = new Person();
+        $person->name = "bar";
+
+        $json = $serializer->serialize($person, "json");
+        $this->assertEquals('{"NAME":"bar"}', $json);
+
+        $json = '{"Name": "bar"}';
+        $person = $serializer->deserialize($json, Person::class, "json");
+        $this->assertEquals("bar", $person->name);
     }
 
     protected function setUp()

@@ -21,6 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Util\Writer;
 use Symfony\Component\Yaml\Inline;
@@ -40,7 +41,7 @@ class YamlSerializationVisitor extends AbstractVisitor
     private $metadataStack;
     private $currentMetadata;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    public function __construct($namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
     {
         parent::__construct($namingStrategy, $accessorStrategy);
 
@@ -165,7 +166,11 @@ class YamlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        $name = $this->namingStrategy->translateName($metadata);
+        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            $name = $this->namingStrategy->getPropertyName($metadata, $context);
+        } else {
+            $name = $this->namingStrategy->translateName($metadata);
+        }
 
         if (!$metadata->inline) {
             $this->writer

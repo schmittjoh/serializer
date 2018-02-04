@@ -20,7 +20,6 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class AbstractVisitor implements VisitorInterface
 {
@@ -31,7 +30,7 @@ abstract class AbstractVisitor implements VisitorInterface
      */
     protected $accessor;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    public function __construct($namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
     {
         $this->namingStrategy = $namingStrategy;
         $this->accessor = $accessorStrategy ?: new DefaultAccessorStrategy();
