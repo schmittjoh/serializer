@@ -1,10 +1,40 @@
 # Change Log
 
-## [1.10.0](https://github.com/schmittjoh/serializer/tree/1.10.0)
+## [1.11.0](https://github.com/schmittjoh/serializer/tree/1.11.0) (2018-02-04)
 
 **Implemented enhancements:**
 
+- Deserialize xmlKeyValuePairs [\#868](https://github.com/schmittjoh/serializer/pull/868) ([goetas](https://github.com/goetas))
+- Add AdvancedNamingStrategyInterface [\#859](https://github.com/schmittjoh/serializer/pull/859) ([LeaklessGfy](https://github.com/LeaklessGfy))
+
+**Fixed bugs:**
+
+- Exception thrown for non-existant accessor to an excluded property [\#862](https://github.com/schmittjoh/serializer/issues/862)
+- Support non-namespaced lists in namespaced XML [\#851](https://github.com/schmittjoh/serializer/pull/851) ([bertterheide](https://github.com/bertterheide))
+
+**Closed issues:**
+
+- Context Group not working [\#865](https://github.com/schmittjoh/serializer/issues/865)
+- Not all virtual properties are serialized [\#864](https://github.com/schmittjoh/serializer/issues/864)
+- DeserializedName [\#857](https://github.com/schmittjoh/serializer/issues/857)
+- Annotation does not exist, or could not be auto-loaded. [\#855](https://github.com/schmittjoh/serializer/issues/855)
+- \[Question\] Serialization of primitive types [\#853](https://github.com/schmittjoh/serializer/issues/853)
+- Empty list when deserializing namespaced XML with children that are not namespaced [\#850](https://github.com/schmittjoh/serializer/issues/850)
+- XmlList\(skipWhenEmpty=true\) or @SkipWhenEmpty\(\) does not work [\#847](https://github.com/schmittjoh/serializer/issues/847)
+- DateHandler Timezone ignored on deserialization [\#457](https://github.com/schmittjoh/serializer/issues/457)
+
+**Merged pull requests:**
+
+- Drop HHVM support [\#869](https://github.com/schmittjoh/serializer/pull/869) ([goetas](https://github.com/goetas))
+- Allow excluded private properties to not have a getter acc… [\#863](https://github.com/schmittjoh/serializer/pull/863) ([0mars](https://github.com/0mars))
+- Solve php 7.2 deprecations [\#860](https://github.com/schmittjoh/serializer/pull/860) ([goetas](https://github.com/goetas))
+- Fixed issue where timezone is lost when creating DateTime from unix timestamp [\#835](https://github.com/schmittjoh/serializer/pull/835) ([goetas](https://github.com/goetas))
+
+## [1.10.0](https://github.com/schmittjoh/serializer/tree/1.10.0) (2017-11-30)
+**Implemented enhancements:**
+
 - support PSR-11 compatible DI containers [\#844](https://github.com/schmittjoh/serializer/pull/844) ([xabbuh](https://github.com/xabbuh))
+- Deserialize xmlKeyValuePairs [\#840](https://github.com/schmittjoh/serializer/pull/840) ([fdyckhoff](https://github.com/fdyckhoff))
 
 **Closed issues:**
 
