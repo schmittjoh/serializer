@@ -22,7 +22,7 @@ use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
+use JMS\Serializer\Naming\PropertyNamingInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
@@ -245,7 +245,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute for %s. Expected character data, but got %s.', $metadata->name, json_encode($v)));
             }
-            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            if ($this->namingStrategy instanceof PropertyNamingInterface) {
                 $attributeName = $this->namingStrategy->getPropertyName($metadata, $context);
             } else {
                 $attributeName = $this->namingStrategy->translateName($metadata);
@@ -298,7 +298,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-            if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+            if ($this->namingStrategy instanceof PropertyNamingInterface) {
                 $elementName = $this->namingStrategy->getPropertyName($metadata, $context);
             } else {
                 $elementName = $this->namingStrategy->translateName($metadata);

@@ -29,7 +29,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  *
  * @author Vincent Rasquier <vincent.rsbs@gmail.com>
  */
-interface AdvancedNamingStrategyInterface
+interface PropertyNamingInterface
 {
     /**
      * Translates the name of the property to the serialized version.

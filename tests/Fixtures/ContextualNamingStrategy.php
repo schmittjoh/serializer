@@ -21,14 +21,14 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
+use JMS\Serializer\Naming\PropertyNamingInterface;
 
 /**
  * Class ContextualNamingStrategy
  *
  * Only use this class for testing purpose
  */
-class ContextualNamingStrategy implements AdvancedNamingStrategyInterface
+class ContextualNamingStrategy implements PropertyNamingInterface
 {
     public function getPropertyName(PropertyMetadata $property, Context $context)
     {

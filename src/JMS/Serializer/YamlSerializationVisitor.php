@@ -21,7 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
+use JMS\Serializer\Naming\PropertyNamingInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Util\Writer;
 use Symfony\Component\Yaml\Inline;
@@ -166,7 +166,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             return;
         }
 
-        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
+        if ($this->namingStrategy instanceof PropertyNamingInterface) {
             $name = $this->namingStrategy->getPropertyName($metadata, $context);
         } else {
             $name = $this->namingStrategy->translateName($metadata);
