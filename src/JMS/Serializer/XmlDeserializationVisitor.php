@@ -268,11 +268,12 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if ($metadata->xmlAttribute) {
-
-            $attributes = $data->attributes($metadata->xmlNamespace);
-            if (isset($attributes[$name])) {
-                $v = $this->navigator->accept($attributes[$name], $metadata->type, $context);
-                $this->accessor->setValue($this->currentObject, $v, $metadata);
+            if ($data->getName() != "") {
+                $attributes = $data->attributes($metadata->xmlNamespace);
+                if (isset($attributes[$name])) {
+                    $v = $this->navigator->accept($attributes[$name], $metadata->type, $context);
+                    $this->accessor->setValue($this->currentObject, $v, $metadata);
+                }
             }
 
             return;
