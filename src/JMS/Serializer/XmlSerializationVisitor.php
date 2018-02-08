@@ -500,7 +500,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
-    private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
+    protected function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
     {
         if (null !== $namespace) {
             if (!$prefix = $node->lookupPrefix($namespace)) {
