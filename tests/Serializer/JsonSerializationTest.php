@@ -407,7 +407,7 @@ class LinkAddingSubscriber implements EventSubscriberInterface
     {
         $author = $event->getObject();
 
-        $event->getVisitor()->addData('_links', array(
+        $event->getVisitor()->setData('_links', array(
             'details' => 'http://foo.bar/details/' . $author->getName(),
             'comments' => 'http://foo.bar/details/' . $author->getName() . '/comments',
         ));
