@@ -3,6 +3,7 @@
 namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Exception\LogicException;
 use Metadata\Driver\DriverInterface;
 
 class CallbackDriverFactory implements DriverFactoryInterface
@@ -21,7 +22,7 @@ class CallbackDriverFactory implements DriverFactoryInterface
     {
         $driver = \call_user_func($this->callback, $metadataDirs, $reader);
         if (!$driver instanceof DriverInterface) {
-            throw new \LogicException('The callback must return an instance of DriverInterface.');
+            throw new LogicException('The callback must return an instance of DriverInterface.');
         }
 
         return $driver;

@@ -86,7 +86,6 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
-        $this->document = null;
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
 

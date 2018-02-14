@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Metadata;
 
+use JMS\Serializer\Exception\LogicException;
+
 class VirtualPropertyMetadata extends PropertyMetadata
 {
     public function __construct($class, $methodName)
@@ -36,7 +38,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
 
     public function setValue($obj, $value)
     {
-        throw new \LogicException('VirtualPropertyMetadata is immutable.');
+        throw new LogicException('VirtualPropertyMetadata is immutable.');
     }
 
     public function setAccessor($type, $getter = null, $setter = null)

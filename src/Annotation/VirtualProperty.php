@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Annotation;
 
+use JMS\Serializer\Exception\InvalidArgumentException;
+
 /**
  * @Annotation
  * @Target({"METHOD", "CLASS"})
@@ -39,7 +41,7 @@ final class VirtualProperty
 
         foreach ($data as $key => $value) {
             if (!property_exists(__CLASS__, $key)) {
-                throw new \BadMethodCallException(sprintf('Unknown property "%s" on annotation "%s".', $key, __CLASS__));
+                throw new InvalidArgumentException(sprintf('Unknown property "%s" on annotation "%s".', $key, __CLASS__));
             }
             $this->{$key} = $value;
         }

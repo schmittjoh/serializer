@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Metadata;
 
+use JMS\Serializer\Exception\LogicException;
+
 class StaticPropertyMetadata extends PropertyMetadata
 {
     private $value;
@@ -38,7 +40,7 @@ class StaticPropertyMetadata extends PropertyMetadata
 
     public function setValue($obj, $value)
     {
-        throw new \LogicException('StaticPropertyMetadata is immutable.');
+        throw new LogicException('StaticPropertyMetadata is immutable.');
     }
 
     public function setAccessor($type, $getter = null, $setter = null)
