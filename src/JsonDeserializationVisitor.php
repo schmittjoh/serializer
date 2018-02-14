@@ -26,20 +26,13 @@ use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 class JsonDeserializationVisitor extends AbstractVisitor
 {
     private $navigator;
-    private $result;
     private $objectStack;
     private $currentObject;
 
     public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
-        $this->result = null;
         $this->objectStack = new \SplStack;
-    }
-
-    public function prepare($data)
-    {
-        return $this->decode($data);
     }
 
     public function visitNull($data, array $type, Context $context)
@@ -47,48 +40,24 @@ class JsonDeserializationVisitor extends AbstractVisitor
         return null;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, array $type, Context $context):string
     {
-        $data = (string)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (string)$data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, array $type, Context $context):bool
     {
-        $data = (Boolean)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (bool)$data;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, array $type, Context $context):int
     {
-        $data = (integer)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (int)$data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, array $type, Context $context):float
     {
-        $data = (double)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (double)$data;
     }
 
     public function visitArray($data, array $type, Context $context)
@@ -99,10 +68,6 @@ class JsonDeserializationVisitor extends AbstractVisitor
 
         // If no further parameters were given, keys/values are just passed as is.
         if (!$type['params']) {
-            if (null === $this->result) {
-                $this->result = $data;
-            }
-
             return $data;
         }
 
@@ -111,9 +76,6 @@ class JsonDeserializationVisitor extends AbstractVisitor
                 $listType = $type['params'][0];
 
                 $result = array();
-                if (null === $this->result) {
-                    $this->result = &$result;
-                }
 
                 foreach ($data as $v) {
                     $result[] = $this->navigator->accept($v, $listType, $context);
@@ -125,9 +87,6 @@ class JsonDeserializationVisitor extends AbstractVisitor
                 list($keyType, $entryType) = $type['params'];
 
                 $result = array();
-                if (null === $this->result) {
-                    $this->result = &$result;
-                }
 
                 foreach ($data as $k => $v) {
                     $result[$this->navigator->accept($k, $keyType, $context)] = $this->navigator->accept($v, $entryType, $context);
@@ -143,10 +102,6 @@ class JsonDeserializationVisitor extends AbstractVisitor
     public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
         $this->setCurrentObject($object);
-
-        if (null === $this->result) {
-            $this->result = $this->currentObject;
-        }
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
@@ -187,9 +142,9 @@ class JsonDeserializationVisitor extends AbstractVisitor
         return $obj;
     }
 
-    public function getResult()
+    public function getResult($data)
     {
-        return $this->result;
+        return $data;
     }
 
     public function setCurrentObject($object)
@@ -208,7 +163,7 @@ class JsonDeserializationVisitor extends AbstractVisitor
         return $this->currentObject = $this->objectStack->pop();
     }
 
-    protected function decode($str)
+    public function prepare($str)
     {
         $decoded = json_decode($str, true);
 

@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
@@ -46,37 +45,21 @@ class JsonSerializationVisitor extends AbstractVisitor
 
     public function visitString($data, array $type, Context $context)
     {
-        if (null === $this->root) {
-            $this->root = $data;
-        }
-
         return (string)$data;
     }
 
     public function visitBoolean($data, array $type, Context $context)
     {
-        if (null === $this->root) {
-            $this->root = $data;
-        }
-
         return (boolean)$data;
     }
 
     public function visitInteger($data, array $type, Context $context)
     {
-        if (null === $this->root) {
-            $this->root = $data;
-        }
-
         return (int)$data;
     }
 
     public function visitDouble($data, array $type, Context $context)
     {
-        if (null === $this->root) {
-            $this->root = $data;
-        }
-
         return (float)$data;
     }
 
@@ -90,14 +73,7 @@ class JsonSerializationVisitor extends AbstractVisitor
     {
         $this->dataStack->push($data);
 
-        $isHash = isset($type['params'][1]);
-
-        if (null === $this->root) {
-            $this->root = $isHash ? new \ArrayObject() : array();
-            $rs = &$this->root;
-        } else {
-            $rs = $isHash ? new \ArrayObject() : array();
-        }
+        $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
 
         $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
@@ -121,10 +97,6 @@ class JsonSerializationVisitor extends AbstractVisitor
 
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
-        if (null === $this->root) {
-            $this->root = new \stdClass;
-        }
-
         $this->dataStack->push($this->data);
         $this->data = array();
     }
@@ -137,10 +109,6 @@ class JsonSerializationVisitor extends AbstractVisitor
         // Force JSON output to "{}" instead of "[]" if it contains either no properties or all properties are null.
         if (empty($rs)) {
             $rs = new \ArrayObject();
-        }
-
-        if ($this->root instanceof \stdClass && 0 === $this->dataStack->count()) {
-            $this->root = $rs;
         }
 
         return $rs;
@@ -195,23 +163,9 @@ class JsonSerializationVisitor extends AbstractVisitor
         $this->data[$key] = $value;
     }
 
-    public function getRoot()
+    public function getResult($data)
     {
-        return $this->root;
-    }
-
-    /**
-     * @param array|\ArrayObject $data the passed data must be understood by whatever encoding function is applied later.
-     */
-    public function setRoot($data)
-    {
-        $this->root = $data;
-    }
-
-
-    public function getResult()
-    {
-        $result = @json_encode($this->getRoot(), $this->options);
+        $result = @json_encode($data, $this->options);
 
         switch (json_last_error()) {
             case JSON_ERROR_NONE:

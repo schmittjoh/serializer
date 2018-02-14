@@ -50,8 +50,9 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
 
     public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
     {
-        if (null === $visitor->document) {
-            $visitor->document = $visitor->createDocument();
+        $currentNode = $visitor->getCurrentNode();
+        if (!$currentNode) {
+            $visitor->createRoot();
         }
 
         foreach ($list as $violation) {
@@ -71,20 +72,19 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
 
     public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
     {
-        if (null === $visitor->document) {
-            $visitor->document = $visitor->createDocument(null, null, false);
-            $visitor->document->appendChild($violationNode = $visitor->document->createElement('violation'));
-            $visitor->setCurrentNode($violationNode);
+        $violationNode = $visitor->getDocument()->createElement('violation');
+
+        $parent = $visitor->getCurrentNode();
+        if (!$parent) {
+            $visitor->setCurrentAndRootNode($violationNode);
         } else {
-            $visitor->getCurrentNode()->appendChild(
-                $violationNode = $visitor->document->createElement('violation')
-            );
+            $parent->appendChild($violationNode);
         }
 
         $violationNode->setAttribute('property_path', $violation->getPropertyPath());
-        $violationNode->appendChild($messageNode = $visitor->document->createElement('message'));
+        $violationNode->appendChild($messageNode = $visitor->getDocument()->createElement('message'));
 
-        $messageNode->appendChild($visitor->document->createCDATASection($violation->getMessage()));
+        $messageNode->appendChild($visitor->getDocument()->createCDATASection($violation->getMessage()));
     }
 
     public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
@@ -93,10 +93,6 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
             'property_path' => $violation->getPropertyPath(),
             'message' => $violation->getMessage()
         );
-
-        if (null === $visitor->getRoot()) {
-            $visitor->setRoot($data);
-        }
 
         return $data;
     }

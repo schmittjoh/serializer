@@ -129,7 +129,9 @@ interface VisitorInterface
     public function setNavigator(GraphNavigatorInterface $navigator);
 
     /**
-     * @return object|array|scalar
+     * @param mixed $data
+     *
+     * @return mixed
      */
-    public function getResult();
+    public function getResult($data);
 }
