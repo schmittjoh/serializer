@@ -42,7 +42,6 @@ use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\PhpCollectionHandler;
-use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
@@ -163,7 +162,6 @@ class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
         return $this;
     }
