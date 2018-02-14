@@ -461,16 +461,10 @@ class SerializerBuilder
             $this->deserializationVisitors,
             $this->eventDispatcher,
             null,
-            $this->expressionEvaluator
+            $this->expressionEvaluator,
+            $this->serializationContextFactory,
+            $this->deserializationContextFactory
         );
-
-        if (null !== $this->serializationContextFactory) {
-            $serializer->setSerializationContextFactory($this->serializationContextFactory);
-        }
-
-        if (null !== $this->deserializationContextFactory) {
-            $serializer->setDeserializationContextFactory($this->deserializationContextFactory);
-        }
 
         return $serializer;
     }
