@@ -18,16 +18,25 @@
 
 namespace JMS\Serializer;
 
-/**
- * Handles traversal along the object graph.
- *
- * This class handles traversal along the graph, and calls different methods
- * on visitors, or custom handlers to process its nodes.
- *
- * @author Asmir Mustafic <goetas@gmail.com>
- */
+use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
+use Metadata\MetadataFactoryInterface;
+
 interface GraphNavigatorInterface
 {
+    const DIRECTION_SERIALIZATION = 1;
+    const DIRECTION_DESERIALIZATION = 2;
+
     /**
      * Called for each node of the graph that is being traversed.
      *

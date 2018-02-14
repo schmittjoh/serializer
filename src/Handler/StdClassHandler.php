@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\VisitorInterface;
 
@@ -35,7 +35,7 @@ class StdClassHandler implements SubscribingHandlerInterface
 
         foreach ($formats as $format) {
             $methods[] = array(
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'stdClass',
                 'format' => $format,
                 'method' => 'serializeStdClass',

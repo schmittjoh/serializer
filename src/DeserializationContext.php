@@ -29,7 +29,7 @@ class DeserializationContext extends Context
 
     public function getDirection()
     {
-        return GraphNavigator::DIRECTION_DESERIALIZATION;
+        return GraphNavigatorInterface::DIRECTION_DESERIALIZATION;
     }
 
     public function getDepth()

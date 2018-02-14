@@ -43,7 +43,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->disableExternalEntities = false;
     }
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;

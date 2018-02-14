@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
@@ -32,7 +32,7 @@ class ContextualNamingStrategy implements AdvancedNamingStrategyInterface
 {
     public function getPropertyName(PropertyMetadata $property, Context $context)
     {
-        if ($context->getDirection() == GraphNavigator::DIRECTION_SERIALIZATION) {
+        if ($context->getDirection() == GraphNavigatorInterface::DIRECTION_SERIALIZATION) {
             return strtoupper($property->name);
         }
         return ucfirst($property->name);

@@ -30,7 +30,7 @@ class JsonDeserializationVisitor extends AbstractVisitor
     private $objectStack;
     private $currentObject;
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->result = null;

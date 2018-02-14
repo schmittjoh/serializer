@@ -25,7 +25,7 @@ interface SubscribingHandlerInterface
      *
      *      array(
      *          array(
-     *              'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+     *              'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
      *              'format' => 'json',
      *              'type' => 'DateTime',
      *              'method' => 'serializeDateTimeToJson',

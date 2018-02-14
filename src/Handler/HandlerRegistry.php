@@ -20,7 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
@@ -33,14 +33,14 @@ class HandlerRegistry implements HandlerRegistryInterface
         }
 
         switch ($direction) {
-            case GraphNavigator::DIRECTION_DESERIALIZATION:
+            case GraphNavigatorInterface::DIRECTION_DESERIALIZATION:
                 return 'deserialize' . $type . 'From' . $format;
 
-            case GraphNavigator::DIRECTION_SERIALIZATION:
+            case GraphNavigatorInterface::DIRECTION_SERIALIZATION:
                 return 'serialize' . $type . 'To' . $format;
 
             default:
-                throw new LogicException(sprintf('The direction %s does not exist; see GraphNavigator::DIRECTION_??? constants.', json_encode($direction)));
+                throw new LogicException(sprintf('The direction %s does not exist; see GraphNavigatorInterface::DIRECTION_??? constants.', json_encode($direction)));
         }
     }
 
@@ -56,7 +56,7 @@ class HandlerRegistry implements HandlerRegistryInterface
                 throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), \get_class($handler)));
             }
 
-            $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
+            $directions = array(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION);
             if (isset($methodData['direction'])) {
                 $directions = array($methodData['direction']);
             }
@@ -71,7 +71,7 @@ class HandlerRegistry implements HandlerRegistryInterface
     public function registerHandler($direction, $typeName, $format, $handler)
     {
         if (\is_string($direction)) {
-            $direction = GraphNavigator::parseDirection($direction);
+            $direction = GraphNavigatorInterface::parseDirection($direction);
         }
 
         $this->handlers[$direction][$typeName][$format] = $handler;

@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
@@ -37,7 +37,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         foreach ($types as $type => $method) {
             foreach ($formats as $format) {
                 $methods[] = array(
-                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => $method . 'To' . $format,
