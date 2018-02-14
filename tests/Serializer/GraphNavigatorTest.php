@@ -20,12 +20,14 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\DeserializationGraphNavigator;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\SerializationGraphNavigator;
 use Metadata\MetadataFactory;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
@@ -34,7 +36,8 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     private $handlerRegistry;
     private $objectConstructor;
     private $dispatcher;
-    private $navigator;
+    private $serializationNavigator;
+    private $deserializationNavigator;
     private $context;
 
     /**
@@ -47,7 +50,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getDirection')
             ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
-        $this->navigator->accept(STDIN, null, $this->context);
+        $this->serializationNavigator->accept(STDIN, null, $this->context);
     }
 
     public function testNavigatorPassesInstanceOnSerialization()
@@ -83,8 +86,8 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept($object, null, $this->context);
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        $navigator->accept($object, null, $this->context);
     }
 
     public function testNavigatorPassesNullOnDeserialization()
@@ -118,8 +121,8 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
     public function testNavigatorChangeTypeOnSerialization()
@@ -143,19 +146,20 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept($object, null, $this->context);
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        $navigator->accept($object, null, $this->context);
     }
 
     protected function setUp()
     {
-        $this->context = $this->getMockBuilder('JMS\Serializer\Context')->getMock();
+        $this->context = $this->getMockBuilder('JMS\Serializer\SerializationContext')->getMock();
         $this->dispatcher = new EventDispatcher();
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->serializationNavigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        $this->deserializationNavigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 }
 

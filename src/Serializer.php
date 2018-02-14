@@ -48,7 +48,8 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     private $deserializationVisitors = array();
 
-    private $navigator;
+    private $serializationNavigator;
+    private $deserializationNavigator;
 
     /**
      * @var SerializationContextFactoryInterface
@@ -94,7 +95,8 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
-        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher, $expressionEvaluator);
+        $this->serializationNavigator = new SerializationGraphNavigator($this->factory, $this->handlerRegistry, $this->dispatcher, $expressionEvaluator);
+        $this->deserializationNavigator = new DeserializationGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher, $expressionEvaluator);
 
         $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
@@ -113,7 +115,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         return (function (VisitorInterface $visitor) use ($context, $data, $format) {
                 $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
 
-                $this->visit($visitor, $context, $visitor->prepare($data), $format, $type);
+                $this->visit($this->serializationNavigator, $visitor, $context, $visitor->prepare($data), $format, $type);
 
                 return $visitor->getResult();
             })($this->serializationVisitors[$format]);
@@ -131,7 +133,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         return (function (VisitorInterface $visitor) use ($context, $data, $format, $type) {
             $preparedData = $visitor->prepare($data);
-            $navigatorResult = $this->visit($visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
+            $navigatorResult = $this->visit($this->deserializationNavigator, $visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
             return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
         })($this->deserializationVisitors[$format]);
@@ -153,7 +155,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         return (function (JsonSerializationVisitor $visitor) use ($context, $data) {
                 $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
 
-                $this->visit($visitor, $context, $data, 'json', $type);
+                $this->visit($this->serializationNavigator, $visitor, $context, $data, 'json', $type);
                 $result = $this->convertArrayObjects($visitor->getRoot());
 
                 if (!\is_array($result)) {
@@ -182,24 +184,24 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
 
         return (function (JsonDeserializationVisitor $visitor) use ($data, $type, $context) {
-                $navigatorResult = $this->visit($visitor, $context, $data, 'json', $this->typeParser->parse($type));
+                $navigatorResult = $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
 
                 return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
             })($this->deserializationVisitors['json']);
     }
 
-    private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
+    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
     {
         $context->initialize(
             $format,
             $visitor,
-            $this->navigator,
+            $navigator,
             $this->factory
         );
 
-        $visitor->setNavigator($this->navigator);
+        $visitor->setNavigator($navigator);
 
-        return $this->navigator->accept($data, $type, $context);
+        return $navigator->accept($data, $type, $context);
     }
 
     private function handleDeserializeResult($visitorResult, $navigatorResult)
