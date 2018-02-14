@@ -52,27 +52,6 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
     private $handlerRegistry;
     private $objectConstructor;
 
-    /**
-     * Parses a direction string to one of the direction constants.
-     *
-     * @param string $dirStr
-     *
-     * @return integer
-     */
-    public static function parseDirection($dirStr)
-    {
-        switch (strtolower($dirStr)) {
-            case 'serialization':
-                return self::DIRECTION_SERIALIZATION;
-
-            case 'deserialization':
-                return self::DIRECTION_DESERIALIZATION;
-
-            default:
-                throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
-        }
-    }
-
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,

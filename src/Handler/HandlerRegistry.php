@@ -21,6 +21,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Serializer;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
@@ -71,7 +72,7 @@ class HandlerRegistry implements HandlerRegistryInterface
     public function registerHandler($direction, $typeName, $format, $handler)
     {
         if (\is_string($direction)) {
-            $direction = GraphNavigatorInterface::parseDirection($direction);
+            $direction = Serializer::parseDirection($direction);
         }
 
         $this->handlers[$direction][$typeName][$format] = $handler;
