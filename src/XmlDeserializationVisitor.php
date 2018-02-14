@@ -33,7 +33,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $objectMetadataStack;
     private $currentObject;
     private $currentMetadata;
-    private $result;
     private $navigator;
     private $disableExternalEntities = true;
     private $doctypeWhitelist = array();
@@ -49,7 +48,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->objectMetadataStack = new \SplStack;
-        $this->result = null;
     }
 
     public function prepare($data)
@@ -95,13 +93,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
     public function visitString($data, array $type, Context $context)
     {
-        $data = (string)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+         return (string)$data;
     }
 
     public function visitBoolean($data, array $type, Context $context)
@@ -109,40 +101,22 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $data = (string)$data;
 
         if ('true' === $data || '1' === $data) {
-            $data = true;
+            return true;
         } elseif ('false' === $data || '0' === $data) {
-            $data = false;
+            return false;
         } else {
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
         }
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
     }
 
     public function visitInteger($data, array $type, Context $context)
     {
-        $data = (integer)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (integer)$data;
     }
 
     public function visitDouble($data, array $type, Context $context)
     {
-        $data = (double)$data;
-
-        if (null === $this->result) {
-            $this->result = $data;
-        }
-
-        return $data;
+        return (double)$data;
     }
 
     public function visitArray($data, array $type, Context $context)
@@ -188,10 +162,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if (!\count($nodes)) {
-            if (null === $this->result) {
-                return $this->result = array();
-            }
-
             return array();
         }
 
@@ -201,10 +171,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             case 1:
                 $result = array();
-
-                if (null === $this->result) {
-                    $this->result = &$result;
-                }
 
                 foreach ($nodes as $v) {
                     $result[] = $this->navigator->accept($v, $type['params'][0], $context);
@@ -219,9 +185,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
                 list($keyType, $entryType) = $type['params'];
                 $result = array();
-                if (null === $this->result) {
-                    $this->result = &$result;
-                }
 
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
@@ -245,9 +208,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
-        if (null === $this->result) {
-            $this->result = $this->currentObject;
-        }
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
@@ -366,9 +326,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
-    public function getResult()
+    public function getResult($data)
     {
-        return $this->result;
+        return $data;
     }
 
     /**
