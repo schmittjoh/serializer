@@ -173,22 +173,6 @@ class JsonSerializationVisitor extends AbstractVisitor
     }
 
     /**
-     * Allows you to add additional data to the current object/root element.
-     * @deprecated use setData instead
-     * @param string $key
-     * @param integer|float|boolean|string|array|null $value This value must either be a regular scalar, or an array.
-     *                                                       It must not contain any objects anymore.
-     */
-    public function addData($key, $value)
-    {
-        if (isset($this->data[$key])) {
-            throw new InvalidArgumentException(sprintf('There is already data for "%s".', $key));
-        }
-
-        $this->data[$key] = $value;
-    }
-
-    /**
      * Checks if some data key exists.
      *
      * @param string $key
