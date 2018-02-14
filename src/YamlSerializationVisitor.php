@@ -18,13 +18,6 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\Util\Writer;
-use Symfony\Component\Yaml\Inline;
 use Symfony\Component\Yaml\Yaml;
 
 /**

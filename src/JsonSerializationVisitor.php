@@ -27,14 +27,12 @@ class JsonSerializationVisitor extends AbstractVisitor
     private $options = 0;
 
     private $navigator;
-    private $root;
     private $dataStack;
     private $data;
 
     public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
-        $this->root = null;
         $this->dataStack = new \SplStack;
     }
 
