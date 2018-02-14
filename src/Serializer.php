@@ -25,6 +25,7 @@ use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
@@ -100,6 +101,27 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
+    }
+
+    /**
+     * Parses a direction string to one of the direction constants.
+     *
+     * @param string $dirStr
+     *
+     * @return integer
+     */
+    public static function parseDirection($dirStr)
+    {
+        switch (strtolower($dirStr)) {
+            case 'serialization':
+                return GraphNavigatorInterface::DIRECTION_SERIALIZATION;
+
+            case 'deserialization':
+                return GraphNavigatorInterface::DIRECTION_DESERIALIZATION;
+
+            default:
+                throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
+        }
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
