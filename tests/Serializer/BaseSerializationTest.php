@@ -36,7 +36,6 @@ use JMS\Serializer\Handler\ConstraintViolationHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -108,8 +107,6 @@ use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
 use Metadata\MetadataFactory;
-use PhpCollection\Map;
-use PhpCollection\Sequence;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Form\Form;
@@ -652,7 +649,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeSame(false, 'reviewed', $deserialized);
             $this->assertAttributeSame('1edf9bf60a32d89afbb85b2be849e3ceed5f5b10', 'etag', $deserialized);
             $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
-            $this->assertAttributeEquals(new Sequence(array($comment)), 'comments2', $deserialized);
+            $this->assertAttributeEquals(array($comment), 'comments2', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
             $this->assertAttributeEquals(array($tag1, $tag2), 'tag', $deserialized);
         }
@@ -689,11 +686,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $accessor = new ExpressionAccessorStrategy($evaluator, new DefaultAccessorStrategy());
 
-        $this->serializationVisitors = new Map(array(
+        $this->serializationVisitors = array(
             'json' => new JsonSerializationVisitor($namingStrategy, $accessor),
             'xml' => new XmlSerializationVisitor($namingStrategy, $accessor),
             'yml' => new YamlSerializationVisitor($namingStrategy, $accessor),
-        ));
+        );
 
         $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, $evaluator);
 
@@ -1111,7 +1108,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException JMS\Serializer\Exception\InvalidArgumentException
+     * @expectedException \JMS\Serializer\Exception\InvalidArgumentException
      * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
      */
     public function testInvalidGroupName()
@@ -1346,7 +1343,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $order = new Order(new Price(12));
 
         $context = new DeserializationContext();
-        $context->attributes->set('target', $order);
+        $context->setAttribute('target', $order);
 
         $deseralizedOrder = $serializer->deserialize(
             $this->getContent('order'),
@@ -1394,7 +1391,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
-        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
             function (VisitorInterface $visitor, $object, array $type, Context $context) {
@@ -1426,15 +1422,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $this->objectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = new Map(array(
+        $this->serializationVisitors = array(
             'json' => new JsonSerializationVisitor($namingStrategy),
             'xml' => new XmlSerializationVisitor($namingStrategy),
             'yml' => new YamlSerializationVisitor($namingStrategy),
-        ));
-        $this->deserializationVisitors = new Map(array(
+        );
+        $this->deserializationVisitors = array(
             'json' => new JsonDeserializationVisitor($namingStrategy),
             'xml' => new XmlDeserializationVisitor($namingStrategy),
-        ));
+        );
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
     }

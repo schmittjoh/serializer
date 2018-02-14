@@ -48,14 +48,13 @@ class SymfonyValidatorSubscriber implements EventSubscriberInterface
         }
 
         $validator = $this->validator;
-        $context->attributes->get('validation_groups')->map(
-            function (array $groups) use ($event, $validator) {
-                $list = $validator->validate($event->getObject(), $groups);
 
-                if ($list->count() > 0) {
-                    throw new ValidationFailedException($list);
-                }
+        array_map(function (array $groups) use ($event, $validator) {
+            $list = $validator->validate($event->getObject(), $groups);
+
+            if ($list->count() > 0) {
+                throw new ValidationFailedException($list);
             }
-        );
+        }, $context->getAttribute('validation_groups'));
     }
 }
