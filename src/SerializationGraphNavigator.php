@@ -40,7 +40,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class GraphNavigator implements GraphNavigatorInterface
+final class SerializationGraphNavigator implements GraphNavigatorInterface
 {
     /**
      * @var ExpressionLanguageExclusionStrategy
@@ -50,7 +50,6 @@ final class GraphNavigator implements GraphNavigatorInterface
     private $dispatcher;
     private $metadataFactory;
     private $handlerRegistry;
-    private $objectConstructor;
 
     /**
      * Parses a direction string to one of the direction constants.
@@ -76,7 +75,6 @@ final class GraphNavigator implements GraphNavigatorInterface
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
-        ObjectConstructorInterface $objectConstructor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
     )
@@ -84,7 +82,6 @@ final class GraphNavigator implements GraphNavigatorInterface
         $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
-        $this->objectConstructor = $objectConstructor;
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
@@ -105,9 +102,6 @@ final class GraphNavigator implements GraphNavigatorInterface
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
-            if ($context instanceof DeserializationContext) {
-                throw new RuntimeException('The type must be given for all properties when deserializing.');
-            }
 
             $typeName = \gettype($data);
             if ('object' === $typeName) {
@@ -118,7 +112,7 @@ final class GraphNavigator implements GraphNavigatorInterface
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-        else if ($context instanceof SerializationContext && null === $data) {
+        else if (null === $data) {
             $type = array('name' => 'NULL', 'params' => array());
         }
         // Sometimes data can convey null but is not of a null type.
@@ -151,46 +145,34 @@ final class GraphNavigator implements GraphNavigatorInterface
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
-                if ($context instanceof SerializationContext && null !== $path = $context->getPath()) {
+                if (null !== $path = $context->getPath()) {
                     $msg .= ' Path: ' . $path;
                 }
 
                 throw new RuntimeException($msg);
 
             default:
-                // TODO: The rest of this method needs some refactoring.
-                if ($context instanceof SerializationContext) {
-                    if (null !== $data) {
-                        if ($context->isVisiting($data)) {
-                            return null;
-                        }
-                        $context->startVisiting($data);
-                    }
 
-                    // If we're serializing a polymorphic type, then we'll be interested in the
-                    // metadata for the actual type of the object, not the base class.
-                    if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
-                        if (is_subclass_of($data, $type['name'], false)) {
-                            $type = array('name' => \get_class($data), 'params' => array());
-                        }
+                if (null !== $data) {
+                    if ($context->isVisiting($data)) {
+                        return null;
                     }
-                } elseif ($context instanceof DeserializationContext) {
-                    $context->increaseDepth();
+                    $context->startVisiting($data);
+                }
+
+                // If we're serializing a polymorphic type, then we'll be interested in the
+                // metadata for the actual type of the object, not the base class.
+                if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
+                    if (is_subclass_of($data, $type['name'], false)) {
+                        $type = array('name' => \get_class($data), 'params' => array());
+                    }
                 }
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($context instanceof SerializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
-                        $type = $event->getType();
-                    }
-                } elseif ($context instanceof DeserializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
-                        $type = $event->getType();
-                        $data = $event->getData();
-                    }
+                if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
+                    $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                    $type = $event->getType();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
@@ -198,7 +180,7 @@ final class GraphNavigator implements GraphNavigatorInterface
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
                     $rs = \call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
+                    $context->stopVisiting($data);
 
                     return $rs;
                 }
@@ -212,29 +194,19 @@ final class GraphNavigator implements GraphNavigatorInterface
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
                 }
 
-                if ($context instanceof DeserializationContext && !empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($data, $metadata);
-                }
-
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
-                    $this->leaveScope($context, $data);
+                    $context->stopVisiting($data);
 
                     return null;
                 }
 
                 $context->pushClassMetadata($metadata);
 
-                if ($context instanceof SerializationContext) {
-                    foreach ($metadata->preSerializeMethods as $method) {
-                        $method->invoke($data);
-                    }
+                foreach ($metadata->preSerializeMethods as $method) {
+                    $method->invoke($data);
                 }
 
                 $object = $data;
-                if ($context instanceof DeserializationContext) {
-                    $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
-                }
-
                 $visitor->startVisitingObject($metadata, $object, $type, $context);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
@@ -245,102 +217,29 @@ final class GraphNavigator implements GraphNavigatorInterface
                         continue;
                     }
 
-                    if ($context instanceof DeserializationContext && $propertyMetadata->readOnly) {
-                        continue;
-                    }
-
                     $context->pushPropertyMetadata($propertyMetadata);
                     $visitor->visitProperty($propertyMetadata, $data, $context);
                     $context->popPropertyMetadata();
                 }
 
-                if ($context instanceof SerializationContext) {
-                    $this->afterVisitingObject($metadata, $data, $type, $context);
 
-                    return $visitor->endVisitingObject($metadata, $data, $type, $context);
-                }
+                $this->afterVisitingObject($metadata, $data, $type, $context);
 
-                $rs = $visitor->endVisitingObject($metadata, $data, $type, $context);
-                $this->afterVisitingObject($metadata, $rs, $type, $context);
-
-                return $rs;
-        }
-    }
-
-    private function resolveMetadata($data, ClassMetadata $metadata)
-    {
-        switch (true) {
-            case \is_array($data) && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
-                break;
-
-            // Check XML attribute for discriminatorFieldName
-            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
-                break;
-
-            // Check XML element with namespace for discriminatorFieldName
-            case \is_object($data) && !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                $typeValue = (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
-                break;
-
-            // Check XML element for discriminatorFieldName
-            case \is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
-                $typeValue = (string)$data->{$metadata->discriminatorFieldName};
-                break;
-
-            default:
-                throw new \LogicException(sprintf(
-                    'The discriminator field name "%s" for base-class "%s" was not found in input data.',
-                    $metadata->discriminatorFieldName,
-                    $metadata->name
-                ));
-        }
-
-        if (!isset($metadata->discriminatorMap[$typeValue])) {
-            throw new \LogicException(sprintf(
-                'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
-                $typeValue,
-                $metadata->name,
-                implode(', ', array_keys($metadata->discriminatorMap))
-            ));
-        }
-
-        return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
-    }
-
-    private function leaveScope(Context $context, $data)
-    {
-        if ($context instanceof SerializationContext) {
-            $context->stopVisiting($data);
-        } elseif ($context instanceof DeserializationContext) {
-            $context->decreaseDepth();
+                return $visitor->endVisitingObject($metadata, $data, $type, $context);
         }
     }
 
     private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
     {
-        $this->leaveScope($context, $object);
+        $context->stopVisiting($object);
         $context->popClassMetadata();
 
-        if ($context instanceof SerializationContext) {
-            foreach ($metadata->postSerializeMethods as $method) {
-                $method->invoke($object);
-            }
-
-            if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $context->getFormat())) {
-                $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
-            }
-
-            return;
-        }
-
-        foreach ($metadata->postDeserializeMethods as $method) {
+        foreach ($metadata->postSerializeMethods as $method) {
             $method->invoke($object);
         }
 
-        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
-            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
+        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $context->getFormat())) {
+            $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
         }
     }
 }
