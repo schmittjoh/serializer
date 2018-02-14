@@ -74,14 +74,20 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
 
+        $context->stopVisiting($collection);
+
         if ($this->initializeExcluded === false) {
             $exclusionStrategy = $context->getExclusionStrategy();
             if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(\get_class($collection)), $context)) {
+                $context->startVisiting($collection);
+
                 return $visitor->visitArray([], $type, $context);
             }
         }
+        $result = $visitor->visitArray($collection->toArray(), $type, $context);
 
-        return $visitor->visitArray($collection->toArray(), $type, $context);
+        $context->startVisiting($collection);
+        return $result;
     }
 
     public function deserializeCollection(VisitorInterface $visitor, $data, array $type, Context $context)
