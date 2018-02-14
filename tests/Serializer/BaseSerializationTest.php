@@ -105,6 +105,7 @@ use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
+use JMS\Serializer\YamlDeserializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
 use Metadata\MetadataFactory;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -1413,6 +1414,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->deserializationVisitors = array(
             'json' => new JsonDeserializationVisitor($namingStrategy),
             'xml' => new XmlDeserializationVisitor($namingStrategy),
+            'yml' => new YamlDeserializationVisitor($namingStrategy),
         );
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);

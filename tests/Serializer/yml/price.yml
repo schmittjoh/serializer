@@ -1,1 +1,1 @@
-price: 3
+price: !!float 3

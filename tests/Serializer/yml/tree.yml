@@ -3,8 +3,7 @@ tree:
         -
             children:
                 -
-                    children:
-                        -
+                    children: []
                     foo: bar
             foo: bar
     foo: bar

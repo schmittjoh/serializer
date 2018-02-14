@@ -245,6 +245,7 @@ class SerializerBuilder
         $this->visitorsAdded = true;
         $this->deserializationVisitors = array(
             'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
+            'yml' => new YamlDeserializationVisitor($this->propertyNamingStrategy),
             'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
         );
 
