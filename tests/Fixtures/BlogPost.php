@@ -130,7 +130,7 @@ class BlogPost
         $this->comments2 = array();
         $this->metadata = array('foo' => 'bar');
         $this->createdAt = $createdAt;
-        $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
+        $this->etag = sha1($this->createdAt->format(\DateTime::ATOM));
     }
 
     public function setPublished()
