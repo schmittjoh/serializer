@@ -75,10 +75,10 @@ class YamlSerializationTest extends BaseSerializationTest
             [['a', 'b'], "- a\n- b\n", null],
             [['a' => 'a', 'b' => 'b'], "a: a\nb: b\n", null],
 
-            [[], " []\n", null],
-            [[], " []\n", SerializationContext::create()->setInitialType('array')],
-            [[], " []\n", SerializationContext::create()->setInitialType('array<integer>')],
-            [[], " {}\n", SerializationContext::create()->setInitialType('array<string,integer>')],
+            [[], "[]\n", null],
+            [[], "[]\n", SerializationContext::create()->setInitialType('array')],
+            [[], "[]\n", SerializationContext::create()->setInitialType('array<integer>')],
+            [[], "{  }\n", SerializationContext::create()->setInitialType('array<string,integer>')],
 
 
             [[1, 2], "- 1\n- 2\n", SerializationContext::create()->setInitialType('array')],
@@ -92,7 +92,7 @@ class YamlSerializationTest extends BaseSerializationTest
 
             [[1, 2], "0: 1\n1: 2\n", SerializationContext::create()->setInitialType('array<integer,integer>')],
             [[1, 2], "0: 1\n1: 2\n", SerializationContext::create()->setInitialType('array<string,integer>')],
-            [[1, 2], "0: 1\n1: 2\n", SerializationContext::create()->setInitialType('array<string,string>')],
+            [[1, 2], "0: '1'\n1: '2'\n", SerializationContext::create()->setInitialType('array<string,string>')],
 
 
             [['a', 'b'], "0: a\n1: b\n", SerializationContext::create()->setInitialType('array<integer,string>')],
@@ -115,10 +115,5 @@ class YamlSerializationTest extends BaseSerializationTest
     protected function getFormat()
     {
         return 'yml';
-    }
-
-    protected function hasDeserializer()
-    {
-        return false;
     }
 }

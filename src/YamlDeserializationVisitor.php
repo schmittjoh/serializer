@@ -33,10 +33,10 @@ use Symfony\Component\Yaml\Yaml;
  * @see http://www.yaml.org/spec/
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class YamlSerializationVisitor extends JsonSerializationVisitor
+class YamlDeserializationVisitor extends JsonDeserializationVisitor
 {
-    public function getResult($data)
+    public function prepare($str)
     {
-        return trim(Yaml::dump($data, 1000, 4, Yaml::DUMP_OBJECT_AS_MAP|Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE))."\n";
+        return Yaml::parse($str);
     }
 }
