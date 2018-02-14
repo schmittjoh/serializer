@@ -1040,57 +1040,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testAdvancedGroups()
-    {
-        $adrien = new GroupsUser(
-            'John',
-            new GroupsUser(
-                'John Manager',
-                null,
-                array(
-                    new GroupsUser(
-                        'John Manager friend 1',
-                        new GroupsUser('John Manager friend 1 manager')
-                    ),
-                    new GroupsUser('John Manager friend 2'),
-                )
-            ),
-            array(
-                new GroupsUser(
-                    'John friend 1',
-                    new GroupsUser('John friend 1 manager')
-                ),
-                new GroupsUser(
-                    'John friend 2',
-                    new GroupsUser('John friend 2 manager')
-                )
-            )
-        );
-
-        $this->assertEquals(
-            $this->getContent('groups_advanced'),
-            $this->serializer->serialize(
-                $adrien,
-                $this->getFormat(),
-                SerializationContext::create()->setGroups(array(
-                    GroupsExclusionStrategy::DEFAULT_GROUP,
-                    'manager_group',
-                    'friends_group',
-
-                    'manager' => array(
-                        GroupsExclusionStrategy::DEFAULT_GROUP,
-                        'friends_group',
-
-                        'friends' => array('nickname_group'),
-                    ),
-                    'friends' => array(
-                        'manager_group'
-                    )
-                ))
-            )
-        );
-    }
-
     /**
      * @expectedException \JMS\Serializer\Exception\InvalidArgumentException
      * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
