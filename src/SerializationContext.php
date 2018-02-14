@@ -42,7 +42,7 @@ class SerializationContext extends Context
     /**
      * @param string $format
      */
-    public function initialize($format, VisitorInterface $visitor, GraphNavigator $navigator, MetadataFactoryInterface $factory)
+    public function initialize($format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory)
     {
         parent::initialize($format, $visitor, $navigator, $factory);
 
@@ -97,7 +97,7 @@ class SerializationContext extends Context
 
     public function getDirection()
     {
-        return GraphNavigator::DIRECTION_SERIALIZATION;
+        return GraphNavigatorInterface::DIRECTION_SERIALIZATION;
     }
 
     public function getDepth()

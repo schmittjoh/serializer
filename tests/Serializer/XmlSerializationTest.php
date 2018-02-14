@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
@@ -426,7 +426,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $author = new ObjectWithXmlNamespacesAndObjectPropertyAuthor('mr', 'smith');
         $object = new ObjectWithXmlNamespacesAndObjectPropertyVirtual('This is a nice title.', new \stdClass());
 
-        $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual', $this->getFormat(),
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual', $this->getFormat(),
             function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
                 $factory = $context->getMetadataFactory(get_class($author));
                 $classMetadata = $factory->getMetadataForClass(get_class($author));

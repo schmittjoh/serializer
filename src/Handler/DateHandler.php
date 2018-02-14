@@ -20,7 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
@@ -43,7 +43,7 @@ class DateHandler implements SubscribingHandlerInterface
             foreach ($deserializationTypes as $type) {
                 $methods[] = [
                     'type' => $type,
-                    'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
+                    'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
                     'format' => $format,
                 ];
             }
@@ -52,7 +52,7 @@ class DateHandler implements SubscribingHandlerInterface
                 $methods[] = array(
                     'type' => $type,
                     'format' => $format,
-                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'method' => 'serialize' . $type,
                 );
             }

@@ -21,7 +21,7 @@ namespace JMS\Serializer\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Context;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\VisitorInterface;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
@@ -51,14 +51,14 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
         foreach ($collectionTypes as $type) {
             foreach ($formats as $format) {
                 $methods[] = array(
-                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => 'serializeCollection',
                 );
 
                 $methods[] = array(
-                    'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
+                    'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => 'deserializeCollection',

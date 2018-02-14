@@ -22,6 +22,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -44,7 +45,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->context->expects($this->any())
             ->method('getDirection')
-            ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
+            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
         $this->navigator->accept(STDIN, null, $this->context);
     }
@@ -76,7 +77,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getDirection')
-            ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
+            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
         $this->context->expects($this->any())
             ->method('getVisitor')
@@ -111,7 +112,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getDirection')
-            ->will($this->returnValue(GraphNavigator::DIRECTION_DESERIALIZATION));
+            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_DESERIALIZATION));
 
         $this->context->expects($this->any())
             ->method('getVisitor')
@@ -136,7 +137,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getDirection')
-            ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
+            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
         $this->context->expects($this->any())
             ->method('getVisitor')
@@ -170,7 +171,7 @@ class TestSubscribingHandler implements SubscribingHandlerInterface
         return array(array(
             'type' => 'JsonSerializable',
             'format' => 'foo',
-            'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+            'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'method' => 'serialize'
         ));
     }

@@ -122,11 +122,11 @@ interface VisitorInterface
     /**
      * Called before serialization/deserialization starts.
      *
-     * @param GraphNavigator $navigator
+     * @param GraphNavigatorInterface $navigator
      *
      * @return void
      */
-    public function setNavigator(GraphNavigator $navigator);
+    public function setNavigator(GraphNavigatorInterface $navigator);
 
     /**
      * @return object|array|scalar

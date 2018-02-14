@@ -81,7 +81,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->defaultEncoding = $encoding;
     }
 
-    public function setNavigator(GraphNavigator $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator)
     {
         $this->navigator = $navigator;
         $this->document = null;
