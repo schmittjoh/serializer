@@ -68,6 +68,6 @@ class ObjectWithXmlNamespaces
         $this->author = $author;
         $this->createdAt = $createdAt;
         $this->language = $language;
-        $this->etag = sha1($this->createdAt->format(\DateTime::ISO8601));
+        $this->etag = sha1($this->createdAt->format(\DateTime::ATOM));
     }
 }
