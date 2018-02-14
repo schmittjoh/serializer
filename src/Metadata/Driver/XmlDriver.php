@@ -340,10 +340,6 @@ class XmlDriver extends AbstractFileDriver
                         throw new RuntimeException('The direction attribute must be set for "handler" callback methods.');
                     }
 
-                    $direction = GraphNavigator::parseDirection((string)$method->attributes()->direction);
-                    $format = (string)$method->attributes()->format;
-                    $metadata->addHandlerCallback($direction, $format, (string)$method->attributes()->name);
-
                     break;
 
                 default:

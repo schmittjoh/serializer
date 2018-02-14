@@ -773,23 +773,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @group handlerCallback
-     */
-    public function testArticle()
-    {
-        $article = new Article();
-        $article->element = 'custom';
-        $article->value = 'serialized';
-
-        $result = $this->serialize($article);
-        $this->assertEquals($this->getContent('article'), $result);
-
-        if ($this->hasDeserializer()) {
-            $this->assertEquals($article, $this->deserialize($result, 'JMS\Serializer\Tests\Fixtures\Article'));
-        }
-    }
-
     public function testInline()
     {
         $inline = new InlineParent();

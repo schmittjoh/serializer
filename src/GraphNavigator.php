@@ -238,17 +238,6 @@ final class GraphNavigator implements GraphNavigatorInterface
                     $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
                 }
 
-                if (isset($metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()])) {
-                    $rs = $object->{$metadata->handlerCallbacks[$context->getDirection()][$context->getFormat()]}(
-                        $visitor,
-                        $context instanceof SerializationContext ? null : $data,
-                        $context
-                    );
-                    $this->afterVisitingObject($metadata, $object, $type, $context);
-
-                    return $context instanceof SerializationContext ? $rs : $object;
-                }
-
                 $visitor->startVisitingObject($metadata, $object, $type, $context);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {

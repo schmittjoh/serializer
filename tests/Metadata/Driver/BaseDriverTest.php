@@ -449,14 +449,6 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedReflection, $actualReflection);
     }
 
-    public function testHandlerCallbacks()
-    {
-        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithHandlerCallbacks'));
-
-        $this->assertEquals('toJson', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['json']);
-        $this->assertEquals('toXml', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['xml']);
-    }
-
     public function testExclusionIf()
     {
         $class = 'JMS\Serializer\Tests\Fixtures\PersonSecret';
