@@ -21,7 +21,6 @@ namespace JMS\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
-use PhpOption\None;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
@@ -52,17 +51,13 @@ class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
         }
 
         $validator = $this->validator;
-        $groups = $context->attributes->get('validation_groups') instanceof None
-            ? null
-            : $context->attributes->get('validation_groups')->get();
+        $groups = $context->hasAttribute('validation_groups') ? $context->getAttribute('validation_groups') : null;
 
         if (!$groups) {
             return;
         }
 
-        $constraints = $context->attributes->get('validation_constraints') instanceof None
-            ? null
-            : $context->attributes->get('validation_constraints')->get();
+        $constraints = $context->hasAttribute('validation_constraints') ? $context->getAttribute('validation_constraints') : null;
 
         $list = $validator->validate($event->getObject(), $constraints, $groups);
 

@@ -58,12 +58,12 @@ use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
-use PhpCollection\Map;
+
 
 class XmlSerializationTest extends BaseSerializationTest
 {
     /**
-     * @expectedException JMS\Serializer\Exception\RuntimeException
+     * @expectedException \JMS\Serializer\Exception\RuntimeException
      */
     public function testInvalidUsageOfXmlValue()
     {
@@ -157,7 +157,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWhitelistedDocumentTypesAreAllowed()
     {
-        $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
+        $this->deserializationVisitors['xml']->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>'));
 
@@ -474,9 +474,9 @@ class XmlSerializationTest extends BaseSerializationTest
         $xmlVisitor = new XmlSerializationVisitor($namingStrategy);
         $xmlVisitor->setFormatOutput(false);
 
-        $visitors = new Map(array(
+        $visitors = array(
             'xml' => new XmlSerializationVisitor($namingStrategy),
-        ));
+        );
 
         $serializer = new Serializer(
             $this->factory,

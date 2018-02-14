@@ -127,7 +127,7 @@ class SerializationContext extends Context
     public function setInitialType($type)
     {
         $this->initialType = $type;
-        $this->attributes->set('initial_type', $type);
+        $this->setAttribute('initial_type', $type);
         return $this;
     }
 
@@ -138,6 +138,6 @@ class SerializationContext extends Context
     {
         return $this->initialType
             ? $this->initialType
-            : $this->attributes->containsKey('initial_type') ? $this->attributes->get('initial_type')->get() : null;
+            : $this->hasAttribute('initial_type') ? $this->getAttribute('initial_type') : null;
     }
 }

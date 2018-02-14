@@ -19,8 +19,6 @@
         "php": "^5.5|^7.0",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
-        "phpoption/phpoption": "^1.1",
-        "phpcollection/phpcollection": "~0.1",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3"
     },

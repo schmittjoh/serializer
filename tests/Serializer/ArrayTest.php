@@ -32,7 +32,6 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
 use Metadata\MetadataFactory;
-use PhpCollection\Map;
 
 class ArrayTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,8 +45,8 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
             new MetadataFactory(new AnnotationDriver(new AnnotationReader())),
             new HandlerRegistry(),
             new UnserializeObjectConstructor(),
-            new Map(array('json' => new JsonSerializationVisitor($namingStrategy))),
-            new Map(array('json' => new JsonDeserializationVisitor($namingStrategy)))
+            array('json' => new JsonSerializationVisitor($namingStrategy)),
+            array('json' => new JsonDeserializationVisitor($namingStrategy))
         );
     }
 

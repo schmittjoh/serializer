@@ -174,10 +174,10 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $context = SerializationContext::create();
         $context->setInitialType('foo');
         $this->assertEquals('foo', $context->getInitialType());
-        $this->assertEquals('foo', $context->attributes->get('initial_type')->get());
+        $this->assertEquals('foo', $context->getAttribute('initial_type'));
 
         $context = SerializationContext::create();
-        $context->attributes->set('initial_type', 'foo');
+        $context->setAttribute('initial_type', 'foo');
         $this->assertEquals('foo', $context->getInitialType());
     }
 
