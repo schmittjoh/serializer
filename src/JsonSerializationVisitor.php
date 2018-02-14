@@ -23,7 +23,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
-class JsonSerializationVisitor extends GenericSerializationVisitor
+class JsonSerializationVisitor extends AbstractVisitor
 {
     private $options = 0;
 
