@@ -32,14 +32,14 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
     /**
      * @var bool
      */
-    private $skipVirtualTypeInit = false;
+    private $skipVirtualTypeInit = true;
 
     /**
      * @var bool
      */
-    private $initializeExcluded = true;
+    private $initializeExcluded = false;
 
-    public function __construct($skipVirtualTypeInit = false, $initializeExcluded = true)
+    public function __construct($skipVirtualTypeInit = true, $initializeExcluded = false)
     {
         $this->skipVirtualTypeInit = (bool)$skipVirtualTypeInit;
         $this->initializeExcluded = (bool)$initializeExcluded;
