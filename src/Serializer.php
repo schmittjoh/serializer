@@ -136,9 +136,11 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
 
-        $preparedData = $this->serializationVisitors[$format]->prepare($data);
-        $result = $this->visit($this->serializationNavigator, $this->serializationVisitors[$format], $context, $preparedData, $format, $type);
-        return $this->serializationVisitors[$format]->getResult($result);
+        $visitor = $this->serializationVisitors[$format];
+
+        $preparedData = $visitor->prepare($data);
+        $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, $format, $type);
+        return $visitor->getResult($result);
     }
 
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
@@ -151,10 +153,11 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
-        $preparedData = $this->deserializationVisitors[$format]->prepare($data);
-        $result = $this->visit($this->deserializationNavigator, $this->deserializationVisitors[$format], $context, $preparedData, $format, $this->typeParser->parse($type));
+        $visitor = $this->deserializationVisitors[$format];
+        $preparedData = $visitor->prepare($data);
+        $result = $this->visit($this->deserializationNavigator, $visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
-        return $this->deserializationVisitors[$format]->getResult($result);
+        return $visitor->getResult($result);
     }
 
     /**
@@ -170,10 +173,12 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
 
+        $visitor = $this->serializationVisitors['json'];
+
         $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
 
-        $preparedData = $this->serializationVisitors['json']->prepare($data);
-        $result = $this->visit($this->serializationNavigator, $this->serializationVisitors['json'], $context, $preparedData, 'json', $type);
+        $preparedData = $visitor->prepare($data);
+        $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, 'json', $type);
         $result = $this->convertArrayObjects($result);
 
         if (!\is_array($result)) {
@@ -199,8 +204,9 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($this->deserializationVisitors['json'])) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
+        $visitor = $this->deserializationVisitors['json'];
 
-        return $this->visit($this->deserializationNavigator, $this->deserializationVisitors['json'], $context, $data, 'json', $this->typeParser->parse($type));
+        return $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
     }
 
     private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
