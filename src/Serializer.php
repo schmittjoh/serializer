@@ -68,7 +68,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @param Construction\ObjectConstructorInterface $objectConstructor
      * @param VisitorInterface[] $serializationVisitors
      * @param VisitorInterface[] $deserializationVisitors
-     * @param EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      * @param TypeParser $typeParser
      * @param ExpressionEvaluatorInterface|null $expressionEvaluator
      */
@@ -80,7 +80,10 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         array $deserializationVisitors,
         EventDispatcherInterface $dispatcher = null,
         TypeParser $typeParser = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ExpressionEvaluatorInterface $expressionEvaluator = null,
+        SerializationContextFactoryInterface $serializationContextFactory = null,
+        DeserializationContextFactoryInterface $deserializationContextFactory = null
+
     )
     {
         $this->factory = $factory;
@@ -93,8 +96,8 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher, $expressionEvaluator);
 
-        $this->serializationContextFactory = new DefaultSerializationContextFactory();
-        $this->deserializationContextFactory = new DefaultDeserializationContextFactory();
+        $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
+        $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
@@ -229,29 +232,5 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     public function getMetadataFactory()
     {
         return $this->factory;
-    }
-
-    /**
-     * @param SerializationContextFactoryInterface $serializationContextFactory
-     *
-     * @return self
-     */
-    public function setSerializationContextFactory(SerializationContextFactoryInterface $serializationContextFactory)
-    {
-        $this->serializationContextFactory = $serializationContextFactory;
-
-        return $this;
-    }
-
-    /**
-     * @param DeserializationContextFactoryInterface $deserializationContextFactory
-     *
-     * @return self
-     */
-    public function setDeserializationContextFactory(DeserializationContextFactoryInterface $deserializationContextFactory)
-    {
-        $this->deserializationContextFactory = $deserializationContextFactory;
-
-        return $this;
     }
 }
