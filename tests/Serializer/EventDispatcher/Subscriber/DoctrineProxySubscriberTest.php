@@ -18,20 +18,22 @@
 
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
-use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var VisitorInterface */
-    private $visitor;
+    /** @var Context */
+    private $context;
 
     /** @var DoctrineProxySubscriber */
     private $subscriber;
@@ -56,7 +58,25 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->subscriber->onPreSerialize($event);
 
         $this->assertEquals(array('name' => 'FakedName', 'params' => array()), $event->getType());
-        $this->assertTrue($obj->__isInitialized());
+        $this->assertFalse($obj->__isInitialized());
+    }
+
+    public function testExcludedPropDoesNotGetInitialized()
+    {
+
+        $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
+        $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface {
+            public function getMetadataForClass($className)
+            {
+                return new ClassMetadata(SimpleObjectProxy::class);
+            }
+        });
+
+        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => SimpleObjectProxy::class, 'params' => array()));
+        $this->subscriber->onPreSerialize($event);
+
+        $this->assertEquals(array('name' => SimpleObjectProxy::class, 'params' => array()), $event->getType());
+        $this->assertFalse($obj->__isInitialized());
     }
 
     public function testProxyLoadingCanBeSkippedForVirtualTypes()
@@ -77,8 +97,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $factoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)->getMock();
         $factoryMock->method('getMetadataForClass')->willReturn(new ClassMetadata(SimpleObject::class));
 
-        $this->visitor->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
-        $this->visitor->method('getMetadataFactory')->willReturn($factoryMock);
+        $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
+        $this->context->method('getMetadataFactory')->willReturn($factoryMock);
 
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => SimpleObjectProxy::class, 'params' => array()));
         $subscriber->onPreSerialize($event);
@@ -144,7 +164,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subscriber = new DoctrineProxySubscriber();
-        $this->visitor = $this->getMockBuilder('JMS\Serializer\Context')->getMock();
+        $this->context = $this->getMockBuilder(Context::class)->getMock();
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber($this->subscriber);
@@ -152,6 +172,6 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
 
     private function createEvent($object, array $type)
     {
-        return new PreSerializeEvent($this->visitor, $object, $type);
+        return new PreSerializeEvent($this->context, $object, $type);
     }
 }
