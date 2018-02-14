@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
@@ -60,7 +61,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         ExpressionEvaluatorInterface $expressionEvaluator = null
     )
     {
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
@@ -124,7 +125,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
+                if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
                     $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
                     $type = $event->getType();
                     $data = $event->getData();
@@ -240,7 +241,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
             $method->invoke($object);
         }
 
-        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
+        if ($this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
             $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
         }
     }
