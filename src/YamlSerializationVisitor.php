@@ -211,11 +211,6 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
     public function getResult()
     {
         return $this->writer->getContent();

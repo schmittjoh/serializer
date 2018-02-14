@@ -52,11 +52,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->result = null;
     }
 
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
     public function prepare($data)
     {
         $data = $this->emptyStringToSpaceCharacter($data);

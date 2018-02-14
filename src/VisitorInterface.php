@@ -129,12 +129,6 @@ interface VisitorInterface
     public function setNavigator(GraphNavigator $navigator);
 
     /**
-     * @deprecated use Context::getNavigator/Context::accept instead
-     * @return GraphNavigator
-     */
-    public function getNavigator();
-
-    /**
      * @return object|array|scalar
      */
     public function getResult();
