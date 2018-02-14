@@ -69,13 +69,6 @@ YAML Reference
                     namespace: http://www.w3.org/2005/Atom
                 max_depth: 2
 
-        handler_callbacks:
-            serialization:
-                xml: serializeToXml
-                json: serializeToJson
-            deserialization:
-                xml: deserializeFromXml
-
         callback_methods:
             pre_serialize: [foo, bar]
             post_serialize: [foo, bar]

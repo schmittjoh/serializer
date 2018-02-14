@@ -28,7 +28,6 @@ use JMS\Serializer\Annotation\ExcludeIf;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\MaxDepth;
 use JMS\Serializer\Annotation\PostDeserialize;
@@ -135,9 +134,6 @@ class AnnotationDriver implements DriverInterface
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $method->name);
                     $propertiesMetadata[] = $virtualPropertyMetadata;
                     $propertiesAnnotations[] = $methodAnnotations;
-                    continue 2;
-                } elseif ($annot instanceof HandlerCallback) {
-                    $classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
                     continue 2;
                 }
             }
