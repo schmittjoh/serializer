@@ -38,7 +38,7 @@ interface HandlerRegistryInterface
      * @param integer $direction one of the GraphNavigatorInterface::DIRECTION_??? constants
      * @param string $typeName
      * @param string $format
-     * @param callable $handler function(VisitorInterface, mixed $data, array $type): mixed
+     * @param callable $handler function(visitor, mixed $data, array $type): mixed
      *
      * @return void
      */

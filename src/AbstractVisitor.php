@@ -21,7 +21,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 
-abstract class AbstractVisitor implements VisitorInterface
+abstract class AbstractVisitor
 {
     protected $namingStrategy;
 

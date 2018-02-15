@@ -30,6 +30,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationGraphNavigator;
+use JMS\Serializer\SerializationVisitorInterface;
 use Metadata\MetadataFactory;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
@@ -87,7 +88,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
+            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
 
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
         $navigator->accept($object, null, $this->context);
@@ -124,7 +125,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
+            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
 
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
         $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
@@ -149,7 +150,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock()));
+            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
 
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
         $navigator->accept($object, null, $this->context);

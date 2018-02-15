@@ -18,11 +18,11 @@
 
 namespace JMS\Serializer\Handler;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlDeserializationVisitor;
@@ -70,10 +70,10 @@ class DateHandler implements SubscribingHandlerInterface
     }
 
     private function serializeDateTimeInterface(
-        VisitorInterface $visitor,
+        SerializationVisitorInterface $visitor,
         \DateTimeInterface $date,
         array $type,
-        Context $context
+        SerializationContext $context
     )
     {
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
@@ -88,22 +88,22 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
-    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
+    public function serializeDateTime(SerializationVisitorInterface $visitor, \DateTime $date, array $type, SerializationContext $context)
     {
         return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
     }
 
     public function serializeDateTimeImmutable(
-        VisitorInterface $visitor,
+        SerializationVisitorInterface $visitor,
         \DateTimeImmutable $date,
         array $type,
-        Context $context
+        SerializationContext $context
     )
     {
         return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
     }
 
-    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
+    public function serializeDateInterval(SerializationVisitorInterface $visitor, \DateInterval $date, array $type, SerializationContext $context)
     {
         $iso8601DateIntervalString = $this->format($date);
 

@@ -5,7 +5,7 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\SerializationVisitorInterface;
 
 class DateHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +41,7 @@ class DateHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
 
-        $visitor = $this->getMockBuilder(VisitorInterface::class)->getMock();
+        $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
         $visitor->method('visitString')->with('2017-06-18');
 
         $datetime = new \DateTime('2017-06-18 14:30:59', $this->timezone);

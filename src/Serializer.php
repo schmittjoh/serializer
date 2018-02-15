@@ -63,15 +63,13 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $deserializationContextFactory;
 
     /**
-     * Constructor.
-     *
      * @param \Metadata\MetadataFactoryInterface $factory
      * @param Handler\HandlerRegistryInterface $handlerRegistry
      * @param Construction\ObjectConstructorInterface $objectConstructor
-     * @param VisitorInterface[] $serializationVisitors
-     * @param VisitorInterface[] $deserializationVisitors
-     * @param EventDispatcherInterface $dispatcher
-     * @param TypeParser $typeParser
+     * @param SerializationVisitorInterface[] $serializationVisitors
+     * @param DeserializationVisitorInterface[] $deserializationVisitors
+     * @param EventDispatcherInterface|null $dispatcher
+     * @param TypeParser|null $typeParser
      * @param ExpressionEvaluatorInterface|null $expressionEvaluator
      */
     public function __construct(
@@ -209,7 +207,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         return $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
     }
 
-    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
+    private function visit(GraphNavigatorInterface $navigator, $visitor, Context $context, $data, $format, array $type = null)
     {
         $context->initialize(
             $format,

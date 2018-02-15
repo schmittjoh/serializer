@@ -39,7 +39,7 @@ abstract class Context
 
     private $format;
 
-    /** @var VisitorInterface */
+    /** @var SerializationVisitorInterface|DeserializationVisitorInterface */
     private $visitor;
 
     /** @var GraphNavigatorInterface */
@@ -67,7 +67,7 @@ abstract class Context
     /**
      * @param string $format
      */
-    public function initialize($format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory)
+    public function initialize($format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory)
     {
         if ($this->initialized) {
             throw new LogicException('This context was already initialized, and cannot be re-used.');

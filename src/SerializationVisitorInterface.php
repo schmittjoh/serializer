@@ -28,8 +28,9 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * output format.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ * @author Asmir Mustafic <goetas@gmail.com>
  */
-interface VisitorInterface
+interface SerializationVisitorInterface
 {
     /**
      * Allows visitors to convert the input data to a different representation
@@ -47,7 +48,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitNull($data, array $type, Context $context);
+    public function visitNull($data, array $type, SerializationContext $context);
 
     /**
      * @param mixed $data
@@ -55,7 +56,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitString($data, array $type, Context $context);
+    public function visitString(string $data, array $type, SerializationContext $context);
 
     /**
      * @param mixed $data
@@ -63,7 +64,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type, Context $context);
+    public function visitBoolean(bool $data, array $type, SerializationContext $context);
 
     /**
      * @param mixed $data
@@ -71,7 +72,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type, Context $context);
+    public function visitDouble(float $data, array $type, SerializationContext $context);
 
     /**
      * @param mixed $data
@@ -79,7 +80,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type, Context $context);
+    public function visitInteger(int $data, array $type, SerializationContext $context);
 
     /**
      * @param mixed $data
@@ -87,7 +88,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function visitArray($data, array $type, Context $context);
+    public function visitArray(array $data, array $type, SerializationContext $context);
 
     /**
      * Called before the properties of the object are being visited.
@@ -98,7 +99,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -106,7 +107,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function visitProperty(PropertyMetadata $metadata, $data, Context $context);
+    public function visitProperty(PropertyMetadata $metadata, $data, SerializationContext $context): void;
 
     /**
      * Called after all properties of the object have been visited.
@@ -117,7 +118,7 @@ interface VisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context);
 
     /**
      * Called before serialization/deserialization starts.
@@ -126,7 +127,7 @@ interface VisitorInterface
      *
      * @return void
      */
-    public function setNavigator(GraphNavigatorInterface $navigator);
+    public function setNavigator(GraphNavigatorInterface $navigator): void;
 
     /**
      * @param mixed $data

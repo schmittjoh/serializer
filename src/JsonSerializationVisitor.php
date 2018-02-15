@@ -22,7 +22,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
-class JsonSerializationVisitor extends AbstractVisitor
+class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     private $options = 0;
 
@@ -30,44 +30,44 @@ class JsonSerializationVisitor extends AbstractVisitor
     private $dataStack;
     private $data;
 
-    public function setNavigator(GraphNavigatorInterface $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator): void
     {
         $this->navigator = $navigator;
         $this->dataStack = new \SplStack;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, array $type, SerializationContext $context)
     {
         return null;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString(string $data, array $type, SerializationContext $context)
     {
-        return (string)$data;
+        return $data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean(bool $data, array $type, SerializationContext $context)
     {
-        return (boolean)$data;
+        return $data;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger(int $data, array $type, SerializationContext $context)
     {
-        return (int)$data;
+        return $data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble(float $data, array $type, SerializationContext $context)
     {
-        return (float)$data;
+        return $data;
     }
 
     /**
      * @param array $data
      * @param array $type
-     * @param Context $context
+     * @param SerializationContext $context
      * @return mixed
      */
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray(array $data, array $type, SerializationContext $context)
     {
         $this->dataStack->push($data);
 
@@ -93,13 +93,13 @@ class JsonSerializationVisitor extends AbstractVisitor
         return $rs;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context): void
     {
         $this->dataStack->push($this->data);
         $this->data = array();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
@@ -112,7 +112,7 @@ class JsonSerializationVisitor extends AbstractVisitor
         return $rs;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
+    public function visitProperty(PropertyMetadata $metadata, $data, SerializationContext $context): void
     {
         $v = $this->accessor->getValue($data, $metadata);
 
@@ -131,7 +131,7 @@ class JsonSerializationVisitor extends AbstractVisitor
 
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
-                $this->data = array_merge($this->data, (array) $v);
+                $this->data = array_merge($this->data, (array)$v);
             }
         } else {
             $this->data[$k] = $v;
