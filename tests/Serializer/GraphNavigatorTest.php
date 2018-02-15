@@ -22,11 +22,13 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationGraphNavigator;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationGraphNavigator;
 use Metadata\MetadataFactory;
 
@@ -59,6 +61,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
         $self = $this;
+        $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
         $context = $this->context;
         $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
         $exclusionStrategy->expects($this->once())
@@ -94,6 +97,8 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     {
         $class = __NAMESPACE__ . '\SerializableClass';
         $metadata = $this->metadataFactory->getMetadataForClass($class);
+
+        $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
 
         $context = $this->context;
         $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
@@ -152,7 +157,11 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->context = $this->getMockBuilder('JMS\Serializer\SerializationContext')->getMock();
+        $this->context = $this->getMockBuilder(SerializationContext::class)
+            ->enableOriginalConstructor()
+            ->setMethodsExcept(['getExclusionStrategy'])
+            ->getMock();
+
         $this->dispatcher = new EventDispatcher();
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();
