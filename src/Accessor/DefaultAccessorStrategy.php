@@ -23,7 +23,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class DefaultAccessorStrategy implements AccessorStrategyInterface
+final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
 
     public function getValue($object, PropertyMetadata $metadata)

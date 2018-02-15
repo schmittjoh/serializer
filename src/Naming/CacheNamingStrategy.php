@@ -20,7 +20,7 @@ namespace JMS\Serializer\Naming;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class CacheNamingStrategy implements PropertyNamingStrategyInterface
+final class CacheNamingStrategy implements PropertyNamingStrategyInterface
 {
     private $delegate;
     private $cache;

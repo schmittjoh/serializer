@@ -25,7 +25,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
+final class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {
     private $separator;
     private $lowerCase;

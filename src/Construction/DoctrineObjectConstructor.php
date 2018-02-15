@@ -28,7 +28,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.
  */
-class DoctrineObjectConstructor implements ObjectConstructorInterface
+final class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
     const ON_MISSING_NULL = 'null';
     const ON_MISSING_EXCEPTION = 'exception';

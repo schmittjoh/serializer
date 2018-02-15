@@ -37,7 +37,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Serializer implements SerializerInterface, ArrayTransformerInterface
+final class Serializer implements SerializerInterface, ArrayTransformerInterface
 {
     private $factory;
     private $handlerRegistry;
