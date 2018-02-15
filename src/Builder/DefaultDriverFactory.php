@@ -9,7 +9,7 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 
-class DefaultDriverFactory implements DriverFactoryInterface
+final class DefaultDriverFactory implements DriverFactoryInterface
 {
     public function createDriver(array $metadataDirs, Reader $annotationReader)
     {

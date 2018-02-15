@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Exception\LogicException;
 use Metadata\Driver\DriverInterface;
 
-class CallbackDriverFactory implements DriverFactoryInterface
+final class CallbackDriverFactory implements DriverFactoryInterface
 {
     private $callback;
 

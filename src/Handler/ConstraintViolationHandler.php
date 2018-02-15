@@ -26,7 +26,7 @@ use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class ConstraintViolationHandler implements SubscribingHandlerInterface
+final class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {

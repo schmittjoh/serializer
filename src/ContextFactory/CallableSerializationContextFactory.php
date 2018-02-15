@@ -21,7 +21,7 @@ namespace JMS\Serializer\ContextFactory;
 /**
  * Serialization Context Factory using a callable.
  */
-class CallableSerializationContextFactory extends CallableContextFactory implements
+final class CallableSerializationContextFactory extends CallableContextFactory implements
     SerializationContextFactoryInterface
 {
     /**

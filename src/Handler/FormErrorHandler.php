@@ -27,7 +27,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class FormErrorHandler implements SubscribingHandlerInterface
+final class FormErrorHandler implements SubscribingHandlerInterface
 {
     private $translator;
 

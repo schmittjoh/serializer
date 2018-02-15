@@ -23,7 +23,7 @@ use JMS\Serializer\SerializationContext;
 /**
  * Default Serialization Context Factory.
  */
-class DefaultSerializationContextFactory implements SerializationContextFactoryInterface
+final class DefaultSerializationContextFactory implements SerializationContextFactoryInterface
 {
     /**
      * {@InheritDoc}

@@ -25,7 +25,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionAccessorStrategy implements AccessorStrategyInterface
+final class ExpressionAccessorStrategy implements AccessorStrategyInterface
 {
     /**
      * @var AccessorStrategyInterface

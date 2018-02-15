@@ -26,7 +26,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 
-class ArrayCollectionHandler implements SubscribingHandlerInterface
+final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
     /**
      * @var bool

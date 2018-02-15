@@ -26,7 +26,7 @@ use JMS\Serializer\SerializationVisitorInterface;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class StdClassHandler implements SubscribingHandlerInterface
+final class StdClassHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {
