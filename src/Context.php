@@ -51,8 +51,8 @@ abstract class Context
     /** @var DisjunctExclusionStrategy */
     private $exclusionStrategy;
 
-    /** @var boolean|null */
-    private $serializeNull;
+    /** @var boolean */
+    private $serializeNull = false;
 
     private $initialized = false;
 
