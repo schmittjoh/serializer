@@ -122,7 +122,17 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
     }
 
-    public function serialize($data, $format, SerializationContext $context = null)
+    private function findInitialType($type, SerializationContext $context)
+    {
+        if ($type !== null) {
+            return $this->typeParser->parse($type);
+        } elseif ($context->hasAttribute('initial_type')) {
+            return $this->typeParser->parse($context->getAttribute('initial_type'));
+        }
+        return null;
+    }
+
+    public function serialize($data, $format, SerializationContext $context = null, $type = null)
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
@@ -132,7 +142,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
         }
 
-        $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
+        $type = $this->findInitialType($type, $context);
 
         $visitor = $this->serializationVisitors[$format];
 
@@ -161,7 +171,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function toArray($data, SerializationContext $context = null)
+    public function toArray($data, SerializationContext $context = null, $type = null)
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
@@ -173,7 +183,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $visitor = $this->serializationVisitors['json'];
 
-        $type = $context->getInitialType() !== null ? $this->typeParser->parse($context->getInitialType()) : null;
+        $type = $this->findInitialType($type, $context);
 
         $preparedData = $visitor->prepare($data);
         $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, 'json', $type);
