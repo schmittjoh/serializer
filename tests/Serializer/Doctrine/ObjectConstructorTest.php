@@ -18,13 +18,13 @@ use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Construction\DoctrineObjectConstructor;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
-use JMS\Serializer\VisitorInterface;
 
 class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +34,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
     /** @var Serializer */
     private $serializer;
 
-    /** @var VisitorInterface */
+    /** @var DeserializationVisitorInterface */
     private $visitor;
 
     /** @var DeserializationContext */
@@ -184,7 +184,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->visitor = $this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock();
+        $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
 
         $connection = $this->createConnection();

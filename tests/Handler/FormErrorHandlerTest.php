@@ -2,10 +2,12 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
+use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\SerializationVisitorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilder;
@@ -21,7 +23,7 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     protected $handler;
 
     /**
-     * @var \JMS\Serializer\VisitorInterface
+     * @var JsonSerializationVisitor
      */
     protected $visitor;
 

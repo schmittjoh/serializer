@@ -18,10 +18,10 @@
 
 namespace JMS\Serializer\Handler;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializationVisitorInterface;
 
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
@@ -45,7 +45,7 @@ class StdClassHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeStdClass(VisitorInterface $visitor, \stdClass $stdClass, array $type, Context $context)
+    public function serializeStdClass(SerializationVisitorInterface $visitor, \stdClass $stdClass, array $type, SerializationContext $context)
     {
         $classMetadata = $context->getMetadataFactory()->getMetadataForClass('stdClass');
         $visitor->startVisitingObject($classMetadata, $stdClass, array('name' => 'stdClass'), $context);

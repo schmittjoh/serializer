@@ -18,7 +18,7 @@
 
 namespace JMS\Serializer;
 
-interface NullAwareVisitorInterface extends VisitorInterface
+interface NullAwareVisitorInterface
 {
     /**
      * Determine if a value conveys a null value.
@@ -28,5 +28,5 @@ interface NullAwareVisitorInterface extends VisitorInterface
      *
      * @return bool
      */
-    public function isNull($value);
+    public function isNull($value):bool;
 }

@@ -26,7 +26,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
-class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface
+class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface, DeserializationVisitorInterface
 {
     private $objectStack;
     private $metadataStack;
@@ -42,7 +42,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->disableExternalEntities = false;
     }
 
-    public function setNavigator(GraphNavigatorInterface $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator): void
     {
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;
@@ -86,17 +86,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         return $data === '' ? ' ' : (string)$data;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, array $type, DeserializationContext $context): void
     {
-        return null;
+
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, array $type, DeserializationContext $context): string
     {
-         return (string)$data;
+        return (string)$data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, array $type, DeserializationContext $context): bool
     {
         $data = (string)$data;
 
@@ -109,17 +109,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, array $type, DeserializationContext $context): int
     {
         return (integer)$data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, array $type, DeserializationContext $context): float
     {
         return (double)$data;
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, array $type, DeserializationContext $context): array
     {
         // handle key-value-pairs
         if (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) {
@@ -204,13 +204,13 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, DeserializationContext $context): void
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
+    public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void
     {
         if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
             $name = $this->namingStrategy->getPropertyName($metadata, $context);
@@ -285,7 +285,14 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->accessor->setValue($this->currentObject, $v, $metadata);
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    /**
+     * @param ClassMetadata $metadata
+     * @param mixed $data
+     * @param array $type
+     * @param DeserializationContext $context
+     * @return mixed
+     */
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();
@@ -381,7 +388,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
      *
      * @return bool
      */
-    public function isNull($value)
+    public function isNull($value): bool
     {
         if ($value instanceof \SimpleXMLElement) {
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
@@ -394,7 +401,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
             if (isset($xsiAttributes['nil'])
-                && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
+                && ((string)$xsiAttributes['nil'] === 'true' || (string)$xsiAttributes['nil'] === '1')
             ) {
                 return true;
             }

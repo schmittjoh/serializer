@@ -23,44 +23,44 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
-class JsonDeserializationVisitor extends AbstractVisitor
+class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
     private $navigator;
     private $objectStack;
     private $currentObject;
 
-    public function setNavigator(GraphNavigatorInterface $navigator)
+    public function setNavigator(GraphNavigatorInterface $navigator): void
     {
         $this->navigator = $navigator;
         $this->objectStack = new \SplStack;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, array $type, DeserializationContext $context): void
     {
-        return null;
+
     }
 
-    public function visitString($data, array $type, Context $context):string
+    public function visitString($data, array $type, DeserializationContext $context): string
     {
         return (string)$data;
     }
 
-    public function visitBoolean($data, array $type, Context $context):bool
+    public function visitBoolean($data, array $type, DeserializationContext $context): bool
     {
         return (bool)$data;
     }
 
-    public function visitInteger($data, array $type, Context $context):int
+    public function visitInteger($data, array $type, DeserializationContext $context): int
     {
         return (int)$data;
     }
 
-    public function visitDouble($data, array $type, Context $context):float
+    public function visitDouble($data, array $type, DeserializationContext $context): float
     {
         return (double)$data;
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, array $type, DeserializationContext $context): array
     {
         if (!\is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', \gettype($data), json_encode($data)));
@@ -99,12 +99,12 @@ class JsonDeserializationVisitor extends AbstractVisitor
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, DeserializationContext $context): void
     {
         $this->setCurrentObject($object);
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
+    public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void
     {
         if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
             $name = $this->namingStrategy->getPropertyName($metadata, $context);
@@ -134,7 +134,7 @@ class JsonDeserializationVisitor extends AbstractVisitor
 
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();

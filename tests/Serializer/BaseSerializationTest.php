@@ -25,6 +25,7 @@ use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
@@ -43,6 +44,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
@@ -102,7 +104,6 @@ use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
-use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlDeserializationVisitor;
@@ -1326,12 +1327,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
-            function (VisitorInterface $visitor, $object, array $type, Context $context) {
+            function (SerializationVisitorInterface $visitor, $object, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type, $context);
             }
         );
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
-            function (VisitorInterface $visitor, $data, $type, Context $context) {
+            function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
                 $type = array(
                     'name' => 'array',
                     'params' => array(
