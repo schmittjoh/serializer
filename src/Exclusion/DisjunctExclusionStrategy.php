@@ -42,7 +42,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 
     public function addStrategy(ExclusionStrategyInterface $strategy)
     {
-        $this->delegates->add($strategy);
+        $this->delegates[] = $strategy;
     }
 
     /**
