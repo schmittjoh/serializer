@@ -101,7 +101,7 @@ class EventDispatcher implements EventDispatcherInterface
                 break;
             }
 
-            call_user_func($listener, $event, $eventName, $loweredClass, $format, $this);
+            \call_user_func($listener, $event, $eventName, $loweredClass, $format, $this);
         }
     }
 

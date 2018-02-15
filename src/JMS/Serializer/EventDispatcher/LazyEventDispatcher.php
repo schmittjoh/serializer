@@ -28,7 +28,7 @@ class LazyEventDispatcher extends EventDispatcher
     public function __construct($container)
     {
         if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {
-            throw new \InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, is_object($container) ? get_class($container) : gettype($container)));
+            throw new \InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, \is_object($container) ? \get_class($container) : \gettype($container)));
         }
 
         $this->container = $container;
@@ -42,7 +42,7 @@ class LazyEventDispatcher extends EventDispatcher
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);
 
         foreach ($listeners as &$listener) {
-            if (!is_array($listener) || !is_string($listener[0])) {
+            if (!\is_array($listener) || !\is_string($listener[0])) {
                 continue;
             }
 

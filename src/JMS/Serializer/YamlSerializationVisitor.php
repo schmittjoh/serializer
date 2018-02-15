@@ -86,7 +86,7 @@ class YamlSerializationVisitor extends AbstractVisitor
 
         $count = $this->writer->changeCount;
         $isList = (isset($type['params'][0]) && !isset($type['params'][1]))
-            || array_keys($data) === range(0, count($data) - 1);
+            || array_keys($data) === range(0, \count($data) - 1);
 
         foreach ($data as $k => $v) {
             if (null === $v && $context->shouldSerializeNull() !== true) {

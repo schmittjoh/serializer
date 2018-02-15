@@ -148,11 +148,11 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
                 $this->visit($visitor, $context, $data, 'json', $type);
                 $result = $this->convertArrayObjects($visitor->getRoot());
 
-                if (!is_array($result)) {
+                if (!\is_array($result)) {
                     throw new RuntimeException(sprintf(
                         'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
-                        is_object($data) ? get_class($data) : gettype($data),
-                        is_object($result) ? get_class($result) : gettype($result)
+                        \is_object($data) ? \get_class($data) : \gettype($data),
+                        \is_object($result) ? \get_class($result) : \gettype($result)
                     ));
                 }
 
@@ -208,7 +208,7 @@ class Serializer implements SerializerInterface, ArrayTransformerInterface
         if ($data instanceof \ArrayObject || $data instanceof \stdClass) {
             $data = (array)$data;
         }
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $k => $v) {
                 $data[$k] = $this->convertArrayObjects($v);
             }

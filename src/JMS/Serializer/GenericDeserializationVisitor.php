@@ -104,8 +104,8 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
     public function visitArray($data, array $type, Context $context)
     {
-        if (!is_array($data)) {
-            throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
+        if (!\is_array($data)) {
+            throw new RuntimeException(sprintf('Expected array, but got %s: %s', \gettype($data), json_encode($data)));
         }
 
         // If no further parameters were given, keys/values are just passed as is.
@@ -117,7 +117,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             return $data;
         }
 
-        switch (count($type['params'])) {
+        switch (\count($type['params'])) {
             case 1: // Array is a list.
                 $listType = $type['params'][0];
 
@@ -172,7 +172,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             return;
         }
 
-        if (!is_array($data)) {
+        if (!\is_array($data)) {
             throw new RuntimeException(sprintf('Invalid data "%s"(%s), expected "%s".', $data, $metadata->type['name'], $metadata->reflection->class));
         }
 

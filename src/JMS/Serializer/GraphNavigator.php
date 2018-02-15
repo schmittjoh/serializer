@@ -112,9 +112,9 @@ final class GraphNavigator
                 throw new RuntimeException('The type must be given for all properties when deserializing.');
             }
 
-            $typeName = gettype($data);
+            $typeName = \gettype($data);
             if ('object' === $typeName) {
-                $typeName = get_class($data);
+                $typeName = \get_class($data);
             }
 
             $type = array('name' => $typeName, 'params' => array());
@@ -174,7 +174,7 @@ final class GraphNavigator
                     // metadata for the actual type of the object, not the base class.
                     if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
                         if (is_subclass_of($data, $type['name'], false)) {
-                            $type = array('name' => get_class($data), 'params' => array());
+                            $type = array('name' => \get_class($data), 'params' => array());
                         }
                     }
                 } elseif ($context instanceof DeserializationContext) {
@@ -200,7 +200,7 @@ final class GraphNavigator
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type, $context);
+                    $rs = \call_user_func($handler, $visitor, $data, $type, $context);
                     $this->leaveScope($context, $data);
 
                     return $rs;
@@ -284,22 +284,22 @@ final class GraphNavigator
     private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
-            case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
+            case \is_array($data) && isset($data[$metadata->discriminatorFieldName]):
                 $typeValue = (string)$data[$metadata->discriminatorFieldName];
                 break;
 
             // Check XML attribute for discriminatorFieldName
-            case is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
+            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
                 $typeValue = (string)$data[$metadata->discriminatorFieldName];
                 break;
 
             // Check XML element with namespace for discriminatorFieldName
-            case is_object($data) && !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
+            case \is_object($data) && !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
                 $typeValue = (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
                 break;
 
             // Check XML element for discriminatorFieldName
-            case is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
+            case \is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
                 $typeValue = (string)$data->{$metadata->discriminatorFieldName};
                 break;
 

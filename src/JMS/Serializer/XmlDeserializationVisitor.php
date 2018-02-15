@@ -192,7 +192,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $nodes = $data->xpath($entryName);
         }
 
-        if (!count($nodes)) {
+        if (!\count($nodes)) {
             if (null === $this->result) {
                 return $this->result = array();
             }
@@ -200,7 +200,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             return array();
         }
 
-        switch (count($type['params'])) {
+        switch (\count($type['params'])) {
             case 0:
                 throw new RuntimeException(sprintf('The array type must be specified either as "array<T>", or "array<K,V>".'));
 

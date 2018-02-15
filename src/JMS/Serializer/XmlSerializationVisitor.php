@@ -269,7 +269,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $this->revertCurrentMetadata();
 
             if (!$node instanceof \DOMCharacterData) {
-                throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node)));
+                throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, \is_object($node) ? \get_class($node) : \gettype($node)));
             }
 
             $this->currentNode->appendChild($node);
@@ -278,8 +278,8 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
 
         if ($metadata->xmlAttributeMap) {
-            if (!is_array($v)) {
-                throw new RuntimeException(sprintf('Unsupported value type for XML attribute map. Expected array but got %s.', gettype($v)));
+            if (!\is_array($v)) {
+                throw new RuntimeException(sprintf('Unsupported value type for XML attribute map. Expected array but got %s.', \gettype($v)));
             }
 
             foreach ($v as $key => $value) {

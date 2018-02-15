@@ -160,7 +160,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
         if ((null === $v && $context->shouldSerializeNull() !== true)
-            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || is_array($v)) && 0 === count($v))
+            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v))
         ) {
             return;
         }
@@ -172,7 +172,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         }
 
         if ($metadata->inline) {
-            if (is_array($v) || ($v instanceof \ArrayObject)) {
+            if (\is_array($v) || ($v instanceof \ArrayObject)) {
                 $this->data = array_merge($this->data, (array) $v);
             }
         } else {

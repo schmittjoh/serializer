@@ -297,7 +297,7 @@ class YamlDriver extends AbstractFileDriver
                     throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
                 }
 
-                if (!isset($config['discriminator']['map']) || !is_array($config['discriminator']['map'])) {
+                if (!isset($config['discriminator']['map']) || !\is_array($config['discriminator']['map'])) {
                     throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
                 }
                 $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : array();
@@ -321,9 +321,9 @@ class YamlDriver extends AbstractFileDriver
 
     private function getCallbackMetadata(\ReflectionClass $class, $config)
     {
-        if (is_string($config)) {
+        if (\is_string($config)) {
             $config = array($config);
-        } elseif (!is_array($config)) {
+        } elseif (!\is_array($config)) {
             throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
         }
 
