@@ -16,7 +16,7 @@
         }        
     ],
     "require": {
-        "php": "^5.5|^7.0",
+        "php": "^7.1",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
         "doctrine/annotations": "^1.0",
@@ -58,7 +58,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.11-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
