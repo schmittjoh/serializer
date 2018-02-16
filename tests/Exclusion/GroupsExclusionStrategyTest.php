@@ -22,7 +22,7 @@ use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 
-class GroupsExclusionStrategyTest extends \PHPUnit_Framework_TestCase
+class GroupsExclusionStrategyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider getExclusionRules

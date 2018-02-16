@@ -26,7 +26,7 @@ use JMS\Serializer\SerializationContext;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionLanguageExclusionStrategyTest extends \PHPUnit_Framework_TestCase
+class ExpressionLanguageExclusionStrategyTest extends \PHPUnit\Framework\TestCase
 {
     private $visitedObject;
     private $context;

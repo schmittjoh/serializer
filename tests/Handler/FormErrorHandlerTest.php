@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Translation\Translator;
 
-class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
+class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \JMS\Serializer\Handler\FormErrorHandler

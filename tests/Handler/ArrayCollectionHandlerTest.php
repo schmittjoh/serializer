@@ -10,7 +10,7 @@ use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use Metadata\MetadataFactoryInterface;
 
-class ArrayCollectionHandlerTest extends \PHPUnit_Framework_TestCase
+class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerializeArray()
     {

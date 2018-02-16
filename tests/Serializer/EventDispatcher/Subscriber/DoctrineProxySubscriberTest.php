@@ -30,7 +30,7 @@ use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactoryInterface;
 
-class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
+class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Context */
     private $context;

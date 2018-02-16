@@ -31,7 +31,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Metadata\MetadataFactory;
 
-class SerializationContextFactoryTest extends \PHPUnit_Framework_TestCase
+class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 {
     protected $serializer;
     protected $metadataFactory;

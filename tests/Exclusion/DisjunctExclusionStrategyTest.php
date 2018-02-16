@@ -23,7 +23,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 
-class DisjunctExclusionStrategyTest extends \PHPUnit_Framework_TestCase
+class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
 {
     public function testShouldSkipClassShortCircuiting()
     {

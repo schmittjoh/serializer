@@ -20,7 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\TypeParser;
 
-class TypeParserTest extends \PHPUnit_Framework_TestCase
+class TypeParserTest extends \PHPUnit\Framework\TestCase
 {
     private $parser;
 
