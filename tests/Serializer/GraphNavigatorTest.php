@@ -33,7 +33,7 @@ use JMS\Serializer\SerializationGraphNavigator;
 use JMS\Serializer\SerializationVisitorInterface;
 use Metadata\MetadataFactory;
 
-class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
+class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
 {
     private $metadataFactory;
     private $handlerRegistry;

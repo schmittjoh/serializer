@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 
-class HandlerRegistryTest extends \PHPUnit_Framework_TestCase
+class HandlerRegistryTest extends \PHPUnit\Framework\TestCase
 {
     protected $handlerRegistry;
 

@@ -7,7 +7,7 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 
-class DateHandlerTest extends \PHPUnit_Framework_TestCase
+class DateHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DateHandler

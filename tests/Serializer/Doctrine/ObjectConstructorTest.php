@@ -26,7 +26,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 
-class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
+class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ManagerRegistry */
     private $registry;

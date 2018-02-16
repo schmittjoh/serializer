@@ -22,7 +22,7 @@ use JMS\Serializer\Twig\SerializerExtension;
 use JMS\Serializer\Twig\SerializerRuntimeExtension;
 use JMS\Serializer\Twig\SerializerRuntimeHelper;
 
-class SerializerExtensionTest extends \PHPUnit_Framework_TestCase
+class SerializerExtensionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerialize()
     {

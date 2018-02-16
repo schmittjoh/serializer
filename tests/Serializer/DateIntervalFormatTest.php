@@ -20,7 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Handler\DateHandler;
 
-class DateIntervalFormatTest extends \PHPUnit_Framework_TestCase
+class DateIntervalFormatTest extends \PHPUnit\Framework\TestCase
 {
     public function testFormat()
     {

@@ -27,7 +27,7 @@ use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit_Framework_TestCase
+class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     private $validator;
 

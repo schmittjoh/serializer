@@ -25,7 +25,7 @@ use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 
-class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
+class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function getMetadata()
     {

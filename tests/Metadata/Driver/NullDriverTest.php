@@ -21,7 +21,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\NullDriver;
 
-class NullDriverTest extends \PHPUnit_Framework_TestCase
+class NullDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function testReturnsValidMetadata()
     {

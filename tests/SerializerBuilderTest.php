@@ -33,7 +33,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
+class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var SerializerBuilder */
     private $builder;

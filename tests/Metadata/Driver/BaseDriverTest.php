@@ -30,7 +30,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscrimina
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
 
-abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
+abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function testLoadBlogPostMetadata()
     {
