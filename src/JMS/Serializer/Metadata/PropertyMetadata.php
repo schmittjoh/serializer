@@ -52,8 +52,17 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
     public $excludeIf = null;
 
+    private $closureAccessor;
+
     private static $typeParser;
 
+    public function __construct($class, $name)
+    {
+        parent::__construct($class, $name);
+        $this->closureAccessor = \Closure::bind(function ($o, $name) {
+            return $o->$name;
+        }, null, $class);
+    }
     public function setAccessor($type, $getter = null, $setter = null)
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
@@ -87,6 +96,11 @@ class PropertyMetadata extends BasePropertyMetadata
     public function getValue($obj)
     {
         if (null === $this->getter) {
+            if (null !== $this->closureAccessor) {
+                $accessor = $this->closureAccessor;
+                return $accessor($obj, $this->name);
+            }
+
             return parent::getValue($obj);
         }
 
@@ -184,5 +198,9 @@ class PropertyMetadata extends BasePropertyMetadata
         }
 
         parent::unserialize($parentStr);
+
+        $this->closureAccessor = \Closure::bind(function ($o, $name) {
+            return $o->$name;
+        }, null, $this->class);
     }
 }
