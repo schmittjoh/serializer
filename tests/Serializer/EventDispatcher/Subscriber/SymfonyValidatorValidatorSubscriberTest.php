@@ -99,10 +99,6 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
 
     protected function setUp()
     {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('Symfony\Component\Validator\Validator\ValidatorInterface ^2.6|^3.0 is not available');
-        }
-
         $this->validator = $this->getMockBuilder('Symfony\Component\Validator\Validator\ValidatorInterface')->getMock();
         $this->subscriber = new SymfonyValidatorValidatorSubscriber($this->validator);
     }
