@@ -44,7 +44,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
     {
         $propertyName = $propertyMetadata->name;
         if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {
-            $propertyMetadata->setType($fieldType);
+            $propertyMetadata->setType($this->typeParser->parse($fieldType));
         } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
             $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
 
@@ -63,7 +63,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
                 $targetEntity = "ArrayCollection<{$targetEntity}>";
             }
 
-            $propertyMetadata->setType($targetEntity);
+            $propertyMetadata->setType($this->typeParser->parse($targetEntity));
         }
     }
 }

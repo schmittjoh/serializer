@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -51,21 +52,23 @@ use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\TypeParser;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
 class AnnotationDriver implements DriverInterface
 {
     private $reader;
+    private $typeParser;
 
-    public function __construct(Reader $reader)
+    public function __construct(Reader $reader, AbstractParser $typeParser = null)
     {
         $this->reader = $reader;
+        $this->typeParser = $typeParser ?: new TypeParser();
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -179,7 +182,7 @@ class AnnotationDriver implements DriverInterface
                             $isExclude = true;
                         }
                     } elseif ($annot instanceof Type) {
-                        $propertyMetadata->setType($annot->name);
+                        $propertyMetadata->setType($this->typeParser->parse($annot->name));
                     } elseif ($annot instanceof XmlElement) {
                         $propertyMetadata->xmlAttribute = false;
                         $propertyMetadata->xmlElementCData = $annot->cdata;

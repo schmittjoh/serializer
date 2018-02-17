@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
@@ -69,8 +70,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @param SerializationVisitorInterface[] $serializationVisitors
      * @param DeserializationVisitorInterface[] $deserializationVisitors
      * @param EventDispatcherInterface|null $dispatcher
-     * @param TypeParser|null $typeParser
+     * @param AbstractParser|null $typeParser
      * @param ExpressionEvaluatorInterface|null $expressionEvaluator
+     * @param SerializationContextFactoryInterface|null $serializationContextFactory
+     * @param DeserializationContextFactoryInterface|null $deserializationContextFactory
      */
     public function __construct(
         MetadataFactoryInterface $factory,
@@ -79,7 +82,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         array $serializationVisitors,
         array $deserializationVisitors,
         EventDispatcherInterface $dispatcher = null,
-        TypeParser $typeParser = null,
+        AbstractParser $typeParser = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null

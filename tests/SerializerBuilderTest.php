@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -75,6 +76,24 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
         $serializer = $this->builder->build();
 
         $this->assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
+    }
+
+    public function testCustomTypeParser()
+    {
+        $parserMock = $this->getMockBuilder(AbstractParser::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $parserMock
+            ->method('parse')
+            ->willReturn(['name' => 'DateTimeImmutable', 'params' => [2 => 'd-Y-m']]);
+
+        $this->builder->setTypeParser($parserMock);
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->deserialize('"04-2020-10"', "XXX", 'json');
+        $this->assertInstanceOf(\DateTimeImmutable::class, $result);
+        $this->assertEquals("2020-10-04", $result->format("Y-m-d"));
     }
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()

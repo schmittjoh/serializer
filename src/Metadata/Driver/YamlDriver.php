@@ -18,19 +18,29 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\TypeParser;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlDriver extends AbstractFileDriver
 {
+    private $typeParser;
+
+    public function __construct(FileLocatorInterface $locator, AbstractParser $typeParser = null)
+    {
+        parent::__construct($locator);
+        $this->typeParser = $typeParser ?: new TypeParser();
+    }
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $config = Yaml::parse(file_get_contents($file));
@@ -124,7 +134,7 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pConfig['type'])) {
-                        $pMetadata->setType((string)$pConfig['type']);
+                        $pMetadata->setType($this->typeParser->parse((string)$pConfig['type']));
                     }
 
                     if (isset($pConfig['groups'])) {

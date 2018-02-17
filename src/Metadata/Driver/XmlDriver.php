@@ -18,19 +18,29 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
-use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\TypeParser;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 
 class XmlDriver extends AbstractFileDriver
 {
+    private $typeParser;
+
+    public function __construct(FileLocatorInterface $locator, AbstractParser $typeParser = null)
+    {
+        parent::__construct($locator);
+        $this->typeParser = $typeParser ?: new TypeParser();
+    }
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $path)
     {
         $previous = libxml_use_internal_errors(true);
@@ -194,9 +204,9 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $type = $pElem->attributes()->type) {
-                        $pMetadata->setType((string)$type);
+                        $pMetadata->setType($this->typeParser->parse((string)$type));
                     } elseif (isset($pElem->type)) {
-                        $pMetadata->setType((string)$pElem->type);
+                        $pMetadata->setType($this->typeParser->parse((string)$pElem->type));
                     }
 
                     if (null !== $groups = $pElem->attributes()->groups) {
