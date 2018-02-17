@@ -22,6 +22,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
@@ -76,6 +77,7 @@ class SerializerBuilder
     private $driverFactory;
     private $serializationContextFactory;
     private $deserializationContextFactory;
+    private $typeParser;
 
     /**
      * @var ExpressionEvaluatorInterface
@@ -94,9 +96,9 @@ class SerializerBuilder
 
     public function __construct()
     {
+        $this->typeParser = new TypeParser();
         $this->handlerRegistry = new HandlerRegistry();
         $this->eventDispatcher = new EventDispatcher();
-        $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = array();
         $this->deserializationVisitors = array();
     }
@@ -121,6 +123,13 @@ class SerializerBuilder
     public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
     {
         $this->expressionEvaluator = $expressionEvaluator;
+
+        return $this;
+    }
+
+    public function setTypeParser(AbstractParser $parser)
+    {
+        $this->typeParser = $parser;
 
         return $this;
     }
@@ -431,6 +440,10 @@ class SerializerBuilder
             }
         }
 
+        if (null === $this->driverFactory) {
+            $this->driverFactory = new DefaultDriverFactory($this->typeParser);
+        }
+
         $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
 
@@ -461,7 +474,7 @@ class SerializerBuilder
             $this->serializationVisitors,
             $this->deserializationVisitors,
             $this->eventDispatcher,
-            null,
+            $this->typeParser,
             $this->expressionEvaluator,
             $this->serializationContextFactory,
             $this->deserializationContextFactory

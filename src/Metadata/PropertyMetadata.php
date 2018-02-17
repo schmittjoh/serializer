@@ -19,7 +19,6 @@
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\TypeParser;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
@@ -53,8 +52,6 @@ class PropertyMetadata extends BasePropertyMetadata
     public $excludeIf = null;
 
     private $closureAccessor;
-
-    private static $typeParser;
 
     public function __construct($class, $name)
     {
@@ -117,13 +114,9 @@ class PropertyMetadata extends BasePropertyMetadata
         $obj->{$this->setter}($value);
     }
 
-    public function setType($type)
+    public function setType(array $type)
     {
-        if (null === self::$typeParser) {
-            self::$typeParser = new TypeParser();
-        }
-
-        $this->type = self::$typeParser->parse($type);
+        $this->type = $type;
     }
 
     public function serialize()

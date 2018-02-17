@@ -47,7 +47,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
                 $fieldType = 'array';
             }
 
-            $propertyMetadata->setType($fieldType);
+            $propertyMetadata->setType($this->typeParser->parse($fieldType));
         } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
             try {
                 $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
@@ -63,7 +63,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
                 $targetEntity = "ArrayCollection<{$targetEntity}>";
             }
 
-            $propertyMetadata->setType($targetEntity);
+            $propertyMetadata->setType($this->typeParser->parse($targetEntity));
         }
     }
 }
