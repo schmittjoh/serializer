@@ -21,7 +21,7 @@ namespace JMS\Serializer\Annotation;
 /**
  * @Annotation
  * @Target("METHOD")
- *
+ * @deprecated
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class HandlerCallback
