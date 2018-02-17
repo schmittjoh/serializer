@@ -2,18 +2,21 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
-use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\Serializer\SerializationVisitorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Validation;
 
 class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
 {
@@ -88,6 +91,31 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         )), $json);
     }
 
+    public function testSerializeFormWithData()
+    {
+        $formFactoryBuilder = Forms::createFormFactoryBuilder();
+        $formFactoryBuilder->addExtension(new ValidatorExtension(Validation::createValidator()));
+
+        $formFactory = $formFactoryBuilder->getFormFactory();
+        $builer = $formFactory->createNamedBuilder('foo', FormType::class);
+
+        $builer->add('url', TextType::class);
+        $builer->add('txt', TextType::class, [
+            'constraints' => array(
+                new Length(array('min' => 10)),
+            ),
+        ]);
+
+        $form = $builer->getForm();
+
+        $form->submit([
+                'url' => 'hi',
+                'txt' => 'hello',
+        ]);
+
+        $data = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+        $this->assertSame('{"children":{"url":{},"txt":{"errors":["This value is too short. It should have 10 characters or more."]}}}', $data);
+    }
 
     public function testSerializeChildElements()
     {
