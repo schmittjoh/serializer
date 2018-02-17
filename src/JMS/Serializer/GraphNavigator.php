@@ -40,7 +40,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class GraphNavigator
+final class GraphNavigator implements GraphNavigatorInterface
 {
     const DIRECTION_SERIALIZATION = 1;
     const DIRECTION_DESERIALIZATION = 2;
