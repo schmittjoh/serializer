@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exception\LogicException;
 
 /**
  * @Annotation
@@ -56,7 +57,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
 
     public function setValue($obj, $value)
     {
-        throw new \LogicException('ExpressionPropertyMetadata is immutable.');
+        throw new LogicException('ExpressionPropertyMetadata is immutable.');
     }
 
     public function serialize()

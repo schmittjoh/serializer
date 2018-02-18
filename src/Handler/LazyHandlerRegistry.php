@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\Exception\InvalidArgumentException;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -29,7 +30,7 @@ class LazyHandlerRegistry extends HandlerRegistry
     public function __construct($container, array $handlers = array())
     {
         if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {
-            throw new \InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, \is_object($container) ? \get_class($container) : \gettype($container)));
+            throw new InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, \is_object($container) ? \get_class($container) : \gettype($container)));
         }
 
         parent::__construct($handlers);
