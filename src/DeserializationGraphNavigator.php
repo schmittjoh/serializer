@@ -26,6 +26,7 @@ use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
@@ -213,7 +214,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                 break;
 
             default:
-                throw new \LogicException(sprintf(
+                throw new LogicException(sprintf(
                     'The discriminator field name "%s" for base-class "%s" was not found in input data.',
                     $metadata->discriminatorFieldName,
                     $metadata->name
@@ -221,7 +222,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         }
 
         if (!isset($metadata->discriminatorMap[$typeValue])) {
-            throw new \LogicException(sprintf(
+            throw new LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
                 $metadata->name,

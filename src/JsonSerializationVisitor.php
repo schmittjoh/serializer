@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
@@ -170,10 +171,10 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
                 return $result;
 
             case JSON_ERROR_UTF8:
-                throw new \RuntimeException('Your data could not be encoded because it contains invalid UTF8 characters.');
+                throw new RuntimeException('Your data could not be encoded because it contains invalid UTF8 characters.');
 
             default:
-                throw new \RuntimeException(sprintf('An error occurred while encoding your data (error code %d).', json_last_error()));
+                throw new RuntimeException(sprintf('An error occurred while encoding your data (error code %d).', json_last_error()));
         }
     }
 

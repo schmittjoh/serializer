@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\LogicException;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
@@ -66,11 +67,11 @@ class ClassMetadata extends MergeableClassMetadata
     public function setDiscriminator($fieldName, array $map, array $groups = array())
     {
         if (empty($fieldName)) {
-            throw new \InvalidArgumentException('The $fieldName cannot be empty.');
+            throw new InvalidArgumentException('The $fieldName cannot be empty.');
         }
 
         if (empty($map)) {
-            throw new \InvalidArgumentException('The discriminator map cannot be empty.');
+            throw new InvalidArgumentException('The discriminator map cannot be empty.');
         }
 
         $this->discriminatorBaseClass = $this->name;
@@ -149,7 +150,7 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
-            throw new \LogicException(sprintf(
+            throw new LogicException(sprintf(
                 'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
                 $object->name,
                 $this->discriminatorBaseClass,
@@ -172,7 +173,7 @@ class ClassMetadata extends MergeableClassMetadata
 
         if ($this->discriminatorMap && !$this->reflection->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
-                throw new \LogicException(sprintf(
+                throw new LogicException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
                     $this->name,
                     $this->discriminatorBaseClass
@@ -184,7 +185,7 @@ class ClassMetadata extends MergeableClassMetadata
             if (isset($this->propertyMetadata[$this->discriminatorFieldName])
                 && !$this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata
             ) {
-                throw new \LogicException(sprintf(
+                throw new LogicException(sprintf(
                     'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
                     $this->discriminatorFieldName,
                     $this->discriminatorBaseClass,
