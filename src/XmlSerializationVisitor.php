@@ -92,8 +92,15 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         $this->currentNode = null;
         $this->nullWasVisited = false;
 
-        $this->document = new \DOMDocument($this->defaultVersion, $this->defaultEncoding);
-        $this->document->formatOutput = $this->isFormatOutput();
+        $this->document = $this->createDocument();
+    }
+
+    private function createDocument(): \DOMDocument
+    {
+        $document = new \DOMDocument($this->defaultVersion, $this->defaultEncoding);
+        $document->formatOutput = $this->isFormatOutput();
+
+        return $document;
     }
 
     public function createRoot(ClassMetadata $metadata = null, $rootName = null, $rootNamespace = null)
@@ -106,12 +113,13 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
             $rootNamespace = $rootNamespace ?: $this->defaultRootNamespace;
         }
 
+        $document = $this->getDocument();
         if ($rootNamespace) {
-            $rootNode = $this->document->createElementNS($rootNamespace, $rootName);
+            $rootNode = $document->createElementNS($rootNamespace, $rootName);
         } else {
-            $rootNode = $this->document->createElement($rootName);
+            $rootNode = $document->createElement($rootName);
         }
-        $this->document->appendChild($rootNode);
+        $document->appendChild($rootNode);
         $this->setCurrentNode($rootNode);
 
         return $rootNode;
@@ -369,6 +377,9 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
 
     public function getDocument()
     {
+        if (null === $this->document) {
+            $this->document = $this->createDocument();
+        }
         return $this->document;
     }
 
