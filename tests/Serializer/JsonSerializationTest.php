@@ -28,6 +28,7 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyString;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\VisitorInterface;
 
@@ -128,6 +129,13 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSkipEmptyArrayAndHash()
     {
         $object = new ObjectWithEmptyArrayAndHash();
+
+        $this->assertEquals('{}', $this->serialize($object));
+    }
+
+    public function testSkipEmptyString()
+    {
+        $object = new ObjectWithEmptyString();
 
         $this->assertEquals('{}', $this->serialize($object));
     }
