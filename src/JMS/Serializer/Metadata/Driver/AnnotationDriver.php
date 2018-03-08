@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
-use JMS\Serializer\Accessor\Guess\AccessorFinderInterface;
+use JMS\Serializer\Accessor\Finder\AccessorFinderInterface;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;

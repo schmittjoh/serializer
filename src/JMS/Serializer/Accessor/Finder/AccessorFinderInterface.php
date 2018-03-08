@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\Serializer\Accessor\Guess;
+namespace JMS\Serializer\Accessor\Finder;
 
 /**
  * Finds getter and setter for class property.

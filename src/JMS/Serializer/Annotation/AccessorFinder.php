@@ -17,7 +17,7 @@
  */
 
 namespace JMS\Serializer\Annotation;
-use JMS\Serializer\Accessor\Guess\DefaultAccessorFinder;
+use JMS\Serializer\Accessor\Finder\DefaultAccessorFinder;
 
 /**
  * Defines accessor finder.

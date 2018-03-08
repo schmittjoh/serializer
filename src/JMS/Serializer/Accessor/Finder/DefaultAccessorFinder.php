@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\Serializer\Accessor\Guess;
+namespace JMS\Serializer\Accessor\Finder;
 
 /**
  * Find for accessors in "getFooBar" and "setFooBar" format.
