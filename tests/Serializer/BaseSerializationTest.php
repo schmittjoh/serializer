@@ -45,6 +45,7 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\AccessorFinder;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
@@ -1018,6 +1019,11 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeEquals('Johannes', 'name', $object);
             $this->assertAttributeEquals(42, 'readOnlyProperty', $object);
         }
+    }
+
+    public function testAccessorFinder()
+    {
+        $this->assertEquals($this->getContent('accessor_finder'), $this->serialize(new AccessorFinder()));
     }
 
     public function testAccessorOrder()

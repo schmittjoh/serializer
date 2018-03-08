@@ -30,6 +30,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\AccessorFinder;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
@@ -85,6 +86,23 @@ class XmlSerializationTest extends BaseSerializationTest
     public function getXMLBooleans()
     {
         return array(array('true', true), array('false', false), array('1', true), array('0', false));
+    }
+
+    public function testAccessorFinderDeserialization()
+    {
+        $value = 2018;
+        $finder = $this->deserialize(<<<XML
+<?xml version="1.0"?>
+<AccessorGuesser>
+    <a1_b>$value</a1_b>
+</AccessorGuesser>
+XML
+,
+            AccessorFinder::class
+        );
+
+        /** @var AccessorFinder $finder */
+        $this->assertSame($value, $finder->getA1B());
     }
 
     public function testAccessorSetterDeserialization()
