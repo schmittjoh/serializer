@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Accessor\Finder\AccessorFinderInterface;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -28,6 +29,7 @@ use JMS\Serializer\Annotation\ExcludeIf;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\AccessorFinder;
 use JMS\Serializer\Annotation\HandlerCallback;
 use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\MaxDepth;
@@ -52,6 +54,7 @@ use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
@@ -81,9 +84,16 @@ class AnnotationDriver implements DriverInterface
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
+        $accessorFinder = null;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
+            } elseif ($annot instanceof AccessorFinder) {
+                $accessorFinder = $annot->class;
+                $accessorFinder = new $accessorFinder();
+                if (!$accessorFinder instanceof AccessorFinderInterface) {
+                    throw new LogicException('Wrong accessor finder type for class: ' . $class->name);
+                }
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
                 $classMetadata->xmlRootNamespace = $annot->namespace;
@@ -240,6 +250,14 @@ class AnnotationDriver implements DriverInterface
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
+                    if ($accessorFinder) {
+                        $accessor = $this->findAccessors(
+                            $accessorFinder,
+                            $accessor,
+                            $class,
+                            $propertyMetadata
+                        );
+                    }
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
@@ -247,5 +265,33 @@ class AnnotationDriver implements DriverInterface
         }
 
         return $classMetadata;
+    }
+
+    /**
+     * @param AccessorFinderInterface $guesser
+     * @param array $accessor Getter and setter.
+     * @param \ReflectionClass $class
+     * @param PropertyMetadata $metadata
+     *
+     * @return array
+     */
+    private function findAccessors(
+        AccessorFinderInterface $guesser,
+        array $accessor,
+        \ReflectionClass $class,
+        PropertyMetadata $metadata
+    )
+    {
+        list($getter, $setter) = $accessor;
+
+        if ($getter === null) {
+            $getter = $guesser->findGetter($class, $metadata->name);
+        }
+
+        if ($setter === null) {
+            $setter = $guesser->findSetter($class, $metadata->name);
+        }
+
+        return [$getter, $setter];
     }
 }
