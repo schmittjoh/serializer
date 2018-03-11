@@ -275,4 +275,14 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
             ]
         ];
     }
+
+    protected function createMock($originalClassName)
+    {
+        return $this->getMockBuilder($originalClassName)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+    }
 }
