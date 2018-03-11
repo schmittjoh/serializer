@@ -3,6 +3,7 @@
 namespace JMS\Serializer\Tests\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
@@ -79,7 +80,7 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \JMS\Serializer\Exception\RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Undefined naming type 'wrong'.
      */
     public function testUpdateWrongNaming()
@@ -97,7 +98,7 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \JMS\Serializer\Exception\RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Specify public setter
      */
     public function testUpdateNoSetter()
@@ -122,8 +123,6 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideUpdateErrors
      *
-     * @expectedException \JMS\Serializer\Exception\RuntimeException
-     *
      * @param bool $hasSetterMethod
      * @param bool $hasGetterMethod
      * @param bool $isPublicSetter
@@ -131,7 +130,7 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
      * @param bool $isReadOnly
      * @param $expectedMessage
      */
-    public function testUpdateErrors(
+        public function testUpdateErrors(
         $hasSetterMethod,
         $hasGetterMethod,
         $isPublicSetter,
@@ -154,7 +153,7 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
         $classReflection->method('getMethod')->willReturn($methodReflection);
         $methodReflection->method('isPublic')->willReturnOnConsecutiveCalls($isPublicSetter, $isPublicGetter);
 
-        $this->expectExceptionMessage($expectedMessage);
+        $this->setExpectedException(RuntimeException::class, $expectedMessage);
 
         (new ClassAccessorUpdater(
             PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD,
