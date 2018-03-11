@@ -18,19 +18,34 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlDriver extends AbstractFileDriver
 {
+    /**
+     * @var ClassMetadataUpdaterInterface
+     */
+    private $propertyUpdater;
+
+    public function __construct(FileLocatorInterface $locator, ClassMetadataUpdaterInterface $classMetadataUpdater = null)
+    {
+        parent::__construct($locator);
+        $this->propertyUpdater = $classMetadataUpdater ?: new ClassAccessorUpdater();
+    }
+
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $config = Yaml::parse(file_get_contents($file));
@@ -45,7 +60,8 @@ class YamlDriver extends AbstractFileDriver
         $metadata->fileResources[] = $class->getFileName();
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
         $excludeAll = isset($config['exclude']) ? (Boolean)$config['exclude'] : false;
-        $classAccessType = isset($config['access_type']) ? $config['access_type'] : PropertyMetadata::ACCESS_TYPE_PROPERTY;
+        $metadata->accessType = isset($config['access_type']) ? $config['access_type'] : null;
+        $metadata->accessTypeNaming = isset($config['access_type_naming']) ? $config['access_type_naming'] : null;
         $readOnlyClass = isset($config['read_only']) ? (Boolean)$config['read_only'] : false;
         $this->addClassProperties($metadata, $config);
 
@@ -78,6 +94,7 @@ class YamlDriver extends AbstractFileDriver
                 $propertiesMetadata[$pName] = new PropertyMetadata($name, $pName);
             }
 
+            /** @var PropertyMetadata $pMetadata */
             foreach ($propertiesMetadata as $pName => $pMetadata) {
                 $isExclude = false;
                 $isExpose = $pMetadata instanceof VirtualPropertyMetadata
@@ -211,9 +228,10 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     $pMetadata->setAccessor(
-                        isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
+                        isset($pConfig['access_type']) ? $pConfig['access_type'] : null,
                         isset($pConfig['accessor']['getter']) ? $pConfig['accessor']['getter'] : null,
-                        isset($pConfig['accessor']['setter']) ? $pConfig['accessor']['setter'] : null
+                        isset($pConfig['accessor']['setter']) ? $pConfig['accessor']['setter'] : null,
+                        isset($pConfig['access_type_naming']) ? $pConfig['access_type_naming'] : null
                     );
 
                     if (isset($pConfig['inline'])) {
@@ -254,6 +272,8 @@ class YamlDriver extends AbstractFileDriver
                 $metadata->postDeserializeMethods = $this->getCallbackMetadata($class, $cConfig['post_deserialize']);
             }
         }
+
+        $this->propertyUpdater->update($metadata);
 
         return $metadata;
     }

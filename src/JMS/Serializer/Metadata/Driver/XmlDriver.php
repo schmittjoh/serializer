@@ -18,19 +18,33 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 
 class XmlDriver extends AbstractFileDriver
 {
+    /**
+     * @var ClassMetadataUpdaterInterface
+     */
+    private $classMetadataUpdater;
+
+    public function __construct(FileLocatorInterface $locator, ClassMetadataUpdaterInterface $classMetadataUpdater = null)
+    {
+        parent::__construct($locator);
+        $this->classMetadataUpdater = $classMetadataUpdater ?: new ClassAccessorUpdater();
+    }
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $path)
     {
         $previous = libxml_use_internal_errors(true);
@@ -53,7 +67,8 @@ class XmlDriver extends AbstractFileDriver
         $metadata->fileResources[] = $class->getFileName();
         $exclusionPolicy = strtoupper($elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
         $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower($exclude) : false;
-        $classAccessType = (string)($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
+        $metadata->accessType = (string) $elem->attributes()->{'access-type'};
+        $metadata->accessTypeNaming = (string) $elem->attributes()->{'access-type-naming'};
 
         $propertiesMetadata = array();
         $propertiesNodes = array();
@@ -147,6 +162,7 @@ class XmlDriver extends AbstractFileDriver
                 $propertiesNodes[] = $pElems ? reset($pElems) : null;
             }
 
+            /** @var PropertyMetadata $pMetadata */
             foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
 
                 $isExclude = false;
@@ -291,9 +307,10 @@ class XmlDriver extends AbstractFileDriver
                     $getter = $pElem->attributes()->{'accessor-getter'};
                     $setter = $pElem->attributes()->{'accessor-setter'};
                     $pMetadata->setAccessor(
-                        (string)($pElem->attributes()->{'access-type'} ?: $classAccessType),
+                        (string) $pElem->attributes()->{'access-type'},
                         $getter ? (string)$getter : null,
-                        $setter ? (string)$setter : null
+                        $setter ? (string) $setter : null,
+                        (string) $pElem->attributes()->{'access-type-naming'}
                     );
 
                     if (null !== $inline = $pElem->attributes()->inline) {
@@ -305,7 +322,6 @@ class XmlDriver extends AbstractFileDriver
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)
                 ) {
-
                     $metadata->addPropertyMetadata($pMetadata);
                 }
             }
@@ -350,6 +366,8 @@ class XmlDriver extends AbstractFileDriver
                     throw new RuntimeException(sprintf('The type "%s" is not supported.', $method->attributes()->name));
             }
         }
+
+        $this->classMetadataUpdater->update($metadata);
 
         return $metadata;
     }

@@ -4,3 +4,5 @@ JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor:
     properties:
         iShallNotBeAccessed:
           exclude: true
+        id:
+          read_only: true

@@ -18,15 +18,19 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\Driver\PhpDriver;
 use Metadata\Driver\FileLocator;
 
 class PhpDriverTest extends BaseDriverTest
 {
-    protected function getDriver()
+    /**
+     * {@inheritDoc}
+     */
+    protected function getDriver($subFolder = null, ClassMetadataUpdaterInterface $propertyMetadataUpdater = null)
     {
         return new PhpDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/php',
-        )));
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/php/' . $subFolder,
+        )), $propertyMetadataUpdater);
     }
 }

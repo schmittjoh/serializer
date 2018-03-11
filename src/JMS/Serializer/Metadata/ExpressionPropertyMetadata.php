@@ -41,7 +41,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor($type, $getter = null, $setter = null, $naming = self::ACCESS_TYPE_NAMING_EXACT)
     {
     }
 

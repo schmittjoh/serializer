@@ -23,7 +23,7 @@ use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\Type;
 
-/** @AccessType("public_method") */
+/** @AccessType("public_method", naming="camel_case") */
 class GetSetObject
 {
     /** @AccessType("property") @Type("integer") */
@@ -43,6 +43,15 @@ class GetSetObject
      */
     private $excludedProperty;
 
+    /** @Type("string") */
+    private $underscored_property;
+
+    /**
+     * @Type("string")
+     * @AccessType(naming="exact")
+     */
+    private $force_underscore;
+
     public function getId()
     {
         throw new \RuntimeException('This should not be called.');
@@ -61,5 +70,25 @@ class GetSetObject
     public function getReadOnlyProperty()
     {
         return $this->readOnlyProperty;
+    }
+
+    public function getUnderscoredProperty()
+    {
+        return $this->underscored_property;
+    }
+
+    public function setUnderscoredProperty($underscored_property)
+    {
+        $this->underscored_property = $underscored_property;
+    }
+
+    public function getForce_Underscore()
+    {
+        return $this->force_underscore;
+    }
+
+    public function setForce_Underscore($force_underscore)
+    {
+        $this->force_underscore = $force_underscore;
     }
 }

@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Metadata;
 
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\TypeParser;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
@@ -26,6 +25,9 @@ class PropertyMetadata extends BasePropertyMetadata
 {
     const ACCESS_TYPE_PROPERTY = 'property';
     const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
+
+    const ACCESS_TYPE_NAMING_EXACT = 'exact';
+    const ACCESS_TYPE_NAMING_CAMEL_CASE = 'camel_case';
 
     public $sinceVersion;
     public $untilVersion;
@@ -52,43 +54,71 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
     public $excludeIf = null;
 
+    /** @deprecated Use getReflection() */
+    public $reflection;
+
+    public $accessType;
+
+    public $accessTypeNaming;
+
     private $closureAccessor;
+
+    /**
+     * @var \ReflectionProperty|null
+     */
+    private $lazyReflection;
 
     private static $typeParser;
 
+    /**
+     * @param string $class
+     * @param string $name
+     * @noinspection PhpMissingParentConstructorInspection
+     */
     public function __construct($class, $name)
     {
-        parent::__construct($class, $name);
+        $this->class = $class;
+        $this->name = $name;
+        $this->prepareLazyReflection();
+
         $this->closureAccessor = \Closure::bind(function ($o, $name) {
             return $o->$name;
         }, null, $class);
     }
-    public function setAccessor($type, $getter = null, $setter = null)
+
+    public function __get($name)
     {
-        if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
-            $class = $this->reflection->getDeclaringClass();
-
-            if (empty($getter)) {
-                if ($class->hasMethod('get' . $this->name) && $class->getMethod('get' . $this->name)->isPublic()) {
-                    $getter = 'get' . $this->name;
-                } elseif ($class->hasMethod('is' . $this->name) && $class->getMethod('is' . $this->name)->isPublic()) {
-                    $getter = 'is' . $this->name;
-                } elseif ($class->hasMethod('has' . $this->name) && $class->getMethod('has' . $this->name)->isPublic()) {
-                    $getter = 'has' . $this->name;
-                } else {
-                    throw new RuntimeException(sprintf('There is neither a public %s method, nor a public %s method, nor a public %s method in class %s. Please specify which public method should be used for retrieving the value of the property %s.', 'get' . ucfirst($this->name), 'is' . ucfirst($this->name), 'has' . ucfirst($this->name), $this->class, $this->name));
-                }
-            }
-
-            if (empty($setter) && !$this->readOnly) {
-                if ($class->hasMethod('set' . $this->name) && $class->getMethod('set' . $this->name)->isPublic()) {
-                    $setter = 'set' . $this->name;
-                } else {
-                    throw new RuntimeException(sprintf('There is no public %s method in class %s. Please specify which public method should be used for setting the value of the property %s.', 'set' . ucfirst($this->name), $this->class, $this->name));
-                }
-            }
+        // Default PHP notice when no property:
+        if ($name !== 'reflection') {
+            trigger_error("Undefined property: $name", \E_NOTICE);
+            return null;
         }
 
+        return $this->getReflection();
+    }
+
+    public function getReflection()
+    {
+        if (!$this->lazyReflection) {
+            $this->lazyReflection = new \ReflectionProperty($this->class, $this->name);
+            $this->lazyReflection->setAccessible(true);
+        }
+
+        return $this->lazyReflection;
+    }
+
+    /**
+     * @see PropertyMetadata::ACCESS_TYPE_PROPERTY
+     * @param string $type
+     *
+     * @param string|null $getter
+     * @param string|null $setter
+     * @param string $naming
+     */
+    public function setAccessor($type, $getter = null, $setter = null, $naming = self::ACCESS_TYPE_NAMING_EXACT)
+    {
+        $this->accessType = $type;
+        $this->accessTypeNaming = $naming;
         $this->getter = $getter;
         $this->setter = $setter;
     }
@@ -197,10 +227,17 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
         }
 
-        parent::unserialize($parentStr);
+        list($this->class, $this->name) = unserialize($parentStr);
+        $this->prepareLazyReflection();
 
         $this->closureAccessor = \Closure::bind(function ($o, $name) {
             return $o->$name;
         }, null, $this->class);
+    }
+
+    protected function prepareLazyReflection()
+    {
+        // Use __get() instead of $this->reflection.
+        unset($this->reflection);
     }
 }

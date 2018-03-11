@@ -25,6 +25,7 @@ use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -44,6 +45,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -90,6 +92,11 @@ class SerializerBuilder
      */
     private $accessorStrategy;
 
+    /**
+     * @var ClassMetadataUpdaterInterface
+     */
+    private $propertyUpdater;
+
     public static function create()
     {
         return new static();
@@ -102,6 +109,7 @@ class SerializerBuilder
         $this->driverFactory = new DefaultDriverFactory();
         $this->serializationVisitors = new Map();
         $this->deserializationVisitors = new Map();
+        $this->propertyUpdater = new ClassAccessorUpdater();
     }
 
     public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy)
@@ -131,6 +139,20 @@ class SerializerBuilder
     public function setAnnotationReader(Reader $reader)
     {
         $this->annotationReader = $reader;
+
+        return $this;
+    }
+
+    /**
+     * You must preserve default behavior of `ClassAccessorUpdater`.
+     *
+     * @param ClassMetadataUpdaterInterface $propertyUpdater
+     *
+     * @return $this
+     */
+    public function setPropertyUpdater(ClassMetadataUpdaterInterface $propertyUpdater)
+    {
+        $this->propertyUpdater = $propertyUpdater;
 
         return $this;
     }
@@ -435,7 +457,11 @@ class SerializerBuilder
             }
         }
 
-        $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
+        $metadataDriver = $this->driverFactory->createDriver(
+            $this->metadataDirs,
+            $annotationReader,
+            $this->propertyUpdater
+        );
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);

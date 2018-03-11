@@ -18,16 +18,20 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use Metadata\Driver\DriverInterface;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
@@ -433,8 +437,8 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $expectedVars = get_object_vars($expected);
         $actualVars = get_object_vars($actual);
 
-        $expectedReflection = (array)$expectedVars['reflection'];
-        $actualReflection = (array)$actualVars['reflection'];
+        $expectedReflection = (array)$expected->reflection;
+        $actualReflection = (array)$actual->reflection;
 
         // HHVM bug with class property
         unset($expectedVars['reflection'], $actualVars['reflection']);
@@ -455,6 +459,42 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('toJson', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['json']);
         $this->assertEquals('toXml', $m->handlerCallbacks[GraphNavigator::DIRECTION_SERIALIZATION]['xml']);
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\RuntimeException
+     * @expectedExceptionMessage Specify public setter for JMS\Serializer\Tests\Fixtures\PersonSecret::$name (using camel_case naming)
+     */
+    public function testChangeDefaultAccessTypeForNoAccessors()
+    {
+        $driver = $this->getDriver(null, new ClassAccessorUpdater(
+            PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD,
+            PropertyMetadata::ACCESS_TYPE_NAMING_CAMEL_CASE
+        ));
+
+        $class = PersonSecret::class;
+        $driver->loadMetadataForClass(new \ReflectionClass($class));
+    }
+
+    public function testCamelCaseAccessor()
+    {
+        $class = GetSetObject::class;
+
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+        $name = 'underscored_property';
+
+        $p = new PropertyMetadata($class, $name);
+        $p->type = ['name' => 'string', 'params' => []];
+        $p->getter = 'getunderscoredproperty';
+        $p->setter = 'setunderscoredproperty';
+        $p->reflection;
+
+        $this->assertEquals($p, $m->propertyMetadata[$name]);
+        $this->assertInstanceOf(ClassMetadata::class, $m);
+        /** @var ClassMetadata $m */
+        $this->assertSame($m->accessType, PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD);
+        $this->assertSame($m->accessTypeNaming, PropertyMetadata::ACCESS_TYPE_NAMING_CAMEL_CASE);
+
     }
 
     public function testExclusionIf()
@@ -490,7 +530,10 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 
 
     /**
+     * @param null $subFolder
+     * @param ClassMetadataUpdaterInterface|null $propertyMetadataUpdater
+     *
      * @return DriverInterface
      */
-    abstract protected function getDriver();
+    abstract protected function getDriver($subFolder = null, ClassMetadataUpdaterInterface $propertyMetadataUpdater = null);
 }

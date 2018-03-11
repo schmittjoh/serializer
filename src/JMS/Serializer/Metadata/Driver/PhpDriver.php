@@ -18,12 +18,27 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 
 class PhpDriver extends AbstractFileDriver
 {
+    /**
+     * @var ClassMetadataUpdaterInterface
+     */
+    private $classMetadataUpdater;
+
+    public function __construct(FileLocatorInterface $locator, ClassMetadataUpdaterInterface $classMetadataUpdater = null)
+    {
+        parent::__construct($locator);
+        $this->classMetadataUpdater = $classMetadataUpdater ?: new ClassAccessorUpdater();
+    }
+
+
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $metadata = require $file;
@@ -34,6 +49,8 @@ class PhpDriver extends AbstractFileDriver
         if ($metadata->name !== $class->name) {
             throw new RuntimeException(sprintf('The file %s was expected to return metadata for class %s, but instead returned metadata for class %s.', $class->name, $metadata->name));
         }
+
+        $this->classMetadataUpdater->update($metadata);
 
         return $metadata;
     }
