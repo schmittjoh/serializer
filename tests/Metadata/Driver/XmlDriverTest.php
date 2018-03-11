@@ -21,7 +21,6 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
-use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest

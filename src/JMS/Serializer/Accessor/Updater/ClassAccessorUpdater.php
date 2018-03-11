@@ -7,13 +7,6 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-/**
- * Default behaviour is required for propper accessors work.
- *
- * For `$person_name` field expected accessors are:
- * - `getPerson_name()`
- * - `setPerson_name()`
- */
 class ClassAccessorUpdater implements ClassMetadataUpdaterInterface
 {
     /**

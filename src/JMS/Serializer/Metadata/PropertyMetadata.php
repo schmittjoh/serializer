@@ -56,9 +56,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     /** @deprecated Use getReflection() */
     public $reflection;
-
     public $accessType;
-
     public $accessTypeNaming;
 
     private $closureAccessor;

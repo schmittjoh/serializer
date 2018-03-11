@@ -260,8 +260,9 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }
-            $this->classUpdater->update($classMetadata);
         }
+
+        $this->classUpdater->update($classMetadata);
 
         return $classMetadata;
     }
