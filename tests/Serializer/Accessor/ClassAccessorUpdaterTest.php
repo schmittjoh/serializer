@@ -282,7 +282,6 @@ final class ClassAccessorUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
             ->getMock();
     }
 }
