@@ -9,7 +9,8 @@ YAML Reference
         xml_root_namespace: http://your.default.namespace
         exclude: true
         read_only: false
-        access_type: public_method # defaults to property
+        access_type: public_method # defaults to 'property'
+        access_type_naming: camel_case # defaults to 'exact'
         accessor_order: custom
         custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
         discriminator:

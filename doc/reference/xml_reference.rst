@@ -27,6 +27,7 @@ XML Reference
                       xml-attribute="true"
                       xml-value="true"
                       access-type="public_method"
+                      access-type-naming="camel_case"
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
                       inline="true"
@@ -102,6 +103,6 @@ XML Reference
                 <xml-list inline="true" entry-name="foobar" namespace="http://www.w3.org/2005/Atom" skip-when-empty="true" />
                 <xml-map inline="true" key-attribute-name="foo" entry-name="bar" namespace="http://www.w3.org/2005/Atom" />
             </virtual-property>
-            
+
         </class>
     </serializer>

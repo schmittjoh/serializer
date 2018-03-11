@@ -98,6 +98,36 @@ set the value via reflection, but you may change this to use a public method ins
         }
     }
 
+    class Shop
+    {
+        /**
+         * @AccessType("public_method", naming="camel_case")
+         * @ReadOnly
+         */
+        private $full_address;
+
+        public function getFullAddress()
+        {
+            return $this->full_address;
+        }
+    }
+
+
+To use accessors instead of properties by default, modify builder:
+
+.. code-block :: php
+
+    <?php
+    use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
+    use JMS\Serializer\SerializerBuilder;
+
+    $serializerBuilder = SerializerBuilder::create()->build();
+    $serializerBuilder->setPropertyUpdater(new ClassAccessorUpdater(
+        PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD,
+        PropertyMetadata::ACCESS_TYPE_NAMING_CAMEL_CASE
+    ));
+    $serializer = $serializerBuilder->build();
+
 @Accessor
 ~~~~~~~~~
 This annotation can be defined on a property to specify which public method should
@@ -126,7 +156,7 @@ be called to retrieve, or set the value of the given property:
             $this->name = $name;
         }
     }
-    
+
 .. note ::
 
     If you need only to serialize your data, you can avoid providing a setter by
