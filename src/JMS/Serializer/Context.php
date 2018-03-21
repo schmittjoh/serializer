@@ -81,6 +81,12 @@ abstract class Context
         $this->metadataStack = new \SplStack();
     }
 
+    /**
+     * @deprecated  Will be removed in 2.0, Use getNavigator()->accept() instead
+     * @param $data
+     * @param array|null $type
+     * @return mixed
+     */
     public function accept($data, array $type = null)
     {
         return $this->navigator->accept($data, $type, $this);

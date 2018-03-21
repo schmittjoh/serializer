@@ -36,6 +36,10 @@ abstract class AbstractVisitor implements VisitorInterface
         $this->accessor = $accessorStrategy ?: new DefaultAccessorStrategy();
     }
 
+    /**
+     * @deprecated Will be removed in 2.0
+     * @return mixed
+     */
     public function getNamingStrategy()
     {
         return $this->namingStrategy;

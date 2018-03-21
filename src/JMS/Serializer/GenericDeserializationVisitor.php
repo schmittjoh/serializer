@@ -26,7 +26,7 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * Generic Deserialization Visitor.
- *
+ * @deprecated
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 abstract class GenericDeserializationVisitor extends AbstractVisitor
