@@ -46,7 +46,7 @@ class ExpressionLanguageExclusionStrategy
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
     {
         if (null === $property->excludeIf) {
             return false;

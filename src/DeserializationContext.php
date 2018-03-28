@@ -24,27 +24,27 @@ class DeserializationContext extends Context
 {
     private $depth = 0;
 
-    public static function create()
+    public static function create(): self
     {
         return new self();
     }
 
-    public function getDirection()
+    public function getDirection(): int
     {
         return GraphNavigatorInterface::DIRECTION_DESERIALIZATION;
     }
 
-    public function getDepth()
+    public function getDepth(): int
     {
         return $this->depth;
     }
 
-    public function increaseDepth()
+    public function increaseDepth(): void
     {
         $this->depth += 1;
     }
 
-    public function decreaseDepth()
+    public function decreaseDepth(): void
     {
         if ($this->depth <= 0) {
             throw new LogicException('Depth cannot be smaller than zero.');

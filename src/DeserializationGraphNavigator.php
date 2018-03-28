@@ -23,9 +23,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
-use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
@@ -60,8 +58,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         ObjectConstructorInterface $objectConstructor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
-    )
-    {
+    ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
@@ -233,7 +230,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context): void
     {
         $context->decreaseDepth();
         $context->popClassMetadata();

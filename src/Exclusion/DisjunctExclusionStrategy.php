@@ -40,7 +40,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->delegates = $delegates;
     }
 
-    public function addStrategy(ExclusionStrategyInterface $strategy)
+    public function addStrategy(ExclusionStrategyInterface $strategy):void
     {
         $this->delegates[] = $strategy;
     }
@@ -52,7 +52,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context)
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context):bool
     {
         foreach ($this->delegates as $delegate) {
             /** @var $delegate ExclusionStrategyInterface */
@@ -71,7 +71,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool
     {
         foreach ($this->delegates as $delegate) {
             /** @var $delegate ExclusionStrategyInterface */

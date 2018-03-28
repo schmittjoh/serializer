@@ -30,7 +30,7 @@ use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
  */
 class ContextualNamingStrategy implements AdvancedNamingStrategyInterface
 {
-    public function getPropertyName(PropertyMetadata $property, Context $context)
+    public function getPropertyName(PropertyMetadata $property, Context $context):string
     {
         if ($context->getDirection() == GraphNavigatorInterface::DIRECTION_SERIALIZATION) {
             return strtoupper($property->name);

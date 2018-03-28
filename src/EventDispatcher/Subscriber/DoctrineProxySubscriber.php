@@ -76,7 +76,8 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         if ($this->initializeExcluded === false && !$virtualType) {
             $context = $event->getContext();
             $exclusionStrategy = $context->getExclusionStrategy();
-            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(get_parent_class($object)), $context)) {
+            $metadata = $context->getMetadataFactory()->getMetadataForClass(get_parent_class($object));
+            if ($metadata !== null && $exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                 return;
             }
         }

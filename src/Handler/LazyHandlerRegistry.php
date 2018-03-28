@@ -37,13 +37,13 @@ class LazyHandlerRegistry extends HandlerRegistry
         $this->container = $container;
     }
 
-    public function registerHandler($direction, $typeName, $format, $handler)
+    public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
         parent::registerHandler($direction, $typeName, $format, $handler);
         unset($this->initializedHandlers[$direction][$typeName][$format]);
     }
 
-    public function getHandler($direction, $typeName, $format)
+    public function getHandler(int $direction, string $typeName, string $format)
     {
         if (isset($this->initializedHandlers[$direction][$typeName][$format])) {
             return $this->initializedHandlers[$direction][$typeName][$format];

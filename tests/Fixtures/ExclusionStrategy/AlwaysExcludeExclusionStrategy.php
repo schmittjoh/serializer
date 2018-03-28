@@ -9,12 +9,12 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 class AlwaysExcludeExclusionStrategy implements ExclusionStrategyInterface
 {
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context)
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context):bool
     {
         return true;
     }
 
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool
     {
         return false;
     }

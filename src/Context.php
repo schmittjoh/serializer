@@ -67,7 +67,7 @@ abstract class Context
     /**
      * @param string $format
      */
-    public function initialize($format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory)
+    public function initialize(string $format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
             throw new LogicException('This context was already initialized, and cannot be re-used.');
@@ -92,7 +92,7 @@ abstract class Context
         return $this->navigator->accept($data, $type, $this);
     }
 
-    public function getMetadataFactory()
+    public function getMetadataFactory(): MetadataFactoryInterface
     {
         return $this->metadataFactory;
     }
@@ -102,27 +102,27 @@ abstract class Context
         return $this->visitor;
     }
 
-    public function getNavigator()
+    public function getNavigator(): GraphNavigatorInterface
     {
         return $this->navigator;
     }
 
-    public function getExclusionStrategy()
+    public function getExclusionStrategy(): ExclusionStrategyInterface
     {
         return $this->exclusionStrategy;
     }
 
-    public function getAttribute($key)
+    public function getAttribute(string $key)
     {
         return $this->attributes[$key];
     }
 
-    public function hasAttribute($key)
+    public function hasAttribute(string $key)
     {
         return isset($this->attributes[$key]);
     }
 
-    public function setAttribute($key, $value)
+    public function setAttribute(string $key, $value)
     {
         $this->assertMutable();
         $this->attributes[$key] = $value;
@@ -130,7 +130,7 @@ abstract class Context
         return $this;
     }
 
-    private function assertMutable()
+    private function assertMutable(): void
     {
         if (!$this->initialized) {
             return;
@@ -139,7 +139,7 @@ abstract class Context
         throw new LogicException('This context was already initialized and is immutable; you cannot modify it anymore.');
     }
 
-    public function addExclusionStrategy(ExclusionStrategyInterface $strategy)
+    public function addExclusionStrategy(ExclusionStrategyInterface $strategy): self
     {
         $this->assertMutable();
 
@@ -148,10 +148,7 @@ abstract class Context
         return $this;
     }
 
-    /**
-     * @param integer $version
-     */
-    public function setVersion($version)
+    public function setVersion(string $version): self
     {
         if (null === $version) {
             throw new LogicException('The version must not be null.');
@@ -166,7 +163,7 @@ abstract class Context
     /**
      * @param array|string $groups
      */
-    public function setGroups($groups)
+    public function setGroups($groups): self
     {
         if (empty($groups)) {
             throw new LogicException('The groups must not be empty.');
@@ -178,7 +175,7 @@ abstract class Context
         return $this;
     }
 
-    public function enableMaxDepthChecks()
+    public function enableMaxDepthChecks(): self
     {
         $this->addExclusionStrategy(new DepthExclusionStrategy());
 
@@ -187,13 +184,10 @@ abstract class Context
 
     /**
      * Set if NULLs should be serialized (TRUE) ot not (FALSE)
-     *
-     * @param bool $bool
-     * @return $this
      */
-    public function setSerializeNull($bool)
+    public function setSerializeNull(bool $bool): self
     {
-        $this->serializeNull = (boolean)$bool;
+        $this->serializeNull = $bool;
 
         return $this;
     }
@@ -204,9 +198,9 @@ abstract class Context
      * Returns NULL when NULLs should not be serialized,
      * but the user has not explicitly decided to use this policy
      *
-     * @return bool|null
+     * @return bool
      */
-    public function shouldSerializeNull()
+    public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
     }
@@ -214,22 +208,22 @@ abstract class Context
     /**
      * @return string
      */
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->format;
     }
 
-    public function pushClassMetadata(ClassMetadata $metadata)
+    public function pushClassMetadata(ClassMetadata $metadata): void
     {
         $this->metadataStack->push($metadata);
     }
 
-    public function pushPropertyMetadata(PropertyMetadata $metadata)
+    public function pushPropertyMetadata(PropertyMetadata $metadata): void
     {
         $this->metadataStack->push($metadata);
     }
 
-    public function popPropertyMetadata()
+    public function popPropertyMetadata(): void
     {
         $metadata = $this->metadataStack->pop();
 
@@ -238,7 +232,7 @@ abstract class Context
         }
     }
 
-    public function popClassMetadata()
+    public function popClassMetadata(): void
     {
         $metadata = $this->metadataStack->pop();
 
@@ -247,16 +241,16 @@ abstract class Context
         }
     }
 
-    public function getMetadataStack()
+    public function getMetadataStack(): \SplStack
     {
         return $this->metadataStack;
     }
 
 
-    abstract public function getDepth();
+    abstract public function getDepth(): int;
 
     /**
      * @return integer
      */
-    abstract public function getDirection();
+    abstract public function getDirection(): int;
 }
