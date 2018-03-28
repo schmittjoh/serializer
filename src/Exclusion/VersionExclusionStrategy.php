@@ -26,7 +26,7 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
 {
     private $version;
 
-    public function __construct($version)
+    public function __construct(string $version)
     {
         $this->version = $version;
     }
@@ -34,7 +34,7 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext)
+    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext):bool
     {
         return false;
     }
@@ -42,7 +42,7 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
     {
         if ((null !== $version = $property->sinceVersion) && version_compare($this->version, $version, '<')) {
             return true;

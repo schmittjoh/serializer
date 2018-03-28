@@ -35,7 +35,7 @@ interface ArrayTransformerInterface
      * @param string|null $type
      * @return array
      */
-    public function toArray($data, SerializationContext $context = null, $type = null);
+    public function toArray($data, SerializationContext $context = null, string $type = null): array;
 
     /**
      * Restores objects from an array structure.
@@ -46,5 +46,5 @@ interface ArrayTransformerInterface
      *
      * @return mixed this returns whatever the passed type is, typically an object or an array of objects
      */
-    public function fromArray(array $data, $type, DeserializationContext $context = null);
+    public function fromArray(array $data, string $type, DeserializationContext $context = null);
 }

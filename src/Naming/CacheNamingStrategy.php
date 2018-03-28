@@ -31,7 +31,7 @@ final class CacheNamingStrategy implements PropertyNamingStrategyInterface
         $this->cache = new \SplObjectStorage();
     }
 
-    public function translateName(PropertyMetadata $property)
+    public function translateName(PropertyMetadata $property):string
     {
         if (isset($this->cache[$property])) {
             return $this->cache[$property];

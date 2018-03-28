@@ -42,7 +42,7 @@ class SerializationContext extends Context
     /**
      * @param string $format
      */
-    public function initialize($format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory)
+    public function initialize(string $format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         parent::initialize($format, $visitor, $navigator, $factory);
 
@@ -50,7 +50,7 @@ class SerializationContext extends Context
         $this->visitingStack = new \SplStack();
     }
 
-    public function startVisiting($object)
+    public function startVisiting($object): void
     {
         if (!\is_object($object)) {
             return;
@@ -59,7 +59,7 @@ class SerializationContext extends Context
         $this->visitingStack->push($object);
     }
 
-    public function stopVisiting($object)
+    public function stopVisiting($object): void
     {
         if (!\is_object($object)) {
             return;
@@ -72,7 +72,7 @@ class SerializationContext extends Context
         }
     }
 
-    public function isVisiting($object)
+    public function isVisiting($object): bool
     {
         if (!\is_object($object)) {
             return false;
@@ -81,7 +81,7 @@ class SerializationContext extends Context
         return $this->visitingSet->contains($object);
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         $path = array();
         foreach ($this->visitingStack as $obj) {
@@ -95,12 +95,12 @@ class SerializationContext extends Context
         return implode(' -> ', $path);
     }
 
-    public function getDirection()
+    public function getDirection(): int
     {
         return GraphNavigatorInterface::DIRECTION_SERIALIZATION;
     }
 
-    public function getDepth()
+    public function getDepth(): int
     {
         return $this->visitingStack->count();
     }
@@ -124,17 +124,14 @@ class SerializationContext extends Context
      * @param string $type
      * @return $this
      */
-    public function setInitialType($type)
+    public function setInitialType($type): self
     {
         $this->initialType = $type;
         $this->setAttribute('initial_type', $type);
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getInitialType()
+    public function getInitialType(): ?string
     {
         return $this->initialType
             ? $this->initialType

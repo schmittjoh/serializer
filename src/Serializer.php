@@ -111,7 +111,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      *
      * @return integer
      */
-    public static function parseDirection($dirStr)
+    public static function parseDirection(string $dirStr) : int
     {
         switch (strtolower($dirStr)) {
             case 'serialization':
@@ -135,7 +135,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return null;
     }
 
-    public function serialize($data, $format, SerializationContext $context = null, $type = null)
+    public function serialize($data, string $format, SerializationContext $context = null, string $type = null):string
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
@@ -154,7 +154,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return $visitor->getResult($result);
     }
 
-    public function deserialize($data, $type, $format, DeserializationContext $context = null)
+    public function deserialize(string $data, string $type, string $format, DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = $this->deserializationContextFactory->createDeserializationContext();
@@ -174,7 +174,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function toArray($data, SerializationContext $context = null, $type = null)
+    public function toArray($data, SerializationContext $context = null, string $type = null):array
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
@@ -206,7 +206,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function fromArray(array $data, $type, DeserializationContext $context = null)
+    public function fromArray(array $data, string $type, DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = $this->deserializationContextFactory->createDeserializationContext();

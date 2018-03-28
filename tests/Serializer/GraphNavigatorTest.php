@@ -70,12 +70,14 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnCallback(function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
                 $self->assertSame($metadata, $passedMetadata);
                 $self->assertSame($context, $passedContext);
+                return false;
             }));
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
             ->will($this->returnCallback(function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
                 $self->assertSame($metadata->propertyMetadata['foo'], $propertyMetadata);
                 $self->assertSame($context, $passedContext);
+                return false;
             }));
 
         $this->context->expects($this->once())

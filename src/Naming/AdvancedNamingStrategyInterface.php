@@ -39,5 +39,5 @@ interface AdvancedNamingStrategyInterface
      *
      * @return string
      */
-    public function getPropertyName(PropertyMetadata $property, Context $context);
+    public function getPropertyName(PropertyMetadata $property, Context $context):string;
 }
