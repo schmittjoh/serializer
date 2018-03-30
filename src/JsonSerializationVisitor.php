@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -77,9 +78,14 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
-            $v = $this->navigator->accept($v, $elType, $context);
 
             if (null === $v && $context->shouldSerializeNull() !== true) {
+                continue;
+            }
+
+            try {
+                $v = $this->navigator->accept($v, $elType, $context);
+            } catch (NotAcceptableException $e) {
                 continue;
             }
 
@@ -117,10 +123,17 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     {
         $v = $this->accessor->getValue($data, $metadata);
 
-        $v = $this->navigator->accept($v, $metadata->type, $context);
-        if ((null === $v && $context->shouldSerializeNull() !== true)
-            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v))
-        ) {
+        if (null === $v && $context->shouldSerializeNull() !== true) {
+            return;
+        }
+
+        try {
+            $v = $this->navigator->accept($v, $metadata->type, $context);
+        } catch (NotAcceptableException $e) {
+            return;
+        }
+
+        if (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v)) {
             return;
         }
 

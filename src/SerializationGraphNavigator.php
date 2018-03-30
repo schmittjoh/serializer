@@ -24,6 +24,8 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\Exception\CircularReferenceDetectedException;
+use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
@@ -135,7 +137,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
 
                 if (null !== $data) {
                     if ($context->isVisiting($data)) {
-                        return null;
+                        throw new CircularReferenceDetectedException();
                     }
                     $context->startVisiting($data);
                 }
@@ -177,7 +179,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                 if ($exclusionStrategy->shouldSkipClass($metadata, $context)) {
                     $context->stopVisiting($data);
 
-                    return null;
+                    throw new ExcludedClassException();
                 }
 
                 $context->pushClassMetadata($metadata);

@@ -64,6 +64,7 @@ use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
@@ -1292,6 +1293,33 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $object = new ObjectWithEmptyNullableAndEmptyArrays();
         $this->assertEquals($this->getContent('nullable_arrays'), $this->serializer->serialize($object, $this->getFormat()));
+    }
+
+    /**
+     * @dataProvider getSerializeNullCases
+     */
+    public function testSerializeNullArrayObjectWithExclusionStrategy(bool $serializeNull)
+    {
+        $arr = array(
+            new SimpleObject('foo1', 'bar1'),
+        );
+
+        $serializationContext = SerializationContext::create();
+        $serializationContext->setSerializeNull($serializeNull);
+        $serializationContext->setInitialType("array<" . SimpleObject::class . ">");
+        $serializationContext->addExclusionStrategy(new AlwaysExcludeExclusionStrategy());
+        $this->assertEquals(
+            $this->getContent('array_objects_nullable'),
+            $this->serializer->serialize($arr, $this->getFormat(), $serializationContext)
+        );
+    }
+
+    public function getSerializeNullCases()
+    {
+        return [
+            [true],
+            [false],
+        ];
     }
 
     abstract protected function getContent($key);
