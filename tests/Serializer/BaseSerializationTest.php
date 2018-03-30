@@ -56,6 +56,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
+use JMS\Serializer\Tests\Fixtures\CircularReferenceCollection;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceParent;
 use JMS\Serializer\Tests\Fixtures\Comment;
 use JMS\Serializer\Tests\Fixtures\CurrencyAwareOrder;
@@ -842,6 +843,13 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $deserialized = $this->deserialize($this->getContent('log'), get_class($log));
             $this->assertEquals($log, $deserialized);
         }
+    }
+
+    public function testSelfCircularReferenceCollection()
+    {
+        $object = new CircularReferenceCollection();
+        $object->collection[] = $object;
+        $this->assertEquals($this->getContent('circular_reference_collection'), $this->serialize($object));
     }
 
     public function testCircularReference()

@@ -47,6 +47,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['float_trailing_zero'] = '1';
             $outputs['simple_object'] = '{"foo":"foo","moo":"bar","camel_case":"boo"}';
             $outputs['circular_reference'] = '{"collection":[{"name":"child1"},{"name":"child2"}],"another_collection":[{"name":"child1"},{"name":"child2"}]}';
+            $outputs['circular_reference_collection'] = '{"name":"foo","collection":[]}';
             $outputs['array_strings'] = '["foo","bar"]';
             $outputs['array_booleans'] = '[true,false]';
             $outputs['array_integers'] = '[1,3,4]';
