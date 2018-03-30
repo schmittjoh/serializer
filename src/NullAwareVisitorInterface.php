@@ -28,5 +28,5 @@ interface NullAwareVisitorInterface
      *
      * @return bool
      */
-    public function isNull($value):bool;
+    public function isNull($value, Context $context):bool;
 }
