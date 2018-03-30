@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -188,8 +189,12 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
                 $entryNode->setAttribute($keyAttributeName, (string)$k);
             }
 
-            if (null !== $node = $this->navigator->accept($v, $elType, $context)) {
-                $this->currentNode->appendChild($node);
+            try {
+                if (null !== $node = $this->navigator->accept($v, $elType, $context)) {
+                    $this->currentNode->appendChild($node);
+                }
+            } catch (NotAcceptableException $e) {
+                $this->currentNode->parentNode->removeChild($this->currentNode);
             }
 
             $this->revertCurrentNode();
@@ -289,8 +294,16 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
 
         $this->setCurrentMetadata($metadata);
 
-        if (null !== $node = $this->navigator->accept($v, $metadata->type, $context)) {
-            $this->currentNode->appendChild($node);
+        try {
+            if (null !== $node = $this->navigator->accept($v, $metadata->type, $context)) {
+                $this->currentNode->appendChild($node);
+            }
+        } catch (NotAcceptableException $e) {
+            $this->currentNode->parentNode->removeChild($this->currentNode);
+            $this->revertCurrentMetadata();
+            $this->revertCurrentNode();
+            $this->hasValue = false;
+            return;
         }
 
         $this->revertCurrentMetadata();
