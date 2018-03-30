@@ -64,6 +64,8 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             }
 
             $propertyMetadata->setType($targetEntity);
+        } elseif (property_exists($doctrineMetadata, 'embeddedClasses') && array_key_exists($propertyName, $doctrineMetadata->embeddedClasses)) {
+            $propertyMetadata->setType($doctrineMetadata->embeddedClasses[$propertyName]['class']);
         }
     }
 }
