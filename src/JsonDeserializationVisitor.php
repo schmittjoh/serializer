@@ -21,7 +21,6 @@ namespace JMS\Serializer;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
 class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
@@ -106,11 +105,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
     public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void
     {
-        if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
-            $name = $this->namingStrategy->getPropertyName($metadata, $context);
-        } else {
-            $name = $this->namingStrategy->translateName($metadata);
-        }
+        $name = $this->namingStrategy->translateName($metadata);
 
         if (null === $data) {
             return;

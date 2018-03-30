@@ -268,22 +268,6 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($person, $object);
     }
 
-    public function testAdvancedNamingStrategy()
-    {
-        $this->builder->setAdvancedNamingStrategy(new ContextualNamingStrategy());
-        $serializer = $this->builder->build();
-
-        $person = new Person();
-        $person->name = "bar";
-
-        $json = $serializer->serialize($person, "json");
-        $this->assertEquals('{"NAME":"bar"}', $json);
-
-        $json = '{"Name": "bar"}';
-        $person = $serializer->deserialize($json, Person::class, "json");
-        $this->assertEquals("bar", $person->name);
-    }
-
     protected function setUp()
     {
         $this->builder = SerializerBuilder::create();
