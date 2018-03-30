@@ -137,14 +137,12 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
             return;
         }
 
-        $k = $this->namingStrategy->translateName($metadata);
-
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
                 $this->data = array_merge($this->data, (array)$v);
             }
         } else {
-            $this->data[$k] = $v;
+            $this->data[$metadata->serializedName] = $v;
         }
     }
 

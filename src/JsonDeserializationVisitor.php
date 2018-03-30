@@ -105,7 +105,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
     public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void
     {
-        $name = $this->namingStrategy->translateName($metadata);
+        $name = $metadata->serializedName;
 
         if (null === $data) {
             return;

@@ -24,29 +24,15 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class AbstractVisitor
 {
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
-    protected $namingStrategy;
 
     /**
      * @var AccessorStrategyInterface
      */
     protected $accessor;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    public function __construct(AccessorStrategyInterface $accessorStrategy = null)
     {
-        $this->namingStrategy = $namingStrategy;
         $this->accessor = $accessorStrategy ?: new DefaultAccessorStrategy();
-    }
-
-    /**
-     * @deprecated Will be removed in 2.0
-     * @return mixed
-     */
-    public function getNamingStrategy()
-    {
-        return $this->namingStrategy;
     }
 
     public function prepare($data)

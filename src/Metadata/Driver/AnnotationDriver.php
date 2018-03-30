@@ -56,6 +56,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\TypeParser;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
@@ -64,11 +65,16 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
     private $typeParser;
+    /**
+     * @var PropertyNamingStrategyInterface
+     */
+    private $namingStrategy;
 
-    public function __construct(Reader $reader, AbstractParser $typeParser = null)
+    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, AbstractParser $typeParser = null)
     {
         $this->reader = $reader;
         $this->typeParser = $typeParser ?: new TypeParser();
+        $this->namingStrategy = $namingStrategy;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -240,6 +246,10 @@ class AnnotationDriver implements DriverInterface
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+
+                    if (!$propertyMetadata->serializedName) {
+                        $propertyMetadata->serializedName = $this->namingStrategy->translateName($propertyMetadata);
+                    }
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }

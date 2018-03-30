@@ -28,6 +28,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationGraphNavigator;
 use JMS\Serializer\SerializationVisitorInterface;
@@ -169,7 +170,7 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();
 
-        $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
         $this->serializationNavigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
         $this->deserializationNavigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }

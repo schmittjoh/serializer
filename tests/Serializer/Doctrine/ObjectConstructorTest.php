@@ -21,6 +21,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
@@ -208,7 +209,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
                 function (array $metadataDirs, Reader $annotationReader) use ($registry) {
-                    $defaultFactory = new DefaultDriverFactory();
+                    $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }

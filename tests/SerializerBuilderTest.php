@@ -111,7 +111,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitor(new CamelCaseNamingStrategy()))
+            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitor())
         );
 
         $this->builder->build()->serialize('foo', 'xml');

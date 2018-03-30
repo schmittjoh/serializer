@@ -26,6 +26,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\TypeParser;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
@@ -34,11 +35,16 @@ use Metadata\MethodMetadata;
 class XmlDriver extends AbstractFileDriver
 {
     private $typeParser;
+    /**
+     * @var PropertyNamingStrategyInterface
+     */
+    private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, AbstractParser $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy,  AbstractParser $typeParser = null)
     {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?: new TypeParser();
+        $this->namingStrategy = $namingStrategy;
     }
 
     protected function loadMetadataFromFile(\ReflectionClass $class, $path)
@@ -315,6 +321,10 @@ class XmlDriver extends AbstractFileDriver
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)
                 ) {
+
+                    if (!$pMetadata->serializedName) {
+                        $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
+                    }
 
                     $metadata->addPropertyMetadata($pMetadata);
                 }

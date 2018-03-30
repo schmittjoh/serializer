@@ -42,11 +42,11 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
 
         $this->serializer = new Serializer(
-            new MetadataFactory(new AnnotationDriver(new AnnotationReader())),
+            new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy)),
             new HandlerRegistry(),
             new UnserializeObjectConstructor(),
-            array('json' => new JsonSerializationVisitor($namingStrategy)),
-            array('json' => new JsonDeserializationVisitor($namingStrategy))
+            array('json' => new JsonSerializationVisitor()),
+            array('json' => new JsonDeserializationVisitor())
         );
     }
 

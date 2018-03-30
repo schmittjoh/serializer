@@ -227,12 +227,10 @@ class SerializerBuilder
 
     public function addDefaultSerializationVisitors()
     {
-        $this->initializePropertyNamingStrategy();
-
         $this->visitorsAdded = true;
         $this->serializationVisitors = array(
-            'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
-            'json' => new JsonSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
+            'xml' => new XmlSerializationVisitor($this->getAccessorStrategy()),
+            'json' => new JsonSerializationVisitor($this->getAccessorStrategy()),
         );
 
         return $this;
@@ -240,12 +238,10 @@ class SerializerBuilder
 
     public function addDefaultDeserializationVisitors()
     {
-        $this->initializePropertyNamingStrategy();
-
         $this->visitorsAdded = true;
         $this->deserializationVisitors = array(
-            'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
-            'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
+            'xml' => new XmlDeserializationVisitor(),
+            'json' => new JsonDeserializationVisitor(),
         );
 
         return $this;
@@ -431,7 +427,8 @@ class SerializerBuilder
         }
 
         if (null === $this->driverFactory) {
-            $this->driverFactory = new DefaultDriverFactory($this->typeParser);
+            $this->initializePropertyNamingStrategy();
+            $this->driverFactory = new DefaultDriverFactory($this->propertyNamingStrategy, $this->typeParser);
         }
 
         $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);

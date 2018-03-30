@@ -471,11 +471,11 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testWithoutFormatedOutputByXmlSerializationVisitor()
     {
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $xmlVisitor = new XmlSerializationVisitor($namingStrategy);
+        $xmlVisitor = new XmlSerializationVisitor();
         $xmlVisitor->setFormatOutput(false);
 
         $visitors = array(
-            'xml' => new XmlSerializationVisitor($namingStrategy),
+            'xml' => new XmlSerializationVisitor(),
         );
 
         $serializer = new Serializer(
@@ -547,8 +547,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testEvaluatesToNull()
     {
         $context =  $this->getMockBuilder(Context::class)->getMock();
-        $namingStrategy = $this->getMockBuilder(PropertyNamingStrategyInterface::class)->getMock();
-        $visitor = new XmlDeserializationVisitor($namingStrategy);
+        $visitor = new XmlDeserializationVisitor();
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 

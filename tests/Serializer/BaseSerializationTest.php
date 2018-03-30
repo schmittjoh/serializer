@@ -689,8 +689,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $accessor = new ExpressionAccessorStrategy($evaluator, new DefaultAccessorStrategy());
 
         $this->serializationVisitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy, $accessor),
-            'xml' => new XmlSerializationVisitor($namingStrategy, $accessor),
+            'json' => new JsonSerializationVisitor($accessor),
+            'xml' => new XmlSerializationVisitor($accessor),
         );
 
         $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, $evaluator);
@@ -1351,7 +1351,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+        $this->factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
 
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
@@ -1387,15 +1388,14 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $this->objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy),
-            'xml' => new XmlSerializationVisitor($namingStrategy),
+            'json' => new JsonSerializationVisitor(),
+            'xml' => new XmlSerializationVisitor(),
         );
         $this->deserializationVisitors = array(
-            'json' => new JsonDeserializationVisitor($namingStrategy),
-            'xml' => new XmlDeserializationVisitor($namingStrategy),
+            'json' => new JsonDeserializationVisitor(),
+            'xml' => new XmlDeserializationVisitor(),
         );
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);

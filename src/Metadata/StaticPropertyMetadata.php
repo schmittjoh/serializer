@@ -28,6 +28,7 @@ class StaticPropertyMetadata extends PropertyMetadata
     {
         $this->class = $className;
         $this->name = $fieldName;
+        $this->serializedName = $fieldName;
         $this->value = $fieldValue;
         $this->readOnly = true;
         $this->groups = $groups;

@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\FileLocator;
 
 class YamlDriverTest extends BaseDriverTest
@@ -67,6 +68,7 @@ class YamlDriverTest extends BaseDriverTest
         $m = $this->getDriverForSubDir('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
+        $p->serializedName = 'title';
         $p->type = array('name' => 'string', 'params' => array());
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
@@ -80,6 +82,7 @@ class YamlDriverTest extends BaseDriverTest
         $p = new PropertyMetadata($m->name, 'title');
         $p->getter = 'getOtherTitle';
         $p->setter = 'setOtherTitle';
+        $p->serializedName = 'title';
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
@@ -87,7 +90,7 @@ class YamlDriverTest extends BaseDriverTest
     {
         return new YamlDriver(new FileLocator(array(
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
-        )));
+        )), new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDriver()

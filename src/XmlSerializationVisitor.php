@@ -53,9 +53,9 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     /** @var boolean */
     private $formatOutput;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, AccessorStrategyInterface $accessorStrategy = null)
+    public function __construct( AccessorStrategyInterface $accessorStrategy = null)
     {
-        parent::__construct($namingStrategy, $accessorStrategy);
+        parent::__construct($accessorStrategy);
         $this->objectMetadataStack = new \SplStack;
         $this->formatOutput = true;
     }
@@ -231,8 +231,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute for %s. Expected character data, but got %s.', $metadata->name, json_encode($v)));
             }
 
-            $attributeName = $this->namingStrategy->translateName($metadata);
-            $this->setAttributeOnNode($this->currentNode, $attributeName, $node->nodeValue, $metadata->xmlNamespace);
+            $this->setAttributeOnNode($this->currentNode, $metadata->serializedName, $node->nodeValue, $metadata->xmlNamespace);
 
             return;
         }
@@ -281,13 +280,11 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
 
-            $elementName = $this->namingStrategy->translateName($metadata);
-
             $namespace = null !== $metadata->xmlNamespace
                 ? $metadata->xmlNamespace
                 : $this->getClassDefaultNamespace($this->objectMetadataStack->top());
 
-            $element = $this->createElement($elementName, $namespace);
+            $element = $this->createElement($metadata->serializedName, $namespace);
             $this->currentNode->appendChild($element);
             $this->setCurrentNode($element);
         }

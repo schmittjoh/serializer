@@ -26,6 +26,7 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -45,11 +46,11 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
+        $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
         $this->handlerRegistry = new HandlerRegistry();
         $this->unserializeObjectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = array('json' => new JsonSerializationVisitor($namingStrategy));
-        $this->deserializationVisitors = array('json' => new JsonDeserializationVisitor($namingStrategy));
+        $this->serializationVisitors = array('json' => new JsonSerializationVisitor());
+        $this->deserializationVisitors = array('json' => new JsonDeserializationVisitor());
     }
 
     public function testSerializeUseProvidedSerializationContext()
