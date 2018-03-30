@@ -25,7 +25,6 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\YamlDeserializationVisitor;
 
 final class DateHandler implements SubscribingHandlerInterface
 {
@@ -39,7 +38,7 @@ final class DateHandler implements SubscribingHandlerInterface
         $deserializationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
         $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
 
-        foreach (array('json', 'xml', 'yml') as $format) {
+        foreach (array('json', 'xml') as $format) {
 
             foreach ($deserializationTypes as $type) {
                 $methods[] = [
@@ -166,33 +165,6 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     public function deserializeDateIntervalFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
-    {
-        if (null === $data) {
-            return null;
-        }
-
-        return $this->parseDateInterval($data);
-    }
-
-    public function deserializeDateTimeFromYml(YamlDeserializationVisitor $visitor, $data, array $type)
-    {
-        if (null === $data) {
-            return null;
-        }
-
-        return $this->parseDateTime($data, $type);
-    }
-
-    public function deserializeDateTimeImmutableFromYml(YamlDeserializationVisitor $visitor, $data, array $type)
-    {
-        if (null === $data) {
-            return null;
-        }
-
-        return $this->parseDateTime($data, $type, true);
-    }
-
-    public function deserializeDateIntervalFromYml(YamlDeserializationVisitor $visitor, $data, array $type)
     {
         if (null === $data) {
             return null;

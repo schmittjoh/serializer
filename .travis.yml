@@ -26,7 +26,6 @@ before_script:
 script:
     - vendor/bin/phpunit $PHPUNIT_FLAGS
     - php tests/benchmark.php json 10
-    - php tests/benchmark.php yml 10
     - php tests/benchmark.php xml 10
 
 after_success:

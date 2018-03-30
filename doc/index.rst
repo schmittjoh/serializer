@@ -3,7 +3,7 @@ Serializer
 
 Introduction
 ------------
-This library allows you to (de-)serialize data of any complexity. Currently, it supports XML, JSON, and YAML.
+This library allows you to (de-)serialize data of any complexity. Currently, it supports XML and JSON.
 
 It also provides you with a rich tool-set to adapt the output to your specific needs.
 
