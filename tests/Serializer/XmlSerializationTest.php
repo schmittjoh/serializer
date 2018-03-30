@@ -546,14 +546,15 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testEvaluatesToNull()
     {
+        $context =  $this->getMockBuilder(Context::class)->getMock();
         $namingStrategy = $this->getMockBuilder(PropertyNamingStrategyInterface::class)->getMock();
         $visitor = new XmlDeserializationVisitor($namingStrategy);
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 
-        $this->assertTrue($visitor->isNull($xsdNilAsTrueElement));
-        $this->assertTrue($visitor->isNull($xsdNilAsOneElement));
-        $this->assertTrue($visitor->isNull(null));
+        $this->assertTrue($visitor->isNull($xsdNilAsTrueElement, $context));
+        $this->assertTrue($visitor->isNull($xsdNilAsOneElement, $context));
+        $this->assertTrue($visitor->isNull(null, $context));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

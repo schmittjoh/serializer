@@ -88,7 +88,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data) === true) {
+        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data, $context) === true) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 

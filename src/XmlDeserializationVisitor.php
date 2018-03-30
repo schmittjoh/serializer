@@ -388,7 +388,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
      *
      * @return bool
      */
-    public function isNull($value): bool
+    public function isNull($value, Context $context): bool
     {
         if ($value instanceof \SimpleXMLElement) {
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
