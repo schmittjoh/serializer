@@ -22,7 +22,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -36,7 +35,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        foreach (array('xml', 'json', 'yml') as $format) {
+        foreach (array('xml', 'json') as $format) {
             $methods[] = array(
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'Symfony\Component\Form\Form',
@@ -87,22 +86,12 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $this->convertFormToArray($visitor, $form);
     }
 
-    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, array $type)
-    {
-        return $this->convertFormToArray($visitor, $form);
-    }
-
     public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type)
     {
         return $visitor->getDocument()->createCDATASection($this->getErrorMessage($formError));
     }
 
     public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type)
-    {
-        return $this->getErrorMessage($formError);
-    }
-
-    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, array $type)
     {
         return $this->getErrorMessage($formError);
     }

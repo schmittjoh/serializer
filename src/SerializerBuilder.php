@@ -240,7 +240,6 @@ class SerializerBuilder
         $this->visitorsAdded = true;
         $this->serializationVisitors = array(
             'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
-            'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
             'json' => new JsonSerializationVisitor($this->propertyNamingStrategy, $this->getAccessorStrategy()),
         );
 
@@ -254,7 +253,6 @@ class SerializerBuilder
         $this->visitorsAdded = true;
         $this->deserializationVisitors = array(
             'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
-            'yml' => new YamlDeserializationVisitor($this->propertyNamingStrategy),
             'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
         );
 

@@ -1,8 +1,0 @@
--
-    foo: foo
-    moo: bar
-    camel_case: boo
--
-    foo: baz
-    moo: boo
-    camel_case: boo

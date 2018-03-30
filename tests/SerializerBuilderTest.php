@@ -49,7 +49,6 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>
 <result><![CDATA[foo]]></result>
 ', $serializer->serialize('foo', 'xml'));
-        $this->assertEquals("foo\n", $serializer->serialize('foo', 'yml'));
 
         $this->assertEquals('foo', $serializer->deserialize('"foo"', 'string', 'json'));
         $this->assertEquals('foo', $serializer->deserialize('<?xml version="1.0" encoding="UTF-8"?><result><![CDATA[foo]]></result>', 'string', 'xml'));
