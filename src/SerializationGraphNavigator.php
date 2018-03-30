@@ -72,7 +72,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
      *
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context $context
+     * @param Context|SerializationContext $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public function accept($data, array $type = null, Context $context)

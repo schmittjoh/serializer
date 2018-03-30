@@ -73,7 +73,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
      *
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context $context
+     * @param Context|DeserializationContext $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public function accept($data, array $type = null, Context $context)
@@ -83,7 +83,6 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
-
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
         // Sometimes data can convey null but is not of a null type.
