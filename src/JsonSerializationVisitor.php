@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -27,14 +28,14 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
 {
     private $options = 0;
 
-    private $navigator;
     private $dataStack;
     private $data;
 
-    public function setNavigator(GraphNavigatorInterface $navigator): void
+    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, int $options = 0)
     {
-        $this->navigator = $navigator;
+        parent::__construct($navigator, $accessorStrategy);
         $this->dataStack = new \SplStack;
+        $this->options = $options;
     }
 
     public function visitNull($data, array $type, SerializationContext $context)
@@ -183,15 +184,5 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
             default:
                 throw new RuntimeException(sprintf('An error occurred while encoding your data (error code %d).', json_last_error()));
         }
-    }
-
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    public function setOptions($options)
-    {
-        $this->options = (integer)$options;
     }
 }

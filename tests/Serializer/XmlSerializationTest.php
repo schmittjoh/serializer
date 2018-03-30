@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -56,6 +58,8 @@ use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
+use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -309,11 +313,13 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeNoCData($key, $value, $type)
     {
+        $accessor = new DefaultAccessorStrategy();
+
         $handlerRegistry = new HandlerRegistry();
         $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         $objectConstructor = new UnserializeObjectConstructor();
 
-        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors);
+        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor);
 
         $this->assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
@@ -324,11 +330,13 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
+        $accessor = new DefaultAccessorStrategy();
+
         $handlerRegistry = new HandlerRegistry();
         $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         $objectConstructor = new UnserializeObjectConstructor();
 
-        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors);
+        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor);
 
         $this->assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
@@ -470,12 +478,12 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWithoutFormatedOutputByXmlSerializationVisitor()
     {
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $xmlVisitor = new XmlSerializationVisitor();
+        $accessor = new  DefaultAccessorStrategy();
+        $xmlVisitor = new XmlSerializationVisitorFactory();
         $xmlVisitor->setFormatOutput(false);
 
         $visitors = array(
-            'xml' => new XmlSerializationVisitor(),
+            'xml' => $xmlVisitor,
         );
 
         $serializer = new Serializer(
@@ -484,6 +492,7 @@ class XmlSerializationTest extends BaseSerializationTest
             new UnserializeObjectConstructor(),
             $visitors,
             $this->deserializationVisitors,
+            $accessor,
             $this->dispatcher
         );
 
@@ -547,7 +556,9 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testEvaluatesToNull()
     {
         $context =  $this->getMockBuilder(Context::class)->getMock();
-        $visitor = new XmlDeserializationVisitor();
+        $navigator =  $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
+
+        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $this->accessorStrategy);
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 

@@ -106,6 +106,10 @@ use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
+use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use Metadata\MetadataFactory;
@@ -134,6 +138,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     protected $serializationVisitors;
     protected $deserializationVisitors;
     protected $objectConstructor;
+    protected $accessorStrategy;
 
     public function testSerializeNullArray()
     {
@@ -243,7 +248,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             return true;
         }));
 
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, new ExpressionEvaluator($language));
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher, null, new ExpressionEvaluator($language));
 
         $this->assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
     }
@@ -333,7 +338,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $language = new ExpressionLanguage();
         $language->addFunction($function);
 
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, new ExpressionEvaluator($language));
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher, null, new ExpressionEvaluator($language));
         $this->assertEquals($this->getContent($json), $serializer->serialize($person, $this->getFormat()));
     }
 
@@ -660,7 +665,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testDeserializingNull()
     {
         $objectConstructor = new InitializedBlogPostConstructor();
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, new DefaultAccessorStrategy(), $this->dispatcher);
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
 
@@ -683,17 +688,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testExpressionAuthor()
     {
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $accessor = new ExpressionAccessorStrategy($evaluator, new DefaultAccessorStrategy());
 
-        $this->serializationVisitors = array(
-            'json' => new JsonSerializationVisitor($accessor),
-            'xml' => new XmlSerializationVisitor($accessor),
-        );
-
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher, null, $evaluator);
+        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor, $this->dispatcher);
 
         $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
         $this->assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
@@ -1277,7 +1275,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
         $serializer = new Serializer(
             $this->factory, $this->handlerRegistry, $objectConstructor,
-            $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher
+            $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher
         );
 
         $order = new Order(new Price(12));
@@ -1388,17 +1386,19 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
+        $this->accessorStrategy = new DefaultAccessorStrategy();
+
         $this->objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = array(
-            'json' => new JsonSerializationVisitor(),
-            'xml' => new XmlSerializationVisitor(),
+            'json' => new JsonSerializationVisitorFactory(),
+            'xml' => new XmlSerializationVisitorFactory(),
         );
         $this->deserializationVisitors = array(
-            'json' => new JsonDeserializationVisitor(),
-            'xml' => new XmlDeserializationVisitor(),
+            'json' => new JsonDeserializationVisitorFactory(),
+            'xml' => new XmlDeserializationVisitorFactory(),
         );
 
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher);
     }
 
     protected function getField($obj, $name)

@@ -30,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
@@ -111,7 +112,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitor())
+            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
         );
 
         $this->builder->build()->serialize('foo', 'xml');

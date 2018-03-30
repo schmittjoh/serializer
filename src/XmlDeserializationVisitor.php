@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
@@ -32,21 +33,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $objectMetadataStack;
     private $currentObject;
     private $currentMetadata;
-    private $navigator;
     private $disableExternalEntities = true;
     private $doctypeWhitelist = array();
 
-    public function enableExternalEntities()
+    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, bool $disableExternalEntities = true, array $doctypeWhitelist = array())
     {
-        $this->disableExternalEntities = false;
-    }
-
-    public function setNavigator(GraphNavigatorInterface $navigator): void
-    {
-        $this->navigator = $navigator;
+        parent::__construct($navigator, $accessorStrategy);
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->objectMetadataStack = new \SplStack;
+        $this->disableExternalEntities = $disableExternalEntities;
+        $this->doctypeWhitelist = $doctypeWhitelist;
     }
 
     public function prepare($data)
@@ -331,22 +328,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     public function getResult($data)
     {
         return $data;
-    }
-
-    /**
-     * @param array <string> $doctypeWhitelist
-     */
-    public function setDoctypeWhitelist(array $doctypeWhitelist)
-    {
-        $this->doctypeWhitelist = $doctypeWhitelist;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getDoctypeWhitelist()
-    {
-        return $this->doctypeWhitelist;
     }
 
     /**

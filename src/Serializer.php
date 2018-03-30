@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Parser\AbstractParser;
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
@@ -31,6 +32,8 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\VisitorFactory\DeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -62,13 +65,18 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @var DeserializationContextFactoryInterface
      */
     private $deserializationContextFactory;
+    /**
+     * @var AccessorStrategyInterface
+     */
+    private $accessorStrategy;
 
     /**
      * @param \Metadata\MetadataFactoryInterface $factory
      * @param Handler\HandlerRegistryInterface $handlerRegistry
      * @param Construction\ObjectConstructorInterface $objectConstructor
-     * @param SerializationVisitorInterface[] $serializationVisitors
-     * @param DeserializationVisitorInterface[] $deserializationVisitors
+     * @param SerializationVisitorFactory[] $serializationVisitors
+     * @param DeserializationVisitorFactory[] $deserializationVisitors
+     * @param AccessorStrategyInterface $accessorStrategy
      * @param EventDispatcherInterface|null $dispatcher
      * @param AbstractParser|null $typeParser
      * @param ExpressionEvaluatorInterface|null $expressionEvaluator
@@ -81,12 +89,12 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         ObjectConstructorInterface $objectConstructor,
         array $serializationVisitors,
         array $deserializationVisitors,
+        AccessorStrategyInterface $accessorStrategy,
         EventDispatcherInterface $dispatcher = null,
         AbstractParser $typeParser = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null
-
     )
     {
         $this->factory = $factory;
@@ -96,6 +104,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->typeParser = $typeParser ?: new TypeParser();
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
+        $this->accessorStrategy = $accessorStrategy;
 
         $this->serializationNavigator = new SerializationGraphNavigator($this->factory, $this->handlerRegistry, $this->dispatcher, $expressionEvaluator);
         $this->deserializationNavigator = new DeserializationGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher, $expressionEvaluator);
@@ -147,7 +156,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $type = $this->findInitialType($type, $context);
 
-        $visitor = $this->serializationVisitors[$format];
+        $visitor = $this->serializationVisitors[$format]->getVisitor($this->serializationNavigator, $this->accessorStrategy);
 
         $preparedData = $visitor->prepare($data);
         $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, $format, $type);
@@ -164,7 +173,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
-        $visitor = $this->deserializationVisitors[$format];
+        $visitor = $this->deserializationVisitors[$format]->getVisitor($this->deserializationNavigator, $this->accessorStrategy);
         $preparedData = $visitor->prepare($data);
         $result = $this->visit($this->deserializationNavigator, $visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
@@ -184,7 +193,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
 
-        $visitor = $this->serializationVisitors['json'];
+        $visitor = $this->serializationVisitors['json']->getVisitor($this->serializationNavigator, $this->accessorStrategy);
 
         $type = $this->findInitialType($type, $context);
 
@@ -215,7 +224,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($this->deserializationVisitors['json'])) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
-        $visitor = $this->deserializationVisitors['json'];
+        $visitor = $this->deserializationVisitors['json']->getVisitor($this->deserializationNavigator, $this->accessorStrategy);
 
         return $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
     }
@@ -228,8 +237,6 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $navigator,
             $this->factory
         );
-
-        $visitor->setNavigator($navigator);
 
         return $navigator->accept($data, $type, $context);
     }

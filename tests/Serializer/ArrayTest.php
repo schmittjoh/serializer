@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\JsonDeserializationVisitor;
@@ -31,6 +32,8 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
+use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
 
 class ArrayTest extends \PHPUnit\Framework\TestCase
@@ -45,8 +48,9 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy)),
             new HandlerRegistry(),
             new UnserializeObjectConstructor(),
-            array('json' => new JsonSerializationVisitor()),
-            array('json' => new JsonDeserializationVisitor())
+            array('json' => new JsonSerializationVisitorFactory()),
+            array('json' => new JsonDeserializationVisitorFactory()),
+            new DefaultAccessorStrategy()
         );
     }
 

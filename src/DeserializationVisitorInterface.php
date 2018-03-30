@@ -121,15 +121,6 @@ interface DeserializationVisitorInterface
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context);
 
     /**
-     * Called before serialization/deserialization starts.
-     *
-     * @param GraphNavigatorInterface $navigator
-     *
-     * @return void
-     */
-    public function setNavigator(GraphNavigatorInterface $navigator): void;
-
-    /**
      * @param mixed $data
      *
      * @return mixed

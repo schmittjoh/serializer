@@ -18,20 +18,25 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
-    private $navigator;
+    private $options = 0;
+    private $depth = 512;
+
     private $objectStack;
     private $currentObject;
 
-    public function setNavigator(GraphNavigatorInterface $navigator): void
+    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, int $options = 0, int $depth = 512)
     {
-        $this->navigator = $navigator;
+        parent::__construct($navigator, $accessorStrategy);
         $this->objectStack = new \SplStack;
+        $this->options = $options;
+        $this->depth = $depth;
     }
 
     public function visitNull($data, array $type, DeserializationContext $context): void
@@ -160,7 +165,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
     public function prepare($str)
     {
-        $decoded = json_decode($str, true);
+        $decoded = json_decode($str, true, $this->depth, $this->options);
 
         switch (json_last_error()) {
             case JSON_ERROR_NONE:

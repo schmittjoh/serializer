@@ -37,11 +37,9 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
      */
     private $document;
 
-    private $navigator;
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
-    private $defaultVersion = '1.0';
-    private $defaultEncoding = 'UTF-8';
+
     private $stack;
     private $metadataStack;
     private $currentNode;
@@ -50,56 +48,33 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     private $nullWasVisited;
     private $objectMetadataStack;
 
-    /** @var boolean */
-    private $formatOutput;
-
-    public function __construct( AccessorStrategyInterface $accessorStrategy = null)
-    {
-        parent::__construct($accessorStrategy);
+    public function __construct(
+        GraphNavigatorInterface $navigator,
+        AccessorStrategyInterface $accessorStrategy,
+        bool $formatOutput = true,
+        string $defaultEncoding = 'UTF-8',
+        string $defaultVersion = '1.0',
+        string $defaultRootName = 'result',
+        string $defaultRootNamespace = null
+    ) {
+        parent::__construct($navigator, $accessorStrategy);
         $this->objectMetadataStack = new \SplStack;
-        $this->formatOutput = true;
-    }
-
-    public function setDefaultRootName($name, $namespace = null)
-    {
-        $this->defaultRootName = $name;
-        $this->defaultRootNamespace = $namespace;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function hasDefaultRootName()
-    {
-        return 'result' === $this->defaultRootName;
-    }
-
-    public function setDefaultVersion($version)
-    {
-        $this->defaultVersion = $version;
-    }
-
-    public function setDefaultEncoding($encoding)
-    {
-        $this->defaultEncoding = $encoding;
-    }
-
-    public function setNavigator(GraphNavigatorInterface $navigator): void
-    {
-        $this->navigator = $navigator;
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
 
         $this->currentNode = null;
         $this->nullWasVisited = false;
 
-        $this->document = $this->createDocument();
+        $this->document = $this->createDocument($formatOutput, $defaultVersion, $defaultEncoding);
+
+        $this->defaultRootName = $defaultRootName;
+        $this->defaultRootNamespace = $defaultRootNamespace;
     }
 
-    private function createDocument(): \DOMDocument
+    private function createDocument(bool $formatOutput, string $defaultVersion, string $defaultEncoding): \DOMDocument
     {
-        $document = new \DOMDocument($this->defaultVersion, $this->defaultEncoding);
-        $document->formatOutput = $this->isFormatOutput();
+        $document = new \DOMDocument($defaultVersion, $defaultEncoding);
+        $document->formatOutput = $formatOutput;
 
         return $document;
     }
@@ -487,21 +462,5 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     private function getClassDefaultNamespace(ClassMetadata $metadata)
     {
         return (isset($metadata->xmlNamespaces['']) ? $metadata->xmlNamespaces[''] : null);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFormatOutput()
-    {
-        return $this->formatOutput;
-    }
-
-    /**
-     * @param bool $formatOutput
-     */
-    public function setFormatOutput($formatOutput)
-    {
-        $this->formatOutput = (boolean)$formatOutput;
     }
 }

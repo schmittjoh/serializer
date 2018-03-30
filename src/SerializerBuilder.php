@@ -46,6 +46,12 @@ use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\VisitorFactory\DeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\SerializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 
@@ -107,7 +113,7 @@ class SerializerBuilder
         $this->accessorStrategy = $accessorStrategy;
     }
 
-    protected function getAccessorStrategy()
+    private function getAccessorStrategy()
     {
         if (!$this->accessorStrategy) {
             $this->accessorStrategy = new DefaultAccessorStrategy();
@@ -209,7 +215,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializationVisitor($format, SerializationVisitorInterface $visitor)
+    public function setSerializationVisitor($format, SerializationVisitorFactory $visitor)
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors[$format] = $visitor;
@@ -217,7 +223,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setDeserializationVisitor($format, DeserializationVisitorInterface $visitor)
+    public function setDeserializationVisitor($format, DeserializationVisitorFactory $visitor)
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors[$format] = $visitor;
@@ -229,8 +235,8 @@ class SerializerBuilder
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors = array(
-            'xml' => new XmlSerializationVisitor($this->getAccessorStrategy()),
-            'json' => new JsonSerializationVisitor($this->getAccessorStrategy()),
+            'xml' => new XmlSerializationVisitorFactory(),
+            'json' => new JsonSerializationVisitorFactory(),
         );
 
         return $this;
@@ -240,8 +246,8 @@ class SerializerBuilder
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors = array(
-            'xml' => new XmlDeserializationVisitor(),
-            'json' => new JsonDeserializationVisitor(),
+            'xml' => new XmlDeserializationVisitorFactory(),
+            'json' => new JsonDeserializationVisitorFactory(),
         );
 
         return $this;
@@ -460,6 +466,7 @@ class SerializerBuilder
             $this->objectConstructor ?: new UnserializeObjectConstructor(),
             $this->serializationVisitors,
             $this->deserializationVisitors,
+            $this->getAccessorStrategy(),
             $this->eventDispatcher,
             $this->typeParser,
             $this->expressionEvaluator,
@@ -490,3 +497,4 @@ class SerializerBuilder
         }
     }
 }
+

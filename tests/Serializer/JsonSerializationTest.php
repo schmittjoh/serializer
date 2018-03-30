@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -238,7 +239,9 @@ class JsonSerializationTest extends BaseSerializationTest
      */
     public function testPrimitiveTypes($primitiveType, $data)
     {
-        $visitor = $this->serializationVisitors['json'];
+        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
+        $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
+        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $access);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, array(), $this->getMockBuilder(SerializationContext::class)->getMock());
         if ($primitiveType == 'double') {

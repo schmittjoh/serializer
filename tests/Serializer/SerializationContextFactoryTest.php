@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -30,6 +31,8 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
 
 class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
@@ -49,8 +52,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
         $this->handlerRegistry = new HandlerRegistry();
         $this->unserializeObjectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = array('json' => new JsonSerializationVisitor());
-        $this->deserializationVisitors = array('json' => new JsonDeserializationVisitor());
+
+        $this->serializationVisitors = array('json' => new JsonSerializationVisitorFactory());
+        $this->deserializationVisitors = array('json' => new JsonDeserializationVisitorFactory());
     }
 
     public function testSerializeUseProvidedSerializationContext()
@@ -70,6 +74,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $this->unserializeObjectConstructor,
             $this->serializationVisitors,
             $this->deserializationVisitors,
+            new DefaultAccessorStrategy(),
             null,
             null,
             null,
@@ -97,6 +102,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $this->unserializeObjectConstructor,
             $this->serializationVisitors,
             $this->deserializationVisitors,
+            new DefaultAccessorStrategy(),
             null,
             null,
             null,
@@ -126,6 +132,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $this->unserializeObjectConstructor,
             $this->serializationVisitors,
             $this->deserializationVisitors,
+            new DefaultAccessorStrategy(),
             null,
             null,
             null,
@@ -153,6 +160,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $this->unserializeObjectConstructor,
             $this->serializationVisitors,
             $this->deserializationVisitors,
+            new DefaultAccessorStrategy(),
             null,
             null,
             null,

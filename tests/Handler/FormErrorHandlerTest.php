@@ -2,10 +2,14 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -43,8 +47,9 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
     public function setUp()
     {
         $this->handler = new FormErrorHandler(new Translator('en'));
-        $naming = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $this->visitor = new JsonSerializationVisitor();
+        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
+        $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
+        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $access);
         $this->dispatcher = new EventDispatcher();
         $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
     }
