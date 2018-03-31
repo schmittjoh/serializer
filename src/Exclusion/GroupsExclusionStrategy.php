@@ -96,4 +96,15 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
         return $groups;
     }
+
+
+    public function getSignature(): ?string
+    {
+        foreach ($this->groups as $v) {
+            if(is_array($v)) {
+                return null;
+            }
+        }
+        return serialize($this->groups);
+    }
 }

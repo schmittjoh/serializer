@@ -34,6 +34,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
     private $delegates = array();
+    private $signature = false;
     /**
      * @param ExclusionStrategyInterface[] $delegates
      */
@@ -45,6 +46,7 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     public function addStrategy(ExclusionStrategyInterface $strategy):void
     {
         $this->delegates[] = $strategy;
+        $this->signature = false;
     }
 
     /**
@@ -83,5 +85,24 @@ class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         }
 
         return false;
+    }
+
+    public function getSignature(): ?string
+    {
+        if ($this->signature !== false) {
+            return $this->signature;
+        }
+        $signatures = array();
+        foreach ($this->delegates as $delegate) {
+            $signature = $delegate->getSignature();
+            if ($signature === null) {
+                $this->signature = null;
+                return $this->signature;
+            }
+            $signatures[] = $signature;
+        }
+
+        $this->signature = implode(", ", $signatures);
+        return $this->signature;
     }
 }

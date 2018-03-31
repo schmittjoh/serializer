@@ -82,10 +82,6 @@ class HandlerRegistry implements HandlerRegistryInterface
 
     public function getHandler(int $direction, string $typeName, string $format)
     {
-        if (!isset($this->handlers[$direction][$typeName][$format])) {
-            return null;
-        }
-
-        return $this->handlers[$direction][$typeName][$format];
+        return $this->handlers[$direction][$typeName][$format] ?? null;
     }
 }

@@ -48,4 +48,12 @@ interface ExclusionStrategyInterface
      * @return boolean
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool;
+
+    /**
+     * Return a signature (used for caching) for this exclusion strategy.
+     * If the exclusion strategy can not be cached, should return NULL.
+     *
+     * @return null|string
+     */
+    public function getSignature(): ?string;
 }

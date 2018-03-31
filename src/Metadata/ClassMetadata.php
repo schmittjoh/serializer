@@ -48,6 +48,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $postDeserializeMethods = array();
 
     public $xmlRootName;
+    public $compiled;
     public $xmlRootNamespace;
     public $xmlNamespaces = array();
     public $accessorOrder;
