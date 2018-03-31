@@ -172,7 +172,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
+                if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
                 }
 
@@ -188,8 +188,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                     $method->invoke($data);
                 }
 
-                $object = $data;
-                $visitor->startVisitingObject($metadata, $object, $type, $context);
+                $visitor->startVisitingObject($metadata, $data, $type, $context);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
                         continue;
