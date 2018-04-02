@@ -48,7 +48,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitNull($data, array $type, DeserializationContext $context): void;
+    public function visitNull($data, array $type): void;
 
     /**
      * @param mixed $data
@@ -56,7 +56,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitString($data, array $type, DeserializationContext $context): string;
+    public function visitString($data, array $type): string;
 
     /**
      * @param mixed $data
@@ -64,7 +64,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type, DeserializationContext $context): bool;
+    public function visitBoolean($data, array $type): bool;
 
     /**
      * @param mixed $data
@@ -72,7 +72,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type, DeserializationContext $context): float;
+    public function visitDouble($data, array $type): float;
 
     /**
      * @param mixed $data
@@ -80,7 +80,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type, DeserializationContext $context): int;
+    public function visitInteger($data, array $type): int;
 
     /**
      * @param mixed $data
@@ -88,7 +88,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitArray($data, array $type, DeserializationContext $context): array;
+    public function visitArray($data, array $type): array;
 
     /**
      * Called before the properties of the object are being visited.
@@ -99,7 +99,7 @@ interface DeserializationVisitorInterface
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context): void;
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -107,7 +107,7 @@ interface DeserializationVisitorInterface
      *
      * @return void
      */
-    public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void;
+    public function visitProperty(PropertyMetadata $metadata, $data): void;
 
     /**
      * Called after all properties of the object have been visited.
@@ -118,7 +118,7 @@ interface DeserializationVisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context);
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type);
 
     /**
      * @param mixed $data

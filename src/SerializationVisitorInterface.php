@@ -48,7 +48,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitNull($data, array $type, SerializationContext $context);
+    public function visitNull($data, array $type);
 
     /**
      * @param mixed $data
@@ -56,7 +56,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitString(string $data, array $type, SerializationContext $context);
+    public function visitString(string $data, array $type);
 
     /**
      * @param mixed $data
@@ -64,7 +64,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitBoolean(bool $data, array $type, SerializationContext $context);
+    public function visitBoolean(bool $data, array $type);
 
     /**
      * @param mixed $data
@@ -72,7 +72,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitDouble(float $data, array $type, SerializationContext $context);
+    public function visitDouble(float $data, array $type);
 
     /**
      * @param mixed $data
@@ -80,7 +80,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitInteger(int $data, array $type, SerializationContext $context);
+    public function visitInteger(int $data, array $type);
 
     /**
      * @param mixed $data
@@ -88,7 +88,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function visitArray(array $data, array $type, SerializationContext $context);
+    public function visitArray(array $data, array $type);
 
     /**
      * Called before the properties of the object are being visited.
@@ -99,7 +99,7 @@ interface SerializationVisitorInterface
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context): void;
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -107,7 +107,7 @@ interface SerializationVisitorInterface
      *
      * @return void
      */
-    public function visitProperty(PropertyMetadata $metadata, $data, SerializationContext $context): void;
+    public function visitProperty(PropertyMetadata $metadata, $data): void;
 
     /**
      * Called after all properties of the object have been visited.
@@ -118,7 +118,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context);
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type);
 
     /**
      * @param mixed $data

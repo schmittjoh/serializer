@@ -9,6 +9,7 @@ use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -49,7 +50,8 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $this->handler = new FormErrorHandler(new Translator('en'));
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
         $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
-        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $access);
+        $context = SerializationContext::create();
+        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $access, $context);
         $this->dispatcher = new EventDispatcher();
         $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
     }

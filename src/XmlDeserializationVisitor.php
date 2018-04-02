@@ -36,9 +36,13 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $disableExternalEntities = true;
     private $doctypeWhitelist = array();
 
-    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, bool $disableExternalEntities = true, array $doctypeWhitelist = array())
+    public function __construct(
+        GraphNavigatorInterface $navigator,
+        AccessorStrategyInterface $accessorStrategy,
+        DeserializationContext $context,
+        bool $disableExternalEntities = true, array $doctypeWhitelist = array())
     {
-        parent::__construct($navigator, $accessorStrategy);
+        parent::__construct($navigator, $accessorStrategy, $context);
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->objectMetadataStack = new \SplStack;
@@ -82,17 +86,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         return $data === '' ? ' ' : (string)$data;
     }
 
-    public function visitNull($data, array $type, DeserializationContext $context): void
+    public function visitNull($data, array $type): void
     {
 
     }
 
-    public function visitString($data, array $type, DeserializationContext $context): string
+    public function visitString($data, array $type): string
     {
         return (string)$data;
     }
 
-    public function visitBoolean($data, array $type, DeserializationContext $context): bool
+    public function visitBoolean($data, array $type): bool
     {
         $data = (string)$data;
 
@@ -105,17 +109,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
-    public function visitInteger($data, array $type, DeserializationContext $context): int
+    public function visitInteger($data, array $type): int
     {
         return (integer)$data;
     }
 
-    public function visitDouble($data, array $type, DeserializationContext $context): float
+    public function visitDouble($data, array $type): float
     {
         return (double)$data;
     }
 
-    public function visitArray($data, array $type, DeserializationContext $context): array
+    public function visitArray($data, array $type): array
     {
         // handle key-value-pairs
         if (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) {
@@ -128,8 +132,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $result = [];
             foreach ($data as $key => $v) {
-                $k = $this->navigator->accept($key, $keyType, $context);
-                $result[$k] = $this->navigator->accept($v, $entryType, $context);
+                $k = $this->navigator->accept($key, $keyType, $this->context);
+                $result[$k] = $this->navigator->accept($v, $entryType, $this->context);
             }
 
             return $result;
@@ -169,7 +173,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 $result = array();
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    $result[] = $this->navigator->accept($v, $type['params'][0], $this->context);
                 }
 
                 return $result;
@@ -189,8 +193,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
-                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $context);
-                    $result[$k] = $this->navigator->accept($v, $entryType, $context);
+                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $this->context);
+                    $result[$k] = $this->navigator->accept($v, $entryType, $this->context);
                 }
 
                 return $result;
@@ -200,13 +204,13 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, DeserializationContext $context): void
+    public function startVisitingObject(ClassMetadata $metadata, $object, array $type): void
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data, DeserializationContext $context): void
+    public function visitProperty(PropertyMetadata $metadata, $data): void
     {
         $name = $metadata->serializedName;
 
@@ -218,7 +222,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
-                $v = $this->navigator->accept($attributes[$name], $metadata->type, $context);
+                $v = $this->navigator->accept($attributes[$name], $metadata->type, $this->context);
                 $this->accessor->setValue($this->currentObject, $v, $metadata);
             }
 
@@ -226,7 +230,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if ($metadata->xmlValue) {
-            $v = $this->navigator->accept($data, $metadata->type, $context);
+            $v = $this->navigator->accept($data, $metadata->type, $this->context);
             $this->accessor->setValue($this->currentObject, $v, $metadata);
 
             return;
@@ -239,7 +243,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             }
 
             $this->setCurrentMetadata($metadata);
-            $v = $this->navigator->accept($enclosingElem, $metadata->type, $context);
+            $v = $this->navigator->accept($enclosingElem, $metadata->type, $this->context);
             $this->revertCurrentMetadata();
             $this->accessor->setValue($this->currentObject, $v, $metadata);
 
@@ -272,7 +276,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $this->setCurrentMetadata($metadata);
         }
 
-        $v = $this->navigator->accept($node, $metadata->type, $context);
+        $v = $this->navigator->accept($node, $metadata->type, $this->context);
 
         $this->accessor->setValue($this->currentObject, $v, $metadata);
     }
@@ -284,7 +288,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
      * @param DeserializationContext $context
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();
@@ -364,7 +368,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
      *
      * @return bool
      */
-    public function isNull($value, Context $context): bool
+    public function isNull($value): bool
     {
         if ($value instanceof \SimpleXMLElement) {
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817

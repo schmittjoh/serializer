@@ -33,11 +33,16 @@ abstract class AbstractVisitor
      * @var GraphNavigatorInterface
      */
     protected $navigator;
+    /**
+     * @var Context
+     */
+    protected $context;
 
-    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy)
+    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, Context $context)
     {
         $this->navigator = $navigator;
         $this->accessor = $accessorStrategy;
+        $this->context = $context;
     }
 
     public function prepare($data)

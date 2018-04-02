@@ -21,6 +21,7 @@ namespace JMS\Serializer\VisitorFactory;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -36,11 +37,12 @@ class XmlSerializationVisitorFactory implements SerializationVisitorFactory
     private $formatOutput = true;
     private $defaultRootNamespace;
 
-    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy): SerializationVisitorInterface
+    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, SerializationContext $context): SerializationVisitorInterface
     {
         return new XmlSerializationVisitor(
             $navigator,
             $accessorStrategy,
+            $context,
             $this->formatOutput,
             $this->defaultEncoding,
             $this->defaultVersion,

@@ -99,31 +99,31 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data, $context) === true) {
+        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data) === true) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 
         switch ($type['name']) {
             case 'NULL':
-                return $visitor->visitNull($data, $type, $context);
+                return $visitor->visitNull($data, $type);
 
             case 'string':
-                return $visitor->visitString($data, $type, $context);
+                return $visitor->visitString($data, $type);
 
             case 'int':
             case 'integer':
-                return $visitor->visitInteger($data, $type, $context);
+                return $visitor->visitInteger($data, $type);
 
             case 'bool':
             case 'boolean':
-                return $visitor->visitBoolean($data, $type, $context);
+                return $visitor->visitBoolean($data, $type);
 
             case 'double':
             case 'float':
-                return $visitor->visitDouble($data, $type, $context);
+                return $visitor->visitDouble($data, $type);
 
             case 'array':
-                return $visitor->visitArray($data, $type, $context);
+                return $visitor->visitArray($data, $type);
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
@@ -199,13 +199,13 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                     }
 
                     $context->pushPropertyMetadata($propertyMetadata);
-                    $visitor->visitProperty($propertyMetadata, $data, $context);
+                    $visitor->visitProperty($propertyMetadata, $data);
                     $context->popPropertyMetadata();
                 }
 
                 $this->afterVisitingObject($metadata, $data, $type, $context);
 
-                return $visitor->endVisitingObject($metadata, $data, $type, $context);
+                return $visitor->endVisitingObject($metadata, $data, $type);
         }
     }
 

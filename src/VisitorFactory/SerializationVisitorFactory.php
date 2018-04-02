@@ -20,6 +20,7 @@ namespace JMS\Serializer\VisitorFactory;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 
 /**
@@ -28,5 +29,5 @@ use JMS\Serializer\SerializationVisitorInterface;
  */
 interface SerializationVisitorFactory
 {
-    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy): SerializationVisitorInterface;
+    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, SerializationContext $context): SerializationVisitorInterface;
 }
