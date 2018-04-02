@@ -22,7 +22,7 @@ function benchmark(\Closure $f, $times = 10)
 function createCollection()
 {
     $collection = array();
-    for ($i = 0; $i < 50; $i++) {
+    for ($i = 0; $i < 200; $i++) {
         $collection[] = createObject();
     }
 
@@ -33,7 +33,7 @@ function createObject()
 {
     $p = new \JMS\Serializer\Tests\Fixtures\Publisher('bar');
     $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime, $p);
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 100; $i++) {
         $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
     }
 
