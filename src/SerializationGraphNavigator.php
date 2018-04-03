@@ -150,17 +150,19 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                     }
                 }
 
+                $format = $context->getFormat();
+
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                    $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
+                if ($this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $format)) {
+                    $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $format, $event = new PreSerializeEvent($context, $data, $type));
                     $type = $event->getType();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
+                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $format)) {
                     $rs = \call_user_func($handler, $visitor, $data, $type, $context);
                     $context->stopVisiting($data);
 
@@ -203,13 +205,13 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                     $context->popPropertyMetadata();
                 }
 
-                $this->afterVisitingObject($metadata, $data, $type, $context);
+                $this->afterVisitingObject($metadata, $data, $type, $context, $format);
 
                 return $visitor->endVisitingObject($metadata, $data, $type);
         }
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context, $format)
     {
         $context->stopVisiting($object);
         $context->popClassMetadata();
@@ -218,8 +220,8 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
             $method->invoke($object);
         }
 
-        if ($this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $context->getFormat())) {
-            $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
+        if ($this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $format)) {
+            $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $format, new ObjectEvent($context, $object, $type));
         }
     }
 }
