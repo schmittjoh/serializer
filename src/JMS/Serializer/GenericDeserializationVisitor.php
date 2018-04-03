@@ -173,7 +173,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         }
 
         if (!\is_array($data)) {
-            throw new RuntimeException(sprintf('Invalid data "%s"(%s), expected "%s".', $data, $metadata->type['name'], $metadata->reflection->class));
+            throw new RuntimeException(sprintf('Invalid data %s(%s), expected "%s".', json_encode($data), $metadata->type['name'], $metadata->reflection->class));
         }
 
         if (!array_key_exists($name, $data)) {
