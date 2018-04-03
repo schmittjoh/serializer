@@ -37,6 +37,7 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $navigator;
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
+    private $defaultRootPrefix = '';
     private $defaultVersion = '1.0';
     private $defaultEncoding = 'UTF-8';
     private $stack;
@@ -57,10 +58,11 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->formatOutput = true;
     }
 
-    public function setDefaultRootName($name, $namespace = null)
+    public function setDefaultRootName($name, $namespace = null, $prefix = '')
     {
         $this->defaultRootName = $name;
         $this->defaultRootNamespace = $namespace;
+        $this->defaultRootPrefix = !empty($prefix)?$prefix.':':'';
     }
 
     /**
@@ -216,7 +218,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
 
             if ($rootNamespace) {
-                $this->currentNode = $this->document->createElementNS($rootNamespace, $rootName);
+                $this->currentNode = $this->document->createElementNS($rootNamespace,$this->defaultRootPrefix . $rootName);
             } else {
                 $this->currentNode = $this->document->createElement($rootName);
             }
@@ -498,7 +500,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
-    private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
+    protected function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
     {
         if (null !== $namespace) {
             if (!$prefix = $node->lookupPrefix($namespace)) {
