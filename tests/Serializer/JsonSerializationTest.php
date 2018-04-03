@@ -148,7 +148,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
             function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
-                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+                return $visitor->visitArray(iterator_to_array($data), $type);
             }
         );
 
@@ -164,7 +164,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->dispatcher->addSubscriber(new ReplaceNameSubscriber());
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
             function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
-                return $visitor->visitArray(iterator_to_array($data), $type, $context);
+                return $visitor->visitArray(iterator_to_array($data), $type);
             }
         );
 
@@ -241,7 +241,8 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
         $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
-        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $access);
+        $context = SerializationContext::create();
+        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $access, $context);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, array(), $this->getMockBuilder(SerializationContext::class)->getMock());
         if ($primitiveType == 'double') {

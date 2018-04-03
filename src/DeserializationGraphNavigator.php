@@ -87,31 +87,31 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data, $context) === true) {
+        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data) === true) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 
         switch ($type['name']) {
             case 'NULL':
-                return $visitor->visitNull($data, $type, $context);
+                return $visitor->visitNull($data, $type);
 
             case 'string':
-                return $visitor->visitString($data, $type, $context);
+                return $visitor->visitString($data, $type);
 
             case 'int':
             case 'integer':
-                return $visitor->visitInteger($data, $type, $context);
+                return $visitor->visitInteger($data, $type);
 
             case 'bool':
             case 'boolean':
-                return $visitor->visitBoolean($data, $type, $context);
+                return $visitor->visitBoolean($data, $type);
 
             case 'double':
             case 'float':
-                return $visitor->visitDouble($data, $type, $context);
+                return $visitor->visitDouble($data, $type);
 
             case 'array':
-                return $visitor->visitArray($data, $type, $context);
+                return $visitor->visitArray($data, $type);
 
             case 'resource':
                 throw new RuntimeException('Resources are not supported in serialized data.');
@@ -161,7 +161,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
 
                 $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
 
-                $visitor->startVisitingObject($metadata, $object, $type, $context);
+                $visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
                         continue;
@@ -176,11 +176,11 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                     }
 
                     $context->pushPropertyMetadata($propertyMetadata);
-                    $visitor->visitProperty($propertyMetadata, $data, $context);
+                    $visitor->visitProperty($propertyMetadata, $data);
                     $context->popPropertyMetadata();
                 }
 
-                $rs = $visitor->endVisitingObject($metadata, $data, $type, $context);
+                $rs = $visitor->endVisitingObject($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $rs, $type, $context);
 
                 return $rs;

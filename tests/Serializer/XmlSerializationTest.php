@@ -22,6 +22,7 @@ use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
@@ -443,7 +444,7 @@ class XmlSerializationTest extends BaseSerializationTest
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
 
-                $visitor->visitProperty($metadata, $author, $context);
+                $visitor->visitProperty($metadata, $author);
             }
         );
 
@@ -555,16 +556,16 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testEvaluatesToNull()
     {
-        $context =  $this->getMockBuilder(Context::class)->getMock();
+        $context =  $this->getMockBuilder(DeserializationContext::class)->getMock();
         $navigator =  $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
 
-        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $this->accessorStrategy);
+        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $this->accessorStrategy, $context);
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 
-        $this->assertTrue($visitor->isNull($xsdNilAsTrueElement, $context));
-        $this->assertTrue($visitor->isNull($xsdNilAsOneElement, $context));
-        $this->assertTrue($visitor->isNull(null, $context));
+        $this->assertTrue($visitor->isNull($xsdNilAsTrueElement));
+        $this->assertTrue($visitor->isNull($xsdNilAsOneElement));
+        $this->assertTrue($visitor->isNull(null));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

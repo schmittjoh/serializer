@@ -31,34 +31,44 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     private $dataStack;
     private $data;
 
-    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, int $options = 0)
+    /**
+     * @var bool
+     */
+    protected $shouldSerializeNull;
+
+    public function __construct(
+        GraphNavigatorInterface $navigator,
+        AccessorStrategyInterface $accessorStrategy,
+        SerializationContext $context,
+        int $options = 0)
     {
-        parent::__construct($navigator, $accessorStrategy);
+        parent::__construct($navigator, $accessorStrategy, $context);
+        $this->shouldSerializeNull = $context->shouldSerializeNull();
         $this->dataStack = new \SplStack;
         $this->options = $options;
     }
 
-    public function visitNull($data, array $type, SerializationContext $context)
+    public function visitNull($data, array $type)
     {
         return null;
     }
 
-    public function visitString(string $data, array $type, SerializationContext $context)
+    public function visitString(string $data, array $type)
     {
         return $data;
     }
 
-    public function visitBoolean(bool $data, array $type, SerializationContext $context)
+    public function visitBoolean(bool $data, array $type)
     {
         return $data;
     }
 
-    public function visitInteger(int $data, array $type, SerializationContext $context)
+    public function visitInteger(int $data, array $type)
     {
         return $data;
     }
 
-    public function visitDouble(float $data, array $type, SerializationContext $context)
+    public function visitDouble(float $data, array $type)
     {
         return $data;
     }
@@ -69,7 +79,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
      * @param SerializationContext $context
      * @return mixed
      */
-    public function visitArray(array $data, array $type, SerializationContext $context)
+    public function visitArray(array $data, array $type)
     {
         $this->dataStack->push($data);
 
@@ -80,12 +90,12 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
 
-            if (null === $v && $context->shouldSerializeNull() !== true) {
+            if (null === $v && $this->shouldSerializeNull !== true) {
                 continue;
             }
 
             try {
-                $v = $this->navigator->accept($v, $elType, $context);
+                $v = $this->navigator->accept($v, $elType, $this->context);
             } catch (NotAcceptableException $e) {
                 continue;
             }
@@ -101,13 +111,13 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         return $rs;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context): void
+    public function startVisitingObject(ClassMetadata $metadata, $data, array $type): void
     {
         $this->dataStack->push($this->data);
         $this->data = array();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, SerializationContext $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
@@ -120,16 +130,16 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         return $rs;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data, SerializationContext $context): void
+    public function visitProperty(PropertyMetadata $metadata, $data): void
     {
         $v = $this->accessor->getValue($data, $metadata);
 
-        if (null === $v && $context->shouldSerializeNull() !== true) {
+        if (null === $v && $this->shouldSerializeNull !== true) {
             return;
         }
 
         try {
-            $v = $this->navigator->accept($v, $metadata->type, $context);
+            $v = $this->navigator->accept($v, $metadata->type, $this->context);
         } catch (NotAcceptableException $e) {
             return;
         }

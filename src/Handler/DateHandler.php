@@ -76,15 +76,15 @@ final class DateHandler implements SubscribingHandlerInterface
     )
     {
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
-            return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
+            return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type);
         }
 
         $format = $this->getFormat($type);
         if ('U' === $format) {
-            return $visitor->visitInteger($date->format($format), $type, $context);
+            return $visitor->visitInteger($date->format($format), $type);
         }
 
-        return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
     public function serializeDateTime(SerializationVisitorInterface $visitor, \DateTime $date, array $type, SerializationContext $context)
@@ -107,10 +107,10 @@ final class DateHandler implements SubscribingHandlerInterface
         $iso8601DateIntervalString = $this->format($date);
 
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
-            return $visitor->visitSimpleString($iso8601DateIntervalString, $type, $context);
+            return $visitor->visitSimpleString($iso8601DateIntervalString, $type);
         }
 
-        return $visitor->visitString($iso8601DateIntervalString, $type, $context);
+        return $visitor->visitString($iso8601DateIntervalString, $type);
     }
 
     private function isDataXmlNull($data)

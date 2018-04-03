@@ -52,7 +52,7 @@ final class StdClassHandler implements SubscribingHandlerInterface
 
         foreach ((array)$stdClass as $name => $value) {
             $metadata = new StaticPropertyMetadata('stdClass', $name, $value);
-            $visitor->visitProperty($metadata, $value, $context);
+            $visitor->visitProperty($metadata, $value);
         }
 
         return $visitor->endVisitingObject($classMetadata, $stdClass, array('name' => 'stdClass'), $context);

@@ -1360,7 +1360,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
             function (SerializationVisitorInterface $visitor, $object, array $type, Context $context) {
-                return $visitor->visitArray(iterator_to_array($object), $type, $context);
+                return $visitor->visitArray(iterator_to_array($object), $type);
             }
         );
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),

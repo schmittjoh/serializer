@@ -156,7 +156,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $type = $this->findInitialType($type, $context);
 
-        $visitor = $this->serializationVisitors[$format]->getVisitor($this->serializationNavigator, $this->accessorStrategy);
+        $visitor = $this->serializationVisitors[$format]->getVisitor($this->serializationNavigator, $this->accessorStrategy, $context);
 
         $preparedData = $visitor->prepare($data);
         $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, $format, $type);
@@ -173,7 +173,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
-        $visitor = $this->deserializationVisitors[$format]->getVisitor($this->deserializationNavigator, $this->accessorStrategy);
+        $visitor = $this->deserializationVisitors[$format]->getVisitor($this->deserializationNavigator, $this->accessorStrategy, $context);
         $preparedData = $visitor->prepare($data);
         $result = $this->visit($this->deserializationNavigator, $visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
@@ -193,7 +193,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
 
-        $visitor = $this->serializationVisitors['json']->getVisitor($this->serializationNavigator, $this->accessorStrategy);
+        $visitor = $this->serializationVisitors['json']->getVisitor($this->serializationNavigator, $this->accessorStrategy, $context);
 
         $type = $this->findInitialType($type, $context);
 
@@ -224,7 +224,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($this->deserializationVisitors['json'])) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
-        $visitor = $this->deserializationVisitors['json']->getVisitor($this->deserializationNavigator, $this->accessorStrategy);
+        $visitor = $this->deserializationVisitors['json']->getVisitor($this->deserializationNavigator, $this->accessorStrategy, $context);
 
         return $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
     }
