@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscrimina
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
 
@@ -499,6 +500,31 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($p, $m->propertyMetadata['age']);
     }
 
+    public function testObjectWithVirtualPropertiesAndDuplicatePropName()
+    {
+        $class = ObjectWithVirtualPropertiesAndDuplicatePropName::class;
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+
+        $p = new PropertyMetadata($class, 'id');
+        $p->serializedName = 'id';
+        $this->assertEquals($p, $m->propertyMetadata['id']);
+
+        $p = new PropertyMetadata($class, 'name');
+        $p->serializedName = 'name';
+        $this->assertEquals($p, $m->propertyMetadata['name']);
+
+        $p = new VirtualPropertyMetadata($class, 'foo');
+        $p->serializedName = 'id';
+        $p->getter = 'getId';
+
+        $this->assertEquals($p, $m->propertyMetadata['foo']);
+
+        $p = new VirtualPropertyMetadata($class, 'bar');
+        $p->serializedName = 'mood';
+        $p->getter = 'getName';
+
+        $this->assertEquals($p, $m->propertyMetadata['bar']);
+    }
     public function testExcludePropertyNoPublicAccessorException()
     {
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));

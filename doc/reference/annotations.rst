@@ -258,6 +258,9 @@ In this example:
 - ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
+ ``@VirtualProperty()`` can also have an optional property ``name``, used to define the internal property name
+(for sorting proposes as example). When not specified, it defaults to the method name with the "get" prefix removed.
+
 .. note ::
 
     This only works for serialization and is completely ignored during deserialization.

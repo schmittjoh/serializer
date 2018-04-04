@@ -241,15 +241,20 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
+                if (!$propertyMetadata->serializedName) {
+                    $propertyMetadata->serializedName = $this->namingStrategy->translateName($propertyMetadata);
+                }
+
+                foreach ($propertyAnnotations as $annot) {
+                    if ($annot instanceof VirtualProperty && $annot->name !== null) {
+                        $propertyMetadata->name = $annot->name;
+                    }
+                }
 
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
                     $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
-
-                    if (!$propertyMetadata->serializedName) {
-                        $propertyMetadata->serializedName = $this->namingStrategy->translateName($propertyMetadata);
-                    }
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }

@@ -1,0 +1,10 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName:
+    properties:
+        id: ~
+        name: ~
+    virtual_properties:
+        getId:
+          name: foo
+        getName:
+          name: bar
+          serialized_name: mood

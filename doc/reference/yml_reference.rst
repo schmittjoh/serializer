@@ -24,9 +24,11 @@ YAML Reference
                 namespace: http://www.w3.org/2005/Atom
         virtual_properties:
             getSomeProperty:
+                name: optional-prop-name
                 serialized_name: foo
                 type: integer
             expression_prop:
+                name: optional-prop-name
                 exp: object.getName()
                 serialized_name: foo
                 type: integer

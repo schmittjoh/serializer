@@ -79,8 +79,11 @@ class YamlDriver extends AbstractFileDriver
                     }
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 }
-                $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
-                $config['properties'][$methodName] = $propertySettings;
+
+                $pName = !empty($propertySettings["name"]) ? $propertySettings["name"] : $virtualPropertyMetadata->name;
+
+                $propertiesMetadata[$pName] = $virtualPropertyMetadata;
+                $config['properties'][$pName] = $propertySettings;
             }
         }
 
@@ -240,14 +243,22 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->maxDepth = (int)$pConfig['max_depth'];
                     }
                 }
+
+                if (!$pMetadata->serializedName) {
+                    $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
+                }
+
+                if (isset($config['properties'][$pName])) {
+                    $pConfig = $config['properties'][$pName];
+
+                    if (isset($pConfig['name'])) {
+                        $pMetadata->name = (string)$pConfig['name'];
+                    }
+                }
+
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
-
-                    if (!$pMetadata->serializedName) {
-                        $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
-                    }
-
                     $metadata->addPropertyMetadata($pMetadata);
                 }
             }

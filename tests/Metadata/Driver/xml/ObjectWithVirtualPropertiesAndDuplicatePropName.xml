@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName">
+        <property name="id"/>
+        <property name="name"/>
+        <virtual-property method="getId" name="foo"/>
+        <virtual-property method="getName" name="bar" serialized-name="mood"/>
+    </class>
+</serializer>

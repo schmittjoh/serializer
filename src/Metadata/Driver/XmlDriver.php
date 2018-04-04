@@ -315,16 +315,20 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $inline = $pElem->attributes()->inline) {
                         $pMetadata->inline = 'true' === strtolower($inline);
                     }
+                }
 
+                if (!$pMetadata->serializedName) {
+                    $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
+                }
+
+                if (!empty($pElem) && null !== $name = $pElem->attributes()->name) {
+                    $pMetadata->name = (string)$name;
                 }
 
                 if ((ExclusionPolicy::NONE === (string)$exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === (string)$exclusionPolicy && $isExpose)
                 ) {
 
-                    if (!$pMetadata->serializedName) {
-                        $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
-                    }
 
                     $metadata->addPropertyMetadata($pMetadata);
                 }
