@@ -37,7 +37,7 @@ be possible to use ``@Expose(if="expression")`` to expose dynamically a property
 This annotation can be defined on a property to indicate that the property should
 not be serialized if the result will be "empty".
 
-Works option works only when serializing.
+Option works only when serializing and is applicable only to strings, arrays and ArrayObjects
 
 @SerializedName
 ~~~~~~~~~~~~~~~

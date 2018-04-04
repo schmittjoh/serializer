@@ -159,10 +159,17 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $v = $this->accessor->getValue($data, $metadata);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if ((null === $v && $context->shouldSerializeNull() !== true)
-            || (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v))
-        ) {
+        if (null === $v && $context->shouldSerializeNull() !== true) {
             return;
+        }
+
+        if (true === $metadata->skipWhenEmpty) {
+            if (($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v)) {
+                return;
+            }
+            if ('' === $v) {
+                return;
+            }
         }
 
         if ($this->namingStrategy instanceof AdvancedNamingStrategyInterface) {
