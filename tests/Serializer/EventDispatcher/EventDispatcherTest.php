@@ -156,6 +156,25 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         ), 'listeners', $this->dispatcher);
     }
 
+    public function testAddSubscriberIsGenerator()
+    {
+        $subscriber = new MockGeneratorSubscriber();
+        MockGeneratorSubscriber::$events = array(
+            array('event' => 'foo.bar_baz', 'format' => 'foo'),
+            array('event' => 'bar', 'method' => 'bar', 'class' => 'foo'),
+        );
+
+        $this->dispatcher->addSubscriber($subscriber);
+        $this->assertAttributeEquals(array(
+            'foo.bar_baz' => array(
+                array(array($subscriber, 'onfoobarbaz'), null, 'foo'),
+            ),
+            'bar' => array(
+                array(array($subscriber, 'bar'), 'foo', null),
+            ),
+        ), 'listeners', $this->dispatcher);
+    }
+
     protected function setUp()
     {
         $this->dispatcher = $this->createEventDispatcher();
@@ -180,6 +199,18 @@ class MockSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return self::$events;
+    }
+}
+
+class MockGeneratorSubscriber implements EventSubscriberInterface
+{
+    public static $events = array();
+
+    public static function getSubscribedEvents()
+    {
+        foreach (self::$events as $event) {
+            yield $event;
+        }
     }
 }
 

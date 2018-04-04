@@ -32,7 +32,7 @@ interface EventSubscriberInterface
      * The class may be omitted if the class wants to subscribe to events of all classes.
      * Same goes for the format key.
      *
-     * @return array
+     * @return array|\Generator
      */
     public static function getSubscribedEvents();
 }
