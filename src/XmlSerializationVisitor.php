@@ -23,7 +23,6 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * XmlSerializationVisitor.
@@ -137,12 +136,16 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
 
     public function visitInteger(int $data, array $type)
     {
-        return $this->visitNumeric($data, $type);
+        return $this->document->createTextNode((string)$data);
     }
 
     public function visitDouble(float $data, array $type)
     {
-        return $this->visitNumeric($data, $type);
+        if (floor($data) === $data) {
+            return $this->document->createTextNode($data.".0");
+        } else {
+            return $this->document->createTextNode((string)$data);
+        }
     }
 
     public function visitArray(array $data, array $type)
@@ -403,11 +406,6 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         $this->nullWasVisited = false;
 
         return $data;
-    }
-
-    private function visitNumeric($data, array $type)
-    {
-        return $this->document->createTextNode((string)$data);
     }
 
     /**

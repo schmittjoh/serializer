@@ -45,7 +45,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['boolean_false'] = 'false';
             $outputs['integer'] = '1';
             $outputs['float'] = '4.533';
-            $outputs['float_trailing_zero'] = '1';
+            $outputs['float_trailing_zero'] = '1.0';
             $outputs['simple_object'] = '{"foo":"foo","moo":"bar","camel_case":"boo"}';
             $outputs['circular_reference'] = '{"collection":[{"name":"child1"},{"name":"child2"}],"another_collection":[{"name":"child1"},{"name":"child2"}]}';
             $outputs['circular_reference_collection'] = '{"name":"foo","collection":[]}';
@@ -53,7 +53,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_booleans'] = '[true,false]';
             $outputs['array_integers'] = '[1,3,4]';
             $outputs['array_empty'] = '{"array":[]}';
-            $outputs['array_floats'] = '[1.34,3,6.42]';
+            $outputs['array_floats'] = '[1.34,3.0,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_list_and_map_difference'] = '{"list":[1,2,3],"map":{"0":1,"2":2,"3":3}}';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
@@ -64,7 +64,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_named_datetimeimmutables_object'] = '{"named_array_with_formatted_date":{"testdate1":"01.01.2047 12:47:47","testdate2":"05.12.2016 00:00:00"}}';
             $outputs['blog_post'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+00:00","is_published":false,"is_reviewed":false,"etag":"e86ce85cdb1253e4fc6352f5cf297248bceec62b","comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"comments2":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"metadata":{"foo":"bar"},"author":{"full_name":"Foo Bar"},"publisher":{"pub_name":"Bar Foo"},"tag":[{"name":"tag1"},{"name":"tag2"}]}';
             $outputs['blog_post_unauthored'] = '{"id":"what_a_nice_id","title":"This is a nice title.","created_at":"2011-07-30T00:00:00+00:00","is_published":false,"is_reviewed":false,"etag":"e86ce85cdb1253e4fc6352f5cf297248bceec62b","comments":[],"comments2":[],"metadata":{"foo":"bar"},"author":null,"publisher":null,"tag":null}';
-            $outputs['price'] = '{"price":3}';
+            $outputs['price'] = '{"price":3.0}';
             $outputs['currency_aware_price'] = '{"currency":"EUR","amount":2.34}';
             $outputs['order'] = '{"cost":{"price":12.34}}';
             $outputs['order_with_currency_aware_price'] = '{"cost":{"currency":"EUR","amount":1.23}}';

@@ -364,7 +364,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testNumerics($key, $value, $type)
     {
-        $this->assertEquals($this->getContent($key), $this->serialize($value));
+        $this->assertSame($this->getContent($key), $this->serialize($value));
 
         if ($this->hasDeserializer()) {
             $this->assertEquals($value, $this->deserialize($this->getContent($key), $type));

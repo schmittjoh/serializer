@@ -33,7 +33,7 @@ class JsonSerializationVisitorFactory implements SerializationVisitorFactory
     /**
      * @var int
      */
-    private $options = 0;
+    private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, SerializationContext $context): SerializationVisitorInterface
     {

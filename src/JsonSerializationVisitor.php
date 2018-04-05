@@ -26,7 +26,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
-    private $options = 0;
+    private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     private $dataStack;
     private $data;
@@ -40,7 +40,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         GraphNavigatorInterface $navigator,
         AccessorStrategyInterface $accessorStrategy,
         SerializationContext $context,
-        int $options = 0)
+        int $options = JSON_PRESERVE_ZERO_FRACTION)
     {
         parent::__construct($navigator, $accessorStrategy, $context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
