@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
 use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
@@ -31,6 +30,8 @@ use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -82,7 +83,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @param DeserializationVisitorFactory[] $deserializationVisitors
      * @param SerializationContextFactoryInterface|null $serializationContextFactory
      * @param DeserializationContextFactoryInterface|null $deserializationContextFactory
-     * @param AbstractParser|null $typeParser
+     * @param ParserInterface|null $typeParser
      */
     public function __construct(
         MetadataFactoryInterface $factory,
@@ -91,14 +92,14 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         array $deserializationVisitors,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null,
-        AbstractParser $typeParser = null
+        ParserInterface $typeParser = null
     ) {
         $this->factory = $factory;
         $this->graphNavigators = $graphNavigators;
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->typeParser = $typeParser ?? new Parser();
 
         $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();

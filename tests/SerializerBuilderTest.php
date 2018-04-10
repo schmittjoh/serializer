@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests;
 
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -29,6 +28,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
+use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -79,7 +79,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomTypeParser()
     {
-        $parserMock = $this->getMockBuilder(AbstractParser::class)
+        $parserMock = $this->getMockBuilder(ParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $parserMock

@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -59,7 +58,8 @@ use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\TypeParser;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
@@ -72,10 +72,10 @@ class AnnotationDriver implements DriverInterface
      */
     private $namingStrategy;
 
-    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, AbstractParser $typeParser = null)
+    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ParserInterface $typeParser = null)
     {
         $this->reader = $reader;
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
     }
 
