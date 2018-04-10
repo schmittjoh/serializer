@@ -12,6 +12,10 @@
     syntaxCheck                 = "false"
     bootstrap                   = "tests/bootstrap.php"
 >
+    <php>
+        <ini name="serialize_precision" value="14"/>
+    </php>
+
     <testsuites>
         <testsuite name="JMS Serializer Test Suite">
             <directory>./tests</directory>
