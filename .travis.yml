@@ -28,9 +28,9 @@ before_script:
 
 script:
     - vendor/bin/phpunit $PHPUNIT_FLAGS
-    - php tests/benchmark.php json 10
-    - php tests/benchmark.php yml 10
-    - php tests/benchmark.php xml 10
+    - php tests/benchmark.php json 3
+    - php tests/benchmark.php yml 3
+    - php tests/benchmark.php xml 3
 
 after_success:
     - if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
