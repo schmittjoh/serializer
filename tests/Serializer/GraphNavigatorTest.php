@@ -50,10 +50,6 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testResourceThrowsException()
     {
-        $this->context->expects($this->any())
-            ->method('getDirection')
-            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
-
         $this->serializationNavigator->accept(STDIN, null, $this->context);
     }
 
@@ -84,10 +80,6 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         $this->context->expects($this->once())
             ->method('getExclusionStrategy')
             ->will($this->returnValue($exclusionStrategy));
-
-        $this->context->expects($this->any())
-            ->method('getDirection')
-            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
         $this->context->expects($this->any())
             ->method('getVisitor')
@@ -123,10 +115,6 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue($exclusionStrategy));
 
         $this->context->expects($this->any())
-            ->method('getDirection')
-            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_DESERIALIZATION));
-
-        $this->context->expects($this->any())
             ->method('getVisitor')
             ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
 
@@ -146,10 +134,6 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         });
 
         $this->handlerRegistry->registerSubscribingHandler(new TestSubscribingHandler());
-
-        $this->context->expects($this->any())
-            ->method('getDirection')
-            ->will($this->returnValue(GraphNavigatorInterface::DIRECTION_SERIALIZATION));
 
         $this->context->expects($this->any())
             ->method('getVisitor')
