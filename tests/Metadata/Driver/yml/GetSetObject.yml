@@ -1,0 +1,15 @@
+JMS\Serializer\Tests\Fixtures\GetSetObject:
+    access_type_naming: camel_case
+    access_type: public_method
+    properties:
+        underscored_property:
+            type: string
+        id:
+            read_only: true
+        readOnlyProperty:
+            read_only: true
+        excludedProperty:
+            exclude: true
+        force_underscore:
+            type: string
+            access_type_naming: exact

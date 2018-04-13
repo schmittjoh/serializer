@@ -3,6 +3,7 @@
 namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use Metadata\Driver\DriverInterface;
 
 class CallbackDriverFactory implements DriverFactoryInterface
@@ -17,9 +18,16 @@ class CallbackDriverFactory implements DriverFactoryInterface
         $this->callback = $callable;
     }
 
-    public function createDriver(array $metadataDirs, Reader $reader)
+    /**
+     * {@inheritDoc}
+     */
+    public function createDriver(
+        array $metadataDirs,
+        Reader $reader,
+        ClassMetadataUpdaterInterface $propertyUpdater = null
+    )
     {
-        $driver = \call_user_func($this->callback, $metadataDirs, $reader);
+        $driver = \call_user_func($this->callback, $metadataDirs, $reader, $propertyUpdater);
         if (!$driver instanceof DriverInterface) {
             throw new \LogicException('The callback must return an instance of DriverInterface.');
         }

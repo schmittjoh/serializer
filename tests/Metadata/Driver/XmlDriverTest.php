@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest
@@ -98,15 +99,10 @@ class XmlDriverTest extends BaseDriverTest
         $this->assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
     }
 
-    protected function getDriver()
+    protected function getDriver($subFolder = null, ClassMetadataUpdaterInterface $propertyMetadataUpdater = null)
     {
-        $append = '';
-        if (func_num_args() == 1) {
-            $append = '/' . func_get_arg(0);
-        }
-
         return new XmlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
-        )));
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml/' . $subFolder,
+        )), $propertyMetadataUpdater);
     }
 }

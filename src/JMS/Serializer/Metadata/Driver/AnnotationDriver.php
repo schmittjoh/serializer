@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Accessor\Updater\ClassAccessorUpdater;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -56,6 +57,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
@@ -64,9 +66,15 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    public function __construct(Reader $reader)
+    /**
+     * @var ClassMetadataUpdaterInterface
+     */
+    private $classUpdater;
+
+    public function __construct(Reader $reader, ClassMetadataUpdaterInterface $classUpdater = null)
     {
         $this->reader = $reader;
+        $this->classUpdater = $classUpdater ?: new ClassAccessorUpdater();
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -79,7 +87,6 @@ class AnnotationDriver implements DriverInterface
 
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
-        $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
@@ -92,7 +99,8 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof Exclude) {
                 $excludeAll = true;
             } elseif ($annot instanceof AccessType) {
-                $classAccessType = $annot->type;
+                $classMetadata->accessType = $annot->type;
+                $classMetadata->accessTypeNaming = $annot->naming;
             } elseif ($annot instanceof ReadOnly) {
                 $readOnlyClass = true;
             } elseif ($annot instanceof AccessorOrder) {
@@ -152,12 +160,14 @@ class AnnotationDriver implements DriverInterface
                 $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
             }
 
+            /** @var PropertyMetadata $propertyMetadata */
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
                 $isExclude = false;
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata
                     || $propertyMetadata instanceof ExpressionPropertyMetadata;
                 $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
-                $accessType = $classAccessType;
+                $accessType = null;
+                $accessTypeNaming = null;
                 $accessor = array(null, null);
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
@@ -212,6 +222,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlElementCData = $annot->cdata;
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
+                        $accessTypeNaming = $annot->naming;
                     } elseif ($annot instanceof ReadOnly) {
                         $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
@@ -240,11 +251,18 @@ class AnnotationDriver implements DriverInterface
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
-                    $propertyMetadata->setAccessor($accessType, $accessor[0], $accessor[1]);
+                    $propertyMetadata->setAccessor(
+                        $accessType,
+                        $accessor[0],
+                        $accessor[1],
+                        $accessTypeNaming
+                    );
                     $classMetadata->addPropertyMetadata($propertyMetadata);
                 }
             }
         }
+
+        $this->classUpdater->update($classMetadata);
 
         return $classMetadata;
     }

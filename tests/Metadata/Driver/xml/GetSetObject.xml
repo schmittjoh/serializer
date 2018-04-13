@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-    <class name="JMS\Serializer\Tests\Fixtures\GetSetObject" access-type="public_method">
+    <class name="JMS\Serializer\Tests\Fixtures\GetSetObject" access-type="public_method" access-type-naming="camel_case">
         <property name="id" type="integer" access-type="property" />
         <property name="name" type="string" accessor-getter="getTrimmedName" accessor-setter="setCapitalizedName" />
+        <property name="underscored_property" type="string"/>
+        <property name="force_underscore" type="string" access-type-naming="exact"/>
+
+        <property name="readOnlyProperty" read-only="true" />
+        <property name="excludedProperty" exclude="true" />
+
     </class>
 </serializer>

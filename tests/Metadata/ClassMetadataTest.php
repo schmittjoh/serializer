@@ -36,7 +36,7 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 
     public function testSerialization()
     {
-        $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
+        $meta = new PropertyMetadata(PropertyMetadataOrder::class, 'b');
         $restoredMeta = unserialize(serialize($meta));
         $this->assertEquals($meta, $restoredMeta);
     }
@@ -68,52 +68,38 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerPublicMethodData
+     * @param string $property
+     * @param string|null $type
+     * @param string|null $getter
+     * @param string|null $setter
      */
-    public function testAccessorTypePublicMethod($property, $getterInit, $setterInit, $getterName, $setterName)
+    public function testAccessorTypePublicMethod($property, $type, $getter, $setter)
     {
         $object = new PropertyMetadataPublicMethod();
 
         $metadata = new PropertyMetadata(get_class($object), $property);
-        $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getterInit, $setterInit);
+        $metadata->setAccessor($type, $getter, $setter);
 
-        $this->assertEquals($getterName, $metadata->getter);
-        $this->assertEquals($setterName, $metadata->setter);
+        $this->assertEquals($getter, $metadata->getter);
+        $this->assertEquals($setter, $metadata->setter);
+        $this->assertEquals($type, $metadata->accessType);
 
         $metadata->setValue($object, 'x');
 
-        $this->assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
-    }
-
-    /**
-     * @dataProvider providerPublicMethodException
-     */
-    public function testAccessorTypePublicMethodException($getter, $setter, $message)
-    {
-        $this->setExpectedException('\JMS\Serializer\Exception\RuntimeException', $message);
-
-        $object = new PropertyMetadataPublicMethod();
-
-        $metadata = new PropertyMetadata(get_class($object), 'e');
-        $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getter, $setter);
+        $this->assertEquals(
+            sprintf('%1$s:%1$s:x', strtoupper($property)),
+            $metadata->getValue($object)
+        );
     }
 
     public function providerPublicMethodData()
     {
-        return array(
-            array('a', null, null, 'geta', 'seta'),
-            array('b', null, null, 'isb', 'setb'),
-            array('c', null, null, 'hasc', 'setc'),
-            array('d', 'fetchd', 'saved', 'fetchd', 'saved')
-        );
-    }
-
-    public function providerPublicMethodException()
-    {
-        return array(
-            array(null, null, 'a public getE method, nor a public isE method, nor a public hasE method in class'),
-            array(null, 'setx', 'a public getE method, nor a public isE method, nor a public hasE method in class'),
-            array('getx', null, 'no public setE method in class'),
-        );
+        return [
+            ['a', PropertyMetadata::ACCESS_TYPE_PROPERTY, 'geta', 'seta'],
+            ['b', PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, 'isb', 'setb'],
+            ['c', PropertyMetadata::ACCESS_TYPE_PROPERTY, 'hasc', 'setc'],
+            ['d', PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, 'fetchd', 'saved']
+        ];
     }
 }
 

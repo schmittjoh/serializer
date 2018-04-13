@@ -20,11 +20,15 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 
 class AnnotationDriverTest extends BaseDriverTest
 {
-    protected function getDriver()
+    /**
+     * {@inheritDoc}
+     */
+    protected function getDriver($subFolder = null, ClassMetadataUpdaterInterface $propertyMetadataUpdater = null)
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), $propertyMetadataUpdater);
     }
 }

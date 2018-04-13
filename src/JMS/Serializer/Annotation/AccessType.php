@@ -27,8 +27,12 @@ namespace JMS\Serializer\Annotation;
 final class AccessType
 {
     /**
-     * @Required
      * @var string
      */
     public $type;
+
+    /**
+     * @var string
+     */
+    public $naming;
 }

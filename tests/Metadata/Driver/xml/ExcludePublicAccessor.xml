@@ -2,5 +2,6 @@
 <serializer>
     <class name="JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor" access-type="public_method" read-only="true">
         <property name="iShallNotBeAccessed" exclude="true" />
+        <property name="id" read-only="true" />
     </class>
 </serializer>

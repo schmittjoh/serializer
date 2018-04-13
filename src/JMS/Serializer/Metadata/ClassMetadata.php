@@ -63,6 +63,9 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlDiscriminatorCData = true;
     public $xmlDiscriminatorNamespace;
 
+    public $accessType;
+    public $accessTypeNaming;
+
     public function setDiscriminator($fieldName, array $map, array $groups = array())
     {
         if (empty($fieldName)) {

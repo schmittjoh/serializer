@@ -6,23 +6,29 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
+use JMS\Serializer\Metadata\ClassMetadataUpdaterInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 
 class DefaultDriverFactory implements DriverFactoryInterface
 {
-    public function createDriver(array $metadataDirs, Reader $annotationReader)
+    public function createDriver(
+        array $metadataDirs,
+        Reader $annotationReader,
+        ClassMetadataUpdaterInterface $propertyUpdater = null
+    )
     {
-        if (!empty($metadataDirs)) {
-            $fileLocator = new FileLocator($metadataDirs);
-
-            return new DriverChain(array(
-                new YamlDriver($fileLocator),
-                new XmlDriver($fileLocator),
-                new AnnotationDriver($annotationReader),
-            ));
+        $annotationDriver = new AnnotationDriver($annotationReader, $propertyUpdater);
+        if (empty($metadataDirs)) {
+            return $annotationDriver;
         }
 
-        return new AnnotationDriver($annotationReader);
+        $fileLocator = new FileLocator($metadataDirs);
+
+        return new DriverChain(array(
+            new YamlDriver($fileLocator, $propertyUpdater),
+            new XmlDriver($fileLocator, $propertyUpdater),
+            $annotationDriver,
+        ));
     }
 }
