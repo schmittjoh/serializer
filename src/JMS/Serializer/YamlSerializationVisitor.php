@@ -93,6 +93,8 @@ class YamlSerializationVisitor extends AbstractVisitor
                 continue;
             }
 
+            $currentContent = $this->writer->content;
+
             if ($isList && !$isHash) {
                 $this->writer->writeln('-');
             } else {
@@ -101,10 +103,12 @@ class YamlSerializationVisitor extends AbstractVisitor
 
             $this->writer->indent();
 
-            if (null !== $v = $this->navigator->accept($v, $this->getElementType($type), $context)) {
+            if (null !== $val = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->writer
                     ->rtrim(false)
-                    ->writeln(' ' . $v);
+                    ->writeln(' ' . $val);
+            } elseif (is_object($v) && null !== $context->getExclusionStrategy() && $context->getMetadataStack()->isEmpty()) {
+                $this->writer->content = $currentContent;
             }
 
             $this->writer->outdent();

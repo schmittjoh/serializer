@@ -97,6 +97,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['person_secret_show'] = '{"name":"mike","gender":"f"}';
             $outputs['person_secret_hide'] = '{"name":"mike"}';
             $outputs['null'] = 'null';
+            $outputs['array_objects_nullable'] = '{"foo":"bar","1":"bar"}';
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
             $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
             $outputs['hash_empty'] = '{"hash":{}}';

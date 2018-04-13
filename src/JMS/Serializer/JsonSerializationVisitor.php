@@ -110,16 +110,18 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
         foreach ($data as $k => $v) {
-            $v = $this->navigator->accept($v, $this->getElementType($type), $context);
+            $val = $this->navigator->accept($v, $this->getElementType($type), $context);
 
-            if (null === $v && $context->shouldSerializeNull() !== true) {
+            if (null === $val && ($context->shouldSerializeNull() !== true
+                || (is_object($v) && null !== $context->getExclusionStrategy() && $context->getMetadataStack()->isEmpty()))
+            ) {
                 continue;
             }
 
             if ($isList) {
-                $rs[] = $v;
+                $rs[] = $val;
             } else {
-                $rs[$k] = $v;
+                $rs[$k] = $val;
             }
         }
 

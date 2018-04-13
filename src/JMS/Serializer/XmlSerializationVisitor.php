@@ -195,6 +195,8 @@ class XmlSerializationVisitor extends AbstractVisitor
 
             if (null !== $node = $this->navigator->accept($v, $this->getElementType($type), $context)) {
                 $this->currentNode->appendChild($node);
+            } elseif (is_object($v) && null !== $context->getExclusionStrategy() && $context->getMetadataStack()->isEmpty()) {
+                $entryNode->parentNode->removeChild($entryNode);
             }
 
             $this->revertCurrentNode();
