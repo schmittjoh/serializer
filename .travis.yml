@@ -24,6 +24,7 @@ before_script:
 
 script:
     - vendor/bin/phpunit $PHPUNIT_FLAGS
+    - phpenv config-rm xdebug.ini || true
     - php tests/benchmark.php json 3
     - php tests/benchmark.php xml 3
 
