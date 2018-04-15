@@ -20,10 +20,11 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\DeserializationGraphNavigator;
+use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
-use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -94,10 +95,10 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         $class = __NAMESPACE__ . '\SerializableClass';
         $metadata = $this->metadataFactory->getMetadataForClass($class);
 
-        $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
+        $this->context = $this->getMockBuilder(DeserializationContext::class)->getMock();
 
         $context = $this->context;
-        $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
+        $exclusionStrategy = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $this->callback(function ($navigatorContext) use ($context) {
@@ -116,9 +117,9 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
+            ->will($this->returnValue($this->getMockBuilder(DeserializationVisitorInterface::class)->getMock()));
 
-        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        $navigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
         $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
