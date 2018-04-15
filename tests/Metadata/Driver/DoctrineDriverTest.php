@@ -24,8 +24,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 
-class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
+class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function getMetadata()
     {
@@ -144,7 +145,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
     public function getAnnotationDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDoctrineDriver()

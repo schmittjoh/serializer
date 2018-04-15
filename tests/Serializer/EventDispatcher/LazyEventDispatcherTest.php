@@ -57,10 +57,10 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $this->dispatcher->addListener('pre', array('b', 'foo'), 'Foo');
         $this->dispatcher->addListener('pre', array('b', 'all'));
 
-        $b->bar($this->event, 'pre', 'bar', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'bar', 'json', $this->dispatcher);
-        $b->foo($this->event, 'pre', 'foo', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'foo', 'json', $this->dispatcher);
+        $b->bar($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
+        $b->foo($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
+        $b->all($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
         $b->_replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');

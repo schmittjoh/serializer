@@ -24,8 +24,9 @@ use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 
-class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
+class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function getMetadata()
     {
@@ -109,7 +110,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
 
     public function getAnnotationDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDoctrinePHPCRDriver()

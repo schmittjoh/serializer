@@ -50,8 +50,6 @@ XML Reference
             <callback-method name="foo" type="pre-serialize" />
             <callback-method name="bar" type="post-serialize" />
             <callback-method name="baz" type="post-deserialize" />
-            <callback-method name="serializeToXml" type="handler" direction="serialization" format="xml" />
-            <callback-method name="deserializeFromJson" type="handler" direction="deserialization" format="xml" />
 
             <virtual-property method="public_method"
                       name="some-property"

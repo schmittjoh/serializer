@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest
@@ -66,6 +67,7 @@ class XmlDriverTest extends BaseDriverTest
         $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
+        $p->serializedName = 'title';
         $p->type = array('name' => 'string', 'params' => array());
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
@@ -78,6 +80,7 @@ class XmlDriverTest extends BaseDriverTest
         $p->type = array('name' => 'string', 'params' => array());
         $p->getter = 'getTrimmedName';
         $p->setter = 'setCapitalizedName';
+        $p->serializedName = 'name';
 
         $this->assertEquals($p, $m->propertyMetadata['name']);
     }
@@ -107,6 +110,6 @@ class XmlDriverTest extends BaseDriverTest
 
         return new XmlDriver(new FileLocator(array(
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
-        )));
+        )), new IdenticalPropertyNamingStrategy());
     }
 }

@@ -20,8 +20,8 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\VisitorInterface;
 
 /**
  * Object constructor that allows deserialization into already constructed
@@ -44,10 +44,10 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
     /**
      * {@inheritdoc}
      */
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
+    public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
     {
-        if ($context->attributes->containsKey('target') && $context->getDepth() === 1) {
-            return $context->attributes->get('target')->get();
+        if ($context->hasAttribute('target') && $context->getDepth() === 1) {
+            return $context->getAttribute('target');
         }
 
         return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);

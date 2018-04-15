@@ -16,6 +16,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
@@ -26,7 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
 
-class IntegrationTest extends \PHPUnit_Framework_TestCase
+class IntegrationTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ManagerRegistry */
     private $registry;
@@ -101,7 +102,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
                 function (array $metadataDirs, Reader $annotationReader) use ($registry) {
-                    $defaultFactory = new DefaultDriverFactory();
+                    $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }

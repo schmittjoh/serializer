@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\JsonDeserializationVisitor;
@@ -31,10 +32,11 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
+use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
-use PhpCollection\Map;
 
-class ArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayTest extends \PHPUnit\Framework\TestCase
 {
     protected $serializer;
 
@@ -43,11 +45,12 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
 
         $this->serializer = new Serializer(
-            new MetadataFactory(new AnnotationDriver(new AnnotationReader())),
+            new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy)),
             new HandlerRegistry(),
             new UnserializeObjectConstructor(),
-            new Map(array('json' => new JsonSerializationVisitor($namingStrategy))),
-            new Map(array('json' => new JsonDeserializationVisitor($namingStrategy)))
+            array('json' => new JsonSerializationVisitorFactory()),
+            array('json' => new JsonDeserializationVisitorFactory()),
+            new DefaultAccessorStrategy()
         );
     }
 
@@ -71,7 +74,8 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testToArrayWithScalar($input)
     {
-        $this->setExpectedException('JMS\Serializer\Exception\RuntimeException', sprintf(
+        $this->expectException('JMS\Serializer\Exception\RuntimeException');
+        $this->expectExceptionMessage(sprintf(
             'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
             gettype($input),
             gettype($input)

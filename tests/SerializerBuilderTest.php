@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Parser\AbstractParser;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -29,11 +30,12 @@ use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
+class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var SerializerBuilder */
     private $builder;
@@ -48,8 +50,6 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>
 <result><![CDATA[foo]]></result>
 ', $serializer->serialize('foo', 'xml'));
-        $this->assertEquals('foo
-', $serializer->serialize('foo', 'yml'));
 
         $this->assertEquals('foo', $serializer->deserialize('"foo"', 'string', 'json'));
         $this->assertEquals('foo', $serializer->deserialize('<?xml version="1.0" encoding="UTF-8"?><result><![CDATA[foo]]></result>', 'string', 'xml'));
@@ -75,7 +75,25 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $serializer = $this->builder->build();
 
-        $this->assertEquals('"2020-04-16T00:00:00+0000"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
+        $this->assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
+    }
+
+    public function testCustomTypeParser()
+    {
+        $parserMock = $this->getMockBuilder(AbstractParser::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $parserMock
+            ->method('parse')
+            ->willReturn(['name' => 'DateTimeImmutable', 'params' => [2 => 'd-Y-m']]);
+
+        $this->builder->setTypeParser($parserMock);
+
+        $serializer = $this->builder->build();
+
+        $result = $serializer->deserialize('"04-2020-10"', "XXX", 'json');
+        $this->assertInstanceOf(\DateTimeImmutable::class, $result);
+        $this->assertEquals("2020-10-04", $result->format("Y-m-d"));
     }
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
@@ -94,7 +112,7 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitor(new CamelCaseNamingStrategy()))
+            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
         );
 
         $this->builder->build()->serialize('foo', 'xml');
@@ -249,22 +267,6 @@ class SerializerBuilderTest extends \PHPUnit_Framework_TestCase
 
         $object = $serializer->deserialize($serialized, PersonSecretWithVariables::class, 'json');
         $this->assertEquals($person, $object);
-    }
-
-    public function testAdvancedNamingStrategy()
-    {
-        $this->builder->setAdvancedNamingStrategy(new ContextualNamingStrategy());
-        $serializer = $this->builder->build();
-
-        $person = new Person();
-        $person->name = "bar";
-
-        $json = $serializer->serialize($person, "json");
-        $this->assertEquals('{"NAME":"bar"}', $json);
-
-        $json = '{"Name": "bar"}';
-        $person = $serializer->deserialize($json, Person::class, "json");
-        $this->assertEquals("bar", $person->name);
     }
 
     protected function setUp()

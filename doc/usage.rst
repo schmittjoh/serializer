@@ -15,14 +15,12 @@ very easily:
         $serializer = JMS\Serializer\SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json');
         $serializer->serialize($object, 'xml');
-        $serializer->serialize($object, 'yml');
 
     .. code-block :: jinja
 
         {{ object | serialize }} {# uses JSON #}
         {{ object | serialize('json') }}
         {{ object | serialize('xml') }}
-        {{ object | serialize('yml') }}
 
 Deserializing Objects
 ---------------------

@@ -258,6 +258,9 @@ In this example:
 - ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
+ ``@VirtualProperty()`` can also have an optional property ``name``, used to define the internal property name
+(for sorting proposes as example). When not specified, it defaults to the method name with the "get" prefix removed.
+
 .. note ::
 
     This only works for serialization and is completely ignored during deserialization.
@@ -292,26 +295,6 @@ object has been serialized.
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called after
 the object has been deserialized.
-
-@HandlerCallback
-~~~~~~~~~~~~~~~~
-This annotation can be defined on a method if serialization/deserialization is handled
-by the object itself.
-
-.. code-block :: php
-
-    <?php
-
-    class Article
-    {
-        /**
-         * @HandlerCallback("xml", direction = "serialization")
-         */
-        public function serializeToXml(XmlSerializationVisitor $visitor)
-        {
-            // custom logic here
-        }
-    }
 
 @Discriminator
 ~~~~~~~~~~~~~~
