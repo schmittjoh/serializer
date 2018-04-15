@@ -155,13 +155,13 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         if ($children) {
-            $form['children'] = $children;
+            $form[$data->getName() ?: 'children'] = $children;
         }
 
         if ($isRoot) {
             $visitor->setRoot($form);
         }
 
-        return $form;
+        return $form ? $form : $data->getData();
     }
 }
