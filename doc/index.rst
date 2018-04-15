@@ -13,7 +13,7 @@ Built-in features include:
 - Supports many built-in PHP types (such as dates)
 - Integrates with Doctrine ORM, et. al.
 - Supports versioning, e.g. for APIs
-- Configurable via PHP, XML, YAML, or Doctrine Annotations
+- Configurable via XML, YAML, or Doctrine Annotations
 
 Installation
 ------------
