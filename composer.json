@@ -37,10 +37,11 @@
         "symfony/dependency-injection": "^3.0|^4.0",
         "symfony/yaml": "^3.3|^4.0",
         "symfony/translation": "^3.0|^4.0",
-        "symfony/validator": "^3.0|^4.0",
+        "symfony/validator": "^3.1.9|^4.0",
         "symfony/form": "^3.0|^4.0",
         "symfony/filesystem": "^3.0|^4.0",
         "symfony/expression-language": "^3.0|^4.0",
+        "phpunit/phpunit-mock-objects": "^5.0|^6.0",
         "phpunit/phpunit": "^6.0"
     },
     "autoload": {
