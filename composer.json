@@ -16,14 +16,14 @@
         }        
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "jms/metadata": "~1.1",
         "jms/parser-lib": "1.*",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3"
     },
     "suggest": {
-        "symfony/yaml": "Required if you'd like to serialize data to YAML format.",
+        "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
         "doctrine/collections": "Required if you like to use doctrine collection types as ArrayCollection.",
         "doctrine/cache": "Required if you like to use cache functionality."
     },

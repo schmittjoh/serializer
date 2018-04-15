@@ -99,7 +99,7 @@ interface SerializationVisitorInterface
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type): void;
+    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -118,7 +118,7 @@ interface SerializationVisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type);
+    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type);
 
     /**
      * @param mixed $data

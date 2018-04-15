@@ -138,7 +138,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();

@@ -204,7 +204,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
@@ -285,10 +285,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
      * @param ClassMetadata $metadata
      * @param mixed $data
      * @param array $type
-     * @param DeserializationContext $context
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type) : object
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();
@@ -337,7 +336,6 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     /**
      * Retrieves internalSubset even in bugfixed php versions
      *
-     * @param \DOMDocumentType $child
      * @param string $data
      * @return string
      */

@@ -111,13 +111,13 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         return $rs;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         $this->dataStack->push($this->data);
         $this->data = array();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
