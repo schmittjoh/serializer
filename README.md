@@ -10,6 +10,9 @@ You are browsing the code of upcoming 2.0 release, if you are interested in the 
 
 Differences between the 1.x and 2.x series can be found in the [CANGELOG][CANGELOG].
 
+If you are submitting a pull request, until the 2.0 is not released submit it targeting the 1.x branch.
+Accepted pull request will be ported to the 2.0 release when possible. 
+
 ## Introduction
 
 This library allows you to (de-)serialize data of any complexity. Currently, it supports XML and JSON.
@@ -24,6 +27,7 @@ Built-in features include:
 - Supports versioning, e.g. for APIs
 - Configurable via XML, YAML, or Annotations
 
+   
 ## Documentation
 
 Learn more about the serializer in its [documentation](http://jmsyst.com/libs/serializer).
