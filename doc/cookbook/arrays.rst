@@ -1,4 +1,4 @@
-Serailizing arrays and hashes
+Serializing arrays and hashes
 =============================
 
 Introduction
