@@ -288,9 +288,14 @@ final class GraphNavigator implements GraphNavigatorInterface
                 $typeValue = (string)$data[$metadata->discriminatorFieldName];
                 break;
 
-            // Check XML attribute for discriminatorFieldName
-            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
+            // Check XML attribute without namespace for discriminatorFieldName
+            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && null === $metadata->xmlDiscriminatorNamespace && isset($data->attributes()->{$metadata->discriminatorFieldName}):
+                $typeValue = (string)$data->attributes()->{$metadata->discriminatorFieldName};
+                break;
+
+            // Check XML attribute with namespace for discriminatorFieldName
+            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
+                $typeValue = (string)$data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
                 break;
 
             // Check XML element with namespace for discriminatorFieldName
