@@ -120,6 +120,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
+            $outputs['type_casting'] = '{"as_string":"8"}';
         }
 
         if (!isset($outputs[$key])) {

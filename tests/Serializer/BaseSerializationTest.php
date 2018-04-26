@@ -86,11 +86,13 @@ use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh236Foo;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
+use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
+use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -159,6 +161,17 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             $this->getContent('nullable_skip'),
             $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeNull(false))
+        );
+    }
+
+    public function testObjectUsingTypeCasting()
+    {
+        $typeAliasing = new ObjectUsingTypeCasting();
+        $typeAliasing->asString = new ObjectWithToString("8");
+
+        $this->assertEquals(
+            $this->getContent('type_casting'),
+            $this->serialize($typeAliasing)
         );
     }
 
