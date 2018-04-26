@@ -25,7 +25,7 @@ Built-in features include:
 - Supports many built-in PHP types (such as dates, intervals)
 - Integrates with Doctrine ORM, et. al.
 - Supports versioning, e.g. for APIs
-- Configurable via XML, YAML, or Annotations
+- Configurable via XML or Annotations
 
    
 ## Documentation

@@ -6,7 +6,6 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\Parser\AbstractParser;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
-use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\TypeParser;
 use Metadata\Driver\DriverChain;
@@ -32,7 +31,6 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $fileLocator = new FileLocator($metadataDirs);
 
             return new DriverChain(array(
-                new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
                 new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
                 new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser),
             ));

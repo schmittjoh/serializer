@@ -22,7 +22,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
