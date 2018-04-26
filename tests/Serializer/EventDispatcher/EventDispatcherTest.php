@@ -208,7 +208,7 @@ class MockListener
         $this->wasReplayed = true;
     }
 
-    public function _verify($message = null)
+    public function _verify($message = '')
     {
         Assert::assertSame($this->expected, $this->actual, $message);
     }
