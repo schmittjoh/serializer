@@ -23,6 +23,11 @@ use JMS\Serializer\SerializationContext;
 
 class YamlSerializationTest extends BaseSerializationTest
 {
+    public function testObjectUsingTypeCasting()
+    {
+        $this->markTestSkipped('This is not available for the YAML format.');
+    }
+
     public function testEmptyChild()
     {
         $this->markTestSkipped('This is not available for the YAML format.');
