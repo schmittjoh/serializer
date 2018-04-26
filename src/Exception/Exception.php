@@ -23,6 +23,6 @@ namespace JMS\Serializer\Exception;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-interface Exception
+interface Exception extends \Throwable
 {
 }
