@@ -162,6 +162,9 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testWhitelistedDocumentTypesAreAllowed()
     {
         $this->deserializationVisitors['xml']->setDoctypeWhitelist(array(

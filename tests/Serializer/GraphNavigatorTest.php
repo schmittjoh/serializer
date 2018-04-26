@@ -125,6 +125,9 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testNavigatorChangeTypeOnSerialization()
     {
         $object = new SerializableClass;
