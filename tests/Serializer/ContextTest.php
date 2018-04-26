@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -191,11 +193,5 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 
         $context->setSerializeNull(true);
         $this->assertTrue($context->shouldSerializeNull());
-
-        $context->setSerializeNull("foo");
-        $this->assertTrue($context->shouldSerializeNull());
-
-        $context->setSerializeNull("0");
-        $this->assertFalse($context->shouldSerializeNull());
     }
 }

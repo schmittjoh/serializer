@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -81,7 +83,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
         $format = $this->getFormat($type);
         if ('U' === $format) {
-            return $visitor->visitInteger($date->format($format), $type);
+            return $visitor->visitInteger((int) $date->format($format), $type);
         }
 
         return $visitor->visitString($date->format($this->getFormat($type)), $type);
@@ -143,7 +145,7 @@ final class DateHandler implements SubscribingHandlerInterface
             return null;
         }
 
-        return $this->parseDateInterval($data);
+        return $this->parseDateInterval((string) $data);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)

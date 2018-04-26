@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\Handler\DateHandler;
@@ -98,7 +100,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
 
-        $timestamp = time();
+        $timestamp = (string)time();
         $timezone = 'Europe/Brussels';
         $type = ['name' => 'DateTime', 'params' => ['U', $timezone]];
 
@@ -120,7 +122,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
 
-        $timestamp = time();
+        $timestamp = (string)time();
         $timezone = 'Europe/Brussels';
         $type = ['name' => 'DateTimeImmutable', 'params' => ['U', $timezone]];
 

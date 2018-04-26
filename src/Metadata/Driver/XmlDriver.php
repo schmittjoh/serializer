@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -67,8 +69,8 @@ class XmlDriver extends AbstractFileDriver
 
         $metadata->fileResources[] = $path;
         $metadata->fileResources[] = $class->getFileName();
-        $exclusionPolicy = strtoupper($elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
-        $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower($exclude) : false;
+        $exclusionPolicy = strtoupper((string)$elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
+        $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower((string)$exclude) : false;
         $classAccessType = (string)($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
         $propertiesMetadata = array();
@@ -86,7 +88,7 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootNamespace = (string)$xmlRootNamespace;
         }
 
-        $readOnlyClass = 'true' === strtolower($elem->attributes()->{'read-only'});
+        $readOnlyClass = 'true' === strtolower((string)$elem->attributes()->{'read-only'});
 
         $discriminatorFieldName = (string)$elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = array();
@@ -173,7 +175,7 @@ class XmlDriver extends AbstractFileDriver
                 if (!empty($pElem)) {
 
                     if (null !== $exclude = $pElem->attributes()->exclude) {
-                        $isExclude = 'true' === strtolower($exclude);
+                        $isExclude = 'true' === strtolower((string)$exclude);
                     }
 
                     if ($isExclude) {
@@ -181,19 +183,19 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $expose = $pElem->attributes()->expose) {
-                        $isExpose = 'true' === strtolower($expose);
+                        $isExpose = 'true' === strtolower((string)$expose);
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'exclude-if'}) {
-                        $pMetadata->excludeIf = $excludeIf;
+                        $pMetadata->excludeIf = (string)$excludeIf;
                     }
 
                     if (null !== $skip = $pElem->attributes()->{'skip-when-empty'}) {
-                        $pMetadata->skipWhenEmpty = 'true' === strtolower($skip);
+                        $pMetadata->skipWhenEmpty = 'true' === strtolower((string)$skip);
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'expose-if'}) {
-                        $pMetadata->excludeIf = "!(" . $excludeIf . ")";
+                        $pMetadata->excludeIf = "!(" . (string)$excludeIf . ")";
                         $isExpose = true;
                     }
 
@@ -216,7 +218,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $groups = $pElem->attributes()->groups) {
-                        $pMetadata->groups = preg_split('/\s*,\s*/', (string) trim($groups));
+                        $pMetadata->groups = preg_split('/\s*,\s*/', trim((string)$groups));
                     } elseif (isset($pElem->groups)) {
                         $pMetadata->groups = (array) $pElem->groups->value;
                     }
@@ -299,7 +301,7 @@ class XmlDriver extends AbstractFileDriver
 
                     //we need read-only before setter and getter set, because that method depends on flag being set
                     if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower($readOnly);
+                        $pMetadata->readOnly = 'true' === strtolower((string)$readOnly);
                     } else {
                         $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
                     }
@@ -313,7 +315,7 @@ class XmlDriver extends AbstractFileDriver
                     );
 
                     if (null !== $inline = $pElem->attributes()->inline) {
-                        $pMetadata->inline = 'true' === strtolower($inline);
+                        $pMetadata->inline = 'true' === strtolower((string)$inline);
                     }
                 }
 

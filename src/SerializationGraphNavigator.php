@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -108,22 +110,22 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                 return $visitor->visitNull($data, $type);
 
             case 'string':
-                return $visitor->visitString($data, $type);
+                return $visitor->visitString((string)$data, $type);
 
             case 'int':
             case 'integer':
-                return $visitor->visitInteger($data, $type);
+                return $visitor->visitInteger((int)$data, $type);
 
             case 'bool':
             case 'boolean':
-                return $visitor->visitBoolean($data, $type);
+                return $visitor->visitBoolean((bool)$data, $type);
 
             case 'double':
             case 'float':
-                return $visitor->visitDouble($data, $type);
+                return $visitor->visitDouble((float)$data, $type);
 
             case 'array':
-                return $visitor->visitArray($data, $type);
+                return $visitor->visitArray((array)$data, $type);
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';

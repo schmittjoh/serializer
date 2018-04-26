@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -204,32 +206,16 @@ class JsonSerializationTest extends BaseSerializationTest
                 'data' => true,
             ),
             array(
-                'type' => 'boolean',
-                'data' => 1,
-            ),
-            array(
                 'type' => 'integer',
                 'data' => 123,
-            ),
-            array(
-                'type' => 'integer',
-                'data' => "123",
             ),
             array(
                 'type' => 'string',
                 'data' => "hello",
             ),
             array(
-                'type' => 'string',
-                'data' => 123,
-            ),
-            array(
                 'type' => 'double',
                 'data' => 0.1234,
-            ),
-            array(
-                'type' => 'double',
-                'data' => "0.1234",
             ),
         );
     }
@@ -266,7 +252,7 @@ class JsonSerializationTest extends BaseSerializationTest
      */
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
-        ini_set('display_errors', 1);
+        ini_set('display_errors', '1');
         $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 
@@ -277,7 +263,7 @@ class JsonSerializationTest extends BaseSerializationTest
      */
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
-        ini_set('display_errors', 0);
+        ini_set('display_errors', '0');
         $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 

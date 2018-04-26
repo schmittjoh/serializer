@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Asmir Mustafic <goetas@gmail.com>
  *
