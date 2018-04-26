@@ -109,7 +109,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->setCurrentObject($object);
     }
