@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -383,15 +385,6 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializingNull()
     {
         $this->markTestSkipped('Not supported in XML.');
-    }
-
-    public function testDeserializeWithObjectWithToStringMethod()
-    {
-        $input = new ObjectWithToString($this->getContent('simple_object'));
-
-        $object = $this->deserialize($input, SimpleObject::class);
-
-        $this->assertInstanceOf(SimpleObject::class, $object);
     }
 
     public function testObjectWithXmlNamespaces()

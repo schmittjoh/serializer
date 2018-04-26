@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *

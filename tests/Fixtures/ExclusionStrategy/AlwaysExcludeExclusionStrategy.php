@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\Tests\Fixtures\ExclusionStrategy;
 
 use JMS\Serializer\Context;

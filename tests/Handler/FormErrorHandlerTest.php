@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;

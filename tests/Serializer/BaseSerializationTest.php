@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -1065,17 +1067,17 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_low'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(2))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('2'))
         );
 
         $this->assertEquals(
             $this->getContent('virtual_properties_all'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(7))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('7'))
         );
 
         $this->assertEquals(
             $this->getContent('virtual_properties_high'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion(9))
+            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('9'))
         );
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -165,7 +167,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
                 continue;
             }
 
-            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
+            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string)$k)) ? $k : $entryName;
 
             $entryNode = $this->createElement($tagName, $namespace);
             $this->currentNode->appendChild($entryNode);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\Tests\Serializer\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationReader;

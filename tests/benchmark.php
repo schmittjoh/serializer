@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (!isset($_SERVER['argv'][1], $_SERVER['argv'][2])) {
     echo 'Usage: php benchmark.php <format> <iterations> [output-file]' . PHP_EOL;
     exit(1);
