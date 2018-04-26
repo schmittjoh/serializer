@@ -36,6 +36,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @doesNotPerformAssertions
      * @dataProvider getParams
      * @param array $params
      */

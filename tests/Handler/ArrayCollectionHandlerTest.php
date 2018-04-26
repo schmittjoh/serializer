@@ -14,6 +14,9 @@ use Metadata\MetadataFactoryInterface;
 
 class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSerializeArray()
     {
         $handler = new ArrayCollectionHandler();
@@ -29,6 +32,9 @@ class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase
         $handler->serializeCollection($visitor, $collection, $type, $context);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSerializeArraySkipByExclusionStrategy()
     {
         $handler = new ArrayCollectionHandler(false);

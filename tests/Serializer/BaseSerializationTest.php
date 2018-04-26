@@ -932,6 +932,9 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testFormErrorsWithNonFormComponents()
     {
         if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
