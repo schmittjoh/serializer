@@ -36,11 +36,10 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
     public function __construct(
         GraphNavigatorInterface $navigator,
-        AccessorStrategyInterface $accessorStrategy,
         DeserializationContext $context,
         int $options = 0, int $depth = 512)
     {
-        parent::__construct($navigator, $accessorStrategy, $context);
+        parent::__construct($navigator, $context);
         $this->objectStack = new \SplStack;
         $this->options = $options;
         $this->depth = $depth;
@@ -128,7 +127,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
         $this->setCurrentObject($object);
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data): void
+    public function visitProperty(PropertyMetadata $metadata, $data)
     {
         $name = $metadata->serializedName;
 
@@ -150,8 +149,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
 
         $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $this->context) : null;
 
-        $this->accessor->setValue($this->currentObject, $v, $metadata);
-
+        return $v;
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object

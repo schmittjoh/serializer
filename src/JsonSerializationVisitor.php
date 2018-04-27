@@ -33,19 +33,13 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     private $dataStack;
     private $data;
 
-    /**
-     * @var bool
-     */
-    protected $shouldSerializeNull;
 
     public function __construct(
         GraphNavigatorInterface $navigator,
-        AccessorStrategyInterface $accessorStrategy,
         SerializationContext $context,
         int $options = JSON_PRESERVE_ZERO_FRACTION)
     {
-        parent::__construct($navigator, $accessorStrategy, $context);
-        $this->shouldSerializeNull = $context->shouldSerializeNull();
+        parent::__construct($navigator, $context);
         $this->dataStack = new \SplStack;
         $this->options = $options;
     }
@@ -92,10 +86,6 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
 
-            if (null === $v && $this->shouldSerializeNull !== true) {
-                continue;
-            }
-
             try {
                 $v = $this->navigator->accept($v, $elType, $this->context);
             } catch (NotAcceptableException $e) {
@@ -132,14 +122,8 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         return $rs;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data): void
+    public function visitProperty(PropertyMetadata $metadata, $v): void
     {
-        $v = $this->accessor->getValue($data, $metadata);
-
-        if (null === $v && $this->shouldSerializeNull !== true) {
-            return;
-        }
-
         try {
             $v = $this->navigator->accept($v, $metadata->type, $this->context);
         } catch (NotAcceptableException $e) {

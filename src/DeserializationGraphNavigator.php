@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -27,6 +28,7 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
@@ -53,11 +55,16 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
     private $metadataFactory;
     private $handlerRegistry;
     private $objectConstructor;
+    /**
+     * @var AccessorStrategyInterface
+     */
+    private $accessor;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
+        AccessorStrategyInterface $accessor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
@@ -65,6 +72,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
+        $this->accessor = $accessor;
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
@@ -178,7 +186,12 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                     }
 
                     $context->pushPropertyMetadata($propertyMetadata);
-                    $visitor->visitProperty($propertyMetadata, $data);
+                    try {
+                        $v = $visitor->visitProperty($propertyMetadata, $data);
+                        $this->accessor->setValue($object, $v, $propertyMetadata);
+                    }catch (NotAcceptableException $e){
+
+                    }
                     $context->popPropertyMetadata();
                 }
 

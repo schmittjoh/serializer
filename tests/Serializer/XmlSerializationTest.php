@@ -555,7 +555,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $context =  $this->getMockBuilder(DeserializationContext::class)->getMock();
         $navigator =  $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
 
-        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $this->accessorStrategy, $context);
+        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $context);
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 

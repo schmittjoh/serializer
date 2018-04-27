@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -49,14 +48,8 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     private $nullWasVisited;
     private $objectMetadataStack;
 
-    /**
-     * @var bool
-     */
-    protected $shouldSerializeNull;
-
     public function __construct(
         GraphNavigatorInterface $navigator,
-        AccessorStrategyInterface $accessorStrategy,
         SerializationContext $context,
         bool $formatOutput = true,
         string $defaultEncoding = 'UTF-8',
@@ -64,8 +57,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         string $defaultRootName = 'result',
         string $defaultRootNamespace = null
     ) {
-        parent::__construct($navigator, $accessorStrategy, $context);
-        $this->shouldSerializeNull = $context->shouldSerializeNull();
+        parent::__construct($navigator, $context);
 
         $this->objectMetadataStack = new \SplStack;
         $this->stack = new \SplStack;
@@ -163,10 +155,6 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
 
-            if (null === $v && $this->shouldSerializeNull !== true) {
-                continue;
-            }
-
             $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string)$k)) ? $k : $entryName;
 
             $entryNode = $this->createElement($tagName, $namespace);
@@ -202,14 +190,8 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         $this->hasValue = false;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $object): void
+    public function visitProperty(PropertyMetadata $metadata, $v): void
     {
-        $v = $this->accessor->getValue($object, $metadata);
-
-        if (null === $v && $this->shouldSerializeNull !== true) {
-            return;
-        }
-
         if ($metadata->xmlAttribute) {
             $this->setCurrentMetadata($metadata);
             $node = $this->navigator->accept($v, $metadata->type, $this->context);

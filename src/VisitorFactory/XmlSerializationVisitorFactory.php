@@ -39,11 +39,10 @@ class XmlSerializationVisitorFactory implements SerializationVisitorFactory
     private $formatOutput = true;
     private $defaultRootNamespace;
 
-    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, SerializationContext $context): SerializationVisitorInterface
+    public function getVisitor(GraphNavigatorInterface $navigator, SerializationContext $context): SerializationVisitorInterface
     {
         return new XmlSerializationVisitor(
             $navigator,
-            $accessorStrategy,
             $context,
             $this->formatOutput,
             $this->defaultEncoding,

@@ -30,6 +30,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -205,11 +206,28 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \JMS\Serializer\Exception\NotAcceptableException
      * @dataProvider getTypes
      */
     public function testNull($type)
     {
-        $this->assertEquals($this->getContent('null'), $this->serialize(null), $type);
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(null, $this->deserialize($this->getContent('null'), $type));
+        }
+
+        // this is the default, but we want to be explicit here
+        $context = SerializationContext::create()->setSerializeNull(false);
+        $this->serialize(null, $context);
+    }
+
+    /**
+     * @dataProvider getTypes
+     */
+    public function testNullAllowed($type)
+    {
+        $context = SerializationContext::create()->setSerializeNull(true);
+        $this->assertEquals($this->getContent('null'), $this->serialize(null, $context), $type);
 
         if ($this->hasDeserializer()) {
             $this->assertEquals(null, $this->deserialize($this->getContent('null'), $type));
