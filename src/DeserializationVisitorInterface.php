@@ -85,6 +85,15 @@ interface DeserializationVisitorInterface
     public function visitInteger($data, array $type): int;
 
     /**
+     * Returns the class name based on the type of the discriminator map value
+     *
+     * @param $data
+     * @param ClassMetadata $metadata
+     * @return string
+     */
+    public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string;
+
+    /**
      * @param mixed $data
      * @param array $type
      *

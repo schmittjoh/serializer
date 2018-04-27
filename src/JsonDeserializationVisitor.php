@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -107,6 +108,19 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
             default:
                 throw new RuntimeException(sprintf('Array type cannot have more than 2 parameters, but got %s.', json_encode($type['params'])));
         }
+    }
+
+    public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string
+    {
+        if (isset($data[$metadata->discriminatorFieldName])) {
+            return (string)$data[$metadata->discriminatorFieldName];
+        }
+
+        throw new LogicException(sprintf(
+            'The discriminator field name "%s" for base-class "%s" was not found in input data.',
+            $metadata->discriminatorFieldName,
+            $metadata->name
+        ));
     }
 
     public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
