@@ -21,11 +21,11 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
+use JMS\Serializer\Annotation\VirtualProperty;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\CircularReferenceDetectedException;
 use JMS\Serializer\Exception\ExcludedClassException;
@@ -33,10 +33,13 @@ use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -68,8 +71,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
         AccessorStrategyInterface $accessor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
-    )
-    {
+    ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
@@ -188,8 +190,21 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
+                $key = $metadata->name . $exclusionStrategy->getSignature() .$format . GraphNavigatorInterface::DIRECTION_SERIALIZATION.$shouldSerializeNull;
+
+                if (!empty($metadata->compiled[$key])) {
+                    return $metadata->compiled[$key]->accept($data, $visitor, $context);
+                }
+
                 if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
+                }
+
+                if (!$metadata->usingExpression && $exclusionStrategy->getSignature() !== null) {
+
+                    $metadata->compiled[$key] = $compiledNavigator = $this->createCompiledHandler($key, $this->accessor, $exclusionStrategy, $metadata, $context, $format, $type, $shouldSerializeNull);
+
+                    return $compiledNavigator->accept($data, $visitor, $context);
                 }
 
                 if ($exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -205,6 +220,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                 }
 
                 $visitor->startVisitingObject($metadata, $data, $type, $context);
+
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
                         continue;
@@ -244,4 +260,147 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
             $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $format, new ObjectEvent($context, $object, $type));
         }
     }
+
+    protected $cache = array();
+
+    private function createCompiledHandler(
+        $key,
+        AccessorStrategyInterface $accessorStrategy,
+        ExclusionStrategyInterface $exclusionStrategy,
+        ClassMetadata $metadata, Context $context, $format, $type, $shouldSerializeNull)
+    {
+
+
+
+        if (!isset($this->cache[$key])) {
+
+            $identity = md5($key);
+
+            $vapart = "JMS\\__CC__\\Id" . $identity;
+
+            $cls = "$vapart\\Navigator";
+
+            if (!class_exists($cls, false)) {
+                $str = "namespace $vapart;\n";
+                $str .= "class Navigator\n{\n";
+                $str .= "\tprotected \$propertyMetadata;\n";
+                $str .= "\tprotected \$metadata;\n";
+                $str .= "\tprotected \$accessor;\n";
+
+                foreach ($metadata->propertyMetadata as $k => $propertyMetadata) {
+                    if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                        continue;
+                    }
+                    $str .= "\tprotected \$v_$propertyMetadata->name;\n";
+
+                    $str .= "\n";
+                }
+
+
+                $str .= "public function __construct(\JMS\Serializer\Metadata\ClassMetadata \$metadata, \$accessor)\n{\n";
+                $str .= "\t\$this->propertyMetadata = \$metadata->propertyMetadata;\n";
+                $str .= "\t\$this->metadata = \$metadata;\n";
+                $str .= "\t\$this->accessor = \$accessor;\n";
+
+                foreach ($metadata->propertyMetadata as $k => $propertyMetadata) {
+                    if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                        continue;
+                    }
+
+                        $str .= "\t\$this->v_$propertyMetadata->name = \Closure::bind(function (\$o) {
+            return \$o->$propertyMetadata->name;
+        }, null, ".var_export($propertyMetadata->class, true).");\n";
+
+                    $str .= "\n";
+                }
+
+
+
+                $str .= "\n}\n";
+                $str .= "public function accept(\$data, \$visitor, \\JMS\\Serializer\\Context \$context)\n{\n";
+
+                if ($exclusionStrategy->shouldSkipClass($metadata, $context)) {
+                    $str .= "\t\$context->stopVisiting(\$data);\n";
+                    $str .= "\tthrow new \JMS\Serializer\Exception\ExcludedClassException();\n";
+                } else {
+
+                    $str .= "\n\$context->pushClassMetadata(\$this->metadata);\n";
+
+                    if ($metadata->preSerializeMethods) {
+                        $str .= "\nforeach (\$this->metadata->preSerializeMethods as \$method) {\n";
+                        $str .= "\n\$method->invoke(\$data);\n";
+                        $str .= "\n}\n";
+                    }
+
+                    $str .= "\n\$visitor->startVisitingObject(\$this->metadata, \$data, " . var_export($type, true) . ", \$context);\n";
+
+                    foreach ($metadata->propertyMetadata as $k => $propertyMetadata) {
+                        if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                            continue;
+                        }
+
+                        $str .= "\t\$m = \$this->propertyMetadata['$k'];\n";
+
+
+                        if ($propertyMetadata->getter) {
+                            $str .= "\t\$v = \$data->$propertyMetadata->getter();\n";
+                        } elseif (!($propertyMetadata instanceof ExpressionPropertyMetadata) && !($propertyMetadata instanceof VirtualProperty) && !($propertyMetadata instanceof StaticPropertyMetadata)) {
+                            $str .= "\t\$v = (\$this->v_$propertyMetadata->name)(\$data);\n";
+                        } else {
+                            $str .= "\t\$v = \$this->accessor->getValue(\$data, \$m);\n";
+                        }
+
+
+
+                        if (!$shouldSerializeNull){
+                            $str .= "if(\$v !== null){\n";
+                        }
+
+                        $str .= "\t\$context->pushPropertyMetadata(\$m);\n";
+                        $str .= "\t\$visitor->visitProperty(\$m, \$v, \$context);\n";
+                        $str .= "\t\$context->popPropertyMetadata();\n";
+
+                        if (!$shouldSerializeNull){
+                            $str .= "\t}\n";
+                        }
+
+                        $str .= "\n";
+                    }
+
+                    $str .= "\n\$context->stopVisiting(\$data);\n";
+                    $str .= "\n\$context->popClassMetadata();\n";
+
+                    if ($metadata->postSerializeMethods) {
+                        $str .= "\nforeach (\$this->metadata->postSerializeMethods as \$method) {\n";
+                        $str .= "\n\$method->invoke(\$data);\n";
+                        $str .= "\n}\n";
+                    }
+
+                    if ($this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $format)) {
+                        $str .= "\n\$this->dispatcher->dispatch('serializer.post_serialize',
+                         \$this->metadata->name, " . var_export($format, true) . ", new \JMS\Serializer\EventDispatcher\ObjectEvent(\$context, \$data, " . var_export($type, true) . ")
+                         );\n";
+                    }
+
+                    $str .= "\nreturn \$visitor->endVisitingObject(\$this->metadata, \$data, " . var_export($type, true) . ", \$context);\n";
+                }
+
+                $str .= "\n}\n";
+
+
+                $str .= "\n}\n";
+                $name = sys_get_temp_dir() . "/$identity";
+                file_put_contents($name, "<?php $str");
+                require $name;
+
+            }
+
+            $this->cache[$key] = new $cls($metadata, $accessorStrategy);
+        }
+        return $this->cache[$key];
+    }
 }
+
+
+
+

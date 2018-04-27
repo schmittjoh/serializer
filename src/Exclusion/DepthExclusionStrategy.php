@@ -66,4 +66,9 @@ class DepthExclusionStrategy implements ExclusionStrategyInterface
 
         return false;
     }
+
+    public function getSignature(): ?string
+    {
+        return null;
+    }
 }
