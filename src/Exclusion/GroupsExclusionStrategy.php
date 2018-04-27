@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
@@ -36,9 +37,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
             $groups = array(self::DEFAULT_GROUP);
         }
 
-        foreach ($groups as $group) {
-            $this->groups[$group] = true;
-        }
+        $this->groups = $groups;
     }
 
     /**
@@ -54,16 +53,47 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
     {
-        if ( ! $property->groups) {
-            return ! isset($this->groups[self::DEFAULT_GROUP]);
+        $groups = $this->getGroupsFor($navigatorContext);
+
+        if (!$property->groups) {
+            return !in_array(self::DEFAULT_GROUP, $groups);
         }
 
+        return $this->shouldSkipUsingGroups($property, $groups);
+    }
+
+    private function shouldSkipUsingGroups(PropertyMetadata $property, $groups)
+    {
         foreach ($property->groups as $group) {
-            if (isset($this->groups[$group])) {
+            if (in_array($group, $groups)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private function getGroupsFor(Context $navigatorContext)
+    {
+        $paths = $navigatorContext->getCurrentPath();
+
+        $groups = $this->groups;
+        foreach ($paths as $index => $path) {
+            if (!array_key_exists($path, $groups)) {
+                if ($index > 0) {
+                    $groups = array(self::DEFAULT_GROUP);
+                }
+
+                break;
+            }
+
+            if (!is_array($groups[$path])) {
+                throw new RuntimeException(sprintf('The group value for the property path "%s" should be an array, "%s" given', $index, gettype($groups[$path])));
+            }
+
+            $groups = $groups[$path];
+        }
+
+        return $groups;
     }
 }
