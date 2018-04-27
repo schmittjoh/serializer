@@ -206,6 +206,30 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
     }
 
+    public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string
+    {
+        switch (true) {
+            // Check XML attribute for discriminatorFieldName
+            case $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
+                return (string)$data[$metadata->discriminatorFieldName];
+
+            // Check XML element with namespace for discriminatorFieldName
+            case !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
+                return (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+
+            // Check XML element for discriminatorFieldName
+            case isset($data->{$metadata->discriminatorFieldName}):
+                return (string)$data->{$metadata->discriminatorFieldName};
+
+            default:
+                throw new LogicException(sprintf(
+                    'The discriminator field name "%s" for base-class "%s" was not found in input data.',
+                    $metadata->discriminatorFieldName,
+                    $metadata->name
+                ));
+        }
+    }
+
     public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->setCurrentObject($object);

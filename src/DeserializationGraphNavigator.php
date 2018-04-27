@@ -150,7 +150,7 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                 }
 
                 if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($data, $metadata);
+                    $metadata = $this->resolveMetadata($visitor, $data, $metadata);
                 }
 
                 if ($exclusionStrategy->shouldSkipClass($metadata, $context)) {
@@ -189,35 +189,9 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         }
     }
 
-    private function resolveMetadata($data, ClassMetadata $metadata)
+    private function resolveMetadata(DeserializationVisitorInterface $visitor, $data, ClassMetadata $metadata)
     {
-        switch (true) {
-            case \is_array($data) && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
-                break;
-
-            // Check XML attribute for discriminatorFieldName
-            case \is_object($data) && $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string)$data[$metadata->discriminatorFieldName];
-                break;
-
-            // Check XML element with namespace for discriminatorFieldName
-            case \is_object($data) && !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                $typeValue = (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
-                break;
-
-            // Check XML element for discriminatorFieldName
-            case \is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
-                $typeValue = (string)$data->{$metadata->discriminatorFieldName};
-                break;
-
-            default:
-                throw new LogicException(sprintf(
-                    'The discriminator field name "%s" for base-class "%s" was not found in input data.',
-                    $metadata->discriminatorFieldName,
-                    $metadata->name
-                ));
-        }
+        $typeValue = $visitor->visitDiscriminatorMapProperty($data, $metadata);
 
         if (!isset($metadata->discriminatorMap[$typeValue])) {
             throw new LogicException(sprintf(
