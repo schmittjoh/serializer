@@ -24,8 +24,12 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
+use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\Fixtures\VersionedObject;
 
 class ContextTest extends \PHPUnit\Framework\TestCase
 {
@@ -183,6 +187,39 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', $context->getInitialType());
     }
 
+    public function testMultipleCallsOnGroupsDoNotCreateMultipleExclusionStrategies()
+    {
+        $serializer = SerializerBuilder::create()->build();
+
+        $context = SerializationContext::create();
+        $context->setGroups(["foo", "Default"]);
+        $context->setGroups("post");
+
+        $object = new BlogPost('serializer', new Author('me'), new \DateTime(), new Publisher('php'));
+        $serialized = $serializer->serialize($object, 'json', $context);
+
+        $data = json_decode($serialized, true);
+
+        $this->assertArrayHasKey("id", $data);
+        $this->assertArrayNotHasKey("created_at", $data);
+    }
+
+    public function testMultipleCallsOnVersionDoNotCreateMultipleExclusionStrategies()
+    {
+        $serializer = SerializerBuilder::create()->build();
+
+        $context = SerializationContext::create();
+        $context->setVersion("1.0.1");
+        $context->setVersion("1.0.0");
+
+        $object = new VersionedObject("a", "b");
+        $serialized = $serializer->serialize($object, 'json', $context);
+
+        $data = json_decode($serialized, true);
+
+        $this->assertEquals("a", $data["name"]);
+    }
+
     public function testSerializeNullOption()
     {
         $context = SerializationContext::create();
@@ -195,3 +232,4 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($context->shouldSerializeNull());
     }
 }
+

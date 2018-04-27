@@ -75,23 +75,25 @@ abstract class Context
             throw new LogicException('This context was already initialized, and cannot be re-used.');
         }
 
-        $this->initialized = true;
         $this->format = $format;
         $this->visitor = $visitor;
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
-    }
 
-    /**
-     * @deprecated  Will be removed in 2.0, Use getNavigator()->accept() instead
-     * @param $data
-     * @param array|null $type
-     * @return mixed
-     */
-    public function accept($data, array $type = null)
-    {
-        return $this->navigator->accept($data, $type, $this);
+        if (isset($this->attributes['groups'])) {
+            $this->addExclusionStrategy(new GroupsExclusionStrategy($this->attributes['groups']));
+        }
+
+        if (isset($this->attributes['version'])) {
+            $this->addExclusionStrategy(new VersionExclusionStrategy($this->attributes['version']));
+        }
+
+        if (!empty($this->attributes['max_depth_checks'])) {
+            $this->addExclusionStrategy(new DepthExclusionStrategy());
+        }
+
+        $this->initialized = true;
     }
 
     public function getMetadataFactory(): MetadataFactoryInterface
@@ -152,12 +154,7 @@ abstract class Context
 
     public function setVersion(string $version): self
     {
-        if (null === $version) {
-            throw new LogicException('The version must not be null.');
-        }
-
         $this->attributes['version'] = $version;
-        $this->addExclusionStrategy(new VersionExclusionStrategy($version));
 
         return $this;
     }
@@ -172,14 +169,13 @@ abstract class Context
         }
 
         $this->attributes['groups'] = (array)$groups;
-        $this->addExclusionStrategy(new GroupsExclusionStrategy((array)$groups));
 
         return $this;
     }
 
     public function enableMaxDepthChecks(): self
     {
-        $this->addExclusionStrategy(new DepthExclusionStrategy());
+        $this->attributes['max_depth_checks'] = true;
 
         return $this;
     }
