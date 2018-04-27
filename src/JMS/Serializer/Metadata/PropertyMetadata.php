@@ -43,6 +43,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlNamespace;
     public $xmlKeyValuePairs = false;
     public $xmlElementCData = true;
+    public $xmlAllowTypes = null;
     public $getter;
     public $setter;
     public $inline = false;

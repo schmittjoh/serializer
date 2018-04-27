@@ -39,4 +39,9 @@ abstract class XmlCollection
      * @var boolean
      */
     public $skipWhenEmpty = true;
+
+    /**
+     * @var array<JMS\Serializer\Annotation\XmlElementRef>
+     */
+    public $allowTypes = [];
 }

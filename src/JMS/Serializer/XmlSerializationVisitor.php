@@ -32,8 +32,10 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
  */
 class XmlSerializationVisitor extends AbstractVisitor
 {
+    /** @var \DOMDocument */
     public $document;
 
+    /** @var GraphNavigator */
     private $navigator;
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
@@ -42,6 +44,8 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $stack;
     private $metadataStack;
     private $currentNode;
+
+    /** @var PropertyMetadata */
     private $currentMetadata;
     private $hasValue;
     private $nullWasVisited;
@@ -184,6 +188,21 @@ class XmlSerializationVisitor extends AbstractVisitor
             }
 
             $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
+
+            if (null !== $this->currentMetadata && !empty($this->currentMetadata->xmlAllowTypes)) {
+                $type = null;
+                foreach ($this->currentMetadata->xmlAllowTypes as $xmlAllowType) {
+                    if ($xmlAllowType['type'] == get_class($v)) {
+                        $type = $xmlAllowType;
+                        break;
+                    }
+                }
+                if ($type) {
+                    $tagName = $type['name'];
+                    $namespace = $type['namespace'];
+                } else
+                    continue;//or Exception?
+            }
 
             $entryNode = $this->createElement($tagName, $namespace);
             $this->currentNode->appendChild($entryNode);

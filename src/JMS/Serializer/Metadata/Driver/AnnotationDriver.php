@@ -45,6 +45,7 @@ use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlAttributeMap;
 use JMS\Serializer\Annotation\XmlDiscriminator;
 use JMS\Serializer\Annotation\XmlElement;
+use JMS\Serializer\Annotation\XmlElementRef;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlMap;
@@ -191,6 +192,16 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof XmlList) {
                         $propertyMetadata->xmlCollection = true;
                         $propertyMetadata->xmlCollectionInline = $annot->inline;
+                        if (!empty($annot->allowTypes)) {
+                            /** @var XmlElementRef $allowType */
+                            foreach ($annot->allowTypes as $allowType) {
+                                $propertyMetadata->xmlAllowTypes[] = [
+                                    'type' => $allowType->type,
+                                    'name' => $allowType->name,
+                                    'namespace' => $allowType->namespace
+                                ];
+                            }
+                        }
                         $propertyMetadata->xmlEntryName = $annot->entry;
                         $propertyMetadata->xmlEntryNamespace = $annot->namespace;
                         $propertyMetadata->xmlCollectionSkipWhenEmpty = $annot->skipWhenEmpty;
