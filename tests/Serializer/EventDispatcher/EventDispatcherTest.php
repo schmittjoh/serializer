@@ -20,12 +20,15 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
+use Doctrine\Common\Persistence\Proxy;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\Tests\Fixtures\SimpleObject;
+use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use PHPUnit\Framework\Assert;
 
 class EventDispatcherTest extends \PHPUnit\Framework\TestCase
@@ -35,6 +38,7 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
      */
     protected $dispatcher;
     protected $event;
+    protected $context;
 
     public function testHasListeners()
     {
@@ -83,6 +87,43 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');
         $b->_verify();
+    }
+
+    public function testDispatchWithInstanceFilteringBothListenersInvoked()
+    {
+        $a = new MockListener();
+
+        $this->dispatcher->addListener('pre', array($a, 'onlyProxy'), 'Bar', 'json', Proxy::class);
+        $this->dispatcher->addListener('pre', array($a, 'all'), 'Bar', 'json');
+
+        $object = new SimpleObjectProxy('a', 'b');
+        $event = new ObjectEvent($this->context, $object, array('name' => 'foo', 'params' => array()));
+
+        // expected
+        $a->onlyProxy($event, 'pre', 'Bar', 'json', $this->dispatcher);
+        $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
+
+        $a->_replay();
+        $this->dispatch('pre', 'Bar', 'json', $event);
+        $a->_verify();
+    }
+
+    public function testDispatchWithInstanceFilteringOnlyGenericListenerInvoked()
+    {
+        $a = new MockListener();
+
+        $this->dispatcher->addListener('pre', array($a, 'onlyProxy'), 'Bar', 'json', Proxy::class);
+        $this->dispatcher->addListener('pre', array($a, 'all'), 'Bar', 'json');
+
+        $object = new SimpleObject('a', 'b');
+        $event = new ObjectEvent($this->context, $object, array('name' => 'foo', 'params' => array()));
+
+        // expected
+        $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
+
+        $a->_replay();
+        $this->dispatch('pre', 'Bar', 'json', $event);
+        $a->_verify();
     }
 
     public function testListenerCanStopPropagation()
@@ -153,18 +194,20 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher->addSubscriber($subscriber);
         $this->assertAttributeEquals(array(
             'foo.bar_baz' => array(
-                array(array($subscriber, 'onfoobarbaz'), null, 'foo'),
+                array(array($subscriber, 'onfoobarbaz'), null, 'foo', null),
             ),
             'bar' => array(
-                array(array($subscriber, 'bar'), 'foo', null),
+                array(array($subscriber, 'bar'), 'foo', null, null),
             ),
         ), 'listeners', $this->dispatcher);
     }
 
     protected function setUp()
     {
+        $this->context = $this->getMockBuilder(Context::class)->getMock();
+
         $this->dispatcher = $this->createEventDispatcher();
-        $this->event = new ObjectEvent($this->getMockBuilder(Context::class)->getMock(), new \stdClass(), array('name' => 'foo', 'params' => array()));
+        $this->event = new ObjectEvent($this->context, new \stdClass(), array('name' => 'foo', 'params' => array()));
     }
 
     protected function createEventDispatcher()

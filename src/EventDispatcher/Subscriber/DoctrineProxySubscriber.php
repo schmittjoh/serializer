@@ -119,8 +119,11 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy'),
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize'),
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy', 'interface' => Proxy::class),
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PersistentCollection::class),
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => MongoDBPersistentCollection::class),
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PHPCRPersistentCollection::class),
+            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => Proxy::class),
         );
     }
 }

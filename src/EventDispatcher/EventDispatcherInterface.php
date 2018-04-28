@@ -54,9 +54,10 @@ interface EventDispatcherInterface
      * @param callable $callable
      * @param string|null $class
      * @param string|null $format
+     * @param string|null $interface
      * @return void
      */
-    public function addListener($eventName, $callable, $class = null, $format = null);
+    public function addListener($eventName, $callable, $class = null, $format = null, $interface = null);
 
     /**
      * Adds a subscribers.
