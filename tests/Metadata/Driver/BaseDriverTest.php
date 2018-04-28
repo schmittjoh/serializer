@@ -25,6 +25,8 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
@@ -230,6 +232,25 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             $m->discriminatorMap
         );
         $this->assertEquals('http://example.com/', $m->xmlDiscriminatorNamespace);
+        $this->assertFalse($m->xmlDiscriminatorAttribute);
+    }
+
+    public function testLoadXmlDiscriminatorWithAttributeNamespaces()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlNamespaceAttributeDiscriminatorParent::class));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'child' => ObjectWithXmlNamespaceAttributeDiscriminatorChild::class,
+            ),
+            $m->discriminatorMap
+        );
+        $this->assertEquals('http://example.com/', $m->xmlDiscriminatorNamespace);
+        $this->assertTrue($m->xmlDiscriminatorAttribute);
     }
 
     public function testLoadDiscriminatorWithGroup()

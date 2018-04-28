@@ -32,6 +32,8 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorChild;
@@ -532,6 +534,20 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->deserialize(
                 $xml,
                 ObjectWithXmlNamespaceDiscriminatorParent::class
+            )
+        );
+    }
+
+    public function testDiscriminatorAsXmlAttributeWithNamespace()
+    {
+        $xml = $this->serialize(new ObjectWithXmlNamespaceAttributeDiscriminatorChild());
+        $this->assertEquals($this->getContent('xml_discriminator_namespace_attribute'), $xml);
+
+        $this->assertInstanceOf(
+            ObjectWithXmlNamespaceAttributeDiscriminatorChild::class,
+            $this->deserialize(
+                $xml,
+                ObjectWithXmlNamespaceAttributeDiscriminatorParent::class
             )
         );
     }

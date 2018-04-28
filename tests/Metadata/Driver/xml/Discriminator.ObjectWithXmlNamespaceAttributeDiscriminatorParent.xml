@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorParent"
+           discriminator-field-name="type"
+    >
+        <discriminator-class value="child">JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild</discriminator-class>
+        <xml-discriminator namespace="http://example.com/" attribute="true" />
+    </class>
+</serializer>
