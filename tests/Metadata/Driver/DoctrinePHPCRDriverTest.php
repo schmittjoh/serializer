@@ -42,7 +42,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name' => 'DateTime', 'params' => array()),
+            ['name' => 'DateTime', 'params' => []],
             $metadata->propertyMetadata['createdAt']->type
         );
     }
@@ -51,7 +51,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => array()),
+            ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => []],
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -61,9 +61,9 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'ArrayCollection', 'params' => array(
-                array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => array()))
-            ),
+            ['name' => 'ArrayCollection', 'params' => [
+                ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []]]
+            ],
             $metadata->propertyMetadata['comments']->type
         );
     }
@@ -74,7 +74,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
 
         // This would be guessed as boolean but we've overridden it to integer
         $this->assertEquals(
-            array('name' => 'integer', 'params' => array()),
+            ['name' => 'integer', 'params' => []],
             $metadata->propertyMetadata['published']->type
         );
     }

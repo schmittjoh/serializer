@@ -32,18 +32,18 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {
-        $methods = array();
-        $formats = array('xml', 'json');
-        $types = array('Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation');
+        $methods = [];
+        $formats = ['xml', 'json'];
+        $types = ['Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation'];
 
         foreach ($types as $type => $method) {
             foreach ($formats as $format) {
-                $methods[] = array(
+                $methods[] = [
                     'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => $method . 'To' . $format,
-                );
+                ];
             }
         }
 
@@ -86,10 +86,10 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
 
     public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
     {
-        $data = array(
+        $data = [
             'property_path' => $violation->getPropertyPath(),
             'message' => $violation->getMessage()
-        );
+        ];
 
         return $data;
     }

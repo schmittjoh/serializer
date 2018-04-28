@@ -43,7 +43,7 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'DateTime', 'params' => array()),
+            ['name' => 'DateTime', 'params' => []],
             $metadata->propertyMetadata['createdAt']->type
         );
     }
@@ -52,7 +52,7 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
+            ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => []],
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -62,9 +62,9 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'ArrayCollection', 'params' => array(
-                array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => array()))
-            ),
+            ['name' => 'ArrayCollection', 'params' => [
+                ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => []]]
+            ],
             $metadata->propertyMetadata['comments']->type
         );
     }
@@ -75,7 +75,7 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
 
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals(
-            array('name' => 'integer', 'params' => array()),
+            ['name' => 'integer', 'params' => []],
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -123,7 +123,7 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name' => 'string', 'params' => array()),
+            ['name' => 'string', 'params' => []],
             $metadata->propertyMetadata['id']->type
         );
     }
@@ -137,10 +137,10 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
             new DoctrineDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
         );
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         return EntityManager::create($conn, $config);
     }

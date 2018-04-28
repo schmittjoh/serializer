@@ -43,24 +43,24 @@ abstract class LazyHandlerRegistryTest extends HandlerRegistryTest
     {
         $jsonSerializationHandler = new HandlerService();
         $this->registerHandlerService('handler.serialization.json', $jsonSerializationHandler);
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json', array('handler.serialization.json', 'handle'));
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json', ['handler.serialization.json', 'handle']);
 
         $jsonDeserializationHandler = new HandlerService();
         $this->registerHandlerService('handler.deserialization.json', $jsonDeserializationHandler);
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json', array('handler.deserialization.json', 'handle'));
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json', ['handler.deserialization.json', 'handle']);
 
         $xmlSerializationHandler = new HandlerService();
         $this->registerHandlerService('handler.serialization.xml', $xmlSerializationHandler);
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml', array('handler.serialization.xml', 'handle'));
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml', ['handler.serialization.xml', 'handle']);
 
         $xmlDeserializationHandler = new HandlerService();
         $this->registerHandlerService('handler.deserialization.xml', $xmlDeserializationHandler);
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml', array('handler.deserialization.xml', 'handle'));
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml', ['handler.deserialization.xml', 'handle']);
 
-        $this->assertSame(array($jsonSerializationHandler, 'handle'), $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json'));
-        $this->assertSame(array($jsonDeserializationHandler, 'handle'), $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json'));
-        $this->assertSame(array($xmlSerializationHandler, 'handle'), $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml'));
-        $this->assertSame(array($xmlDeserializationHandler, 'handle'), $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
+        $this->assertSame([$jsonSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json'));
+        $this->assertSame([$jsonDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json'));
+        $this->assertSame([$xmlSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml'));
+        $this->assertSame([$xmlDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
     }
 
     abstract protected function createContainer();

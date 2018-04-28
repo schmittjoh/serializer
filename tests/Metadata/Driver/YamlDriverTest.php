@@ -30,7 +30,7 @@ class YamlDriverTest extends BaseDriverTest
     public function testAccessorOrderIsInferred()
     {
         $m = $this->getDriverForSubDir('accessor_inferred')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
-        $this->assertEquals(array('age', 'name'), array_keys($m->propertyMetadata));
+        $this->assertEquals(['age', 'name'], array_keys($m->propertyMetadata));
     }
 
     public function testShortExposeSyntax()
@@ -47,7 +47,7 @@ class YamlDriverTest extends BaseDriverTest
 
         $this->assertArrayHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
             $this->assertArrayNotHasKey($key, $m->propertyMetadata);
         }
@@ -59,7 +59,7 @@ class YamlDriverTest extends BaseDriverTest
 
         $this->assertArrayNotHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
             $this->assertArrayHasKey($key, $m->propertyMetadata);
         }
@@ -71,7 +71,7 @@ class YamlDriverTest extends BaseDriverTest
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->serializedName = 'title';
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = ['name' => 'string', 'params' => []];
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
@@ -90,9 +90,9 @@ class YamlDriverTest extends BaseDriverTest
 
     private function getDriverForSubDir($subDir = null)
     {
-        return new YamlDriver(new FileLocator(array(
+        return new YamlDriver(new FileLocator([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
-        )), new IdenticalPropertyNamingStrategy());
+        ]), new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDriver()

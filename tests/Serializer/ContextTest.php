@@ -35,13 +35,13 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 {
     public function testSerializationContextPathAndDepth()
     {
-        $object = new Node(array(
+        $object = new Node([
             new Node(),
-            new Node(array(
+            new Node([
                 new Node()
-            )),
-        ));
-        $objects = array($object, $object->children[0], $object->children[1], $object->children[1]->children[0]);
+            ]),
+        ]);
+        $objects = [$object, $object->children[0], $object->children[1], $object->children[1]->children[0]];
 
         $self = $this;
 
@@ -105,9 +105,9 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 
     public function testSerializationMetadataStack()
     {
-        $object = new Node(array(
+        $object = new Node([
             $child = new InlineChild(),
-        ));
+        ]);
         $self = $this;
 
         $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
@@ -155,12 +155,12 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 
     public function getScalars()
     {
-        return array(
-            array("string"),
-            array(5),
-            array(5.5),
-            array(array())
-        );
+        return [
+            ["string"],
+            [5],
+            [5.5],
+            [[]]
+        ];
     }
 
     /**

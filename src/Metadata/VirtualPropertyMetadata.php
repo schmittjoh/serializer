@@ -49,7 +49,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -73,7 +73,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->class,
             $this->name,
             'excludeIf' => $this->excludeIf,
-        ));
+        ]);
     }
 
     public function unserialize($str)

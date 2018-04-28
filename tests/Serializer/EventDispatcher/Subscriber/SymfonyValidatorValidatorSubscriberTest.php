@@ -42,12 +42,12 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, null, array('foo'))
+            ->with($obj, null, ['foo'])
             ->will($this->returnValue(new ConstraintViolationList()));
 
-        $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
+        $context = DeserializationContext::create()->setAttribute('validation_groups', ['foo']);
 
-        $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, array()));
+        $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
 
     /**
@@ -60,12 +60,12 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
 
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($obj, null, array('foo'))
-            ->will($this->returnValue(new ConstraintViolationList(array(new ConstraintViolation('foo', 'foo', array(), 'a', 'b', 'c')))));
+            ->with($obj, null, ['foo'])
+            ->will($this->returnValue(new ConstraintViolationList([new ConstraintViolation('foo', 'foo', [], 'a', 'b', 'c')])));
 
-        $context = DeserializationContext::create()->setAttribute('validation_groups', array('foo'));
+        $context = DeserializationContext::create()->setAttribute('validation_groups', ['foo']);
 
-        $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, array()));
+        $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
 
     public function testValidatorIsNotCalledWhenNoGroupsAreSet()
@@ -73,14 +73,14 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
         $this->validator->expects($this->never())
             ->method('validate');
 
-        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new \stdClass, array()));
+        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new \stdClass, []));
     }
 
     public function testValidationIsOnlyPerformedOnRootObject()
     {
         $this->validator->expects($this->once())
             ->method('validate')
-            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), null, array('Foo'))
+            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), null, ['Foo'])
             ->will($this->returnValue(new ConstraintViolationList()));
 
         $subscriber = $this->subscriber;
@@ -93,7 +93,7 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
                 '{"authors":[{"full_name":"foo"},{"full_name":"bar"}]}',
                 'JMS\Serializer\Tests\Fixtures\AuthorList',
                 'json',
-                DeserializationContext::create()->setAttribute('validation_groups', array('Foo'))
+                DeserializationContext::create()->setAttribute('validation_groups', ['Foo'])
             );
 
         $this->assertCount(2, $list);

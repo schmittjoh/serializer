@@ -158,7 +158,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(array('value' => null), 'json');
+        $result = $serializer->serialize(['value' => null], 'json');
 
         $this->assertEquals('{"value":null}', $result);
     }
@@ -179,7 +179,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->deserialize('{"value":null}', 'array', 'json');
 
-        $this->assertEquals(array('value' => null), $result);
+        $this->assertEquals(['value' => null], $result);
     }
 
     public function testSetCallbackSerializationContextWithSerializeNull()
@@ -191,7 +191,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(array('value' => null), 'json');
+        $result = $serializer->serialize(['value' => null], 'json');
 
         $this->assertEquals('{"value":null}', $result);
     }
@@ -205,7 +205,7 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(array('value' => null, 'not_null' => 'ok'), 'json');
+        $result = $serializer->serialize(['value' => null, 'not_null' => 'ok'], 'json');
 
         $this->assertEquals('{"not_null":"ok"}', $result);
     }

@@ -41,7 +41,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * Map of doctrine 2 field types to JMS\Serializer types
      * @var array
      */
-    protected $fieldMapping = array(
+    protected $fieldMapping = [
         'string' => 'string',
         'text' => 'string',
         'blob' => 'string',
@@ -64,7 +64,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'array' => 'array',
         'json_array' => 'array',
         'simple_array' => 'array<string>',
-    );
+    ];
 
     /**
      * @var DriverInterface

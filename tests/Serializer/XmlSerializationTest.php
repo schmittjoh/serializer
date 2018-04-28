@@ -93,7 +93,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function getXMLBooleans()
     {
-        return array(array('true', true), array('false', false), array('1', true), array('0', false));
+        return [['true', true], ['false', false], ['1', true], ['0', false]];
     }
 
     public function testAccessorSetterDeserialization()
@@ -169,9 +169,9 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testWhitelistedDocumentTypesAreAllowed()
     {
-        $this->deserializationVisitors['xml']->setDoctypeWhitelist(array(
+        $this->deserializationVisitors['xml']->setDoctypeWhitelist([
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>'));
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>']);
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
@@ -188,7 +188,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_attributes'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('attributes')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['attributes']))
         );
     }
 
@@ -196,7 +196,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_values'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('values')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['values']))
         );
     }
 
@@ -204,7 +204,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_list'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('list')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['list']))
         );
     }
 
@@ -212,7 +212,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->assertEquals(
             $this->getContent('virtual_properties_map'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('map')))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['map']))
         );
     }
 
@@ -220,7 +220,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $xml = '<result></result>';
         $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
-        $this->assertEquals($object->absentAndNs, array());
+        $this->assertEquals($object->absentAndNs, []);
 
         $xml = '<result xmlns:x="http://www.example.com">
                     <absent_and_ns>
@@ -228,7 +228,7 @@ class XmlSerializationTest extends BaseSerializationTest
                     </absent_and_ns>
                   </result>';
         $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
-        $this->assertEquals($object->absentAndNs, array("foo"));
+        $this->assertEquals($object->absentAndNs, ["foo"]);
     }
 
     public function testObjectWithNamespacesAndList()
@@ -237,17 +237,17 @@ class XmlSerializationTest extends BaseSerializationTest
         $object->name = 'name';
         $object->nameAlternativeB = 'nameB';
 
-        $object->phones = array('111', '222');
-        $object->addresses = array('A' => 'Street 1', 'B' => 'Street 2');
+        $object->phones = ['111', '222'];
+        $object->addresses = ['A' => 'Street 1', 'B' => 'Street 2'];
 
-        $object->phonesAlternativeB = array('555', '666');
-        $object->addressesAlternativeB = array('A' => 'Street 5', 'B' => 'Street 6');
+        $object->phonesAlternativeB = ['555', '666'];
+        $object->addressesAlternativeB = ['A' => 'Street 5', 'B' => 'Street 6'];
 
-        $object->phonesAlternativeC = array('777', '888');
-        $object->addressesAlternativeC = array('A' => 'Street 7', 'B' => 'Street 8');
+        $object->phonesAlternativeC = ['777', '888'];
+        $object->addressesAlternativeC = ['A' => 'Street 7', 'B' => 'Street 8'];
 
-        $object->phonesAlternativeD = array('999', 'AAA');
-        $object->addressesAlternativeD = array('A' => 'Street 9', 'B' => 'Street A');
+        $object->phonesAlternativeD = ['999', 'AAA'];
+        $object->addressesAlternativeD = ['A' => 'Street 9', 'B' => 'Street A'];
 
         $this->assertEquals(
             $this->getContent('object_with_namespaces_and_list'),
@@ -355,9 +355,9 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testXmlAttributeMapWithoutArray()
     {
-        $attributes = new \ArrayObject(array(
+        $attributes = new \ArrayObject([
             'type' => 'text',
-        ));
+        ]);
 
         $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
@@ -366,17 +366,17 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $object = new ObjectWithNamespacesAndList();
 
-        $object->phones = array();
-        $object->addresses = array();
+        $object->phones = [];
+        $object->addresses = [];
 
-        $object->phonesAlternativeB = array();
-        $object->addressesAlternativeB = array();
+        $object->phonesAlternativeB = [];
+        $object->addressesAlternativeB = [];
 
-        $object->phonesAlternativeC = array('777', '888');
-        $object->addressesAlternativeC = array('A' => 'Street 7', 'B' => 'Street 8');
+        $object->phonesAlternativeC = ['777', '888'];
+        $object->addressesAlternativeC = ['A' => 'Street 7', 'B' => 'Street 8'];
 
-        $object->phonesAlternativeD = array();
-        $object->addressesAlternativeD = array();
+        $object->phonesAlternativeD = [];
+        $object->addressesAlternativeD = [];
 
         $this->assertEquals(
             $this->getContent('object_with_only_namespaces_and_list'),
@@ -481,9 +481,9 @@ class XmlSerializationTest extends BaseSerializationTest
         $xmlVisitor = new XmlSerializationVisitorFactory();
         $xmlVisitor->setFormatOutput(false);
 
-        $visitors = array(
+        $visitors = [
             'xml' => $xmlVisitor,
-        );
+        ];
 
         $serializer = new Serializer(
             $this->factory,

@@ -39,9 +39,9 @@ class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => 'serializer.post_deserialize', 'method' => 'onPostDeserialize'),
-        );
+        return [
+            ['event' => 'serializer.post_deserialize', 'method' => 'onPostDeserialize'],
+        ];
     }
 
     public function onPostDeserialize(Event $event)

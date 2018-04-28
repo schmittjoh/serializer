@@ -26,8 +26,8 @@ class PreSerializeEvent extends ObjectEvent
      * @param string $typeName
      * @param array $params
      */
-    public function setType($typeName, array $params = array())
+    public function setType($typeName, array $params = [])
     {
-        $this->type = array('name' => $typeName, 'params' => $params);
+        $this->type = ['name' => $typeName, 'params' => $params];
     }
 }

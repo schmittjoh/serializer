@@ -32,7 +32,7 @@ final class VirtualProperty
 {
     public $exp;
     public $name;
-    public $options = array();
+    public $options = [];
 
     public function __construct(array $data)
     {

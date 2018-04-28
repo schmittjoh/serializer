@@ -73,8 +73,8 @@ class XmlDriver extends AbstractFileDriver
         $excludeAll = null !== ($exclude = $elem->attributes()->exclude) ? 'true' === strtolower((string)$exclude) : false;
         $classAccessType = (string)($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
-        $propertiesMetadata = array();
-        $propertiesNodes = array();
+        $propertiesMetadata = [];
+        $propertiesNodes = [];
 
         if (null !== $accessorOrder = $elem->attributes()->{'accessor-order'}) {
             $metadata->setAccessorOrder((string)$accessorOrder, preg_split('/\s*,\s*/', (string)$elem->attributes()->{'custom-accessor-order'}));
@@ -91,7 +91,7 @@ class XmlDriver extends AbstractFileDriver
         $readOnlyClass = 'true' === strtolower((string)$elem->attributes()->{'read-only'});
 
         $discriminatorFieldName = (string)$elem->attributes()->{'discriminator-field-name'};
-        $discriminatorMap = array();
+        $discriminatorMap = [];
         foreach ($elem->xpath('./discriminator-class') as $entry) {
             if (!isset($entry->attributes()->value)) {
                 throw new RuntimeException('Each discriminator-class element must have a "value" attribute.');
@@ -104,7 +104,7 @@ class XmlDriver extends AbstractFileDriver
             $metadata->discriminatorDisabled = true;
         } elseif (!empty($discriminatorFieldName) || !empty($discriminatorMap)) {
 
-            $discriminatorGroups = array();
+            $discriminatorGroups = [];
             foreach ($elem->xpath('./discriminator-groups/group') as $entry) {
                 $discriminatorGroups[] = (string)$entry;
             }

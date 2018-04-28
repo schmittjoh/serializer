@@ -33,15 +33,15 @@ final class SerializerRuntimeExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('serialize', array(SerializerRuntimeHelper::class, 'serialize')),
-        );
+        return [
+            new \Twig_SimpleFilter('serialize', [SerializerRuntimeHelper::class, 'serialize']),
+        ];
     }
 
     public function getFunctions()
     {
-        return array(
+        return [
             new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
-        );
+        ];
     }
 }

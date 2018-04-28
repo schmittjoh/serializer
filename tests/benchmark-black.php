@@ -34,7 +34,7 @@ function createObject()
 
 $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 $obj = createObject();
-$metrics = array();
+$metrics = [];
 
 
 $config = new \Blackfire\ClientConfiguration();
@@ -76,7 +76,7 @@ echo "\n".$profile->getUrl()."\n";
 
 
 
-$output = json_encode(array('metrics' => $metrics));
+$output = json_encode(['metrics' => $metrics]);
 
 if (isset($_SERVER['argv'][3])) {
     file_put_contents($_SERVER['argv'][3], $output);

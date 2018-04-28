@@ -37,10 +37,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $currentObject;
     private $currentMetadata;
     private $disableExternalEntities = true;
-    private $doctypeWhitelist = array();
+    private $doctypeWhitelist = [];
 
     public function __construct(
-        bool $disableExternalEntities = true, array $doctypeWhitelist = array())
+        bool $disableExternalEntities = true, array $doctypeWhitelist = [])
     {
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
@@ -161,7 +161,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if (!\count($nodes)) {
-            return array();
+            return [];
         }
 
         switch (\count($type['params'])) {
@@ -169,7 +169,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 throw new RuntimeException(sprintf('The array type must be specified either as "array<T>", or "array<K,V>".'));
 
             case 1:
-                $result = array();
+                $result = [];
 
                 foreach ($nodes as $v) {
                     $result[] = $this->navigator->accept($v, $type['params'][0]);
@@ -183,7 +183,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 list($keyType, $entryType) = $type['params'];
-                $result = array();
+                $result = [];
 
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
@@ -372,9 +372,9 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         } while ($braces > 0);
 
         $internalSubset = substr($data, $startPos, $endPos - $startPos);
-        $internalSubset = str_replace(array("\n", "\r"), '', $internalSubset);
+        $internalSubset = str_replace(["\n", "\r"], '', $internalSubset);
         $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
-        $internalSubset = str_replace(array("[ <!", "> ]>"), array('[<!', '>]>'), $internalSubset);
+        $internalSubset = str_replace(["[ <!", "> ]>"], ['[<!', '>]>'], $internalSubset);
 
         return $internalSubset;
     }

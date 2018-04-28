@@ -51,8 +51,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $dispatcher;
     private $typeParser;
 
-    private $serializationVisitors = array();
-    private $deserializationVisitors = array();
+    private $serializationVisitors = [];
+    private $deserializationVisitors = [];
 
     /**
      * @var SerializationContextFactoryInterface

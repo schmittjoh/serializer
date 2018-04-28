@@ -28,5 +28,5 @@ class CircularReferenceCollection
     public $name = 'foo';
 
     /** @Type("array<JMS\Serializer\Tests\Fixtures\CircularReferenceCollection>") */
-    public $collection = array();
+    public $collection = [];
 }

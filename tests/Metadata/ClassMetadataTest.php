@@ -28,11 +28,11 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
     public function getAccessOrderCases()
     {
         return [
-            [array('b', 'a'), array('b', 'a')],
-            [array('a', 'b'), array('a', 'b')],
-            [array('b'), array('b', 'a')],
-            [array('a'), array('a', 'b')],
-            [array('foo', 'bar'), array('b', 'a')],
+            [['b', 'a'], ['b', 'a']],
+            [['a', 'b'], ['a', 'b']],
+            [['b'], ['b', 'a']],
+            [['a'], ['a', 'b']],
+            [['foo', 'bar'], ['b', 'a']],
         ];
     }
 
@@ -51,7 +51,7 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
+        $this->assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, $order);
         $this->assertEquals($expected, array_keys($metadata->propertyMetadata));
@@ -62,10 +62,10 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(array('b', 'a'), array_keys($metadata->propertyMetadata));
+        $this->assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
-        $this->assertEquals(array('a', 'b'), array_keys($metadata->propertyMetadata));
+        $this->assertEquals(['a', 'b'], array_keys($metadata->propertyMetadata));
     }
 
     /**
@@ -102,21 +102,21 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
 
     public function providerPublicMethodData()
     {
-        return array(
-            array('a', null, null, 'geta', 'seta'),
-            array('b', null, null, 'isb', 'setb'),
-            array('c', null, null, 'hasc', 'setc'),
-            array('d', 'fetchd', 'saved', 'fetchd', 'saved')
-        );
+        return [
+            ['a', null, null, 'geta', 'seta'],
+            ['b', null, null, 'isb', 'setb'],
+            ['c', null, null, 'hasc', 'setc'],
+            ['d', 'fetchd', 'saved', 'fetchd', 'saved']
+        ];
     }
 
     public function providerPublicMethodException()
     {
-        return array(
-            array(null, null, 'a public getE method, nor a public isE method, nor a public hasE method in class'),
-            array(null, 'setx', 'a public getE method, nor a public isE method, nor a public hasE method in class'),
-            array('getx', null, 'no public setE method in class'),
-        );
+        return [
+            [null, null, 'a public getE method, nor a public isE method, nor a public hasE method in class'],
+            [null, 'setx', 'a public getE method, nor a public isE method, nor a public hasE method in class'],
+            ['getx', null, 'no public setE method in class'],
+        ];
     }
 }
 

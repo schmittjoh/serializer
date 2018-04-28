@@ -86,7 +86,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
 
         // Fallback to default constructor if missing identifier(s)
         $classMetadata = $objectManager->getClassMetadata($metadata->name);
-        $identifierList = array();
+        $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
             if (!array_key_exists($name, $data)) {

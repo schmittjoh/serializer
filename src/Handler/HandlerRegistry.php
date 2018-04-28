@@ -47,7 +47,7 @@ class HandlerRegistry implements HandlerRegistryInterface
         }
     }
 
-    public function __construct(array $handlers = array())
+    public function __construct(array $handlers = [])
     {
         $this->handlers = $handlers;
     }
@@ -59,14 +59,14 @@ class HandlerRegistry implements HandlerRegistryInterface
                 throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), \get_class($handler)));
             }
 
-            $directions = array(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION);
+            $directions = [GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION];
             if (isset($methodData['direction'])) {
-                $directions = array($methodData['direction']);
+                $directions = [$methodData['direction']];
             }
 
             foreach ($directions as $direction) {
                 $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
-                $this->registerHandler($direction, $methodData['type'], $methodData['format'], array($handler, $method));
+                $this->registerHandler($direction, $methodData['type'], $methodData['format'], [$handler, $method]);
             }
         }
     }

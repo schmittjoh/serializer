@@ -41,10 +41,10 @@ class SerializerExtensionTest extends \PHPUnit\Framework\TestCase
 
         $filters = $serializerExtension->getFilters();
         $this->assertInstanceOf('Twig_SimpleFilter', $filters[0]);
-        $this->assertSame(array($serializerExtension, 'serialize'), $filters[0]->getCallable());
+        $this->assertSame([$serializerExtension, 'serialize'], $filters[0]->getCallable());
 
         $this->assertEquals(
-            array(new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')),
+            [new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')],
             $serializerExtension->getFunctions()
         );
     }
@@ -69,11 +69,11 @@ class SerializerExtensionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('jms_serializer', $serializerExtension->getName());
         $this->assertEquals(
-            array(new \Twig_SimpleFilter('serialize', array(SerializerRuntimeHelper::class, 'serialize'))),
+            [new \Twig_SimpleFilter('serialize', [SerializerRuntimeHelper::class, 'serialize'])],
             $serializerExtension->getFilters()
         );
         $this->assertEquals(
-            array(new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')),
+            [new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')],
             $serializerExtension->getFunctions()
         );
     }

@@ -46,7 +46,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $this->assertArrayHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
             $this->assertArrayNotHasKey($key, $m->propertyMetadata);
         }
@@ -58,7 +58,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $this->assertArrayNotHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
             $this->assertArrayHasKey($key, $m->propertyMetadata);
         }
@@ -70,7 +70,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->serializedName = 'title';
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = ['name' => 'string', 'params' => []];
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
@@ -79,7 +79,7 @@ class XmlDriverTest extends BaseDriverTest
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\GetSetObject'));
 
         $p = new PropertyMetadata($m->name, 'name');
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = ['name' => 'string', 'params' => []];
         $p->getter = 'getTrimmedName';
         $p->setter = 'setCapitalizedName';
         $p->serializedName = 'name';
@@ -110,8 +110,8 @@ class XmlDriverTest extends BaseDriverTest
             $append = '/' . func_get_arg(0);
         }
 
-        return new XmlDriver(new FileLocator(array(
+        return new XmlDriver(new FileLocator([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
-        )), new IdenticalPropertyNamingStrategy());
+        ]), new IdenticalPropertyNamingStrategy());
     }
 }

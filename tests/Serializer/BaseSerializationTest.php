@@ -147,7 +147,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testSerializeNullArray()
     {
-        $arr = array('foo' => 'bar', 'baz' => null, null);
+        $arr = ['foo' => 'bar', 'baz' => null, null];
 
         $this->assertEquals(
             $this->getContent('nullable'),
@@ -157,7 +157,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testSerializeNullArrayExcludingNulls()
     {
-        $arr = array('foo' => 'bar', 'baz' => null, null);
+        $arr = ['foo' => 'bar', 'baz' => null, null];
 
         $this->assertEquals(
             $this->getContent('nullable_skip'),
@@ -236,14 +236,14 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function getTypes()
     {
-        return array(
-            array('NULL'),
-            array('integer'),
-            array('double'),
-            array('float'),
-            array('string'),
-            array('DateTime'),
-        );
+        return [
+            ['NULL'],
+            ['integer'],
+            ['double'],
+            ['float'],
+            ['string'],
+            ['DateTime'],
+        ];
     }
 
     public function testString()
@@ -389,7 +389,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function getBooleans()
     {
-        return array(array('true', true), array('false', false));
+        return [['true', true], ['false', false]];
     }
 
     /**
@@ -406,13 +406,13 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function getNumerics()
     {
-        return array(
-            array('integer', 1, 'integer'),
-            array('float', 4.533, 'double'),
-            array('float', 4.533, 'float'),
-            array('float_trailing_zero', 1.0, 'double'),
-            array('float_trailing_zero', 1.0, 'float'),
-        );
+        return [
+            ['integer', 1, 'integer'],
+            ['float', 4.533, 'double'],
+            ['float', 4.533, 'float'],
+            ['float_trailing_zero', 1.0, 'double'],
+            ['float_trailing_zero', 1.0, 'float'],
+        ];
     }
 
     public function testSimpleObject()
@@ -426,7 +426,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayStrings()
     {
-        $data = array('foo', 'bar');
+        $data = ['foo', 'bar'];
         $this->assertEquals($this->getContent('array_strings'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -436,7 +436,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayBooleans()
     {
-        $data = array(true, false);
+        $data = [true, false];
         $this->assertEquals($this->getContent('array_booleans'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -446,7 +446,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayIntegers()
     {
-        $data = array(1, 3, 4);
+        $data = [1, 3, 4];
         $this->assertEquals($this->getContent('array_integers'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -460,7 +460,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $this->markTestSkipped('XML can\'t be tested for empty array');
         }
 
-        $data = array('array' => []);
+        $data = ['array' => []];
         $this->assertEquals($this->getContent('array_empty'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -470,7 +470,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayFloats()
     {
-        $data = array(1.34, 3.0, 6.42);
+        $data = [1.34, 3.0, 6.42];
         $this->assertEquals($this->getContent('array_floats'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -480,7 +480,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayObjects()
     {
-        $data = array(new SimpleObject('foo', 'bar'), new SimpleObject('baz', 'boo'));
+        $data = [new SimpleObject('foo', 'bar'), new SimpleObject('baz', 'boo')];
         $this->assertEquals($this->getContent('array_objects'), $this->serialize($data));
 
         if ($this->hasDeserializer()) {
@@ -490,7 +490,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayListAndMapDifference()
     {
-        $arrayData = array(0 => 1, 2 => 2, 3 => 3); // Misses key 1
+        $arrayData = [0 => 1, 2 => 2, 3 => 3]; // Misses key 1
         $data = new ObjectWithIntListAndIntMap($arrayData, $arrayData);
 
         $this->assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
@@ -498,10 +498,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testDateTimeArrays()
     {
-        $data = array(
+        $data = [
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
             new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
-        );
+        ];
 
         $object = new DateTimeArraysObject($data, $data);
         $serializedObject = $this->serialize($object);
@@ -527,12 +527,12 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testNamedDateTimeArrays()
     {
-        $data = array(
+        $data = [
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
             new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
-        );
+        ];
 
-        $object = new NamedDateTimeArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $object = new NamedDateTimeArraysObject(['testdate1' => $data[0], 'testdate2' => $data[1]]);
         $serializedObject = $this->serialize($object);
 
         $this->assertEquals($this->getContent('array_named_datetimes_object'), $serializedObject);
@@ -561,12 +561,12 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testNamedDateTimeImmutableArrays()
     {
-        $data = array(
+        $data = [
             new \DateTimeImmutable('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
             new \DateTimeImmutable('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
-        );
+        ];
 
-        $object = new NamedDateTimeImmutableArraysObject(array('testdate1' => $data[0], 'testdate2' => $data[1]));
+        $object = new NamedDateTimeImmutableArraysObject(['testdate1' => $data[0], 'testdate2' => $data[1]]);
         $serializedObject = $this->serialize($object);
 
         $this->assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
@@ -591,7 +591,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayMixed()
     {
-        $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
+        $this->assertEquals($this->getContent('array_mixed'), $this->serialize(['foo', 1, true, new SimpleObject('foo', 'bar'), [1, 3, true]]));
     }
 
     /**
@@ -613,9 +613,9 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function getDateTime()
     {
-        return array(
-            array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
-        );
+        return [
+            ['date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'],
+        ];
     }
 
     /**
@@ -637,9 +637,9 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function getDateTimeImmutable()
     {
-        return array(
-            array('date_time_immutable', new \DateTimeImmutable('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTimeImmutable'),
-        );
+        return [
+            ['date_time_immutable', new \DateTimeImmutable('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTimeImmutable'],
+        ];
     }
 
     public function testTimestamp()
@@ -688,10 +688,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $this->assertAttributeSame(false, 'published', $deserialized);
             $this->assertAttributeSame(false, 'reviewed', $deserialized);
             $this->assertAttributeSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', 'etag', $deserialized);
-            $this->assertAttributeEquals(new ArrayCollection(array($comment)), 'comments', $deserialized);
-            $this->assertAttributeEquals(array($comment), 'comments2', $deserialized);
+            $this->assertAttributeEquals(new ArrayCollection([$comment]), 'comments', $deserialized);
+            $this->assertAttributeEquals([$comment], 'comments2', $deserialized);
             $this->assertAttributeEquals($author, 'author', $deserialized);
-            $this->assertAttributeEquals(array($tag1, $tag2), 'tag', $deserialized);
+            $this->assertAttributeEquals([$tag1, $tag2], 'tag', $deserialized);
         }
     }
 
@@ -921,10 +921,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testFormErrors()
     {
-        $errors = array(
+        $errors = [
             new FormError('This is the form error'),
             new FormError('Another error')
-        );
+        ];
 
         $this->assertEquals($this->getContent('form_errors'), $this->serialize($errors));
     }
@@ -984,7 +984,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     public function testConstraintViolation()
     {
-        $violation = new ConstraintViolation('Message of violation', 'Message of violation', array(), null, 'foo', null);
+        $violation = new ConstraintViolation('Message of violation', 'Message of violation', [], null, 'foo', null);
 
         $this->assertEquals($this->getContent('constraint_violation'), $this->serialize($violation));
     }
@@ -992,8 +992,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testConstraintViolationList()
     {
         $violations = new ConstraintViolationList();
-        $violations->add(new ConstraintViolation('Message of violation', 'Message of violation', array(), null, 'foo', null));
-        $violations->add(new ConstraintViolation('Message of another violation', 'Message of another violation', array(), null, 'bar', null));
+        $violations->add(new ConstraintViolation('Message of violation', 'Message of violation', [], null, 'foo', null));
+        $violations->add(new ConstraintViolation('Message of another violation', 'Message of another violation', [], null, 'bar', null));
 
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
@@ -1057,12 +1057,12 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->getContent('groups_foo'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('foo')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(['foo']))
         );
 
         $this->assertEquals(
             $this->getContent('groups_foobar'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array('foo', 'bar')))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(['foo', 'bar']))
         );
 
         $this->assertEquals(
@@ -1072,12 +1072,12 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->getContent('groups_default'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array(GroupsExclusionStrategy::DEFAULT_GROUP)))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups([GroupsExclusionStrategy::DEFAULT_GROUP]))
         );
 
         $this->assertEquals(
             $this->getContent('groups_default'),
-            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups(array(GroupsExclusionStrategy::DEFAULT_GROUP)))
+            $this->serializer->serialize($groupsObject, $this->getFormat(), SerializationContext::create()->setGroups([GroupsExclusionStrategy::DEFAULT_GROUP]))
         );
     }
 
@@ -1088,15 +1088,15 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             new GroupsUser(
                 'John Manager',
                 null,
-                array(
+                [
                     new GroupsUser(
                         'John Manager friend 1',
                         new GroupsUser('John Manager friend 1 manager')
                     ),
                     new GroupsUser('John Manager friend 2'),
-                )
+                ]
             ),
-            array(
+            [
                 new GroupsUser(
                     'John friend 1',
                     new GroupsUser('John friend 1 manager')
@@ -1105,7 +1105,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
                     'John friend 2',
                     new GroupsUser('John friend 2 manager')
                 )
-            )
+            ]
         );
 
         $this->assertEquals(
@@ -1113,21 +1113,21 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $this->serializer->serialize(
                 $adrien,
                 $this->getFormat(),
-                SerializationContext::create()->setGroups(array(
+                SerializationContext::create()->setGroups([
                     GroupsExclusionStrategy::DEFAULT_GROUP,
                     'manager_group',
                     'friends_group',
 
-                    'manager' => array(
+                    'manager' => [
                         GroupsExclusionStrategy::DEFAULT_GROUP,
                         'friends_group',
 
-                        'friends' => array('nickname_group'),
-                    ),
-                    'friends' => array(
+                        'friends' => ['nickname_group'],
+                    ],
+                    'friends' => [
                         'manager_group'
-                    )
-                ))
+                    ]
+                ])
             )
         );
     }
@@ -1215,7 +1215,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testPolymorphicObjectsWithGroup()
     {
         $context = SerializationContext::create();
-        $context->setGroups(array("foo"));
+        $context->setGroups(["foo"]);
 
         $this->assertEquals(
             $this->getContent('car'),
@@ -1268,7 +1268,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testNestedPolymorphicObjects()
     {
-        $garage = new Garage(array(new Car(3), new Moped(1)));
+        $garage = new Garage([new Car(3), new Moped(1)]);
         $this->assertEquals(
             $this->getContent('garage'),
             $this->serialize($garage)
@@ -1290,7 +1290,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testNestedPolymorphicInterfaces()
     {
-        $garage = new VehicleInterfaceGarage(array(new Car(3), new Moped(1)));
+        $garage = new VehicleInterfaceGarage([new Car(3), new Moped(1)]);
         $this->assertEquals(
             $this->getContent('garage'),
             $this->serialize($garage)
@@ -1329,15 +1329,15 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             ->addExclusionStrategy(new DepthExclusionStrategy());
 
         $data = new Tree(
-            new Node(array(
-                new Node(array(
-                    new Node(array(
-                        new Node(array(
+            new Node([
+                new Node([
+                    new Node([
+                        new Node([
                             new Node(),
-                        )),
-                    )),
-                )),
-            ))
+                        ]),
+                    ]),
+                ]),
+            ])
         );
 
         $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($data, $this->getFormat(), $context));
@@ -1393,9 +1393,9 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testSerializeNullArrayObjectWithExclusionStrategy(bool $serializeNull)
     {
-        $arr = array(
+        $arr = [
             new SimpleObject('foo1', 'bar1'),
-        );
+        ];
 
         $serializationContext = SerializationContext::create();
         $serializationContext->setSerializeNull($serializeNull);
@@ -1452,13 +1452,13 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         );
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
             function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
-                $type = array(
+                $type = [
                     'name' => 'array',
-                    'params' => array(
-                        array('name' => 'integer', 'params' => array()),
-                        array('name' => 'JMS\Serializer\Tests\Fixtures\Author', 'params' => array()),
-                    ),
-                );
+                    'params' => [
+                        ['name' => 'integer', 'params' => []],
+                        ['name' => 'JMS\Serializer\Tests\Fixtures\Author', 'params' => []],
+                    ],
+                ];
 
                 $elements = $context->getNavigator()->accept($data, $type);
                 $list = new AuthorList();
@@ -1476,14 +1476,14 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->accessorStrategy = new DefaultAccessorStrategy();
 
         $this->objectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = array(
+        $this->serializationVisitors = [
             'json' => new JsonSerializationVisitorFactory(),
             'xml' => new XmlSerializationVisitorFactory(),
-        );
-        $this->deserializationVisitors = array(
+        ];
+        $this->deserializationVisitors = [
             'json' => new JsonDeserializationVisitorFactory(),
             'xml' => new XmlDeserializationVisitorFactory(),
-        );
+        ];
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher);
     }

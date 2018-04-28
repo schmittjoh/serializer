@@ -36,5 +36,5 @@ class Discriminator
     public $disabled = false;
 
     /** @var string[] */
-    public $groups = array();
+    public $groups = [];
 }

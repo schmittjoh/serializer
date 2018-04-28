@@ -65,7 +65,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $student1 = new Student();
         $student2 = new Student();
         $teacher = new Teacher();
-        $class = new Clazz($teacher, array($student1, $student2));
+        $class = new Clazz($teacher, [$student1, $student2]);
 
         $em->persist($student1);
         $em->persist($student2);
@@ -125,10 +125,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 
     private function createConnection()
     {
-        $con = DriverManager::getConnection(array(
+        $con = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        ));
+        ]);
 
         return $con;
     }
@@ -136,9 +136,9 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
     private function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
-        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
+        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
             __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
-        )));
+        ]));
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
@@ -151,10 +151,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 
 class SimpleManagerRegistry extends AbstractManagerRegistry
 {
-    private $services = array();
+    private $services = [];
     private $serviceCreator;
 
-    public function __construct($serviceCreator, $name = 'anonymous', array $connections = array('default' => 'default_connection'), array $managers = array('default' => 'default_manager'), $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
+    public function __construct($serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
     {
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);

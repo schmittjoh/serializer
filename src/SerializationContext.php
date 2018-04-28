@@ -85,7 +85,7 @@ class SerializationContext extends Context
 
     public function getPath(): string
     {
-        $path = array();
+        $path = [];
         foreach ($this->visitingStack as $obj) {
             $path[] = \get_class($obj);
         }

@@ -11,10 +11,10 @@ class CamelCaseNamingStrategyTest extends \PHPUnit\Framework\TestCase
 
     public function providePropertyNames()
     {
-        return array(
-            array('getUrl', 'get_url'),
-            array('getURL', 'get_url')
-        );
+        return [
+            ['getUrl', 'get_url'],
+            ['getURL', 'get_url']
+        ];
     }
 
     /**

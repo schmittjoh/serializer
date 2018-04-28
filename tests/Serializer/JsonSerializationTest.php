@@ -38,7 +38,7 @@ class JsonSerializationTest extends BaseSerializationTest
 {
     protected function getContent($key)
     {
-        static $outputs = array();
+        static $outputs = [];
 
         if (!$outputs) {
             $outputs['readonly'] = '{"id":123,"full_name":"Ruud Kamphuis"}';
@@ -202,24 +202,24 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function getPrimitiveTypes()
     {
-        return array(
-            array(
+        return [
+            [
                 'type' => 'boolean',
                 'data' => true,
-            ),
-            array(
+            ],
+            [
                 'type' => 'integer',
                 'data' => 123,
-            ),
-            array(
+            ],
+            [
                 'type' => 'string',
                 'data' => "hello",
-            ),
-            array(
+            ],
+            [
                 'type' => 'double',
                 'data' => 0.1234,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -231,7 +231,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $context = SerializationContext::create();
         $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $context);
         $functionToCall = 'visit' . ucfirst($primitiveType);
-        $result = $visitor->$functionToCall($data, array(), $this->getMockBuilder(SerializationContext::class)->getMock());
+        $result = $visitor->$functionToCall($data, [], $this->getMockBuilder(SerializationContext::class)->getMock());
         if ($primitiveType == 'double') {
             $primitiveType = 'float';
         }
@@ -254,7 +254,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', '1');
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
+        $this->serialize(['foo' => 'bar', 'bar' => pack("H*", 'c32e')]);
     }
 
     /**
@@ -265,12 +265,12 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
         ini_set('display_errors', '0');
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
+        $this->serialize(['foo' => 'bar', 'bar' => pack("H*", 'c32e')]);
     }
 
     public function testSerializeArrayWithEmptyObject()
     {
-        $this->assertEquals('[{}]', $this->serialize(array(new \stdClass())));
+        $this->assertEquals('[{}]', $this->serialize([new \stdClass()]));
     }
 
     public function testInlineArray()
@@ -285,19 +285,19 @@ class JsonSerializationTest extends BaseSerializationTest
         $author1 = new Author("Jim");
         $author2 = new Author("Mark");
 
-        $data = array(
+        $data = [
             'jim' => $author1,
             'mark' => $author2,
-        );
+        ];
 
         $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array')));
         $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<JMS\Serializer\Tests\Fixtures\Author>')));
         $this->assertEquals('{"jim":{"full_name":"Jim"},"mark":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
 
-        $data = array(
+        $data = [
             $author1,
             $author2,
-        );
+        ];
         $this->assertEquals('[{"full_name":"Jim"},{"full_name":"Mark"}]', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array')));
         $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<int,JMS\Serializer\Tests\Fixtures\Author>')));
         $this->assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
@@ -399,17 +399,17 @@ class LinkAddingSubscriber implements EventSubscriberInterface
     {
         $author = $event->getObject();
 
-        $event->getVisitor()->setData('_links', array(
+        $event->getVisitor()->setData('_links', [
             'details' => 'http://foo.bar/details/' . $author->getName(),
             'comments' => 'http://foo.bar/details/' . $author->getName() . '/comments',
-        ));
+        ]);
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
-        );
+        return [
+            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
+        ];
     }
 }
 
@@ -422,8 +422,8 @@ class ReplaceNameSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'),
-        );
+        return [
+            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
+        ];
     }
 }

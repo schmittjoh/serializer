@@ -55,9 +55,9 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $b = new MockListener();
         $this->registerListenerService('b', $b);
 
-        $this->dispatcher->addListener('pre', array('b', 'bar'), 'Bar');
-        $this->dispatcher->addListener('pre', array('b', 'foo'), 'Foo');
-        $this->dispatcher->addListener('pre', array('b', 'all'));
+        $this->dispatcher->addListener('pre', ['b', 'bar'], 'Bar');
+        $this->dispatcher->addListener('pre', ['b', 'foo'], 'Foo');
+        $this->dispatcher->addListener('pre', ['b', 'all']);
 
         $b->bar($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
         $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);

@@ -29,12 +29,12 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
     const DEFAULT_GROUP = 'Default';
 
-    private $groups = array();
+    private $groups = [];
 
     public function __construct(array $groups)
     {
         if (empty($groups)) {
-            $groups = array(self::DEFAULT_GROUP);
+            $groups = [self::DEFAULT_GROUP];
         }
 
         $this->groups = $groups;
@@ -81,7 +81,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
                 if ($index > 0) {
-                    $groups = array(self::DEFAULT_GROUP);
+                    $groups = [self::DEFAULT_GROUP];
                 }
 
                 break;

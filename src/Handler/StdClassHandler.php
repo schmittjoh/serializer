@@ -32,16 +32,16 @@ final class StdClassHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {
-        $methods = array();
-        $formats = array('json', 'xml', 'yml');
+        $methods = [];
+        $formats = ['json', 'xml', 'yml'];
 
         foreach ($formats as $format) {
-            $methods[] = array(
+            $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'stdClass',
                 'format' => $format,
                 'method' => 'serializeStdClass',
-            );
+            ];
         }
 
         return $methods;
@@ -50,13 +50,13 @@ final class StdClassHandler implements SubscribingHandlerInterface
     public function serializeStdClass(SerializationVisitorInterface $visitor, \stdClass $stdClass, array $type, SerializationContext $context)
     {
         $classMetadata = $context->getMetadataFactory()->getMetadataForClass('stdClass');
-        $visitor->startVisitingObject($classMetadata, $stdClass, array('name' => 'stdClass'), $context);
+        $visitor->startVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass'], $context);
 
         foreach ((array)$stdClass as $name => $value) {
             $metadata = new StaticPropertyMetadata('stdClass', $name, $value);
             $visitor->visitProperty($metadata, $value);
         }
 
-        return $visitor->endVisitingObject($classMetadata, $stdClass, array('name' => 'stdClass'), $context);
+        return $visitor->endVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass'], $context);
     }
 }

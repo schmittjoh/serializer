@@ -129,8 +129,8 @@ class BlogPost
         $this->published = false;
         $this->reviewed = false;
         $this->comments = new ArrayCollection();
-        $this->comments2 = array();
-        $this->metadata = array('foo' => 'bar');
+        $this->comments2 = [];
+        $this->metadata = ['foo' => 'bar'];
         $this->createdAt = $createdAt;
         $this->etag = sha1($this->createdAt->format(\DateTime::ATOM));
     }

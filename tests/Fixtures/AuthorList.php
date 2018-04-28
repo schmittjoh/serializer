@@ -31,7 +31,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
      * @Serializer\Type("array<JMS\Serializer\Tests\Fixtures\Author>")
      * @var array
      */
-    protected $authors = array();
+    protected $authors = [];
 
     /**
      * @param Author $author

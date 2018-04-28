@@ -55,8 +55,8 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->unserializeObjectConstructor = new UnserializeObjectConstructor();
 
-        $this->serializationVisitors = array('json' => new JsonSerializationVisitorFactory());
-        $this->deserializationVisitors = array('json' => new JsonDeserializationVisitorFactory());
+        $this->serializationVisitors = ['json' => new JsonSerializationVisitorFactory()];
+        $this->deserializationVisitors = ['json' => new JsonDeserializationVisitorFactory()];
     }
 
     public function testSerializeUseProvidedSerializationContext()
@@ -83,7 +83,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $contextFactoryMock
         );
 
-        $result = $serializer->serialize(array('value' => null), 'json');
+        $result = $serializer->serialize(['value' => null], 'json');
 
         $this->assertEquals('{"value":null}', $result);
     }
@@ -114,7 +114,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->deserialize('{"value":null}', 'array', 'json');
 
-        $this->assertEquals(array('value' => null), $result);
+        $this->assertEquals(['value' => null], $result);
     }
 
     public function testToArrayUseProvidedSerializationContext()
@@ -141,9 +141,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $contextFactoryMock
         );
 
-        $result = $serializer->toArray(array('value' => null));
+        $result = $serializer->toArray(['value' => null]);
 
-        $this->assertEquals(array('value' => null), $result);
+        $this->assertEquals(['value' => null], $result);
     }
 
     public function testFromArrayUseProvidedDeserializationContext()
@@ -170,8 +170,8 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             $contextFactoryMock
         );
 
-        $result = $serializer->fromArray(array('value' => null), 'array');
+        $result = $serializer->fromArray(['value' => null], 'array');
 
-        $this->assertEquals(array('value' => null), $result);
+        $this->assertEquals(['value' => null], $result);
     }
 }

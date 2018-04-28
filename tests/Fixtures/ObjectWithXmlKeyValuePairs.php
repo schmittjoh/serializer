@@ -28,21 +28,21 @@ class ObjectWithXmlKeyValuePairs
      * @var array
      * @XmlKeyValuePairs
      */
-    private $array = array(
+    private $array = [
         'key-one' => 'foo',
         'key-two' => 1,
-        'nested-array' => array(
+        'nested-array' => [
             'bar' => 'foo',
-        ),
-        'without-keys' => array(
+        ],
+        'without-keys' => [
             1,
             'test'
-        ),
-        'mixed' => array(
+        ],
+        'mixed' => [
             'test',
             'foo' => 'bar',
             '1_foo' => 'bar'
-        ),
+        ],
         1 => 'foo'
-    );
+    ];
 }
