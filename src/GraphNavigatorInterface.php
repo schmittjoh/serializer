@@ -40,14 +40,14 @@ interface GraphNavigatorInterface
     const DIRECTION_SERIALIZATION = 1;
     const DIRECTION_DESERIALIZATION = 2;
 
+    public function initialize(VisitorInterface $visitor, Context $context): void;
     /**
      * Called for each node of the graph that is being traversed.
      *
      * @throws NotAcceptableException
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null, Context $context);
+    public function accept($data, array $type = null);
 }

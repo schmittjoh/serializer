@@ -33,13 +33,9 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     private $dataStack;
     private $data;
 
-
     public function __construct(
-        GraphNavigatorInterface $navigator,
-        SerializationContext $context,
         int $options = JSON_PRESERVE_ZERO_FRACTION)
     {
-        parent::__construct($navigator, $context);
         $this->dataStack = new \SplStack;
         $this->options = $options;
     }
@@ -87,7 +83,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
         foreach ($data as $k => $v) {
 
             try {
-                $v = $this->navigator->accept($v, $elType, $this->context);
+                $v = $this->navigator->accept($v, $elType);
             } catch (NotAcceptableException $e) {
                 continue;
             }
@@ -125,7 +121,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     public function visitProperty(PropertyMetadata $metadata, $v): void
     {
         try {
-            $v = $this->navigator->accept($v, $metadata->type, $this->context);
+            $v = $this->navigator->accept($v, $metadata->type);
         } catch (NotAcceptableException $e) {
             return;
         }

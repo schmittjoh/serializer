@@ -44,8 +44,13 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class DeserializationGraphNavigator implements GraphNavigatorInterface
+final class DeserializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
 {
+    /**
+     * @var DeserializationVisitorInterface
+     */
+    protected $visitor;
+
     /**
      * @var ExpressionLanguageExclusionStrategy
      */
@@ -83,13 +88,10 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
      *
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context|DeserializationContext $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null, Context $context)
+    public function accept($data, array $type = null)
     {
-        $visitor = $context->getVisitor();
-
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
@@ -97,43 +99,43 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($visitor instanceof NullAwareVisitorInterface && $visitor->isNull($data) === true) {
+        if ($this->visitor instanceof NullAwareVisitorInterface && $this->visitor->isNull($data) === true) {
             $type = array('name' => 'NULL', 'params' => array());
         }
 
         switch ($type['name']) {
             case 'NULL':
-                return $visitor->visitNull($data, $type);
+                return $this->visitor->visitNull($data, $type);
 
             case 'string':
-                return $visitor->visitString($data, $type);
+                return $this->visitor->visitString($data, $type);
 
             case 'int':
             case 'integer':
-                return $visitor->visitInteger($data, $type);
+                return $this->visitor->visitInteger($data, $type);
 
             case 'bool':
             case 'boolean':
-                return $visitor->visitBoolean($data, $type);
+                return $this->visitor->visitBoolean($data, $type);
 
             case 'double':
             case 'float':
-                return $visitor->visitDouble($data, $type);
+                return $this->visitor->visitDouble($data, $type);
 
             case 'array':
-                return $visitor->visitArray($data, $type);
+                return $this->visitor->visitArray($data, $type);
 
             case 'resource':
                 throw new RuntimeException('Resources are not supported in serialized data.');
 
             default:
 
-                $context->increaseDepth();
+                $this->context->increaseDepth();
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
-                    $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
+                if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $this->format)) {
+                    $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $this->format, $event = new PreDeserializeEvent($this->context, $data, $type));
                     $type = $event->getType();
                     $data = $event->getData();
                 }
@@ -141,14 +143,12 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $context->getFormat())) {
-                    $rs = \call_user_func($handler, $visitor, $data, $type, $context);
-                    $context->decreaseDepth();
+                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
+                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                    $this->context->decreaseDepth();
 
                     return $rs;
                 }
-
-                $exclusionStrategy = $context->getExclusionStrategy();
 
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
@@ -158,26 +158,26 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                 }
 
                 if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($visitor, $data, $metadata);
+                    $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
-                if ($exclusionStrategy->shouldSkipClass($metadata, $context)) {
-                    $context->decreaseDepth();
+                if ($this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
+                    $this->context->decreaseDepth();
 
                     return null;
                 }
 
-                $context->pushClassMetadata($metadata);
+                $this->context->pushClassMetadata($metadata);
 
-                $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
+                $object = $this->objectConstructor->construct($this->visitor, $metadata, $data, $type, $this->context);
 
-                $visitor->startVisitingObject($metadata, $object, $type);
+                $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if ($exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                    if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
 
-                    if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                    if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
 
@@ -185,26 +185,26 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
                         continue;
                     }
 
-                    $context->pushPropertyMetadata($propertyMetadata);
+                    $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
-                        $v = $visitor->visitProperty($propertyMetadata, $data);
+                        $v = $this->visitor->visitProperty($propertyMetadata, $data);
                         $this->accessor->setValue($object, $v, $propertyMetadata);
                     }catch (NotAcceptableException $e){
 
                     }
-                    $context->popPropertyMetadata();
+                    $this->context->popPropertyMetadata();
                 }
 
-                $rs = $visitor->endVisitingObject($metadata, $data, $type);
-                $this->afterVisitingObject($metadata, $rs, $type, $context);
+                $rs = $this->visitor->endVisitingObject($metadata, $data, $type);
+                $this->afterVisitingObject($metadata, $rs, $type);
 
                 return $rs;
         }
     }
 
-    private function resolveMetadata(DeserializationVisitorInterface $visitor, $data, ClassMetadata $metadata)
+    private function resolveMetadata($data, ClassMetadata $metadata)
     {
-        $typeValue = $visitor->visitDiscriminatorMapProperty($data, $metadata);
+        $typeValue = $this->visitor->visitDiscriminatorMapProperty($data, $metadata);
 
         if (!isset($metadata->discriminatorMap[$typeValue])) {
             throw new LogicException(sprintf(
@@ -218,17 +218,17 @@ final class DeserializationGraphNavigator implements GraphNavigatorInterface
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context): void
+    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type): void
     {
-        $context->decreaseDepth();
-        $context->popClassMetadata();
+        $this->context->decreaseDepth();
+        $this->context->popClassMetadata();
 
         foreach ($metadata->postDeserializeMethods as $method) {
             $method->invoke($object);
         }
 
-        if ($this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $context->getFormat())) {
-            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
+        if ($this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
+            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new ObjectEvent($this->context, $object, $type));
         }
     }
 }

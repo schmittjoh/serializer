@@ -49,13 +49,17 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
     private $context;
     private $accessor;
 
+    private $serializationVisitor;
+    private $deserializationVisitor;
+
+
     /**
      * @expectedException JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage Resources are not supported in serialized data.
      */
     public function testResourceThrowsException()
     {
-        $this->serializationNavigator->accept(STDIN, null, $this->context);
+        $this->serializationNavigator->accept(STDIN, null);
     }
 
     public function testNavigatorPassesInstanceOnSerialization()
@@ -86,12 +90,9 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
             ->method('getExclusionStrategy')
             ->will($this->returnValue($exclusionStrategy));
 
-        $this->context->expects($this->any())
-            ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
-
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
-        $navigator->accept($object, null, $this->context);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $navigator->accept($object, null);
     }
 
     public function testNavigatorPassesNullOnDeserialization()
@@ -119,12 +120,9 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
             ->method('getExclusionStrategy')
             ->will($this->returnValue($exclusionStrategy));
 
-        $this->context->expects($this->any())
-            ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder(DeserializationVisitorInterface::class)->getMock()));
-
         $navigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->accessor, $this->dispatcher);
-        $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
+        $navigator->initialize($this->deserializationVisitor, $this->context);
+        $navigator->accept('random', array('name' => $class, 'params' => array()));
     }
 
     /**
@@ -143,16 +141,17 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
 
         $this->handlerRegistry->registerSubscribingHandler(new TestSubscribingHandler());
 
-        $this->context->expects($this->any())
-            ->method('getVisitor')
-            ->will($this->returnValue($this->getMockBuilder(SerializationVisitorInterface::class)->getMock()));
-
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
-        $navigator->accept($object, null, $this->context);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $navigator->accept($object, null);
     }
 
     protected function setUp()
     {
+
+        $this->deserializationVisitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
+        $this->serializationVisitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
+
         $this->context = $this->getMockBuilder(SerializationContext::class)
             ->enableOriginalConstructor()
             ->setMethodsExcept(['getExclusionStrategy'])
@@ -164,8 +163,12 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
         $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
+
         $this->serializationNavigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $this->serializationNavigator->initialize($this->serializationVisitor, $this->context);
+
         $this->deserializationNavigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->accessor, $this->dispatcher);
+        $this->deserializationNavigator->initialize($this->deserializationVisitor, $this->context);
     }
 }
 

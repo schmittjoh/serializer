@@ -32,18 +32,8 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-interface SerializationVisitorInterface
+interface SerializationVisitorInterface extends VisitorInterface
 {
-    /**
-     * Allows visitors to convert the input data to a different representation
-     * before the actual serialization/deserialization process starts.
-     *
-     * @param mixed $data
-     *
-     * @return mixed
-     */
-    public function prepare($data);
-
     /**
      * @param mixed $data
      * @param array $type

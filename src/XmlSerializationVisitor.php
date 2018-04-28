@@ -49,16 +49,12 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     private $objectMetadataStack;
 
     public function __construct(
-        GraphNavigatorInterface $navigator,
-        SerializationContext $context,
         bool $formatOutput = true,
         string $defaultEncoding = 'UTF-8',
         string $defaultVersion = '1.0',
         string $defaultRootName = 'result',
         string $defaultRootNamespace = null
     ) {
-        parent::__construct($navigator, $context);
-
         $this->objectMetadataStack = new \SplStack;
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
@@ -166,7 +162,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
             }
 
             try {
-                if (null !== $node = $this->navigator->accept($v, $elType, $this->context)) {
+                if (null !== $node = $this->navigator->accept($v, $elType)) {
                     $this->currentNode->appendChild($node);
                 }
             } catch (NotAcceptableException $e) {
@@ -194,7 +190,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     {
         if ($metadata->xmlAttribute) {
             $this->setCurrentMetadata($metadata);
-            $node = $this->navigator->accept($v, $metadata->type, $this->context);
+            $node = $this->navigator->accept($v, $metadata->type);
             $this->revertCurrentMetadata();
 
             if (!$node instanceof \DOMCharacterData) {
@@ -216,7 +212,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
             $this->hasValue = true;
 
             $this->setCurrentMetadata($metadata);
-            $node = $this->navigator->accept($v, $metadata->type, $this->context);
+            $node = $this->navigator->accept($v, $metadata->type);
             $this->revertCurrentMetadata();
 
             if (!$node instanceof \DOMCharacterData) {
@@ -235,7 +231,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
 
             foreach ($v as $key => $value) {
                 $this->setCurrentMetadata($metadata);
-                $node = $this->navigator->accept($value, null, $this->context);
+                $node = $this->navigator->accept($value, null);
                 $this->revertCurrentMetadata();
 
                 if (!$node instanceof \DOMCharacterData) {
@@ -262,7 +258,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         $this->setCurrentMetadata($metadata);
 
         try {
-            if (null !== $node = $this->navigator->accept($v, $metadata->type, $this->context)) {
+            if (null !== $node = $this->navigator->accept($v, $metadata->type)) {
                 $this->currentNode->appendChild($node);
             }
         } catch (NotAcceptableException $e) {
@@ -278,7 +274,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($this->isElementEmpty($element) && ($v === null || $this->isSkippableCollection($metadata) || $this->isSkippableEmptyObject($node, $metadata) || $this->isCircularRef($this->context, $v))) {
+            if ($this->isElementEmpty($element) && ($v === null || $this->isSkippableCollection($metadata) || $this->isSkippableEmptyObject($node, $metadata))) {
                 $this->currentNode->removeChild($element);
             }
         }
@@ -289,11 +285,6 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     private function isInLineCollection(PropertyMetadata $metadata)
     {
         return $metadata->xmlCollection && $metadata->xmlCollectionInline;
-    }
-
-    private function isCircularRef(SerializationContext $context, $v)
-    {
-        return $this->context->isVisiting($v);
     }
 
     private function isSkippableEmptyObject($node, PropertyMetadata $metadata)

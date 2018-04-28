@@ -1460,7 +1460,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
                     ),
                 );
 
-                $elements = $context->getNavigator()->accept($data, $type, $context);
+                $elements = $context->getNavigator()->accept($data, $type);
                 $list = new AuthorList();
                 foreach ($elements as $author) {
                     $list->add($author);

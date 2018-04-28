@@ -32,5 +32,5 @@ use JMS\Serializer\SerializationContext;
  */
 interface DeserializationVisitorFactory
 {
-    public function getVisitor(GraphNavigatorInterface $navigator, DeserializationContext $context): DeserializationVisitorInterface;
+    public function getVisitor(): DeserializationVisitorInterface;
 }

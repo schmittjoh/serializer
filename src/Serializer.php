@@ -52,11 +52,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $typeParser;
 
     private $serializationVisitors = array();
-
     private $deserializationVisitors = array();
-
-    private $serializationNavigator;
-    private $deserializationNavigator;
 
     /**
      * @var SerializationContextFactoryInterface
@@ -72,6 +68,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     private $accessorStrategy;
 
+    private $expressionEvaluator;
     /**
      * @param \Metadata\MetadataFactoryInterface $factory
      * @param Handler\HandlerRegistryInterface $handlerRegistry
@@ -107,9 +104,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
         $this->accessorStrategy = $accessorStrategy;
-
-        $this->serializationNavigator = new SerializationGraphNavigator($this->factory, $this->handlerRegistry, $this->accessorStrategy, $this->dispatcher, $expressionEvaluator);
-        $this->deserializationNavigator = new DeserializationGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->accessorStrategy, $this->dispatcher, $expressionEvaluator);
+        $this->expressionEvaluator = $expressionEvaluator;
 
         $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
@@ -146,6 +141,16 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return null;
     }
 
+    private function getSerializationNavigator() : GraphNavigatorInterface
+    {
+        return new SerializationGraphNavigator($this->factory, $this->handlerRegistry, $this->accessorStrategy, $this->dispatcher, $this->expressionEvaluator);
+    }
+
+    private function getDeserializationNavigator(): GraphNavigatorInterface
+    {
+        return new DeserializationGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->accessorStrategy, $this->dispatcher, $this->expressionEvaluator);
+    }
+
     public function serialize($data, string $format, SerializationContext $context = null, string $type = null):string
     {
         if (null === $context) {
@@ -158,10 +163,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $type = $this->findInitialType($type, $context);
 
-        $visitor = $this->serializationVisitors[$format]->getVisitor($this->serializationNavigator, $context);
+        $visitor = $this->serializationVisitors[$format]->getVisitor();
+        $navigator = $this->getSerializationNavigator();
 
-        $preparedData = $visitor->prepare($data);
-        $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, $format, $type);
+        $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
         return $visitor->getResult($result);
     }
 
@@ -175,9 +180,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
         }
 
-        $visitor = $this->deserializationVisitors[$format]->getVisitor($this->deserializationNavigator, $context);
-        $preparedData = $visitor->prepare($data);
-        $result = $this->visit($this->deserializationNavigator, $visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
+        $visitor = $this->deserializationVisitors[$format]->getVisitor();
+        $navigator = $this->getDeserializationNavigator();
+
+        $result = $this->visit($navigator, $visitor, $context, $data, $format, $this->typeParser->parse($type));
 
         return $visitor->getResult($result);
     }
@@ -195,12 +201,12 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
 
-        $visitor = $this->serializationVisitors['json']->getVisitor($this->serializationNavigator, $context);
-
         $type = $this->findInitialType($type, $context);
 
-        $preparedData = $visitor->prepare($data);
-        $result = $this->visit($this->serializationNavigator, $visitor, $context, $preparedData, 'json', $type);
+        $visitor = $this->serializationVisitors['json']->getVisitor();
+        $navigator = $this->getSerializationNavigator();
+
+        $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
         $result = $this->convertArrayObjects($result);
 
         if (!\is_array($result)) {
@@ -226,12 +232,14 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($this->deserializationVisitors['json'])) {
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
         }
-        $visitor = $this->deserializationVisitors['json']->getVisitor($this->deserializationNavigator, $context);
 
-        return $this->visit($this->deserializationNavigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type));
+        $visitor = $this->deserializationVisitors['json']->getVisitor();
+        $navigator = $this->getDeserializationNavigator();
+
+        return $this->visit($navigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type), false);
     }
 
-    private function visit(GraphNavigatorInterface $navigator, $visitor, Context $context, $data, $format, array $type = null)
+    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, $format, array $type = null, $prepare = true)
     {
         $context->initialize(
             $format,
@@ -240,7 +248,13 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $this->factory
         );
 
-        return $navigator->accept($data, $type, $context);
+        $visitor->setNavigator($navigator);
+        $navigator->initialize($visitor, $context);
+
+        if ($prepare) {
+            $data = $visitor->prepare($data);
+        }
+        return $navigator->accept($data, $type);
     }
 
     private function convertArrayObjects($data)
