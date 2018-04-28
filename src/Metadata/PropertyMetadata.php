@@ -95,12 +95,8 @@ class PropertyMetadata extends BasePropertyMetadata
     public function getValue($obj)
     {
         if (null === $this->getter) {
-            if (null !== $this->closureAccessor) {
-                $accessor = $this->closureAccessor;
-                return $accessor($obj, $this->name);
-            }
-
-            return parent::getValue($obj);
+            $accessor = $this->closureAccessor;
+            return $accessor($obj, $this->name);
         }
 
         return $obj->{$this->getter}();
