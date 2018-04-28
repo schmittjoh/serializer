@@ -35,9 +35,9 @@ class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
     private $disableExternalEntities = true;
     private $doctypeWhitelist = array();
 
-    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, DeserializationContext $context): DeserializationVisitorInterface
+    public function getVisitor(GraphNavigatorInterface $navigator, DeserializationContext $context): DeserializationVisitorInterface
     {
-        return new XmlDeserializationVisitor($navigator, $accessorStrategy, $context, $this->disableExternalEntities, $this->doctypeWhitelist);
+        return new XmlDeserializationVisitor($navigator, $context, $this->disableExternalEntities, $this->doctypeWhitelist);
     }
 
     public function enableExternalEntities(bool $enable = true): self

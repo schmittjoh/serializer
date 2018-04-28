@@ -37,9 +37,9 @@ class JsonSerializationVisitorFactory implements SerializationVisitorFactory
      */
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
-    public function getVisitor(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, SerializationContext $context): SerializationVisitorInterface
+    public function getVisitor(GraphNavigatorInterface $navigator, SerializationContext $context): SerializationVisitorInterface
     {
-        return new JsonSerializationVisitor($navigator, $accessorStrategy, $context, $this->options);
+        return new JsonSerializationVisitor($navigator, $context, $this->options);
     }
 
     public function setOptions(int $options): self

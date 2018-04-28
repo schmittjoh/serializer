@@ -51,9 +51,8 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $this->handler = new FormErrorHandler(new Translator('en'));
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-        $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
         $context = SerializationContext::create();
-        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $access, $context);
+        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $context);
         $this->dispatcher = new EventDispatcher();
         $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
     }

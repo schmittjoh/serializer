@@ -228,9 +228,8 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testPrimitiveTypes($primitiveType, $data)
     {
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-        $access = $this->getMockBuilder(AccessorStrategyInterface::class)->getMock();
         $context = SerializationContext::create();
-        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $access, $context);
+        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $context);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, array(), $this->getMockBuilder(SerializationContext::class)->getMock());
         if ($primitiveType == 'double') {

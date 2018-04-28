@@ -27,11 +27,6 @@ use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 abstract class AbstractVisitor
 {
     /**
-     * @var AccessorStrategyInterface
-     */
-    protected $accessor;
-
-    /**
      * @var GraphNavigatorInterface
      */
     protected $navigator;
@@ -40,10 +35,9 @@ abstract class AbstractVisitor
      */
     protected $context;
 
-    public function __construct(GraphNavigatorInterface $navigator, AccessorStrategyInterface $accessorStrategy, Context $context)
+    public function __construct(GraphNavigatorInterface $navigator, Context $context)
     {
         $this->navigator = $navigator;
-        $this->accessor = $accessorStrategy;
         $this->context = $context;
     }
 

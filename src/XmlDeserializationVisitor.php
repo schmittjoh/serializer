@@ -23,6 +23,7 @@ namespace JMS\Serializer;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -40,11 +41,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
     public function __construct(
         GraphNavigatorInterface $navigator,
-        AccessorStrategyInterface $accessorStrategy,
         DeserializationContext $context,
         bool $disableExternalEntities = true, array $doctypeWhitelist = array())
     {
-        parent::__construct($navigator, $accessorStrategy, $context);
+        parent::__construct($navigator, $context);
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->objectMetadataStack = new \SplStack;
@@ -236,7 +236,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         $this->objectMetadataStack->push($metadata);
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data): void
+    public function visitProperty(PropertyMetadata $metadata, $data)
     {
         $name = $metadata->serializedName;
 
@@ -248,18 +248,14 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
-                $v = $this->navigator->accept($attributes[$name], $metadata->type, $this->context);
-                $this->accessor->setValue($this->currentObject, $v, $metadata);
+                return $this->navigator->accept($attributes[$name], $metadata->type, $this->context);
             }
 
-            return;
+            throw new NotAcceptableException();
         }
 
         if ($metadata->xmlValue) {
-            $v = $this->navigator->accept($data, $metadata->type, $this->context);
-            $this->accessor->setValue($this->currentObject, $v, $metadata);
-
-            return;
+            return $this->navigator->accept($data, $metadata->type, $this->context);
         }
 
         if ($metadata->xmlCollection) {
@@ -271,15 +267,13 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $this->setCurrentMetadata($metadata);
             $v = $this->navigator->accept($enclosingElem, $metadata->type, $this->context);
             $this->revertCurrentMetadata();
-            $this->accessor->setValue($this->currentObject, $v, $metadata);
-
-            return;
+            return $v;
         }
 
         if ($metadata->xmlNamespace) {
             $node = $data->children($metadata->xmlNamespace)->$name;
             if (!$node->count()) {
-                return;
+                throw new NotAcceptableException();
             }
         } else {
 
@@ -293,7 +287,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 $nodes = $data->xpath('./' . $name);
             }
             if (empty($nodes)) {
-                return;
+                throw new NotAcceptableException();
             }
             $node = reset($nodes);
         }
@@ -302,9 +296,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $this->setCurrentMetadata($metadata);
         }
 
-        $v = $this->navigator->accept($node, $metadata->type, $this->context);
-
-        $this->accessor->setValue($this->currentObject, $v, $metadata);
+        return $this->navigator->accept($node, $metadata->type, $this->context);
     }
 
     /**

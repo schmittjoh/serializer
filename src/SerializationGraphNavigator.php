@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -30,6 +31,7 @@ use JMS\Serializer\Exception\CircularReferenceDetectedException;
 use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
@@ -55,10 +57,15 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
     private $dispatcher;
     private $metadataFactory;
     private $handlerRegistry;
+    /**
+     * @var AccessorStrategyInterface
+     */
+    private $accessor;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
+        AccessorStrategyInterface $accessor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
     )
@@ -66,6 +73,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
+        $this->accessor = $accessor;
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
@@ -82,6 +90,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
     public function accept($data, array $type = null, Context $context)
     {
         $visitor = $context->getVisitor();
+        $shouldSerializeNull = $context->shouldSerializeNull();
 
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
@@ -107,6 +116,9 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
 
         switch ($type['name']) {
             case 'NULL':
+                if (!$shouldSerializeNull) {
+                    throw new NotAcceptableException();
+                }
                 return $visitor->visitNull($data, $type);
 
             case 'string':
@@ -202,8 +214,14 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
                         continue;
                     }
 
+                    $v = $this->accessor->getValue($data, $propertyMetadata);
+
+                    if (null === $v && $shouldSerializeNull !== true) {
+                        continue;
+                    }
+
                     $context->pushPropertyMetadata($propertyMetadata);
-                    $visitor->visitProperty($propertyMetadata, $data);
+                    $visitor->visitProperty($propertyMetadata, $v);
                     $context->popPropertyMetadata();
                 }
 
@@ -213,7 +231,7 @@ final class SerializationGraphNavigator implements GraphNavigatorInterface
         }
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context, $format)
+    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, SerializationContext $context, $format)
     {
         $context->stopVisiting($object);
         $context->popClassMetadata();

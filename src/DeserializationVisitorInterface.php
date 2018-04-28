@@ -116,9 +116,9 @@ interface DeserializationVisitorInterface
      * @param PropertyMetadata $metadata
      * @param mixed $data
      *
-     * @return void
+     * @return mixed
      */
-    public function visitProperty(PropertyMetadata $metadata, $data): void;
+    public function visitProperty(PropertyMetadata $metadata, $data);
 
     /**
      * Called after all properties of the object have been visited.
