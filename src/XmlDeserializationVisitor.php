@@ -209,14 +209,17 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string
     {
         switch (true) {
-            // Check XML attribute for discriminatorFieldName
-            case $metadata->xmlDiscriminatorAttribute && isset($data[$metadata->discriminatorFieldName]):
-                return (string)$data[$metadata->discriminatorFieldName];
+            // Check XML attribute without namespace for discriminatorFieldName
+            case $metadata->xmlDiscriminatorAttribute && null === $metadata->xmlDiscriminatorNamespace && isset($data->attributes()->{$metadata->discriminatorFieldName}):
+                return (string)$data->attributes()->{$metadata->discriminatorFieldName};
+
+            // Check XML attribute with namespace for discriminatorFieldName
+            case $metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
+                return (string)$data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
 
             // Check XML element with namespace for discriminatorFieldName
             case !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                return (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
-
+                return  (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
             // Check XML element for discriminatorFieldName
             case isset($data->{$metadata->discriminatorFieldName}):
                 return (string)$data->{$metadata->discriminatorFieldName};
