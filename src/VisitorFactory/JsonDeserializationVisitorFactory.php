@@ -42,9 +42,9 @@ class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
      */
     private $depth = 512;
 
-    public function getVisitor(GraphNavigatorInterface $navigator, DeserializationContext $context): DeserializationVisitorInterface
+    public function getVisitor(): DeserializationVisitorInterface
     {
-        return new JsonDeserializationVisitor($navigator, $context);
+        return new JsonDeserializationVisitor($this->options, $this->depth);
     }
 
     public function setOptions(int $options): self

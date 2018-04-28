@@ -35,11 +35,8 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
     private $currentObject;
 
     public function __construct(
-        GraphNavigatorInterface $navigator,
-        DeserializationContext $context,
         int $options = 0, int $depth = 512)
     {
-        parent::__construct($navigator, $context);
         $this->objectStack = new \SplStack;
         $this->options = $options;
         $this->depth = $depth;
@@ -88,7 +85,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
                 $result = array();
 
                 foreach ($data as $v) {
-                    $result[] = $this->navigator->accept($v, $listType, $this->context);
+                    $result[] = $this->navigator->accept($v, $listType);
                 }
 
                 return $result;
@@ -99,7 +96,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
                 $result = array();
 
                 foreach ($data as $k => $v) {
-                    $result[$this->navigator->accept($k, $keyType, $this->context)] = $this->navigator->accept($v, $entryType, $this->context);
+                    $result[$this->navigator->accept($k, $keyType)] = $this->navigator->accept($v, $entryType);
                 }
 
                 return $result;
@@ -147,7 +144,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
         }
 
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type, $this->context) : null;
+        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type) : null;
 
         return $v;
     }

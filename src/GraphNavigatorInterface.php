@@ -41,13 +41,20 @@ interface GraphNavigatorInterface
     const DIRECTION_DESERIALIZATION = 2;
 
     /**
+     * Called at the beginning of the serialization process. The navigator should use the traverse the object graph
+     * and pass to the $visitor the value of found nodes (following the rules obtained from $context).
+     *
+     * @param VisitorInterface $visitor
+     * @param Context $context
+     */
+    public function initialize(VisitorInterface $visitor, Context $context): void;
+    /**
      * Called for each node of the graph that is being traversed.
      *
      * @throws NotAcceptableException
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
-     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null, Context $context);
+    public function accept($data, array $type = null);
 }

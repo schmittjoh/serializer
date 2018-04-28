@@ -40,11 +40,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $doctypeWhitelist = array();
 
     public function __construct(
-        GraphNavigatorInterface $navigator,
-        DeserializationContext $context,
         bool $disableExternalEntities = true, array $doctypeWhitelist = array())
     {
-        parent::__construct($navigator, $context);
         $this->objectStack = new \SplStack;
         $this->metadataStack = new \SplStack;
         $this->objectMetadataStack = new \SplStack;
@@ -134,8 +131,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $result = [];
             foreach ($data as $key => $v) {
-                $k = $this->navigator->accept($key, $keyType, $this->context);
-                $result[$k] = $this->navigator->accept($v, $entryType, $this->context);
+                $k = $this->navigator->accept($key, $keyType);
+                $result[$k] = $this->navigator->accept($v, $entryType);
             }
 
             return $result;
@@ -175,7 +172,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 $result = array();
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $this->context);
+                    $result[] = $this->navigator->accept($v, $type['params'][0]);
                 }
 
                 return $result;
@@ -195,8 +192,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
-                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType, $this->context);
-                    $result[$k] = $this->navigator->accept($v, $entryType, $this->context);
+                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
+                    $result[$k] = $this->navigator->accept($v, $entryType);
                 }
 
                 return $result;
@@ -251,14 +248,14 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
-                return $this->navigator->accept($attributes[$name], $metadata->type, $this->context);
+                return $this->navigator->accept($attributes[$name], $metadata->type);
             }
 
             throw new NotAcceptableException();
         }
 
         if ($metadata->xmlValue) {
-            return $this->navigator->accept($data, $metadata->type, $this->context);
+            return $this->navigator->accept($data, $metadata->type);
         }
 
         if ($metadata->xmlCollection) {
@@ -268,7 +265,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             }
 
             $this->setCurrentMetadata($metadata);
-            $v = $this->navigator->accept($enclosingElem, $metadata->type, $this->context);
+            $v = $this->navigator->accept($enclosingElem, $metadata->type);
             $this->revertCurrentMetadata();
             return $v;
         }
@@ -299,7 +296,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $this->setCurrentMetadata($metadata);
         }
 
-        return $this->navigator->accept($node, $metadata->type, $this->context);
+        return $this->navigator->accept($node, $metadata->type);
     }
 
     /**

@@ -24,21 +24,16 @@ use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
-abstract class AbstractVisitor
+abstract class AbstractVisitor implements VisitorInterface
 {
     /**
      * @var GraphNavigatorInterface
      */
     protected $navigator;
-    /**
-     * @var Context
-     */
-    protected $context;
 
-    public function __construct(GraphNavigatorInterface $navigator, Context $context)
+    public function setNavigator(GraphNavigatorInterface $navigator) : void
     {
         $this->navigator = $navigator;
-        $this->context = $context;
     }
 
     public function prepare($data)

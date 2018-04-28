@@ -31,5 +31,5 @@ use JMS\Serializer\SerializationVisitorInterface;
  */
 interface SerializationVisitorFactory
 {
-    public function getVisitor(GraphNavigatorInterface $navigator, SerializationContext $context): SerializationVisitorInterface;
+    public function getVisitor(): SerializationVisitorInterface;
 }
