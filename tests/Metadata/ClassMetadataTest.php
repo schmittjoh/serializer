@@ -40,7 +40,7 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
     {
         $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
         $restoredMeta = unserialize(serialize($meta));
-        $this->assertEquals($meta, $restoredMeta);
+        self::assertEquals($meta, $restoredMeta);
     }
 
     /**
@@ -51,10 +51,10 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
+        self::assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, $order);
-        $this->assertEquals($expected, array_keys($metadata->propertyMetadata));
+        self::assertEquals($expected, array_keys($metadata->propertyMetadata));
     }
 
     public function testSetAccessorOrderAlphabetical()
@@ -62,10 +62,10 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
         $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
-        $this->assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
+        self::assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
-        $this->assertEquals(['a', 'b'], array_keys($metadata->propertyMetadata));
+        self::assertEquals(['a', 'b'], array_keys($metadata->propertyMetadata));
     }
 
     /**
@@ -78,12 +78,12 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata = new PropertyMetadata(get_class($object), $property);
         $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getterInit, $setterInit);
 
-        $this->assertEquals($getterName, $metadata->getter);
-        $this->assertEquals($setterName, $metadata->setter);
+        self::assertEquals($getterName, $metadata->getter);
+        self::assertEquals($setterName, $metadata->setter);
 
         $metadata->setValue($object, 'x');
 
-        $this->assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
+        self::assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
     }
 
     /**

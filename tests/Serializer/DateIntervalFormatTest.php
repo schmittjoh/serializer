@@ -29,21 +29,21 @@ class DateIntervalFormatTest extends \PHPUnit\Framework\TestCase
         $dtf = new DateHandler();
 
         $ATOMDateIntervalString = $dtf->format(new \DateInterval('P0D'));
-        $this->assertEquals($ATOMDateIntervalString, 'P0DT0S');
+        self::assertEquals($ATOMDateIntervalString, 'P0DT0S');
 
         $ATOMDateIntervalString = $dtf->format(new \DateInterval('P0DT0S'));
-        $this->assertEquals($ATOMDateIntervalString, 'P0DT0S');
+        self::assertEquals($ATOMDateIntervalString, 'P0DT0S');
 
         $ATOMDateIntervalString = $dtf->format(new \DateInterval('PT45M'));
 
-        $this->assertEquals($ATOMDateIntervalString, 'PT45M');
+        self::assertEquals($ATOMDateIntervalString, 'PT45M');
 
         $ATOMDateIntervalString = $dtf->format(new \DateInterval('P2YT45M'));
 
-        $this->assertEquals($ATOMDateIntervalString, 'P2YT45M');
+        self::assertEquals($ATOMDateIntervalString, 'P2YT45M');
 
         $ATOMDateIntervalString = $dtf->format(new \DateInterval('P2Y4DT6H8M16S'));
 
-        $this->assertEquals($ATOMDateIntervalString, 'P2Y4DT6H8M16S');
+        self::assertEquals($ATOMDateIntervalString, 'P2Y4DT6H8M16S');
     }
 }

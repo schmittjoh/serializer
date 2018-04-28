@@ -50,8 +50,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => get_class($obj), 'params' => []]);
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertEquals(['name' => get_parent_class($obj), 'params' => []], $event->getType());
-        $this->assertTrue($obj->__isInitialized());
+        self::assertEquals(['name' => get_parent_class($obj), 'params' => []], $event->getType());
+        self::assertTrue($obj->__isInitialized());
     }
 
     public function testDoesNotRewriteCustomType()
@@ -59,8 +59,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => 'FakedName', 'params' => []]);
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertEquals(['name' => 'FakedName', 'params' => []], $event->getType());
-        $this->assertFalse($obj->__isInitialized());
+        self::assertEquals(['name' => 'FakedName', 'params' => []], $event->getType());
+        self::assertFalse($obj->__isInitialized());
     }
 
     public function testExcludedPropDoesNotGetInitialized()
@@ -77,8 +77,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => SimpleObjectProxy::class, 'params' => []]);
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertEquals(['name' => SimpleObjectProxy::class, 'params' => []], $event->getType());
-        $this->assertFalse($obj->__isInitialized());
+        self::assertEquals(['name' => SimpleObjectProxy::class, 'params' => []], $event->getType());
+        self::assertFalse($obj->__isInitialized());
     }
 
     public function testProxyLoadingCanBeSkippedForVirtualTypes()
@@ -88,8 +88,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => 'FakedName', 'params' => []]);
         $subscriber->onPreSerialize($event);
 
-        $this->assertEquals(['name' => 'FakedName', 'params' => []], $event->getType());
-        $this->assertFalse($obj->__isInitialized());
+        self::assertEquals(['name' => 'FakedName', 'params' => []], $event->getType());
+        self::assertFalse($obj->__isInitialized());
     }
 
     public function testProxyLoadingCanBeSkippedByExclusionStrategy()
@@ -104,12 +104,12 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
 
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => SimpleObjectProxy::class, 'params' => []]);
         $subscriber->onPreSerialize($event);
-        $this->assertFalse($obj->__isInitialized());
+        self::assertFalse($obj->__isInitialized());
 
         // virtual types are still initialized
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => 'FakeName', 'params' => []]);
         $subscriber->onPreSerialize($event);
-        $this->assertTrue($obj->__isInitialized());
+        self::assertTrue($obj->__isInitialized());
     }
 
     public function testEventTriggeredOnRealClassName()
@@ -124,7 +124,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($proxy, ['name' => get_class($proxy), 'params' => []]);
         $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
 
-        $this->assertTrue($realClassEventTriggered1);
+        self::assertTrue($realClassEventTriggered1);
     }
 
     public function testListenersCanChangeType()
@@ -139,7 +139,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($proxy, ['name' => get_class($proxy), 'params' => []]);
         $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
 
-        $this->assertSame(['name' => 'foo', 'params' => ['bar']], $event->getType());
+        self::assertSame(['name' => 'foo', 'params' => ['bar']], $event->getType());
     }
 
     public function testListenersDoNotChangeTypeOnProxiesAndVirtualTypes()
@@ -149,7 +149,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($proxy, ['name' => 'foo', 'params' => []]);
         $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
 
-        $this->assertSame(['name' => 'foo', 'params' => []], $event->getType());
+        self::assertSame(['name' => 'foo', 'params' => []], $event->getType());
     }
 
     public function testOnPreSerializeMaintainsParams()
@@ -160,7 +160,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->createEvent($object, $type);
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertSame(['name' => SimpleObject::class, 'params' => ['baz']], $event->getType());
+        self::assertSame(['name' => SimpleObject::class, 'params' => ['baz']], $event->getType());
     }
 
     protected function setUp()

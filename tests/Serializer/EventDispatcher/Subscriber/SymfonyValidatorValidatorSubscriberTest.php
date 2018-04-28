@@ -96,7 +96,7 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
                 DeserializationContext::create()->setAttribute('validation_groups', ['Foo'])
             );
 
-        $this->assertCount(2, $list);
+        self::assertCount(2, $list);
     }
 
     protected function setUp()

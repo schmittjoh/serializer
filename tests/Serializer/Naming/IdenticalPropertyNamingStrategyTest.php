@@ -42,6 +42,6 @@ class IdenticalPropertyNamingStrategyTest extends \PHPUnit\Framework\TestCase
         $mockProperty->name = $propertyName;
 
         $strategy = new IdenticalPropertyNamingStrategy();
-        $this->assertEquals($propertyName, $strategy->translateName($mockProperty));
+        self::assertEquals($propertyName, $strategy->translateName($mockProperty));
     }
 }

@@ -41,20 +41,20 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
     {
         $school = new School();
         $json = $this->serializer->serialize($school, 'json');
-        $this->assertEquals('{"type":"school"}', $json);
+        self::assertEquals('{"type":"school"}', $json);
 
         $deserialized = $this->serializer->deserialize($json, Organization::class, 'json');
-        $this->assertEquals($school, $deserialized);
+        self::assertEquals($school, $deserialized);
     }
 
     public function testDiscriminatorIsInferredForGenericBaseClass()
     {
         $student = new Student();
         $json = $this->serializer->serialize($student, 'json');
-        $this->assertEquals('{"type":"student"}', $json);
+        self::assertEquals('{"type":"student"}', $json);
 
         $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
-        $this->assertEquals($student, $deserialized);
+        self::assertEquals($student, $deserialized);
     }
 
     public function testDiscriminatorIsInferredFromDoctrine()
@@ -75,10 +75,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $em->clear();
 
         $reloadedClass = $em->find(get_class($class), $class->getId());
-        $this->assertNotSame($class, $reloadedClass);
+        self::assertNotSame($class, $reloadedClass);
 
         $json = $this->serializer->serialize($reloadedClass, 'json');
-        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
+        self::assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
     }
 
     protected function setUp()

@@ -85,7 +85,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->serialize(['value' => null], 'json');
 
-        $this->assertEquals('{"value":null}', $result);
+        self::assertEquals('{"value":null}', $result);
     }
 
     public function testDeserializeUseProvidedDeserializationContext()
@@ -114,7 +114,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->deserialize('{"value":null}', 'array', 'json');
 
-        $this->assertEquals(['value' => null], $result);
+        self::assertEquals(['value' => null], $result);
     }
 
     public function testToArrayUseProvidedSerializationContext()
@@ -143,7 +143,7 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->toArray(['value' => null]);
 
-        $this->assertEquals(['value' => null], $result);
+        self::assertEquals(['value' => null], $result);
     }
 
     public function testFromArrayUseProvidedDeserializationContext()
@@ -172,6 +172,6 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
 
         $result = $serializer->fromArray(['value' => null], 'array');
 
-        $this->assertEquals(['value' => null], $result);
+        self::assertEquals(['value' => null], $result);
     }
 }

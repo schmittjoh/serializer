@@ -26,7 +26,7 @@ class CamelCaseNamingStrategyTest extends \PHPUnit\Framework\TestCase
         $mockProperty->name = $propertyName;
 
         $strategy = new CamelCaseNamingStrategy();
-        $this->assertEquals($expected, $strategy->translateName($mockProperty));
+        self::assertEquals($expected, $strategy->translateName($mockProperty));
     }
 
 }

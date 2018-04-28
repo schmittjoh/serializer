@@ -57,10 +57,10 @@ abstract class LazyHandlerRegistryTest extends HandlerRegistryTest
         $this->registerHandlerService('handler.deserialization.xml', $xmlDeserializationHandler);
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml', ['handler.deserialization.xml', 'handle']);
 
-        $this->assertSame([$jsonSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json'));
-        $this->assertSame([$jsonDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json'));
-        $this->assertSame([$xmlSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml'));
-        $this->assertSame([$xmlDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
+        self::assertSame([$jsonSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'json'));
+        self::assertSame([$jsonDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'json'));
+        self::assertSame([$xmlSerializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '\stdClass', 'xml'));
+        self::assertSame([$xmlDeserializationHandler, 'handle'], $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
     }
 
     abstract protected function createContainer();

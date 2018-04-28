@@ -70,7 +70,7 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $form = $this->createForm();
         $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
 
-        $this->assertSame('{}', $json);
+        self::assertSame('{}', $json);
     }
 
     public function testErrorHandlerWithoutTranslator()
@@ -80,7 +80,7 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $form->addError(new FormError('error!'));
         $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
 
-        $this->assertSame(json_encode([
+        self::assertSame(json_encode([
             'errors' => [
                 'error!',
             ],
@@ -93,7 +93,7 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $form->addError(new FormError('error!'));
         $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
 
-        $this->assertSame(json_encode([
+        self::assertSame(json_encode([
             'errors' => [
                 'error!',
             ],
@@ -123,7 +123,7 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $data = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
-        $this->assertSame('{"children":{"url":{},"txt":{"errors":["This value is too short. It should have 10 characters or more."]}}}', $data);
+        self::assertSame('{"children":{"url":{},"txt":{"errors":["This value is too short. It should have 10 characters or more."]}}}', $data);
     }
 
     public function testSerializeChildElements()
@@ -139,7 +139,7 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
 
         $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
 
-        $this->assertSame(json_encode([
+        self::assertSame(json_encode([
             'errors' => [
                 'error!',
             ],

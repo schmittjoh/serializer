@@ -60,7 +60,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
 
-        $this->assertEquals($author, $authorFetched);
+        self::assertEquals($author, $authorFetched);
     }
 
     public function testFindManagedEntity()
@@ -79,7 +79,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
 
-        $this->assertSame($author, $authorFetched);
+        self::assertSame($author, $authorFetched);
     }
 
     public function testMissingAuthor()
@@ -91,7 +91,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $author = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
-        $this->assertNull($author);
+        self::assertNull($author);
     }
 
     public function testMissingAuthorFallback()
@@ -106,7 +106,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
-        $this->assertSame($author, $authorFetched);
+        self::assertSame($author, $authorFetched);
     }
 
     public function testMissingNotManaged()
@@ -121,7 +121,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
-        $this->assertSame($author, $authorFetched);
+        self::assertSame($author, $authorFetched);
     }
 
     public function testReference()
@@ -139,7 +139,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
-        $this->assertSame($author, $authorFetched);
+        self::assertSame($author, $authorFetched);
     }
 
     /**
@@ -182,7 +182,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
-        $this->assertSame($author, $authorFetched);
+        self::assertSame($author, $authorFetched);
     }
 
     protected function setUp()

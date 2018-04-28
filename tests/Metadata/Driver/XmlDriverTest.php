@@ -44,11 +44,11 @@ class XmlDriverTest extends BaseDriverTest
     {
         $m = $this->getDriver('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
-        $this->assertArrayHasKey('title', $m->propertyMetadata);
+        self::assertArrayHasKey('title', $m->propertyMetadata);
 
         $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
-            $this->assertArrayNotHasKey($key, $m->propertyMetadata);
+            self::assertArrayNotHasKey($key, $m->propertyMetadata);
         }
     }
 
@@ -56,11 +56,11 @@ class XmlDriverTest extends BaseDriverTest
     {
         $m = $this->getDriver('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
-        $this->assertArrayNotHasKey('title', $m->propertyMetadata);
+        self::assertArrayNotHasKey('title', $m->propertyMetadata);
 
         $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
-            $this->assertArrayHasKey($key, $m->propertyMetadata);
+            self::assertArrayHasKey($key, $m->propertyMetadata);
         }
     }
 
@@ -71,7 +71,7 @@ class XmlDriverTest extends BaseDriverTest
         $p = new PropertyMetadata($m->name, 'title');
         $p->serializedName = 'title';
         $p->type = ['name' => 'string', 'params' => []];
-        $this->assertEquals($p, $m->propertyMetadata['title']);
+        self::assertEquals($p, $m->propertyMetadata['title']);
     }
 
     public function testAccessorAttributes()
@@ -84,23 +84,23 @@ class XmlDriverTest extends BaseDriverTest
         $p->setter = 'setCapitalizedName';
         $p->serializedName = 'name';
 
-        $this->assertEquals($p, $m->propertyMetadata['name']);
+        self::assertEquals($p, $m->propertyMetadata['name']);
     }
 
     public function testGroupsTrim()
     {
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\GroupsTrim'));
 
-        $this->assertArrayHasKey('amount', $first->propertyMetadata);
-        $this->assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertArrayHasKey('amount', $first->propertyMetadata);
+        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
     }
 
     public function testMultilineGroups()
     {
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\MultilineGroupsFormat'));
 
-        $this->assertArrayHasKey('amount', $first->propertyMetadata);
-        $this->assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertArrayHasKey('amount', $first->propertyMetadata);
+        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
     }
 
     protected function getDriver()

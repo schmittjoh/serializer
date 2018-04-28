@@ -42,28 +42,28 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 
     public function testHasListeners()
     {
-        $this->assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
         $this->dispatcher->addListener('foo', function () {
         });
-        $this->assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
 
-        $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
         $this->dispatcher->addListener('bar', function () {
         }, 'Foo');
-        $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
         $this->dispatcher->addListener('bar', function () {
         }, 'Bar', 'xml');
-        $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
         $this->dispatcher->addListener('bar', function () {
         }, null, 'json');
-        $this->assertTrue($this->dispatcher->hasListeners('bar', 'Baz', 'json'));
-        $this->assertTrue($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('bar', 'Baz', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
 
-        $this->assertFalse($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
+        self::assertFalse($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
         $this->dispatcher->addListener('baz', function () {
         }, 'Bar');
-        $this->assertTrue($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
-        //$this->assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
+        self::assertTrue($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
+        //self::assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
     }
 
     public function testDispatch()
@@ -142,8 +142,8 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $this->dispatch('pre');
 
-        $this->assertTrue($listener1);
-        $this->assertFalse($listener2);
+        self::assertTrue($listener1);
+        self::assertFalse($listener2);
     }
 
     public function testListenerCanDispatchEvent()
@@ -157,9 +157,9 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 
             $event = new Event($event->getContext(), $event->getType());
 
-            $this->assertSame('pre', $eventName);
-            $this->assertSame('json', $format);
-            $this->assertSame('Foo', $loweredClass);
+            self::assertSame('pre', $eventName);
+            self::assertSame('json', $format);
+            self::assertSame('Foo', $loweredClass);
 
             $dispatcher->dispatch('post', 'Blah', 'xml', $event);
         });
@@ -171,16 +171,16 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher->addListener('post', function (Event $event, $eventName, $loweredClass, $format, EventDispatcherInterface $dispatcher) use (&$listener3) {
             $listener3 = true;
 
-            $this->assertSame('post', $eventName);
-            $this->assertSame('xml', $format);
-            $this->assertSame('Blah', $loweredClass);
+            self::assertSame('post', $eventName);
+            self::assertSame('xml', $format);
+            self::assertSame('Blah', $loweredClass);
         });
 
         $this->dispatch('pre');
 
-        $this->assertTrue($listener1);
-        $this->assertTrue($listener2);
-        $this->assertTrue($listener3);
+        self::assertTrue($listener1);
+        self::assertTrue($listener2);
+        self::assertTrue($listener3);
     }
 
     public function testAddSubscriber()
@@ -192,7 +192,7 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->dispatcher->addSubscriber($subscriber);
-        $this->assertAttributeEquals([
+        self::assertAttributeEquals([
             'foo.bar_baz' => [
                 [[$subscriber, 'onfoobarbaz'], null, 'foo', null],
             ],

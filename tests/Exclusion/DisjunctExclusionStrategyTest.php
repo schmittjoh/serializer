@@ -45,7 +45,7 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
         $last->expects($this->never())
             ->method('shouldSkipClass');
 
-        $this->assertTrue($strat->shouldSkipClass($metadata, $context));
+        self::assertTrue($strat->shouldSkipClass($metadata, $context));
     }
 
     public function testShouldSkipClassDisjunctBehavior()
@@ -68,7 +68,7 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
             ->with($metadata, $context)
             ->will($this->returnValue(true));
 
-        $this->assertTrue($strat->shouldSkipClass($metadata, $context));
+        self::assertTrue($strat->shouldSkipClass($metadata, $context));
     }
 
     public function testShouldSkipClassReturnsFalseIfNoPredicateMatched()
@@ -91,7 +91,7 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
             ->with($metadata, $context)
             ->will($this->returnValue(false));
 
-        $this->assertFalse($strat->shouldSkipClass($metadata, $context));
+        self::assertFalse($strat->shouldSkipClass($metadata, $context));
     }
 
     public function testShouldSkipPropertyShortCircuiting()
@@ -112,7 +112,7 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
         $last->expects($this->never())
             ->method('shouldSkipProperty');
 
-        $this->assertTrue($strat->shouldSkipProperty($metadata, $context));
+        self::assertTrue($strat->shouldSkipProperty($metadata, $context));
     }
 
     public function testShouldSkipPropertyDisjunct()
@@ -135,7 +135,7 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
             ->with($metadata, $context)
             ->will($this->returnValue(true));
 
-        $this->assertTrue($strat->shouldSkipProperty($metadata, $context));
+        self::assertTrue($strat->shouldSkipProperty($metadata, $context));
     }
 
     public function testShouldSkipPropertyReturnsFalseIfNoPredicateMatches()
@@ -158,6 +158,6 @@ class DisjunctExclusionStrategyTest extends \PHPUnit\Framework\TestCase
             ->with($metadata, $context)
             ->will($this->returnValue(false));
 
-        $this->assertFalse($strat->shouldSkipProperty($metadata, $context));
+        self::assertFalse($strat->shouldSkipProperty($metadata, $context));
     }
 }

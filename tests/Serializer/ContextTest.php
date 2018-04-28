@@ -171,7 +171,7 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         $context = SerializationContext::create();
 
         $context->startVisiting($scalar);
-        $this->assertFalse($context->isVisiting($scalar));
+        self::assertFalse($context->isVisiting($scalar));
         $context->stopVisiting($scalar);
     }
 
@@ -179,12 +179,12 @@ class ContextTest extends \PHPUnit\Framework\TestCase
     {
         $context = SerializationContext::create();
         $context->setInitialType('foo');
-        $this->assertEquals('foo', $context->getInitialType());
-        $this->assertEquals('foo', $context->getAttribute('initial_type'));
+        self::assertEquals('foo', $context->getInitialType());
+        self::assertEquals('foo', $context->getAttribute('initial_type'));
 
         $context = SerializationContext::create();
         $context->setAttribute('initial_type', 'foo');
-        $this->assertEquals('foo', $context->getInitialType());
+        self::assertEquals('foo', $context->getInitialType());
     }
 
     public function testMultipleCallsOnGroupsDoNotCreateMultipleExclusionStrategies()
@@ -200,8 +200,8 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 
         $data = json_decode($serialized, true);
 
-        $this->assertArrayHasKey("id", $data);
-        $this->assertArrayNotHasKey("created_at", $data);
+        self::assertArrayHasKey("id", $data);
+        self::assertArrayNotHasKey("created_at", $data);
     }
 
     public function testMultipleCallsOnVersionDoNotCreateMultipleExclusionStrategies()
@@ -217,19 +217,19 @@ class ContextTest extends \PHPUnit\Framework\TestCase
 
         $data = json_decode($serialized, true);
 
-        $this->assertEquals("a", $data["name"]);
+        self::assertEquals("a", $data["name"]);
     }
 
     public function testSerializeNullOption()
     {
         $context = SerializationContext::create();
-        $this->assertFalse($context->shouldSerializeNull());
+        self::assertFalse($context->shouldSerializeNull());
 
         $context->setSerializeNull(false);
-        $this->assertFalse($context->shouldSerializeNull());
+        self::assertFalse($context->shouldSerializeNull());
 
         $context->setSerializeNull(true);
-        $this->assertTrue($context->shouldSerializeNull());
+        self::assertTrue($context->shouldSerializeNull());
     }
 }
 

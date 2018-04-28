@@ -31,7 +31,7 @@ class TypeParserTest extends \PHPUnit\Framework\TestCase
      */
     public function testParse($type, $name, array $params = [])
     {
-        $this->assertEquals(['name' => $name, 'params' => $params], $this->parser->parse($type));
+        self::assertEquals(['name' => $name, 'params' => $params], $this->parser->parse($type));
     }
 
     public function getTypes()
