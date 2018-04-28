@@ -51,9 +51,9 @@ class EventDispatcher implements EventDispatcherInterface
         $this->classListeners = array();
     }
 
-    public function addListener($eventName, $callable, $class = null, $format = null)
+    public function addListener($eventName, $callable, $class = null, $format = null, $interface = null): void
     {
-        $this->listeners[$eventName][] = array($callable, null === $class ? null : $class, $format);
+        $this->listeners[$eventName][] = array($callable, $class, $format, $interface);
         unset($this->classListeners[$eventName]);
     }
 
@@ -67,7 +67,8 @@ class EventDispatcher implements EventDispatcherInterface
             $method = isset($eventData['method']) ? $eventData['method'] : self::getDefaultMethodName($eventData['event']);
             $class = isset($eventData['class']) ? $eventData['class'] : null;
             $format = isset($eventData['format']) ? $eventData['format'] : null;
-            $this->listeners[$eventData['event']][] = array(array($subscriber, $method), $class, $format);
+            $interface = isset($eventData['interface']) ? $eventData['interface'] : null;
+            $this->listeners[$eventData['event']][] = array(array($subscriber, $method), $class, $format, $interface);
             unset($this->classListeners[$eventData['event']]);
         }
     }
@@ -91,16 +92,25 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        if (!isset($this->classListeners[$eventName][$class][$format])) {
-            $this->classListeners[$eventName][$class][$format] = $this->initializeListeners($eventName, $class, $format);
+        $object = $event instanceof ObjectEvent ? $event->getObject() : null;
+        $objectClass = $object ? (get_class($object) . $class) : $class;
+
+        if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
+            $this->classListeners[$eventName][$objectClass][$format] = array();
+            foreach ($this->initializeListeners($eventName, $class, $format) as $listener) {
+                if ($listener[3] !== null && !($object instanceof $listener[3])) {
+                    continue;
+                }
+
+                $this->classListeners[$eventName][$objectClass][$format][] = $listener[0];
+            }
         }
 
-        foreach ($this->classListeners[$eventName][$class][$format] as $listener) {
+        foreach ($this->classListeners[$eventName][$objectClass][$format] as  $listener) {
 
             if ($event->isPropagationStopped()) {
                 break;
             }
-
             \call_user_func($listener, $event, $eventName, $class, $format, $this);
         }
     }
@@ -123,9 +133,10 @@ class EventDispatcher implements EventDispatcherInterface
                 continue;
             }
 
-            $listeners[] = $listener[0];
+            $listeners[] = $listener;
         }
 
         return $listeners;
     }
 }
+
