@@ -38,9 +38,9 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $a = new MockListener();
         $this->registerListenerService('a', $a);
 
-        $this->assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
         $this->dispatcher->addListener('foo', ['a', 'foo']);
-        $this->assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
     }
 
     public function testDispatchWithListenerAsService()
@@ -55,9 +55,9 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $b = new MockListener();
         $this->registerListenerService('b', $b);
 
-        $this->dispatcher->addListener('pre', array('b', 'bar'), 'Bar');
-        $this->dispatcher->addListener('pre', array('b', 'foo'), 'Foo');
-        $this->dispatcher->addListener('pre', array('b', 'all'));
+        $this->dispatcher->addListener('pre', ['b', 'bar'], 'Bar');
+        $this->dispatcher->addListener('pre', ['b', 'foo'], 'Foo');
+        $this->dispatcher->addListener('pre', ['b', 'all']);
 
         $b->bar($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
         $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);

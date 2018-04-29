@@ -30,26 +30,26 @@ class YamlDriverTest extends BaseDriverTest
     public function testAccessorOrderIsInferred()
     {
         $m = $this->getDriverForSubDir('accessor_inferred')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
-        $this->assertEquals(array('age', 'name'), array_keys($m->propertyMetadata));
+        self::assertEquals(['age', 'name'], array_keys($m->propertyMetadata));
     }
 
     public function testShortExposeSyntax()
     {
         $m = $this->getDriverForSubDir('short_expose')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
 
-        $this->assertArrayHasKey('name', $m->propertyMetadata);
-        $this->assertArrayNotHasKey('age', $m->propertyMetadata);
+        self::assertArrayHasKey('name', $m->propertyMetadata);
+        self::assertArrayNotHasKey('age', $m->propertyMetadata);
     }
 
     public function testBlogPost()
     {
         $m = $this->getDriverForSubDir('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
-        $this->assertArrayHasKey('title', $m->propertyMetadata);
+        self::assertArrayHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
-            $this->assertArrayNotHasKey($key, $m->propertyMetadata);
+            self::assertArrayNotHasKey($key, $m->propertyMetadata);
         }
     }
 
@@ -57,11 +57,11 @@ class YamlDriverTest extends BaseDriverTest
     {
         $m = $this->getDriverForSubDir('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
-        $this->assertArrayNotHasKey('title', $m->propertyMetadata);
+        self::assertArrayNotHasKey('title', $m->propertyMetadata);
 
-        $excluded = array('createdAt', 'published', 'comments', 'author');
+        $excluded = ['createdAt', 'published', 'comments', 'author'];
         foreach ($excluded as $key) {
-            $this->assertArrayHasKey($key, $m->propertyMetadata);
+            self::assertArrayHasKey($key, $m->propertyMetadata);
         }
     }
 
@@ -71,28 +71,28 @@ class YamlDriverTest extends BaseDriverTest
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->serializedName = 'title';
-        $p->type = array('name' => 'string', 'params' => array());
-        $this->assertEquals($p, $m->propertyMetadata['title']);
+        $p->type = ['name' => 'string', 'params' => []];
+        self::assertEquals($p, $m->propertyMetadata['title']);
     }
 
     public function testBlogPostAccessor()
     {
         $m = $this->getDriverForSubDir('accessor')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
-        $this->assertArrayHasKey('title', $m->propertyMetadata);
+        self::assertArrayHasKey('title', $m->propertyMetadata);
 
         $p = new PropertyMetadata($m->name, 'title');
         $p->getter = 'getOtherTitle';
         $p->setter = 'setOtherTitle';
         $p->serializedName = 'title';
-        $this->assertEquals($p, $m->propertyMetadata['title']);
+        self::assertEquals($p, $m->propertyMetadata['title']);
     }
 
     private function getDriverForSubDir($subDir = null)
     {
-        return new YamlDriver(new FileLocator(array(
+        return new YamlDriver(new FileLocator([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
-        )), new IdenticalPropertyNamingStrategy());
+        ]), new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDriver()

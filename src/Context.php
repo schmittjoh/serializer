@@ -37,7 +37,7 @@ abstract class Context
     /**
      * @var array
      */
-    private $attributes = array();
+    private $attributes = [];
 
     private $format;
 
@@ -250,10 +250,10 @@ abstract class Context
     public function getCurrentPath()
     {
         if (!$this->metadataStack) {
-            return array();
+            return [];
         }
 
-        $paths = array();
+        $paths = [];
         foreach ($this->metadataStack as $metadata) {
             if ($metadata instanceof PropertyMetadata) {
                 array_unshift($paths, $metadata->name);

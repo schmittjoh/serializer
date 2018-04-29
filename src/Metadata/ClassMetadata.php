@@ -39,17 +39,17 @@ class ClassMetadata extends MergeableClassMetadata
     const ACCESSOR_ORDER_CUSTOM = 'custom';
 
     /** @var \ReflectionMethod[] */
-    public $preSerializeMethods = array();
+    public $preSerializeMethods = [];
 
     /** @var \ReflectionMethod[] */
-    public $postSerializeMethods = array();
+    public $postSerializeMethods = [];
 
     /** @var \ReflectionMethod[] */
-    public $postDeserializeMethods = array();
+    public $postDeserializeMethods = [];
 
     public $xmlRootName;
     public $xmlRootNamespace;
-    public $xmlNamespaces = array();
+    public $xmlNamespaces = [];
     public $accessorOrder;
     public $customOrder;
     public $usingExpression = false;
@@ -59,14 +59,14 @@ class ClassMetadata extends MergeableClassMetadata
     public $discriminatorBaseClass;
     public $discriminatorFieldName;
     public $discriminatorValue;
-    public $discriminatorMap = array();
-    public $discriminatorGroups = array();
+    public $discriminatorMap = [];
+    public $discriminatorGroups = [];
 
     public $xmlDiscriminatorAttribute = false;
     public $xmlDiscriminatorCData = true;
     public $xmlDiscriminatorNamespace;
 
-    public function setDiscriminator($fieldName, array $map, array $groups = array())
+    public function setDiscriminator($fieldName, array $map, array $groups = [])
     {
         if (empty($fieldName)) {
             throw new InvalidArgumentException('The $fieldName cannot be empty.');
@@ -91,9 +91,9 @@ class ClassMetadata extends MergeableClassMetadata
      * @throws InvalidArgumentException When the accessor order is not valid
      * @throws InvalidArgumentException When the custom order is not valid
      */
-    public function setAccessorOrder($order, array $customOrder = array())
+    public function setAccessorOrder($order, array $customOrder = [])
     {
-        if (!in_array($order, array(self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM), true)) {
+        if (!in_array($order, [self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM], true)) {
             throw new InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
         }
 
@@ -233,7 +233,7 @@ class ClassMetadata extends MergeableClassMetadata
     {
         $this->sortProperties();
 
-        return serialize(array(
+        return serialize([
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
@@ -254,7 +254,7 @@ class ClassMetadata extends MergeableClassMetadata
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
             'usingExpression' => $this->usingExpression,
             'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
-        ));
+        ]);
     }
 
     public function unserialize($str)

@@ -33,11 +33,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
 
-            return new DriverChain(array(
+            return new DriverChain([
                 new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
                 new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
                 new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser),
-            ));
+            ]);
         }
 
         return new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);

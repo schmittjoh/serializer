@@ -75,7 +75,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     {
         $this->dataStack->push($data);
 
-        $rs = isset($type['params'][1]) ? new \ArrayObject() : array();
+        $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
         $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
@@ -102,7 +102,7 @@ class JsonSerializationVisitor extends AbstractVisitor implements SerializationV
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         $this->dataStack->push($this->data);
-        $this->data = array();
+        $this->data = [];
     }
 
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)

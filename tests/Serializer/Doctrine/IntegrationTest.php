@@ -41,20 +41,20 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
     {
         $school = new School();
         $json = $this->serializer->serialize($school, 'json');
-        $this->assertEquals('{"type":"school"}', $json);
+        self::assertEquals('{"type":"school"}', $json);
 
         $deserialized = $this->serializer->deserialize($json, Organization::class, 'json');
-        $this->assertEquals($school, $deserialized);
+        self::assertEquals($school, $deserialized);
     }
 
     public function testDiscriminatorIsInferredForGenericBaseClass()
     {
         $student = new Student();
         $json = $this->serializer->serialize($student, 'json');
-        $this->assertEquals('{"type":"student"}', $json);
+        self::assertEquals('{"type":"student"}', $json);
 
         $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
-        $this->assertEquals($student, $deserialized);
+        self::assertEquals($student, $deserialized);
     }
 
     public function testDiscriminatorIsInferredFromDoctrine()
@@ -65,7 +65,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $student1 = new Student();
         $student2 = new Student();
         $teacher = new Teacher();
-        $class = new Clazz($teacher, array($student1, $student2));
+        $class = new Clazz($teacher, [$student1, $student2]);
 
         $em->persist($student1);
         $em->persist($student2);
@@ -75,10 +75,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $em->clear();
 
         $reloadedClass = $em->find(get_class($class), $class->getId());
-        $this->assertNotSame($class, $reloadedClass);
+        self::assertNotSame($class, $reloadedClass);
 
         $json = $this->serializer->serialize($reloadedClass, 'json');
-        $this->assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
+        self::assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
     }
 
     protected function setUp()
@@ -125,10 +125,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 
     private function createConnection()
     {
-        $con = DriverManager::getConnection(array(
+        $con = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        ));
+        ]);
 
         return $con;
     }
@@ -136,9 +136,9 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
     private function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
-        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
+        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
             __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
-        )));
+        ]));
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
@@ -151,10 +151,10 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 
 class SimpleManagerRegistry extends AbstractManagerRegistry
 {
-    private $services = array();
+    private $services = [];
     private $serviceCreator;
 
-    public function __construct($serviceCreator, $name = 'anonymous', array $connections = array('default' => 'default_connection'), array $managers = array('default' => 'default_manager'), $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
+    public function __construct($serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
     {
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);

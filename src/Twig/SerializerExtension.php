@@ -44,16 +44,16 @@ class SerializerExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('serialize', array($this, 'serialize')),
-        );
+        return [
+            new \Twig_SimpleFilter('serialize', [$this, 'serialize']),
+        ];
     }
 
     public function getFunctions()
     {
-        return array(
+        return [
             new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
-        );
+        ];
     }
 
     /**

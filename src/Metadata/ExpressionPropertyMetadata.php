@@ -64,7 +64,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -89,7 +89,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
             $this->name,
             'excludeIf' => $this->excludeIf,
             'expression' => $this->expression,
-        ));
+        ]);
     }
 
     public function unserialize($str)

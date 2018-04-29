@@ -33,9 +33,9 @@ class PreDeserializeEvent extends Event
         $this->data = $data;
     }
 
-    public function setType($name, array $params = array())
+    public function setType($name, array $params = [])
     {
-        $this->type = array('name' => $name, 'params' => $params);
+        $this->type = ['name' => $name, 'params' => $params];
     }
 
     public function getData()

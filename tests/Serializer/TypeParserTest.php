@@ -29,22 +29,22 @@ class TypeParserTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider getTypes
      */
-    public function testParse($type, $name, array $params = array())
+    public function testParse($type, $name, array $params = [])
     {
-        $this->assertEquals(array('name' => $name, 'params' => $params), $this->parser->parse($type));
+        self::assertEquals(['name' => $name, 'params' => $params], $this->parser->parse($type));
     }
 
     public function getTypes()
     {
-        $types = array();
-        $types[] = array('string', 'string');
-        $types[] = array('array<Foo>', 'array', array(array('name' => 'Foo', 'params' => array())));
-        $types[] = array('array<Foo,Bar>', 'array', array(array('name' => 'Foo', 'params' => array()), array('name' => 'Bar', 'params' => array())));
-        $types[] = array('array<Foo\Bar, Baz\Boo>', 'array', array(array('name' => 'Foo\Bar', 'params' => array()), array('name' => 'Baz\Boo', 'params' => array())));
-        $types[] = array('a<b<c,d>,e>', 'a', array(array('name' => 'b', 'params' => array(array('name' => 'c', 'params' => array()), array('name' => 'd', 'params' => array()))), array('name' => 'e', 'params' => array())));
-        $types[] = array('Foo', 'Foo');
-        $types[] = array('Foo\Bar', 'Foo\Bar');
-        $types[] = array('Foo<"asdf asdf">', 'Foo', array('asdf asdf'));
+        $types = [];
+        $types[] = ['string', 'string'];
+        $types[] = ['array<Foo>', 'array', [['name' => 'Foo', 'params' => []]]];
+        $types[] = ['array<Foo,Bar>', 'array', [['name' => 'Foo', 'params' => []], ['name' => 'Bar', 'params' => []]]];
+        $types[] = ['array<Foo\Bar, Baz\Boo>', 'array', [['name' => 'Foo\Bar', 'params' => []], ['name' => 'Baz\Boo', 'params' => []]]];
+        $types[] = ['a<b<c,d>,e>', 'a', [['name' => 'b', 'params' => [['name' => 'c', 'params' => []], ['name' => 'd', 'params' => []]]], ['name' => 'e', 'params' => []]]];
+        $types[] = ['Foo', 'Foo'];
+        $types[] = ['Foo\Bar', 'Foo\Bar'];
+        $types[] = ['Foo<"asdf asdf">', 'Foo', ['asdf asdf']];
 
         return $types;
     }

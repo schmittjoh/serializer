@@ -59,7 +59,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
-        $this->assertEquals(
+        self::assertEquals(
             \DateTime::createFromFormat('Y-m-d|', '2017-06-18', $this->timezone),
             $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
         );
@@ -81,14 +81,14 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
         // no custom deserialization format specified
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDateTime,
             $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
         );
 
         // custom deserialization format specified
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d']];
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDateTime,
             $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
         );
@@ -110,7 +110,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
         $actualDateTime = $this->handler->deserializeDateTimeFromJson($visitor, $timestamp, $type);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDateTime->format(\DateTime::RFC3339),
             $actualDateTime->format(\DateTime::RFC3339)
         );
@@ -132,7 +132,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
         $actualDateTime = $this->handler->deserializeDateTimeImmutableFromJson($visitor, $timestamp, $type);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDateTime->format(\DateTime::RFC3339),
             $actualDateTime->format(\DateTime::RFC3339)
         );

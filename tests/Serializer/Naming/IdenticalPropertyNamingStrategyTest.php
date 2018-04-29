@@ -26,11 +26,11 @@ class IdenticalPropertyNamingStrategyTest extends \PHPUnit\Framework\TestCase
 {
     public function providePropertyNames()
     {
-        return array(
-            array('createdAt'),
-            array('my_field'),
-            array('identical')
-        );
+        return [
+            ['createdAt'],
+            ['my_field'],
+            ['identical']
+        ];
     }
 
     /**
@@ -42,6 +42,6 @@ class IdenticalPropertyNamingStrategyTest extends \PHPUnit\Framework\TestCase
         $mockProperty->name = $propertyName;
 
         $strategy = new IdenticalPropertyNamingStrategy();
-        $this->assertEquals($propertyName, $strategy->translateName($mockProperty));
+        self::assertEquals($propertyName, $strategy->translateName($mockProperty));
     }
 }

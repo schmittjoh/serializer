@@ -28,7 +28,7 @@ class ArrayCollectionDepthTest extends \PHPUnit\Framework\TestCase
         $context = SerializationContext::create()
             ->addExclusionStrategy(new DepthExclusionStrategy());
         $result = $this->serializer->serialize(new CollectionWrapper($collection), 'json', $context);
-        $this->assertSame('{"collection":[{"name":"lvl1","next":{"name":"lvl2"}}]}', $result);
+        self::assertSame('{"collection":[{"name":"lvl1","next":{"name":"lvl2"}}]}', $result);
     }
 
     public static function getCollections()

@@ -106,7 +106,7 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
             // check if this is already a re-dispatch
             if (strtolower($class) !== strtolower($parentClassName)) {
                 $event->stopPropagation();
-                $newEvent = new PreSerializeEvent($event->getContext(), $object, array('name' => $parentClassName, 'params' => $type['params']));
+                $newEvent = new PreSerializeEvent($event->getContext(), $object, ['name' => $parentClassName, 'params' => $type['params']]);
                 $dispatcher->dispatch($eventName, $parentClassName, $format, $newEvent);
 
                 // update the type in case some listener changed it
@@ -118,12 +118,12 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy', 'interface' => Proxy::class),
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PersistentCollection::class),
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => MongoDBPersistentCollection::class),
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PHPCRPersistentCollection::class),
-            array('event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => Proxy::class),
-        );
+        return [
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy', 'interface' => Proxy::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PersistentCollection::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => MongoDBPersistentCollection::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PHPCRPersistentCollection::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => Proxy::class],
+        ];
     }
 }

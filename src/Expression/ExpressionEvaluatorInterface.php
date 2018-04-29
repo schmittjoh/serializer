@@ -30,5 +30,5 @@ interface ExpressionEvaluatorInterface
      * @param  array $data
      * @return mixed
      */
-    public function evaluate($expression, array $data = array());
+    public function evaluate($expression, array $data = []);
 }

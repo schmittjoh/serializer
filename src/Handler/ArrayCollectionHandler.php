@@ -42,31 +42,31 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
     public static function getSubscribingMethods()
     {
-        $methods = array();
-        $formats = array('json', 'xml', 'yml');
-        $collectionTypes = array(
+        $methods = [];
+        $formats = ['json', 'xml', 'yml'];
+        $collectionTypes = [
             'ArrayCollection',
             'Doctrine\Common\Collections\ArrayCollection',
             'Doctrine\ORM\PersistentCollection',
             'Doctrine\ODM\MongoDB\PersistentCollection',
             'Doctrine\ODM\PHPCR\PersistentCollection',
-        );
+        ];
 
         foreach ($collectionTypes as $type) {
             foreach ($formats as $format) {
-                $methods[] = array(
+                $methods[] = [
                     'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => 'serializeCollection',
-                );
+                ];
 
-                $methods[] = array(
+                $methods[] = [
                     'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
                     'type' => $type,
                     'format' => $format,
                     'method' => 'deserializeCollection',
-                );
+                ];
             }
         }
 

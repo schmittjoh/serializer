@@ -67,7 +67,7 @@ class YamlDriver extends AbstractFileDriver
         $readOnlyClass = isset($config['read_only']) ? (Boolean)$config['read_only'] : false;
         $this->addClassProperties($metadata, $config);
 
-        $propertiesMetadata = array();
+        $propertiesMetadata = [];
         if (array_key_exists('virtual_properties', $config)) {
             foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
                 if (isset($propertySettings['exp'])) {
@@ -295,7 +295,7 @@ class YamlDriver extends AbstractFileDriver
         }
 
         if (isset($config['accessor_order'])) {
-            $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : array());
+            $metadata->setAccessorOrder($config['accessor_order'], isset($config['custom_accessor_order']) ? $config['custom_accessor_order'] : []);
         }
 
         if (isset($config['xml_root_name'])) {
@@ -325,7 +325,7 @@ class YamlDriver extends AbstractFileDriver
                 if (!isset($config['discriminator']['map']) || !\is_array($config['discriminator']['map'])) {
                     throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
                 }
-                $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : array();
+                $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : [];
                 $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
 
                 if (isset($config['discriminator']['xml_attribute'])) {
@@ -347,12 +347,12 @@ class YamlDriver extends AbstractFileDriver
     private function getCallbackMetadata(\ReflectionClass $class, $config)
     {
         if (\is_string($config)) {
-            $config = array($config);
+            $config = [$config];
         } elseif (!\is_array($config)) {
             throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
         }
 
-        $methods = array();
+        $methods = [];
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
                 throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $name, $class->name));

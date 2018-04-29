@@ -82,7 +82,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
             case 1: // Array is a list.
                 $listType = $type['params'][0];
 
-                $result = array();
+                $result = [];
 
                 foreach ($data as $v) {
                     $result[] = $this->navigator->accept($v, $listType);
@@ -93,7 +93,7 @@ class JsonDeserializationVisitor extends AbstractVisitor implements Deserializat
             case 2: // Array is a map.
                 list($keyType, $entryType) = $type['params'];
 
-                $result = array();
+                $result = [];
 
                 foreach ($data as $k => $v) {
                     $result[$this->navigator->accept($k, $keyType)] = $this->navigator->accept($v, $entryType);

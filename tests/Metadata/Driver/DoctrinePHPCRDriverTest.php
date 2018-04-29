@@ -41,8 +41,8 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
     public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
     {
         $metadata = $this->getMetadata();
-        $this->assertEquals(
-            array('name' => 'DateTime', 'params' => array()),
+        self::assertEquals(
+            ['name' => 'DateTime', 'params' => []],
             $metadata->propertyMetadata['createdAt']->type
         );
     }
@@ -50,8 +50,8 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
     public function testSingleValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
-        $this->assertEquals(
-            array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => array()),
+        self::assertEquals(
+            ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => []],
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -60,10 +60,10 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
     {
         $metadata = $this->getMetadata();
 
-        $this->assertEquals(
-            array('name' => 'ArrayCollection', 'params' => array(
-                array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => array()))
-            ),
+        self::assertEquals(
+            ['name' => 'ArrayCollection', 'params' => [
+                ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []]]
+            ],
             $metadata->propertyMetadata['comments']->type
         );
     }
@@ -73,8 +73,8 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         // This would be guessed as boolean but we've overridden it to integer
-        $this->assertEquals(
-            array('name' => 'integer', 'params' => array()),
+        self::assertEquals(
+            ['name' => 'integer', 'params' => []],
             $metadata->propertyMetadata['published']->type
         );
     }
@@ -93,7 +93,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
             $plainMetadata->createdAt = $doctrineMetadata->createdAt;
         }
 
-        $this->assertEquals($plainMetadata, $doctrineMetadata);
+        self::assertEquals($plainMetadata, $doctrineMetadata);
     }
 
     protected function getDocumentManager()

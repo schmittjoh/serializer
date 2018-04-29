@@ -50,8 +50,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
             new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy)),
             new HandlerRegistry(),
             new UnserializeObjectConstructor(),
-            array('json' => new JsonSerializationVisitorFactory()),
-            array('json' => new JsonDeserializationVisitorFactory()),
+            ['json' => new JsonSerializationVisitorFactory()],
+            ['json' => new JsonDeserializationVisitorFactory()],
             new DefaultAccessorStrategy()
         );
     }
@@ -60,15 +60,15 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     {
         $order = new Order(new Price(5));
 
-        $expected = array(
-            'cost' => array(
+        $expected = [
+            'cost' => [
                 'price' => 5
-            )
-        );
+            ]
+        ];
 
         $result = $this->serializer->toArray($order);
 
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     /**
@@ -84,38 +84,38 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         ));
         $result = $this->serializer->toArray($input);
 
-        $this->assertEquals(array($input), $result);
+        self::assertEquals([$input], $result);
     }
 
     public function scalarValues()
     {
-        return array(
-            array(42),
-            array(3.14159),
-            array('helloworld'),
-            array(true),
-        );
+        return [
+            [42],
+            [3.14159],
+            ['helloworld'],
+            [true],
+        ];
     }
 
     public function testFromArray()
     {
-        $data = array(
-            'cost' => array(
+        $data = [
+            'cost' => [
                 'price' => 2.5
-            )
-        );
+            ]
+        ];
 
         $expected = new Order(new Price(2.5));
         $result = $this->serializer->fromArray($data, 'JMS\Serializer\Tests\Fixtures\Order');
 
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     public function testToArrayReturnsArrayObjectAsArray()
     {
         $result = $this->serializer->toArray(new Author(null));
 
-        $this->assertSame(array(), $result);
+        self::assertSame([], $result);
     }
 
     public function testToArrayConversNestedArrayObjects()
@@ -124,6 +124,6 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $list->add(new Author(null));
 
         $result = $this->serializer->toArray($list);
-        $this->assertSame(array('authors' => array(array())), $result);
+        self::assertSame(['authors' => [[]]], $result);
     }
 }

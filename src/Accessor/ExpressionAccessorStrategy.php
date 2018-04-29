@@ -47,7 +47,7 @@ final class ExpressionAccessorStrategy implements AccessorStrategyInterface
     public function getValue($object, PropertyMetadata $metadata)
     {
         if ($metadata instanceof ExpressionPropertyMetadata) {
-            return $this->evaluator->evaluate($metadata->expression, array('object' => $object));
+            return $this->evaluator->evaluate($metadata->expression, ['object' => $object]);
         }
         return $this->fallback->getValue($object, $metadata);
     }

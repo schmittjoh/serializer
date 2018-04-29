@@ -84,8 +84,8 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new ClassMetadata($name = $class->name);
         $classMetadata->fileResources[] = $class->getFilename();
 
-        $propertiesMetadata = array();
-        $propertiesAnnotations = array();
+        $propertiesMetadata = [];
+        $propertiesAnnotations = [];
 
         $exclusionPolicy = 'NONE';
         $excludeAll = false;
@@ -165,7 +165,7 @@ class AnnotationDriver implements DriverInterface
                     || $propertyMetadata instanceof ExpressionPropertyMetadata;
                 $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
                 $accessType = $classAccessType;
-                $accessor = array(null, null);
+                $accessor = [null, null];
 
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
 
@@ -222,7 +222,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof ReadOnly) {
                         $propertyMetadata->readOnly = $annot->readOnly;
                     } elseif ($annot instanceof Accessor) {
-                        $accessor = array($annot->getter, $annot->setter);
+                        $accessor = [$annot->getter, $annot->setter];
                     } elseif ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
                         foreach ((array)$propertyMetadata->groups as $groupName) {

@@ -38,7 +38,7 @@ class GroupsExclusionStrategyTest extends \PHPUnit\Framework\TestCase
         $metadata->groups = $propertyGroups;
 
         $strat = new GroupsExclusionStrategy($groups);
-        $this->assertEquals($strat->shouldSkipProperty($metadata, SerializationContext::create()), $exclude);
+        self::assertEquals($strat->shouldSkipProperty($metadata, SerializationContext::create()), $exclude);
     }
 
     public function getExclusionRules()

@@ -36,18 +36,18 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     public static function getSubscribingMethods()
     {
-        $methods = array();
-        foreach (array('xml', 'json') as $format) {
-            $methods[] = array(
+        $methods = [];
+        foreach (['xml', 'json'] as $format) {
+            $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'Symfony\Component\Form\Form',
                 'format' => $format,
-            );
-            $methods[] = array(
+            ];
+            $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'Symfony\Component\Form\FormError',
                 'format' => $format,
-            );
+            ];
         }
 
         return $methods;
@@ -68,13 +68,13 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         $formNode->appendChild($errorsNode = $visitor->getDocument()->createElement('errors'));
         foreach ($form->getErrors() as $error) {
             $errorNode = $visitor->getDocument()->createElement('entry');
-            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, array()));
+            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, []));
             $errorsNode->appendChild($errorNode);
         }
 
         foreach ($form->all() as $child) {
             if ($child instanceof Form) {
-                if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
+                if (null !== $node = $this->serializeFormToXml($visitor, $child, [])) {
                     $formNode->appendChild($node);
                 }
             }
@@ -115,7 +115,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     private function convertFormToArray(SerializationVisitorInterface $visitor, Form $data)
     {
         $form = new \ArrayObject();
-        $errors = array();
+        $errors = [];
         foreach ($data->getErrors() as $error) {
             $errors[] = $this->getErrorMessage($error);
         }
@@ -124,7 +124,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
             $form['errors'] = $errors;
         }
 
-        $children = array();
+        $children = [];
         foreach ($data->all() as $child) {
             if ($child instanceof Form) {
                 $children[$child->getName()] = $this->convertFormToArray($visitor, $child);

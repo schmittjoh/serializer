@@ -122,7 +122,7 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
 
         $navigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->accessor, $this->dispatcher);
         $navigator->initialize($this->deserializationVisitor, $this->context);
-        $navigator->accept('random', array('name' => $class, 'params' => array()));
+        $navigator->accept('random', ['name' => $class, 'params' => []]);
     }
 
     /**
@@ -181,12 +181,12 @@ class TestSubscribingHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {
-        return array(array(
+        return [[
             'type' => 'JsonSerializable',
             'format' => 'foo',
             'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'method' => 'serialize'
-        ));
+        ]];
     }
 }
 

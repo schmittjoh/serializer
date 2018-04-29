@@ -115,17 +115,17 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 $typeName = \get_class($data);
             }
 
-            $type = array('name' => $typeName, 'params' => array());
+            $type = ['name' => $typeName, 'params' => []];
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
         else if (null === $data) {
-            $type = array('name' => 'NULL', 'params' => array());
+            $type = ['name' => 'NULL', 'params' => []];
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && $this->visitor->isNull($data) === true) {
-            $type = array('name' => 'NULL', 'params' => array());
+            $type = ['name' => 'NULL', 'params' => []];
         }
 
         switch ($type['name']) {
@@ -174,7 +174,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 // metadata for the actual type of the object, not the base class.
                 if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
                     if (is_subclass_of($data, $type['name'], false)) {
-                        $type = array('name' => \get_class($data), 'params' => array());
+                        $type = ['name' => \get_class($data), 'params' => []];
                     }
                 }
 

@@ -26,7 +26,7 @@ class StaticPropertyMetadata extends PropertyMetadata
 {
     private $value;
 
-    public function __construct($className, $fieldName, $fieldValue, array $groups = array())
+    public function __construct($className, $fieldName, $fieldValue, array $groups = [])
     {
         $this->class = $className;
         $this->name = $fieldName;
@@ -52,7 +52,7 @@ class StaticPropertyMetadata extends PropertyMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -74,7 +74,7 @@ class StaticPropertyMetadata extends PropertyMetadata
             $this->class,
             $this->name,
             $this->value
-        ));
+        ]);
     }
 
     public function unserialize($str)

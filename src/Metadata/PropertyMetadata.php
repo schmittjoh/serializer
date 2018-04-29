@@ -119,7 +119,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -145,7 +145,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
-        ));
+        ]);
     }
 
     public function unserialize($str)

@@ -32,12 +32,12 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  */
 class EventDispatcher implements EventDispatcherInterface
 {
-    private $listeners = array();
-    private $classListeners = array();
+    private $listeners = [];
+    private $classListeners = [];
 
     public static function getDefaultMethodName($eventName)
     {
-        return 'on' . str_replace(array('_', '.'), '', $eventName);
+        return 'on' . str_replace(['_', '.'], '', $eventName);
     }
 
     /**
@@ -48,12 +48,12 @@ class EventDispatcher implements EventDispatcherInterface
     public function setListeners(array $listeners)
     {
         $this->listeners = $listeners;
-        $this->classListeners = array();
+        $this->classListeners = [];
     }
 
     public function addListener($eventName, $callable, $class = null, $format = null, $interface = null): void
     {
-        $this->listeners[$eventName][] = array($callable, $class, $format, $interface);
+        $this->listeners[$eventName][] = [$callable, $class, $format, $interface];
         unset($this->classListeners[$eventName]);
     }
 
@@ -68,7 +68,7 @@ class EventDispatcher implements EventDispatcherInterface
             $class = isset($eventData['class']) ? $eventData['class'] : null;
             $format = isset($eventData['format']) ? $eventData['format'] : null;
             $interface = isset($eventData['interface']) ? $eventData['interface'] : null;
-            $this->listeners[$eventData['event']][] = array(array($subscriber, $method), $class, $format, $interface);
+            $this->listeners[$eventData['event']][] = [[$subscriber, $method], $class, $format, $interface];
             unset($this->classListeners[$eventData['event']]);
         }
     }
@@ -96,7 +96,7 @@ class EventDispatcher implements EventDispatcherInterface
         $objectClass = $object ? (get_class($object) . $class) : $class;
 
         if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
-            $this->classListeners[$eventName][$objectClass][$format] = array();
+            $this->classListeners[$eventName][$objectClass][$format] = [];
             foreach ($this->initializeListeners($eventName, $class, $format) as $listener) {
                 if ($listener[3] !== null && !($object instanceof $listener[3])) {
                     continue;
@@ -124,7 +124,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     protected function initializeListeners($eventName, $loweredClass, $format)
     {
-        $listeners = array();
+        $listeners = [];
         foreach ($this->listeners[$eventName] as $listener) {
             if (null !== $listener[1] && $loweredClass !== $listener[1]) {
                 continue;

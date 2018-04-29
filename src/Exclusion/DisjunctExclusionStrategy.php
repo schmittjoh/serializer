@@ -33,11 +33,11 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
-    private $delegates = array();
+    private $delegates = [];
     /**
      * @param ExclusionStrategyInterface[] $delegates
      */
-    public function __construct(array $delegates = array())
+    public function __construct(array $delegates = [])
     {
         $this->delegates = $delegates;
     }

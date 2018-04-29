@@ -66,7 +66,7 @@ class ObjectWithVirtualXmlProperties
      */
     public function getVirualXmlList()
     {
-        return array('One', 'Two');
+        return ['One', 'Two'];
     }
 
     /**
@@ -78,10 +78,10 @@ class ObjectWithVirtualXmlProperties
      */
     public function getVirualXmlMap()
     {
-        return array(
+        return [
             'key-one' => 'One',
             'key-two' => 'Two'
-        );
+        ];
     }
 
     /**

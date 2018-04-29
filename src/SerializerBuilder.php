@@ -67,7 +67,7 @@ use Metadata\MetadataFactory;
  */
 class SerializerBuilder
 {
-    private $metadataDirs = array();
+    private $metadataDirs = [];
     private $handlerRegistry;
     private $handlersConfigured = false;
     private $eventDispatcher;
@@ -106,8 +106,8 @@ class SerializerBuilder
         $this->typeParser = new TypeParser();
         $this->handlerRegistry = new HandlerRegistry();
         $this->eventDispatcher = new EventDispatcher();
-        $this->serializationVisitors = array();
-        $this->deserializationVisitors = array();
+        $this->serializationVisitors = [];
+        $this->deserializationVisitors = [];
     }
 
     public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy)
@@ -236,10 +236,10 @@ class SerializerBuilder
     public function addDefaultSerializationVisitors()
     {
         $this->visitorsAdded = true;
-        $this->serializationVisitors = array(
+        $this->serializationVisitors = [
             'xml' => new XmlSerializationVisitorFactory(),
             'json' => new JsonSerializationVisitorFactory(),
-        );
+        ];
 
         return $this;
     }
@@ -247,10 +247,10 @@ class SerializerBuilder
     public function addDefaultDeserializationVisitors()
     {
         $this->visitorsAdded = true;
-        $this->deserializationVisitors = array(
+        $this->deserializationVisitors = [
             'xml' => new XmlDeserializationVisitorFactory(),
             'json' => new JsonDeserializationVisitorFactory(),
-        );
+        ];
 
         return $this;
     }

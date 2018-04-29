@@ -33,7 +33,7 @@ use JMS\Serializer\XmlDeserializationVisitor;
 class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
     private $disableExternalEntities = true;
-    private $doctypeWhitelist = array();
+    private $doctypeWhitelist = [];
 
     public function getVisitor(): DeserializationVisitorInterface
     {

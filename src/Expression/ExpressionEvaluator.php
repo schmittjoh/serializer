@@ -36,14 +36,14 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
     /**
      * @var array
      */
-    private $context = array();
+    private $context = [];
 
     /**
      * @var array
      */
-    private $cache = array();
+    private $cache = [];
 
-    public function __construct(ExpressionLanguage $expressionLanguage, array $context = array(), array $cache = array())
+    public function __construct(ExpressionLanguage $expressionLanguage, array $context = [], array $cache = [])
     {
         $this->expressionLanguage = $expressionLanguage;
         $this->context = $context;
@@ -64,7 +64,7 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
      * @param  array $data
      * @return mixed
      */
-    public function evaluate($expression, array $data = array())
+    public function evaluate($expression, array $data = [])
     {
         if (!\is_string($expression)) {
             return $expression;

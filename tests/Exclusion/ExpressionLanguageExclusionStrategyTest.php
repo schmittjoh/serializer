@@ -56,14 +56,14 @@ class ExpressionLanguageExclusionStrategyTest extends \PHPUnit\Framework\TestCas
 
         $this->expressionEvaluator->expects($this->once())
             ->method('evaluate')
-            ->with('foo', array(
+            ->with('foo', [
                 'context' => $this->context,
                 'property_metadata' => $metadata,
                 'object' => $this->visitedObject,
-            ))
+            ])
             ->willReturn(true);
 
-        $this->assertSame(true, $this->exclusionStrategy->shouldSkipProperty($metadata, $this->context));
+        self::assertSame(true, $this->exclusionStrategy->shouldSkipProperty($metadata, $this->context));
     }
 
     public function testExpressionLanguageSkipsWhenNoExpression()
@@ -72,6 +72,6 @@ class ExpressionLanguageExclusionStrategyTest extends \PHPUnit\Framework\TestCas
 
         $this->expressionEvaluator->expects($this->never())->method('evaluate');
 
-        $this->assertSame(false, $this->exclusionStrategy->shouldSkipProperty($metadata, $this->context));
+        self::assertSame(false, $this->exclusionStrategy->shouldSkipProperty($metadata, $this->context));
     }
 }

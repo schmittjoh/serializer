@@ -36,11 +36,11 @@ final class DateHandler implements SubscribingHandlerInterface
 
     public static function getSubscribingMethods()
     {
-        $methods = array();
-        $deserializationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
-        $serialisationTypes = array('DateTime', 'DateTimeImmutable', 'DateInterval');
+        $methods = [];
+        $deserializationTypes = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
+        $serialisationTypes = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
 
-        foreach (array('json', 'xml') as $format) {
+        foreach (['json', 'xml'] as $format) {
 
             foreach ($deserializationTypes as $type) {
                 $methods[] = [
@@ -51,12 +51,12 @@ final class DateHandler implements SubscribingHandlerInterface
             }
 
             foreach ($serialisationTypes as $type) {
-                $methods[] = array(
+                $methods[] = [
                     'type' => $type,
                     'format' => $format,
                     'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     'method' => 'serialize' . $type,
-                );
+                ];
             }
         }
 
