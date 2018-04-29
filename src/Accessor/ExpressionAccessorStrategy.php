@@ -52,7 +52,7 @@ final class ExpressionAccessorStrategy implements AccessorStrategyInterface
         return $this->fallback->getValue($object, $metadata);
     }
 
-    public function setValue(object $object, $value, PropertyMetadata $metadata):void
+    public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
         $this->fallback->setValue($object, $value, $metadata);
     }

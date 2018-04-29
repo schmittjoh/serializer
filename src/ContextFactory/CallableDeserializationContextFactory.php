@@ -31,7 +31,7 @@ final class CallableDeserializationContextFactory extends CallableContextFactory
     /**
      * {@InheritDoc}
      */
-    public function createDeserializationContext():DeserializationContext
+    public function createDeserializationContext(): DeserializationContext
     {
         return $this->createContext();
     }

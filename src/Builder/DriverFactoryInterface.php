@@ -15,5 +15,5 @@ interface DriverFactoryInterface
      *
      * @return DriverInterface
      */
-    public function createDriver(array $metadataDirs, Reader $annotationReader):DriverInterface;
+    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface;
 }

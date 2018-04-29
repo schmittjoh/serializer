@@ -29,7 +29,7 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         $this->propertyNamingStrategy = $propertyNamingStrategy;
     }
 
-    public function createDriver(array $metadataDirs, Reader $annotationReader):DriverInterface
+    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);

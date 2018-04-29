@@ -39,17 +39,17 @@ class Event
         $this->type = $type;
     }
 
-    public function getVisitor():VisitorInterface
+    public function getVisitor(): VisitorInterface
     {
         return $this->context->getVisitor();
     }
 
-    public function getContext():Context
+    public function getContext(): Context
     {
         return $this->context;
     }
 
-    public function getType():array
+    public function getType(): array
     {
         return $this->type;
     }
@@ -61,7 +61,7 @@ class Event
      *
      * @return bool Whether propagation was already stopped for this event
      */
-    public function isPropagationStopped():bool
+    public function isPropagationStopped(): bool
     {
         return $this->propagationStopped;
     }
@@ -73,7 +73,7 @@ class Event
      * further event listener will be triggered once any trigger calls
      * stopPropagation().
      */
-    public function stopPropagation():void
+    public function stopPropagation(): void
     {
         $this->propagationStopped = true;
     }

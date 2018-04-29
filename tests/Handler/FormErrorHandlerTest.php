@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Handler;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -118,8 +114,8 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $form = $builer->getForm();
 
         $form->submit([
-                'url' => 'hi',
-                'txt' => 'hello',
+            'url' => 'hi',
+            'txt' => 'hello',
         ]);
 
         $data = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
@@ -148,7 +144,6 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
                 'date' => ['errors' => ['child-error']]
             ]
         ]), $json);
-
     }
 
     public function testDefaultTranslationDomain()
@@ -243,7 +238,6 @@ class FormErrorHandlerTest extends \PHPUnit\Framework\TestCase
         $formError->expects($this->once())->method('getMessageParameters')->willReturn([]);
 
         $this->invokeMethod($handler, 'getErrorMessage', [$formError,]);
-
     }
 
     /**

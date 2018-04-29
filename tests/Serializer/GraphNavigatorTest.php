@@ -24,17 +24,17 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
-use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
+use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
+use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactory;
@@ -52,7 +52,6 @@ class GraphNavigatorTest extends \PHPUnit\Framework\TestCase
 
     private $serializationVisitor;
     private $deserializationVisitor;
-
 
     /**
      * @expectedException JMS\Serializer\Exception\RuntimeException

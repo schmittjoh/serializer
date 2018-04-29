@@ -33,7 +33,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         return $metadata->getValue($object);
     }
 
-    public function setValue(object $object, $value, PropertyMetadata $metadata):void
+    public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
         $metadata->setValue($object, $value);
     }

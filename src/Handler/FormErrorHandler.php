@@ -101,7 +101,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     private function getErrorMessage(FormError $error)
     {
 
-        if ($this->translator === null){
+        if ($this->translator === null) {
             return $error->getMessage();
         }
 

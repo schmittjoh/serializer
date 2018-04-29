@@ -123,13 +123,13 @@ final class SerializerBuilder
         }
     }
 
-    public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy):self
+    public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy): self
     {
         $this->accessorStrategy = $accessorStrategy;
         return $this;
     }
 
-    private function getAccessorStrategy():AccessorStrategyInterface
+    private function getAccessorStrategy(): AccessorStrategyInterface
     {
         if (!$this->accessorStrategy) {
             $this->accessorStrategy = new DefaultAccessorStrategy();
@@ -141,35 +141,35 @@ final class SerializerBuilder
         return $this->accessorStrategy;
     }
 
-    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator):self
+    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator): self
     {
         $this->expressionEvaluator = $expressionEvaluator;
 
         return $this;
     }
 
-    public function setTypeParser(AbstractParser $parser):self
+    public function setTypeParser(AbstractParser $parser): self
     {
         $this->typeParser = $parser;
 
         return $this;
     }
 
-    public function setAnnotationReader(Reader $reader):self
+    public function setAnnotationReader(Reader $reader): self
     {
         $this->annotationReader = $reader;
 
         return $this;
     }
 
-    public function setDebug(bool $bool):self
+    public function setDebug(bool $bool): self
     {
         $this->debug = $bool;
 
         return $this;
     }
 
-    public function setCacheDir(string $dir):self
+    public function setCacheDir(string $dir): self
     {
         if (!is_dir($dir)) {
             $this->createDir($dir);
@@ -183,7 +183,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultHandlers():self
+    public function addDefaultHandlers(): self
     {
         $this->handlersConfigured = true;
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
@@ -193,7 +193,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function configureHandlers(\Closure $closure):self
+    public function configureHandlers(\Closure $closure): self
     {
         $this->handlersConfigured = true;
         $closure($this->handlerRegistry);
@@ -201,7 +201,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultListeners():self
+    public function addDefaultListeners(): self
     {
         $this->listenersConfigured = true;
         $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
@@ -209,7 +209,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function configureListeners(\Closure $closure):self
+    public function configureListeners(\Closure $closure): self
     {
         $this->listenersConfigured = true;
         $closure($this->eventDispatcher);
@@ -217,21 +217,21 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setObjectConstructor(ObjectConstructorInterface $constructor):self
+    public function setObjectConstructor(ObjectConstructorInterface $constructor): self
     {
         $this->objectConstructor = $constructor;
 
         return $this;
     }
 
-    public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy):self
+    public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy): self
     {
         $this->propertyNamingStrategy = $propertyNamingStrategy;
 
         return $this;
     }
 
-    public function setSerializationVisitor($format, SerializationVisitorFactory $visitor):self
+    public function setSerializationVisitor($format, SerializationVisitorFactory $visitor): self
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors[$format] = $visitor;
@@ -239,7 +239,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setDeserializationVisitor($format, DeserializationVisitorFactory $visitor):self
+    public function setDeserializationVisitor($format, DeserializationVisitorFactory $visitor): self
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors[$format] = $visitor;
@@ -247,7 +247,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultSerializationVisitors():self
+    public function addDefaultSerializationVisitors(): self
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors = [
@@ -258,7 +258,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultDeserializationVisitors():self
+    public function addDefaultDeserializationVisitors(): self
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors = [
@@ -274,7 +274,7 @@ final class SerializerBuilder
      *
      * @return SerializerBuilder
      */
-    public function includeInterfaceMetadata(bool $include):self
+    public function includeInterfaceMetadata(bool $include): self
     {
         $this->includeInterfaceMetadata = $include;
 
@@ -292,7 +292,7 @@ final class SerializerBuilder
      *
      * @throws InvalidArgumentException When a directory does not exist
      */
-    public function setMetadataDirs(array $namespacePrefixToDirMap):self
+    public function setMetadataDirs(array $namespacePrefixToDirMap): self
     {
         foreach ($namespacePrefixToDirMap as $dir) {
             if (!is_dir($dir)) {
@@ -331,7 +331,7 @@ final class SerializerBuilder
      * @throws InvalidArgumentException When a directory does not exist
      * @throws InvalidArgumentException When a directory has already been registered
      */
-    public function addMetadataDir(string $dir, string $namespacePrefix = ''):self
+    public function addMetadataDir(string $dir, string $namespacePrefix = ''): self
     {
         if (!is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
@@ -353,7 +353,7 @@ final class SerializerBuilder
      *
      * @return SerializerBuilder
      */
-    public function addMetadataDirs(array $namespacePrefixToDirMap):self
+    public function addMetadataDirs(array $namespacePrefixToDirMap): self
     {
         foreach ($namespacePrefixToDirMap as $prefix => $dir) {
             $this->addMetadataDir($dir, $prefix);
@@ -373,7 +373,7 @@ final class SerializerBuilder
      * @throws InvalidArgumentException When a directory does not exist
      * @throws InvalidArgumentException When no directory is configured for the ns prefix
      */
-    public function replaceMetadataDir(string $dir, $namespacePrefix = ''):self
+    public function replaceMetadataDir(string $dir, $namespacePrefix = ''): self
     {
         if (!is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
@@ -388,7 +388,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setMetadataDriverFactory(DriverFactoryInterface $driverFactory):self
+    public function setMetadataDriverFactory(DriverFactoryInterface $driverFactory): self
     {
         $this->driverFactory = $driverFactory;
 
@@ -400,7 +400,7 @@ final class SerializerBuilder
      *
      * @return self
      */
-    public function setSerializationContextFactory($serializationContextFactory):self
+    public function setSerializationContextFactory($serializationContextFactory): self
     {
         if ($serializationContextFactory instanceof SerializationContextFactoryInterface) {
             $this->serializationContextFactory = $serializationContextFactory;
@@ -420,7 +420,7 @@ final class SerializerBuilder
      *
      * @return self
      */
-    public function setDeserializationContextFactory($deserializationContextFactory):self
+    public function setDeserializationContextFactory($deserializationContextFactory): self
     {
         if ($deserializationContextFactory instanceof DeserializationContextFactoryInterface) {
             $this->deserializationContextFactory = $deserializationContextFactory;
@@ -435,7 +435,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function build():SerializerInterface
+    public function build(): SerializerInterface
     {
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {

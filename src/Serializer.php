@@ -160,7 +160,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
                 sprintf(
                     'The format "%s" is not supported for %s.', $format,
                     $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
-            ));
+                ));
         }
 
         return $factories[$format]->getVisitor();

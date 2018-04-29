@@ -31,7 +31,7 @@ final class CallableSerializationContextFactory extends CallableContextFactory i
     /**
      * {@InheritDoc}
      */
-    public function createSerializationContext():SerializationContext
+    public function createSerializationContext(): SerializationContext
     {
         return $this->createContext();
     }

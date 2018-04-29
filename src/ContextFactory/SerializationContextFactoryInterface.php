@@ -30,5 +30,5 @@ interface SerializationContextFactoryInterface
     /**
      * @return SerializationContext
      */
-    public function createSerializationContext():SerializationContext;
+    public function createSerializationContext(): SerializationContext;
 }

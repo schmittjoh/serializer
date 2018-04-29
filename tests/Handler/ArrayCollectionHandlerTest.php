@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
@@ -50,7 +50,6 @@ class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
         $context->method('getMetadataFactory')->willReturn($factoryMock);
-
 
         $type = ['name' => 'ArrayCollection', 'params' => []];
 

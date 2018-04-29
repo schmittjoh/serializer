@@ -22,7 +22,6 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlKeyValuePairs;
 
-
 class NamedDateTimeArraysObject
 {
     /**

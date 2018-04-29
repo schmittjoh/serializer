@@ -40,5 +40,5 @@ interface AccessorStrategyInterface
      * @param PropertyMetadata $metadata
      * @return void
      */
-    public function setValue(object $object, $value, PropertyMetadata $metadata):void;
+    public function setValue(object $object, $value, PropertyMetadata $metadata): void;
 }

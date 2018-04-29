@@ -20,17 +20,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
-use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -41,13 +36,7 @@ use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\StdClassHandler;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
@@ -112,14 +101,9 @@ use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
-use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
-use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
-use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
-use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use JMS\Serializer\XmlDeserializationVisitor;
-use JMS\Serializer\XmlSerializationVisitor;
-use Metadata\MetadataFactory;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Form\Form;
@@ -268,7 +252,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $person->name = 'mike';
         $this->serialize($person);
     }
-
 
     public function testExpressionExclusionConfiguredWithDisjunctStrategy()
     {
@@ -595,7 +578,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-
     public function testArrayMixed()
     {
         self::assertEquals($this->getContent('array_mixed'), $this->serialize(['foo', 1, true, new SimpleObject('foo', 'bar'), [1, 3, true]]));
@@ -822,7 +804,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline'), $result);
-
         // no deserialization support
     }
 
@@ -832,7 +813,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline_child_empty'), $result);
-
         // no deserialization support
     }
 

@@ -23,8 +23,8 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 class InitializedBlogPostConstructor implements ObjectConstructorInterface
 {
@@ -34,7 +34,8 @@ class InitializedBlogPostConstructor implements ObjectConstructorInterface
     {
         $this->fallback = new UnserializeObjectConstructor();
     }
-    public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context):?object
+
+    public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
         if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
             return $this->fallback->construct($visitor, $metadata, $data, $type, $context);

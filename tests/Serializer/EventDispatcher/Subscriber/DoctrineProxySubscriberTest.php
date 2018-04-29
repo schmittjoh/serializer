@@ -24,9 +24,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
@@ -67,7 +65,8 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
     {
 
         $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
-        $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface {
+        $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface
+        {
             public function getMetadataForClass($className)
             {
                 return new ClassMetadata(SimpleObjectProxy::class);

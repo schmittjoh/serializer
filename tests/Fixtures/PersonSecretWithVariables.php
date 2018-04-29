@@ -39,7 +39,6 @@ class PersonSecretWithVariables
      */
     public $gender;
 
-
     public function test(PropertyMetadata $propertyMetadata, Context $context)
     {
         return true;

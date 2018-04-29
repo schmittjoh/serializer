@@ -62,6 +62,7 @@ class PropertyMetadata extends BasePropertyMetadata
             return $o->$name;
         }, null, $class);
     }
+
     public function setAccessor($type, $getter = null, $setter = null)
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {

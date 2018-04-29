@@ -39,7 +39,7 @@ final class SerializedNameAnnotationStrategy implements PropertyNamingStrategyIn
     /**
      * {@inheritDoc}
      */
-    public function translateName(PropertyMetadata $property):string
+    public function translateName(PropertyMetadata $property): string
     {
         if (null !== $name = $property->serializedName) {
             return $name;

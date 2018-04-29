@@ -34,6 +34,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
     private $delegates = [];
+
     /**
      * @param ExclusionStrategyInterface[] $delegates
      */
@@ -42,7 +43,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->delegates = $delegates;
     }
 
-    public function addStrategy(ExclusionStrategyInterface $strategy):void
+    public function addStrategy(ExclusionStrategyInterface $strategy): void
     {
         $this->delegates[] = $strategy;
     }
@@ -54,7 +55,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context):bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
             /** @var $delegate ExclusionStrategyInterface */
@@ -73,7 +74,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
             /** @var $delegate ExclusionStrategyInterface */

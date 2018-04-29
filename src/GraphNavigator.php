@@ -19,6 +19,7 @@ declare(strict_types=1);
  */
 
 namespace JMS\Serializer;
+
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 
 /**
@@ -51,7 +52,7 @@ abstract class GraphNavigator implements GraphNavigatorInterface
      */
     protected $exclusionStrategy;
 
-    public function initialize(VisitorInterface $visitor, Context $context):void
+    public function initialize(VisitorInterface $visitor, Context $context): void
     {
         $this->visitor = $visitor;
         $this->context = $context;

@@ -91,7 +91,6 @@ class AccessorSetterElement
         $this->attribute = $attribute . "-different";
     }
 
-
     /**
      * @param string $element
      */

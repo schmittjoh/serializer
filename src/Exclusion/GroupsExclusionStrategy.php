@@ -43,7 +43,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext):bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         $groups = $this->getGroupsFor($navigatorContext);
 

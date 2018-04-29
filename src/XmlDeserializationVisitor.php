@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
@@ -217,7 +216,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
             // Check XML element with namespace for discriminatorFieldName
             case !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                return  (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+                return (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
             // Check XML element for discriminatorFieldName
             case isset($data->{$metadata->discriminatorFieldName}):
                 return (string)$data->{$metadata->discriminatorFieldName};
@@ -306,7 +305,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      * @param array $type
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type) : object
+    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();

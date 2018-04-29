@@ -43,7 +43,7 @@ abstract class CallableContextFactory
     /**
      * @return mixed
      */
-    protected function createContext():Context
+    protected function createContext(): Context
     {
         $callable = $this->callable;
 

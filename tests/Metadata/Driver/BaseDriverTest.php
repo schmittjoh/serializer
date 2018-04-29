@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -406,7 +405,6 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p->xmlNamespace = "http://new.foo.example.org";
         self::assertEquals($p, $m->propertyMetadata['moo']);
 
-
         $subm = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleSubClassObject'));
         self::assertNotNull($subm);
         self::assertCount(2, $subm->xmlNamespaces);
@@ -548,6 +546,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
         self::assertEquals($p, $m->propertyMetadata['bar']);
     }
+
     public function testExcludePropertyNoPublicAccessorException()
     {
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));
@@ -558,7 +557,6 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         self::assertArrayHasKey('id', $first->propertyMetadata);
         self::assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
     }
-
 
     /**
      * @return DriverInterface

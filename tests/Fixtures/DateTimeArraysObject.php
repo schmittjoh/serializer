@@ -21,7 +21,6 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
 
-
 class DateTimeArraysObject
 {
     /**
@@ -35,7 +34,6 @@ class DateTimeArraysObject
      * @Type("array<DateTime<'d.m.Y H:i:s'>>")
      */
     private $arrayWithFormattedDateTime;
-
 
     function __construct($arrayWithDefaultDateTime, $arrayWithFormattedDateTime)
     {

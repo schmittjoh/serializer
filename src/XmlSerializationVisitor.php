@@ -133,7 +133,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     public function visitDouble(float $data, array $type)
     {
         if (floor($data) === $data) {
-            return $this->document->createTextNode($data.".0");
+            return $this->document->createTextNode($data . ".0");
         } else {
             return $this->document->createTextNode((string)$data);
         }

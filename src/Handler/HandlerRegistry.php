@@ -52,7 +52,7 @@ class HandlerRegistry implements HandlerRegistryInterface
         $this->handlers = $handlers;
     }
 
-    public function registerSubscribingHandler(SubscribingHandlerInterface $handler):void
+    public function registerSubscribingHandler(SubscribingHandlerInterface $handler): void
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
             if (!isset($methodData['type'], $methodData['format'])) {
@@ -71,7 +71,7 @@ class HandlerRegistry implements HandlerRegistryInterface
         }
     }
 
-    public function registerHandler(int $direction, string $typeName, string $format, $handler):void
+    public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
         if (\is_string($direction)) {
             $direction = Serializer::parseDirection($direction);
