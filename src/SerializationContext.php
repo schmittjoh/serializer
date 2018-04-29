@@ -107,7 +107,7 @@ class SerializationContext extends Context
         return $this->visitingStack->count();
     }
 
-    public function getObject()
+    public function getObject(): ?object
     {
         return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
     }

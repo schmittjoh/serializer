@@ -41,7 +41,7 @@ abstract class Context
 
     private $format;
 
-    /** @var SerializationVisitorInterface|DeserializationVisitorInterface */
+    /** @var VisitorInterface */
     private $visitor;
 
     /** @var GraphNavigatorInterface */
@@ -193,8 +193,6 @@ abstract class Context
     /**
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
-     * Returns NULL when NULLs should not be serialized,
-     * but the user has not explicitly decided to use this policy
      *
      * @return bool
      */
