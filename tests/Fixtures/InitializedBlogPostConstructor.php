@@ -27,7 +27,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 
 class InitializedBlogPostConstructor extends UnserializeObjectConstructor
 {
-    public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
+    public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context):?object
     {
         if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
             return parent::construct($visitor, $metadata, $data, $type);

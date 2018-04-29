@@ -101,7 +101,7 @@ abstract class Context
         return $this->metadataFactory;
     }
 
-    public function getVisitor()
+    public function getVisitor():VisitorInterface
     {
         return $this->visitor;
     }
@@ -121,12 +121,12 @@ abstract class Context
         return $this->attributes[$key];
     }
 
-    public function hasAttribute(string $key)
+    public function hasAttribute(string $key):bool
     {
         return isset($this->attributes[$key]);
     }
 
-    public function setAttribute(string $key, $value)
+    public function setAttribute(string $key, $value):self
     {
         $this->assertMutable();
         $this->attributes[$key] = $value;
@@ -247,7 +247,7 @@ abstract class Context
     /**
      * @return array
      */
-    public function getCurrentPath()
+    public function getCurrentPath():array
     {
         if (!$this->metadataStack) {
             return [];

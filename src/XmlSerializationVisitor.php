@@ -330,7 +330,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         return $this->document->saveXML();
     }
 
-    public function getCurrentNode()
+    public function getCurrentNode(): ?\DOMNode
     {
         return $this->currentNode;
     }

@@ -20,7 +20,7 @@ final class CallbackDriverFactory implements DriverFactoryInterface
         $this->callback = $callable;
     }
 
-    public function createDriver(array $metadataDirs, Reader $reader)
+    public function createDriver(array $metadataDirs, Reader $reader):DriverInterface
     {
         $driver = \call_user_func($this->callback, $metadataDirs, $reader);
         if (!$driver instanceof DriverInterface) {

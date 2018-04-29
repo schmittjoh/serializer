@@ -50,24 +50,28 @@ class XmlSerializationVisitorFactory implements SerializationVisitorFactory
         );
     }
 
-    public function setDefaultRootName(string $name, ?string $namespace = null)
+    public function setDefaultRootName(string $name, ?string $namespace = null):self
     {
         $this->defaultRootName = $name;
         $this->defaultRootNamespace = $namespace;
+        return $this;
     }
 
-    public function setDefaultVersion(string $version)
+    public function setDefaultVersion(string $version):self
     {
         $this->defaultVersion = $version;
+        return $this;
     }
 
-    public function setDefaultEncoding(string $encoding)
+    public function setDefaultEncoding(string $encoding):self
     {
         $this->defaultEncoding = $encoding;
+        return $this;
     }
 
-    public function setFormatOutput(bool $formatOutput)
+    public function setFormatOutput(bool $formatOutput):self
     {
         $this->formatOutput = (boolean)$formatOutput;
+        return $this;
     }
 }

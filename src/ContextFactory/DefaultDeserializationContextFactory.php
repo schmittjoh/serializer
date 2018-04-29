@@ -30,7 +30,7 @@ final class DefaultDeserializationContextFactory implements DeserializationConte
     /**
      * {@InheritDoc}
      */
-    public function createDeserializationContext()
+    public function createDeserializationContext():DeserializationContext
     {
         return new DeserializationContext();
     }

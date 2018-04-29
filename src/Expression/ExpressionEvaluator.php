@@ -54,7 +54,7 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
      * @param string $name
      * @param mixed $value
      */
-    public function setContextVariable($name, $value)
+    public function setContextVariable($name, $value):void
     {
         $this->context[$name] = $value;
     }

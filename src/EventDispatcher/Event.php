@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\VisitorInterface;
 
 class Event
 {
@@ -38,17 +39,17 @@ class Event
         $this->type = $type;
     }
 
-    public function getVisitor()
+    public function getVisitor():VisitorInterface
     {
         return $this->context->getVisitor();
     }
 
-    public function getContext()
+    public function getContext():Context
     {
         return $this->context;
     }
 
-    public function getType()
+    public function getType():array
     {
         return $this->type;
     }
@@ -60,7 +61,7 @@ class Event
      *
      * @return bool Whether propagation was already stopped for this event
      */
-    public function isPropagationStopped()
+    public function isPropagationStopped():bool
     {
         return $this->propagationStopped;
     }
@@ -72,7 +73,7 @@ class Event
      * further event listener will be triggered once any trigger calls
      * stopPropagation().
      */
-    public function stopPropagation()
+    public function stopPropagation():void
     {
         $this->propagationStopped = true;
     }

@@ -28,12 +28,12 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
 
-    public function getValue($object, PropertyMetadata $metadata)
+    public function getValue(object $object, PropertyMetadata $metadata)
     {
         return $metadata->getValue($object);
     }
 
-    public function setValue($object, $value, PropertyMetadata $metadata)
+    public function setValue(object $object, $value, PropertyMetadata $metadata):void
     {
         $metadata->setValue($object, $value);
     }
