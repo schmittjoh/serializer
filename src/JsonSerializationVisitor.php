@@ -24,6 +24,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
@@ -40,43 +41,43 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         $this->options = $options;
     }
 
-    public function visitNull($data, array $type)
+    public function visitNull($data, TypeDefinition $type)
     {
         return null;
     }
 
-    public function visitString(string $data, array $type)
+    public function visitString(string $data, TypeDefinition $type)
     {
         return $data;
     }
 
-    public function visitBoolean(bool $data, array $type)
+    public function visitBoolean(bool $data, TypeDefinition $type)
     {
         return $data;
     }
 
-    public function visitInteger(int $data, array $type)
+    public function visitInteger(int $data, TypeDefinition $type)
     {
         return $data;
     }
 
-    public function visitDouble(float $data, array $type)
+    public function visitDouble(float $data, TypeDefinition $type)
     {
         return $data;
     }
 
     /**
      * @param array $data
-     * @param array $type
+     * @param TypeDefinition $type
      * @return mixed
      */
-    public function visitArray(array $data, array $type)
+    public function visitArray(array $data, TypeDefinition $type)
     {
         $this->dataStack->push($data);
 
-        $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
+        $rs = $type->hasParam('1') ? new \ArrayObject() : [];
 
-        $isList = isset($type['params'][0]) && !isset($type['params'][1]);
+        $isList = $type->hasParam('0') && !$type->hasParam('1');
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
@@ -98,13 +99,13 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         return $rs;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type): void
     {
         $this->dataStack->push($this->data);
         $this->data = [];
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();

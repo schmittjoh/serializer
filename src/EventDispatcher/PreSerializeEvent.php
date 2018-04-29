@@ -20,14 +20,18 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\EventDispatcher;
 
+use JMS\Serializer\Type\TypeDefinition;
+
 class PreSerializeEvent extends ObjectEvent
 {
-    /**
-     * @param string $typeName
-     * @param array $params
-     */
-    public function setType(string $typeName, array $params = [])
+
+    public function setType(string $typeName, array $params = []): void
     {
-        $this->type = ['name' => $typeName, 'params' => $params];
+        $this->type = TypeDefinition::fromArray(['name' => $typeName, 'params' => $params]);
+    }
+
+    public function setTypeDefinition(TypeDefinition $type): void
+    {
+        $this->type = $type;
     }
 }

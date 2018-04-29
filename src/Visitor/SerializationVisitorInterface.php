@@ -22,6 +22,7 @@ namespace JMS\Serializer\Visitor;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
 /**
@@ -37,62 +38,62 @@ interface SerializationVisitorInterface extends VisitorInterface
 {
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitNull($data, array $type);
+    public function visitNull($data, TypeDefinition $type);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitString(string $data, array $type);
+    public function visitString(string $data, TypeDefinition $type);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitBoolean(bool $data, array $type);
+    public function visitBoolean(bool $data, TypeDefinition $type);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitDouble(float $data, array $type);
+    public function visitDouble(float $data, TypeDefinition $type);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitInteger(int $data, array $type);
+    public function visitInteger(int $data, TypeDefinition $type);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitArray(array $data, array $type);
+    public function visitArray(array $data, TypeDefinition $type);
 
     /**
      * Called before the properties of the object are being visited.
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
+    public function startVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -107,9 +108,9 @@ interface SerializationVisitorInterface extends VisitorInterface
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type);
+    public function endVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type);
 }

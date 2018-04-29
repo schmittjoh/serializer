@@ -24,6 +24,7 @@ use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
@@ -42,32 +43,32 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         $this->depth = $depth;
     }
 
-    public function visitNull($data, array $type): void
+    public function visitNull($data, TypeDefinition $type): void
     {
 
     }
 
-    public function visitString($data, array $type): string
+    public function visitString($data, TypeDefinition $type): string
     {
         return (string)$data;
     }
 
-    public function visitBoolean($data, array $type): bool
+    public function visitBoolean($data, TypeDefinition $type): bool
     {
         return (bool)$data;
     }
 
-    public function visitInteger($data, array $type): int
+    public function visitInteger($data, TypeDefinition $type): int
     {
         return (int)$data;
     }
 
-    public function visitDouble($data, array $type): float
+    public function visitDouble($data, TypeDefinition $type): float
     {
         return (double)$data;
     }
 
-    public function visitArray($data, array $type): array
+    public function visitArray($data, TypeDefinition $type): array
     {
         if (!\is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', \gettype($data), json_encode($data)));
@@ -119,7 +120,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         ));
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $object, TypeDefinition $type): void
     {
         $this->setCurrentObject($object);
     }
@@ -149,7 +150,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         return $v;
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type): object
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();

@@ -22,6 +22,7 @@ namespace JMS\Serializer\Visitor;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
 /**
@@ -37,43 +38,43 @@ interface DeserializationVisitorInterface extends VisitorInterface
 {
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitNull($data, array $type): void;
+    public function visitNull($data, TypeDefinition $type): void;
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitString($data, array $type): string;
+    public function visitString($data, TypeDefinition $type): string;
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type): bool;
+    public function visitBoolean($data, TypeDefinition $type): bool;
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type): float;
+    public function visitDouble($data, TypeDefinition $type): float;
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type): int;
+    public function visitInteger($data, TypeDefinition $type): int;
 
     /**
      * Returns the class name based on the type of the discriminator map value
@@ -86,22 +87,22 @@ interface DeserializationVisitorInterface extends VisitorInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitArray($data, array $type): array;
+    public function visitArray($data, TypeDefinition $type): array;
 
     /**
      * Called before the properties of the object are being visited.
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
+    public function startVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type): void;
 
     /**
      * @param PropertyMetadata $metadata
@@ -116,11 +117,11 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object;
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type): object;
 
     /**
      * @param mixed $data

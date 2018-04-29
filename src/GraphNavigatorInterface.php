@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Type\TypeDefinition;
 
 interface GraphNavigatorInterface
 {
@@ -44,5 +45,5 @@ interface GraphNavigatorInterface
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null);
+    public function accept($data, TypeDefinition $type = null);
 }

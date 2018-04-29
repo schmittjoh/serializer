@@ -21,21 +21,27 @@ declare(strict_types=1);
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Type\TypeDefinition;
 
 class PreDeserializeEvent extends Event
 {
     private $data;
 
-    public function __construct(DeserializationContext $context, $data, array $type)
+    public function __construct(DeserializationContext $context, $data, TypeDefinition $type)
     {
         parent::__construct($context, $type);
 
         $this->data = $data;
     }
 
-    public function setType(string $name, array $params = [])
+    public function setType(string $typeName, array $params = []): void
     {
-        $this->type = ['name' => $name, 'params' => $params];
+        $this->type = TypeDefinition::fromArray(['name' => $typeName, 'params' => $params]);
+    }
+
+    public function setTypeDefinition(TypeDefinition $type): void
+    {
+        $this->type = $type;
     }
 
     public function getData()
