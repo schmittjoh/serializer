@@ -51,12 +51,12 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $typeParser;
 
     /**
-     * @var array|SerializationVisitorFactory[]
+     * @var SerializationVisitorFactory[]
      */
     private $serializationVisitors = [];
 
     /**
-     * @var array|DeserializationVisitorFactory[]
+     * @var DeserializationVisitorFactory[]
      */
     private $deserializationVisitors = [];
 
@@ -71,13 +71,13 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $deserializationContextFactory;
 
     /**
-     * @var array|GraphNavigatorFactoryInterface[]
+     * @var GraphNavigatorFactoryInterface[]
      */
     private $graphNavigators;
 
     /**
      * @param MetadataFactoryInterface $factory
-     * @param array|GraphNavigatorFactoryInterface[] $graphNavigators
+     * @param GraphNavigatorFactoryInterface[] $graphNavigators
      * @param SerializationVisitorFactory[] $serializationVisitors
      * @param DeserializationVisitorFactory[] $deserializationVisitors
      * @param SerializationContextFactoryInterface|null $serializationContextFactory

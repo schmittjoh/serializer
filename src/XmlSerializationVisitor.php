@@ -244,8 +244,9 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
             return;
         }
-
-        if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
+        $addEnclosingElement = !$this->isInLineCollection($metadata);
+        $element = null;
+        if ($addEnclosingElement && !$metadata->inline) {
 
             $namespace = null !== $metadata->xmlNamespace
                 ? $metadata->xmlNamespace
@@ -341,7 +342,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->currentMetadata;
     }
 
-    public function getDocument()
+    public function getDocument(): \DOMDocument
     {
         if (null === $this->document) {
             $this->document = $this->createDocument();
@@ -349,19 +350,19 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->document;
     }
 
-    public function setCurrentMetadata(PropertyMetadata $metadata)
+    public function setCurrentMetadata(PropertyMetadata $metadata):void
     {
         $this->metadataStack->push($this->currentMetadata);
         $this->currentMetadata = $metadata;
     }
 
-    public function setCurrentNode(\DOMNode $node)
+    public function setCurrentNode(\DOMNode $node):void
     {
         $this->stack->push($this->currentNode);
         $this->currentNode = $node;
     }
 
-    public function setCurrentAndRootNode(\DOMNode $node)
+    public function setCurrentAndRootNode(\DOMNode $node):void
     {
         $this->setCurrentNode($node);
         $this->document->appendChild($node);

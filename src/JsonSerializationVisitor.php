@@ -68,7 +68,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     /**
      * @param array $data
      * @param array $type
-     * @param SerializationContext $context
      * @return mixed
      */
     public function visitArray(array $data, array $type)
@@ -145,7 +144,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      * @param string $key
      * @return boolean
      */
-    public function hasData($key)
+    public function hasData(string $key): bool
     {
         return isset($this->data[$key]);
     }
@@ -154,10 +153,10 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      * Allows you to replace existing data on the current object/root element.
      *
      * @param string $key
-     * @param integer|float|boolean|string|array|null $value This value must either be a regular scalar, or an array.
+     * @param mixed $value This value must either be a regular scalar, or an array.
      *                                                       It must not contain any objects anymore.
      */
-    public function setData($key, $value)
+    public function setData(string $key, $value): void
     {
         $this->data[$key] = $value;
     }

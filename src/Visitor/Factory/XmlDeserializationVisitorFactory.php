@@ -44,7 +44,7 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
     }
 
     /**
-     * @param array|string[] $doctypeWhitelist
+     * @param string[] $doctypeWhitelist
      */
     public function setDoctypeWhitelist(array $doctypeWhitelist): self
     {

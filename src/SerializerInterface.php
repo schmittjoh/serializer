@@ -30,7 +30,7 @@ interface SerializerInterface
     /**
      * Serializes the given data to the specified output format.
      *
-     * @param object|array|scalar $data
+     * @param mixed $data
      * @param string $format
      * @param SerializationContext $context
      * @param string $type
@@ -46,7 +46,7 @@ interface SerializerInterface
      * @param string $format
      * @param DeserializationContext $context
      *
-     * @return object|array|scalar
+     * @return mixed
      */
     public function deserialize(string $data, string $type, string $format, DeserializationContext $context = null);
 }
