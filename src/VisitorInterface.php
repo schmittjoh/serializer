@@ -52,4 +52,6 @@ interface VisitorInterface
      * @return void
      */
     public function setNavigator(GraphNavigatorInterface $navigator): void;
+
+    public function getResult($data);
 }

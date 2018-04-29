@@ -111,11 +111,4 @@ interface SerializationVisitorInterface extends VisitorInterface
      * @return mixed
      */
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type);
-
-    /**
-     * @param mixed $data
-     *
-     * @return mixed
-     */
-    public function getResult($data);
 }
