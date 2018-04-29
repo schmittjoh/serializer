@@ -24,7 +24,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LazyHandlerRegistry extends HandlerRegistry
+final class LazyHandlerRegistry extends HandlerRegistry
 {
     private $container;
     private $initializedHandlers = [];

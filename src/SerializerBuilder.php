@@ -71,7 +71,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class SerializerBuilder
+final class SerializerBuilder
 {
     private $metadataDirs = [];
     private $handlerRegistry;

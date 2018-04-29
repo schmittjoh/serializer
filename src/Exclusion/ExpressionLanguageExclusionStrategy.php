@@ -33,7 +33,7 @@ use JMS\Serializer\SerializationContext;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionLanguageExclusionStrategy
+final class ExpressionLanguageExclusionStrategy
 {
     /**
      * @var ExpressionEvaluatorInterface

@@ -26,7 +26,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
+final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 

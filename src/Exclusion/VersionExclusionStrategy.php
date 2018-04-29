@@ -24,7 +24,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class VersionExclusionStrategy implements ExclusionStrategyInterface
+final class VersionExclusionStrategy implements ExclusionStrategyInterface
 {
     private $version;
 

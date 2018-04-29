@@ -25,7 +25,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 
-class UnserializeObjectConstructor implements ObjectConstructorInterface
+final class UnserializeObjectConstructor implements ObjectConstructorInterface
 {
     /** @var Instantiator */
     private $instantiator;

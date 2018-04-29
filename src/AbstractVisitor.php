@@ -24,6 +24,9 @@ use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
+/**
+ * @internal
+ */
 abstract class AbstractVisitor implements VisitorInterface
 {
     /**

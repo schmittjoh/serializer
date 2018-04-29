@@ -83,7 +83,7 @@ class SerializationContext extends Context
         return $this->visitingSet->contains($object);
     }
 
-    public function getPath(): string
+    public function getPath(): ?string
     {
         $path = [];
         foreach ($this->visitingStack as $obj) {

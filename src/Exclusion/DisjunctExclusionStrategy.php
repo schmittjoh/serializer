@@ -31,7 +31,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DisjunctExclusionStrategy implements ExclusionStrategyInterface
+final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
     private $delegates = [];
     /**

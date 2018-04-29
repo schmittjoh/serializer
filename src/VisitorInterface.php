@@ -29,6 +29,8 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * This contains the minimal set of values that must be supported for any
  * output format.
  *
+ * @internal Use SerializationVisitorInterface and DeserializationVisitorInterface instead
+ *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Asmir Mustafic <goetas@gmail.com>
  */

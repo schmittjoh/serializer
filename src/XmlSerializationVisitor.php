@@ -30,7 +30,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
+final class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     /**
      * @var \DOMDocument

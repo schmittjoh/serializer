@@ -27,7 +27,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class DepthExclusionStrategy implements ExclusionStrategyInterface
+final class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
      * {@inheritDoc}

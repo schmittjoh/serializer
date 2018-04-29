@@ -31,7 +31,7 @@ use JMS\Serializer\XmlSerializationVisitor;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class XmlSerializationVisitorFactory implements SerializationVisitorFactory
+final class XmlSerializationVisitorFactory implements SerializationVisitorFactory
 {
     private $defaultRootName = 'result';
     private $defaultVersion = '1.0';

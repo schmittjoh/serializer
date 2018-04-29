@@ -30,7 +30,7 @@ use JMS\Serializer\JsonDeserializationVisitor;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
+final class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
     /**
      * @var int

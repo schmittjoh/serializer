@@ -26,7 +26,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
+final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
     private $options = 0;
     private $depth = 512;
