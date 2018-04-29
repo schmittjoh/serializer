@@ -49,6 +49,7 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializationVisitorInterface;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
@@ -281,7 +282,9 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             return true;
         }));
 
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher, null, new ExpressionEvaluator($language));
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+        $serializer = $builder->build();
 
         self::assertEquals($this->getContent('person_secret_hide'), $serializer->serialize($person, $this->getFormat()));
     }
@@ -371,7 +374,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $language = new ExpressionLanguage();
         $language->addFunction($function);
 
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher, null, new ExpressionEvaluator($language));
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+        $serializer = $builder->build();
+
         self::assertEquals($this->getContent($json), $serializer->serialize($person, $this->getFormat()));
     }
 
@@ -698,7 +704,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testDeserializingNull()
     {
         $objectConstructor = new InitializedBlogPostConstructor();
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, new DefaultAccessorStrategy(), $this->dispatcher);
+
+        $builder = SerializerBuilder::create();
+        $builder->setObjectConstructor($objectConstructor);
+        $this->serializer = $builder->build();
 
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
 
@@ -722,9 +731,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testExpressionAuthor()
     {
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
-        $accessor = new ExpressionAccessorStrategy($evaluator, new DefaultAccessorStrategy());
 
-        $serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor, $this->dispatcher);
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator($evaluator);
+        $serializer = $builder->build();
 
         $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
         self::assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
@@ -1358,12 +1368,11 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
-
         $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
-        $serializer = new Serializer(
-            $this->factory, $this->handlerRegistry, $objectConstructor,
-            $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher
-        );
+
+        $builder = SerializerBuilder::create();
+        $builder->setObjectConstructor($objectConstructor);
+        $serializer = $builder->build();
 
         $order = new Order(new Price(12));
 
@@ -1436,8 +1445,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-        $this->factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
 
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
@@ -1473,19 +1480,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
-        $this->accessorStrategy = new DefaultAccessorStrategy();
-
-        $this->objectConstructor = new UnserializeObjectConstructor();
-        $this->serializationVisitors = [
-            'json' => new JsonSerializationVisitorFactory(),
-            'xml' => new XmlSerializationVisitorFactory(),
-        ];
-        $this->deserializationVisitors = [
-            'json' => new JsonDeserializationVisitorFactory(),
-            'xml' => new XmlDeserializationVisitorFactory(),
-        ];
-
-        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->accessorStrategy, $this->dispatcher);
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $this->serializer = $builder->build();
     }
 
     protected function getField($obj, $name)

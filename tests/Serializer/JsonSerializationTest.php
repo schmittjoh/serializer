@@ -33,6 +33,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
+use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -228,8 +229,10 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testPrimitiveTypes($primitiveType, $data)
     {
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-        $context = SerializationContext::create();
-        $visitor = $this->serializationVisitors['json']->getVisitor($navigator, $context);
+
+        $factory = new JsonSerializationVisitorFactory();
+        $visitor = $factory->getVisitor();
+        $visitor->setNavigator($navigator);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, [], $this->getMockBuilder(SerializationContext::class)->getMock());
         if ($primitiveType == 'double') {

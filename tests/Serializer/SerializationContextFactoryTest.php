@@ -33,6 +33,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
@@ -70,18 +71,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('createSerializationContext')
             ->will($this->returnValue($context));
 
-        $serializer = new Serializer(
-            $this->metadataFactory,
-            $this->handlerRegistry,
-            $this->unserializeObjectConstructor,
-            $this->serializationVisitors,
-            $this->deserializationVisitors,
-            new DefaultAccessorStrategy(),
-            null,
-            null,
-            null,
-            $contextFactoryMock
-        );
+        $builder = SerializerBuilder::create();
+        $builder->setSerializationContextFactory($contextFactoryMock);
+        $serializer = $builder->build();
 
         $result = $serializer->serialize(['value' => null], 'json');
 
@@ -98,19 +90,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('createDeserializationContext')
             ->will($this->returnValue($context));
 
-        $serializer = new Serializer(
-            $this->metadataFactory,
-            $this->handlerRegistry,
-            $this->unserializeObjectConstructor,
-            $this->serializationVisitors,
-            $this->deserializationVisitors,
-            new DefaultAccessorStrategy(),
-            null,
-            null,
-            null,
-            null,
-            $contextFactoryMock
-        );
+        $builder = SerializerBuilder::create();
+        $builder->setDeserializationContextFactory($contextFactoryMock);
+        $serializer = $builder->build();
 
         $result = $serializer->deserialize('{"value":null}', 'array', 'json');
 
@@ -128,18 +110,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('createSerializationContext')
             ->will($this->returnValue($context));
 
-        $serializer = new Serializer(
-            $this->metadataFactory,
-            $this->handlerRegistry,
-            $this->unserializeObjectConstructor,
-            $this->serializationVisitors,
-            $this->deserializationVisitors,
-            new DefaultAccessorStrategy(),
-            null,
-            null,
-            null,
-            $contextFactoryMock
-        );
+        $builder = SerializerBuilder::create();
+        $builder->setSerializationContextFactory($contextFactoryMock);
+        $serializer = $builder->build();
 
         $result = $serializer->toArray(['value' => null]);
 
@@ -156,19 +129,9 @@ class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('createDeserializationContext')
             ->will($this->returnValue($context));
 
-        $serializer = new Serializer(
-            $this->metadataFactory,
-            $this->handlerRegistry,
-            $this->unserializeObjectConstructor,
-            $this->serializationVisitors,
-            $this->deserializationVisitors,
-            new DefaultAccessorStrategy(),
-            null,
-            null,
-            null,
-            null,
-            $contextFactoryMock
-        );
+        $builder = SerializerBuilder::create();
+        $builder->setDeserializationContextFactory($contextFactoryMock);
+        $serializer = $builder->build();
 
         $result = $serializer->fromArray(['value' => null], 'array');
 

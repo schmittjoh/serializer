@@ -18,22 +18,33 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\GraphNavigator;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use JMS\Serializer\Exception\CircularReferenceDetectedException;
+use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
-use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\NullAwareVisitorInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -44,12 +55,17 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class DeserializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
+final class SerializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
 {
     /**
-     * @var DeserializationVisitorInterface
+     * @var SerializationVisitorInterface
      */
     protected $visitor;
+
+    /**
+     * @var SerializationContext
+     */
+    protected $context;
 
     /**
      * @var ExpressionLanguageExclusionStrategy
@@ -59,28 +75,38 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
     private $dispatcher;
     private $metadataFactory;
     private $handlerRegistry;
-    private $objectConstructor;
     /**
      * @var AccessorStrategyInterface
      */
     private $accessor;
 
+    /**
+     * @var bool
+     */
+    private $shouldSerializeNull;
+
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
-        ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
-    ) {
+    )
+    {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
-        $this->objectConstructor = $objectConstructor;
         $this->accessor = $accessor;
+
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
+    }
+
+    public function initialize(VisitorInterface $visitor, Context $context):void
+    {
+        parent::initialize($visitor, $context);
+        $this->shouldSerializeNull = $context->shouldSerializeNull();
     }
 
     /**
@@ -95,7 +121,18 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
-            throw new RuntimeException('The type must be given for all properties when deserializing.');
+
+            $typeName = \gettype($data);
+            if ('object' === $typeName) {
+                $typeName = \get_class($data);
+            }
+
+            $type = ['name' => $typeName, 'params' => []];
+        }
+        // If the data is null, we have to force the type to null regardless of the input in order to
+        // guarantee correct handling of null values, and not have any internal auto-casting behavior.
+        else if (null === $data) {
+            $type = ['name' => 'NULL', 'params' => []];
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
@@ -105,73 +142,92 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
         switch ($type['name']) {
             case 'NULL':
+                if (!$this->shouldSerializeNull) {
+                    throw new NotAcceptableException();
+                }
                 return $this->visitor->visitNull($data, $type);
 
             case 'string':
-                return $this->visitor->visitString($data, $type);
+                return $this->visitor->visitString((string)$data, $type);
 
             case 'int':
             case 'integer':
-                return $this->visitor->visitInteger($data, $type);
+                return $this->visitor->visitInteger((int)$data, $type);
 
             case 'bool':
             case 'boolean':
-                return $this->visitor->visitBoolean($data, $type);
+                return $this->visitor->visitBoolean((bool)$data, $type);
 
             case 'double':
             case 'float':
-                return $this->visitor->visitDouble($data, $type);
+                return $this->visitor->visitDouble((float)$data, $type);
 
             case 'array':
-                return $this->visitor->visitArray($data, $type);
+                return $this->visitor->visitArray((array)$data, $type);
 
             case 'resource':
-                throw new RuntimeException('Resources are not supported in serialized data.');
+                $msg = 'Resources are not supported in serialized data.';
+                if (null !== $path = $this->context->getPath()) {
+                    $msg .= ' Path: ' . $path;
+                }
+
+                throw new RuntimeException($msg);
 
             default:
 
-                $this->context->increaseDepth();
+                if (null !== $data) {
+                    if ($this->context->isVisiting($data)) {
+                        throw new CircularReferenceDetectedException();
+                    }
+                    $this->context->startVisiting($data);
+                }
+
+                // If we're serializing a polymorphic type, then we'll be interested in the
+                // metadata for the actual type of the object, not the base class.
+                if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
+                    if (is_subclass_of($data, $type['name'], false)) {
+                        $type = ['name' => \get_class($data), 'params' => []];
+                    }
+                }
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $this->format)) {
-                    $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $this->format, $event = new PreDeserializeEvent($this->context, $data, $type));
+                if ($this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
+                    $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($this->context, $data, $type));
                     $type = $event->getType();
-                    $data = $event->getData();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
+                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
                     $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    $this->context->decreaseDepth();
+                    $this->context->stopVisiting($data);
 
                     return $rs;
                 }
 
+
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
+                if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
                 }
 
-                if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($data, $metadata);
-                }
-
                 if ($this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
-                    $this->context->decreaseDepth();
+                    $this->context->stopVisiting($data);
 
-                    return null;
+                    throw new ExcludedClassException();
                 }
 
                 $this->context->pushClassMetadata($metadata);
 
-                $object = $this->objectConstructor->construct($this->visitor, $metadata, $data, $type, $this->context);
+                foreach ($metadata->preSerializeMethods as $method) {
+                    $method->invoke($data);
+                }
 
-                $this->visitor->startVisitingObject($metadata, $object, $type);
+                $this->visitor->startVisitingObject($metadata, $data, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
@@ -181,54 +237,34 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         continue;
                     }
 
-                    if ($propertyMetadata->readOnly) {
+                    $v = $this->accessor->getValue($data, $propertyMetadata);
+
+                    if (null === $v && $this->shouldSerializeNull !== true) {
                         continue;
                     }
 
                     $this->context->pushPropertyMetadata($propertyMetadata);
-                    try {
-                        $v = $this->visitor->visitProperty($propertyMetadata, $data);
-                        $this->accessor->setValue($object, $v, $propertyMetadata);
-                    }catch (NotAcceptableException $e){
-
-                    }
+                    $this->visitor->visitProperty($propertyMetadata, $v);
                     $this->context->popPropertyMetadata();
                 }
 
-                $rs = $this->visitor->endVisitingObject($metadata, $data, $type);
-                $this->afterVisitingObject($metadata, $rs, $type);
+                $this->afterVisitingObject($metadata, $data, $type);
 
-                return $rs;
+                return $this->visitor->endVisitingObject($metadata, $data, $type);
         }
     }
 
-    private function resolveMetadata($data, ClassMetadata $metadata)
+    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type)
     {
-        $typeValue = $this->visitor->visitDiscriminatorMapProperty($data, $metadata);
-
-        if (!isset($metadata->discriminatorMap[$typeValue])) {
-            throw new LogicException(sprintf(
-                'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
-                $typeValue,
-                $metadata->name,
-                implode(', ', array_keys($metadata->discriminatorMap))
-            ));
-        }
-
-        return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
-    }
-
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type): void
-    {
-        $this->context->decreaseDepth();
+        $this->context->stopVisiting($object);
         $this->context->popClassMetadata();
 
-        foreach ($metadata->postDeserializeMethods as $method) {
+        foreach ($metadata->postSerializeMethods as $method) {
             $method->invoke($object);
         }
 
-        if ($this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
-            $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new ObjectEvent($this->context, $object, $type));
+        if ($this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $this->format)) {
+            $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $this->format, new ObjectEvent($this->context, $object, $type));
         }
     }
 }

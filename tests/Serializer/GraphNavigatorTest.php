@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationGraphNavigator;
+use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
 use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
@@ -34,7 +34,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationGraphNavigator;
+use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
 use JMS\Serializer\SerializationVisitorInterface;
 use Metadata\MetadataFactory;
 

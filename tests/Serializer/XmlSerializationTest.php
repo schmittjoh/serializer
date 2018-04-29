@@ -29,12 +29,14 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild;
@@ -169,15 +171,21 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testWhitelistedDocumentTypesAreAllowed()
     {
-        $this->deserializationVisitors['xml']->setDoctypeWhitelist([
+        $xmlVisitor = new XmlDeserializationVisitorFactory();
+
+        $xmlVisitor->setDoctypeWhitelist([
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>']);
 
-        $this->serializer->deserialize('<?xml version="1.0"?>
+        $builder = SerializerBuilder::create();
+        $builder->setDeserializationVisitor('xml', $xmlVisitor);
+        $serializer = $builder->build();
+
+        $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
             <foo></foo>', 'stdClass', 'xml');
 
-        $this->serializer->deserialize('<?xml version="1.0"?>
+        $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
@@ -321,13 +329,11 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeNoCData($key, $value, $type)
     {
-        $accessor = new DefaultAccessorStrategy();
-
-        $handlerRegistry = new HandlerRegistry();
-        $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
-        $objectConstructor = new UnserializeObjectConstructor();
-
-        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor);
+        $builder = SerializerBuilder::create();
+        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
+            $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
+        });
+        $serializer = $builder->build();
 
         self::assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
@@ -338,13 +344,11 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
-        $accessor = new DefaultAccessorStrategy();
-
-        $handlerRegistry = new HandlerRegistry();
-        $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
-        $objectConstructor = new UnserializeObjectConstructor();
-
-        $serializer = new Serializer($this->factory, $handlerRegistry, $objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $accessor);
+        $builder = SerializerBuilder::create();
+        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry){
+            $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
+        });
+        $serializer = $builder->build();
 
         self::assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
@@ -477,23 +481,12 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testWithoutFormatedOutputByXmlSerializationVisitor()
     {
-        $accessor = new  DefaultAccessorStrategy();
         $xmlVisitor = new XmlSerializationVisitorFactory();
         $xmlVisitor->setFormatOutput(false);
 
-        $visitors = [
-            'xml' => $xmlVisitor,
-        ];
-
-        $serializer = new Serializer(
-            $this->factory,
-            $this->handlerRegistry,
-            new UnserializeObjectConstructor(),
-            $visitors,
-            $this->deserializationVisitors,
-            $accessor,
-            $this->dispatcher
-        );
+        $builder = SerializerBuilder::create();
+        $builder->setSerializationVisitor('xml', $xmlVisitor);
+        $serializer = $builder->build();
 
         $object = new SimpleClassObject;
         $object->foo = 'foo';
