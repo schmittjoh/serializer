@@ -93,25 +93,24 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         $object = $event instanceof ObjectEvent ? $event->getObject() : null;
-        $objectClass = $object ? (get_class($object) . $class) : $class;
+        $realClass = is_object($object) ? get_class($object) : '';
+        $objectClass = $realClass !== $class ? ($realClass . $class) : $class;
 
         if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
-            $this->classListeners[$eventName][$objectClass][$format] = [];
-            foreach ($this->initializeListeners($eventName, $class, $format) as $listener) {
-                if ($listener[3] !== null && !($object instanceof $listener[3])) {
-                    continue;
-                }
-
-                $this->classListeners[$eventName][$objectClass][$format][] = $listener[0];
-            }
+            $this->classListeners[$eventName][$objectClass][$format] = $this->initializeListeners($eventName, $class, $format);
         }
 
         foreach ($this->classListeners[$eventName][$objectClass][$format] as $listener) {
 
+            if ($listener[3] !== null && !($object instanceof $listener[3])) {
+                continue;
+            }
+
+            \call_user_func($listener[0], $event, $eventName, $class, $format, $this);
+
             if ($event->isPropagationStopped()) {
                 break;
             }
-            \call_user_func($listener, $event, $eventName, $class, $format, $this);
         }
     }
 

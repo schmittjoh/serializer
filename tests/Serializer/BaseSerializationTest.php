@@ -35,6 +35,7 @@ use JMS\Serializer\Handler\ConstraintViolationHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -125,6 +126,10 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
     /** @var Serializer */
     protected $serializer;
+
+    /**
+     * @var HandlerRegistryInterface
+     */
     protected $handlerRegistry;
     protected $serializationVisitors;
     protected $deserializationVisitors;
@@ -1395,6 +1400,24 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $this->getContent('array_objects_nullable'),
             $this->serializer->serialize($arr, $this->getFormat(), $serializationContext)
         );
+    }
+
+    public function testHandlerInvokedOnPrimitives()
+    {
+        $invoked = false;
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            'Virtual',
+            $this->getFormat(),
+            function ($visitor, $data) use (&$invoked) {
+                $invoked = true;
+                $this->assertEquals('foo', $data);
+                return null;
+            }
+        );
+
+        $this->serializer->serialize('foo', $this->getFormat(), null, 'Virtual');
+        $this->assertTrue($invoked);
     }
 
     public function getSerializeNullCases()
