@@ -40,10 +40,24 @@ use Metadata\MetadataFactoryInterface;
  */
 final class Serializer implements SerializerInterface, ArrayTransformerInterface
 {
+    /**
+     * @var MetadataFactoryInterface
+     */
     private $factory;
+
+    /**
+     * @var TypeParser
+     */
     private $typeParser;
 
+    /**
+     * @var array|SerializationVisitorFactory[]
+     */
     private $serializationVisitors = [];
+
+    /**
+     * @var array|DeserializationVisitorFactory[]
+     */
     private $deserializationVisitors = [];
 
     /**
@@ -114,9 +128,9 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private function findInitialType(?string $type, SerializationContext $context)
     {
         if ($type !== null) {
-            return $this->typeParser->parse($type);
+            return $type;
         } elseif ($context->hasAttribute('initial_type')) {
-            return $this->typeParser->parse($context->getAttribute('initial_type'));
+            return $context->getAttribute('initial_type');
         }
         return null;
     }
@@ -176,7 +190,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
-        $result = $this->visit($navigator, $visitor, $context, $data, $format, $this->typeParser->parse($type));
+        $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
 
         return $visitor->getResult($result);
     }
@@ -220,10 +234,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
-        return $this->visit($navigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type), false);
+        return $this->visit($navigator, $visitor, $context, $data, 'json', $type, false);
     }
 
-    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, $format, array $type = null, $prepare = true)
+    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, string $format, string $type = null, bool $prepare = true)
     {
         $context->initialize(
             $format,
@@ -237,6 +251,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         if ($prepare) {
             $data = $visitor->prepare($data);
+        }
+
+        if ($type !== null) {
+            $type = $this->typeParser->parse($type);
         }
         return $navigator->accept($data, $type);
     }
