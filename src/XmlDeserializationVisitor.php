@@ -27,6 +27,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface, DeserializationVisitorInterface
@@ -85,17 +86,17 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         return $data === '' ? ' ' : (string)$data;
     }
 
-    public function visitNull($data, array $type): void
+    public function visitNull($data, TypeDefinition $type): void
     {
 
     }
 
-    public function visitString($data, array $type): string
+    public function visitString($data, TypeDefinition $type): string
     {
         return (string)$data;
     }
 
-    public function visitBoolean($data, array $type): bool
+    public function visitBoolean($data, TypeDefinition $type): bool
     {
         $data = (string)$data;
 
@@ -108,17 +109,17 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         }
     }
 
-    public function visitInteger($data, array $type): int
+    public function visitInteger($data, TypeDefinition $type): int
     {
         return (integer)$data;
     }
 
-    public function visitDouble($data, array $type): float
+    public function visitDouble($data, TypeDefinition $type): float
     {
         return (double)$data;
     }
 
-    public function visitArray($data, array $type): array
+    public function visitArray($data, TypeDefinition $type): array
     {
         // handle key-value-pairs
         if (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) {
@@ -230,7 +231,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $object, TypeDefinition $type): void
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
@@ -302,10 +303,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type): object
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();

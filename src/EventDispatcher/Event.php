@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
 class Event
@@ -33,7 +34,7 @@ class Event
     protected $type;
     private $context;
 
-    public function __construct(Context $context, array $type)
+    public function __construct(Context $context, TypeDefinition $type)
     {
         $this->context = $context;
         $this->type = $type;
@@ -50,6 +51,11 @@ class Event
     }
 
     public function getType(): array
+    {
+        return TypeDefinition::toArray($this->type);
+    }
+
+    public function getTypeDefinition(): TypeDefinition
     {
         return $this->type;
     }

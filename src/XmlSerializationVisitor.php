@@ -24,6 +24,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
@@ -99,7 +100,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $rootNode;
     }
 
-    public function visitNull($data, array $type)
+    public function visitNull($data, TypeDefinition $type)
     {
         $node = $this->document->createAttribute('xsi:nil');
         $node->value = 'true';
@@ -108,29 +109,29 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $node;
     }
 
-    public function visitString(string $data, array $type)
+    public function visitString(string $data, TypeDefinition $type)
     {
         $doCData = null !== $this->currentMetadata ? $this->currentMetadata->xmlElementCData : true;
 
         return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string)$data);
     }
 
-    public function visitSimpleString($data, array $type)
+    public function visitSimpleString($data, TypeDefinition $type)
     {
         return $this->document->createTextNode((string)$data);
     }
 
-    public function visitBoolean(bool $data, array $type)
+    public function visitBoolean(bool $data, TypeDefinition $type)
     {
         return $this->document->createTextNode($data ? 'true' : 'false');
     }
 
-    public function visitInteger(int $data, array $type)
+    public function visitInteger(int $data, TypeDefinition $type)
     {
         return $this->document->createTextNode((string)$data);
     }
 
-    public function visitDouble(float $data, array $type)
+    public function visitDouble(float $data, TypeDefinition $type)
     {
         if (floor($data) === $data) {
             return $this->document->createTextNode($data . ".0");
@@ -139,7 +140,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
     }
 
-    public function visitArray(array $data, array $type)
+    public function visitArray(array $data, TypeDefinition $type)
     {
         if ($this->currentNode === null) {
             $this->createRoot();
@@ -174,7 +175,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
+    public function startVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type): void
     {
         $this->objectMetadataStack->push($metadata);
 
@@ -303,7 +304,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return !$element->hasChildNodes() && !$element->hasAttributes();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, object $data, TypeDefinition $type)
     {
         $this->objectMetadataStack->pop();
     }

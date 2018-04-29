@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Type\TypeDefinition;
+
 /**
  * Parses a serializer type.
  *
@@ -85,7 +87,7 @@ final class TypeParser extends \JMS\Parser\AbstractParser
     {
         $typeName = $this->match(self::T_NAME);
         if (!$this->lexer->isNext(self::T_OPEN_BRACKET)) {
-            return ['name' => $typeName, 'params' => []];
+            return TypeDefinition::fromArray(['name' => $typeName, 'params' => []]);
         }
 
         $this->match(self::T_OPEN_BRACKET);
@@ -102,6 +104,6 @@ final class TypeParser extends \JMS\Parser\AbstractParser
 
         $this->match(self::T_CLOSE_BRACKET);
 
-        return ['name' => $typeName, 'params' => $params];
+        return TypeDefinition::fromArray(['name' => $typeName, 'params' => $params]);
     }
 }

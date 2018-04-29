@@ -39,6 +39,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\TypeDefinition;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
@@ -111,7 +112,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null)
+    public function accept($data, TypeDefinition $type = null)
     {
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
@@ -122,20 +123,20 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 $typeName = \get_class($data);
             }
 
-            $type = ['name' => $typeName, 'params' => []];
+            $type = new TypeDefinition($typeName);
         }
         // If the data is null, we have to force the type to null regardless of the input in order to
         // guarantee correct handling of null values, and not have any internal auto-casting behavior.
         else if (null === $data) {
-            $type = ['name' => 'NULL', 'params' => []];
+            $type = new TypeDefinition('NULL');
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && $this->visitor->isNull($data) === true) {
-            $type = ['name' => 'NULL', 'params' => []];
+            $type = new TypeDefinition('NULL');
         }
 
-        switch ($type['name']) {
+        switch ($type->getName()) {
             case 'NULL':
                 if (!$this->shouldSerializeNull) {
                     throw new NotAcceptableException();
@@ -179,31 +180,31 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                 // If we're serializing a polymorphic type, then we'll be interested in the
                 // metadata for the actual type of the object, not the base class.
-                if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
-                    if (is_subclass_of($data, $type['name'], false)) {
-                        $type = ['name' => \get_class($data), 'params' => []];
+                if (class_exists($type->getName(), false) || interface_exists($type->getName(), false)) {
+                    if (is_subclass_of($data, $type->getName(), false)) {
+                        $type =new TypeDefinition(\get_class($data));
                     }
                 }
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
-                    $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($this->context, $data, $type));
-                    $type = $event->getType();
+                if ($this->dispatcher->hasListeners('serializer.pre_serialize', $type->getName(), $this->format)) {
+                    $this->dispatcher->dispatch('serializer.pre_serialize', $type->getName(), $this->format, $event = new PreSerializeEvent($this->context, $data, $type));
+                    $type = $event->getTypeDefinition();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type->getName(), $this->format)) {
+                    $rs = \call_user_func($handler, $this->visitor, $data, TypeDefinition::toArray($type), $this->context);
                     $this->context->stopVisiting($data);
 
                     return $rs;
                 }
 
                 /** @var $metadata ClassMetadata */
-                $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
 
                 if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
                     throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
@@ -248,7 +249,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
         }
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type)
+    private function afterVisitingObject(ClassMetadata $metadata, $object, TypeDefinition $type)
     {
         $this->context->stopVisiting($object);
         $this->context->popClassMetadata();

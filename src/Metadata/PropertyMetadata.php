@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Type\TypeDefinition;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
@@ -113,7 +114,7 @@ class PropertyMetadata extends BasePropertyMetadata
         $obj->{$this->setter}($value);
     }
 
-    public function setType(array $type)
+    public function setType(TypeDefinition $type)
     {
         $this->type = $type;
     }

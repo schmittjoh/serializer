@@ -19,6 +19,7 @@ declare(strict_types=1);
  */
 
 namespace JMS\Serializer;
+use JMS\Serializer\Type\TypeDefinition;
 
 /**
  * @internal
@@ -40,16 +41,16 @@ abstract class AbstractVisitor implements VisitorInterface
         return $data;
     }
 
-    protected function getElementType(array $typeArray): ?array
+    protected function getElementType(TypeDefinition $type): ?TypeDefinition
     {
-        if (false === isset($typeArray['params'][0])) {
+        if ($type->hasParam('0')) {
             return null;
         }
 
-        if (isset($typeArray['params'][1]) && \is_array($typeArray['params'][1])) {
-            return $typeArray['params'][1];
+        if ($type->hasParam('1')) {
+            return $type->getParam('1');
         } else {
-            return $typeArray['params'][0];
+            return $type->getParam('0');
         }
     }
 }
