@@ -73,10 +73,6 @@ class HandlerRegistry implements HandlerRegistryInterface
 
     public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
-        if (\is_string($direction)) {
-            $direction = Serializer::parseDirection($direction);
-        }
-
         $this->handlers[$direction][$typeName][$format] = $handler;
     }
 
