@@ -25,6 +25,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {

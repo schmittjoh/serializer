@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Construction;
 
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationVisitorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 
 /**

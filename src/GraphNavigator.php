@@ -27,7 +27,7 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
  * This class handles traversal along the graph, and calls different methods
  * on visitors, or custom handlers to process its nodes.
  *
- * @internal Use GraphNavigatorInterface
+ * @internal
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>

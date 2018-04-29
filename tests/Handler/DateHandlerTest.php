@@ -7,7 +7,8 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 class DateHandlerTest extends \PHPUnit\Framework\TestCase
 {

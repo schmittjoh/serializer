@@ -27,13 +27,14 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
-use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 class JsonSerializationTest extends BaseSerializationTest
 {

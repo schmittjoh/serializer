@@ -29,8 +29,8 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
-use JMS\Serializer\VisitorFactory\DeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\SerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
 
 /**

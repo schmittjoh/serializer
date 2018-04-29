@@ -35,8 +35,8 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
-use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
 
 class ArrayTest extends \PHPUnit\Framework\TestCase

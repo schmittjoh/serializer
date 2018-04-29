@@ -65,8 +65,8 @@ use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
-use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 

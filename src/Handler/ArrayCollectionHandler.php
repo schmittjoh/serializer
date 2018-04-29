@@ -23,10 +23,10 @@ namespace JMS\Serializer\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationVisitorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {

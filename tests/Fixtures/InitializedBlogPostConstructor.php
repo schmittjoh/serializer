@@ -23,7 +23,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationVisitorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 
 class InitializedBlogPostConstructor implements ObjectConstructorInterface

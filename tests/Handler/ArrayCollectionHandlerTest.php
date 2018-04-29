@@ -8,8 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase

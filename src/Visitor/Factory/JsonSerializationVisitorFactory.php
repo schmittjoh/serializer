@@ -18,18 +18,30 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer\VisitorFactory;
+namespace JMS\Serializer\Visitor\Factory;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-interface SerializationVisitorFactory
+final class JsonSerializationVisitorFactory implements SerializationVisitorFactory
 {
-    public function getVisitor(): SerializationVisitorInterface;
+    /**
+     * @var int
+     */
+    private $options = JSON_PRESERVE_ZERO_FRACTION;
+
+    public function getVisitor(): SerializationVisitorInterface
+    {
+        return new JsonSerializationVisitor($this->options);
+    }
+
+    public function setOptions(int $options): self
+    {
+        $this->options = (integer)$options;
+        return $this;
+    }
 }
