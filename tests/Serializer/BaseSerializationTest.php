@@ -599,8 +599,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
 
-            self::assertTrue(is_object($deserialized));
-            self::assertEquals(get_class($value), get_class($deserialized));
+            self::assertInternalType('object', $deserialized);
+            self::assertInstanceOf(get_class($value), $deserialized);
             self::assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
         }
     }
@@ -623,8 +623,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
 
-            self::assertTrue(is_object($deserialized));
-            self::assertEquals(get_class($value), get_class($deserialized));
+            self::assertInternalType('object', $deserialized);
+            self::assertInstanceOf(get_class($value), $deserialized);
             self::assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
         }
     }
@@ -888,14 +888,14 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             $deserialized = $this->deserialize($this->getContent('circular_reference'), get_class($object));
 
             $col = $this->getField($deserialized, 'collection');
-            self::assertEquals(2, count($col));
+            self::assertCount(2, $col);
             self::assertEquals('child1', $col[0]->getName());
             self::assertEquals('child2', $col[1]->getName());
             self::assertSame($deserialized, $col[0]->getParent());
             self::assertSame($deserialized, $col[1]->getParent());
 
             $col = $this->getField($deserialized, 'anotherCollection');
-            self::assertEquals(2, count($col));
+            self::assertCount(2, $col);
             self::assertEquals('child1', $col[0]->getName());
             self::assertEquals('child2', $col[1]->getName());
             self::assertSame($deserialized, $col[0]->getParent());
