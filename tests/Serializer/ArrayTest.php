@@ -30,6 +30,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -44,16 +45,8 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
-
-        $this->serializer = new Serializer(
-            new MetadataFactory(new AnnotationDriver(new AnnotationReader(), $namingStrategy)),
-            new HandlerRegistry(),
-            new UnserializeObjectConstructor(),
-            ['json' => new JsonSerializationVisitorFactory()],
-            ['json' => new JsonDeserializationVisitorFactory()],
-            new DefaultAccessorStrategy()
-        );
+        $builder = SerializerBuilder::create();
+        $this->serializer = $builder->build();
     }
 
     public function testToArray()

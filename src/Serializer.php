@@ -21,19 +21,14 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Parser\AbstractParser;
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\ContextFactory\DefaultDeserializationContextFactory;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
 use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
-use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
-use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\VisitorFactory\DeserializationVisitorFactory;
 use JMS\Serializer\VisitorFactory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
@@ -46,9 +41,6 @@ use Metadata\MetadataFactoryInterface;
 final class Serializer implements SerializerInterface, ArrayTransformerInterface
 {
     private $factory;
-    private $handlerRegistry;
-    private $objectConstructor;
-    private $dispatcher;
     private $typeParser;
 
     private $serializationVisitors = [];
@@ -63,48 +55,37 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      * @var DeserializationContextFactoryInterface
      */
     private $deserializationContextFactory;
-    /**
-     * @var AccessorStrategyInterface
-     */
-    private $accessorStrategy;
 
-    private $expressionEvaluator;
     /**
-     * @param \Metadata\MetadataFactoryInterface $factory
-     * @param Handler\HandlerRegistryInterface $handlerRegistry
-     * @param Construction\ObjectConstructorInterface $objectConstructor
+     * @var array|GraphNavigatorFactoryInterface[]
+     */
+    private $graphNavigators;
+
+    /**
+     * @param MetadataFactoryInterface $factory
+     * @param array|GraphNavigatorFactoryInterface[] $graphNavigators
      * @param SerializationVisitorFactory[] $serializationVisitors
      * @param DeserializationVisitorFactory[] $deserializationVisitors
-     * @param AccessorStrategyInterface $accessorStrategy
-     * @param EventDispatcherInterface|null $dispatcher
-     * @param AbstractParser|null $typeParser
-     * @param ExpressionEvaluatorInterface|null $expressionEvaluator
      * @param SerializationContextFactoryInterface|null $serializationContextFactory
      * @param DeserializationContextFactoryInterface|null $deserializationContextFactory
+     * @param AbstractParser|null $typeParser
      */
     public function __construct(
         MetadataFactoryInterface $factory,
-        HandlerRegistryInterface $handlerRegistry,
-        ObjectConstructorInterface $objectConstructor,
+        array $graphNavigators,
         array $serializationVisitors,
         array $deserializationVisitors,
-        AccessorStrategyInterface $accessorStrategy,
-        EventDispatcherInterface $dispatcher = null,
-        AbstractParser $typeParser = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null,
         SerializationContextFactoryInterface $serializationContextFactory = null,
-        DeserializationContextFactoryInterface $deserializationContextFactory = null
+        DeserializationContextFactoryInterface $deserializationContextFactory = null,
+        AbstractParser $typeParser = null
     )
     {
         $this->factory = $factory;
-        $this->handlerRegistry = $handlerRegistry;
-        $this->objectConstructor = $objectConstructor;
-        $this->dispatcher = $dispatcher ?: new EventDispatcher();
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->graphNavigators = $graphNavigators;
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
-        $this->accessorStrategy = $accessorStrategy;
-        $this->expressionEvaluator = $expressionEvaluator;
+
+        $this->typeParser = $typeParser ?: new TypeParser();
 
         $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
@@ -131,7 +112,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
     }
 
-    private function findInitialType($type, SerializationContext $context)
+    private function findInitialType(?string $type, SerializationContext $context)
     {
         if ($type !== null) {
             return $this->typeParser->parse($type);
@@ -141,14 +122,9 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return null;
     }
 
-    private function getSerializationNavigator() : GraphNavigatorInterface
+    private function getNavigator(int $direction) : GraphNavigatorInterface
     {
-        return new SerializationGraphNavigator($this->factory, $this->handlerRegistry, $this->accessorStrategy, $this->dispatcher, $this->expressionEvaluator);
-    }
-
-    private function getDeserializationNavigator(): GraphNavigatorInterface
-    {
-        return new DeserializationGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->accessorStrategy, $this->dispatcher, $this->expressionEvaluator);
+        return $this->graphNavigators[$direction]->getGraphNavigator();
     }
 
     public function serialize($data, string $format, SerializationContext $context = null, string $type = null):string
@@ -164,7 +140,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $type = $this->findInitialType($type, $context);
 
         $visitor = $this->serializationVisitors[$format]->getVisitor();
-        $navigator = $this->getSerializationNavigator();
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
         return $visitor->getResult($result);
@@ -181,7 +157,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
 
         $visitor = $this->deserializationVisitors[$format]->getVisitor();
-        $navigator = $this->getDeserializationNavigator();
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $this->typeParser->parse($type));
 
@@ -204,7 +180,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $type = $this->findInitialType($type, $context);
 
         $visitor = $this->serializationVisitors['json']->getVisitor();
-        $navigator = $this->getSerializationNavigator();
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
         $result = $this->convertArrayObjects($result);
@@ -234,7 +210,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
 
         $visitor = $this->deserializationVisitors['json']->getVisitor();
-        $navigator = $this->getDeserializationNavigator();
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         return $this->visit($navigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type), false);
     }

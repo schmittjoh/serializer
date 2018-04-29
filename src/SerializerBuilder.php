@@ -37,13 +37,18 @@ use JMS\Serializer\ContextFactory\CallableSerializationContextFactory;
 use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\GraphNavigator\Factory\DeserializationGraphNavigatorFactory;
+use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
+use JMS\Serializer\GraphNavigator\Factory\SerializationGraphNavigatorFactory;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -56,6 +61,7 @@ use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * Builder for serializer instances.
@@ -96,18 +102,25 @@ class SerializerBuilder
      */
     private $accessorStrategy;
 
-    public static function create()
+    public static function create(...$args)
     {
-        return new static();
+        return new static(...$args);
     }
 
-    public function __construct()
+    public function __construct(HandlerRegistryInterface $handlerRegistry = null, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->typeParser = new TypeParser();
-        $this->handlerRegistry = new HandlerRegistry();
-        $this->eventDispatcher = new EventDispatcher();
+        $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
+        $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         $this->serializationVisitors = [];
         $this->deserializationVisitors = [];
+
+        if ($handlerRegistry) {
+            $this->handlersConfigured = true;
+        }
+        if ($eventDispatcher) {
+            $this->listenersConfigured = true;
+        }
     }
 
     public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy)
@@ -461,22 +474,45 @@ class SerializerBuilder
             $this->addDefaultSerializationVisitors();
             $this->addDefaultDeserializationVisitors();
         }
+        $navigatorFactories = [
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION => $this->getSerializationNavigatorFactory($metadataFactory),
+            GraphNavigatorInterface::DIRECTION_DESERIALIZATION => $this->getDeserializationNavigatorFactory($metadataFactory),
+        ];
 
         $serializer = new Serializer(
             $metadataFactory,
-            $this->handlerRegistry,
-            $this->objectConstructor ?: new UnserializeObjectConstructor(),
+            $navigatorFactories,
             $this->serializationVisitors,
             $this->deserializationVisitors,
-            $this->getAccessorStrategy(),
-            $this->eventDispatcher,
-            $this->typeParser,
-            $this->expressionEvaluator,
             $this->serializationContextFactory,
-            $this->deserializationContextFactory
+            $this->deserializationContextFactory,
+            $this->typeParser
         );
 
         return $serializer;
+    }
+
+    private function getSerializationNavigatorFactory(MetadataFactoryInterface $metadataFactory): GraphNavigatorFactoryInterface
+    {
+        return new SerializationGraphNavigatorFactory(
+            $metadataFactory,
+            $this->handlerRegistry,
+            $this->getAccessorStrategy(),
+            $this->eventDispatcher,
+            $this->expressionEvaluator
+        );
+    }
+
+    private function getDeserializationNavigatorFactory(MetadataFactoryInterface $metadataFactory): GraphNavigatorFactoryInterface
+    {
+        return new DeserializationGraphNavigatorFactory(
+            $metadataFactory,
+            $this->handlerRegistry,
+            $this->objectConstructor ?: new UnserializeObjectConstructor(),
+            $this->getAccessorStrategy(),
+            $this->eventDispatcher,
+            $this->expressionEvaluator
+        );
     }
 
     private function initializePropertyNamingStrategy()
