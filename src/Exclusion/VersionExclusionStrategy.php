@@ -24,7 +24,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class VersionExclusionStrategy implements ExclusionStrategyInterface
+final class VersionExclusionStrategy implements ExclusionStrategyInterface
 {
     private $version;
 
@@ -36,7 +36,7 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext):bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
@@ -44,7 +44,7 @@ class VersionExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if ((null !== $version = $property->sinceVersion) && version_compare($this->version, $version, '<')) {
             return true;

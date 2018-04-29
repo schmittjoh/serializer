@@ -42,7 +42,7 @@ class XmlDriver extends AbstractFileDriver
      */
     private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy,  AbstractParser $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, AbstractParser $typeParser = null)
     {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?: new TypeParser();
@@ -220,7 +220,7 @@ class XmlDriver extends AbstractFileDriver
                     if (null !== $groups = $pElem->attributes()->groups) {
                         $pMetadata->groups = preg_split('/\s*,\s*/', trim((string)$groups));
                     } elseif (isset($pElem->groups)) {
-                        $pMetadata->groups = (array) $pElem->groups->value;
+                        $pMetadata->groups = (array)$pElem->groups->value;
                     }
 
                     if (isset($pElem->{'xml-list'})) {

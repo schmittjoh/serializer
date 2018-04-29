@@ -21,20 +21,16 @@ declare(strict_types=1);
 namespace JMS\Serializer\GraphNavigator;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\CircularReferenceDetectedException;
 use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
-use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
@@ -43,7 +39,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
@@ -91,8 +87,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
         AccessorStrategyInterface $accessor,
         EventDispatcherInterface $dispatcher = null,
         ExpressionEvaluatorInterface $expressionEvaluator = null
-    )
-    {
+    ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
@@ -103,7 +98,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
         }
     }
 
-    public function initialize(VisitorInterface $visitor, Context $context):void
+    public function initialize(VisitorInterface $visitor, Context $context): void
     {
         parent::initialize($visitor, $context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
@@ -206,7 +201,6 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                     return $rs;
                 }
-
 
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);

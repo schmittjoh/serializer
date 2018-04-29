@@ -32,7 +32,7 @@ interface AccessorStrategyInterface
      * @param PropertyMetadata $metadata
      * @return mixed
      */
-    public function getValue($object, PropertyMetadata $metadata);
+    public function getValue(object $object, PropertyMetadata $metadata);
 
     /**
      * @param object $object
@@ -40,5 +40,5 @@ interface AccessorStrategyInterface
      * @param PropertyMetadata $metadata
      * @return void
      */
-    public function setValue($object, $value, PropertyMetadata $metadata);
+    public function setValue(object $object, $value, PropertyMetadata $metadata): void;
 }

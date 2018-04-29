@@ -30,5 +30,5 @@ interface DeserializationContextFactoryInterface
     /**
      * @return DeserializationContext
      */
-    public function createDeserializationContext();
+    public function createDeserializationContext(): DeserializationContext;
 }

@@ -23,7 +23,6 @@ namespace JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationVisitorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -39,6 +38,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -199,7 +199,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
                         $this->accessor->setValue($object, $v, $propertyMetadata);
-                    }catch (NotAcceptableException $e){
+                    } catch (NotAcceptableException $e) {
 
                     }
                     $this->context->popPropertyMetadata();

@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\ContextFactory;
 
+use JMS\Serializer\Context;
+
 /**
  * Context Factory using a callable.
  */
@@ -41,7 +43,7 @@ abstract class CallableContextFactory
     /**
      * @return mixed
      */
-    protected function createContext()
+    protected function createContext(): Context
     {
         $callable = $this->callable;
 

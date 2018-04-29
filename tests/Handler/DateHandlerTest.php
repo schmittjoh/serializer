@@ -7,7 +7,8 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SeerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 class DateHandlerTest extends \PHPUnit\Framework\TestCase
 {
@@ -54,9 +55,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testTimePartGetsRemoved()
     {
-        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $visitor = new JsonDeserializationVisitor();
 
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
         self::assertEquals(
@@ -67,9 +66,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testTimePartGetsPreserved()
     {
-        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $visitor = new JsonDeserializationVisitor();
 
         $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
         // if the test is executed exactly at midnight, it might not detect a possible failure since the time component will be "00:00:00
@@ -96,10 +93,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testTimeZoneGetsPreservedWithUnixTimestamp()
     {
-        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $visitor = new JsonDeserializationVisitor();
 
         $timestamp = (string)time();
         $timezone = 'Europe/Brussels';
@@ -118,10 +112,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testImmutableTimeZoneGetsPreservedWithUnixTimestamp()
     {
-        $visitor = $this->getMockBuilder(JsonDeserializationVisitor::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $visitor = new JsonDeserializationVisitor();
 
         $timestamp = (string)time();
         $timezone = 'Europe/Brussels';

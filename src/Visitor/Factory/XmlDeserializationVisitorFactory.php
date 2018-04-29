@@ -18,19 +18,16 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer\VisitorFactory;
+namespace JMS\Serializer\Visitor\Factory;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\DeserializationVisitorInterface;
-use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 
 /**
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
+final class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
     private $disableExternalEntities = true;
     private $doctypeWhitelist = [];

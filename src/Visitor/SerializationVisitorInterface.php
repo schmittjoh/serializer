@@ -18,10 +18,11 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Visitor;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\VisitorInterface;
 
 /**
  * Interface for visitors.
@@ -32,7 +33,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-interface DeserializationVisitorInterface extends VisitorInterface
+interface SerializationVisitorInterface extends VisitorInterface
 {
     /**
      * @param mixed $data
@@ -40,7 +41,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitNull($data, array $type): void;
+    public function visitNull($data, array $type);
 
     /**
      * @param mixed $data
@@ -48,7 +49,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitString($data, array $type): string;
+    public function visitString(string $data, array $type);
 
     /**
      * @param mixed $data
@@ -56,7 +57,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type): bool;
+    public function visitBoolean(bool $data, array $type);
 
     /**
      * @param mixed $data
@@ -64,7 +65,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type): float;
+    public function visitDouble(float $data, array $type);
 
     /**
      * @param mixed $data
@@ -72,16 +73,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type): int;
-
-    /**
-     * Returns the class name based on the type of the discriminator map value
-     *
-     * @param $data
-     * @param ClassMetadata $metadata
-     * @return string
-     */
-    public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string;
+    public function visitInteger(int $data, array $type);
 
     /**
      * @param mixed $data
@@ -89,7 +81,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitArray($data, array $type): array;
+    public function visitArray(array $data, array $type);
 
     /**
      * Called before the properties of the object are being visited.
@@ -106,9 +98,9 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * @param PropertyMetadata $metadata
      * @param mixed $data
      *
-     * @return mixed
+     * @return void
      */
-    public function visitProperty(PropertyMetadata $metadata, $data);
+    public function visitProperty(PropertyMetadata $metadata, $data): void;
 
     /**
      * Called after all properties of the object have been visited.
@@ -119,12 +111,5 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object;
-
-    /**
-     * @param mixed $data
-     *
-     * @return mixed
-     */
-    public function getResult($data);
+    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type);
 }

@@ -24,13 +24,14 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  * XmlSerializationVisitor.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
+final class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     /**
      * @var \DOMDocument
@@ -132,7 +133,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
     public function visitDouble(float $data, array $type)
     {
         if (floor($data) === $data) {
-            return $this->document->createTextNode($data.".0");
+            return $this->document->createTextNode($data . ".0");
         } else {
             return $this->document->createTextNode((string)$data);
         }
@@ -330,7 +331,7 @@ class XmlSerializationVisitor extends AbstractVisitor implements SerializationVi
         return $this->document->saveXML();
     }
 
-    public function getCurrentNode()
+    public function getCurrentNode(): ?\DOMNode
     {
         return $this->currentNode;
     }

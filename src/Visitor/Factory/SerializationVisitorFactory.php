@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -17,30 +18,15 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Tests\Fixtures;
+namespace JMS\Serializer\Visitor\Factory;
 
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlKeyValuePairs;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-class NamedDateTimeArraysObject
+/**
+ *
+ * @author Asmir Mustafic <goetas@gmail.com>
+ */
+interface SerializationVisitorFactory
 {
-    /**
-     * @var \DateTime[]
-     * @Type("array<string,DateTime<'d.m.Y H:i:s'>>")
-     * @XmlKeyValuePairs
-     */
-    private $namedArrayWithFormattedDate;
-
-    function __construct($namedArrayWithFormattedDate)
-    {
-        $this->namedArrayWithFormattedDate = $namedArrayWithFormattedDate;
-    }
-
-    /**
-     * @return \DateTime[]
-     */
-    public function getNamedArrayWithFormattedDate()
-    {
-        return $this->namedArrayWithFormattedDate;
-    }
+    public function getVisitor(): SerializationVisitorInterface;
 }

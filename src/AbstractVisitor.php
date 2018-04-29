@@ -20,10 +20,9 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-
+/**
+ * @internal
+ */
 abstract class AbstractVisitor implements VisitorInterface
 {
     /**
@@ -31,7 +30,7 @@ abstract class AbstractVisitor implements VisitorInterface
      */
     protected $navigator;
 
-    public function setNavigator(GraphNavigatorInterface $navigator) : void
+    public function setNavigator(GraphNavigatorInterface $navigator): void
     {
         $this->navigator = $navigator;
     }
@@ -41,10 +40,7 @@ abstract class AbstractVisitor implements VisitorInterface
         return $data;
     }
 
-    /**
-     * @param array $typeArray
-     */
-    protected function getElementType($typeArray)
+    protected function getElementType(array $typeArray): ?array
     {
         if (false === isset($typeArray['params'][0])) {
             return null;

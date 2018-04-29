@@ -31,7 +31,7 @@ interface EventDispatcherInterface
      *
      * @return boolean
      */
-    public function hasListeners($eventName, $class, $format);
+    public function hasListeners(string $eventName, string $class, string $format): bool;
 
     /**
      * Dispatches an event.
@@ -45,7 +45,7 @@ interface EventDispatcherInterface
      * @param Event $event
      * @return void
      */
-    public function dispatch($eventName, $class, $format, Event $event);
+    public function dispatch($eventName, string $class, string $format, Event $event): void;
 
     /**
      * Adds a listener.
@@ -57,7 +57,7 @@ interface EventDispatcherInterface
      * @param string|null $interface
      * @return void
      */
-    public function addListener($eventName, $callable, $class = null, $format = null, $interface = null);
+    public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null): void;
 
     /**
      * Adds a subscribers.
@@ -65,5 +65,5 @@ interface EventDispatcherInterface
      * @param EventSubscriberInterface $subscriber
      * @return void
      */
-    public function addSubscriber(EventSubscriberInterface $subscriber);
+    public function addSubscriber(EventSubscriberInterface $subscriber): void;
 }

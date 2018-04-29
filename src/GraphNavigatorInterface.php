@@ -20,20 +20,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Construction\ObjectConstructorInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
-use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
-use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
-use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
-use JMS\Serializer\Handler\HandlerRegistryInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
-use Metadata\MetadataFactoryInterface;
 
 interface GraphNavigatorInterface
 {
@@ -48,6 +35,7 @@ interface GraphNavigatorInterface
      * @param Context $context
      */
     public function initialize(VisitorInterface $visitor, Context $context): void;
+
     /**
      * Called for each node of the graph that is being traversed.
      *

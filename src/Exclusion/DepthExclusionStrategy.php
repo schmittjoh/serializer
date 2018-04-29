@@ -27,12 +27,12 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class DepthExclusionStrategy implements ExclusionStrategyInterface
+final class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context):bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         return $this->isTooDeep($context);
     }
@@ -40,12 +40,12 @@ class DepthExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         return $this->isTooDeep($context);
     }
 
-    private function isTooDeep(Context $context):bool
+    private function isTooDeep(Context $context): bool
     {
         $depth = $context->getDepth();
         $metadataStack = $context->getMetadataStack();

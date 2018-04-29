@@ -22,7 +22,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -101,7 +101,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     private function getErrorMessage(FormError $error)
     {
 
-        if ($this->translator === null){
+        if ($this->translator === null) {
             return $error->getMessage();
         }
 

@@ -23,7 +23,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  * @author Asmir Mustafic <goetas@gmail.com>

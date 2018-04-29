@@ -29,7 +29,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 
-class DoctrineProxySubscriber implements EventSubscriberInterface
+final class DoctrineProxySubscriber implements EventSubscriberInterface
 {
     /**
      * @var bool

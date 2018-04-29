@@ -41,7 +41,7 @@ abstract class Context
 
     private $format;
 
-    /** @var SerializationVisitorInterface|DeserializationVisitorInterface */
+    /** @var VisitorInterface */
     private $visitor;
 
     /** @var GraphNavigatorInterface */
@@ -69,7 +69,7 @@ abstract class Context
     /**
      * @param string $format
      */
-    public function initialize(string $format, $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
+    public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
             throw new LogicException('This context was already initialized, and cannot be re-used.');
@@ -101,7 +101,7 @@ abstract class Context
         return $this->metadataFactory;
     }
 
-    public function getVisitor()
+    public function getVisitor(): VisitorInterface
     {
         return $this->visitor;
     }
@@ -121,12 +121,12 @@ abstract class Context
         return $this->attributes[$key];
     }
 
-    public function hasAttribute(string $key)
+    public function hasAttribute(string $key): bool
     {
         return isset($this->attributes[$key]);
     }
 
-    public function setAttribute(string $key, $value)
+    public function setAttribute(string $key, $value): self
     {
         $this->assertMutable();
         $this->attributes[$key] = $value;
@@ -193,8 +193,6 @@ abstract class Context
     /**
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
-     * Returns NULL when NULLs should not be serialized,
-     * but the user has not explicitly decided to use this policy
      *
      * @return bool
      */
@@ -247,7 +245,7 @@ abstract class Context
     /**
      * @return array
      */
-    public function getCurrentPath()
+    public function getCurrentPath(): array
     {
         if (!$this->metadataStack) {
             return [];
@@ -262,7 +260,6 @@ abstract class Context
 
         return $paths;
     }
-
 
     abstract public function getDepth(): int;
 

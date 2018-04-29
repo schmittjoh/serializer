@@ -19,6 +19,7 @@ declare(strict_types=1);
  */
 
 namespace JMS\Serializer;
+
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 
 /**
@@ -27,6 +28,9 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
  * This class handles traversal along the graph, and calls different methods
  * on visitors, or custom handlers to process its nodes.
  *
+ * @internal
+ *
+ * @author Asmir Mustafic <goetas@gmail.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 abstract class GraphNavigator implements GraphNavigatorInterface
@@ -48,7 +52,7 @@ abstract class GraphNavigator implements GraphNavigatorInterface
      */
     protected $exclusionStrategy;
 
-    public function initialize(VisitorInterface $visitor, Context $context):void
+    public function initialize(VisitorInterface $visitor, Context $context): void
     {
         $this->visitor = $visitor;
         $this->context = $context;

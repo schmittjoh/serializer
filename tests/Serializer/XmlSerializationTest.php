@@ -20,22 +20,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
-use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
@@ -49,7 +41,6 @@ use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
-use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithObjectType;
@@ -63,13 +54,10 @@ use JMS\Serializer\Tests\Fixtures\Person;
 use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
-use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
-use JMS\Serializer\VisitorFactory\XmlDeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\XmlSerializationVisitorFactory;
-use JMS\Serializer\XmlDeserializationVisitor;
+use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlSerializationVisitor;
-
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -81,7 +69,6 @@ class XmlSerializationTest extends BaseSerializationTest
         $obj = new InvalidUsageOfXmlValue();
         $this->serialize($obj);
     }
-
 
     /**
      * @dataProvider getXMLBooleans
@@ -345,7 +332,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
         $builder = SerializerBuilder::create();
-        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry){
+        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
             $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         });
         $serializer = $builder->build();
@@ -420,7 +407,6 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertAttributeSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', 'etag', $deserialized);
         self::assertAttributeSame('en', 'language', $deserialized);
         self::assertAttributeEquals('Foo Bar', 'author', $deserialized);
-
     }
 
     public function testObjectWithXmlNamespacesAndBackReferencedNamespaces()
@@ -561,8 +547,8 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testEvaluatesToNull()
     {
-        $context =  $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $navigator =  $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
+        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
+        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
 
         $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $context);
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');

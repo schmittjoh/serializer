@@ -29,8 +29,8 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
-use JMS\Serializer\VisitorFactory\DeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\SerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -160,7 +160,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
                 sprintf(
                     'The format "%s" is not supported for %s.', $format,
                     $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
-            ));
+                ));
         }
 
         return $factories[$format]->getVisitor();
@@ -276,7 +276,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * @return MetadataFactoryInterface
      */
-    public function getMetadataFactory()
+    public function getMetadataFactory(): MetadataFactoryInterface
     {
         return $this->factory;
     }

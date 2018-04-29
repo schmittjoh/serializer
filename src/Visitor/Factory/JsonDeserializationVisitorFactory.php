@@ -18,33 +18,41 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer\VisitorFactory;
+namespace JMS\Serializer\Visitor\Factory;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class JsonSerializationVisitorFactory implements SerializationVisitorFactory
+final class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
     /**
      * @var int
      */
-    private $options = JSON_PRESERVE_ZERO_FRACTION;
+    private $options = 0;
 
-    public function getVisitor(): SerializationVisitorInterface
+    /**
+     * @var int
+     */
+    private $depth = 512;
+
+    public function getVisitor(): DeserializationVisitorInterface
     {
-        return new JsonSerializationVisitor($this->options);
+        return new JsonDeserializationVisitor($this->options, $this->depth);
     }
 
     public function setOptions(int $options): self
     {
-        $this->options = (integer)$options;
+        $this->options = $options;
+        return $this;
+    }
+
+    public function setDepth(int $depth): self
+    {
+        $this->depth = $depth;
         return $this;
     }
 }

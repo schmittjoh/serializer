@@ -25,7 +25,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-class GroupsExclusionStrategy implements ExclusionStrategyInterface
+final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
     const DEFAULT_GROUP = 'Default';
 
@@ -43,7 +43,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext):bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         $groups = $this->getGroupsFor($navigatorContext);
 

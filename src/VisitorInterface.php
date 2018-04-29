@@ -20,15 +20,13 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
-
 /**
  * Interface for visitors.
  *
  * This contains the minimal set of values that must be supported for any
  * output format.
  *
+ * @internal
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Asmir Mustafic <goetas@gmail.com>
  */
@@ -53,5 +51,11 @@ interface VisitorInterface
      */
     public function setNavigator(GraphNavigatorInterface $navigator): void;
 
+    /**
+     * Get the result of the serialization/deserialization process.
+     *
+     * @param mixed $data
+     * @return mixed
+     */
     public function getResult($data);
 }

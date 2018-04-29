@@ -33,7 +33,7 @@ use JMS\Serializer\SerializationContext;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionLanguageExclusionStrategy
+final class ExpressionLanguageExclusionStrategy
 {
     /**
      * @var ExpressionEvaluatorInterface
@@ -48,7 +48,7 @@ class ExpressionLanguageExclusionStrategy
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext):bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if (null === $property->excludeIf) {
             return false;

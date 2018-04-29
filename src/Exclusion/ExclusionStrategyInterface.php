@@ -38,7 +38,7 @@ interface ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context):bool;
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool;
 
     /**
      * Whether the property should be skipped.
@@ -47,5 +47,5 @@ interface ExclusionStrategyInterface
      *
      * @return boolean
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context):bool;
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool;
 }

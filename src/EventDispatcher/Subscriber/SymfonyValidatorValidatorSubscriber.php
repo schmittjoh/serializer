@@ -25,7 +25,7 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
+final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
 {
     /**
      * @var ValidatorInterface

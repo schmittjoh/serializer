@@ -36,7 +36,6 @@ class ObjectWithEmptyNullableAndEmptyArrays
      */
     public $empty_inline = [];
 
-
     /**
      * @Serializer\XmlList(inline = true, entry = "comment")
      * @Serializer\Type("array")
@@ -72,7 +71,6 @@ class ObjectWithEmptyNullableAndEmptyArrays
      * @Serializer\Type("array")
      */
     public $empty_not_inline_skip = [];
-
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment", skipWhenEmpty=false)

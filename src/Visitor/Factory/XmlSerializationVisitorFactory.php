@@ -18,20 +18,16 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace JMS\Serializer\VisitorFactory;
+namespace JMS\Serializer\Visitor\Factory;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
 /**
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class XmlSerializationVisitorFactory implements SerializationVisitorFactory
+final class XmlSerializationVisitorFactory implements SerializationVisitorFactory
 {
     private $defaultRootName = 'result';
     private $defaultVersion = '1.0';
@@ -50,24 +46,28 @@ class XmlSerializationVisitorFactory implements SerializationVisitorFactory
         );
     }
 
-    public function setDefaultRootName(string $name, ?string $namespace = null)
+    public function setDefaultRootName(string $name, ?string $namespace = null): self
     {
         $this->defaultRootName = $name;
         $this->defaultRootNamespace = $namespace;
+        return $this;
     }
 
-    public function setDefaultVersion(string $version)
+    public function setDefaultVersion(string $version): self
     {
         $this->defaultVersion = $version;
+        return $this;
     }
 
-    public function setDefaultEncoding(string $encoding)
+    public function setDefaultEncoding(string $encoding): self
     {
         $this->defaultEncoding = $encoding;
+        return $this;
     }
 
-    public function setFormatOutput(bool $formatOutput)
+    public function setFormatOutput(bool $formatOutput): self
     {
         $this->formatOutput = (boolean)$formatOutput;
+        return $this;
     }
 }

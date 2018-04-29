@@ -42,7 +42,7 @@ class YamlDriver extends AbstractFileDriver
      */
     private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy,  AbstractParser $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, AbstractParser $typeParser = null)
     {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?: new TypeParser();
@@ -73,7 +73,6 @@ class YamlDriver extends AbstractFileDriver
                 if (isset($propertySettings['exp'])) {
                     $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $methodName, $propertySettings['exp']);
                     unset($propertySettings['exp']);
-
                 } else {
 
                     if (!$class->hasMethod($methodName)) {
@@ -194,7 +193,6 @@ class YamlDriver extends AbstractFileDriver
                         if (isset($colConfig['key_attribute_name'])) {
                             $pMetadata->xmlKeyAttribute = $colConfig['key_attribute_name'];
                         }
-
                     }
 
                     if (isset($pConfig['xml_element'])) {
@@ -311,7 +309,6 @@ class YamlDriver extends AbstractFileDriver
             foreach ($config['xml_namespaces'] as $prefix => $uri) {
                 $metadata->registerNamespace($uri, $prefix);
             }
-
         }
 
         if (isset($config['discriminator'])) {
@@ -339,7 +336,6 @@ class YamlDriver extends AbstractFileDriver
                         $metadata->xmlDiscriminatorNamespace = (string)$config['discriminator']['xml_element']['namespace'];
                     }
                 }
-
             }
         }
     }

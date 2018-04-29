@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
+final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 

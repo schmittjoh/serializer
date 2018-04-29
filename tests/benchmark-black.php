@@ -36,7 +36,6 @@ $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 $obj = createObject();
 $metrics = [];
 
-
 $config = new \Blackfire\ClientConfiguration();
 $config->setClientId('f46955db-6735-4f75-b89f-8f9999e023d8');
 $config->setClientToken('1b01d44aaf9072b56d195be3fa53e1d3139974abffca76d11f1e1a4d45f0038d');
@@ -63,7 +62,6 @@ $f = function () use ($serializer, $obj, $format, $probe) {
     $probe->close();
 };
 
-
 // Load all necessary classes into memory.
 $serializer->serialize($obj, $format);
 
@@ -72,9 +70,7 @@ $metrics['benchmark-collection-' . $format] = benchmark($f, $iterations);
 
 $profile = $blackfire->endProbe($probe);
 
-echo "\n".$profile->getUrl()."\n";
-
-
+echo "\n" . $profile->getUrl() . "\n";
 
 $output = json_encode(['metrics' => $metrics]);
 

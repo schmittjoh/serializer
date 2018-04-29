@@ -24,7 +24,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -75,15 +75,14 @@ final class DateHandler implements SubscribingHandlerInterface
         \DateTimeInterface $date,
         array $type,
         SerializationContext $context
-    )
-    {
+    ) {
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type);
         }
 
         $format = $this->getFormat($type);
         if ('U' === $format) {
-            return $visitor->visitInteger((int) $date->format($format), $type);
+            return $visitor->visitInteger((int)$date->format($format), $type);
         }
 
         return $visitor->visitString($date->format($this->getFormat($type)), $type);
@@ -99,8 +98,7 @@ final class DateHandler implements SubscribingHandlerInterface
         \DateTimeImmutable $date,
         array $type,
         SerializationContext $context
-    )
-    {
+    ) {
         return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
     }
 
@@ -145,7 +143,7 @@ final class DateHandler implements SubscribingHandlerInterface
             return null;
         }
 
-        return $this->parseDateInterval((string) $data);
+        return $this->parseDateInterval((string)$data);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
@@ -211,7 +209,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param array $type
-     *  @return string
+     * @return string
      */
     private function getDeserializationFormat(array $type)
     {

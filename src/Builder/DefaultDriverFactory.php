@@ -12,6 +12,7 @@ use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\TypeParser;
 use Metadata\Driver\DriverChain;
+use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
 final class DefaultDriverFactory implements DriverFactoryInterface
@@ -28,7 +29,7 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         $this->propertyNamingStrategy = $propertyNamingStrategy;
     }
 
-    public function createDriver(array $metadataDirs, Reader $annotationReader)
+    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);

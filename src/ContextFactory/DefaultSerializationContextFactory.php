@@ -30,7 +30,7 @@ final class DefaultSerializationContextFactory implements SerializationContextFa
     /**
      * {@InheritDoc}
      */
-    public function createSerializationContext()
+    public function createSerializationContext(): SerializationContext
     {
         return new SerializationContext();
     }

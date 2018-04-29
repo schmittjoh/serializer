@@ -54,7 +54,6 @@ class ClassMetadata extends MergeableClassMetadata
     public $customOrder;
     public $usingExpression = false;
 
-
     public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
     public $discriminatorFieldName;
@@ -226,7 +225,6 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         $this->xmlNamespaces[$prefix] = $uri;
-
     }
 
     public function serialize()

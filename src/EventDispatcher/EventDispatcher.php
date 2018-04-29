@@ -45,19 +45,19 @@ class EventDispatcher implements EventDispatcherInterface
      *
      * @param array $listeners
      */
-    public function setListeners(array $listeners)
+    public function setListeners(array $listeners): void
     {
         $this->listeners = $listeners;
         $this->classListeners = [];
     }
 
-    public function addListener($eventName, $callable, $class = null, $format = null, $interface = null): void
+    public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null): void
     {
         $this->listeners[$eventName][] = [$callable, $class, $format, $interface];
         unset($this->classListeners[$eventName]);
     }
 
-    public function addSubscriber(EventSubscriberInterface $subscriber)
+    public function addSubscriber(EventSubscriberInterface $subscriber): void
     {
         foreach ($subscriber->getSubscribedEvents() as $eventData) {
             if (!isset($eventData['event'])) {
@@ -73,7 +73,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    public function hasListeners($eventName, $class, $format)
+    public function hasListeners(string $eventName, string $class, string $format): bool
     {
         if (!isset($this->listeners[$eventName])) {
             return false;
@@ -86,7 +86,7 @@ class EventDispatcher implements EventDispatcherInterface
         return !!$this->classListeners[$eventName][$class][$format];
     }
 
-    public function dispatch($eventName, $class, $format, Event $event)
+    public function dispatch($eventName, string $class, string $format, Event $event): void
     {
         if (!isset($this->listeners[$eventName])) {
             return;
@@ -106,7 +106,7 @@ class EventDispatcher implements EventDispatcherInterface
             }
         }
 
-        foreach ($this->classListeners[$eventName][$objectClass][$format] as  $listener) {
+        foreach ($this->classListeners[$eventName][$objectClass][$format] as $listener) {
 
             if ($event->isPropagationStopped()) {
                 break;

@@ -21,21 +21,16 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\VisitorFactory\JsonDeserializationVisitorFactory;
-use JMS\Serializer\VisitorFactory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
 
 class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase

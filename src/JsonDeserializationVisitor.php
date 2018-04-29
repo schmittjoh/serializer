@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
-class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
+final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
     private $options = 0;
     private $depth = 512;
