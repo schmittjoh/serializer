@@ -78,8 +78,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null,
         AbstractParser $typeParser = null
-    )
-    {
+    ) {
         $this->factory = $factory;
         $this->graphNavigators = $graphNavigators;
         $this->serializationVisitors = $serializationVisitors;
@@ -98,7 +97,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      *
      * @return integer
      */
-    public static function parseDirection(string $dirStr) : int
+    public static function parseDirection(string $dirStr): int
     {
         switch (strtolower($dirStr)) {
             case 'serialization':
@@ -122,7 +121,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return null;
     }
 
-    private function getNavigator(int $direction) : GraphNavigatorInterface
+    private function getNavigator(int $direction): GraphNavigatorInterface
     {
         if (!isset($this->graphNavigators[$direction])) {
             throw new RuntimeException(
@@ -136,20 +135,33 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return $this->graphNavigators[$direction]->getGraphNavigator();
     }
 
-    public function serialize($data, string $format, SerializationContext $context = null, string $type = null):string
+    private function getVisitor(int $direction, string $format): VisitorInterface
+    {
+        $factories = $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION
+            ? $this->serializationVisitors
+            : $this->deserializationVisitors;
+
+        if (!isset($factories[$format])) {
+            throw new UnsupportedFormatException(
+                sprintf(
+                    'The format "%s" is not supported for %s.', $format,
+                    $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
+            ));
+        }
+
+        return $factories[$format]->getVisitor();
+    }
+
+    public function serialize($data, string $format, SerializationContext $context = null, string $type = null): string
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
-        if (!isset($this->serializationVisitors[$format])) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format));
-        }
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $format);
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $type = $this->findInitialType($type, $context);
-
-        $visitor = $this->serializationVisitors[$format]->getVisitor();
-        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
         return $visitor->getResult($result);
@@ -161,11 +173,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
-        if (!isset($this->deserializationVisitors[$format])) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format));
-        }
-
-        $visitor = $this->deserializationVisitors[$format]->getVisitor();
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $this->typeParser->parse($type));
@@ -176,21 +184,16 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function toArray($data, SerializationContext $context = null, string $type = null):array
+    public function toArray($data, SerializationContext $context = null, string $type = null): array
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
-        if (!isset($this->serializationVisitors['json'])) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
-        }
-
-        $type = $this->findInitialType($type, $context);
-
-        $visitor = $this->serializationVisitors['json']->getVisitor();
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
+        $type = $this->findInitialType($type, $context);
         $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
         $result = $this->convertArrayObjects($result);
 
@@ -214,11 +217,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
-        if (!isset($this->deserializationVisitors['json'])) {
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for fromArray.', 'json'));
-        }
-
-        $visitor = $this->deserializationVisitors['json']->getVisitor();
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         return $this->visit($navigator, $visitor, $context, $data, 'json', $this->typeParser->parse($type), false);
