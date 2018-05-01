@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Accessor;
 
+use GeneratedHydrator\Configuration;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -27,14 +29,38 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
+    private $gen = array();
 
-    public function getValue(object $object, PropertyMetadata $metadata)
+    public function getValue(object $object, PropertyMetadata $metadata, $context)
     {
+
+        if (!$metadata->getter && array_key_exists($metadata->name, $context)) {
+            return $context[$metadata->name];
+        }
+
         return $metadata->getValue($object);
     }
 
     public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
         $metadata->setValue($object, $value);
+    }
+
+    public function startAccessing(object $object, ClassMetadata $metadata)
+    {
+        $class = get_class($object);
+
+        if (!isset($this->gen[$class])) {
+            $config = new Configuration($class);
+            $hydratorClass = $config->createFactory()->getHydratorClass();
+            $this->gen[$class] = new $hydratorClass();
+        }
+
+        return $this->gen[$class]->extract($object);
+    }
+
+    public function endAccessing(object $object, ClassMetadata $metadata, $context)
+    {
+
     }
 }

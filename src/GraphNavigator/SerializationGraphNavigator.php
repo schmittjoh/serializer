@@ -222,6 +222,9 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 }
 
                 $this->visitor->startVisitingObject($metadata, $data, $type);
+
+                $context = $this->accessor->startAccessing($data, $metadata);
+
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
@@ -231,7 +234,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                         continue;
                     }
 
-                    $v = $this->accessor->getValue($data, $propertyMetadata);
+                    $v = $this->accessor->getValue($data, $propertyMetadata, $context);
 
                     if (null === $v && $this->shouldSerializeNull !== true) {
                         continue;
@@ -241,6 +244,8 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                     $this->visitor->visitProperty($propertyMetadata, $v);
                     $this->context->popPropertyMetadata();
                 }
+
+                $this->accessor->endAccessing($data, $metadata, $context);
 
                 $this->afterVisitingObject($metadata, $data, $type);
 
