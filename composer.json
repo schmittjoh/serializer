@@ -18,9 +18,9 @@
     "require": {
         "php": "^7.2",
         "jms/metadata": "~1.1",
-        "jms/parser-lib": "1.*",
         "doctrine/annotations": "^1.0",
-        "doctrine/instantiator": "^1.0.3"
+        "doctrine/instantiator": "^1.0.3",
+        "hoa/compiler": "^3.17.08.08"
     },
     "suggest": {
         "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
@@ -42,6 +42,11 @@
         "symfony/filesystem": "^3.0|^4.0",
         "symfony/expression-language": "^3.0|^4.0",
         "phpunit/phpunit": "^7.1"
+    },
+    "conflict": {
+        "hoa/core": "*",
+        "hoa/consistency": "<1.17.05.02",
+        "hoa/iterator": "<2.16.03.15"
     },
     "autoload": {
         "psr-4": {

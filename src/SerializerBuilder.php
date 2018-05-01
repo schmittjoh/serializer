@@ -24,7 +24,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
@@ -53,6 +52,8 @@ use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
@@ -109,7 +110,7 @@ final class SerializerBuilder
 
     public function __construct(HandlerRegistryInterface $handlerRegistry = null, EventDispatcherInterface $eventDispatcher = null)
     {
-        $this->typeParser = new TypeParser();
+        $this->typeParser = new Parser();
         $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         $this->serializationVisitors = [];
@@ -148,7 +149,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setTypeParser(AbstractParser $parser): self
+    public function setTypeParser(ParserInterface $parser): self
     {
         $this->typeParser = $parser;
 

@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -28,7 +27,8 @@ use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\TypeParser;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
@@ -42,10 +42,10 @@ class YamlDriver extends AbstractFileDriver
      */
     private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, AbstractParser $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ParserInterface $typeParser = null)
     {
         parent::__construct($locator);
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
     }
 

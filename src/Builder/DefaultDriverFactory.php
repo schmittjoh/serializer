@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\Serializer\TypeParser;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
@@ -23,9 +23,9 @@ final class DefaultDriverFactory implements DriverFactoryInterface
      */
     private $propertyNamingStrategy;
 
-    public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, AbstractParser $typeParser = null)
+    public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, ParserInterface $typeParser = null)
     {
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->typeParser = $typeParser ?: new Parser();
         $this->propertyNamingStrategy = $propertyNamingStrategy;
     }
 

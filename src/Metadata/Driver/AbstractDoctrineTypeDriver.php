@@ -22,13 +22,13 @@ namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
-use JMS\Parser\AbstractParser;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
-use JMS\Serializer\TypeParser;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -78,11 +78,11 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
 
     protected $typeParser;
 
-    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, AbstractParser $typeParser = null)
+    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ParserInterface $typeParser = null)
     {
         $this->delegate = $delegate;
         $this->registry = $registry;
-        $this->typeParser = $typeParser ?: new TypeParser();
+        $this->typeParser = $typeParser ?: new Parser();
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
