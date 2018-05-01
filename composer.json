@@ -20,7 +20,8 @@
         "jms/metadata": "~1.1",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
-        "hoa/compiler": "^3.17.08.08"
+        "hoa/compiler": "^3.17.08.08",
+        "ocramius/generated-hydrator": "^2.2"
     },
     "suggest": {
         "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
