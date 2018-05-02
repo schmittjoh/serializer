@@ -21,10 +21,12 @@ declare(strict_types=1);
 namespace JMS\Serializer\Accessor;
 
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
@@ -73,6 +75,13 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
     public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
+        if ($metadata instanceof StaticPropertyMetadata || $metadata instanceof VirtualPropertyMetadata) {
+            throw new LogicException(sprintf('%s on %s is immutable.'), $metadata->name, $metadata->class);
+        }
+        if ($metadata->readOnly) {
+            throw new LogicException(sprintf('%s on %s is read only.'), $metadata->name, $metadata->class);
+        }
+
         if (null === $metadata->setter) {
             if (!isset($this->writeAccessors[$metadata->class])) {
                 $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value) {
