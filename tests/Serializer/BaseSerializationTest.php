@@ -65,6 +65,7 @@ use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
 use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\IndexedCommentsBlogPost;
+use JMS\Serializer\Tests\Fixtures\Inheritance\ChildClass;
 use JMS\Serializer\Tests\Fixtures\InitializedBlogPostConstructor;
 use JMS\Serializer\Tests\Fixtures\InitializedObjectConstructor;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
@@ -135,6 +136,24 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     protected $deserializationVisitors;
     protected $objectConstructor;
     protected $accessorStrategy;
+
+    public function testInheritanceSameProprietyName()/* The :void return type declaration that should be here would cause a BC issue */
+    {
+        $object = new ChildClass('b', 'c');
+
+        self::assertEquals(
+            $this->getContent('inheritance_same_prop_name'),
+            $this->serialize($object)
+        );
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals(
+                $object,
+                $this->deserialize($this->getContent('inheritance_same_prop_name'))
+            );
+        }
+    }
+
 
     public function testSerializeNullArray()
     {
