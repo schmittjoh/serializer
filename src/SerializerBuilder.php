@@ -133,11 +133,7 @@ final class SerializerBuilder
     private function getAccessorStrategy(): AccessorStrategyInterface
     {
         if (!$this->accessorStrategy) {
-            $this->accessorStrategy = new DefaultAccessorStrategy();
-
-            if ($this->expressionEvaluator) {
-                $this->accessorStrategy = new ExpressionAccessorStrategy($this->expressionEvaluator, $this->accessorStrategy);
-            }
+            $this->accessorStrategy = new DefaultAccessorStrategy($this->expressionEvaluator);
         }
         return $this->accessorStrategy;
     }

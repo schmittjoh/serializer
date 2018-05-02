@@ -48,15 +48,6 @@ class ExpressionPropertyMetadata extends PropertyMetadata
     {
     }
 
-    /**
-     * @param object $object
-     * @return mixed
-     */
-    public function getValue($object)
-    {
-        throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $this->name, $this->class));
-    }
-
     public function setValue($obj, $value)
     {
         throw new LogicException('ExpressionPropertyMetadata is immutable.');

@@ -80,10 +80,6 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
 
         self::assertEquals($getterName, $metadata->getter);
         self::assertEquals($setterName, $metadata->setter);
-
-        $metadata->setValue($object, 'x');
-
-        self::assertEquals(sprintf('%1$s:%1$s:x', strtoupper($property)), $metadata->getValue($object));
     }
 
     /**
