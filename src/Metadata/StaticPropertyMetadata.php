@@ -41,11 +41,6 @@ class StaticPropertyMetadata extends PropertyMetadata
         return $this->value;
     }
 
-    public function setValue($obj, $value)
-    {
-        throw new LogicException('StaticPropertyMetadata is immutable.');
-    }
-
     public function setAccessor($type, $getter = null, $setter = null)
     {
     }
