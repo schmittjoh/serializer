@@ -75,9 +75,6 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
     public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
-        if ($metadata instanceof StaticPropertyMetadata || $metadata instanceof VirtualPropertyMetadata) {
-            throw new LogicException(sprintf('%s on %s is immutable.'), $metadata->name, $metadata->class);
-        }
         if ($metadata->readOnly) {
             throw new LogicException(sprintf('%s on %s is read only.'), $metadata->name, $metadata->class);
         }
