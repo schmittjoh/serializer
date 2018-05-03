@@ -32,8 +32,12 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
     private $metadataStack;
     private $objectMetadataStack;
     private $currentObject;
+
+    /** @var PropertyMetadata */
     private $currentMetadata;
     private $result;
+
+    /** @var GraphNavigator */
     private $navigator;
     private $disableExternalEntities = true;
     private $doctypeWhitelist = array();
@@ -150,6 +154,12 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         return $data;
     }
 
+    /**
+     * @param \SimpleXMLElement $data
+     * @param array $type
+     * @param Context $context
+     * @return array|mixed
+     */
     public function visitArray($data, array $type, Context $context)
     {
         // handle key-value-pairs
@@ -170,26 +180,61 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             return $result;
         }
 
-        $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
-        $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
+        if (!empty($this->currentMetadata) && !empty($this->currentMetadata->xmlAllowTypes)) {
+            $nodes = [];
+            $q = '';
+            foreach ($this->currentMetadata->xmlAllowTypes as $allowType) {
+                $entryName = $allowType['name'];
+                $namespace = $allowType['namespace'] ?: null;
 
-        if ($namespace === null && $this->objectMetadataStack->count()) {
-            $classMetadata = $this->objectMetadataStack->top();
-            $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
-            if ($namespace === null) {
-                $namespaces = $data->getDocNamespaces();
-                if (isset($namespaces[''])) {
-                    $namespace = $namespaces[''];
+                if ($namespace === null && $this->objectMetadataStack->count()) {
+                    $classMetadata = $this->objectMetadataStack->top();
+                    $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
+                    if ($namespace === null) {
+                        $namespaces = $data->getDocNamespaces();
+                        if (isset($namespaces[''])) {
+                            $namespace = $namespaces[''];
+                        }
+                    }
+                }
+
+                if (!empty($q)) {
+                    $q .= '|';
+                }
+
+                if (null !== $namespace) {
+                    $prefix = uniqid('ns-');
+                    $data->registerXPathNamespace($prefix, $namespace);
+                    $q .= $prefix . ':' . $entryName;
+                }
+                else {
+                    $q .= $entryName;
                 }
             }
+            $nodes = $data->xpath($q);
         }
+        else {
+            $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
+            $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
-        if (null !== $namespace) {
-            $prefix = uniqid('ns-');
-            $data->registerXPathNamespace($prefix, $namespace);
-            $nodes = $data->xpath("$prefix:$entryName");
-        } else {
-            $nodes = $data->xpath($entryName);
+            if ($namespace === null && $this->objectMetadataStack->count()) {
+                $classMetadata = $this->objectMetadataStack->top();
+                $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
+                if ($namespace === null) {
+                    $namespaces = $data->getDocNamespaces();
+                    if (isset($namespaces[''])) {
+                        $namespace = $namespaces[''];
+                    }
+                }
+            }
+
+            if (null !== $namespace) {
+                $prefix = uniqid('ns-');
+                $data->registerXPathNamespace($prefix, $namespace);
+                $nodes = $data->xpath("$prefix:$entryName");
+            } else {
+                $nodes = $data->xpath($entryName);
+            }
         }
 
         if (!count($nodes)) {
@@ -212,7 +257,21 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    if (!empty($this->currentMetadata) && !empty($this->currentMetadata->xmlAllowTypes)) {
+                        $t = null;
+                        foreach ($this->currentMetadata->xmlAllowTypes as $xmlAllowType) {
+                            if ($xmlAllowType['name'] == $v->getName() && $xmlAllowType['namespace'] == dom_import_simplexml($v)->namespaceURI) {
+                                $t = $xmlAllowType['type'];
+                                break;
+                            }
+                        }
+                        if ($t) {
+                            $result[] = $this->navigator->accept($v, ['name' => $t, 'params' => []], $context);
+                        }
+                    }
+                    else {
+                        $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    }
                 }
 
                 return $result;

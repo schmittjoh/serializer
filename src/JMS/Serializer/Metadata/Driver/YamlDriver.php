@@ -152,6 +152,16 @@ class YamlDriver extends AbstractFileDriver
                         if (isset($colConfig['namespace'])) {
                             $pMetadata->xmlEntryNamespace = (string)$colConfig['namespace'];
                         }
+
+                        if (isset($colConfig['allow_types']) && is_array($colConfig['allow_types'])) {
+                            foreach ($colConfig['allow_types'] as $allowType) {
+                                $pMetadata->xmlAllowTypes[] = [
+                                    'type' => $allowType['type'],
+                                    'name' => $allowType['name'],
+                                    'namespace' => $allowType['namespace']
+                                ];
+                            }
+                        }
                     }
 
                     if (isset($pConfig['xml_map'])) {
