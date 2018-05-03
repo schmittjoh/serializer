@@ -22,6 +22,9 @@ namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Ordering\AlphabeticalPropertyOrderingStrategy;
+use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
+use JMS\Serializer\Ordering\IdenticalPropertyOrderingStrategy;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
@@ -302,31 +305,16 @@ class ClassMetadata extends MergeableClassMetadata
     private function sortProperties()
     {
         switch ($this->accessorOrder) {
+            case self::ACCESSOR_ORDER_UNDEFINED:
+                $this->propertyMetadata = (new IdenticalPropertyOrderingStrategy())->order($this->propertyMetadata);
+                break;
+
             case self::ACCESSOR_ORDER_ALPHABETICAL:
-                ksort($this->propertyMetadata);
+                $this->propertyMetadata = (new AlphabeticalPropertyOrderingStrategy())->order($this->propertyMetadata);
                 break;
 
             case self::ACCESSOR_ORDER_CUSTOM:
-                $order = $this->customOrder;
-                $currentSorting = $this->propertyMetadata ? array_combine(array_keys($this->propertyMetadata), range(1, \count($this->propertyMetadata))) : [];
-                uksort($this->propertyMetadata, function ($a, $b) use ($order, $currentSorting) {
-                    $existsA = isset($order[$a]);
-                    $existsB = isset($order[$b]);
-
-                    if (!$existsA && !$existsB) {
-                        return $currentSorting[$a] - $currentSorting[$b];
-                    }
-
-                    if (!$existsA) {
-                        return 1;
-                    }
-
-                    if (!$existsB) {
-                        return -1;
-                    }
-
-                    return $order[$a] < $order[$b] ? -1 : 1;
-                });
+                $this->propertyMetadata = (new CustomPropertyOrderingStrategy($this->customOrder))->order($this->propertyMetadata);
                 break;
         }
     }
