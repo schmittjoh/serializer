@@ -8,7 +8,7 @@
 
 You are browsing the code of upcoming 2.0 release, if you are interested in the 1.x series, check the [1.x][1.x] branch.
 
-Differences between the 1.x and 2.x series can be found in the [CANGELOG][CANGELOG].
+Differences between the 1.x and 2.x series can be found in the [CHANGELOG][CHANGELOG].
 
 If you are submitting a pull request, until the 2.0 is not released submit it targeting the 1.x branch.
 Accepted pull request will be ported to the 2.0 release when possible. 
@@ -32,7 +32,7 @@ Built-in features include:
 
 Learn more about the serializer in its [documentation](http://jmsyst.com/libs/serializer).
 
-  [CANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
+  [CHANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
   
   [Master image]: https://img.shields.io/travis/schmittjoh/serializer/master.svg?style=flat-square
   [Master]: https://travis-ci.org/schmittjoh/serializer
