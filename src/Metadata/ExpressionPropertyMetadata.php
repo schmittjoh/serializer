@@ -48,11 +48,6 @@ class ExpressionPropertyMetadata extends PropertyMetadata
     {
     }
 
-    public function setValue($obj, $value)
-    {
-        throw new LogicException('ExpressionPropertyMetadata is immutable.');
-    }
-
     public function serialize()
     {
         return serialize([

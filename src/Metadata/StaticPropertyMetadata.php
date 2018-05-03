@@ -36,11 +36,6 @@ class StaticPropertyMetadata extends PropertyMetadata
         $this->groups = $groups;
     }
 
-    public function getValue($obj)
-    {
-        return $this->value;
-    }
-
     public function setAccessor($type, $getter = null, $setter = null)
     {
     }

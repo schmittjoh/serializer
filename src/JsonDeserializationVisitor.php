@@ -133,7 +133,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (!\is_array($data)) {
-            throw new RuntimeException(sprintf('Invalid data "%s"(%s), expected "%s".', $data, $metadata->type['name'], $metadata->reflection->class));
+            throw new RuntimeException(sprintf('Invalid data "%s"(%s), expected "%s".', $data, $metadata->type['name'], $metadata->class));
         }
 
         if (!array_key_exists($name, $data)) {
@@ -141,7 +141,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
         }
 
         $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type) : null;

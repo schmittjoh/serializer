@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "jms/metadata": "~1.1",
+        "jms/metadata": "^2.0@dev",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
         "hoa/compiler": "^3.17.08.08"
@@ -43,6 +43,12 @@
         "symfony/expression-language": "^3.0|^4.0",
         "phpunit/phpunit": "^7.1"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:goetas/metadata.git"
+        }
+    ],
     "conflict": {
         "hoa/core": "*",
         "hoa/consistency": "<1.17.05.02",

@@ -84,6 +84,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorGroups = $groups;
     }
 
+    private function getReflection(): \ReflectionClass
+    {
+        return new \ReflectionClass($this->name);
+    }
+
     /**
      * Sets the order of properties in the class.
      *
@@ -175,7 +180,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
         }
 
-        if ($this->discriminatorMap && !$this->reflection->isAbstract()) {
+        if ($this->discriminatorMap && !$this->getReflection()->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
                 throw new LogicException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
