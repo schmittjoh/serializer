@@ -27,6 +27,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     const DEFAULT_GROUP = 'Default';
 
     private $groups = array();
+    private $nestedGroups = false;
 
     public function __construct(array $groups)
     {
@@ -34,7 +35,20 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
             $groups = array(self::DEFAULT_GROUP);
         }
 
-        $this->groups = $groups;
+        foreach ($groups as $group) {
+            if (is_array($group)) {
+                $this->nestedGroups = true;
+                break;
+            }
+        }
+
+        if ($this->nestedGroups) {
+            $this->groups = $groups;
+        } else {
+            foreach ($groups as $group) {
+                $this->groups[$group] = true;
+            }
+        }
     }
 
     /**
@@ -50,13 +64,27 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
-        $groups = $this->getGroupsFor($navigatorContext);
+        if ($this->nestedGroups) {
+            $groups = $this->getGroupsFor($navigatorContext);
 
-        if (!$property->groups) {
-            return !in_array(self::DEFAULT_GROUP, $groups);
+            if (!$property->groups) {
+                return !in_array(self::DEFAULT_GROUP, $groups);
+            }
+
+            return $this->shouldSkipUsingGroups($property, $groups);
+        } else {
+
+            if (!$property->groups) {
+                return !isset($this->groups[self::DEFAULT_GROUP]);
+            }
+
+            foreach ($property->groups as $group) {
+                if (isset($this->groups[$group])) {
+                    return false;
+                }
+            }
+            return true;
         }
-
-        return $this->shouldSkipUsingGroups($property, $groups);
     }
 
     private function shouldSkipUsingGroups(PropertyMetadata $property, $groups)
