@@ -28,6 +28,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\FirstClassCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
@@ -137,6 +138,20 @@ class JsonSerializationTest extends BaseSerializationTest
         $object = new ObjectWithEmptyArrayAndHash();
 
         self::assertEquals('{}', $this->serialize($object));
+    }
+
+    public function testFirstClassCollectionsWithItems() : void
+    {
+        $collection = new FirstClassCollection(1, 2, 3);
+
+        self::assertSame('[1,2,3]', $this->serialize($collection));
+    }
+
+    public function testFirstClassCollectionEmpty() : void
+    {
+        $collection = new FirstClassCollection();
+
+        self::assertSame('[]', $this->serialize($collection));
     }
 
     public function testAddLinksToOutput()
