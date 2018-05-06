@@ -139,8 +139,9 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     }
 
     /**
-     * Checks if some data key exists.
+     * @deprecated Will be removed in 3.0
      *
+     * Checks if some data key exists.
      * @param string $key
      * @return boolean
      */
@@ -150,7 +151,9 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     }
 
     /**
-     * Allows you to replace existing data on the current object/root element.
+     * @deprecated Use visitProperty(new StaticPropertyMetadata(null, 'name', 'value'), null) instead
+     *
+     * Allows you to replace existing data on the current object element.
      *
      * @param string $key
      * @param mixed $value This value must either be a regular scalar, or an array.
