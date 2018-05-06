@@ -31,6 +31,9 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     private $dataStack;
+    /**
+     * @var \ArrayObject
+     */
     private $data;
 
     public function __construct(
@@ -101,19 +104,13 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         $this->dataStack->push($this->data);
-        $this->data = [];
+        $this->data = new \ArrayObject();
     }
 
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
-
-        // Force JSON output to "{}" instead of "[]" if it contains either no properties or all properties are null.
-        if (empty($rs)) {
-            $rs = new \ArrayObject();
-        }
-
         return $rs;
     }
 
@@ -131,7 +128,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
-                $this->data = array_merge($this->data, (array)$v);
+                $this->data->exchangeArray(array_merge((array)$this->data, (array)$v));
             }
         } else {
             $this->data[$metadata->serializedName] = $v;
