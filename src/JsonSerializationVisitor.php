@@ -133,7 +133,11 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
-                $this->data->exchangeArray(array_merge((array)$this->data, (array)$v));
+                // concatenate the two array-like structures
+                // is there anything faster?
+                foreach ($v as $key => $value) {
+                    $this->data[$key] = $value;
+                }
             }
         } else {
             $this->data[$metadata->serializedName] = $v;
