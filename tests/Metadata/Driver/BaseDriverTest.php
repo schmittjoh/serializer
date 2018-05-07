@@ -30,6 +30,8 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeD
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
+use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
@@ -143,6 +145,18 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p->serializedName = 'virtualValue';
 
         self::assertEquals($p, $m->propertyMetadata['virtualValue']);
+    }
+
+    public function testFirstClassListCollection()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassListCollection::class));
+        self::assertTrue($m->isList);
+    }
+
+    public function testFirstClassMapCollection()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassMapCollection::class));
+        self::assertFalse($m->isList);
     }
 
     public function testXmlKeyValuePairs()
