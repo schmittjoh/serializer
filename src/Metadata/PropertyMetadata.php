@@ -98,6 +98,22 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->type = $type;
     }
 
+    public function isCollectionList(): bool
+    {
+        return is_array($this->type)
+            && $this->type['name'] === 'array'
+            && isset($this->type['params'][0])
+            && !isset($this->type['params'][1]);
+    }
+
+    public function isCollectionMap(): bool
+    {
+        return is_array($this->type)
+            && $this->type['name'] === 'array'
+            && isset($this->type['params'][0])
+            && isset($this->type['params'][1]);
+    }
+
     public function serialize()
     {
         return serialize([

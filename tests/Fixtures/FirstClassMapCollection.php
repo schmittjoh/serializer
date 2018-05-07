@@ -6,22 +6,17 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class FirstClassCollection implements \IteratorAggregate
+class FirstClassMapCollection
 {
     /**
-     * @Serializer\Type("array<int>")
+     * @Serializer\Type("array<string,int>")
      * @Serializer\Inline
      * @var int[]
      */
     public $items = [];
 
-    public function __construct(int ...$items)
+    public function __construct(array $items)
     {
         $this->items = $items;
-    }
-
-    public function getIterator() : iterable
-    {
-        yield from $this->items;
     }
 }

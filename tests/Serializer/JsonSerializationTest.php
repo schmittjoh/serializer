@@ -29,6 +29,8 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
@@ -140,18 +142,51 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{}', $this->serialize($object));
     }
 
-    public function testFirstClassCollectionsWithItems() : void
+    public function getFirstClassListCollectionsValues()
     {
-        $collection = new FirstClassCollection(1, 2, 3);
-
-        self::assertSame('[1,2,3]', $this->serialize($collection));
+        $v = [1, 2];
+        unset($v[0]);
+        $v[0] = 3;
+        return [
+            [[1, 2, 3], '[1,2,3]'],
+            [[], '[]'],
+            [$v, '[2,3]'],
+        ];
     }
 
-    public function testFirstClassCollectionEmpty() : void
+    /**
+     * @dataProvider getFirstClassListCollectionsValues
+     * @param $items
+     * @param $expected
+     */
+    public function testFirstClassListCollections($items, $expected): void
     {
-        $collection = new FirstClassCollection();
+        $collection = new FirstClassListCollection($items);
 
-        self::assertSame('[]', $this->serialize($collection));
+        self::assertSame($expected, $this->serialize($collection));
+    }
+
+    public function getFirstClassMapCollectionsValues()
+    {
+        $v = [1, 2];
+        return [
+            [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
+            [[], '{}'],
+            [["a" => "b", "c" => "d", 5], '{"a":0,"c":0,"0":5}'],
+            [$v, '{"0":1,"1":2}'],
+        ];
+    }
+
+    /**
+     * @dataProvider getFirstClassMapCollectionsValues
+     * @param $items
+     * @param $expected
+     */
+    public function testFirstClassMapCollections($items, $expected): void
+    {
+        $collection = new FirstClassMapCollection($items);
+
+        self::assertSame($expected, $this->serialize($collection));
     }
 
     public function testAddLinksToOutput()

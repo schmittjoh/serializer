@@ -57,6 +57,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $accessorOrder;
     public $customOrder;
     public $usingExpression = false;
+    public $isList = false;
 
     public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
@@ -261,6 +262,7 @@ class ClassMetadata extends MergeableClassMetadata
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
             'usingExpression' => $this->usingExpression,
             'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
+            'isList' => $this->isList,
         ]);
     }
 
@@ -305,6 +307,9 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlDiscriminatorCData = $unserialized['xmlDiscriminatorCData'];
         }
 
+        if (isset($unserialized['isList'])) {
+            $this->isList = $unserialized['isList'];
+        }
         parent::unserialize($parentStr);
     }
 
