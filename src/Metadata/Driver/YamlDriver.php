@@ -248,7 +248,7 @@ class YamlDriver extends AbstractFileDriver
                     $pMetadata->serializedName = $this->namingStrategy->translateName($pMetadata);
                 }
 
-                if ($pMetadata->inline && $pMetadata->isCollectionList()) {
+                if ($pMetadata->inline && PropertyMetadata::isCollectionList($pMetadata->type)) {
                     $metadata->isList = true;
                 }
 
