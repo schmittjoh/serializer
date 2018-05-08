@@ -1121,7 +1121,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
                         'friends' => ['nickname_group'],
                     ],
                     'friends' => [
-                        'manager_group'
+                        'manager_group',
+                        'nickname_group',
                     ]
                 ])
             )

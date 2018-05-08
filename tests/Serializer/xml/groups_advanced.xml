@@ -14,13 +14,15 @@
   </manager>
   <friends>
     <entry>
+      <nickname><![CDATA[nickname]]></nickname>
       <manager>
-        <name><![CDATA[John friend 1 manager]]></name>
+        <nickname><![CDATA[nickname]]></nickname>
       </manager>
     </entry>
     <entry>
+      <nickname><![CDATA[nickname]]></nickname>
       <manager>
-        <name><![CDATA[John friend 2 manager]]></name>
+        <nickname><![CDATA[nickname]]></nickname>
       </manager>
     </entry>
   </friends>
