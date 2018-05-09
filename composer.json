@@ -43,12 +43,6 @@
         "symfony/expression-language": "^3.0|^4.0",
         "phpunit/phpunit": "^7.1"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/schmittjoh/metadata.git"
-        }
-    ],
     "conflict": {
         "hoa/core": "*",
         "hoa/consistency": "<1.17.05.02",

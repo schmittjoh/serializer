@@ -53,7 +53,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
     public $excludeIf = null;
 
-    public function __construct($class, $name)
+    public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
     }
@@ -63,7 +63,7 @@ class PropertyMetadata extends BasePropertyMetadata
         return new \ReflectionProperty($this->class, $this->name);
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->getReflection()->getDeclaringClass();

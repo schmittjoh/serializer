@@ -49,7 +49,7 @@ class XmlDriver extends AbstractFileDriver
         $this->namingStrategy = $namingStrategy;
     }
 
-    protected function loadMetadataFromFile(\ReflectionClass $class, $path)
+    protected function loadMetadataFromFile(\ReflectionClass $class, $path):?\Metadata\ClassMetadata
     {
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();
@@ -376,7 +376,7 @@ class XmlDriver extends AbstractFileDriver
         return $metadata;
     }
 
-    protected function getExtension()
+    protected function getExtension():string
     {
         return 'xml';
     }

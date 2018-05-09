@@ -49,7 +49,7 @@ class YamlDriver extends AbstractFileDriver
         $this->namingStrategy = $namingStrategy;
     }
 
-    protected function loadMetadataFromFile(\ReflectionClass $class, $file)
+    protected function loadMetadataFromFile(\ReflectionClass $class, string $file):?\Metadata\ClassMetadata
     {
         $config = Yaml::parse(file_get_contents($file));
 
@@ -281,7 +281,7 @@ class YamlDriver extends AbstractFileDriver
         return $metadata;
     }
 
-    protected function getExtension()
+    protected function getExtension():string
     {
         return 'yml';
     }

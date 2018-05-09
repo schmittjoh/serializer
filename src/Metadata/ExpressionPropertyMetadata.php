@@ -36,7 +36,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
      */
     public $expression;
 
-    public function __construct($class, $fieldName, $expression)
+    public function __construct(string $class, string $fieldName, string $expression)
     {
         $this->class = $class;
         $this->name = $fieldName;
@@ -44,7 +44,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
     {
     }
 
