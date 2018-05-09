@@ -53,15 +53,20 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
     public $excludeIf = null;
 
-    public function __construct($class, $name)
+    public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    private function getReflection(): \ReflectionProperty
+    {
+        return new \ReflectionProperty($this->class, $this->name);
+    }
+
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
-            $class = $this->reflection->getDeclaringClass();
+            $class = $this->getReflection()->getDeclaringClass();
 
             if (empty($getter)) {
                 if ($class->hasMethod('get' . $this->name) && $class->getMethod('get' . $this->name)->isPublic()) {
@@ -86,16 +91,6 @@ class PropertyMetadata extends BasePropertyMetadata
 
         $this->getter = $getter;
         $this->setter = $setter;
-    }
-
-    public function setValue($obj, $value)
-    {
-        if (null === $this->setter) {
-            parent::setValue($obj, $value);
-            return;
-        }
-
-        $obj->{$this->setter}($value);
     }
 
     public function setType(array $type)

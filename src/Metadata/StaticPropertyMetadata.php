@@ -20,13 +20,11 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata;
 
-use JMS\Serializer\Exception\LogicException;
-
 class StaticPropertyMetadata extends PropertyMetadata
 {
     private $value;
 
-    public function __construct($className, $fieldName, $fieldValue, array $groups = [])
+    public function __construct(string $className, string $fieldName, $fieldValue, array $groups = [])
     {
         $this->class = $className;
         $this->name = $fieldName;
@@ -36,12 +34,12 @@ class StaticPropertyMetadata extends PropertyMetadata
         $this->groups = $groups;
     }
 
-    public function getValue($obj)
+    public function getValue()
     {
         return $this->value;
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
     {
     }
 

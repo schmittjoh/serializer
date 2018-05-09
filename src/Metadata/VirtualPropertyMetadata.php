@@ -22,7 +22,7 @@ namespace JMS\Serializer\Metadata;
 
 class VirtualPropertyMetadata extends PropertyMetadata
 {
-    public function __construct($class, $methodName)
+    public function __construct(string $class, string $methodName)
     {
         if (0 === strpos($methodName, 'get')) {
             $fieldName = lcfirst(substr($methodName, 3));
@@ -36,7 +36,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor($type, $getter = null, $setter = null)
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
     {
     }
 

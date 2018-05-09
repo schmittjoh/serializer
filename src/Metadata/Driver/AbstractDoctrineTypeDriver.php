@@ -65,17 +65,14 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'json_array' => 'array',
         'simple_array' => 'array<string>',
     ];
-
     /**
      * @var DriverInterface
      */
     protected $delegate;
-
     /**
      * @var ManagerRegistry
      */
     protected $registry;
-
     protected $typeParser;
 
     public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ParserInterface $typeParser = null)
@@ -85,7 +82,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         $this->typeParser = $typeParser ?: new Parser();
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?\Metadata\ClassMetadata
     {
         /** @var $classMetadata ClassMetadata */
         $classMetadata = $this->delegate->loadMetadataForClass($class);
@@ -128,7 +125,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param ClassMetadata $classMetadata
      */
-    protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata)
+    protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata): void
     {
     }
 
@@ -136,7 +133,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param PropertyMetadata $propertyMetadata
      */
-    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
+    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): bool
     {
         return false;
     }
@@ -145,7 +142,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param PropertyMetadata $propertyMetadata
      */
-    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
+    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
     }
 
@@ -154,7 +151,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      *
      * @return null|DoctrineClassMetadata
      */
-    protected function tryLoadingDoctrineMetadata($className)
+    protected function tryLoadingDoctrineMetadata(string $className): ?DoctrineClassMetadata
     {
         if (!$manager = $this->registry->getManagerForClass($className)) {
             return null;
@@ -167,13 +164,10 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $manager->getClassMetadata($className);
     }
 
-    /**
-     * @param string $type
-     */
-    protected function normalizeFieldType($type)
+    protected function normalizeFieldType($type): ?string
     {
         if (!isset($this->fieldMapping[$type])) {
-            return;
+            return null;
         }
 
         return $this->fieldMapping[$type];

@@ -68,7 +68,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlDiscriminatorCData = true;
     public $xmlDiscriminatorNamespace;
 
-    public function setDiscriminator($fieldName, array $map, array $groups = [])
+    public function setDiscriminator($fieldName, array $map, array $groups = []):void
     {
         if (empty($fieldName)) {
             throw new InvalidArgumentException('The $fieldName cannot be empty.');
@@ -84,6 +84,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorGroups = $groups;
     }
 
+    private function getReflection(): \ReflectionClass
+    {
+        return new \ReflectionClass($this->name);
+    }
+
     /**
      * Sets the order of properties in the class.
      *
@@ -93,7 +98,7 @@ class ClassMetadata extends MergeableClassMetadata
      * @throws InvalidArgumentException When the accessor order is not valid
      * @throws InvalidArgumentException When the custom order is not valid
      */
-    public function setAccessorOrder($order, array $customOrder = [])
+    public function setAccessorOrder(string $order, array $customOrder = []):void
     {
         if (!in_array($order, [self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM], true)) {
             throw new InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
@@ -110,7 +115,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    public function addPropertyMetadata(BasePropertyMetadata $metadata)
+    public function addPropertyMetadata(BasePropertyMetadata $metadata):void
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
@@ -119,22 +124,22 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 
-    public function addPreSerializeMethod(MethodMetadata $method)
+    public function addPreSerializeMethod(MethodMetadata $method):void
     {
         $this->preSerializeMethods[] = $method;
     }
 
-    public function addPostSerializeMethod(MethodMetadata $method)
+    public function addPostSerializeMethod(MethodMetadata $method):void
     {
         $this->postSerializeMethods[] = $method;
     }
 
-    public function addPostDeserializeMethod(MethodMetadata $method)
+    public function addPostDeserializeMethod(MethodMetadata $method):void
     {
         $this->postDeserializeMethods[] = $method;
     }
 
-    public function merge(MergeableInterface $object)
+    public function merge(MergeableInterface $object):void
     {
         if (!$object instanceof ClassMetadata) {
             throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
@@ -175,7 +180,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
         }
 
-        if ($this->discriminatorMap && !$this->reflection->isAbstract()) {
+        if ($this->discriminatorMap && !$this->getReflection()->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
                 throw new LogicException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
@@ -213,7 +218,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    public function registerNamespace($uri, $prefix = null)
+    public function registerNamespace(string $uri, ?string $prefix = null):void
     {
         if (!\is_string($uri)) {
             throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));

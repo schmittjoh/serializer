@@ -33,14 +33,14 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
      * @param DoctrineClassMetadata $doctrineMetadata
      * @param PropertyMetadata $propertyMetadata
      */
-    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
+    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata):bool
     {
         return 'lazyPropertiesDefaults' === $propertyMetadata->name
             || $doctrineMetadata->parentMapping === $propertyMetadata->name
             || $doctrineMetadata->node === $propertyMetadata->name;
     }
 
-    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
+    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata):void
     {
         $propertyName = $propertyMetadata->name;
         if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {

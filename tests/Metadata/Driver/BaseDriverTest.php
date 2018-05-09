@@ -482,20 +482,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $expectedVars = get_object_vars($expected);
         $actualVars = get_object_vars($actual);
 
-        $expectedReflection = (array)$expectedVars['reflection'];
-        $actualReflection = (array)$actualVars['reflection'];
-
-        // HHVM bug with class property
-        unset($expectedVars['reflection'], $actualVars['reflection']);
         self::assertEquals($expectedVars, $actualVars);
-
-        // HHVM bug with class property
-        if (isset($expectedReflection['info']) || isset($actualReflection['info'])) {
-            $expectedReflection['class'] = $expectedReflection['info']['class'];
-            $actualReflection['class'] = $actualReflection['info']['class'];
-        }
-
-        self::assertEquals($expectedReflection, $actualReflection);
     }
 
     public function testExclusionIf()
