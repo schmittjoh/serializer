@@ -30,7 +30,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 {
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
-    private $dataStack;
+    private $dataStack = [];
     /**
      * @var \ArrayObject
      */
@@ -39,7 +39,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     public function __construct(
         int $options = JSON_PRESERVE_ZERO_FRACTION)
     {
-        $this->dataStack = new \SplStack;
+        $this->dataStack = [];
         $this->options = $options;
     }
 
@@ -75,7 +75,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitArray(array $data, array $type)
     {
-        $this->dataStack->push($data);
+        \array_push($this->dataStack, $data);
 
         $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
@@ -97,20 +97,20 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
             }
         }
 
-        $this->dataStack->pop();
+        \array_pop($this->dataStack);
         return $rs;
     }
 
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
-        $this->dataStack->push($this->data);
+        \array_push($this->dataStack, $this->data);
         $this->data = $metadata->isMap === true ? new \ArrayObject() : [];
     }
 
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
         $rs = $this->data;
-        $this->data = $this->dataStack->pop();
+        $this->data = \array_pop($this->dataStack);
 
         if ($metadata->isList !== true && empty($rs)) {
             return new \ArrayObject();
