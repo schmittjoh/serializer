@@ -87,7 +87,7 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
      */
     public function testAccessorTypePublicMethodException($getter, $setter, $message)
     {
-        $this->expectException('\JMS\Serializer\Exception\RuntimeException');
+        $this->expectException('\JMS\Serializer\Exception\InvalidMetadataException');
         $this->expectExceptionMessage($message);
 
         $object = new PropertyMetadataPublicMethod();

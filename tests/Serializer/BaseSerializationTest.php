@@ -1130,7 +1130,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \JMS\Serializer\Exception\InvalidArgumentException
+     * @expectedException \JMS\Serializer\Exception\InvalidMetadataException
      * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
      */
     public function testInvalidGroupName()

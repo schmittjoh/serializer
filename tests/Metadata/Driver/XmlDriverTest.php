@@ -28,8 +28,8 @@ use Metadata\Driver\FileLocator;
 class XmlDriverTest extends BaseDriverTest
 {
     /**
-     * @expectedException JMS\Serializer\Exception\XmlErrorException
-     * @expectedExceptionMessage [FATAL] Start tag expected, '<' not found
+     * @expectedException \JMS\Serializer\Exception\InvalidMetadataException
+     * @expectedExceptionMessage Invalid XML content for metadata
      */
     public function testInvalidXml()
     {

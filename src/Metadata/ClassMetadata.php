@@ -20,8 +20,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata;
 
-use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Ordering\AlphabeticalPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\IdenticalPropertyOrderingStrategy;
@@ -74,11 +73,11 @@ class ClassMetadata extends MergeableClassMetadata
     public function setDiscriminator($fieldName, array $map, array $groups = []):void
     {
         if (empty($fieldName)) {
-            throw new InvalidArgumentException('The $fieldName cannot be empty.');
+            throw new InvalidMetadataException('The $fieldName cannot be empty.');
         }
 
         if (empty($map)) {
-            throw new InvalidArgumentException('The discriminator map cannot be empty.');
+            throw new InvalidMetadataException('The discriminator map cannot be empty.');
         }
 
         $this->discriminatorBaseClass = $this->name;
@@ -98,18 +97,18 @@ class ClassMetadata extends MergeableClassMetadata
      * @param string $order
      * @param array $customOrder
      *
-     * @throws InvalidArgumentException When the accessor order is not valid
-     * @throws InvalidArgumentException When the custom order is not valid
+     * @throws InvalidMetadataException When the accessor order is not valid
+     * @throws InvalidMetadataException When the custom order is not valid
      */
     public function setAccessorOrder(string $order, array $customOrder = []):void
     {
         if (!in_array($order, [self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM], true)) {
-            throw new InvalidArgumentException(sprintf('The accessor order "%s" is invalid.', $order));
+            throw new InvalidMetadataException(sprintf('The accessor order "%s" is invalid.', $order));
         }
 
         foreach ($customOrder as $name) {
             if (!\is_string($name)) {
-                throw new InvalidArgumentException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
+                throw new InvalidMetadataException(sprintf('$customOrder is expected to be a list of strings, but got element of value %s.', json_encode($name)));
             }
         }
 
@@ -145,7 +144,7 @@ class ClassMetadata extends MergeableClassMetadata
     public function merge(MergeableInterface $object):void
     {
         if (!$object instanceof ClassMetadata) {
-            throw new InvalidArgumentException('$object must be an instance of ClassMetadata.');
+            throw new InvalidMetadataException('$object must be an instance of ClassMetadata.');
         }
         parent::merge($object);
 
@@ -162,7 +161,7 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
-            throw new LogicException(sprintf(
+            throw new InvalidMetadataException(sprintf(
                 'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
                 $object->name,
                 $this->discriminatorBaseClass,
@@ -185,7 +184,7 @@ class ClassMetadata extends MergeableClassMetadata
 
         if ($this->discriminatorMap && !$this->getReflection()->isAbstract()) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
-                throw new LogicException(sprintf(
+                throw new InvalidMetadataException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
                     $this->name,
                     $this->discriminatorBaseClass
@@ -197,7 +196,7 @@ class ClassMetadata extends MergeableClassMetadata
             if (isset($this->propertyMetadata[$this->discriminatorFieldName])
                 && !$this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata
             ) {
-                throw new LogicException(sprintf(
+                throw new InvalidMetadataException(sprintf(
                     'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
                     $this->discriminatorFieldName,
                     $this->discriminatorBaseClass,
@@ -224,12 +223,12 @@ class ClassMetadata extends MergeableClassMetadata
     public function registerNamespace(string $uri, ?string $prefix = null):void
     {
         if (!\is_string($uri)) {
-            throw new InvalidArgumentException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
+            throw new InvalidMetadataException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
         if ($prefix !== null) {
             if (!\is_string($prefix)) {
-                throw new InvalidArgumentException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
+                throw new InvalidMetadataException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }
         } else {
             $prefix = "";

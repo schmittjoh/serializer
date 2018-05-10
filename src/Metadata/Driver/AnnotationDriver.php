@@ -26,7 +26,6 @@ use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
 use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\Annotation\Exclude;
-use JMS\Serializer\Annotation\ExcludeIf;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Groups;
@@ -52,7 +51,7 @@ use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlValue;
-use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -228,7 +227,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->groups = $annot->groups;
                         foreach ((array)$propertyMetadata->groups as $groupName) {
                             if (false !== strpos($groupName, ',')) {
-                                throw new InvalidArgumentException(sprintf(
+                                throw new InvalidMetadataException(sprintf(
                                     'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
                                     implode(', ', $propertyMetadata->groups),
                                     $propertyMetadata->class . '->' . $propertyMetadata->name
@@ -247,6 +246,10 @@ class AnnotationDriver implements DriverInterface
                 if ($propertyMetadata->inline) {
                     $classMetadata->isList = $classMetadata->isList || PropertyMetadata::isCollectionList($propertyMetadata->type);
                     $classMetadata->isMap = $classMetadata->isMap || PropertyMetadata::isCollectionMap($propertyMetadata->type);
+
+                    if ($classMetadata->isMap && $classMetadata->isList) {
+                        throw new InvalidMetadataException("Can not have an inline map and and inline map on the same class");
+                    }
                 }
 
                 if (!$propertyMetadata->serializedName) {
