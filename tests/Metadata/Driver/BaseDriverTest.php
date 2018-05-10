@@ -54,6 +54,9 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         self::assertArrayHasKey('dc', $m->xmlNamespaces);
         self::assertEquals('http://purl.org/dc/elements/1.1/', $m->xmlNamespaces['dc']);
 
+        self::assertFalse($m->isList);
+        self::assertFalse($m->isMap);
+
         $p = new PropertyMetadata($m->name, 'id');
         $p->type = ['name' => 'string', 'params' => []];
         $p->groups = ["comments", "post"];
@@ -151,12 +154,14 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassListCollection::class));
         self::assertTrue($m->isList);
+        self::assertFalse($m->isMap);
     }
 
     public function testFirstClassMapCollection()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassMapCollection::class));
         self::assertFalse($m->isList);
+        self::assertTrue($m->isMap);
     }
 
     public function testXmlKeyValuePairs()

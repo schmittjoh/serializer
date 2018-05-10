@@ -58,6 +58,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $customOrder;
     public $usingExpression = false;
     public $isList = false;
+    public $isMap = false;
 
     public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
@@ -263,6 +264,7 @@ class ClassMetadata extends MergeableClassMetadata
             'usingExpression' => $this->usingExpression,
             'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
             'isList' => $this->isList,
+            'isMap' => $this->isMap,
         ]);
     }
 
@@ -310,6 +312,9 @@ class ClassMetadata extends MergeableClassMetadata
         if (isset($unserialized['isList'])) {
             $this->isList = $unserialized['isList'];
         }
+        if (isset($unserialized['isMap'])) {
+            $this->isMap = $unserialized['isMap'];
+        }
         parent::unserialize($parentStr);
     }
 
@@ -330,3 +335,4 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 }
+

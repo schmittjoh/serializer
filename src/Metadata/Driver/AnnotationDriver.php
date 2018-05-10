@@ -244,8 +244,9 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
-                if ($propertyMetadata->inline && PropertyMetadata::isCollectionList($propertyMetadata->type)) {
-                    $classMetadata->isList = true;
+                if ($propertyMetadata->inline) {
+                    $classMetadata->isList = $classMetadata->isList || PropertyMetadata::isCollectionList($propertyMetadata->type);
+                    $classMetadata->isMap = $classMetadata->isMap || PropertyMetadata::isCollectionMap($propertyMetadata->type);
                 }
 
                 if (!$propertyMetadata->serializedName) {

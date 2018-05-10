@@ -322,8 +322,9 @@ class XmlDriver extends AbstractFileDriver
                     }
                 }
 
-                if ($pMetadata->inline && PropertyMetadata::isCollectionList($pMetadata->type)) {
-                    $metadata->isList = true;
+                if ($pMetadata->inline) {
+                    $metadata->isList = $metadata->isList || PropertyMetadata::isCollectionList($pMetadata->type);
+                    $metadata->isMap = $metadata->isMap || PropertyMetadata::isCollectionMap($pMetadata->type);
                 }
 
                 if (!$pMetadata->serializedName) {
