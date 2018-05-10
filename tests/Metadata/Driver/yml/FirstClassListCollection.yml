@@ -1,0 +1,5 @@
+JMS\Serializer\Tests\Fixtures\FirstClassListCollection:
+    properties:
+        items:
+            inline: true
+            type: array<int>

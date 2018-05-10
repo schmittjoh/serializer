@@ -28,6 +28,9 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\FirstClassCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
@@ -137,6 +140,48 @@ class JsonSerializationTest extends BaseSerializationTest
         $object = new ObjectWithEmptyArrayAndHash();
 
         self::assertEquals('{}', $this->serialize($object));
+    }
+
+    public function getFirstClassListCollectionsValues()
+    {
+        return [
+            [[1, 2, 3], '[1,2,3]'],
+            [[], '[]'],
+            [[1, 'a' => 2], '[1,2]'],
+        ];
+    }
+
+    /**
+     * @dataProvider getFirstClassListCollectionsValues
+     * @param $items
+     * @param $expected
+     */
+    public function testFirstClassListCollections($items, $expected): void
+    {
+        $collection = new FirstClassListCollection($items);
+
+        self::assertSame($expected, $this->serialize($collection));
+    }
+
+    public function getFirstClassMapCollectionsValues()
+    {
+        return [
+            [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
+            [[], '{}'],
+            [["a" => "b", "c" => "d", 5], '{"a":0,"c":0,"0":5}'],
+        ];
+    }
+
+    /**
+     * @dataProvider getFirstClassMapCollectionsValues
+     * @param $items
+     * @param $expected
+     */
+    public function testFirstClassMapCollections($items, $expected): void
+    {
+        $collection = new FirstClassMapCollection($items);
+
+        self::assertSame($expected, $this->serialize($collection));
     }
 
     public function testAddLinksToOutput()

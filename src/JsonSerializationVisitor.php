@@ -30,13 +30,16 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 {
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
-    private $dataStack;
+    private $dataStack = [];
+    /**
+     * @var \ArrayObject
+     */
     private $data;
 
     public function __construct(
         int $options = JSON_PRESERVE_ZERO_FRACTION)
     {
-        $this->dataStack = new \SplStack;
+        $this->dataStack = [];
         $this->options = $options;
     }
 
@@ -72,7 +75,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitArray(array $data, array $type)
     {
-        $this->dataStack->push($data);
+        \array_push($this->dataStack, $data);
 
         $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
@@ -94,26 +97,24 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
             }
         }
 
-        $this->dataStack->pop();
+        \array_pop($this->dataStack);
         return $rs;
     }
 
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
-        $this->dataStack->push($this->data);
-        $this->data = [];
+        \array_push($this->dataStack, $this->data);
+        $this->data = $metadata->isMap === true ? new \ArrayObject() : [];
     }
 
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
         $rs = $this->data;
-        $this->data = $this->dataStack->pop();
+        $this->data = \array_pop($this->dataStack);
 
-        // Force JSON output to "{}" instead of "[]" if it contains either no properties or all properties are null.
-        if (empty($rs)) {
-            $rs = new \ArrayObject();
+        if ($metadata->isList !== true && empty($rs)) {
+            return new \ArrayObject();
         }
-
         return $rs;
     }
 
@@ -131,7 +132,11 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
-                $this->data = array_merge($this->data, (array)$v);
+                // concatenate the two array-like structures
+                // is there anything faster?
+                foreach ($v as $key => $value) {
+                    $this->data[$key] = $value;
+                }
             }
         } else {
             $this->data[$metadata->serializedName] = $v;

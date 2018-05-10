@@ -1,0 +1,5 @@
+JMS\Serializer\Tests\Fixtures\FirstClassMapCollection:
+    properties:
+        items:
+            inline: true
+            type: array<string,int>

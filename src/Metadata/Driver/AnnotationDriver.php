@@ -244,6 +244,11 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
 
+                if ($propertyMetadata->inline) {
+                    $classMetadata->isList = $classMetadata->isList || PropertyMetadata::isCollectionList($propertyMetadata->type);
+                    $classMetadata->isMap = $classMetadata->isMap || PropertyMetadata::isCollectionMap($propertyMetadata->type);
+                }
+
                 if (!$propertyMetadata->serializedName) {
                     $propertyMetadata->serializedName = $this->namingStrategy->translateName($propertyMetadata);
                 }
