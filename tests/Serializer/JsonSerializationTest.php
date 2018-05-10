@@ -182,7 +182,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage Invalid data "baz"(string), expected "JMS\Serializer\Tests\Fixtures\Author".
+     * @expectedExceptionMessage Invalid data "baz" (string), expected "JMS\Serializer\Tests\Fixtures\Author".
      */
     public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
     {

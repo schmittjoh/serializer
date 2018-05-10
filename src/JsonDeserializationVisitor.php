@@ -133,7 +133,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (!\is_array($data)) {
-            throw new RuntimeException(sprintf('Invalid data "%s"(%s), expected "%s".', $data, $metadata->type['name'], $metadata->class));
+            throw new RuntimeException(sprintf('Invalid data %s (%s), expected "%s".', json_encode($data), $metadata->type['name'], $metadata->class));
         }
 
         if (!array_key_exists($name, $data)) {
