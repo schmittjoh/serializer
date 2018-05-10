@@ -40,7 +40,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
     private $defaultRootName = 'result';
     private $defaultRootNamespace;
-
+    private $defaultRootPrefix;
     private $stack;
     private $metadataStack;
     private $currentNode;
@@ -54,7 +54,8 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         string $defaultEncoding = 'UTF-8',
         string $defaultVersion = '1.0',
         string $defaultRootName = 'result',
-        string $defaultRootNamespace = null
+        string $defaultRootNamespace = null,
+        string $defaultRootPrefix = null
     ) {
         $this->objectMetadataStack = new \SplStack;
         $this->stack = new \SplStack;
@@ -67,6 +68,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         $this->defaultRootName = $defaultRootName;
         $this->defaultRootNamespace = $defaultRootNamespace;
+        $this->defaultRootPrefix = $defaultRootPrefix;
     }
 
     private function createDocument(bool $formatOutput, string $defaultVersion, string $defaultEncoding): \DOMDocument
@@ -77,19 +79,21 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $document;
     }
 
-    public function createRoot(ClassMetadata $metadata = null, $rootName = null, $rootNamespace = null)
+    public function createRoot(ClassMetadata $metadata = null, ?string $rootName = null, ?string $rootNamespace = null, ?string $rootPrefix = null)
     {
         if ($metadata !== null && !empty($metadata->xmlRootName)) {
+            $rootPrefix = $metadata->xmlRootPrefix;
             $rootName = $metadata->xmlRootName;
             $rootNamespace = $metadata->xmlRootNamespace ?: $this->getClassDefaultNamespace($metadata);
         } else {
-            $rootName = $rootName ?: $this->defaultRootName;
+            $rootName = $rootName ?: ($this->defaultRootName);
             $rootNamespace = $rootNamespace ?: $this->defaultRootNamespace;
+            $rootPrefix = $rootPrefix ?: $this->defaultRootPrefix;
         }
 
         $document = $this->getDocument();
         if ($rootNamespace) {
-            $rootNode = $document->createElementNS($rootNamespace, $rootName);
+            $rootNode = $document->createElementNS($rootNamespace, ($rootPrefix !== null ? ($rootPrefix . ':') : '') . $rootName);
         } else {
             $rootNode = $document->createElement($rootName);
         }
@@ -336,7 +340,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->currentNode;
     }
 
-    public function getCurrentMetadata()
+    public function getCurrentMetadata(): ?PropertyMetadata
     {
         return $this->currentMetadata;
     }
@@ -349,30 +353,30 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->document;
     }
 
-    public function setCurrentMetadata(PropertyMetadata $metadata):void
+    public function setCurrentMetadata(PropertyMetadata $metadata): void
     {
         $this->metadataStack->push($this->currentMetadata);
         $this->currentMetadata = $metadata;
     }
 
-    public function setCurrentNode(\DOMNode $node):void
+    public function setCurrentNode(\DOMNode $node): void
     {
         $this->stack->push($this->currentNode);
         $this->currentNode = $node;
     }
 
-    public function setCurrentAndRootNode(\DOMNode $node):void
+    public function setCurrentAndRootNode(\DOMNode $node): void
     {
         $this->setCurrentNode($node);
         $this->document->appendChild($node);
     }
 
-    public function revertCurrentNode()
+    public function revertCurrentNode(): ?\DOMNode
     {
         return $this->currentNode = $this->stack->pop();
     }
 
-    public function revertCurrentMetadata()
+    public function revertCurrentMetadata(): ?PropertyMetadata
     {
         return $this->currentMetadata = $this->metadataStack->pop();
     }

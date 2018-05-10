@@ -97,6 +97,7 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlRoot) {
                 $classMetadata->xmlRootName = $annot->name;
                 $classMetadata->xmlRootNamespace = $annot->namespace;
+                $classMetadata->xmlRootPrefix = $annot->prefix;
             } elseif ($annot instanceof XmlNamespace) {
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {

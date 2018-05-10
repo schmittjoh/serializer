@@ -52,6 +52,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $xmlRootName;
     public $xmlRootNamespace;
+    public $xmlRootPrefix;
     public $xmlNamespaces = [];
     public $accessorOrder;
     public $customOrder;

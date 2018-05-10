@@ -315,6 +315,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));
         self::assertNotNull($m);
         self::assertEquals('test-object', $m->xmlRootName);
+        self::assertEquals('ex', $m->xmlRootPrefix);
         self::assertEquals('http://example.com/namespace', $m->xmlRootNamespace);
         self::assertCount(3, $m->xmlNamespaces);
         self::assertArrayHasKey('', $m->xmlNamespaces);

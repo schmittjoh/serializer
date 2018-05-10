@@ -388,7 +388,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
 
         $serialized = $this->serialize($object);
-        self::assertEquals($this->getContent('object_with_xml_namespaces'), $this->serialize($object));
+        self::assertEquals($this->getContent('object_with_xml_namespaces'), $serialized);
 
         $xml = simplexml_load_string($this->serialize($object));
         $xml->registerXPathNamespace('ns1', "http://purl.org/dc/elements/1.1/");

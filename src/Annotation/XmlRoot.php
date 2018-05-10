@@ -36,4 +36,9 @@ final class XmlRoot
      * @var string
      */
     public $namespace;
+
+    /**
+     * @var string
+     */
+    public $prefix;
 }

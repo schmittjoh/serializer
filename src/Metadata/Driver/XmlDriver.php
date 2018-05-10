@@ -87,6 +87,9 @@ class XmlDriver extends AbstractFileDriver
         if (null !== $xmlRootNamespace = $elem->attributes()->{'xml-root-namespace'}) {
             $metadata->xmlRootNamespace = (string)$xmlRootNamespace;
         }
+        if (null !== $xmlRootPrefix = $elem->attributes()->{'xml-root-prefix'}) {
+            $metadata->xmlRootPrefix = (string)$xmlRootPrefix;
+        }
 
         $readOnlyClass = 'true' === strtolower((string)$elem->attributes()->{'read-only'});
 
