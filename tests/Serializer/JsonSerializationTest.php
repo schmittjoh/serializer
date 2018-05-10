@@ -144,13 +144,10 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function getFirstClassListCollectionsValues()
     {
-        $v = [1, 2];
-        unset($v[0]);
-        $v[0] = 3;
         return [
             [[1, 2, 3], '[1,2,3]'],
             [[], '[]'],
-            [$v, '[2,3]'],
+            [[1, 'a' => 2], '[1,2]'],
         ];
     }
 
@@ -168,14 +165,10 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function getFirstClassMapCollectionsValues()
     {
-        $v = [1, 2];
-        unset($v[0]);
-        $v[0] = 3;
         return [
             [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
             [[], '{}'],
             [["a" => "b", "c" => "d", 5], '{"a":0,"c":0,"0":5}'],
-            [$v, '{"1":2,"0":3}'],
         ];
     }
 

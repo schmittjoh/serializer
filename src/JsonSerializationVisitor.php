@@ -112,9 +112,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         $rs = $this->data;
         $this->data = $this->dataStack->pop();
 
-        if ($metadata->isList === true) {
-            return array_values($rs);
-        } elseif (empty($rs)) {
+        if ($metadata->isList !== true && empty($rs)) {
             return new \ArrayObject();
         }
         return $rs;
