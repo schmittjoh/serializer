@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -54,7 +54,7 @@ class YamlDriver extends AbstractFileDriver
         $config = Yaml::parse(file_get_contents($file));
 
         if (!isset($config[$name = $class->name])) {
-            throw new RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file));
+            throw new InvalidMetadataException(sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file));
         }
 
         $config = $config[$name];
@@ -76,7 +76,7 @@ class YamlDriver extends AbstractFileDriver
                 } else {
 
                     if (!$class->hasMethod($methodName)) {
-                        throw new RuntimeException('The method ' . $methodName . ' not found in class ' . $class->name);
+                        throw new InvalidMetadataException('The method ' . $methodName . ' not found in class ' . $class->name);
                     }
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 }
@@ -325,11 +325,11 @@ class YamlDriver extends AbstractFileDriver
                 $metadata->discriminatorDisabled = true;
             } else {
                 if (!isset($config['discriminator']['field_name'])) {
-                    throw new RuntimeException('The "field_name" attribute must be set for discriminators.');
+                    throw new InvalidMetadataException('The "field_name" attribute must be set for discriminators.');
                 }
 
                 if (!isset($config['discriminator']['map']) || !\is_array($config['discriminator']['map'])) {
-                    throw new RuntimeException('The "map" attribute must be set, and be an array for discriminators.');
+                    throw new InvalidMetadataException('The "map" attribute must be set, and be an array for discriminators.');
                 }
                 $groups = isset($config['discriminator']['groups']) ? $config['discriminator']['groups'] : [];
                 $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
@@ -354,13 +354,13 @@ class YamlDriver extends AbstractFileDriver
         if (\is_string($config)) {
             $config = [$config];
         } elseif (!\is_array($config)) {
-            throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
+            throw new InvalidMetadataException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
         }
 
         $methods = [];
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
-                throw new RuntimeException(sprintf('The method %s does not exist in class %s.', $name, $class->name));
+                throw new InvalidMetadataException(sprintf('The method %s does not exist in class %s.', $name, $class->name));
             }
 
             $methods[] = new MethodMetadata($class->name, $name);
