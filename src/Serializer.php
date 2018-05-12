@@ -273,12 +273,4 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         return $data;
     }
-
-    /**
-     * @return MetadataFactoryInterface
-     */
-    public function getMetadataFactory(): MetadataFactoryInterface
-    {
-        return $this->factory;
-    }
 }
