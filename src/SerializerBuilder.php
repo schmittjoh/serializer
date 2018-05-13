@@ -438,12 +438,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    /**
-     * @param CacheInterface $cache
-     *
-     * @return self
-     */
-    public function setMetadataCache(CacheInterface $cache)
+    public function setMetadataCache(CacheInterface $cache): self
     {
         $this->metadataCache = $cache;
         return $this;
