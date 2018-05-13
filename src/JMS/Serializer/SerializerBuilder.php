@@ -48,6 +48,7 @@ use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use PhpCollection\Map;
@@ -89,6 +90,11 @@ class SerializerBuilder
      * @var AccessorStrategyInterface
      */
     private $accessorStrategy;
+
+    /**
+     * @var CacheInterface
+     */
+    private $metadataCache;
 
     public static function create()
     {
@@ -422,6 +428,11 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setMetadataCache(CacheInterface $cache)
+    {
+        $this->metadataCache = $cache;
+    }
+
     public function build()
     {
         $annotationReader = $this->annotationReader;
@@ -440,7 +451,9 @@ class SerializerBuilder
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
-        if (null !== $this->cacheDir) {
+        if ($this->metadataCache !== null) {
+            $metadataFactory->setCache($this->metadataCache);
+        } elseif (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir . '/metadata');
             $metadataFactory->setCache(new FileCache($this->cacheDir . '/metadata'));
         }
