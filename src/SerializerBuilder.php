@@ -61,6 +61,7 @@ use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use Metadata\Cache\FileCache;
+use Metadata\Cache\CacheInterface;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 
@@ -102,6 +103,11 @@ final class SerializerBuilder
      * @var AccessorStrategyInterface
      */
     private $accessorStrategy;
+
+    /**
+     * @var CacheInterface
+     */
+    private $metadataCache;
 
     public static function create(...$args)
     {
@@ -432,6 +438,11 @@ final class SerializerBuilder
         return $this;
     }
 
+    public function setMetadataCache(CacheInterface $cache)
+    {
+        $this->metadataCache = $cache;
+    }
+
     public function build(): SerializerInterface
     {
         $annotationReader = $this->annotationReader;
@@ -455,7 +466,9 @@ final class SerializerBuilder
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
-        if (null !== $this->cacheDir) {
+        if ($this->metadataCache !== null) {
+            $metadataFactory->setCache($this->metadataCache);
+        } elseif (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir . '/metadata');
             $metadataFactory->setCache(new FileCache($this->cacheDir . '/metadata'));
         }
