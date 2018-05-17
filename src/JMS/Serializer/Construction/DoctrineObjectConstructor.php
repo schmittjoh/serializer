@@ -23,6 +23,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\VisitorInterface;
 
 /**
@@ -87,7 +88,14 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            $dataName = $metadata->propertyMetadata[$name]->serializedName ?: $name;
+            if (method_exists($visitor, 'getNamingStrategy')) {
+                /** @var PropertyNamingStrategyInterface $namingStrategy */
+                $namingStrategy = $visitor->getNamingStrategy();
+                $dataName = $namingStrategy->translateName($metadata->propertyMetadata[$name]);
+            } else {
+                $dataName = $name;
+            }
+
             if (!array_key_exists($dataName, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
