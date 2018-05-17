@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <TypeA>
+    <foo><![CDATA[testA]]></foo>
+  </TypeA>
+  <TypeB/>
+  <TypeA/>
+  <TypeB>
+    <bar><![CDATA[testB]]></bar>
+  </TypeB>
+</object>

@@ -45,6 +45,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithObjectType;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithType;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectType;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
@@ -202,6 +203,17 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->getContent('virtual_properties_map'),
             $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('map')))
         );
+    }
+
+    public function testObjectWithListWithTypes()
+    {
+        $object = new ObjectWithXmlListWithObjectType();
+        $this->assertEquals(
+            $this->getContent('object_with_xml_list_with_object_type'),
+            $this->serialize($object)
+        );
+        $deserialized = $this->deserialize($this->getContent('object_with_xml_list_with_object_type'), get_class($object));
+        $this->assertEquals($object, $deserialized);
     }
 
     public function testUnserializeMissingArray()
