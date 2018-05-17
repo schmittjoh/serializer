@@ -227,6 +227,16 @@ class XmlDriver extends AbstractFileDriver
                         if (isset($colConfig->attributes()->namespace)) {
                             $pMetadata->xmlEntryNamespace = (string)$colConfig->attributes()->namespace;
                         }
+
+                        if (isset($colConfig->{'allow-types'}->type) /*&& is_array(($colConfig->{'allow-types'}->type))*/) {
+                            foreach ($colConfig->{'allow-types'}->type as $allowType) {
+                                $pMetadata->xmlAllowTypes[] = [
+                                    'type' => $allowType->attributes()->type,
+                                    'name' => $allowType->attributes()->name,
+                                    'namespace' => $allowType->attributes()->namespace ?: null
+                                ];
+                            }
+                        }
                     }
 
                     if (isset($pElem->{'xml-map'})) {

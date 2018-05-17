@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectType" >
+        <property name="list" type="array">
+            <xml-list>
+                <allow-types>
+                    <type name="TypeA" type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeA" />
+                    <type name="TypeB" type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeB" />
+                </allow-types>
+            </xml-list>
+        </property>
+    </class>
+</serializer>

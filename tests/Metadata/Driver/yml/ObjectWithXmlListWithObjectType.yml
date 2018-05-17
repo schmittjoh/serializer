@@ -1,0 +1,8 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectType:
+    properties:
+        list:
+            type: array
+            xml_list:
+                allow_types:
+                    - { name: TypeA, type: JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeA }
+                    - { name: TypeB, type: JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeB }

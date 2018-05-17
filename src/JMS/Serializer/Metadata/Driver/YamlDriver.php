@@ -158,7 +158,7 @@ class YamlDriver extends AbstractFileDriver
                                 $pMetadata->xmlAllowTypes[] = [
                                     'type' => $allowType['type'],
                                     'name' => $allowType['name'],
-                                    'namespace' => $allowType['namespace']
+                                    'namespace' => array_key_exists('namespace', $allowType) ? $allowType['namespace'] : null
                                 ];
                             }
                         }
