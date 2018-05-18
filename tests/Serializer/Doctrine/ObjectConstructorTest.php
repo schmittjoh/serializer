@@ -196,9 +196,9 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $em->flush();
         $em->clear();
 
-        $jsonData = '{"ip":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
+        $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
         /** @var Server $serverDeserialized */
-        $serverDeserialized = $serializer->deserialize($jsonData, Server::class ,'json');
+        $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
 
         static::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
@@ -282,7 +282,6 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
     private function createSerializerWithDoctrineObjectConstructor()
     {
         return SerializerBuilder::create()
-
             ->setObjectConstructor(
                 new DoctrineObjectConstructor(
                     $this->registry,

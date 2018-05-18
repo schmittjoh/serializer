@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use JMS\Serializer\AbstractVisitor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
@@ -88,7 +89,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (method_exists($visitor, 'getNamingStrategy')) {
+            if ($visitor instanceof AbstractVisitor) {
                 /** @var PropertyNamingStrategyInterface $namingStrategy */
                 $namingStrategy = $visitor->getNamingStrategy();
                 $dataName = $namingStrategy->translateName($metadata->propertyMetadata[$name]);
