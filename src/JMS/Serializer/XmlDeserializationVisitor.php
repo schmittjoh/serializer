@@ -183,14 +183,16 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
             }
         }
-
+        $isKVP = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs);
+        $nsName = "";
         if (null !== $namespace) {
             $prefix = uniqid('ns-');
             $data->registerXPathNamespace($prefix, $namespace);
-            $nodes = $data->xpath("$prefix:$entryName");
-        } else {
-            $nodes = $data->xpath($entryName);
+            $nsName = $prefix . ':';
         }
+        $nsName .=  $isKVP ? '*' : $entryName;
+        $nodes = $data->xpath($nsName);
+
 
         if (!\count($nodes)) {
             if (null === $this->result) {
@@ -212,7 +214,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
                 }
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    $key = $isKVP ? $v->getName() : count($result);
+                    $result[$key] = $this->navigator->accept($v, $type['params'][0], $context);
                 }
 
                 return $result;
@@ -287,7 +290,7 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
         if ($metadata->xmlCollection) {
             $enclosingElem = $data;
-            if (!$metadata->xmlCollectionInline) {
+            if (!$metadata->xmlCollectionInline  && !$metadata->xmlKeyValuePairs) {
                 $enclosingElem = $data->children($metadata->xmlNamespace)->$name;
             }
 

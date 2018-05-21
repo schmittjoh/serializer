@@ -18,18 +18,23 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild;
@@ -60,7 +65,9 @@ use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
+use Metadata\MetadataFactoryInterface;
 use PhpCollection\Map;
+use Mockery as m;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -550,6 +557,120 @@ class XmlSerializationTest extends BaseSerializationTest
                 ObjectWithXmlNamespaceAttributeDiscriminatorParent::class
             )
         );
+    }
+
+    public function testVisitBooleanWithInvalidData()
+    {
+        $deserial = new XmlDeserializationVisitor('strategy');
+
+        $data = 'someBadValue';
+        $type = [];
+        $context = SerializationContext::create()->setSerializeNull(true);
+
+        $expected = 'Could not convert data to boolean. Expected "true", "false", "1" or "0", but got "someBadValue".';
+
+        try {
+            $result = $deserial->visitBoolean($data, $type, $context);
+        } catch (RuntimeException $e) {
+            $actual = $e->getMessage();
+        }
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testVisitPropertyWithNoType()
+    {
+        $strat = new ContextualNamingStrategy();
+        $deserial = new XmlDeserializationVisitor($strat);
+
+        $data = 'someBadValue';
+        $metadata = new PropertyMetadata(SimpleClassObject::class, 'bar');
+        $context = SerializationContext::create()->setSerializeNull(true);
+
+        $expected = 'You must define a type for JMS\Serializer\Tests\Fixtures\SimpleClassObject::$bar.';
+
+        try {
+            $deserial->visitProperty($metadata, $data, $context);
+        } catch (RuntimeException $e) {
+            $actual = $e->getMessage();
+        }
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRoundTripCurrentObject()
+    {
+        $metadata = m::mock(MetadataFactoryInterface::class);
+        $handler = m::mock(HandlerRegistryInterface::class);
+        $objectCtor = m::mock(ObjectConstructorInterface::class);
+        $navigator = new GraphNavigator($metadata, $handler, $objectCtor);
+
+        $strat = new ContextualNamingStrategy();
+        $deserial = new XmlDeserializationVisitor($strat);
+        $deserial->setNavigator($navigator);
+
+        $expected = new \stdClass;
+        $deserial->setCurrentObject($expected);
+        $actual = $deserial->getCurrentObject();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRoundTripCurrentMetadata()
+    {
+        $metadata = m::mock(MetadataFactoryInterface::class);
+        $handler = m::mock(HandlerRegistryInterface::class);
+        $objectCtor = m::mock(ObjectConstructorInterface::class);
+        $navigator = new GraphNavigator($metadata, $handler, $objectCtor);
+
+        $strat = new ContextualNamingStrategy();
+        $deserial = new XmlDeserializationVisitor($strat);
+        $deserial->setNavigator($navigator);
+
+        $expected = m::mock(PropertyMetadata::class);
+        $deserial->setCurrentMetadata($expected);
+        $actual = $deserial->getCurrentMetadata();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRoundTripDocTypeWhitelist()
+    {
+        $strat = new ContextualNamingStrategy();
+        $deserial = new XmlDeserializationVisitor($strat);
+
+        $expected = [];
+        $deserial->setDoctypeWhitelist($expected);
+        $actual = $deserial->getDoctypeWhitelist();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testVisitArrayKeyValuePairWrongNumberParms()
+    {
+        $metadata = m::mock(MetadataFactoryInterface::class);
+        $handler = m::mock(HandlerRegistryInterface::class);
+        $objectCtor = m::mock(ObjectConstructorInterface::class);
+        $navigator = new GraphNavigator($metadata, $handler, $objectCtor);
+
+
+        $metadata = m::mock(PropertyMetadata::class);
+        $metadata->xmlKeyValuePairs = true;
+        $context = m::mock(Context::class);
+
+        $strat = new ContextualNamingStrategy();
+        $deserial = new XmlDeserializationVisitor($strat);
+        $deserial->setNavigator($navigator);
+        $deserial->setCurrentMetadata($metadata);
+
+        $type = ['params' => []];
+
+        $expected = 'The array type must be specified as "array<K,V>" for Key-Value-Pairs.';
+
+        try {
+            $deserial->visitArray(null, $type, $context);
+        } catch (RuntimeException $e) {
+            $actual = $e->getMessage();
+        }
+        $this->assertEquals($expected, $actual);
     }
 
     /**
