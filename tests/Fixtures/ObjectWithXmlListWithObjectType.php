@@ -11,10 +11,9 @@ use JMS\Serializer\Annotation as Serializer;
 class ObjectWithXmlListWithObjectType
 {
     /**
-     * @var array
-     * @Serializer\Type(name="array<MS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypesInterface>")
-     * @ Serializer\XmlList(inline=true)
-     * @Serializer\XmlList(inline=true, entry="item", allowTypes={
+     * @var ObjectWithXmlListWithObjectTypesInterface[]
+     * @Serializer\Type(name="array<JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypesInterface>")
+     * @Serializer\XmlList(inline=true, allowTypes={
      *     @Serializer\XmlElementRef(name="TypeA", type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeA"),
      *     @Serializer\XmlElementRef(name="TypeB", type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeB")
      * })

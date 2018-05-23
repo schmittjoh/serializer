@@ -649,6 +649,110 @@ Resulting XML:
     </post>
 
 You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``).
+If the tag name is determined by the type of the object, use the ``allowTypes`` attribute (see @XmlElementRef).
+
+@XmlElementRef
+~~~~~~~~~~~~~~
+It is used in the ``allowTypes`` attribute of the ``@XmlList`` annotation to describe the types used.
+
+.. code-block :: php
+
+    <?php
+
+    namespace JMS\Serializer\Tests\Fixtures;
+
+    use JMS\Serializer\Annotation\Type;
+    use JMS\Serializer\Annotation\XmlRoot;
+    use JMS\Serializer\Annotation\XmlList;
+    use JMS\Serializer\Annotation\XmlElementRef;
+
+    interface ObjectWithXmlListWithObjectTypesInterface
+    {
+    }
+
+    class ObjectWithXmlListWithObjectTypeA implements ObjectWithXmlListWithObjectTypesInterface
+    {
+        /**
+         * @var string
+         * @Type(name="string")
+         */
+        private $foo;
+
+        /**
+         * @param string $foo
+         */
+        public function __construct($foo = null)
+        {
+            $this->foo = $foo;
+        }
+    }
+
+    class ObjectWithXmlListWithObjectTypeB implements ObjectWithXmlListWithObjectTypesInterface
+    {
+        /**
+         * @var string
+         * @Type(name="string")
+         */
+        private $bar;
+
+        /**
+         * @param string $bar
+         */
+        public function __construct($bar = null)
+        {
+            $this->bar = $bar;
+        }
+    }
+
+    /**
+     * @XmlRoot(name="object")
+     */
+    class ObjectWithXmlListWithObjectType
+    {
+        /**
+         * @var ObjectWithXmlListWithObjectTypesInterface[]
+         * @Type(name="array<JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypesInterface>")
+         * @XmlList(inline=true, allowTypes={
+         *     @XmlElementRef(name="TypeA", type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeA"),
+         *     @XmlElementRef(name="TypeB", type="JMS\Serializer\Tests\Fixtures\ObjectWithXmlListWithObjectTypeB")
+         * })
+         */
+        private $list;
+
+        public function __construct()
+        {
+            $this->list = self::create();
+        }
+
+        public static function create()
+        {
+            return
+                [
+                    new ObjectWithXmlListWithObjectTypeA('testA'),
+                    new ObjectWithXmlListWithObjectTypeB(),
+                    new ObjectWithXmlListWithObjectTypeA(),
+                    new ObjectWithXmlListWithObjectTypeB('testB'),
+                ]
+            ;
+        }
+    }
+
+Resulting XML:
+
+.. code-block :: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <object>
+        <TypeA>
+            <foo><![CDATA[testA]]></foo>
+        </TypeA>
+        <TypeB/>
+        <TypeA/>
+        <TypeB>
+            <bar><![CDATA[testB]]></bar>
+        </TypeB>
+    </object>
+
 
 @XmlMap
 ~~~~~~~
