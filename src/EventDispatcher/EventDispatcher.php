@@ -102,7 +102,7 @@ class EventDispatcher implements EventDispatcherInterface
 
         foreach ($this->classListeners[$eventName][$objectClass][$format] as $listener) {
 
-            if ($listener[3] !== null && !($object instanceof $listener[3])) {
+            if (!empty($listener[3]) && !($object instanceof $listener[3])) {
                 continue;
             }
 
