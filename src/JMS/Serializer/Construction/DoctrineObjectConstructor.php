@@ -3,10 +3,12 @@
 namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use JMS\Serializer\AbstractVisitor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\VisitorInterface;
 
 /**
@@ -71,11 +73,19 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (!array_key_exists($name, $data)) {
+            if ($visitor instanceof AbstractVisitor) {
+                /** @var PropertyNamingStrategyInterface $namingStrategy */
+                $namingStrategy = $visitor->getNamingStrategy();
+                $dataName = $namingStrategy->translateName($metadata->propertyMetadata[$name]);
+            } else {
+                $dataName = $name;
+            }
+
+            if (!array_key_exists($dataName, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 
-            $identifierList[$name] = $data[$name];
+            $identifierList[$name] = $data[$dataName];
         }
 
         // Entity update, load it from database
