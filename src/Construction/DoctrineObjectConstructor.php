@@ -73,11 +73,17 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (!array_key_exists($name, $data)) {
-                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+
+            if (isset($metadata->propertyMetadata[$name])) {
+                $dataName = $metadata->propertyMetadata[$name]->serializedName;
+            } else {
+                $dataName = $name;
             }
 
-            $identifierList[$name] = $data[$name];
+            if (!array_key_exists($dataName, $data)) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+            }
+            $identifierList[$name] = $data[$dataName];
         }
 
         // Entity update, load it from database

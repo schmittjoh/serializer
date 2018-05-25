@@ -15,10 +15,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\UnitOfWork;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Construction\DoctrineObjectConstructor;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
@@ -26,6 +28,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
@@ -185,6 +188,27 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         self::assertSame($author, $authorFetched);
     }
 
+    public function testNamingForIdentifierColumnIsConsidered()
+    {
+        $serializer = $this->createSerializerWithDoctrineObjectConstructor();
+
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
+        $server = new Server('Linux', '127.0.0.1', 'home');
+        $em->persist($server);
+        $em->flush();
+        $em->clear();
+
+        $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
+        /** @var Server $serverDeserialized */
+        $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
+
+        static::assertSame(
+            $em->getUnitOfWork()->getEntityState($serverDeserialized),
+            UnitOfWork::STATE_MANAGED
+        );
+    }
+
     protected function setUp()
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
@@ -253,6 +277,23 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         $em = EntityManager::create($con, $cfg);
 
         return $em;
+    }
+
+    /**
+     * @return \JMS\Serializer\SerializerInterface
+     */
+    private function createSerializerWithDoctrineObjectConstructor()
+    {
+        return SerializerBuilder::create()
+            ->setObjectConstructor(
+                new DoctrineObjectConstructor(
+                    $this->registry,
+                    new UnserializeObjectConstructor(),
+                    DoctrineObjectConstructor::ON_MISSING_FALLBACK
+                )
+            )
+            ->addDefaultHandlers()
+            ->build();
     }
 }
 
