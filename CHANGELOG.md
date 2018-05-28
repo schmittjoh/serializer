@@ -1,11 +1,44 @@
 # Change Log
 
+## [1.12.0](https://github.com/schmittjoh/serializer/tree/1.12.0) (2018-05-25)
+
+**Implemented enhancements:**
+
+- Add support for namespaced XML attribute on Discriminator + Tests [\#909](https://github.com/schmittjoh/serializer/pull/909) ([ArthurJam](https://github.com/ArthurJam))
+- Introduce graph navigator interface [\#876](https://github.com/schmittjoh/serializer/pull/876) ([goetas](https://github.com/goetas))
+- Use Bind closure accessor [\#875](https://github.com/schmittjoh/serializer/pull/875) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- DoctrineObjectConstructor and deserialize not work [\#806](https://github.com/schmittjoh/serializer/issues/806)
+- \[Symfony\] DoctrineObjectorConstructor always creates new entity because of camel case to snake case conversion [\#734](https://github.com/schmittjoh/serializer/issues/734)
+- Fix DoctrineObjectConstructor deserialization with naming strategies [\#951](https://github.com/schmittjoh/serializer/pull/951) ([re2bit](https://github.com/re2bit))
+
+**Closed issues:**
+
+- Feature proposal: dynamic property serialized name [\#225](https://github.com/schmittjoh/serializer/issues/225)
+- Mapping request payload works for JSON but not for XML [\#820](https://github.com/schmittjoh/serializer/issues/820)
+
+**Merged pull requests:**
+
+- Cange the spelling of a word [\#939](https://github.com/schmittjoh/serializer/pull/939) ([greg0ire](https://github.com/greg0ire))
+- Use dedicated PHPUnit assertions [\#928](https://github.com/schmittjoh/serializer/pull/928) ([carusogabriel](https://github.com/carusogabriel))
+- Update arrays.rst [\#907](https://github.com/schmittjoh/serializer/pull/907) ([burki](https://github.com/burki))
+- Change to MIT license [\#956](https://github.com/schmittjoh/serializer/pull/956) ([goetas](https://github.com/goetas))
+- Double logic for group exclusion \(20% faster\) [\#941](https://github.com/schmittjoh/serializer/pull/941) ([goetas](https://github.com/goetas))
+- Type casting tests [\#917](https://github.com/schmittjoh/serializer/pull/917) ([goetas](https://github.com/goetas))
+- Explicitly set serialization precision for tests [\#899](https://github.com/schmittjoh/serializer/pull/899) ([Majkl578](https://github.com/Majkl578))
+- Deprecations   [\#877](https://github.com/schmittjoh/serializer/pull/877) ([goetas](https://github.com/goetas))
+- Added note on SerializedName annotation valididity [\#874](https://github.com/schmittjoh/serializer/pull/874) ([bobvandevijver](https://github.com/bobvandevijver))
+- Optimizations [\#861](https://github.com/schmittjoh/serializer/pull/861) ([goetas](https://github.com/goetas))
+
 ## [1.11.0](https://github.com/schmittjoh/serializer/tree/1.11.0) (2018-02-04)
 
 **Implemented enhancements:**
 
 - Deserialize xmlKeyValuePairs [\#868](https://github.com/schmittjoh/serializer/pull/868) ([goetas](https://github.com/goetas))
 - Add AdvancedNamingStrategyInterface [\#859](https://github.com/schmittjoh/serializer/pull/859) ([LeaklessGfy](https://github.com/LeaklessGfy))
+- Deserialize xmlKeyValuePairs [\#840](https://github.com/schmittjoh/serializer/pull/840) ([fdyckhoff](https://github.com/fdyckhoff))
 
 **Fixed bugs:**
 
@@ -31,10 +64,10 @@
 - Fixed issue where timezone is lost when creating DateTime from unix timestamp [\#835](https://github.com/schmittjoh/serializer/pull/835) ([goetas](https://github.com/goetas))
 
 ## [1.10.0](https://github.com/schmittjoh/serializer/tree/1.10.0) (2017-11-30)
+
 **Implemented enhancements:**
 
 - support PSR-11 compatible DI containers [\#844](https://github.com/schmittjoh/serializer/pull/844) ([xabbuh](https://github.com/xabbuh))
-- Deserialize xmlKeyValuePairs [\#840](https://github.com/schmittjoh/serializer/pull/840) ([fdyckhoff](https://github.com/fdyckhoff))
 
 **Closed issues:**
 
@@ -43,6 +76,7 @@
 - @MaxDepth jms/serializer-bundle 2.2 [\#842](https://github.com/schmittjoh/serializer/issues/842)
 
 ## [1.9.2](https://github.com/schmittjoh/serializer/tree/1.9.2) (2017-11-22)
+
 **Fixed bugs:**
 
 - Missing ClassMetadata deserialization data [\#841](https://github.com/schmittjoh/serializer/pull/841) ([TristanMogwai](https://github.com/TristanMogwai))
@@ -58,6 +92,7 @@
 - Improve documentation about default DateTime format [\#838](https://github.com/schmittjoh/serializer/pull/838) ([enumag](https://github.com/enumag))
 
 ## [1.9.1](https://github.com/schmittjoh/serializer/tree/1.9.1) (2017-10-27)
+
 **Fixed bugs:**
 
 - Dynamic exclusion strategy, Variable "object" is not valid [\#826](https://github.com/schmittjoh/serializer/issues/826)
@@ -71,6 +106,7 @@
 - Alow to use "object" var in expressions when deserializing [\#827](https://github.com/schmittjoh/serializer/pull/827) ([goetas](https://github.com/goetas))
 
 ## [1.9.0](https://github.com/schmittjoh/serializer/tree/1.9.0) (2017-09-28)
+
 **Implemented enhancements:**
 
 - Doctrine LazyCriteriaCollection not supported [\#814](https://github.com/schmittjoh/serializer/issues/814)
@@ -99,17 +135,16 @@
 - Added null metadata driver [\#822](https://github.com/schmittjoh/serializer/pull/822) ([goetas](https://github.com/goetas))
 - Run Travis tests against modern PHP [\#819](https://github.com/schmittjoh/serializer/pull/819) ([Majkl578](https://github.com/Majkl578))
 - Added bool type alias [\#818](https://github.com/schmittjoh/serializer/pull/818) ([Majkl578](https://github.com/Majkl578))
+- Revert back to PSR-0 [\#797](https://github.com/schmittjoh/serializer/pull/797) ([goetas](https://github.com/goetas))
 
 ## [1.8.1](https://github.com/schmittjoh/serializer/tree/1.8.1) (2017-07-13)
+
 **Closed issues:**
 
 - Version 1.8 is breaking backwards compatibility [\#796](https://github.com/schmittjoh/serializer/issues/796)
 
-**Merged pull requests:**
-
-- Revert back to PSR-0 [\#797](https://github.com/schmittjoh/serializer/pull/797) ([goetas](https://github.com/goetas))
-
 ## [1.8.0](https://github.com/schmittjoh/serializer/tree/1.8.0) (2017-07-12)
+
 **Implemented enhancements:**
 
 - Detect XML xsi:nil="true" to null when deserializing [\#790](https://github.com/schmittjoh/serializer/pull/790) ([goetas](https://github.com/goetas))
@@ -140,6 +175,7 @@
 - Proposing some guidelines for contributing [\#763](https://github.com/schmittjoh/serializer/pull/763) ([goetas](https://github.com/goetas))
 
 ## [1.7.1](https://github.com/schmittjoh/serializer/tree/1.7.1) (2017-05-15)
+
 **Fixed bugs:**
 
 - Custom type handlers does not work with doctrine proxies anymore [\#765](https://github.com/schmittjoh/serializer/issues/765)
@@ -152,6 +188,7 @@
 - Configure whether serializing empty array. [\#124](https://github.com/schmittjoh/serializer/issues/124)
 
 ## [1.7.0](https://github.com/schmittjoh/serializer/tree/1.7.0) (2017-05-10)
+
 **Implemented enhancements:**
 
 - Skip doctrine proxy initializations when exclusion strategy will exclude it  [\#760](https://github.com/schmittjoh/serializer/pull/760) ([goetas](https://github.com/goetas))
@@ -162,6 +199,7 @@
 - Add data using setData produces hashes instead of arrays [\#761](https://github.com/schmittjoh/serializer/issues/761)
 
 ## [1.7.0-RC2](https://github.com/schmittjoh/serializer/tree/1.7.0-RC2) (2017-05-05)
+
 **Implemented enhancements:**
 
 - Make sure input is always a string [\#755](https://github.com/schmittjoh/serializer/pull/755) ([goetas](https://github.com/goetas))
@@ -183,19 +221,19 @@
 - Fix typo in annotation docs [\#754](https://github.com/schmittjoh/serializer/pull/754) ([JustBlackBird](https://github.com/JustBlackBird))
 
 ## [1.7.0-RC1](https://github.com/schmittjoh/serializer/tree/1.7.0-RC1) (2017-04-25)
+
 **Implemented enhancements:**
 
 - Allow to configure the doctrine object constructor [\#751](https://github.com/schmittjoh/serializer/pull/751) ([goetas](https://github.com/goetas))
 - Trigger doctrine events on doctrine proxies [\#750](https://github.com/schmittjoh/serializer/pull/750) ([goetas](https://github.com/goetas))
 - Added stdClass serialization handler [\#749](https://github.com/schmittjoh/serializer/pull/749) ([goetas](https://github.com/goetas))
-- Allow to typehint for the type \(array/hash\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
 
 **Fixed bugs:**
 
 - Array gets serialized as object, not as array, depending on order. [\#709](https://github.com/schmittjoh/serializer/issues/709)
 - Doctrine Proxies and serializer.pre\_serialize [\#666](https://github.com/schmittjoh/serializer/issues/666)
 - Fix stdClass inconsistencies when serializing to JSON [\#730](https://github.com/schmittjoh/serializer/pull/730) ([goetas](https://github.com/goetas))
-- Allow to typehint for the type \\(array/hash\\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
+- Allow to typehint for the type \(array/hash\) of the root item to be serialized [\#728](https://github.com/schmittjoh/serializer/pull/728) ([goetas](https://github.com/goetas))
 
 **Closed issues:**
 
@@ -257,11 +295,13 @@
 - Added runtime twig extension support \(significant performance improvements\) [\#747](https://github.com/schmittjoh/serializer/pull/747) ([goetas](https://github.com/goetas))
 
 ## [1.6.2](https://github.com/schmittjoh/serializer/tree/1.6.2) (2017-04-17)
+
 **Fixed bugs:**
 
 - @VirtualProperty "exp" does not play nice with @ExclusionPolicy\("ALL"\) [\#746](https://github.com/schmittjoh/serializer/issues/746)
 
 ## [1.6.1](https://github.com/schmittjoh/serializer/tree/1.6.1) (2017-04-12)
+
 **Fixed bugs:**
 
 - Do not output the XML node when the object will be emtpy [\#744](https://github.com/schmittjoh/serializer/pull/744) ([goetas](https://github.com/goetas))
@@ -271,9 +311,6 @@
 - XmlList not working since version 1.5.0 with xmlns attributes [\#742](https://github.com/schmittjoh/serializer/issues/742)
 - DoctrineObjectConstructor: how to use it without Symfony, in a PHP project [\#741](https://github.com/schmittjoh/serializer/issues/741)
 - Outdated docs site [\#733](https://github.com/schmittjoh/serializer/issues/733)
-- Allow data access to Property naming strategy [\#717](https://github.com/schmittjoh/serializer/issues/717)
-- Can't hint interface using @Type to trigger custom handler [\#631](https://github.com/schmittjoh/serializer/issues/631)
-- JSON/YAML encoding changes [\#617](https://github.com/schmittjoh/serializer/issues/617)
 - Why do we need this check inside SerializedName constructor, if there is name? [\#558](https://github.com/schmittjoh/serializer/issues/558)
 - Is it possible to deserialize Collection from Json [\#534](https://github.com/schmittjoh/serializer/issues/534)
 - PhpCollection 0.4 [\#531](https://github.com/schmittjoh/serializer/issues/531)
@@ -286,6 +323,7 @@
 - Update PHPDocs [\#736](https://github.com/schmittjoh/serializer/pull/736) ([gnat42](https://github.com/gnat42))
 
 ## [1.6.0](https://github.com/schmittjoh/serializer/tree/1.6.0) (2017-03-24)
+
 **Implemented enhancements:**
 
 - Add DateTimeImmutable support to DateHandler [\#543](https://github.com/schmittjoh/serializer/issues/543)
@@ -313,12 +351,14 @@
 - Discriminator is not exposed when using a group exclusion strategy [\#157](https://github.com/schmittjoh/serializer/issues/157)
 
 ## [1.6.0-RC1](https://github.com/schmittjoh/serializer/tree/1.6.0-RC1) (2017-03-14)
+
 **Implemented enhancements:**
 
 - Add symfony expression in exclusions/expositions [\#406](https://github.com/schmittjoh/serializer/issues/406)
 - check that cache directory was not created before throwing exception [\#729](https://github.com/schmittjoh/serializer/pull/729) ([mente](https://github.com/mente))
 - \#720 - Adding support for DateInterval deserialization [\#721](https://github.com/schmittjoh/serializer/pull/721) ([c0ntax](https://github.com/c0ntax))
 - Expression language based virtual properties [\#708](https://github.com/schmittjoh/serializer/pull/708) ([goetas](https://github.com/goetas))
+- Added clearing previous libxml errors [\#688](https://github.com/schmittjoh/serializer/pull/688) ([zerkms](https://github.com/zerkms))
 - Xml namespaces improvements [\#644](https://github.com/schmittjoh/serializer/pull/644) ([goetas](https://github.com/goetas))
 
 **Fixed bugs:**
@@ -358,8 +398,14 @@
 **Merged pull requests:**
 
 - Include reference to cache [\#727](https://github.com/schmittjoh/serializer/pull/727) ([hyperized](https://github.com/hyperized))
+- A possible fix for the \#688 [\#689](https://github.com/schmittjoh/serializer/pull/689) ([zerkms](https://github.com/zerkms))
 
 ## [1.5.0](https://github.com/schmittjoh/serializer/tree/1.5.0) (2017-02-14)
+
+**Fixed bugs:**
+
+- Deserializing XMLList with Namespaces not \(always\) working as intended [\#697](https://github.com/schmittjoh/serializer/pull/697) ([goetas](https://github.com/goetas))
+
 **Closed issues:**
 
 - Serialized DateTime instances are not valid ISO-8601 [\#713](https://github.com/schmittjoh/serializer/issues/713)
@@ -367,16 +413,13 @@
 - Deserializing XMLList with Namespaces not \(always\) working as intended [\#695](https://github.com/schmittjoh/serializer/issues/695)
 
 ## [1.5.0-RC1](https://github.com/schmittjoh/serializer/tree/1.5.0-RC1) (2017-01-19)
+
 **Implemented enhancements:**
 
 - added support for xml-attributes as discriminators [\#692](https://github.com/schmittjoh/serializer/pull/692) ([twtinteractive](https://github.com/twtinteractive))
-- Added clearing previous libxml errors [\#688](https://github.com/schmittjoh/serializer/pull/688) ([zerkms](https://github.com/zerkms))
 - Prevent doctrine proxy loading for virtual types [\#684](https://github.com/schmittjoh/serializer/pull/684) ([goetas](https://github.com/goetas))
 - Implemented dynamic exclusion using symfony expression language [\#673](https://github.com/schmittjoh/serializer/pull/673) ([goetas](https://github.com/goetas))
-
-**Fixed bugs:**
-
-- Deserializing XMLList with Namespaces not \(always\) working as intended [\#697](https://github.com/schmittjoh/serializer/pull/697) ([goetas](https://github.com/goetas))
+- Issue543 - Adding DateTimeImmutable support [\#635](https://github.com/schmittjoh/serializer/pull/635) ([toby-griffiths](https://github.com/toby-griffiths))
 
 **Closed issues:**
 
@@ -393,10 +436,12 @@
 
 - Added doc reference for disabling discriminator [\#699](https://github.com/schmittjoh/serializer/pull/699) ([dragosprotung](https://github.com/dragosprotung))
 - Use GroupsExclusionStrategy::DEFAULT\_GROUP instead default group. [\#694](https://github.com/schmittjoh/serializer/pull/694) ([Aliance](https://github.com/Aliance))
-- A possible fix for the \#688 [\#689](https://github.com/schmittjoh/serializer/pull/689) ([zerkms](https://github.com/zerkms))
 - Improved Symfony 3.x compatibility  [\#682](https://github.com/schmittjoh/serializer/pull/682) ([goetas](https://github.com/goetas))
+- Discriminator Groups [\#579](https://github.com/schmittjoh/serializer/pull/579) ([maennchen](https://github.com/maennchen))
+- Add extra test for handling child elements [\#569](https://github.com/schmittjoh/serializer/pull/569) ([tarjei](https://github.com/tarjei))
 
 ## [1.4.2](https://github.com/schmittjoh/serializer/tree/1.4.2) (2016-11-13)
+
 **Fixed bugs:**
 
 - Warning: JMS\Serializer\XmlDeserializationVisitor::visitArray\(\): Node no longer exists [\#674](https://github.com/schmittjoh/serializer/issues/674)
@@ -407,6 +452,7 @@
 - Max depth produces array of nulls [\#671](https://github.com/schmittjoh/serializer/issues/671)
 
 ## [1.4.1](https://github.com/schmittjoh/serializer/tree/1.4.1) (2016-11-02)
+
 **Fixed bugs:**
 
 - Groups context might be not initialized  [\#669](https://github.com/schmittjoh/serializer/pull/669) ([goetas](https://github.com/goetas))
@@ -416,11 +462,13 @@
 - Warning: Invalid argument supplied for foreach\(\) on getCurrentPath method [\#668](https://github.com/schmittjoh/serializer/issues/668)
 
 ## [1.4.0](https://github.com/schmittjoh/serializer/tree/1.4.0) (2016-10-31)
+
 **Implemented enhancements:**
 
 - Document the implied 'Default' property group when no group is specified [\#661](https://github.com/schmittjoh/serializer/pull/661) ([akoebbe](https://github.com/akoebbe))
 - Allow discriminator map in the middle of the hierarchy when deserializing [\#659](https://github.com/schmittjoh/serializer/pull/659) ([goetas](https://github.com/goetas))
 - Handle both int and integer [\#657](https://github.com/schmittjoh/serializer/pull/657) ([Aliance](https://github.com/Aliance))
+- Can now override groups on specific paths of the graph [\#170](https://github.com/schmittjoh/serializer/pull/170) ([adrienbrault](https://github.com/adrienbrault))
 
 **Fixed bugs:**
 
@@ -457,10 +505,13 @@
 - Add format output option [\#640](https://github.com/schmittjoh/serializer/pull/640) ([AyrtonRicardo](https://github.com/AyrtonRicardo))
 - Remove deprecated FileCacheReader for doctrine annotations [\#634](https://github.com/schmittjoh/serializer/pull/634) ([goetas](https://github.com/goetas))
 - Added tests to ensure SerializeNull policy [\#633](https://github.com/schmittjoh/serializer/pull/633) ([goetas](https://github.com/goetas))
+- Revert "Default `$serializeNull` to false" [\#630](https://github.com/schmittjoh/serializer/pull/630) ([goetas](https://github.com/goetas))
+- Introducing NormalizerInterface [\#592](https://github.com/schmittjoh/serializer/pull/592) ([alcalyn](https://github.com/alcalyn))
 - Fix inheritance of discriminators on Doctrine entities [\#382](https://github.com/schmittjoh/serializer/pull/382) ([xoob](https://github.com/xoob))
 - Allow Post Serialize Event to overwrite existing data [\#273](https://github.com/schmittjoh/serializer/pull/273) ([jockri](https://github.com/jockri))
 
 ## [1.3.1](https://github.com/schmittjoh/serializer/tree/1.3.1) (2016-08-23)
+
 **Closed issues:**
 
 - \[Idea\] Inline name [\#629](https://github.com/schmittjoh/serializer/issues/629)
@@ -479,11 +530,12 @@
 - Problem with deserialize related entity [\#123](https://github.com/schmittjoh/serializer/issues/123)
 - serialized\_name does not work in yaml [\#118](https://github.com/schmittjoh/serializer/issues/118)
 
-**Merged pull requests:**
-
-- Revert "Default `$serializeNull` to false" [\#630](https://github.com/schmittjoh/serializer/pull/630) ([goetas](https://github.com/goetas))
-
 ## [1.3.0](https://github.com/schmittjoh/serializer/tree/1.3.0) (2016-08-17)
+
+**Fixed bugs:**
+
+- Fix warning array\_key\_exists in deserialization. [\#398](https://github.com/schmittjoh/serializer/pull/398) ([leonnleite](https://github.com/leonnleite))
+
 **Closed issues:**
 
 - problems with xml namespaces after update [\#621](https://github.com/schmittjoh/serializer/issues/621)
@@ -502,7 +554,6 @@
 - Added public `hasData` function to check if a data key already have been added. [\#625](https://github.com/schmittjoh/serializer/pull/625) ([goetas](https://github.com/goetas))
 - $context is not used [\#622](https://github.com/schmittjoh/serializer/pull/622) ([olvlvl](https://github.com/olvlvl))
 - Fix Doctrine PHPCR ODM 2.0 compatibility [\#605](https://github.com/schmittjoh/serializer/pull/605) ([wouterj](https://github.com/wouterj))
-- Introducing NormalizerInterface [\#592](https://github.com/schmittjoh/serializer/pull/592) ([alcalyn](https://github.com/alcalyn))
 - Fixed type-hinting [\#586](https://github.com/schmittjoh/serializer/pull/586) ([jgendera](https://github.com/jgendera))
 - Fix multiple handler callbacks in YamlDriver [\#515](https://github.com/schmittjoh/serializer/pull/515) ([mpajunen](https://github.com/mpajunen))
 - Fixed minor typos [\#364](https://github.com/schmittjoh/serializer/pull/364) ([sdaoudi](https://github.com/sdaoudi))
@@ -511,14 +562,10 @@
 - Removed unnecessary use statement [\#262](https://github.com/schmittjoh/serializer/pull/262) ([dunglas](https://github.com/dunglas))
 
 ## [1.2.0](https://github.com/schmittjoh/serializer/tree/1.2.0) (2016-08-03)
-**Implemented enhancements:**
-
-- Issue543 - Adding DateTimeImmutable support [\#635](https://github.com/schmittjoh/serializer/pull/635) ([toby-griffiths](https://github.com/toby-griffiths))
 
 **Fixed bugs:**
 
 - Fix xml-attribute-map for the xml driver [\#595](https://github.com/schmittjoh/serializer/pull/595) ([romantomchak](https://github.com/romantomchak))
-- Fix warning array\_key\_exists in deserialization. [\#398](https://github.com/schmittjoh/serializer/pull/398) ([leonnleite](https://github.com/leonnleite))
 - \#367 Exclude annotation not preventing attempt to find public methods when using AccessType [\#397](https://github.com/schmittjoh/serializer/pull/397) ([Strate](https://github.com/Strate))
 
 **Closed issues:**
@@ -546,10 +593,8 @@
 - Update Symfony validator and allow PHPUnit 7 [\#583](https://github.com/schmittjoh/serializer/pull/583) ([goetas](https://github.com/goetas))
 - Fix serialize bug [\#582](https://github.com/schmittjoh/serializer/pull/582) ([goetas](https://github.com/goetas))
 - HHVM compatibility [\#580](https://github.com/schmittjoh/serializer/pull/580) ([goetas](https://github.com/goetas))
-- Discriminator Groups [\#579](https://github.com/schmittjoh/serializer/pull/579) ([maennchen](https://github.com/maennchen))
 - Fixed test suite on master [\#578](https://github.com/schmittjoh/serializer/pull/578) ([goetas](https://github.com/goetas))
 - Fix for a broken test: a missing \(incorrectly positioned\) argument [\#577](https://github.com/schmittjoh/serializer/pull/577) ([zerkms](https://github.com/zerkms))
-- Add extra test for handling child elements [\#569](https://github.com/schmittjoh/serializer/pull/569) ([tarjei](https://github.com/tarjei))
 - Fix bug \#343 return integer when the column is datetime [\#562](https://github.com/schmittjoh/serializer/pull/562) ([Bukashk0zzz](https://github.com/Bukashk0zzz))
 - \[doc\] fix AccessorOrder documentation [\#553](https://github.com/schmittjoh/serializer/pull/553) ([aledeg](https://github.com/aledeg))
 - Generic way to solve setValue on a property which respects its setter [\#550](https://github.com/schmittjoh/serializer/pull/550) ([maennchen](https://github.com/maennchen))
@@ -557,6 +602,7 @@
 - Generate namespaced element on XmlList entries [\#301](https://github.com/schmittjoh/serializer/pull/301) ([goetas](https://github.com/goetas))
 
 ## [1.1.0](https://github.com/schmittjoh/serializer/tree/1.1.0) (2015-10-27)
+
 **Closed issues:**
 
 - Possible to set xsi:schemalocation? [\#505](https://github.com/schmittjoh/serializer/issues/505)
@@ -575,6 +621,7 @@
 - Added PHP 5.6 [\#297](https://github.com/schmittjoh/serializer/pull/297) ([Nyholm](https://github.com/Nyholm))
 
 ## [1.0.0](https://github.com/schmittjoh/serializer/tree/1.0.0) (2015-06-16)
+
 **Closed issues:**
 
 - Unrecognized 4 parts namespace [\#449](https://github.com/schmittjoh/serializer/issues/449)
@@ -619,12 +666,14 @@
 - Serialization of nested polymorphic objects [\#238](https://github.com/schmittjoh/serializer/pull/238) ([DavidMikeSimon](https://github.com/DavidMikeSimon))
 
 ## [0.16.0](https://github.com/schmittjoh/serializer/tree/0.16.0) (2014-03-18)
+
 **Closed issues:**
 
 - best way to add root to json?  [\#250](https://github.com/schmittjoh/serializer/issues/250)
 - Use Doctrine metadata [\#247](https://github.com/schmittjoh/serializer/issues/247)
 - Integration Points - run-time exclusion checking [\#239](https://github.com/schmittjoh/serializer/issues/239)
 - Using DoctrineTypeDriver to use Doctrine Anotations  [\#232](https://github.com/schmittjoh/serializer/issues/232)
+- Virtual property documentation xml & yaml [\#100](https://github.com/schmittjoh/serializer/issues/100)
 
 **Merged pull requests:**
 
@@ -635,6 +684,7 @@
 - Improve yaml documentacion Fix \#100 [\#221](https://github.com/schmittjoh/serializer/pull/221) ([BraisGabin](https://github.com/BraisGabin))
 
 ## [0.15.0](https://github.com/schmittjoh/serializer/tree/0.15.0) (2014-02-10)
+
 **Closed issues:**
 
 - Add trait support [\#228](https://github.com/schmittjoh/serializer/issues/228)
@@ -642,7 +692,6 @@
 - Discriminator field filtered by exclusion strategy [\#189](https://github.com/schmittjoh/serializer/issues/189)
 - DateTime within an array \(format get ignored\) [\#140](https://github.com/schmittjoh/serializer/issues/140)
 - EntityNotFoundException using softDeletable [\#101](https://github.com/schmittjoh/serializer/issues/101)
-- Virtual property documentation xml & yaml [\#100](https://github.com/schmittjoh/serializer/issues/100)
 
 **Merged pull requests:**
 
@@ -657,11 +706,9 @@
 - Add xmlAttributeMap to serialized values [\#204](https://github.com/schmittjoh/serializer/pull/204) ([colinfrei](https://github.com/colinfrei))
 - fix issue \#199: "array" type ignoring DateTime format [\#201](https://github.com/schmittjoh/serializer/pull/201) ([lukey78](https://github.com/lukey78))
 - Potential fix for "recursion detected" issue [\#104](https://github.com/schmittjoh/serializer/pull/104) ([tyler-sommer](https://github.com/tyler-sommer))
+- Adds XML namespaces support [\#58](https://github.com/schmittjoh/serializer/pull/58) ([ajgarlag](https://github.com/ajgarlag))
 
 ## [0.14.0](https://github.com/schmittjoh/serializer/tree/0.14.0) (2013-12-04)
-**Implemented enhancements:**
-
-- Can now override groups on specific paths of the graph [\#170](https://github.com/schmittjoh/serializer/pull/170) ([adrienbrault](https://github.com/adrienbrault))
 
 **Closed issues:**
 
@@ -693,10 +740,11 @@
 - Update annotations.rst [\#146](https://github.com/schmittjoh/serializer/pull/146) ([chrisjohnson00](https://github.com/chrisjohnson00))
 - Add Doctrine\ODM\PHPCR\ChildrenCollection to ArrayCollectionHandler [\#143](https://github.com/schmittjoh/serializer/pull/143) ([hacfi](https://github.com/hacfi))
 - xml\_attribute\_map fix for the yaml driver [\#142](https://github.com/schmittjoh/serializer/pull/142) ([mvanmeerbeck](https://github.com/mvanmeerbeck))
+- fix wrong quote in used in docs [\#130](https://github.com/schmittjoh/serializer/pull/130) ([jaapio](https://github.com/jaapio))
 - Support PropelCollection serialization [\#81](https://github.com/schmittjoh/serializer/pull/81) ([zebraf1](https://github.com/zebraf1))
-- Adds XML namespaces support [\#58](https://github.com/schmittjoh/serializer/pull/58) ([ajgarlag](https://github.com/ajgarlag))
 
 ## [0.13.0](https://github.com/schmittjoh/serializer/tree/0.13.0) (2013-07-29)
+
 **Closed issues:**
 
 - Documentation on Exclusion Strategies has an error [\#122](https://github.com/schmittjoh/serializer/issues/122)
@@ -713,7 +761,6 @@
 
 **Merged pull requests:**
 
-- fix wrong quote in used in docs [\#130](https://github.com/schmittjoh/serializer/pull/130) ([jaapio](https://github.com/jaapio))
 - Document the handler $context argument [\#116](https://github.com/schmittjoh/serializer/pull/116) ([adrienbrault](https://github.com/adrienbrault))
 - Document the SubscribingHandlerInterface a bit [\#115](https://github.com/schmittjoh/serializer/pull/115) ([adrienbrault](https://github.com/adrienbrault))
 - Add getter for the xml serialization visitor defaultRootName property [\#114](https://github.com/schmittjoh/serializer/pull/114) ([adrienbrault](https://github.com/adrienbrault))
@@ -729,6 +776,7 @@
 - Max depth strategy [\#4](https://github.com/schmittjoh/serializer/pull/4) ([adrienbrault](https://github.com/adrienbrault))
 
 ## [0.12.0](https://github.com/schmittjoh/serializer/tree/0.12.0) (2013-03-28)
+
 **Closed issues:**
 
 - Serialization profile/definition builder [\#68](https://github.com/schmittjoh/serializer/issues/68)
@@ -759,6 +807,7 @@
 - The NavigatorContext now holds a metadata stack [\#28](https://github.com/schmittjoh/serializer/pull/28) ([adrienbrault](https://github.com/adrienbrault))
 
 ## [0.11.0](https://github.com/schmittjoh/serializer/tree/0.11.0) (2013-01-29)
+
 **Closed issues:**
 
 - Hooking into metadata directly... [\#17](https://github.com/schmittjoh/serializer/issues/17)
