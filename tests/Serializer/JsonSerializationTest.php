@@ -110,6 +110,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
+            $outputs['inheritance_same_prop_name'] = '{"foo":"b", "bar":"c"}';
         }
 
         if (!isset($outputs[$key])) {
