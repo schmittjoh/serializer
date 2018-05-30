@@ -225,7 +225,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $name = $metadata->serializedName;
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->class, $metadata->name));
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
         }
 
         if ($metadata->xmlAttribute) {
