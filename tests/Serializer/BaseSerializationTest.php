@@ -390,7 +390,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+            $deserialized = $this->deserialize($this->getContent('simple_object'), get_class($obj));
+            $this->assertEquals(get_class($obj), get_class($deserialized));
         }
     }
 
