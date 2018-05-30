@@ -43,10 +43,22 @@ class PropertyMetadata extends BasePropertyMetadata
     public function __construct($class, $name)
     {
         parent::__construct($class, $name);
-        $this->closureAccessor = \Closure::bind(function ($o, $name) {
-            return $o->$name;
-        }, null, $class);
+        $this->initAccessor();
     }
+
+    private function initAccessor()
+    {
+        if ($this->reflection->getDeclaringClass()->isInternal()){
+            $this->closureAccessor = function ($o) {
+                return $this->reflection->getValue($o);
+            };
+        } else {
+            $this->closureAccessor = \Closure::bind(function ($o, $name) {
+                return $o->$name;
+            }, null, $this->reflection->class);
+        }
+    }
+
     public function setAccessor($type, $getter = null, $setter = null)
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
@@ -183,8 +195,6 @@ class PropertyMetadata extends BasePropertyMetadata
 
         parent::unserialize($parentStr);
 
-        $this->closureAccessor = \Closure::bind(function ($o, $name) {
-            return $o->$name;
-        }, null, $this->class);
+        $this->initAccessor();
     }
 }

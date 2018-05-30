@@ -25,6 +25,7 @@ use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
@@ -83,6 +84,7 @@ use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
 use JMS\Serializer\Tests\Fixtures\PersonSecretVirtual;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\Fixtures\SimpleInternalObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use JMS\Serializer\Tests\Fixtures\Tag;
@@ -93,6 +95,7 @@ use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
+use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use PhpCollection\Map;
 use PhpCollection\Sequence;
@@ -373,6 +376,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             array('float_trailing_zero', 1.0, 'double'),
             array('float_trailing_zero', 1.0, 'float'),
         );
+    }
+
+    public function testSimpleInternalObject()
+    {
+        $this->factory = new MetadataFactory(new YamlDriver(new FileLocator([
+           'JMS\Serializer\Tests\Fixtures' => __DIR__ .'/metadata/SimpleInternalObject',
+            '' => __DIR__ .'/metadata/SimpleInternalObject'
+        ])));
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->serializationVisitors, $this->deserializationVisitors, $this->dispatcher);
+        $obj = new SimpleInternalObject('foo', 'bar');
+
+        $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+        }
     }
 
     public function testSimpleObject()
