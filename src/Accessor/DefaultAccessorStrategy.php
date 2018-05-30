@@ -60,7 +60,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
     public function setValue(object $object, $value, PropertyMetadata $metadata): void
     {
         if ($metadata->readOnly) {
-            throw new LogicException(sprintf('%s on %s is read only.'), $metadata->name, $metadata->class);
+            throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
         }
 
         if (null === $metadata->setter) {
