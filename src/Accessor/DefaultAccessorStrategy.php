@@ -46,9 +46,17 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->getter) {
             if (!isset($this->readAccessors[$metadata->class])) {
-                $this->readAccessors[$metadata->class] = \Closure::bind(function ($o, $name) {
-                    return $o->$name;
-                }, null, $metadata->class);
+                if ($metadata->isInternal) {
+                    $ref = new \ReflectionProperty($metadata->class, $metadata->name);
+                    $ref->setAccessible(true);
+                    $this->readAccessors[$metadata->class] = function ($o, $name) use($ref) {
+                        return $ref->getValue($o);
+                    };
+                } else {
+                    $this->readAccessors[$metadata->class] = \Closure::bind(function ($o, $name) {
+                        return $o->$name;
+                    }, null, $metadata->class);
+                }
             }
 
             return $this->readAccessors[$metadata->class]($object, $metadata->name);
@@ -65,9 +73,17 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->setter) {
             if (!isset($this->writeAccessors[$metadata->class])) {
-                $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value) {
-                    $o->$name = $value;
-                }, null, $metadata->class);
+                if ($metadata->isInternal) {
+                    $ref = new \ReflectionProperty($metadata->class, $metadata->name);
+                    $ref->setAccessible(true);
+                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use($ref) {
+                        $ref->setValue($o, $value);
+                    };
+                } else {
+                    $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value) {
+                        $o->$name = $value;
+                    }, null, $metadata->class);
+                }
             }
 
             $this->writeAccessors[$metadata->class]($object, $metadata->name, $value);

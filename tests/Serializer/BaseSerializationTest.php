@@ -80,6 +80,7 @@ use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
 use JMS\Serializer\Tests\Fixtures\PersonSecretVirtual;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\Fixtures\SimpleInternalObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use JMS\Serializer\Tests\Fixtures\Tag;
@@ -87,7 +88,6 @@ use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -392,6 +392,25 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             ['float_trailing_zero', 1.0, 'double'],
             ['float_trailing_zero', 1.0, 'float'],
         ];
+    }
+
+    public function testSimpleInternalObject()
+    {
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->setMetadataDirs([
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ .'/metadata/SimpleInternalObject',
+            '' => __DIR__ .'/metadata/SimpleInternalObject'
+        ]);
+
+        $this->serializer = $builder->build();
+
+        $obj = new SimpleInternalObject('foo', 'bar');
+
+        $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+        }
     }
 
     public function testSimpleObject()

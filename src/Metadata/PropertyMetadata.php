@@ -36,10 +36,17 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlAttributeMap = false;
     public $maxDepth = null;
     public $excludeIf = null;
+    public $isInternal = false;
 
     public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
+
+        try {
+            $class = $this->getReflection()->getDeclaringClass();
+            $this->isInternal = $class->isInternal();
+        } catch (\ReflectionException $e) {
+        }
     }
 
     private function getReflection(): \ReflectionProperty
@@ -126,6 +133,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
+            'isInternal' => $this->isInternal,
         ]);
     }
 
@@ -167,6 +175,9 @@ class PropertyMetadata extends BasePropertyMetadata
         }
         if (isset($unserialized['skipWhenEmpty'])) {
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
+        }
+        if (isset($unserialized['isInternal'])) {
+            $this->isInternal = $unserialized['isInternal'];
         }
 
         parent::unserialize($parentStr);
