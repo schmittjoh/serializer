@@ -48,7 +48,8 @@ class PropertyMetadata extends BasePropertyMetadata
 
     private function initAccessor()
     {
-        if ($this->reflection->getDeclaringClass()->isInternal()){
+        $classRef = $this->reflection->getDeclaringClass();
+        if ($classRef->isInternal() || $classRef->getProperty($this->name)->isStatic()) {
             $this->closureAccessor = function ($o) {
                 return $this->reflection->getValue($o);
             };
