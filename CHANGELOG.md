@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.12.1](https://github.com/schmittjoh/serializer/tree/1.12.1) (2018-06-01)
+
+**Fixed bugs:**
+
+- Accessing static property as non static [\#960](https://github.com/schmittjoh/serializer/issues/960)
+- creating JMS\Serializer\Metadata-\>closureAccessor on internal class failed [\#959](https://github.com/schmittjoh/serializer/issues/959)
+
 ## [1.12.0](https://github.com/schmittjoh/serializer/tree/1.12.0) (2018-05-25)
 
 **Implemented enhancements:**
