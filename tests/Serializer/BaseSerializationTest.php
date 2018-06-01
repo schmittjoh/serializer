@@ -83,6 +83,7 @@ use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\SimpleInternalObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
+use JMS\Serializer\Tests\Fixtures\SimpleObjectWithStaticProp;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
@@ -419,6 +420,15 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         if ($this->hasDeserializer()) {
             self::assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+        }
+    }
+
+    public function testSimpleObjectStaticProp()
+    {
+        $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj = new SimpleObjectWithStaticProp('foo', 'bar')));
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
         }
     }
 

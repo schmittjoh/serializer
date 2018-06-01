@@ -39,8 +39,23 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlNamespaces = [];
     public $accessorOrder;
     public $customOrder;
+
+    /**
+     * @internal
+     * @var bool
+     */
     public $usingExpression = false;
+    
+    /**
+     * @internal
+     * @var bool
+     */
     public $isList = false;
+
+    /**
+     * @internal
+     * @var bool
+     */
     public $isMap = false;
 
     public $discriminatorDisabled = false;

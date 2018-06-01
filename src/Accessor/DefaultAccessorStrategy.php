@@ -10,15 +10,15 @@ use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
 final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
-    private $readAccessors = array();
-    private $writeAccessors = array();
+    private $readAccessors = [];
+    private $writeAccessors = [];
+    private $propertyReflectionCache = [];
 
     /**
      * @var ExpressionEvaluatorInterface
@@ -46,10 +46,16 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->getter) {
             if (!isset($this->readAccessors[$metadata->class])) {
-                if ($metadata->isInternal) {
-                    $ref = new \ReflectionProperty($metadata->class, $metadata->name);
-                    $ref->setAccessible(true);
-                    $this->readAccessors[$metadata->class] = function ($o, $name) use($ref) {
+                if ($metadata->forceReflectionAccess === true) {
+                    $this->readAccessors[$metadata->class] = function ($o, $name) use ($metadata) {
+
+                        $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
+                        if ($ref === null) {
+                            $ref = new \ReflectionProperty($metadata->class, $name);
+                            $ref->setAccessible(true);
+                            $this->propertyReflectionCache[$metadata->class][$name] = $ref;
+                        }
+
                         return $ref->getValue($o);
                     };
                 } else {
@@ -73,10 +79,15 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->setter) {
             if (!isset($this->writeAccessors[$metadata->class])) {
-                if ($metadata->isInternal) {
-                    $ref = new \ReflectionProperty($metadata->class, $metadata->name);
-                    $ref->setAccessible(true);
-                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use($ref) {
+                if ($metadata->forceReflectionAccess === true) {
+                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use ($metadata) {
+                        $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
+                        if ($ref === null) {
+                            $ref = new \ReflectionProperty($metadata->class, $name);
+                            $ref->setAccessible(true);
+                            $this->propertyReflectionCache[$metadata->class][$name] = $ref;
+                        }
+
                         $ref->setValue($o, $value);
                     };
                 } else {
