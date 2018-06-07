@@ -197,8 +197,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
             $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
             $allowTypes = array(
-                'name' => $entryName,
-                'namespace' => $namespace
+                array(
+                    'name' => $entryName,
+                    'namespace' => $namespace
+                )
             );
         }
 
