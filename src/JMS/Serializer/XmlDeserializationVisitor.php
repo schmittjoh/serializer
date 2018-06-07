@@ -154,6 +154,16 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         return $data;
     }
 
+    private function getTypeForArrayElement($name, $namespace)
+    {
+        foreach ($this->currentMetadata->xmlAllowTypes as $xmlAllowType) {
+            if ($xmlAllowType['name'] == $name && $xmlAllowType['namespace'] == $namespace) {
+                return ['name' => $xmlAllowType['type'], 'params' => []];
+            }
+        }
+        return null;
+    }
+
     /**
      * @param \SimpleXMLElement $data
      * @param array $type
@@ -181,41 +191,21 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
         }
 
         if (!empty($this->currentMetadata) && !empty($this->currentMetadata->xmlAllowTypes)) {
-            $nodes = [];
-            $q = '';
-            foreach ($this->currentMetadata->xmlAllowTypes as $allowType) {
-                $entryName = $allowType['name'];
-                $namespace = $allowType['namespace'] ?: null;
-
-                if ($namespace === null && $this->objectMetadataStack->count()) {
-                    $classMetadata = $this->objectMetadataStack->top();
-                    $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
-                    if ($namespace === null) {
-                        $namespaces = $data->getDocNamespaces();
-                        if (isset($namespaces[''])) {
-                            $namespace = $namespaces[''];
-                        }
-                    }
-                }
-
-                if (!empty($q)) {
-                    $q .= '|';
-                }
-
-                if (null !== $namespace) {
-                    $prefix = uniqid('ns-');
-                    $data->registerXPathNamespace($prefix, $namespace);
-                    $q .= $prefix . ':' . $entryName;
-                }
-                else {
-                    $q .= $entryName;
-                }
-            }
-            $nodes = $data->xpath($q);
+            $allowTypes = $this->currentMetadata->xmlAllowTypes;
         }
         else {
             $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
             $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
+            $allowTypes = array(
+                'name' => $entryName,
+                'namespace' => $namespace
+            );
+        }
+
+        $queryArray = array();
+        foreach ($allowTypes as $allowType) {
+            $entryName = $allowType['name'];
+            $namespace = $allowType['namespace'] ?: null;
 
             if ($namespace === null && $this->objectMetadataStack->count()) {
                 $classMetadata = $this->objectMetadataStack->top();
@@ -231,11 +221,13 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             if (null !== $namespace) {
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespace);
-                $nodes = $data->xpath("$prefix:$entryName");
+                $queryArray[] = $prefix . ':' . $entryName;
             } else {
-                $nodes = $data->xpath($entryName);
+                $queryArray[] = $entryName;
             }
         }
+        $q = implode('|', $queryArray);
+        $nodes = $data->xpath($q);
 
         if (!count($nodes)) {
             if (null === $this->result) {
@@ -258,20 +250,15 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
                 foreach ($nodes as $v) {
                     if (!empty($this->currentMetadata) && !empty($this->currentMetadata->xmlAllowTypes)) {
-                        $t = null;
-                        foreach ($this->currentMetadata->xmlAllowTypes as $xmlAllowType) {
-                            if ($xmlAllowType['name'] == $v->getName() && $xmlAllowType['namespace'] == dom_import_simplexml($v)->namespaceURI) {
-                                $t = $xmlAllowType['type'];
-                                break;
-                            }
-                        }
-                        if ($t) {
-                            $result[] = $this->navigator->accept($v, ['name' => $t, 'params' => []], $context);
+                        $t = $this->getTypeForArrayElement($v->getName(), dom_import_simplexml($v)->namespaceURI);
+                        if (!$t) {
+                            continue;
                         }
                     }
                     else {
-                        $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                        $t = $type['params'][0];
                     }
+                    $result[] = $this->navigator->accept($v, $t, $context);
                 }
 
                 return $result;

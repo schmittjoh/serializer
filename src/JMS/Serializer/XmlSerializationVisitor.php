@@ -171,6 +171,16 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->visitNumeric($data, $type);
     }
 
+    private function getTypeForArrayElement($className)
+    {
+        foreach ($this->currentMetadata->xmlAllowTypes as $allowType) {
+            if ($allowType['type'] == $className) {
+                return $allowType;
+            }
+        }
+        return null;
+    }
+
     public function visitArray($data, array $type, Context $context)
     {
         if (null === $this->document) {
@@ -190,13 +200,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid($k)) ? $k : $entryName;
 
             if (null !== $this->currentMetadata && !empty($this->currentMetadata->xmlAllowTypes)) {
-                $type = null;
-                foreach ($this->currentMetadata->xmlAllowTypes as $xmlAllowType) {
-                    if ($xmlAllowType['type'] == get_class($v)) {
-                        $type = $xmlAllowType;
-                        break;
-                    }
-                }
+                $type = $this->getTypeForArrayElement(get_class($v));
                 if ($type) {
                     $tagName = $type['name'];
                     $namespace = $type['namespace'];
