@@ -215,7 +215,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                         continue;
                     }
 
-                    $v = $this->accessor->getValue($data, $propertyMetadata);
+                    $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
 
                     if (null === $v && $this->shouldSerializeNull !== true) {
                         continue;
