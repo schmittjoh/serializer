@@ -42,8 +42,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             if ($this->evaluator === null) {
                 throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $metadata->name, $metadata->class));
             }
-
-            return $this->evaluator->evaluate($metadata->expression, ['object' => $object, 'context' => $context]);
+            return $this->evaluator->evaluate($metadata->expression, ['object' => $object, 'context' => $context, 'property_metadata' => $metadata ]);
         }
 
         if (null === $metadata->getter) {
