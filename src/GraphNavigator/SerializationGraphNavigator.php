@@ -195,7 +195,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                 $this->visitor->startVisitingObject($metadata, $data, $type);
 
-                $properties = $this->selector->select($metadata, $this->context);
+                $properties = $this->selector->select($metadata);
                 $values = $this->accessor->getValues($data, $metadata, $properties, $this->context);
 
                 foreach ($properties as $i => $propertyMetadata) {

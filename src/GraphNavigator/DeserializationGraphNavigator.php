@@ -166,7 +166,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
 
-                $properties = $this->selector->select($metadata, $this->context);
+                $properties = $this->selector->select($metadata);
                 $values = [];
 
                 foreach ($properties as $i => $propertyMetadata) {

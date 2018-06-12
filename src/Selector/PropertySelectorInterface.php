@@ -17,8 +17,7 @@ interface PropertySelectorInterface
 {
     /**
      * @param ClassMetadata $metadata
-     * @param Context $context
      * @return PropertyMetadata[]
      */
-    public function select(ClassMetadata $metadata, Context $context): array;
+    public function select(ClassMetadata $metadata): array;
 }

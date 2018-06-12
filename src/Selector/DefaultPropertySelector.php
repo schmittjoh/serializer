@@ -34,35 +34,49 @@ final class DefaultPropertySelector implements PropertySelectorInterface
      */
     private $expressionExclusionStrategy;
 
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var array
+     */
+    private $cache = [];
+
     public function __construct(
-        ExclusionStrategyInterface $exclusionStrategy,
+        Context $context,
         ExpressionEvaluatorInterface $evaluator
     ) {
-        $this->exclusionStrategy = $exclusionStrategy;
+        $this->exclusionStrategy = $context->getExclusionStrategy();
+        $this->context = $context;
         $this->evaluator = $evaluator;
         $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($evaluator);
     }
 
     /**
      * @param ClassMetadata $metadata
-     * @param Context $context
      * @return PropertyMetadata[]
      */
-    public function select(ClassMetadata $metadata, Context $context): array
+    public function select(ClassMetadata $metadata): array
     {
-        $values = [];
-        foreach ($metadata->propertyMetadata as $propertyMetadata) {
-            if ($context instanceof DeserializationContext && $propertyMetadata->readOnly) {
-                continue;
-            }
+        if (!isset($this->cache[spl_object_hash($metadata)])) {
 
-            if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $context) || $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
-                continue;
-            }
+            $values = [];
+            foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                if ($this->context instanceof DeserializationContext && $propertyMetadata->readOnly) {
+                    continue;
+                }
 
-            $values[] = $propertyMetadata;
+                if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context) || $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
+                    continue;
+                }
+
+                $values[] = $propertyMetadata;
+            }
+            $this->cache[spl_object_hash($metadata)] = $values;
         }
 
-        return $values;
+        return $this->cache[spl_object_hash($metadata)];
     }
 }
