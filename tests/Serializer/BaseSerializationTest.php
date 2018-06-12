@@ -30,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
 use JMS\Serializer\Tests\Fixtures\Article;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
+use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
@@ -740,6 +741,19 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
         self::assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
     }
+
+    public function testExpressionAuthorWithContextVars()
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator($evaluator);
+        $serializer = $builder->build();
+
+        $author = new AuthorExpressionAccessContext("Ruud");
+        self::assertEquals($this->getContent('author_expression_context'), $serializer->serialize($author, $this->getFormat()));
+    }
+
 
     /**
      * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException

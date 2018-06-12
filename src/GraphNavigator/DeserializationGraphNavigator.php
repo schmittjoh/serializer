@@ -182,7 +182,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
-                        $this->accessor->setValue($object, $v, $propertyMetadata);
+                        $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
 
                     }

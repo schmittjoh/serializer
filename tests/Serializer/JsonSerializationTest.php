@@ -107,6 +107,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
             $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
             $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
+            $outputs['author_expression_context'] = '{"first_name":"Ruud","direction":1,"name":"name"}';
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
