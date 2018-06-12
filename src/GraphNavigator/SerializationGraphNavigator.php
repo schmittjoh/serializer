@@ -12,11 +12,8 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\CircularReferenceDetectedException;
 use JMS\Serializer\Exception\ExcludedClassException;
-use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -41,17 +38,10 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
      * @var SerializationVisitorInterface
      */
     protected $visitor;
-
     /**
      * @var SerializationContext
      */
     protected $context;
-
-    /**
-     * @var ExpressionLanguageExclusionStrategy
-     */
-    private $expressionExclusionStrategy;
-
     private $dispatcher;
     private $metadataFactory;
     private $handlerRegistry;
@@ -59,7 +49,6 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
      * @var AccessorStrategyInterface
      */
     private $accessor;
-
     /**
      * @var bool
      */
@@ -69,17 +58,12 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        EventDispatcherInterface $dispatcher = null
     ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->accessor = $accessor;
-
-        if ($expressionEvaluator) {
-            $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
-        }
     }
 
     public function initialize(VisitorInterface $visitor, Context $context): void
@@ -189,10 +173,6 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
-                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
-                }
-
                 if ($this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
                     $this->context->stopVisiting($data);
 
@@ -206,23 +186,13 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 }
 
                 $this->visitor->startVisitingObject($metadata, $data, $type);
-                foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
-                        continue;
-                    }
 
-                    if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
-                        continue;
-                    }
+                $props = $this->accessor->getProperties($metadata, $this->context);
+                $values = $this->accessor->getValues($data, $props, $this->context);
 
-                    $v = $this->accessor->getValue($data, $propertyMetadata);
-
-                    if (null === $v && $this->shouldSerializeNull !== true) {
-                        continue;
-                    }
-
+                foreach ($props as $i => $propertyMetadata) {
                     $this->context->pushPropertyMetadata($propertyMetadata);
-                    $this->visitor->visitProperty($propertyMetadata, $v);
+                    $this->visitor->visitProperty($propertyMetadata, $values[$i]);
                     $this->context->popPropertyMetadata();
                 }
 
