@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Accessor;
 
-use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
@@ -19,28 +21,63 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
     private $readAccessors = [];
     private $writeAccessors = [];
     private $propertyReflectionCache = [];
-
     /**
      * @var ExpressionEvaluatorInterface
      */
     private $evaluator;
 
-    public function __construct(ExpressionEvaluatorInterface $evaluator = null)
-    {
+    public function __construct(
+        ExpressionEvaluatorInterface $evaluator = null
+    ) {
         $this->evaluator = $evaluator;
     }
 
-    public function getValue(object $object, PropertyMetadata $metadata)
+    public function getValues(object $data, ClassMetadata $metadata, array $properties, SerializationContext $context): array
+    {
+        $shouldSerializeNull = $context->shouldSerializeNull();
+
+        $values = [];
+        foreach ($properties as $propertyMetadata) {
+
+            $v = $this->getValue($data, $propertyMetadata, $context);
+
+            if (null === $v && $shouldSerializeNull !== true) {
+                continue;
+            }
+
+            $values[] = $v;
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param object $object
+     * @param mixed[] $values
+     * @param PropertyMetadata[] $properties
+     * @param DeserializationContext $context
+     * @return void
+     */
+    public function setValues(object $object, array $values, ClassMetadata $metadata, array $properties, DeserializationContext $context): void
+    {
+        $values = [];
+        foreach ($properties as $i => $propertyMetadata) {
+
+            if (!array_key_exists($i, $values)) {
+                continue;
+            }
+
+            $this->setValue($object, $values[$i], $propertyMetadata, $context);
+        }
+    }
+
+    private function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if ($metadata instanceof StaticPropertyMetadata) {
-            return $metadata->getValue(null);
+            return $metadata->getValue();
         }
 
         if ($metadata instanceof ExpressionPropertyMetadata) {
-            if ($this->evaluator === null) {
-                throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $metadata->name, $metadata->class));
-            }
-
             return $this->evaluator->evaluate($metadata->expression, ['object' => $object]);
         }
 
@@ -71,7 +108,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         return $object->{$metadata->getter}();
     }
 
-    public function setValue(object $object, $value, PropertyMetadata $metadata): void
+    private function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
         if ($metadata->readOnly) {
             throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
