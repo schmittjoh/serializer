@@ -155,7 +155,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
-                if ($this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
                     $this->context->decreaseDepth();
 
                     return null;
@@ -167,7 +167,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
 

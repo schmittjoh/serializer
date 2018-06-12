@@ -47,7 +47,6 @@ abstract class Context
 
     public function __construct()
     {
-        $this->exclusionStrategy = new DisjunctExclusionStrategy();
     }
 
     /**
@@ -95,7 +94,7 @@ abstract class Context
         return $this->navigator;
     }
 
-    public function getExclusionStrategy(): ExclusionStrategyInterface
+    public function getExclusionStrategy(): ?ExclusionStrategyInterface
     {
         return $this->exclusionStrategy;
     }
@@ -131,7 +130,20 @@ abstract class Context
     {
         $this->assertMutable();
 
-        $this->exclusionStrategy->addStrategy($strategy);
+        if (null === $this->exclusionStrategy) {
+            $this->exclusionStrategy = $strategy;
+            return $this;
+        }
+
+        if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
+            $this->exclusionStrategy->addStrategy($strategy);
+            return $this;
+        }
+
+        $this->exclusionStrategy = new DisjunctExclusionStrategy(array(
+            $this->exclusionStrategy,
+            $strategy,
+        ));
 
         return $this;
     }
