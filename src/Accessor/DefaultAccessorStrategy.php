@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Accessor;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\LogicException;
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
-use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
@@ -28,48 +25,14 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
      * @var ExpressionEvaluatorInterface
      */
     private $evaluator;
-    /**
-     * @var ExclusionStrategyInterface
-     */
-    private $exclusionStrategy;
-    /**
-     * @var ExpressionLanguageExclusionStrategy
-     */
-    private $expressionExclusionStrategy;
 
     public function __construct(
-        ExclusionStrategyInterface $exclusionStrategy,
-        ExpressionEvaluatorInterface $evaluator
+        ExpressionEvaluatorInterface $evaluator = null
     ) {
-        $this->exclusionStrategy = $exclusionStrategy;
         $this->evaluator = $evaluator;
-        $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($evaluator);
     }
 
-    /**
-     * @param ClassMetadata $metadata
-     * @param Context $context
-     * @return PropertyMetadata[]
-     */
-    public function getProperties(ClassMetadata $metadata, Context $context): array
-    {
-        $values = [];
-        foreach ($metadata->propertyMetadata as $propertyMetadata) {
-            if ($context instanceof DeserializationContext && $propertyMetadata->readOnly) {
-                continue;
-            }
-
-            if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $context) || $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
-                continue;
-            }
-
-            $values[] = $propertyMetadata;
-        }
-
-        return $values;
-    }
-
-    public function getValues(object $data, array $properties, SerializationContext $context): array
+    public function getValues(object $data, ClassMetadata $metadata, array $properties, SerializationContext $context): array
     {
         $shouldSerializeNull = $context->shouldSerializeNull();
 
@@ -95,7 +58,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
      * @param DeserializationContext $context
      * @return void
      */
-    public function setValues(object $object, array $values, array $properties, DeserializationContext $context): void
+    public function setValues(object $object, array $values, ClassMetadata $metadata, array $properties, DeserializationContext $context): void
     {
         $values = [];
         foreach ($properties as $i => $propertyMetadata) {
@@ -145,7 +108,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         return $object->{$metadata->getter}();
     }
 
-    public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
+    private function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
         if ($metadata->readOnly) {
             throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));

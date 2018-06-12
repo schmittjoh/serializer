@@ -19,6 +19,8 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
+use JMS\Serializer\Selector\DefaultPropertySelector;
+use JMS\Serializer\Selector\PropertySelectorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
@@ -53,17 +55,23 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
      * @var bool
      */
     private $shouldSerializeNull;
+    /**
+     * @var PropertySelectorInterface
+     */
+    private $selector;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
         AccessorStrategyInterface $accessor,
+        PropertySelectorInterface $selector,
         EventDispatcherInterface $dispatcher = null
     ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->accessor = $accessor;
+        $this->selector = $selector;
     }
 
     public function initialize(VisitorInterface $visitor, Context $context): void
@@ -187,10 +195,10 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                 $this->visitor->startVisitingObject($metadata, $data, $type);
 
-                $props = $this->accessor->getProperties($metadata, $this->context);
-                $values = $this->accessor->getValues($data, $props, $this->context);
+                $properties = $this->selector->select($metadata, $this->context);
+                $values = $this->accessor->getValues($data, $metadata, $properties, $this->context);
 
-                foreach ($props as $i => $propertyMetadata) {
+                foreach ($properties as $i => $propertyMetadata) {
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     $this->visitor->visitProperty($propertyMetadata, $values[$i]);
                     $this->context->popPropertyMetadata();

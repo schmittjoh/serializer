@@ -22,6 +22,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
+use JMS\Serializer\Selector\PropertySelectorInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
@@ -58,23 +59,25 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      * @var AccessorStrategyInterface
      */
     private $accessor;
+    /**
+     * @var PropertySelectorInterface
+     */
+    private $selector;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        PropertySelectorInterface $selector,
+        EventDispatcherInterface $dispatcher = null
     ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
         $this->accessor = $accessor;
-        if ($expressionEvaluator) {
-            $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
-        }
+        $this->selector = $selector;
     }
 
     /**
@@ -147,10 +150,6 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 /** @var $metadata ClassMetadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
-                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
-                }
-
                 if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($data, $metadata);
                 }
@@ -167,10 +166,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
 
-                $props = $this->accessor->getProperties($metadata, $this->context);
+                $properties = $this->selector->select($metadata, $this->context);
                 $values = [];
 
-                foreach ($props as $i => $propertyMetadata) {
+                foreach ($properties as $i => $propertyMetadata) {
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $values[$i] = $this->visitor->visitProperty($propertyMetadata, $data);
@@ -180,7 +179,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $this->context->popPropertyMetadata();
                 }
 
-                $this->accessor->setValues($data, $props, $values, $this->context);
+                $this->accessor->setValues($data, $values, $metadata, $properties, $this->context);
 
                 $rs = $this->visitor->endVisitingObject($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $rs, $type);
