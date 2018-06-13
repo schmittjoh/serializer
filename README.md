@@ -8,7 +8,11 @@
 
 You are browsing the code of upcoming 2.0 release, if you are interested in the 1.x series, check the [1.x][1.x] branch.
 
-Differences between the 1.x and 2.x series can be found in the [CHANGELOG][CHANGELOG].
+Differences between the 1.x and 2.x series can be found in the [CHANGELOG][CHANGELOG]. 
+
+Upgrading from 1.x to 2.x should be almost transparent for most of the userland code, in the  
+case you have heavily used internal-api or you are relaying on some of the removed features,
+ the [UPGRADING][UPGRADING] document is a short guide on how to upgrade. 
 
 If you are submitting a pull request, until the 2.0 is not released submit it targeting the 1.x branch.
 Accepted pull request will be ported to the 2.0 release when possible. 
