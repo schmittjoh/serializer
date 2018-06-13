@@ -37,6 +37,7 @@ Built-in features include:
 Learn more about the serializer in its [documentation](http://jmsyst.com/libs/serializer).
 
   [CHANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
+  [UPGRADING]: https://github.com/schmittjoh/serializer/blob/master/UPGRADING.md
   
   [Master image]: https://img.shields.io/travis/schmittjoh/serializer/master.svg?style=flat-square
   [Master]: https://travis-ci.org/schmittjoh/serializer
