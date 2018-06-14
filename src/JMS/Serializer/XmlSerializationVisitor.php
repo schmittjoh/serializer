@@ -361,8 +361,18 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata;
     }
 
+    /**
+     * @param bool $create (default = false)
+     * @return \DOMDocument
+     */
     public function getDocument()
     {
+        if (func_num_args() === 1) {
+            if (null === $this->document && func_get_arg(0) === true) {
+                $this->document = $this->createDocument();
+            }
+        }
+
         return $this->document;
     }
 
@@ -388,6 +398,13 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
+    /**
+     * @deprecated Use $this->getDocument(true) instead
+     * @param null $version
+     * @param null $encoding
+     * @param bool $addRoot
+     * @return \DOMDocument
+     */
     public function createDocument($version = null, $encoding = null, $addRoot = true)
     {
         $doc = new \DOMDocument($version ?: $this->defaultVersion, $encoding ?: $this->defaultEncoding);
