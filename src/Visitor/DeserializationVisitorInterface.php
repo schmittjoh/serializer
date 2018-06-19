@@ -14,8 +14,6 @@ use JMS\Serializer\VisitorInterface;
  * This contains the minimal set of values that must be supported for any
  * output format.
  *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- * @author Asmir Mustafic <goetas@gmail.com>
  */
 interface DeserializationVisitorInterface extends VisitorInterface
 {
@@ -63,8 +61,6 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * Returns the class name based on the type of the discriminator map value
      *
      * @param $data
-     * @param ClassMetadata $metadata
-     * @return string
      */
     public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string;
 
@@ -79,16 +75,13 @@ interface DeserializationVisitorInterface extends VisitorInterface
     /**
      * Called before the properties of the object are being visited.
      *
-     * @param ClassMetadata $metadata
      * @param mixed $data
      * @param array $type
      *
-     * @return void
      */
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
 
     /**
-     * @param PropertyMetadata $metadata
      * @param mixed $data
      *
      * @return mixed
@@ -98,7 +91,6 @@ interface DeserializationVisitorInterface extends VisitorInterface
     /**
      * Called after all properties of the object have been visited.
      *
-     * @param ClassMetadata $metadata
      * @param mixed $data
      * @param array $type
      *

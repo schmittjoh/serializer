@@ -6,5 +6,5 @@ namespace JMS\Serializer\Type;
 
 interface ParserInterface
 {
-    public function parse(string $type) : array;
+    public function parse(string $type): array;
 }

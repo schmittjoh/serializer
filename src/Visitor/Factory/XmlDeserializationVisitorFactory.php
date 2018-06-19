@@ -7,14 +7,10 @@ namespace JMS\Serializer\Visitor\Factory;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 
-/**
- *
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
     private $disableExternalEntities = true;
-    private $doctypeWhitelist = [];
+    private $doctypeWhitelist        = [];
 
     public function getVisitor(): DeserializationVisitorInterface
     {
@@ -36,4 +32,3 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
         return $this;
     }
 }
-

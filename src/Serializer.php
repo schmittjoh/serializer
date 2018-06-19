@@ -12,89 +12,73 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
-use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
-use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
+use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
+use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function sprintf;
+use function strtolower;
 
 /**
  * Serializer Implementation.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class Serializer implements SerializerInterface, ArrayTransformerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $factory;
 
-    /**
-     * @var TypeParser
-     */
+    /** @var TypeParser */
     private $typeParser;
 
-    /**
-     * @var SerializationVisitorFactory[]
-     */
+    /** @var SerializationVisitorFactory[] */
     private $serializationVisitors = [];
 
-    /**
-     * @var DeserializationVisitorFactory[]
-     */
+    /** @var DeserializationVisitorFactory[] */
     private $deserializationVisitors = [];
 
-    /**
-     * @var SerializationContextFactoryInterface
-     */
+    /** @var SerializationContextFactoryInterface */
     private $serializationContextFactory;
 
-    /**
-     * @var DeserializationContextFactoryInterface
-     */
+    /** @var DeserializationContextFactoryInterface */
     private $deserializationContextFactory;
 
-    /**
-     * @var GraphNavigatorFactoryInterface[]
-     */
+    /** @var GraphNavigatorFactoryInterface[] */
     private $graphNavigators;
 
     /**
-     * @param MetadataFactoryInterface $factory
      * @param GraphNavigatorFactoryInterface[] $graphNavigators
-     * @param SerializationVisitorFactory[] $serializationVisitors
-     * @param DeserializationVisitorFactory[] $deserializationVisitors
-     * @param SerializationContextFactoryInterface|null $serializationContextFactory
-     * @param DeserializationContextFactoryInterface|null $deserializationContextFactory
-     * @param ParserInterface|null $typeParser
+     * @param SerializationVisitorFactory[]    $serializationVisitors
+     * @param DeserializationVisitorFactory[]  $deserializationVisitors
      */
     public function __construct(
         MetadataFactoryInterface $factory,
         array $graphNavigators,
         array $serializationVisitors,
         array $deserializationVisitors,
-        SerializationContextFactoryInterface $serializationContextFactory = null,
-        DeserializationContextFactoryInterface $deserializationContextFactory = null,
-        ParserInterface $typeParser = null
+        ?SerializationContextFactoryInterface $serializationContextFactory = null,
+        ?DeserializationContextFactoryInterface $deserializationContextFactory = null,
+        ?ParserInterface $typeParser = null
     ) {
-        $this->factory = $factory;
-        $this->graphNavigators = $graphNavigators;
-        $this->serializationVisitors = $serializationVisitors;
+        $this->factory                 = $factory;
+        $this->graphNavigators         = $graphNavigators;
+        $this->serializationVisitors   = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
         $this->typeParser = $typeParser ?? new Parser();
 
-        $this->serializationContextFactory = $serializationContextFactory ?: new DefaultSerializationContextFactory();
+        $this->serializationContextFactory   = $serializationContextFactory ?: new DefaultSerializationContextFactory();
         $this->deserializationContextFactory = $deserializationContextFactory ?: new DefaultDeserializationContextFactory();
     }
 
     /**
      * Parses a direction string to one of the direction constants.
      *
-     * @param string $dirStr
      *
-     * @return integer
      */
     public static function parseDirection(string $dirStr): int
     {
@@ -143,21 +127,23 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($factories[$format])) {
             throw new UnsupportedFormatException(
                 sprintf(
-                    'The format "%s" is not supported for %s.', $format,
+                    'The format "%s" is not supported for %s.',
+                    $format,
                     $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
-                ));
+                )
+            );
         }
 
         return $factories[$format]->getVisitor();
     }
 
-    public function serialize($data, string $format, SerializationContext $context = null, string $type = null): string
+    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $format);
+        $visitor   = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $type = $this->findInitialType($type, $context);
@@ -166,13 +152,13 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         return $visitor->getResult($result);
     }
 
-    public function deserialize(string $data, string $type, string $format, DeserializationContext $context = null)
+    public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $format);
+        $visitor   = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
@@ -183,24 +169,24 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function toArray($data, SerializationContext $context = null, string $type = null): array
+    public function toArray($data, ?SerializationContext $context = null, ?string $type = null): array
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
+        $visitor   = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
-        $type = $this->findInitialType($type, $context);
+        $type   = $this->findInitialType($type, $context);
         $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
         $result = $this->convertArrayObjects($result);
 
-        if (!\is_array($result)) {
+        if (!is_array($result)) {
             throw new RuntimeException(sprintf(
                 'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
-                \is_object($data) ? \get_class($data) : \gettype($data),
-                \is_object($result) ? \get_class($result) : \gettype($result)
+                is_object($data) ? get_class($data) : gettype($data),
+                is_object($result) ? get_class($result) : gettype($result)
             ));
         }
 
@@ -210,19 +196,19 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function fromArray(array $data, string $type, DeserializationContext $context = null)
+    public function fromArray(array $data, string $type, ?DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
+        $visitor   = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         return $this->visit($navigator, $visitor, $context, $data, 'json', $type, false);
     }
 
-    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, string $format, string $type = null, bool $prepare = true)
+    private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, string $format, ?string $type = null, bool $prepare = true)
     {
         $context->initialize(
             $format,
@@ -247,9 +233,9 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private function convertArrayObjects($data)
     {
         if ($data instanceof \ArrayObject || $data instanceof \stdClass) {
-            $data = (array)$data;
+            $data = (array) $data;
         }
-        if (\is_array($data)) {
+        if (is_array($data)) {
             foreach ($data as $k => $v) {
                 $data[$k] = $this->convertArrayObjects($v);
             }

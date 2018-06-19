@@ -49,26 +49,22 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'json_array' => 'array',
         'simple_array' => 'array<string>',
     ];
-    /**
-     * @var DriverInterface
-     */
+    /** @var DriverInterface */
     protected $delegate;
-    /**
-     * @var ManagerRegistry
-     */
+    /** @var ManagerRegistry */
     protected $registry;
     protected $typeParser;
 
-    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ParserInterface $typeParser = null)
+    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ?ParserInterface $typeParser = null)
     {
-        $this->delegate = $delegate;
-        $this->registry = $registry;
+        $this->delegate   = $delegate;
+        $this->registry   = $registry;
         $this->typeParser = $typeParser ?: new Parser();
     }
 
     public function loadMetadataForClass(\ReflectionClass $class): ?\Metadata\ClassMetadata
     {
-        /** @var $classMetadata ClassMetadata */
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
@@ -105,36 +101,19 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
             || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param ClassMetadata $classMetadata
-     */
     protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata): void
     {
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param PropertyMetadata $propertyMetadata
-     */
     protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): bool
     {
         return false;
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param PropertyMetadata $propertyMetadata
-     */
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
     }
 
-    /**
-     * @param string $className
-     *
-     * @return null|DoctrineClassMetadata
-     */
     protected function tryLoadingDoctrineMetadata(string $className): ?DoctrineClassMetadata
     {
         if (!$manager = $this->registry->getManagerForClass($className)) {

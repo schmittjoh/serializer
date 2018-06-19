@@ -11,8 +11,6 @@ namespace JMS\Serializer;
  * output format.
  *
  * @internal
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- * @author Asmir Mustafic <goetas@gmail.com>
  */
 interface VisitorInterface
 {
@@ -29,9 +27,7 @@ interface VisitorInterface
     /**
      * Called before serialization/deserialization starts.
      *
-     * @param GraphNavigatorInterface $navigator
      *
-     * @return void
      */
     public function setNavigator(GraphNavigatorInterface $navigator): void;
 

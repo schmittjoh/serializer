@@ -16,8 +16,6 @@ final class XmlNamespace
      */
     public $uri;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $prefix = '';
 }

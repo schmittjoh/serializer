@@ -7,6 +7,7 @@ namespace JMS\Serializer\Exclusion;
 use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use function version_compare;
 
 final class VersionExclusionStrategy implements ExclusionStrategyInterface
 {

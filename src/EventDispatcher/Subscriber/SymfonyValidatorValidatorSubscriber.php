@@ -11,9 +11,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ValidatorInterface
-     */
+    /** @var ValidatorInterface */
     private $validator;
 
     public function __construct(ValidatorInterface $validator)
@@ -28,7 +26,7 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         ];
     }
 
-    public function onPostDeserialize(Event $event)
+    public function onPostDeserialize(Event $event): void
     {
         $context = $event->getContext();
 
@@ -37,7 +35,7 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         }
 
         $validator = $this->validator;
-        $groups = $context->hasAttribute('validation_groups') ? $context->getAttribute('validation_groups') : null;
+        $groups    = $context->hasAttribute('validation_groups') ? $context->getAttribute('validation_groups') : null;
 
         if (!$groups) {
             return;

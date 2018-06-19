@@ -7,16 +7,12 @@ namespace JMS\Serializer\Visitor\Factory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
-/**
- *
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class XmlSerializationVisitorFactory implements SerializationVisitorFactory
 {
     private $defaultRootName = 'result';
-    private $defaultVersion = '1.0';
+    private $defaultVersion  = '1.0';
     private $defaultEncoding = 'UTF-8';
-    private $formatOutput = true;
+    private $formatOutput    = true;
     private $defaultRootNamespace;
 
     public function getVisitor(): SerializationVisitorInterface
@@ -32,7 +28,7 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
 
     public function setDefaultRootName(string $name, ?string $namespace = null): self
     {
-        $this->defaultRootName = $name;
+        $this->defaultRootName      = $name;
         $this->defaultRootNamespace = $namespace;
         return $this;
     }
@@ -51,7 +47,7 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
 
     public function setFormatOutput(bool $formatOutput): self
     {
-        $this->formatOutput = (boolean)$formatOutput;
+        $this->formatOutput = (bool) $formatOutput;
         return $this;
     }
 }

@@ -10,8 +10,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class XmlMap extends XmlCollection
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $keyAttribute = '_key';
 }

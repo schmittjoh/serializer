@@ -10,35 +10,35 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use function array_key_exists;
+use function is_array;
+use function sprintf;
 
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.
  */
 final class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
-    const ON_MISSING_NULL = 'null';
-    const ON_MISSING_EXCEPTION = 'exception';
-    const ON_MISSING_FALLBACK = 'fallback';
-    /**
-     * @var string
-     */
+    public const ON_MISSING_NULL      = 'null';
+    public const ON_MISSING_EXCEPTION = 'exception';
+    public const ON_MISSING_FALLBACK  = 'fallback';
+    /** @var string */
     private $fallbackStrategy;
 
     private $managerRegistry;
     private $fallbackConstructor;
 
     /**
-     * Constructor.
      *
-     * @param ManagerRegistry $managerRegistry Manager registry
+     *
+     * @param ManagerRegistry            $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
-     * @param string $fallbackStrategy
      */
-    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, $fallbackStrategy = self::ON_MISSING_NULL)
+    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, string $fallbackStrategy = self::ON_MISSING_NULL)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->managerRegistry     = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
-        $this->fallbackStrategy = $fallbackStrategy;
+        $this->fallbackStrategy    = $fallbackStrategy;
     }
 
     /**
@@ -63,17 +63,16 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!\is_array($data)) {
+        if (!is_array($data)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
 
         // Fallback to default constructor if missing identifier(s)
-        $classMetadata = $objectManager->getClassMetadata($metadata->name);
+        $classMetadata  = $objectManager->getClassMetadata($metadata->name);
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-
             if (isset($metadata->propertyMetadata[$name])) {
                 $dataName = $metadata->propertyMetadata[$name]->serializedName;
             } else {
@@ -94,11 +93,11 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
                 case self::ON_MISSING_NULL:
                     return null;
                 case self::ON_MISSING_EXCEPTION:
-                    throw new ObjectConstructionException(sprintf("Entity %s can not be found", $metadata->name));
+                    throw new ObjectConstructionException(sprintf('Entity %s can not be found', $metadata->name));
                 case self::ON_MISSING_FALLBACK:
                     return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
                 default:
-                    throw new InvalidArgumentException("The provided fallback strategy for the object constructor is not valid");
+                    throw new InvalidArgumentException('The provided fallback strategy for the object constructor is not valid');
             }
         }
 

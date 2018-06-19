@@ -6,16 +6,11 @@ namespace JMS\Serializer\Visitor\Factory;
 
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use const JSON_PRESERVE_ZERO_FRACTION;
 
-/**
- *
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class JsonSerializationVisitorFactory implements SerializationVisitorFactory
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     public function getVisitor(): SerializationVisitorInterface
@@ -25,7 +20,7 @@ final class JsonSerializationVisitorFactory implements SerializationVisitorFacto
 
     public function setOptions(int $options): self
     {
-        $this->options = (integer)$options;
+        $this->options = (int) $options;
         return $this;
     }
 }

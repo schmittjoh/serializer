@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\GraphNavigator\Factory;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -13,30 +15,17 @@ use Metadata\MetadataFactoryInterface;
 
 final class DeserializationGraphNavigatorFactory implements GraphNavigatorFactoryInterface
 {
-
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
-    /**
-     * @var ObjectConstructorInterface
-     */
+    /** @var ObjectConstructorInterface */
     private $objectConstructor;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $dispatcher;
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(
@@ -44,15 +33,14 @@ final class DeserializationGraphNavigatorFactory implements GraphNavigatorFactor
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
-
-        $this->metadataFactory = $metadataFactory;
-        $this->handlerRegistry = $handlerRegistry;
-        $this->objectConstructor = $objectConstructor;
-        $this->accessor = $accessor;
-        $this->dispatcher = $dispatcher;
+        $this->metadataFactory     = $metadataFactory;
+        $this->handlerRegistry     = $handlerRegistry;
+        $this->objectConstructor   = $objectConstructor;
+        $this->accessor            = $accessor;
+        $this->dispatcher          = $dispatcher;
         $this->expressionEvaluator = $expressionEvaluator;
     }
 

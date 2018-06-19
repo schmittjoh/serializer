@@ -8,9 +8,6 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 final class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
@@ -31,7 +28,7 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
     private function isTooDeep(Context $context): bool
     {
-        $depth = $context->getDepth();
+        $depth         = $context->getDepth();
         $metadataStack = $context->getMetadataStack();
 
         $nthProperty = 0;

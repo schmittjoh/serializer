@@ -7,20 +7,12 @@ namespace JMS\Serializer\Visitor\Factory;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
-/**
- *
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options = 0;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $depth = 512;
 
     public function getVisitor(): DeserializationVisitorInterface

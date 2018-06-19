@@ -18,11 +18,11 @@ final class Parser implements ParserInterface
 
     public function __construct()
     {
-        $this->parser = new InnerParser();
+        $this->parser  = new InnerParser();
         $this->visitor = new TypeVisitor();
     }
 
-    public function parse(string $type) : array
+    public function parse(string $type): array
     {
         try {
             $ast = $this->parser->parse($type, 'type');

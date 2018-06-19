@@ -7,6 +7,12 @@ namespace JMS\Serializer\EventDispatcher;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
 
 class LazyEventDispatcher extends EventDispatcher
 {
@@ -15,7 +21,7 @@ class LazyEventDispatcher extends EventDispatcher
     public function __construct($container)
     {
         if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {
-            throw new InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, \is_object($container) ? \get_class($container) : \gettype($container)));
+            throw new InvalidArgumentException(sprintf('The container must be an instance of %s or %s (%s given).', PsrContainerInterface::class, ContainerInterface::class, is_object($container) ? get_class($container) : gettype($container)));
         }
 
         $this->container = $container;
@@ -29,7 +35,7 @@ class LazyEventDispatcher extends EventDispatcher
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);
 
         foreach ($listeners as &$listener) {
-            if (!\is_array($listener[0]) || !\is_string($listener[0][0])) {
+            if (!is_array($listener[0]) || !is_string($listener[0][0])) {
                 continue;
             }
 

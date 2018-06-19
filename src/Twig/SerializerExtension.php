@@ -40,12 +40,7 @@ class SerializerExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * @param object $object
-     * @param string $type
-     * @param SerializationContext $context
-     */
-    public function serialize($object, $type = 'json', SerializationContext $context = null)
+    public function serialize(object $object, string $type = 'json', ?SerializationContext $context = null)
     {
         return $this->serializer->serialize($object, $type, $context);
     }

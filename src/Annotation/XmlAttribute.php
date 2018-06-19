@@ -10,8 +10,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class XmlAttribute
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $namespace;
 }

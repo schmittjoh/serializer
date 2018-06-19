@@ -14,14 +14,10 @@ use JMS\Serializer\SerializationContext;
  * This is not a standard exclusion strategy and can not be used in user applications.
  *
  * @internal
- *
- * @author Asmir Mustafic <goetas@gmail.com>
  */
 final class ExpressionLanguageExclusionStrategy
 {
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)

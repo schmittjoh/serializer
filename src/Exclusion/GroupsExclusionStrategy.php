@@ -8,12 +8,17 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use function array_key_exists;
+use function gettype;
+use function in_array;
+use function is_array;
+use function sprintf;
 
 final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
-    const DEFAULT_GROUP = 'Default';
+    public const DEFAULT_GROUP = 'Default';
 
-    private $groups = [];
+    private $groups       = [];
     private $nestedGroups = false;
 
     public function __construct(array $groups)
@@ -60,7 +65,6 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
             return $this->shouldSkipUsingGroups($property, $groups);
         } else {
-
             if (!$property->groups) {
                 return !isset($this->groups[self::DEFAULT_GROUP]);
             }

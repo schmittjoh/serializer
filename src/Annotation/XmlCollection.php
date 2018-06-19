@@ -6,23 +6,15 @@ namespace JMS\Serializer\Annotation;
 
 abstract class XmlCollection
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $entry = 'entry';
 
-    /**
-     * @var boolean
-     */
+    /** @var bool */
     public $inline = false;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $namespace;
 
-    /**
-     * @var boolean
-     */
+    /** @var bool */
     public $skipWhenEmpty = true;
 }
