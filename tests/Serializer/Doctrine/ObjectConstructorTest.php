@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer\Doctrine;
 
+use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\AbstractManagerRegistry;
@@ -23,15 +24,21 @@ use JMS\Serializer\Construction\DoctrineObjectConstructor;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver as MetaDataReader;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Xml\Result;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
+use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -61,7 +68,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -80,7 +87,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -93,7 +100,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $author = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -108,7 +115,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -123,7 +130,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -141,7 +148,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
@@ -156,7 +163,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_EXCEPTION);
         $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -170,7 +177,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -184,7 +191,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->createClassMetadataFor(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
@@ -209,6 +216,44 @@ class ObjectConstructorTest extends TestCase
         static::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
             UnitOfWork::STATE_MANAGED
+        );
+    }
+
+    public function testDeserializeXMLWithDoctrineObjectConstructor()
+    {
+        $serializer = $this->createSerializerWithDoctrineObjectConstructor();
+
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
+        $server = new Server('Linux', '127.0.0.1', 'home');
+        $em->persist($server);
+        $em->flush();
+        $em->clear();
+
+        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
+<result>
+        <server>
+            <ip_address>127.0.0.1</ip_address> 
+            <server_id_extracted>home</server_id_extracted> 
+            <name>Windows</name> 
+        </server> 
+        <server>
+            <ip_address>192.168.66.6</ip_address> 
+            <server_id_extracted>home</server_id_extracted> 
+            <name>Windows</name> 
+    </server> 
+</result>';
+        /** @var Result $result */
+        $result = $serializer->deserialize($xmlData, Result::class, 'xml');
+
+        static::assertSame(
+            $em->getUnitOfWork()->getEntityState($result->getServers()->first()),
+            UnitOfWork::STATE_MANAGED
+        );
+
+        static::assertSame(
+            $em->getUnitOfWork()->getEntityState($result->getServers()->last()),
+            UnitOfWork::STATE_NEW
         );
     }
 
@@ -297,6 +342,25 @@ class ObjectConstructorTest extends TestCase
             )
             ->addDefaultHandlers()
             ->build();
+    }
+
+    /**
+     * @param string $className
+     * @return ClassMetadata
+     * @throws AnnotationException
+     * @throws InvalidMetadataException
+     * @throws \ReflectionException
+     */
+    private function createClassMetadataFor($className): ClassMetadata
+    {
+        $metaDataReader = new MetaDataReader(
+            new AnnotationReader(),
+            new SerializedNameAnnotationStrategy(
+                new CamelCaseNamingStrategy()
+            ),
+            new Parser()
+        );
+        return $metaDataReader->loadMetadataForClass(new \ReflectionClass($className));
     }
 }
 

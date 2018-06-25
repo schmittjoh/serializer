@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
@@ -51,6 +53,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
         // Locate possible ObjectManager
+        /** @var ObjectManager|EntityManager $objectManager */
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);
 
         if (!$objectManager) {
@@ -67,7 +70,16 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!\is_array($data)) {
+
+        if ($data instanceof \SimpleXMLElement) {
+            $attributes = iterator_to_array($data->attributes());
+            $properties = iterator_to_array($data);
+            $dataAsArray = array_merge($attributes, $properties);
+        } else {
+            $dataAsArray = $data;
+        }
+
+        if (!\is_array($dataAsArray)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
@@ -77,16 +89,32 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
+            $propertyMetadata = $metadata->propertyMetadata[$name];
+            $searchArray = $properties ?? $data;
+            $isAttribute = $propertyMetadata->xmlAttribute;
+            $isValue = $propertyMetadata->xmlValue;
+            if ($isAttribute) {
+                $searchArray = $attributes ?? $data;
+            }
+            if ($isValue) {
+                $searchArray[$name] = (string) $data;
+            }
+
             if (isset($metadata->propertyMetadata[$name])) {
                 $dataName = $metadata->propertyMetadata[$name]->serializedName;
             } else {
                 $dataName = $name;
             }
 
-            if (!array_key_exists($dataName, $data)) {
+            if (!array_key_exists($dataName, $searchArray)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
-            $identifierList[$name] = $data[$dataName];
+
+            if ($searchArray[$dataName] instanceof \SimpleXMLElement) {
+                $identifierList[$name] = (string) $searchArray[$dataName][0];
+            } else {
+                $identifierList[$name] = $searchArray[$dataName];
+            }
         }
 
         // Entity update, load it from database
