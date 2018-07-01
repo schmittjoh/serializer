@@ -12,7 +12,7 @@ abstract class XmlCollection
     public $entry = 'entry';
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $inline = false;
 
@@ -22,7 +22,7 @@ abstract class XmlCollection
     public $namespace;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $skipWhenEmpty = true;
 }

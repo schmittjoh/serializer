@@ -12,45 +12,77 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
+    /**
+     * @var int
+     */
     private $options = 0;
+
+    /**
+     * @var int
+     */
     private $depth = 512;
 
+    /**
+     * @var \SplStack
+     */
     private $objectStack;
+
+    /**
+     * @var object|null
+     */
     private $currentObject;
 
     public function __construct(
-        int $options = 0, int $depth = 512)
-    {
-        $this->objectStack = new \SplStack;
+        int $options = 0,
+        int $depth = 512
+    ) {
+        $this->objectStack = new \SplStack();
         $this->options = $options;
         $this->depth = $depth;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitNull($data, array $type): void
     {
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitString($data, array $type): string
     {
-        return (string)$data;
+        return (string) $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitBoolean($data, array $type): bool
     {
-        return (bool)$data;
+        return (bool) $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitInteger($data, array $type): int
     {
-        return (int)$data;
+        return (int) $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitDouble($data, array $type): float
     {
-        return (double)$data;
+        return (float) $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitArray($data, array $type): array
     {
         if (!\is_array($data)) {
@@ -90,10 +122,13 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitDiscriminatorMapProperty($data, ClassMetadata $metadata): string
     {
         if (isset($data[$metadata->discriminatorFieldName])) {
-            return (string)$data[$metadata->discriminatorFieldName];
+            return (string) $data[$metadata->discriminatorFieldName];
         }
 
         throw new LogicException(sprintf(
@@ -103,11 +138,17 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->setCurrentObject($object);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitProperty(PropertyMetadata $metadata, $data)
     {
         $name = $metadata->serializedName;
@@ -129,10 +170,12 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type) : null;
-
         return $v;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
     {
         $obj = $this->currentObject;
@@ -141,27 +184,33 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         return $obj;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResult($data)
     {
         return $data;
     }
 
-    public function setCurrentObject($object)
+    public function setCurrentObject(object $object): void
     {
         $this->objectStack->push($this->currentObject);
         $this->currentObject = $object;
     }
 
-    public function getCurrentObject()
+    public function getCurrentObject(): ?object
     {
         return $this->currentObject;
     }
 
-    public function revertCurrentObject()
+    public function revertCurrentObject(): ?object
     {
         return $this->currentObject = $this->objectStack->pop();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepare($str)
     {
         $decoded = json_decode($str, true, $this->depth, $this->options);

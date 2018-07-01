@@ -46,5 +46,3 @@ abstract class GraphNavigator implements GraphNavigatorInterface
         $this->exclusionStrategy = $context->getExclusionStrategy();
     }
 }
-
-

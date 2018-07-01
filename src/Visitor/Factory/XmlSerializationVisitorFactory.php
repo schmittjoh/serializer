@@ -13,10 +13,29 @@ use JMS\Serializer\XmlSerializationVisitor;
  */
 final class XmlSerializationVisitorFactory implements SerializationVisitorFactory
 {
+    /**
+     * @var string
+     */
     private $defaultRootName = 'result';
+
+    /**
+     * @var string
+     */
     private $defaultVersion = '1.0';
+
+    /**
+     * @var string
+     */
     private $defaultEncoding = 'UTF-8';
+
+    /**
+     * @var bool
+     */
     private $formatOutput = true;
+
+    /**
+     * @var string|null
+     */
     private $defaultRootNamespace;
 
     public function getVisitor(): SerializationVisitorInterface
@@ -51,7 +70,7 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
 
     public function setFormatOutput(bool $formatOutput): self
     {
-        $this->formatOutput = (boolean)$formatOutput;
+        $this->formatOutput = (bool) $formatOutput;
         return $this;
     }
 }

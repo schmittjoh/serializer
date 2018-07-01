@@ -25,13 +25,13 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
      */
     private $initializeExcluded = false;
 
-    public function __construct($skipVirtualTypeInit = true, $initializeExcluded = false)
+    public function __construct(bool $skipVirtualTypeInit = true, bool $initializeExcluded = false)
     {
-        $this->skipVirtualTypeInit = (bool)$skipVirtualTypeInit;
-        $this->initializeExcluded = (bool)$initializeExcluded;
+        $this->skipVirtualTypeInit = (bool) $skipVirtualTypeInit;
+        $this->initializeExcluded = (bool) $initializeExcluded;
     }
 
-    public function onPreSerialize(PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event): void
     {
         $object = $event->getObject();
         $type = $event->getType();
@@ -75,7 +75,7 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher)
+    public function onPreSerializeTypedProxy(PreSerializeEvent $event, string $eventName, string $class, string $format, EventDispatcherInterface $dispatcher): void
     {
         $type = $event->getType();
         // is a virtual type? then there is no need to change the event name

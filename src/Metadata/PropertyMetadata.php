@@ -9,32 +9,123 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
 {
-    const ACCESS_TYPE_PROPERTY = 'property';
-    const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
+    public const ACCESS_TYPE_PROPERTY = 'property';
+    public const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
+    /**
+     * @var string
+     */
     public $sinceVersion;
+    /**
+     * @var string
+     */
     public $untilVersion;
+    /**
+     * @var string[]
+     */
     public $groups;
+    /**
+     * @var string
+     */
     public $serializedName;
+    /**
+     * @var array
+     */
     public $type;
+
+    /**
+     * @var bool
+     */
     public $xmlCollection = false;
+
+    /**
+     * @var bool
+     */
     public $xmlCollectionInline = false;
+
+    /**
+     * @var bool
+     */
     public $xmlCollectionSkipWhenEmpty = true;
+
+    /**
+     * @var string
+     */
     public $xmlEntryName;
+
+    /**
+     * @var string
+     */
     public $xmlEntryNamespace;
+
+    /**
+     * @var string
+     */
     public $xmlKeyAttribute;
+
+    /**
+     * @var bool
+     */
     public $xmlAttribute = false;
+
+    /**
+     * @var bool
+     */
     public $xmlValue = false;
+
+    /**
+     * @var string
+     */
     public $xmlNamespace;
+
+    /**
+     * @var bool
+     */
     public $xmlKeyValuePairs = false;
+
+    /**
+     * @var bool
+     */
     public $xmlElementCData = true;
+
+    /**
+     * @var string
+     */
     public $getter;
+
+    /**
+     * @var string
+     */
     public $setter;
+
+    /**
+     * @var bool
+     */
     public $inline = false;
+
+    /**
+     * @var bool
+     */
     public $skipWhenEmpty = false;
+
+    /**
+     * @var bool
+     */
     public $readOnly = false;
+
+    /**
+     * @var bool
+     */
     public $xmlAttributeMap = false;
+
+    /**
+     * @var int|null
+     */
     public $maxDepth = null;
+
+    /**
+     * @var string
+     */
     public $excludeIf = null;
 
     /**
@@ -59,7 +150,7 @@ class PropertyMetadata extends BasePropertyMetadata
         return new \ReflectionProperty($this->class, $this->name);
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->getReflection()->getDeclaringClass();
@@ -89,12 +180,12 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
-    public function setType(array $type)
+    public function setType(array $type): void
     {
         $this->type = $type;
     }
 
-    public static function isCollectionList(array $type = null): bool
+    public static function isCollectionList(?array $type = null): bool
     {
         return is_array($type)
             && $type['name'] === 'array'
@@ -102,7 +193,7 @@ class PropertyMetadata extends BasePropertyMetadata
             && !isset($type['params'][1]);
     }
 
-    public static function isCollectionMap(array $type = null): bool
+    public static function isCollectionMap(?array $type = null): bool
     {
         return is_array($type)
             && $type['name'] === 'array'
@@ -110,7 +201,7 @@ class PropertyMetadata extends BasePropertyMetadata
             && isset($type['params'][1]);
     }
 
-    public function serialize()
+    public function serialize(): string
     {
         return serialize([
             $this->sinceVersion,

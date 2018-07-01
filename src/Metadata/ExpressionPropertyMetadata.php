@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata;
 
-use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
-use JMS\Serializer\Exception\LogicException;
-
 /**
  * @Annotation
  * @Target("METHOD")
@@ -28,11 +25,11 @@ class ExpressionPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
     }
 
-    public function serialize()
+    public function serialize(): string
     {
         return serialize([
             $this->sinceVersion,

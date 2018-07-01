@@ -11,7 +11,6 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
  */
 class ExpressionEvaluator implements ExpressionEvaluatorInterface
 {
-
     /**
      * @var ExpressionLanguage
      */
@@ -35,20 +34,18 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      */
-    public function setContextVariable($name, $value): void
+    public function setContextVariable(string $name, $value): void
     {
         $this->context[$name] = $value;
     }
 
     /**
-     * @param  string $expression
      * @param  array $data
      * @return mixed
      */
-    public function evaluate($expression, array $data = [])
+    public function evaluate(string $expression, array $data = [])
     {
         if (!\is_string($expression)) {
             return $expression;

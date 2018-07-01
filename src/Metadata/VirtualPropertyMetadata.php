@@ -20,11 +20,11 @@ class VirtualPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
     }
 
-    public function serialize()
+    public function serialize(): string
     {
         return serialize([
             $this->sinceVersion,

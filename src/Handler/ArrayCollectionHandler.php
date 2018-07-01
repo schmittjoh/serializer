@@ -19,7 +19,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
      */
     private $initializeExcluded = true;
 
-    public function __construct($initializeExcluded = true)
+    public function __construct(bool $initializeExcluded = true)
     {
         $this->initializeExcluded = $initializeExcluded;
     }
@@ -57,6 +57,9 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+    /**
+     * @return array|\ArrayObject
+     */
     public function serializeCollection(SerializationVisitorInterface $visitor, Collection $collection, array $type, SerializationContext $context)
     {
         // We change the base type, and pass through possible parameters.
@@ -78,7 +81,10 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         return $result;
     }
 
-    public function deserializeCollection(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context)
+    /**
+     * @param mixed $data
+     */
+    public function deserializeCollection(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context): ArrayCollection
     {
         // See above.
         $type['name'] = 'array';

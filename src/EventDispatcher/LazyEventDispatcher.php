@@ -10,8 +10,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LazyEventDispatcher extends EventDispatcher
 {
+    /**
+     * @var PsrContainerInterface|ContainerInterface
+     */
     private $container;
 
+    /**
+     * @param PsrContainerInterface|ContainerInterface $container
+     */
     public function __construct($container)
     {
         if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {
@@ -24,7 +30,7 @@ class LazyEventDispatcher extends EventDispatcher
     /**
      * {@inheritdoc}
      */
-    protected function initializeListeners($eventName, $loweredClass, $format)
+    protected function initializeListeners(string $eventName, string $loweredClass, string $format): array
     {
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);
 

@@ -13,6 +13,9 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterface
 {
+    /**
+     * @var PropertyNamingStrategyInterface
+     */
     private $delegate;
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy)

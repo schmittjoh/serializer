@@ -28,7 +28,7 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         ];
     }
 
-    public function onPostDeserialize(Event $event)
+    public function onPostDeserialize(Event $event): void
     {
         $context = $event->getContext();
 

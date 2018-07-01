@@ -20,10 +20,7 @@ class ValidationFailedException extends RuntimeException
         $this->list = $list;
     }
 
-    /**
-     * @return ConstraintViolationListInterface
-     */
-    public function getConstraintViolationList()
+    public function getConstraintViolationList(): ConstraintViolationListInterface
     {
         return $this->list;
     }

@@ -8,7 +8,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -34,7 +33,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type): void
     {
         $currentNode = $visitor->getCurrentNode();
         if (!$currentNode) {
@@ -46,12 +45,15 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
         }
     }
 
+    /**
+     * @return array|\ArrayObject
+     */
     public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type, SerializationContext $context)
     {
         return $visitor->visitArray(iterator_to_array($list), $type);
     }
 
-    public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, ?array $type = null): void
     {
         $violationNode = $visitor->getDocument()->createElement('violation');
 
@@ -68,11 +70,11 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
         $messageNode->appendChild($visitor->getDocument()->createCDATASection($violation->getMessage()));
     }
 
-    public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, ?array $type = null): array
     {
         $data = [
             'property_path' => $violation->getPropertyPath(),
-            'message' => $violation->getMessage()
+            'message' => $violation->getMessage(),
         ];
 
         return $data;

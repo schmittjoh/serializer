@@ -8,8 +8,16 @@ use JMS\Serializer\DeserializationContext;
 
 class PreDeserializeEvent extends Event
 {
+    /**
+     * @var mixed
+     */
     private $data;
 
+    /**
+     *
+     * @param mixed $data
+     * @param array $type
+     */
     public function __construct(DeserializationContext $context, $data, array $type)
     {
         parent::__construct($context, $type);
@@ -17,17 +25,23 @@ class PreDeserializeEvent extends Event
         $this->data = $data;
     }
 
-    public function setType(string $name, array $params = [])
+    public function setType(string $name, array $params = []): void
     {
         $this->type = ['name' => $name, 'params' => $params];
     }
 
+    /**
+     * @return mixed
+     */
     public function getData()
     {
         return $this->data;
     }
 
-    public function setData($data)
+    /**
+     * @param mixed $data
+     */
+    public function setData($data): void
     {
         $this->data = $data;
     }

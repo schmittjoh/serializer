@@ -10,9 +10,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LazyHandlerRegistry extends HandlerRegistry
 {
+    /**
+     * @var PsrContainerInterface|ContainerInterface
+     */
     private $container;
+
+    /**
+     * @var array
+     */
     private $initializedHandlers = [];
 
+    /**
+     * @param PsrContainerInterface|ContainerInterface $container
+     * @param array                                    $handlers
+     */
     public function __construct($container, array $handlers = [])
     {
         if (!$container instanceof PsrContainerInterface && !$container instanceof ContainerInterface) {

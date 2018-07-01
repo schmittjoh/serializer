@@ -14,6 +14,9 @@ use JMS\Serializer\SerializerInterface;
  */
 class SerializerExtension extends \Twig_Extension
 {
+    /**
+     * @var SerializerInterface
+     */
     protected $serializer;
 
     public function getName()
@@ -26,6 +29,9 @@ class SerializerExtension extends \Twig_Extension
         $this->serializer = $serializer;
     }
 
+    /**
+     * @return \Twig_Filter[]
+     */
     public function getFilters()
     {
         return [
@@ -33,6 +39,9 @@ class SerializerExtension extends \Twig_Extension
         ];
     }
 
+    /**
+     * @return \Twig_Function[]
+     */
     public function getFunctions()
     {
         return [
@@ -40,12 +49,7 @@ class SerializerExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * @param object $object
-     * @param string $type
-     * @param SerializationContext $context
-     */
-    public function serialize($object, $type = 'json', SerializationContext $context = null)
+    public function serialize(object $object, string $type = 'json', ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);
     }

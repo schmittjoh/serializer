@@ -16,25 +16,29 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
  */
 final class DoctrineObjectConstructor implements ObjectConstructorInterface
 {
-    const ON_MISSING_NULL = 'null';
-    const ON_MISSING_EXCEPTION = 'exception';
-    const ON_MISSING_FALLBACK = 'fallback';
+    public const ON_MISSING_NULL = 'null';
+    public const ON_MISSING_EXCEPTION = 'exception';
+    public const ON_MISSING_FALLBACK = 'fallback';
     /**
      * @var string
      */
     private $fallbackStrategy;
 
+    /**
+     * @var ManagerRegistry
+     */
     private $managerRegistry;
+
+    /**
+     * @var ObjectConstructorInterface
+     */
     private $fallbackConstructor;
 
     /**
-     * Constructor.
-     *
-     * @param ManagerRegistry $managerRegistry Manager registry
+     * @param ManagerRegistry            $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
-     * @param string $fallbackStrategy
      */
-    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, $fallbackStrategy = self::ON_MISSING_NULL)
+    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, string $fallbackStrategy = self::ON_MISSING_NULL)
     {
         $this->managerRegistry = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
@@ -73,7 +77,6 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-
             if (isset($metadata->propertyMetadata[$name])) {
                 $dataName = $metadata->propertyMetadata[$name]->serializedName;
             } else {
@@ -94,11 +97,11 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
                 case self::ON_MISSING_NULL:
                     return null;
                 case self::ON_MISSING_EXCEPTION:
-                    throw new ObjectConstructionException(sprintf("Entity %s can not be found", $metadata->name));
+                    throw new ObjectConstructionException(sprintf('Entity %s can not be found', $metadata->name));
                 case self::ON_MISSING_FALLBACK:
                     return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
                 default:
-                    throw new InvalidArgumentException("The provided fallback strategy for the object constructor is not valid");
+                    throw new InvalidArgumentException('The provided fallback strategy for the object constructor is not valid');
             }
         }
 

@@ -11,7 +11,7 @@ namespace JMS\Serializer\Annotation;
 final class XmlValue
 {
     /**
-     * @var boolean
+     * @var bool
      */
     public $cdata = true;
 }

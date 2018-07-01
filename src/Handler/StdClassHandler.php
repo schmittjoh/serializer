@@ -31,12 +31,15 @@ final class StdClassHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+    /**
+     * @return mixed
+     */
     public function serializeStdClass(SerializationVisitorInterface $visitor, \stdClass $stdClass, array $type, SerializationContext $context)
     {
         $classMetadata = $context->getMetadataFactory()->getMetadataForClass('stdClass');
         $visitor->startVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass'], $context);
 
-        foreach ((array)$stdClass as $name => $value) {
+        foreach ((array) $stdClass as $name => $value) {
             $metadata = new StaticPropertyMetadata('stdClass', $name, $value);
             $visitor->visitProperty($metadata, $value);
         }

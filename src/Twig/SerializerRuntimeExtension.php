@@ -9,7 +9,6 @@ namespace JMS\Serializer\Twig;
  */
 final class SerializerRuntimeExtension extends \Twig_Extension
 {
-
     public function getName()
     {
         return 'jms_serializer';

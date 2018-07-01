@@ -12,5 +12,5 @@ interface PropertyOrderingInterface
      * @param PropertyMetadata[] $properties name => property
      * @return PropertyMetadata[] name => property
      */
-    public function order(array $properties) : array;
+    public function order(array $properties): array;
 }

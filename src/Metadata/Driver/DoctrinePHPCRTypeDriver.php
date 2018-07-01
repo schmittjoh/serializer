@@ -13,18 +13,14 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
 {
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param PropertyMetadata $propertyMetadata
-     */
-    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata):bool
+    protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): bool
     {
         return 'lazyPropertiesDefaults' === $propertyMetadata->name
             || $doctrineMetadata->parentMapping === $propertyMetadata->name
             || $doctrineMetadata->node === $propertyMetadata->name;
     }
 
-    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata):void
+    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
         $propertyName = $propertyMetadata->name;
         if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {
@@ -37,7 +33,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
         } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
             try {
                 $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 return;
             }
 

@@ -11,9 +11,16 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
-    const DEFAULT_GROUP = 'Default';
+    public const DEFAULT_GROUP = 'Default';
 
+    /**
+     * @var array
+     */
     private $groups = [];
+
+    /**
+     * @var bool
+     */
     private $nestedGroups = false;
 
     public function __construct(array $groups)
@@ -60,7 +67,6 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
             return $this->shouldSkipUsingGroups($property, $groups);
         } else {
-
             if (!$property->groups) {
                 return !isset($this->groups[self::DEFAULT_GROUP]);
             }
@@ -74,7 +80,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 
-    private function shouldSkipUsingGroups(PropertyMetadata $property, $groups)
+    private function shouldSkipUsingGroups(PropertyMetadata $property, array $groups): bool
     {
         foreach ($property->groups as $group) {
             if (in_array($group, $groups)) {
@@ -85,7 +91,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         return true;
     }
 
-    private function getGroupsFor(Context $navigatorContext)
+    private function getGroupsFor(Context $navigatorContext): array
     {
         $paths = $navigatorContext->getCurrentPath();
 

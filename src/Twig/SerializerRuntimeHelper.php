@@ -12,6 +12,9 @@ use JMS\Serializer\SerializerInterface;
  */
 final class SerializerRuntimeHelper
 {
+    /**
+     * @var SerializerInterface
+     */
     protected $serializer;
 
     public function __construct(SerializerInterface $serializer)
@@ -19,13 +22,7 @@ final class SerializerRuntimeHelper
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param $object
-     * @param string $type
-     * @param SerializationContext|null $context
-     * @return string
-     */
-    public function serialize($object, $type = 'json', SerializationContext $context = null)
+    public function serialize($object, string $type = 'json', ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);
     }

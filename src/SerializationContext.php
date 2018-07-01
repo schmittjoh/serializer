@@ -20,14 +20,11 @@ class SerializationContext extends Context
      */
     private $initialType;
 
-    public static function create()
+    public static function create(): self
     {
         return new self();
     }
 
-    /**
-     * @param string $format
-     */
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         parent::initialize($format, $visitor, $navigator, $factory);
@@ -36,6 +33,9 @@ class SerializationContext extends Context
         $this->visitingStack = new \SplStack();
     }
 
+    /**
+     * @param mixed $object
+     */
     public function startVisiting($object): void
     {
         if (!\is_object($object)) {
@@ -45,6 +45,9 @@ class SerializationContext extends Context
         $this->visitingStack->push($object);
     }
 
+    /**
+     * @param mixed $object
+     */
     public function stopVisiting($object): void
     {
         if (!\is_object($object)) {
@@ -58,6 +61,9 @@ class SerializationContext extends Context
         }
     }
 
+    /**
+     * @param mixed $object
+     */
     public function isVisiting($object): bool
     {
         if (!\is_object($object)) {
@@ -96,21 +102,21 @@ class SerializationContext extends Context
         return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
     }
 
-    public function getVisitingStack()
+    public function getVisitingStack(): \SplStack
     {
         return $this->visitingStack;
     }
 
-    public function getVisitingSet()
+
+    public function getVisitingSet(): \SplObjectStorage
     {
         return $this->visitingSet;
     }
 
     /**
-     * @param string $type
      * @return $this
      */
-    public function setInitialType($type): self
+    public function setInitialType(string $type): self
     {
         $this->initialType = $type;
         $this->setAttribute('initial_type', $type);

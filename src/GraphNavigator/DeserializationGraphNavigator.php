@@ -50,9 +50,24 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      */
     private $expressionExclusionStrategy;
 
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
+
+    /**
+     * @var MetadataFactoryInterface
+     */
     private $metadataFactory;
+
+    /**
+     * @var HandlerRegistryInterface
+     */
     private $handlerRegistry;
+
+    /**
+     * @var ObjectConstructorInterface
+     */
     private $objectConstructor;
     /**
      * @var AccessorStrategyInterface
@@ -64,8 +79,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
@@ -80,11 +95,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
     /**
      * Called for each node of the graph that is being traversed.
      *
-     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param mixed      $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null)
+    public function accept($data, ?array $type = null)
     {
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
@@ -123,7 +138,6 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 throw new RuntimeException('Resources are not supported in serialized data.');
 
             default:
-
                 $this->context->increaseDepth();
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
@@ -144,7 +158,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     return $rs;
                 }
 
-                /** @var $metadata ClassMetadata */
+                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
@@ -184,7 +198,6 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
-
                     }
                     $this->context->popPropertyMetadata();
                 }
@@ -196,7 +209,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         }
     }
 
-    private function resolveMetadata($data, ClassMetadata $metadata)
+    /**
+     * @param mixed $data
+     */
+    private function resolveMetadata($data, ClassMetadata $metadata): ?ClassMetadata
     {
         $typeValue = $this->visitor->visitDiscriminatorMapProperty($data, $metadata);
 
@@ -212,7 +228,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type): void
+    private function afterVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->context->decreaseDepth();
         $this->context->popClassMetadata();

@@ -8,15 +8,13 @@ use JMS\Serializer\Exception\NotAcceptableException;
 
 interface GraphNavigatorInterface
 {
-    const DIRECTION_SERIALIZATION = 1;
-    const DIRECTION_DESERIALIZATION = 2;
+    public const DIRECTION_SERIALIZATION = 1;
+    public const DIRECTION_DESERIALIZATION = 2;
 
     /**
      * Called at the beginning of the serialization process. The navigator should use the traverse the object graph
      * and pass to the $visitor the value of found nodes (following the rules obtained from $context).
      *
-     * @param VisitorInterface $visitor
-     * @param Context $context
      */
     public function initialize(VisitorInterface $visitor, Context $context): void;
 
@@ -24,9 +22,9 @@ interface GraphNavigatorInterface
      * Called for each node of the graph that is being traversed.
      *
      * @throws NotAcceptableException
-     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param mixed      $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null);
+    public function accept($data, ?array $type = null);
 }
