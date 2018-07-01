@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<ruleset
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
+>
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="80"/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg value="nps"/>
+
+    <file>src/</file>
+
+
+    <rule ref="Doctrine">
+        <exclude name="Generic.Formatting.SpaceAfterNot"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
+
+        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
+
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
+        <exclude ref="Generic.Formatting.MultipleStatementAlignment"/>
+        <exclude ref="Generic.Formatting.MultipleStatementAlignment"/>
+        <exclude ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+
+
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
+
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversablePropertyTypeHintSpecification"/>
+
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint"/>
+
+
+
+
+
+    </rule>
+
+     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+        <properties>
+            <property
+                name="forbiddenAnnotations"
+                type="array"
+                value="
+                    @api,
+                    @category,
+                    @copyright,
+                    @created,
+                    @license,
+                    @package,
+                    @since,
+                    @subpackage,
+                    @version
+                "
+            />
+        </properties>
+    </rule>
+
+
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+        <properties>
+            <property name="allowFallbackGlobalConstants" type="boolean" value="true"/>
+            <property name="allowFallbackGlobalFunctions" type="boolean" value="true"/>
+            <property name="allowFullyQualifiedGlobalClasses" type="boolean" value="true"/>
+            <property name="allowFullyQualifiedGlobalConstants" type="boolean" value="true"/>
+            <property name="allowFullyQualifiedGlobalFunctions" type="boolean" value="true"/>
+            <property name="allowFullyQualifiedNameForCollidingClasses" type="boolean" value="false"/>
+            <property name="allowFullyQualifiedNameForCollidingConstants" type="boolean" value="false"/>
+            <property name="allowFullyQualifiedNameForCollidingFunctions" type="boolean" value="false"/>
+            <property name="searchAnnotations" type="boolean" value="true"/>
+        </properties>
+    </rule>
+
+     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
+            <properties>
+                <property name="spacesCountBeforeColon" value="0"/>
+            </properties>
+        </rule>
+
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.Classes.ClassFileName.NoMatch">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+</ruleset>
