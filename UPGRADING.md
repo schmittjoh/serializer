@@ -6,7 +6,7 @@ in case you have heavily used internal-api here are the most important the chang
 
 **Main changes**
 
-- The minimum PHP version is 7.2, typo hints are used almost everywhere. Most of the method signatures changed.
+- The minimum PHP version is 7.2, type hints are used almost everywhere. Most of the method signatures changed.
 - `JsonSerializationVisitor::getRoot` and `JsonSerializationVisitor::setRoot` have been removed, their
   use is not necessary anymore.
 - Removed `AdvancedNamingStrategyInterface`, the serialized name is now compiled and can not be changed at runtime
