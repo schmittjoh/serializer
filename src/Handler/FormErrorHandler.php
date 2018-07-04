@@ -24,6 +24,10 @@ final class FormErrorHandler implements SubscribingHandlerInterface
      */
     private $translationDomain;
 
+
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];

@@ -44,6 +44,9 @@ class EventDispatcher implements EventDispatcherInterface
         $this->classListeners = [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null): void
     {
         $this->listeners[$eventName][] = [$callable, $class, $format, $interface];

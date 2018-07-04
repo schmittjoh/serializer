@@ -43,6 +43,10 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         $this->evaluator = $evaluator;
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if ($metadata instanceof StaticPropertyMetadata) {
@@ -82,6 +86,9 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         return $object->{$metadata->getter}();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
         if ($metadata->readOnly === true) {

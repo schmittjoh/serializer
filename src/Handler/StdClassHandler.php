@@ -14,6 +14,9 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
  */
 final class StdClassHandler implements SubscribingHandlerInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];

@@ -9,11 +9,21 @@ namespace JMS\Serializer\Twig;
  */
 final class SerializerRuntimeExtension extends \Twig_Extension
 {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'jms_serializer';
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return \Twig_Filter[]
+     */
     public function getFilters()
     {
         return [
@@ -21,6 +31,11 @@ final class SerializerRuntimeExtension extends \Twig_Extension
         ];
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return \Twig_Function[]
+     */
     public function getFunctions()
     {
         return [

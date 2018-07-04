@@ -22,6 +22,9 @@ final class SerializerRuntimeHelper
         $this->serializer = $serializer;
     }
 
+    /**
+     * @param mixed $object
+     */
     public function serialize($object, string $type = 'json', ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);

@@ -335,7 +335,10 @@ class YamlDriver extends AbstractFileDriver
         }
     }
 
-    private function getCallbackMetadata(\ReflectionClass $class, $config)
+    /**
+     * @param string|string[] $config
+     */
+    private function getCallbackMetadata(\ReflectionClass $class, $config): array
     {
         if (\is_string($config)) {
             $config = [$config];

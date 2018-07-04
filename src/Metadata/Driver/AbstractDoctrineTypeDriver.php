@@ -103,7 +103,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata)
+    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
     {
         return $propertyMetadata instanceof VirtualPropertyMetadata
             || $propertyMetadata instanceof StaticPropertyMetadata
@@ -136,7 +136,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $manager->getClassMetadata($className);
     }
 
-    protected function normalizeFieldType($type): ?string
+    protected function normalizeFieldType(string $type): ?string
     {
         if (!isset($this->fieldMapping[$type])) {
             return null;

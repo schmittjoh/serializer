@@ -110,6 +110,9 @@ abstract class Context
         return $this->exclusionStrategy;
     }
 
+    /**
+     * @return mixed
+     */
     public function getAttribute(string $key)
     {
         return $this->attributes[$key];
@@ -120,6 +123,9 @@ abstract class Context
         return isset($this->attributes[$key]);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setAttribute(string $key, $value): self
     {
         $this->assertMutable();

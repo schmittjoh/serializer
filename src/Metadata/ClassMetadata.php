@@ -289,7 +289,13 @@ class ClassMetadata extends MergeableClassMetadata
         $this->xmlNamespaces[$prefix] = $uri;
     }
 
-    public function serialize(): string
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return string
+     */
+    public function serialize()
     {
         $this->sortProperties();
 
@@ -319,6 +325,13 @@ class ClassMetadata extends MergeableClassMetadata
         ]);
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @param string $str
+     * @return void
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);

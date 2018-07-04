@@ -19,6 +19,10 @@ class SerializerExtension extends \Twig_Extension
      */
     protected $serializer;
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @return string
+     */
     public function getName()
     {
         return 'jms_serializer';
@@ -30,6 +34,8 @@ class SerializerExtension extends \Twig_Extension
     }
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
      * @return \Twig_Filter[]
      */
     public function getFilters()
@@ -40,6 +46,8 @@ class SerializerExtension extends \Twig_Extension
     }
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
      * @return \Twig_Function[]
      */
     public function getFunctions()

@@ -13,6 +13,9 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 final class ConstraintViolationHandler implements SubscribingHandlerInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];

@@ -12,23 +12,23 @@
 
     <file>src/</file>
 
-
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+
         <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
-        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
 
         <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
 
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
         <exclude ref="Generic.Formatting.MultipleStatementAlignment"/>
-        <exclude ref="Generic.Formatting.MultipleStatementAlignment"/>
         <exclude ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
-
 
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
@@ -36,13 +36,6 @@
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversablePropertyTypeHintSpecification"/>
-
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint"/>
-
-
-
-
 
     </rule>
 

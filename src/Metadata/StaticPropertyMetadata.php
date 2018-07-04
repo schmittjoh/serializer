@@ -38,7 +38,10 @@ class StaticPropertyMetadata extends PropertyMetadata
     {
     }
 
-    public function serialize(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
     {
         return serialize([
             $this->sinceVersion,
@@ -65,6 +68,9 @@ class StaticPropertyMetadata extends PropertyMetadata
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function unserialize($str)
     {
         list(

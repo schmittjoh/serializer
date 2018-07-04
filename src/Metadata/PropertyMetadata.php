@@ -201,7 +201,12 @@ class PropertyMetadata extends BasePropertyMetadata
             && isset($type['params'][1]);
     }
 
-    public function serialize(): string
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @return string
+     */
+    public function serialize()
     {
         return serialize([
             $this->sinceVersion,
@@ -233,6 +238,13 @@ class PropertyMetadata extends BasePropertyMetadata
         ]);
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @param string $str
+     * @return void
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);

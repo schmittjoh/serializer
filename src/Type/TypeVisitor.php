@@ -12,6 +12,9 @@ use function strpos;
 
 final class TypeVisitor implements Visit
 {
+    /**
+     * {@inheritdoc}
+     */
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         switch ($element->getId()) {

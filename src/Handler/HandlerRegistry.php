@@ -57,11 +57,17 @@ class HandlerRegistry implements HandlerRegistryInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
         $this->handlers[$direction][$typeName][$format] = $handler;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHandler(int $direction, string $typeName, string $format)
     {
         if (!isset($this->handlers[$direction][$typeName][$format])) {

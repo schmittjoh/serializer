@@ -29,6 +29,9 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private $xmlCData;
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];

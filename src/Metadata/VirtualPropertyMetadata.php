@@ -24,7 +24,10 @@ class VirtualPropertyMetadata extends PropertyMetadata
     {
     }
 
-    public function serialize(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
     {
         return serialize([
             $this->sinceVersion,
@@ -53,6 +56,9 @@ class VirtualPropertyMetadata extends PropertyMetadata
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);

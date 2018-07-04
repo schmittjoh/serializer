@@ -18,6 +18,9 @@ interface EventSubscriberInterface
      * The class may be omitted if the class wants to subscribe to events of all classes.
      * Same goes for the format key.
      *
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
      * @return array
      */
     public static function getSubscribedEvents();

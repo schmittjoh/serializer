@@ -19,6 +19,9 @@ abstract class AbstractVisitor implements VisitorInterface
         $this->navigator = $navigator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepare($data)
     {
         return $data;

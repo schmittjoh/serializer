@@ -20,6 +20,8 @@ interface SubscribingHandlerInterface
      *
      * The direction and method keys can be omitted.
      *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
      * @return array
      */
     public static function getSubscribingMethods();

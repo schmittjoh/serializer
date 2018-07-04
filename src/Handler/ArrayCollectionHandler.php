@@ -24,6 +24,9 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         $this->initializeExcluded = $initializeExcluded;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];
