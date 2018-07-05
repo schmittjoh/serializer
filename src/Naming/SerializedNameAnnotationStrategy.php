@@ -8,8 +8,6 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Naming strategy which uses an annotation to translate the property name.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class SerializedNameAnnotationStrategy implements PropertyNamingStrategyInterface
 {

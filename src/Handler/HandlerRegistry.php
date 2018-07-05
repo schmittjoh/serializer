@@ -7,7 +7,13 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Serializer;
+use function array_keys;
+use function get_class;
+use function implode;
+use function json_encode;
+use function sprintf;
+use function strrpos;
+use function substr;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
@@ -40,7 +46,7 @@ class HandlerRegistry implements HandlerRegistryInterface
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
             if (!isset($methodData['type'], $methodData['format'])) {
-                throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), \get_class($handler)));
+                throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), get_class($handler)));
             }
 
             $directions = [GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION];
@@ -49,7 +55,7 @@ class HandlerRegistry implements HandlerRegistryInterface
             }
 
             foreach ($directions as $direction) {
-                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
+                $method = $methodData['method'] ?? self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
                 $this->registerHandler($direction, $methodData['type'], $methodData['format'], [$handler, $method]);
             }
         }

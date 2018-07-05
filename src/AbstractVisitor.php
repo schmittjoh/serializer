@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use function is_array;
+
 /**
  * @internal
  */
 abstract class AbstractVisitor implements VisitorInterface
 {
-    /**
-     * @var GraphNavigatorInterface
-     */
+    /** @var GraphNavigatorInterface */
     protected $navigator;
 
     public function setNavigator(GraphNavigatorInterface $navigator): void
@@ -30,7 +30,7 @@ abstract class AbstractVisitor implements VisitorInterface
             return null;
         }
 
-        if (isset($typeArray['params'][1]) && \is_array($typeArray['params'][1])) {
+        if (isset($typeArray['params'][1]) && is_array($typeArray['params'][1])) {
             return $typeArray['params'][1];
         } else {
             return $typeArray['params'][0];

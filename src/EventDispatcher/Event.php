@@ -9,9 +9,7 @@ use JMS\Serializer\VisitorInterface;
 
 class Event
 {
-    /**
-     * @var bool Whether no further event listeners should be triggered
-     */
+    /** @var bool Whether no further event listeners should be triggered */
     private $propagationStopped = false;
 
     protected $type;
@@ -20,7 +18,7 @@ class Event
     public function __construct(Context $context, array $type)
     {
         $this->context = $context;
-        $this->type = $type;
+        $this->type    = $type;
     }
 
     public function getVisitor(): VisitorInterface

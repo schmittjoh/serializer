@@ -12,29 +12,28 @@ use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use function class_exists;
+use function get_parent_class;
+use function strtolower;
 
 final class DoctrineProxySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $skipVirtualTypeInit = true;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $initializeExcluded = false;
 
     public function __construct($skipVirtualTypeInit = true, $initializeExcluded = false)
     {
-        $this->skipVirtualTypeInit = (bool)$skipVirtualTypeInit;
-        $this->initializeExcluded = (bool)$initializeExcluded;
+        $this->skipVirtualTypeInit = (bool) $skipVirtualTypeInit;
+        $this->initializeExcluded  = (bool) $initializeExcluded;
     }
 
-    public function onPreSerialize(PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event): void
     {
         $object = $event->getObject();
-        $type = $event->getType();
+        $type   = $event->getType();
 
         // If the set type name is not an actual class, but a faked type for which a custom handler exists, we do not
         // modify it with this subscriber. Also, we forgo autoloading here as an instance of this type is already created,
@@ -60,9 +59,9 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
 
         // do not initialize the proxy if is going to be excluded by-class by some exclusion strategy
         if ($this->initializeExcluded === false && !$virtualType) {
-            $context = $event->getContext();
+            $context           = $event->getContext();
             $exclusionStrategy = $context->getExclusionStrategy();
-            $metadata = $context->getMetadataFactory()->getMetadataForClass(get_parent_class($object));
+            $metadata          = $context->getMetadataFactory()->getMetadataForClass(get_parent_class($object));
             if ($metadata !== null && $exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                 return;
             }
@@ -75,7 +74,7 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher)
+    public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher): void
     {
         $type = $event->getType();
         // is a virtual type? then there is no need to change the event name

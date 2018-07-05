@@ -6,36 +6,41 @@ namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
+use function is_array;
+use function serialize;
+use function sprintf;
+use function ucfirst;
+use function unserialize;
 
 class PropertyMetadata extends BasePropertyMetadata
 {
-    const ACCESS_TYPE_PROPERTY = 'property';
-    const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
+    public const ACCESS_TYPE_PROPERTY      = 'property';
+    public const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
     public $sinceVersion;
     public $untilVersion;
     public $groups;
     public $serializedName;
     public $type;
-    public $xmlCollection = false;
-    public $xmlCollectionInline = false;
+    public $xmlCollection              = false;
+    public $xmlCollectionInline        = false;
     public $xmlCollectionSkipWhenEmpty = true;
     public $xmlEntryName;
     public $xmlEntryNamespace;
     public $xmlKeyAttribute;
     public $xmlAttribute = false;
-    public $xmlValue = false;
+    public $xmlValue     = false;
     public $xmlNamespace;
     public $xmlKeyValuePairs = false;
-    public $xmlElementCData = true;
+    public $xmlElementCData  = true;
     public $getter;
     public $setter;
-    public $inline = false;
-    public $skipWhenEmpty = false;
-    public $readOnly = false;
+    public $inline          = false;
+    public $skipWhenEmpty   = false;
+    public $readOnly        = false;
     public $xmlAttributeMap = false;
-    public $maxDepth = null;
-    public $excludeIf = null;
+    public $maxDepth        = null;
+    public $excludeIf       = null;
 
     /**
      * @internal
@@ -48,7 +53,7 @@ class PropertyMetadata extends BasePropertyMetadata
         parent::__construct($class, $name);
 
         try {
-            $class = $this->getReflection()->getDeclaringClass();
+            $class                       = $this->getReflection()->getDeclaringClass();
             $this->forceReflectionAccess = $class->isInternal() || $class->getProperty($name)->isStatic();
         } catch (\ReflectionException $e) {
         }
@@ -59,7 +64,7 @@ class PropertyMetadata extends BasePropertyMetadata
         return new \ReflectionProperty($this->class, $this->name);
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->getReflection()->getDeclaringClass();
@@ -89,12 +94,12 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
-    public function setType(array $type)
+    public function setType(array $type): void
     {
         $this->type = $type;
     }
 
-    public static function isCollectionList(array $type = null): bool
+    public static function isCollectionList(?array $type = null): bool
     {
         return is_array($type)
             && $type['name'] === 'array'
@@ -102,7 +107,7 @@ class PropertyMetadata extends BasePropertyMetadata
             && !isset($type['params'][1]);
     }
 
-    public static function isCollectionMap(array $type = null): bool
+    public static function isCollectionMap(?array $type = null): bool
     {
         return is_array($type)
             && $type['name'] === 'array'
@@ -142,7 +147,7 @@ class PropertyMetadata extends BasePropertyMetadata
         ]);
     }
 
-    public function unserialize($str)
+    public function unserialize($str): void
     {
         $unserialized = unserialize($str);
         list(
@@ -167,7 +172,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlAttributeMap,
             $this->maxDepth,
             $parentStr
-            ) = $unserialized;
+            )         = $unserialized;
 
         if (isset($unserialized['xmlEntryNamespace'])) {
             $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];

@@ -37,9 +37,9 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function __construct(TranslatorInterface $translator = null, $translationDomain = 'validators')
+    public function __construct(?TranslatorInterface $translator = null, $translationDomain = 'validators')
     {
-        $this->translator = $translator;
+        $this->translator        = $translator;
         $this->translationDomain = $translationDomain;
     }
 
@@ -84,7 +84,6 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     private function getErrorMessage(FormError $error)
     {
-
         if ($this->translator === null) {
             return $error->getMessage();
         }
@@ -98,7 +97,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     private function convertFormToArray(SerializationVisitorInterface $visitor, Form $data)
     {
-        $form = new \ArrayObject();
+        $form   = new \ArrayObject();
         $errors = [];
         foreach ($data->getErrors() as $error) {
             $errors[] = $this->getErrorMessage($error);

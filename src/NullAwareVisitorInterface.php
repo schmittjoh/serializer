@@ -12,7 +12,6 @@ interface NullAwareVisitorInterface
      *
      * @param mixed $value
      *
-     * @return bool
      */
     public function isNull($value): bool;
 }

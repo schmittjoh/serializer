@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata;
 
+use function lcfirst;
+use function serialize;
+use function strpos;
+use function substr;
+use function unserialize;
+
 class VirtualPropertyMetadata extends PropertyMetadata
 {
     public function __construct(string $class, string $methodName)
@@ -14,13 +20,13 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $fieldName = $methodName;
         }
 
-        $this->class = $class;
-        $this->name = $fieldName;
-        $this->getter = $methodName;
+        $this->class    = $class;
+        $this->name     = $fieldName;
+        $this->getter   = $methodName;
         $this->readOnly = true;
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
     }
 
@@ -53,7 +59,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
         ]);
     }
 
-    public function unserialize($str)
+    public function unserialize($str): void
     {
         $unserialized = unserialize($str);
         list(
@@ -79,7 +85,7 @@ class VirtualPropertyMetadata extends PropertyMetadata
             $this->readOnly,
             $this->class,
             $this->name
-            ) = $unserialized;
+            )         = $unserialized;
 
         if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];

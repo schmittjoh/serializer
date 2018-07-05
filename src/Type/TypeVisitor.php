@@ -8,6 +8,9 @@ use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
 use JMS\Serializer\Type\Exception\InvalidNode;
+use function array_map;
+use function array_slice;
+use function str_replace;
 use function strpos;
 
 final class TypeVisitor implements Visit
@@ -15,9 +18,9 @@ final class TypeVisitor implements Visit
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         switch ($element->getId()) {
-            case '#simple_type' :
+            case '#simple_type':
                 return $this->visitSimpleType($element);
-            case '#compound_type' :
+            case '#compound_type':
                 return $this->visitCompoundType($element, $handle, $eldnah);
         }
 
@@ -30,8 +33,8 @@ final class TypeVisitor implements Visit
     private function visitSimpleType(TreeNode $element)
     {
         $tokenNode = $element->getChild(0);
-        $token = $tokenNode->getValueToken();
-        $value = $tokenNode->getValueValue();
+        $token     = $tokenNode->getValueToken();
+        $value     = $tokenNode->getValueValue();
 
         if ($token === 'name') {
             return ['name' => $value, 'params' => []];
@@ -46,9 +49,9 @@ final class TypeVisitor implements Visit
         return str_replace($escapeChar . $escapeChar, $escapeChar, $value);
     }
 
-    private function visitCompoundType(TreeNode $element, ?int &$handle, ?int $eldnah) : array
+    private function visitCompoundType(TreeNode $element, ?int &$handle, ?int $eldnah): array
     {
-        $nameToken = $element->getChild(0);
+        $nameToken  = $element->getChild(0);
         $parameters = array_slice($element->getChildren(), 1);
 
         return [

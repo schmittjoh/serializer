@@ -24,39 +24,33 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
+use function array_keys;
+use function call_user_func;
+use function implode;
+use function sprintf;
 
 /**
  * Handles traversal along the object graph.
  *
  * This class handles traversal along the graph, and calls different methods
  * on visitors, or custom handlers to process its nodes.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class DeserializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
 {
-    /**
-     * @var DeserializationVisitorInterface
-     */
+    /** @var DeserializationVisitorInterface */
     protected $visitor;
 
-    /**
-     * @var DeserializationContext
-     */
+    /** @var DeserializationContext */
     protected $context;
 
-    /**
-     * @var ExpressionLanguageExclusionStrategy
-     */
+    /** @var ExpressionLanguageExclusionStrategy */
     private $expressionExclusionStrategy;
 
     private $dispatcher;
     private $metadataFactory;
     private $handlerRegistry;
     private $objectConstructor;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
 
     public function __construct(
@@ -64,14 +58,14 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
-        $this->dispatcher = $dispatcher ?: new EventDispatcher();
-        $this->metadataFactory = $metadataFactory;
-        $this->handlerRegistry = $handlerRegistry;
+        $this->dispatcher        = $dispatcher ?: new EventDispatcher();
+        $this->metadataFactory   = $metadataFactory;
+        $this->handlerRegistry   = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;
-        $this->accessor = $accessor;
+        $this->accessor          = $accessor;
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
@@ -80,11 +74,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
     /**
      * Called for each node of the graph that is being traversed.
      *
-     * @param mixed $data the data depends on the direction, and type of visitor
+     * @param mixed      $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null)
+    public function accept($data, ?array $type = null)
     {
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
@@ -123,28 +117,27 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 throw new RuntimeException('Resources are not supported in serialized data.');
 
             default:
-
                 $this->context->increaseDepth();
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $this->format)) {
                     $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $this->format, $event = new PreDeserializeEvent($this->context, $data, $type));
-                    $type = $event->getType();
-                    $data = $event->getData();
+                    $type                                                                                          = $event->getType();
+                    $data                                                                                          = $event->getData();
                 }
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                    $rs = call_user_func($handler, $this->visitor, $data, $type, $this->context);
                     $this->context->decreaseDepth();
 
                     return $rs;
                 }
 
-                /** @var $metadata ClassMetadata */
+                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
@@ -184,7 +177,6 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
-
                     }
                     $this->context->popPropertyMetadata();
                 }

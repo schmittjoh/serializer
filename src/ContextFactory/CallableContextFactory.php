@@ -11,14 +11,9 @@ use JMS\Serializer\Context;
  */
 abstract class CallableContextFactory
 {
-    /**
-     * @var callable
-     */
+    /** @var callable */
     private $callable;
 
-    /**
-     * @param callable $callable
-     */
     public function __construct(callable $callable)
     {
         $this->callable = $callable;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\GraphNavigator\Factory;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -14,38 +16,28 @@ use Metadata\MetadataFactoryInterface;
 
 final class SerializationGraphNavigatorFactory implements GraphNavigatorFactoryInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $dispatcher;
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
-        AccessorStrategyInterface $accessor = null,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null)
-    {
-        $this->metadataFactory = $metadataFactory;
-        $this->handlerRegistry = $handlerRegistry;
-        $this->accessor = $accessor ?: new DefaultAccessorStrategy();
-        $this->dispatcher = $dispatcher ?: new EventDispatcher();
+        ?AccessorStrategyInterface $accessor = null,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
+    ) {
+        $this->metadataFactory     = $metadataFactory;
+        $this->handlerRegistry     = $handlerRegistry;
+        $this->accessor            = $accessor ?: new DefaultAccessorStrategy();
+        $this->dispatcher          = $dispatcher ?: new EventDispatcher();
         $this->expressionEvaluator = $expressionEvaluator;
     }
 

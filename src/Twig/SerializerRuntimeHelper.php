@@ -7,9 +7,6 @@ namespace JMS\Serializer\Twig;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 
-/**
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class SerializerRuntimeHelper
 {
     protected $serializer;
@@ -19,13 +16,7 @@ final class SerializerRuntimeHelper
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param $object
-     * @param string $type
-     * @param SerializationContext|null $context
-     * @return string
-     */
-    public function serialize($object, $type = 'json', SerializationContext $context = null)
+    public function serialize($object, string $type = 'json', ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);
     }

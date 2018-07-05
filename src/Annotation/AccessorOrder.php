@@ -9,7 +9,6 @@ namespace JMS\Serializer\Annotation;
  *
  * @Annotation
  * @Target("CLASS")
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class AccessorOrder
 {
@@ -19,8 +18,6 @@ final class AccessorOrder
      */
     public $order;
 
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     public $custom = [];
 }

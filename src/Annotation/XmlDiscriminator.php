@@ -10,18 +10,12 @@ namespace JMS\Serializer\Annotation;
  */
 class XmlDiscriminator
 {
-    /**
-     * @var boolean
-     */
+    /** @var bool */
     public $attribute = false;
 
-    /**
-     * @var boolean
-     */
+    /** @var bool */
     public $cdata = true;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $namespace;
 }

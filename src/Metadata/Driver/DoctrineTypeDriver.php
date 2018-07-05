@@ -14,7 +14,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
 {
-    protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata):void
+    protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata): void
     {
         if (empty($classMetadata->discriminatorMap) && !$classMetadata->discriminatorDisabled
             && !empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
@@ -26,7 +26,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
         }
     }
 
-    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata):void
+    protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
         $propertyName = $propertyMetadata->name;
         if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {

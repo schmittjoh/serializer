@@ -11,8 +11,5 @@ use JMS\Serializer\DeserializationContext;
  */
 interface DeserializationContextFactoryInterface
 {
-    /**
-     * @return DeserializationContext
-     */
     public function createDeserializationContext(): DeserializationContext;
 }

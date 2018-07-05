@@ -11,8 +11,5 @@ use JMS\Serializer\SerializationContext;
  */
 interface SerializationContextFactoryInterface
 {
-    /**
-     * @return SerializationContext
-     */
     public function createSerializationContext(): SerializationContext;
 }

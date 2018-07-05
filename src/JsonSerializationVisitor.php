@@ -9,22 +9,30 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use const JSON_ERROR_NONE;
+use const JSON_ERROR_UTF8;
+use const JSON_PRESERVE_ZERO_FRACTION;
+use function array_pop;
+use function array_push;
+use function count;
+use function is_array;
+use function json_encode;
+use function json_last_error;
+use function sprintf;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     private $dataStack = [];
-    /**
-     * @var \ArrayObject
-     */
+    /** @var \ArrayObject */
     private $data;
 
     public function __construct(
-        int $options = JSON_PRESERVE_ZERO_FRACTION)
-    {
+        int $options = JSON_PRESERVE_ZERO_FRACTION
+    ) {
         $this->dataStack = [];
-        $this->options = $options;
+        $this->options   = $options;
     }
 
     public function visitNull($data, array $type)
@@ -59,7 +67,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitArray(array $data, array $type)
     {
-        \array_push($this->dataStack, $data);
+        array_push($this->dataStack, $data);
 
         $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
@@ -67,7 +75,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
-
             try {
                 $v = $this->navigator->accept($v, $elType);
             } catch (NotAcceptableException $e) {
@@ -81,20 +88,20 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
             }
         }
 
-        \array_pop($this->dataStack);
+        array_pop($this->dataStack);
         return $rs;
     }
 
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
-        \array_push($this->dataStack, $this->data);
+        array_push($this->dataStack, $this->data);
         $this->data = $metadata->isMap === true ? new \ArrayObject() : [];
     }
 
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
-        $rs = $this->data;
-        $this->data = \array_pop($this->dataStack);
+        $rs         = $this->data;
+        $this->data = array_pop($this->dataStack);
 
         if ($metadata->isList !== true && empty($rs)) {
             return new \ArrayObject();
@@ -110,12 +117,12 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
             return;
         }
 
-        if (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v)) {
+        if (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || is_array($v)) && 0 === count($v)) {
             return;
         }
 
         if ($metadata->inline) {
-            if (\is_array($v) || ($v instanceof \ArrayObject)) {
+            if (is_array($v) || ($v instanceof \ArrayObject)) {
                 // concatenate the two array-like structures
                 // is there anything faster?
                 foreach ($v as $key => $value) {
@@ -131,8 +138,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      * @deprecated Will be removed in 3.0
      *
      * Checks if some data key exists.
-     * @param string $key
-     * @return boolean
      */
     public function hasData(string $key): bool
     {
@@ -144,7 +149,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      *
      * Allows you to replace existing data on the current object element.
      *
-     * @param string $key
      * @param mixed $value This value must either be a regular scalar, or an array.
      *                                                       It must not contain any objects anymore.
      */

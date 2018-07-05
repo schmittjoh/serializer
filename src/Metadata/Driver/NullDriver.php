@@ -9,9 +9,9 @@ use Metadata\Driver\DriverInterface;
 
 class NullDriver implements DriverInterface
 {
-    public function loadMetadataForClass(\ReflectionClass $class):?\Metadata\ClassMetadata
+    public function loadMetadataForClass(\ReflectionClass $class): ?\Metadata\ClassMetadata
     {
-        $classMetadata = new ClassMetadata($name = $class->name);
+        $classMetadata                  = new ClassMetadata($name = $class->name);
         $classMetadata->fileResources[] = $class->getFilename();
 
         return $classMetadata;

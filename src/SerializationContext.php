@@ -6,6 +6,9 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
 use Metadata\MetadataFactoryInterface;
+use function get_class;
+use function implode;
+use function is_object;
 
 class SerializationContext extends Context
 {
@@ -15,9 +18,7 @@ class SerializationContext extends Context
     /** @var \SplStack */
     private $visitingStack;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $initialType;
 
     public static function create()
@@ -25,20 +26,17 @@ class SerializationContext extends Context
         return new self();
     }
 
-    /**
-     * @param string $format
-     */
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         parent::initialize($format, $visitor, $navigator, $factory);
 
-        $this->visitingSet = new \SplObjectStorage();
+        $this->visitingSet   = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();
     }
 
     public function startVisiting($object): void
     {
-        if (!\is_object($object)) {
+        if (!is_object($object)) {
             return;
         }
         $this->visitingSet->attach($object);
@@ -47,7 +45,7 @@ class SerializationContext extends Context
 
     public function stopVisiting($object): void
     {
-        if (!\is_object($object)) {
+        if (!is_object($object)) {
             return;
         }
         $this->visitingSet->detach($object);
@@ -60,7 +58,7 @@ class SerializationContext extends Context
 
     public function isVisiting($object): bool
     {
-        if (!\is_object($object)) {
+        if (!is_object($object)) {
             return false;
         }
 
@@ -71,7 +69,7 @@ class SerializationContext extends Context
     {
         $path = [];
         foreach ($this->visitingStack as $obj) {
-            $path[] = \get_class($obj);
+            $path[] = get_class($obj);
         }
 
         if (!$path) {
@@ -107,10 +105,9 @@ class SerializationContext extends Context
     }
 
     /**
-     * @param string $type
      * @return $this
      */
-    public function setInitialType($type): self
+    public function setInitialType(string $type): self
     {
         $this->initialType = $type;
         $this->setAttribute('initial_type', $type);

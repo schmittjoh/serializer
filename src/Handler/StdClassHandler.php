@@ -9,9 +9,6 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-/**
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 final class StdClassHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
@@ -36,7 +33,7 @@ final class StdClassHandler implements SubscribingHandlerInterface
         $classMetadata = $context->getMetadataFactory()->getMetadataForClass('stdClass');
         $visitor->startVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass'], $context);
 
-        foreach ((array)$stdClass as $name => $value) {
+        foreach ((array) $stdClass as $name => $value) {
             $metadata = new StaticPropertyMetadata('stdClass', $name, $value);
             $visitor->visitProperty($metadata, $value);
         }

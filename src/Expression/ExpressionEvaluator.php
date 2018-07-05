@@ -5,52 +5,43 @@ declare(strict_types=1);
 namespace JMS\Serializer\Expression;
 
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use function array_key_exists;
+use function array_keys;
+use function is_string;
 
-/**
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 class ExpressionEvaluator implements ExpressionEvaluatorInterface
 {
-
-    /**
-     * @var ExpressionLanguage
-     */
+    /** @var ExpressionLanguage */
     private $expressionLanguage;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $context = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $cache = [];
 
     public function __construct(ExpressionLanguage $expressionLanguage, array $context = [], array $cache = [])
     {
         $this->expressionLanguage = $expressionLanguage;
-        $this->context = $context;
-        $this->cache = $cache;
+        $this->context            = $context;
+        $this->cache              = $cache;
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      */
-    public function setContextVariable($name, $value): void
+    public function setContextVariable(string $name, $value): void
     {
         $this->context[$name] = $value;
     }
 
     /**
-     * @param  string $expression
      * @param  array $data
      * @return mixed
      */
-    public function evaluate($expression, array $data = [])
+    public function evaluate(string $expression, array $data = [])
     {
-        if (!\is_string($expression)) {
+        if (!is_string($expression)) {
             return $expression;
         }
 

@@ -11,12 +11,11 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use function get_class;
 
 final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $initializeExcluded = true;
 
     public function __construct($initializeExcluded = true)
@@ -26,8 +25,8 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
     public static function getSubscribingMethods()
     {
-        $methods = [];
-        $formats = ['json', 'xml', 'yml'];
+        $methods         = [];
+        $formats         = ['json', 'xml', 'yml'];
         $collectionTypes = [
             'ArrayCollection',
             'Doctrine\Common\Collections\ArrayCollection',
@@ -66,7 +65,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
         if ($this->initializeExcluded === false) {
             $exclusionStrategy = $context->getExclusionStrategy();
-            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(\get_class($collection)), $context)) {
+            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(get_class($collection)), $context)) {
                 $context->startVisiting($collection);
 
                 return $visitor->visitArray([], $type, $context);

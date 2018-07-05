@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace JMS\Serializer\Annotation;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
+use function property_exists;
+use function sprintf;
 
 /**
  * @Annotation
  * @Target({"METHOD", "CLASS"})
- *
- * @author Alexander Klimenkov <alx.devel@gmail.com>
  */
 final class VirtualProperty
 {
@@ -33,4 +33,3 @@ final class VirtualProperty
         }
     }
 }
-

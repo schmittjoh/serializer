@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
+use function call_user_func;
+use function get_class;
+use function is_object;
+use function sprintf;
+use function str_replace;
 
 /**
  * Light-weight event dispatcher.
  *
  * This implementation focuses primarily on performance, and dispatching
  * events for certain classes. It is not a general purpose event dispatcher.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 class EventDispatcher implements EventDispatcherInterface
 {
-    private $listeners = [];
+    private $listeners      = [];
     private $classListeners = [];
 
     public static function getDefaultMethodName($eventName)
@@ -31,7 +34,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function setListeners(array $listeners): void
     {
-        $this->listeners = $listeners;
+        $this->listeners      = $listeners;
         $this->classListeners = [];
     }
 
@@ -48,10 +51,10 @@ class EventDispatcher implements EventDispatcherInterface
                 throw new InvalidArgumentException(sprintf('Each event must have a "event" key.'));
             }
 
-            $method = isset($eventData['method']) ? $eventData['method'] : self::getDefaultMethodName($eventData['event']);
-            $class = isset($eventData['class']) ? $eventData['class'] : null;
-            $format = isset($eventData['format']) ? $eventData['format'] : null;
-            $interface = isset($eventData['interface']) ? $eventData['interface'] : null;
+            $method                                 = $eventData['method'] ?? self::getDefaultMethodName($eventData['event']);
+            $class                                  = $eventData['class'] ?? null;
+            $format                                 = $eventData['format'] ?? null;
+            $interface                              = $eventData['interface'] ?? null;
             $this->listeners[$eventData['event']][] = [[$subscriber, $method], $class, $format, $interface];
             unset($this->classListeners[$eventData['event']]);
         }
@@ -76,8 +79,8 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $object = $event instanceof ObjectEvent ? $event->getObject() : null;
-        $realClass = is_object($object) ? get_class($object) : '';
+        $object      = $event instanceof ObjectEvent ? $event->getObject() : null;
+        $realClass   = is_object($object) ? get_class($object) : '';
         $objectClass = $realClass !== $class ? ($realClass . $class) : $class;
 
         if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
@@ -85,12 +88,11 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         foreach ($this->classListeners[$eventName][$objectClass][$format] as $listener) {
-
             if (!empty($listener[3]) && !($object instanceof $listener[3])) {
                 continue;
             }
 
-            \call_user_func($listener[0], $event, $eventName, $class, $format, $this);
+            call_user_func($listener[0], $event, $eventName, $class, $format, $this);
 
             if ($event->isPropagationStopped()) {
                 break;
@@ -99,13 +101,10 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * @param string $eventName
-     * @param string $loweredClass
-     * @param string $format
      *
      * @return array An array of listeners
      */
-    protected function initializeListeners($eventName, $loweredClass, $format)
+    protected function initializeListeners(string $eventName, string $loweredClass, string $format): array
     {
         $listeners = [];
         foreach ($this->listeners[$eventName] as $listener) {
@@ -122,4 +121,3 @@ class EventDispatcher implements EventDispatcherInterface
         return $listeners;
     }
 }
-

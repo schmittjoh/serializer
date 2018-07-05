@@ -10,7 +10,6 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -44,18 +43,21 @@ use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
-use Metadata\Cache\FileCache;
 use Metadata\Cache\CacheInterface;
+use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
+use function is_callable;
+use function is_dir;
+use function is_writable;
+use function mkdir;
+use function sprintf;
 
 /**
  * Builder for serializer instances.
  *
  * This object makes serializer construction a breeze for projects that do not use
  * any special dependency injection container.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class SerializerBuilder
 {
@@ -78,19 +80,13 @@ final class SerializerBuilder
     private $deserializationContextFactory;
     private $typeParser;
 
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessorStrategy;
 
-    /**
-     * @var CacheInterface
-     */
+    /** @var CacheInterface */
     private $metadataCache;
 
     public static function create(...$args)
@@ -98,12 +94,12 @@ final class SerializerBuilder
         return new static(...$args);
     }
 
-    public function __construct(HandlerRegistryInterface $handlerRegistry = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?HandlerRegistryInterface $handlerRegistry = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
-        $this->typeParser = new Parser();
-        $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
-        $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
-        $this->serializationVisitors = [];
+        $this->typeParser              = new Parser();
+        $this->handlerRegistry         = $handlerRegistry ?: new HandlerRegistry();
+        $this->eventDispatcher         = $eventDispatcher ?: new EventDispatcher();
+        $this->serializationVisitors   = [];
         $this->deserializationVisitors = [];
 
         if ($handlerRegistry) {
@@ -220,7 +216,7 @@ final class SerializerBuilder
 
     public function setSerializationVisitor($format, SerializationVisitorFactory $visitor): self
     {
-        $this->visitorsAdded = true;
+        $this->visitorsAdded                  = true;
         $this->serializationVisitors[$format] = $visitor;
 
         return $this;
@@ -228,7 +224,7 @@ final class SerializerBuilder
 
     public function setDeserializationVisitor($format, DeserializationVisitorFactory $visitor): self
     {
-        $this->visitorsAdded = true;
+        $this->visitorsAdded                    = true;
         $this->deserializationVisitors[$format] = $visitor;
 
         return $this;
@@ -236,7 +232,7 @@ final class SerializerBuilder
 
     public function addDefaultSerializationVisitors(): self
     {
-        $this->visitorsAdded = true;
+        $this->visitorsAdded         = true;
         $this->serializationVisitors = [
             'xml' => new XmlSerializationVisitorFactory(),
             'json' => new JsonSerializationVisitorFactory(),
@@ -247,7 +243,7 @@ final class SerializerBuilder
 
     public function addDefaultDeserializationVisitors(): self
     {
-        $this->visitorsAdded = true;
+        $this->visitorsAdded           = true;
         $this->deserializationVisitors = [
             'xml' => new XmlDeserializationVisitorFactory(),
             'json' => new JsonDeserializationVisitorFactory(),
@@ -257,7 +253,7 @@ final class SerializerBuilder
     }
 
     /**
-     * @param Boolean $include Whether to include the metadata from the interfaces
+     * @param bool $include Whether to include the metadata from the interfaces
      *
      * @return SerializerBuilder
      */
@@ -310,7 +306,7 @@ final class SerializerBuilder
      *
      * Please keep in mind that you currently may only have one directory per namespace prefix.
      *
-     * @param string $dir The directory where metadata files are located.
+     * @param string $dir             The directory where metadata files are located.
      * @param string $namespacePrefix An optional prefix if you only store metadata for specific namespaces in this directory.
      *
      * @return SerializerBuilder
@@ -352,15 +348,13 @@ final class SerializerBuilder
     /**
      * Similar to addMetadataDir(), but overrides an existing entry.
      *
-     * @param string $dir
-     * @param string $namespacePrefix
      *
      * @return SerializerBuilder
      *
      * @throws InvalidArgumentException When a directory does not exist
      * @throws InvalidArgumentException When no directory is configured for the ns prefix
      */
-    public function replaceMetadataDir(string $dir, $namespacePrefix = ''): self
+    public function replaceMetadataDir(string $dir, string $namespacePrefix = ''): self
     {
         if (!is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
@@ -385,7 +379,6 @@ final class SerializerBuilder
     /**
      * @param SerializationContextFactoryInterface|callable $serializationContextFactory
      *
-     * @return self
      */
     public function setSerializationContextFactory($serializationContextFactory): self
     {
@@ -405,7 +398,6 @@ final class SerializerBuilder
     /**
      * @param DeserializationContextFactoryInterface|callable $deserializationContextFactory
      *
-     * @return self
      */
     public function setDeserializationContextFactory($deserializationContextFactory): self
     {
@@ -446,7 +438,7 @@ final class SerializerBuilder
             $this->driverFactory = new DefaultDriverFactory($this->propertyNamingStrategy, $this->typeParser);
         }
 
-        $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
+        $metadataDriver  = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
@@ -511,7 +503,7 @@ final class SerializerBuilder
         );
     }
 
-    private function initializePropertyNamingStrategy()
+    private function initializePropertyNamingStrategy(): void
     {
         if (null !== $this->propertyNamingStrategy) {
             return;
@@ -520,7 +512,7 @@ final class SerializerBuilder
         $this->propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
     }
 
-    private function createDir($dir)
+    private function createDir($dir): void
     {
         if (is_dir($dir)) {
             return;
@@ -531,4 +523,3 @@ final class SerializerBuilder
         }
     }
 }
-

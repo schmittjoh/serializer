@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace JMS\Serializer\Naming;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
+use function preg_replace;
+use function strtolower;
+use function ucfirst;
 
 /**
  * Generic naming strategy which translates a camel-cased property name.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 final class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {

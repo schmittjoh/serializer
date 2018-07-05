@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Annotation;
 
 use JMS\Serializer\Exception\RuntimeException;
+use function is_string;
+use function strtoupper;
 
 /**
  * @Annotation
@@ -12,14 +14,14 @@ use JMS\Serializer\Exception\RuntimeException;
  */
 final class ExclusionPolicy
 {
-    const NONE = 'NONE';
-    const ALL = 'ALL';
+    public const NONE = 'NONE';
+    public const ALL  = 'ALL';
 
     public $policy;
 
     public function __construct(array $values)
     {
-        if (!\is_string($values['value'])) {
+        if (!is_string($values['value'])) {
             throw new RuntimeException('"value" must be a string.');
         }
 

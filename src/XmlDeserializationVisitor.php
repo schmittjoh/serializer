@@ -12,6 +12,21 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use function count;
+use function in_array;
+use function json_encode;
+use function libxml_clear_errors;
+use function libxml_disable_entity_loader;
+use function libxml_get_last_error;
+use function libxml_use_internal_errors;
+use function preg_replace;
+use function reset;
+use function simplexml_load_string;
+use function sprintf;
+use function str_replace;
+use function stripos;
+use function substr;
+use function uniqid;
 
 final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface, DeserializationVisitorInterface
 {
@@ -21,16 +36,17 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     private $currentObject;
     private $currentMetadata;
     private $disableExternalEntities = true;
-    private $doctypeWhitelist = [];
+    private $doctypeWhitelist        = [];
 
     public function __construct(
-        bool $disableExternalEntities = true, array $doctypeWhitelist = [])
-    {
-        $this->objectStack = new \SplStack;
-        $this->metadataStack = new \SplStack;
-        $this->objectMetadataStack = new \SplStack;
+        bool $disableExternalEntities = true,
+        array $doctypeWhitelist = []
+    ) {
+        $this->objectStack             = new \SplStack();
+        $this->metadataStack           = new \SplStack();
+        $this->objectMetadataStack     = new \SplStack();
         $this->disableExternalEntities = $disableExternalEntities;
-        $this->doctypeWhitelist = $doctypeWhitelist;
+        $this->doctypeWhitelist        = $doctypeWhitelist;
     }
 
     public function prepare($data)
@@ -66,22 +82,21 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
     private function emptyStringToSpaceCharacter($data)
     {
-        return $data === '' ? ' ' : (string)$data;
+        return $data === '' ? ' ' : (string) $data;
     }
 
     public function visitNull($data, array $type): void
     {
-
     }
 
     public function visitString($data, array $type): string
     {
-        return (string)$data;
+        return (string) $data;
     }
 
     public function visitBoolean($data, array $type): bool
     {
-        $data = (string)$data;
+        $data = (string) $data;
 
         if ('true' === $data || '1' === $data) {
             return true;
@@ -94,12 +109,12 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
     public function visitInteger($data, array $type): int
     {
-        return (integer)$data;
+        return (int) $data;
     }
 
     public function visitDouble($data, array $type): float
     {
-        return (double)$data;
+        return (float) $data;
     }
 
     public function visitArray($data, array $type): array
@@ -115,7 +130,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
             $result = [];
             foreach ($data as $key => $v) {
-                $k = $this->navigator->accept($key, $keyType);
+                $k          = $this->navigator->accept($key, $keyType);
                 $result[$k] = $this->navigator->accept($v, $entryType);
             }
 
@@ -127,7 +142,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
         if ($namespace === null && $this->objectMetadataStack->count()) {
             $classMetadata = $this->objectMetadataStack->top();
-            $namespace = isset($classMetadata->xmlNamespaces['']) ? $classMetadata->xmlNamespaces[''] : $namespace;
+            $namespace     = $classMetadata->xmlNamespaces[''] ?? $namespace;
             if ($namespace === null) {
                 $namespaces = $data->getDocNamespaces();
                 if (isset($namespaces[''])) {
@@ -144,11 +159,11 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             $nodes = $data->xpath($entryName);
         }
 
-        if (!\count($nodes)) {
+        if (!count($nodes)) {
             return [];
         }
 
-        switch (\count($type['params'])) {
+        switch (count($type['params'])) {
             case 0:
                 throw new RuntimeException(sprintf('The array type must be specified either as "array<T>", or "array<K,V>".'));
 
@@ -167,7 +182,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 }
 
                 list($keyType, $entryType) = $type['params'];
-                $result = [];
+                $result                    = [];
 
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
@@ -176,7 +191,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
-                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
+                    $k          = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
                     $result[$k] = $this->navigator->accept($v, $entryType);
                 }
 
@@ -192,18 +207,18 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         switch (true) {
             // Check XML attribute without namespace for discriminatorFieldName
             case $metadata->xmlDiscriminatorAttribute && null === $metadata->xmlDiscriminatorNamespace && isset($data->attributes()->{$metadata->discriminatorFieldName}):
-                return (string)$data->attributes()->{$metadata->discriminatorFieldName};
+                return (string) $data->attributes()->{$metadata->discriminatorFieldName};
 
             // Check XML attribute with namespace for discriminatorFieldName
             case $metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                return (string)$data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+                return (string) $data->attributes($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
 
             // Check XML element with namespace for discriminatorFieldName
             case !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
-                return (string)$data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+                return (string) $data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
             // Check XML element for discriminatorFieldName
             case isset($data->{$metadata->discriminatorFieldName}):
-                return (string)$data->{$metadata->discriminatorFieldName};
+                return (string) $data->{$metadata->discriminatorFieldName};
 
             default:
                 throw new LogicException(sprintf(
@@ -229,7 +244,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         }
 
         if ($metadata->xmlAttribute) {
-
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
                 return $this->navigator->accept($attributes[$name], $metadata->type);
@@ -260,7 +274,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw new NotAcceptableException();
             }
         } else {
-
             $namespaces = $data->getDocNamespaces();
 
             if (isset($namespaces[''])) {
@@ -284,7 +297,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     }
 
     /**
-     * @param ClassMetadata $metadata
      * @param mixed $data
      * @param array $type
      * @return mixed
@@ -298,7 +310,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         return $rs;
     }
 
-    public function setCurrentObject($object)
+    public function setCurrentObject($object): void
     {
         $this->objectStack->push($this->currentObject);
         $this->currentObject = $object;
@@ -314,7 +326,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         return $this->currentObject = $this->objectStack->pop();
     }
 
-    public function setCurrentMetadata(PropertyMetadata $metadata)
+    public function setCurrentMetadata(PropertyMetadata $metadata): void
     {
         $this->metadataStack->push($this->currentMetadata);
         $this->currentMetadata = $metadata;
@@ -338,13 +350,11 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * Retrieves internalSubset even in bugfixed php versions
      *
-     * @param string $data
-     * @return string
      */
-    private function getDomDocumentTypeEntitySubset($data)
+    private function getDomDocumentTypeEntitySubset(string $data): string
     {
         $startPos = $endPos = stripos($data, '<!doctype');
-        $braces = 0;
+        $braces   = 0;
         do {
             $char = $data[$endPos++];
             if ($char === '<') {
@@ -358,7 +368,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $internalSubset = substr($data, $startPos, $endPos - $startPos);
         $internalSubset = str_replace(["\n", "\r"], '', $internalSubset);
         $internalSubset = preg_replace('/\s{2,}/', ' ', $internalSubset);
-        $internalSubset = str_replace(["[ <!", "> ]>"], ['[<!', '>]>'], $internalSubset);
+        $internalSubset = str_replace(['[ <!', '> ]>'], ['[<!', '>]>'], $internalSubset);
 
         return $internalSubset;
     }
@@ -366,7 +376,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * @param mixed $value
      *
-     * @return bool
      */
     public function isNull($value): bool
     {
@@ -374,14 +383,14 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
             // If the "name" is empty means that we are on an not-existent node and subsequent operations on the object will trigger the warning:
             // "Node no longer exists"
-            if ($value->getName() === "") {
+            if ($value->getName() === '') {
                 // @todo should be "true", but for collections needs a default collection value. maybe something for the 2.0
                 return false;
             }
 
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
             if (isset($xsiAttributes['nil'])
-                && ((string)$xsiAttributes['nil'] === 'true' || (string)$xsiAttributes['nil'] === '1')
+                && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
             ) {
                 return true;
             }

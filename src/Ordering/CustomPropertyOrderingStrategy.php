@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Ordering;
 
+use function array_combine;
+use function array_keys;
+use function count;
+use function range;
+use function uksort;
+
 final class CustomPropertyOrderingStrategy implements PropertyOrderingInterface
 {
     /** @var int[] property => weight */
@@ -20,9 +26,9 @@ final class CustomPropertyOrderingStrategy implements PropertyOrderingInterface
     /**
      * {@inheritdoc}
      */
-    public function order(array $properties) : array
+    public function order(array $properties): array
     {
-        $currentSorting = $properties ? array_combine(array_keys($properties), range(1, \count($properties))) : [];
+        $currentSorting = $properties ? array_combine(array_keys($properties), range(1, count($properties))) : [];
 
         uksort($properties, function ($a, $b) use ($currentSorting) {
             $existsA = isset($this->ordering[$a]);

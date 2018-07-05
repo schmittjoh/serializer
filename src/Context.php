@@ -15,12 +15,11 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
+use function array_unshift;
 
 abstract class Context
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $attributes = [];
 
     private $format;
@@ -37,7 +36,7 @@ abstract class Context
     /** @var DisjunctExclusionStrategy */
     private $exclusionStrategy;
 
-    /** @var boolean */
+    /** @var bool */
     private $serializeNull = false;
 
     private $initialized = false;
@@ -49,20 +48,17 @@ abstract class Context
     {
     }
 
-    /**
-     * @param string $format
-     */
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
             throw new LogicException('This context was already initialized, and cannot be re-used.');
         }
 
-        $this->format = $format;
-        $this->visitor = $visitor;
-        $this->navigator = $navigator;
+        $this->format          = $format;
+        $this->visitor         = $visitor;
+        $this->navigator       = $navigator;
         $this->metadataFactory = $factory;
-        $this->metadataStack = new \SplStack();
+        $this->metadataStack   = new \SplStack();
 
         if (isset($this->attributes['groups'])) {
             $this->addExclusionStrategy(new GroupsExclusionStrategy($this->attributes['groups']));
@@ -140,10 +136,10 @@ abstract class Context
             return $this;
         }
 
-        $this->exclusionStrategy = new DisjunctExclusionStrategy(array(
+        $this->exclusionStrategy = new DisjunctExclusionStrategy([
             $this->exclusionStrategy,
             $strategy,
-        ));
+        ]);
 
         return $this;
     }
@@ -164,7 +160,7 @@ abstract class Context
             throw new LogicException('The groups must not be empty.');
         }
 
-        $this->attributes['groups'] = (array)$groups;
+        $this->attributes['groups'] = (array) $groups;
 
         return $this;
     }
@@ -190,16 +186,12 @@ abstract class Context
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
      *
-     * @return bool
      */
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
     }
 
-    /**
-     * @return string
-     */
     public function getFormat(): string
     {
         return $this->format;
@@ -259,8 +251,5 @@ abstract class Context
 
     abstract public function getDepth(): int;
 
-    /**
-     * @return integer
-     */
     abstract public function getDirection(): int;
 }
