@@ -19,19 +19,18 @@
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
 
         <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
-
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
 
         <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
 
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
-
-        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
-        <exclude ref="Generic.Formatting.MultipleStatementAlignment"/>
-        <exclude ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
+
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
 
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
