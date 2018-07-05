@@ -186,7 +186,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         if (null !== $namespace) {
             $prefix = uniqid('ns-');
             $data->registerXPathNamespace($prefix, $namespace);
-            $nodes = $data->xpath("$prefix:$entryName");
+            $nodes = $data->xpath(sprintf('%s:%s', $prefix, $entryName));
         } else {
             $nodes = $data->xpath($entryName);
         }

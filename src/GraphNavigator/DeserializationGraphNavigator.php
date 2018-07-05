@@ -162,7 +162,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
-                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
+                    throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
                 }
 
                 if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {

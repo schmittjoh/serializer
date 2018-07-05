@@ -42,7 +42,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
             }
 
             if (!$doctrineMetadata->isSingleValuedAssociation($propertyName)) {
-                $targetEntity = "ArrayCollection<{$targetEntity}>";
+                $targetEntity = sprintf('ArrayCollection<%s>', $targetEntity);
             }
 
             $propertyMetadata->setType($this->typeParser->parse($targetEntity));

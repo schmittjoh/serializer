@@ -26,7 +26,6 @@
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 
-        <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
 
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
