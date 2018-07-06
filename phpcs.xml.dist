@@ -30,7 +30,6 @@
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
 
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
 
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
