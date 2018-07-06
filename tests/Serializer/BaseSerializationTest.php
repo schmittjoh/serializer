@@ -56,6 +56,7 @@ use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\InlineChildWithGroups;
 use JMS\Serializer\Tests\Fixtures\InlineParent;
+use JMS\Serializer\Tests\Fixtures\InlineParentWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\Log;
@@ -837,16 +838,20 @@ abstract class BaseSerializationTest extends TestCase
 
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline'), $result);
-        // no deserialization support
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($inline, $this->deserialize($this->getContent('inline'), get_class($inline)));
+        }
     }
 
     public function testInlineEmptyChild()
     {
-        $inline = new InlineParent(new InlineChildEmpty());
-
+        $inline = new InlineParentWithEmptyChild(new InlineChildEmpty());
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline_child_empty'), $result);
-        // no deserialization support
+        if ($this->hasDeserializer()) {
+            self::assertEquals($inline, $this->deserialize($this->getContent('inline'), get_class($inline)));
+        }
     }
 
     public function testEmptyChild()

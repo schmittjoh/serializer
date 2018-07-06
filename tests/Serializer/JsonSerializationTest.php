@@ -12,6 +12,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\AuthorsInline;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
@@ -130,7 +131,6 @@ class JsonSerializationTest extends BaseSerializationTest
         return [
             [[1, 2, 3], '[1,2,3]'],
             [[], '[]'],
-            [[1, 'a' => 2], '[1,2]'],
         ];
     }
 
@@ -142,8 +142,9 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testFirstClassListCollections($items, $expected): void
     {
         $collection = new FirstClassListCollection($items);
-
-        self::assertSame($expected, $this->serialize($collection));
+        $serialized = $this->serialize($collection);
+        self::assertSame($expected, $serialized);
+        self::assertEquals($collection, $this->deserialize($serialized, get_class($collection)));
     }
 
     public function getFirstClassMapCollectionsValues()
@@ -164,7 +165,9 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $collection = new FirstClassMapCollection($items);
 
-        self::assertSame($expected, $this->serialize($collection));
+        $serialized = $this->serialize($collection);
+        self::assertSame($expected, $serialized);
+        self::assertEquals($collection, $this->deserialize($serialized, FirstClassMapCollection::class));
     }
 
     public function testAddLinksToOutput()
@@ -313,8 +316,17 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testInlineArray()
     {
         $object = new ObjectWithInlineArray(['a' => 'b', 'c' => 'd']);
+        $serialized = $this->serialize($object);
+        self::assertEquals('{"a":"b","c":"d"}', $serialized);
+        self::assertEquals($object, $this->deserialize($serialized, ObjectWithInlineArray::class));
+    }
 
-        self::assertEquals('{"a":"b","c":"d"}', $this->serialize($object));
+    public function testInlineCollection()
+    {
+        $list = new AuthorsInline(new Author('foo'), new Author('bar'));
+        $serialized = $this->serialize($list);
+        self::assertEquals('[{"full_name":"foo"},{"full_name":"bar"}]', $serialized);
+        self::assertEquals($list, $this->deserialize($serialized, AuthorsInline::class));
     }
 
     public function testSerializeRootArrayWithDefinedKeys()
