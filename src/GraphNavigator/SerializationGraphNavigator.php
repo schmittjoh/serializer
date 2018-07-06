@@ -102,7 +102,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
     /**
      * Called for each node of the graph that is being traversed.
      *
-     * @param mixed      $data the data depends on the direction, and type of visitor
+     * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */

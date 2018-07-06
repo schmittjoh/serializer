@@ -35,7 +35,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
     private $fallbackConstructor;
 
     /**
-     * @param ManagerRegistry            $managerRegistry     Manager registry
+     * @param ManagerRegistry $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
     public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, string $fallbackStrategy = self::ON_MISSING_NULL)

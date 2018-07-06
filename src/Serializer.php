@@ -62,8 +62,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     /**
      * @param GraphNavigatorFactoryInterface[] $graphNavigators
-     * @param SerializationVisitorFactory[]    $serializationVisitors
-     * @param DeserializationVisitorFactory[]  $deserializationVisitors
+     * @param SerializationVisitorFactory[] $serializationVisitors
+     * @param DeserializationVisitorFactory[] $deserializationVisitors
      */
     public function __construct(
         MetadataFactoryInterface $factory,

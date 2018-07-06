@@ -22,7 +22,7 @@ final class LazyHandlerRegistry extends HandlerRegistry
 
     /**
      * @param PsrContainerInterface|ContainerInterface $container
-     * @param array                                    $handlers
+     * @param array $handlers
      */
     public function __construct($container, array $handlers = [])
     {

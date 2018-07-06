@@ -28,6 +28,8 @@
 
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
 
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
         <exclude name="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
 
