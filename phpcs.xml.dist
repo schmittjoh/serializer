@@ -14,27 +14,24 @@
 
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+        <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
 
         <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
 
         <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
-
-        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
-
-        <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
-
-        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
-
-        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
 
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversablePropertyTypeHintSpecification"/>
-
     </rule>
 
      <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
