@@ -21,9 +21,8 @@
         <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
 
-        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
+        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
 
-        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
