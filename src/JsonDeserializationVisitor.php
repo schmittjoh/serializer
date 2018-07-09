@@ -161,9 +161,12 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             throw new RuntimeException(sprintf('Invalid data %s (%s), expected "%s".', json_encode($data), $metadata->type['name'], $metadata->class));
         }
 
-        if ($metadata->inline){
+        if (true === $metadata->inline) {
             if (!$metadata->type) {
-                throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+                throw new RuntimeException(sprintf(
+                    'You must define a type for %s::$%s.', $metadata->class,
+                    $metadata->name
+                ));
             }
             return $this->navigator->accept($data, $metadata->type);
         }
