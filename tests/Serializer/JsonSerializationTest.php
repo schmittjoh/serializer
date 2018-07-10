@@ -110,6 +110,13 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
+            $outputs['authors_inline'] = '{"as_string":"8"}';
+            $outputs['inline_list_collection'] = '[1,2,3]';
+            $outputs['inline_empty_list_collection'] = '[]';
+            $outputs['inline_deserialization_list_collection'] = '[1,2]';
+            $outputs['inline_map'] = '{"0":1,"1":2,"2":3}';
+            $outputs['inline_empty_map'] = '{}';
+            $outputs['inline_deserialization_map'] = '{"a":0,"c":0,"0":5}';
         }
 
         if (!isset($outputs[$key])) {
@@ -126,48 +133,38 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{}', $this->serialize($object));
     }
 
-    public function getFirstClassListCollectionsValues()
-    {
-        return [
-            [[1, 2, 3], '[1,2,3]'],
-            [[], '[]'],
-        ];
-    }
 
-    /**
-     * @dataProvider getFirstClassListCollectionsValues
-     * @param array $items
-     * @param array $expected
-     */
-    public function testFirstClassListCollections($items, $expected): void
+    public function testInlineMap()
     {
-        $collection = new FirstClassListCollection($items);
+        $collection = new FirstClassMapCollection([1, 2, 3]);
         $serialized = $this->serialize($collection);
-        self::assertSame($expected, $serialized);
-        self::assertEquals($collection, $this->deserialize($serialized, get_class($collection)));
+        self::assertSame($this->getContent('inline_map'), $serialized);
+        self::assertEquals(
+            $collection,
+            $this->deserialize($this->getContent('inline_map'), get_class($collection))
+        );
     }
 
-    public function getFirstClassMapCollectionsValues()
+    public function testInlineEmptyMap()
     {
-        return [
-            [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
-            [[], '{}'],
-            [['a' => 'b', 'c' => 'd', 5], '{"a":0,"c":0,"0":5}'],
-        ];
-    }
-
-    /**
-     * @dataProvider getFirstClassMapCollectionsValues
-     * @param array $items
-     * @param array $expected
-     */
-    public function testFirstClassMapCollections($items, $expected): void
-    {
-        $collection = new FirstClassMapCollection($items);
-
+        $collection = new FirstClassMapCollection([]);
         $serialized = $this->serialize($collection);
-        self::assertSame($expected, $serialized);
-        self::assertEquals($collection, $this->deserialize($serialized, FirstClassMapCollection::class));
+        self::assertSame($this->getContent('inline_empty_map'), $serialized);
+        self::assertEquals(
+            $collection,
+            $this->deserialize($this->getContent('inline_empty_map'), get_class($collection))
+        );
+
+    }
+
+    public function testInlineMapDeserialization()
+    {
+        $collection = new FirstClassMapCollection(["a" => "b", "c" => "d", 5]);
+        $serialized = $this->serialize($collection);
+        self::assertSame(
+            $this->getContent('inline_deserialization_map'),
+            $serialized
+        );
     }
 
     public function testAddLinksToOutput()

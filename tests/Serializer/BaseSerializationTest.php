@@ -33,6 +33,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
+use JMS\Serializer\Tests\Fixtures\AuthorsInline;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceCollection;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceParent;
@@ -45,6 +46,8 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
+use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
+use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
@@ -1449,6 +1452,46 @@ abstract class BaseSerializationTest extends TestCase
 
         $this->serializer->serialize('foo', $this->getFormat(), null, 'Virtual');
         $this->assertTrue($invoked);
+    }
+
+    public function testInlineCollection()
+    {
+        $list = new AuthorsInline(new Author('foo'), new Author('bar'));
+        self::assertEquals($this->getContent('authors_inline'), $this->serialize($list));
+        self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
+    }
+
+    public function testInlineListCollection()
+    {
+        $collection = new FirstClassListCollection([1, 2, 3]);
+        $serialized = $this->serialize($collection);
+        self::assertSame($this->getContent('inline_list_collection'), $serialized);
+        self::assertEquals(
+            $collection,
+            $this->deserialize($this->getContent('inline_list_collection'), get_class($collection))
+        );
+    }
+
+    public function testInlineEmptyListCollection()
+    {
+        $collection = new FirstClassListCollection([]);
+        $serialized = $this->serialize($collection);
+        self::assertSame($this->getContent('inline_empty_list_collection'), $serialized);
+        self::assertEquals(
+            $collection,
+            $this->deserialize($this->getContent('inline_empty_list_collection'), get_class($collection))
+        );
+
+    }
+
+    public function testInlineListCollectionDeserialization()
+    {
+        $collection = new FirstClassListCollection([1, 'a' => 2]);
+        $serialized = $this->serialize($collection);
+        self::assertSame(
+            $this->getContent('inline_deserialization_list_collection'),
+            $serialized
+        );
     }
 
     public function getSerializeNullCases()
