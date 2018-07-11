@@ -27,6 +27,6 @@ class PersonCollection
 
     public function __construct()
     {
-        $this->persons = new ArrayCollection;
+        $this->persons = new ArrayCollection();
     }
 }

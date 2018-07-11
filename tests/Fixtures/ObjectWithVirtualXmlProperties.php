@@ -16,7 +16,6 @@ use JMS\Serializer\Annotation\XmlValue;
 
 class ObjectWithVirtualXmlProperties
 {
-
     /**
      *
      * @VirtualProperty
@@ -64,7 +63,7 @@ class ObjectWithVirtualXmlProperties
     {
         return [
             'key-one' => 'One',
-            'key-two' => 'Two'
+            'key-two' => 'Two',
         ];
     }
 
@@ -90,5 +89,4 @@ class ObjectWithVirtualXmlProperties
     {
         return 8;
     }
-
 }

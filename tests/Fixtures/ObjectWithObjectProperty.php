@@ -27,11 +27,10 @@ class ObjectWithObjectProperty
     }
 
     /**
-     * @return \JMS\Serializer\Tests\Fixtures\Author
+     * @return Author
      */
     public function getAuthor()
     {
         return $this->author;
     }
-
 }

@@ -7,10 +7,10 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use PHPUnit\Framework\TestCase;
 
-class DateHandlerTest extends \PHPUnit\Framework\TestCase
+class DateHandlerTest extends TestCase
 {
     /**
      * @var DateHandler
@@ -71,7 +71,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
         $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
         // if the test is executed exactly at midnight, it might not detect a possible failure since the time component will be "00:00:00
         // I know, this is a bit paranoid
-        if ($expectedDateTime->format("H:i:s") === "00:00:00") {
+        if ($expectedDateTime->format('H:i:s') === '00:00:00') {
             sleep(1);
             $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
         }
@@ -95,7 +95,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $visitor = new JsonDeserializationVisitor();
 
-        $timestamp = (string)time();
+        $timestamp = (string) time();
         $timezone = 'Europe/Brussels';
         $type = ['name' => 'DateTime', 'params' => ['U', $timezone]];
 
@@ -114,7 +114,7 @@ class DateHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $visitor = new JsonDeserializationVisitor();
 
-        $timestamp = (string)time();
+        $timestamp = (string) time();
         $timezone = 'Europe/Brussels';
         $type = ['name' => 'DateTimeImmutable', 'params' => ['U', $timezone]];
 

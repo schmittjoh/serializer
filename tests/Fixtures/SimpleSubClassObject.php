@@ -12,10 +12,8 @@ use JMS\Serializer\Annotation\XmlNamespace;
  * @XmlNamespace(prefix="old_foo", uri="http://foo.example.org");
  * @XmlNamespace(prefix="foo", uri="http://better.foo.example.org");
  */
-class SimpleSubClassObject
-    extends SimpleClassObject
+class SimpleSubClassObject extends SimpleClassObject
 {
-
     /**
      * @Type("string")
      * @XmlElement(namespace="http://better.foo.example.org")
@@ -33,5 +31,4 @@ class SimpleSubClassObject
      * @XmlElement(namespace="http://new.foo.example.org")
      */
     public $qux;
-
 }

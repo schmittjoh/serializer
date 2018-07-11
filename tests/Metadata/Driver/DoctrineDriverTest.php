@@ -11,8 +11,9 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use PHPUnit\Framework\TestCase;
 
-class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
+class DoctrineDriverTest extends TestCase
 {
     public function getMetadata()
     {
@@ -46,8 +47,11 @@ class DoctrineDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         self::assertEquals(
-            ['name' => 'ArrayCollection', 'params' => [
-                ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => []]]
+            [
+            'name' => 'ArrayCollection',
+            'params' => [
+                ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => []],
+            ],
             ],
             $metadata->propertyMetadata['comments']->type
         );

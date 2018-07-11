@@ -18,7 +18,7 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
     private $fallbackConstructor;
 
     /**
-     * Constructor.
+     *
      *
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
@@ -38,5 +38,4 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
 
         return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
     }
-
 }

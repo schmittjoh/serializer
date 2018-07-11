@@ -10,10 +10,11 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCase
+class SymfonyValidatorValidatorSubscriberTest extends TestCase
 {
     private $validator;
 
@@ -22,7 +23,7 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
 
     public function testValidate()
     {
-        $obj = new \stdClass;
+        $obj = new \stdClass();
 
         $this->validator->expects($this->once())
             ->method('validate')
@@ -40,7 +41,7 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
      */
     public function testValidateThrowsExceptionWhenListIsNotEmpty()
     {
-        $obj = new \stdClass;
+        $obj = new \stdClass();
 
         $this->validator->expects($this->once())
             ->method('validate')
@@ -57,7 +58,7 @@ class SymfonyValidatorValidatorSubscriberTest extends \PHPUnit\Framework\TestCas
         $this->validator->expects($this->never())
             ->method('validate');
 
-        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new \stdClass, []));
+        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new \stdClass(), []));
     }
 
     public function testValidationIsOnlyPerformedOnRootObject()

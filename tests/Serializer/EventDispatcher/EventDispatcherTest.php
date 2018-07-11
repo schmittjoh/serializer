@@ -14,8 +14,9 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 
-class EventDispatcherTest extends \PHPUnit\Framework\TestCase
+class EventDispatcherTest extends TestCase
 {
     /**
      * @var EventDispatcher
@@ -199,7 +200,7 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         return new EventDispatcher();
     }
 
-    protected function dispatch($eventName, $class = 'Foo', $format = 'json', Event $event = null)
+    protected function dispatch($eventName, $class = 'Foo', $format = 'json', ?Event $event = null)
     {
         $this->dispatcher->dispatch($eventName, $class, $format, $event ?: $this->event);
     }

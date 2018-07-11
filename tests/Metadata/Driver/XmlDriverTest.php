@@ -90,7 +90,7 @@ class XmlDriverTest extends BaseDriverTest
     protected function getDriver()
     {
         $append = '';
-        if (func_num_args() == 1) {
+        if (func_num_args() === 1) {
             $append = '/' . func_get_arg(0);
         }
 

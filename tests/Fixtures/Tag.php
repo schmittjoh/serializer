@@ -12,16 +12,14 @@ use JMS\Serializer\Annotation as JMS;
  */
 class Tag
 {
-
     /**
      * @JMS\XmlElement(cdata=false)
      * @JMS\Type("string")
      */
     public $name;
 
-    function __construct($name)
+    public function __construct($name)
     {
         $this->name = $name;
     }
-
 }

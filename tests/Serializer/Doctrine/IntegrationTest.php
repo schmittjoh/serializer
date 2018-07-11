@@ -22,14 +22,14 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
+use PHPUnit\Framework\TestCase;
 
-class IntegrationTest extends \PHPUnit\Framework\TestCase
+class IntegrationTest extends TestCase
 {
     /** @var ManagerRegistry */
     private $registry;

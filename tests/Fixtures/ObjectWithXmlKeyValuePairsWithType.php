@@ -46,9 +46,7 @@ class ObjectWithXmlKeyValuePairsWithType
                 'key_02' => 'Two',
                 'key_03' => 'Three',
             ],
-            [
-                'Four',
-            ]
+            ['Four']
         );
     }
 }

@@ -16,11 +16,14 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscrimina
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
+use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
+use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
+use PHPUnit\Framework\TestCase;
 
-abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
+abstract class BaseDriverTest extends TestCase
 {
     public function testLoadBlogPostMetadata()
     {
@@ -43,7 +46,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
         $p = new PropertyMetadata($m->name, 'id');
         $p->type = ['name' => 'string', 'params' => []];
-        $p->groups = ["comments", "post"];
+        $p->groups = ['comments', 'post'];
         $p->serializedName = 'id';
         $p->xmlElementCData = false;
         self::assertEquals($p, $m->propertyMetadata['id']);
@@ -51,8 +54,8 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($m->name, 'title');
         $p->type = ['name' => 'string', 'params' => []];
         $p->serializedName = 'title';
-        $p->groups = ["comments", "post"];
-        $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
+        $p->groups = ['comments', 'post'];
+        $p->xmlNamespace = 'http://purl.org/dc/elements/1.1/';
         self::assertEquals($p, $m->propertyMetadata['title']);
 
         $p = new PropertyMetadata($m->name, 'createdAt');
@@ -66,15 +69,15 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p->type = ['name' => 'boolean', 'params' => []];
         $p->serializedName = 'is_published';
         $p->xmlAttribute = true;
-        $p->groups = ["post"];
+        $p->groups = ['post'];
         self::assertEquals($p, $m->propertyMetadata['published']);
 
         $p = new PropertyMetadata($m->name, 'etag');
         $p->serializedName = 'etag';
         $p->type = ['name' => 'string', 'params' => []];
         $p->xmlAttribute = true;
-        $p->groups = ["post"];
-        $p->xmlNamespace = "http://schemas.google.com/g/2005";
+        $p->groups = ['post'];
+        $p->xmlNamespace = 'http://schemas.google.com/g/2005';
         self::assertEquals($p, $m->propertyMetadata['etag']);
 
         $p = new PropertyMetadata($m->name, 'comments');
@@ -83,13 +86,13 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p->xmlCollection = true;
         $p->xmlCollectionInline = true;
         $p->xmlEntryName = 'comment';
-        $p->groups = ["comments"];
+        $p->groups = ['comments'];
         self::assertEquals($p, $m->propertyMetadata['comments']);
 
         $p = new PropertyMetadata($m->name, 'author');
         $p->serializedName = 'author';
         $p->type = ['name' => 'JMS\Serializer\Tests\Fixtures\Author', 'params' => []];
-        $p->groups = ["post"];
+        $p->groups = ['post'];
         $p->xmlNamespace = 'http://www.w3.org/2005/Atom';
         self::assertEquals($p, $m->propertyMetadata['author']);
 
@@ -158,8 +161,9 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testExpressionVirtualPropertyWithExcludeAll()
     {
-        $a = new \JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll();
-        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));;
+        $a = new ObjectWithExpressionVirtualPropertiesAndExcludeAll();
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
+        ;
 
         self::assertArrayHasKey('virtualValue', $m->propertyMetadata);
 
@@ -170,7 +174,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testVirtualPropertyWithExcludeAll()
     {
-        $a = new \JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll();
+        $a = new ObjectWithVirtualPropertiesAndExcludeAll();
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
 
         self::assertArrayHasKey('virtualValue', $m->propertyMetadata);
@@ -191,7 +195,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testExpressionVirtualProperty()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess'));
 
         $keys = array_keys($m->propertyMetadata);
@@ -200,7 +204,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadDiscriminator()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'));
 
         self::assertNotNull($m);
@@ -217,7 +221,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadXmlDiscriminator()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlAttributeDiscriminatorParent::class));
 
         self::assertNotNull($m);
@@ -235,7 +239,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadXmlDiscriminatorWithNamespaces()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlNamespaceDiscriminatorParent::class));
 
         self::assertNotNull($m);
@@ -253,7 +257,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadXmlDiscriminatorWithAttributeNamespaces()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlNamespaceAttributeDiscriminatorParent::class));
 
         self::assertNotNull($m);
@@ -271,7 +275,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadDiscriminatorWithGroup()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Vehicle'));
 
         self::assertNotNull($m);
@@ -279,16 +283,14 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         self::assertEquals(['foo'], $m->discriminatorGroups);
         self::assertEquals($m->name, $m->discriminatorBaseClass);
         self::assertEquals(
-            [
-                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'
-            ],
+            ['car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'],
             $m->discriminatorMap
         );
     }
 
     public function testSkipWhenEmptyOption()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ParentSkipWithEmptyChild::class));
 
         self::assertNotNull($m);
@@ -303,7 +305,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadDiscriminatorSubClass()
     {
-        /** @var $m ClassMetadata */
+        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Car'));
 
         self::assertNotNull($m);
@@ -331,7 +333,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($m->name, 'title');
         $p->serializedName = 'title';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
+        $p->xmlNamespace = 'http://purl.org/dc/elements/1.1/';
         self::assertEquals($p, $m->propertyMetadata['title']);
 
         $p = new PropertyMetadata($m->name, 'createdAt');
@@ -344,21 +346,21 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p->serializedName = 'etag';
         $p->type = ['name' => 'string', 'params' => []];
         $p->xmlAttribute = true;
-        $p->xmlNamespace = "http://schemas.google.com/g/2005";
+        $p->xmlNamespace = 'http://schemas.google.com/g/2005';
         self::assertEquals($p, $m->propertyMetadata['etag']);
 
         $p = new PropertyMetadata($m->name, 'author');
         $p->serializedName = 'author';
         $p->type = ['name' => 'string', 'params' => []];
         $p->xmlAttribute = false;
-        $p->xmlNamespace = "http://www.w3.org/2005/Atom";
+        $p->xmlNamespace = 'http://www.w3.org/2005/Atom';
         self::assertEquals($p, $m->propertyMetadata['author']);
 
         $p = new PropertyMetadata($m->name, 'language');
         $p->serializedName = 'language';
         $p->type = ['name' => 'string', 'params' => []];
         $p->xmlAttribute = true;
-        $p->xmlNamespace = "http://purl.org/dc/elements/1.1/";
+        $p->xmlNamespace = 'http://purl.org/dc/elements/1.1/';
         self::assertEquals($p, $m->propertyMetadata['language']);
     }
 
@@ -393,20 +395,20 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($m->name, 'foo');
         $p->serializedName = 'foo';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://old.foo.example.org";
+        $p->xmlNamespace = 'http://old.foo.example.org';
         $p->xmlAttribute = true;
         self::assertEquals($p, $m->propertyMetadata['foo']);
 
         $p = new PropertyMetadata($m->name, 'bar');
         $p->serializedName = 'bar';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://foo.example.org";
+        $p->xmlNamespace = 'http://foo.example.org';
         self::assertEquals($p, $m->propertyMetadata['bar']);
 
         $p = new PropertyMetadata($m->name, 'moo');
         $p->serializedName = 'moo';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://new.foo.example.org";
+        $p->xmlNamespace = 'http://new.foo.example.org';
         self::assertEquals($p, $m->propertyMetadata['moo']);
 
         $subm = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleSubClassObject'));
@@ -421,19 +423,19 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($subm->name, 'moo');
         $p->serializedName = 'moo';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://better.foo.example.org";
+        $p->xmlNamespace = 'http://better.foo.example.org';
         self::assertEquals($p, $subm->propertyMetadata['moo']);
 
         $p = new PropertyMetadata($subm->name, 'baz');
         $p->serializedName = 'baz';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://foo.example.org";
+        $p->xmlNamespace = 'http://foo.example.org';
         self::assertEquals($p, $subm->propertyMetadata['baz']);
 
         $p = new PropertyMetadata($subm->name, 'qux');
         $p->serializedName = 'qux';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://new.foo.example.org";
+        $p->xmlNamespace = 'http://new.foo.example.org';
         self::assertEquals($p, $subm->propertyMetadata['qux']);
 
         $m->merge($subm);
@@ -450,7 +452,7 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($m->name, 'foo');
         $p->serializedName = 'foo';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://old.foo.example.org";
+        $p->xmlNamespace = 'http://old.foo.example.org';
         $p->xmlAttribute = true;
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
         $this->assetMetadataEquals($p, $m->propertyMetadata['foo']);
@@ -458,26 +460,26 @@ abstract class BaseDriverTest extends \PHPUnit\Framework\TestCase
         $p = new PropertyMetadata($m->name, 'bar');
         $p->serializedName = 'bar';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://foo.example.org";
+        $p->xmlNamespace = 'http://foo.example.org';
         $p->class = 'JMS\Serializer\Tests\Fixtures\SimpleClassObject';
         $this->assetMetadataEquals($p, $m->propertyMetadata['bar']);
 
         $p = new PropertyMetadata($m->name, 'moo');
         $p->serializedName = 'moo';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://better.foo.example.org";
+        $p->xmlNamespace = 'http://better.foo.example.org';
         $this->assetMetadataEquals($p, $m->propertyMetadata['moo']);
 
         $p = new PropertyMetadata($m->name, 'baz');
         $p->serializedName = 'baz';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://foo.example.org";
+        $p->xmlNamespace = 'http://foo.example.org';
         $this->assetMetadataEquals($p, $m->propertyMetadata['baz']);
 
         $p = new PropertyMetadata($m->name, 'qux');
         $p->serializedName = 'qux';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->xmlNamespace = "http://new.foo.example.org";
+        $p->xmlNamespace = 'http://new.foo.example.org';
         $this->assetMetadataEquals($p, $m->propertyMetadata['qux']);
     }
 

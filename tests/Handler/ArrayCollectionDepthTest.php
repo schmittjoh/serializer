@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Handler;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer as JMSSerializer;
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\TestCase;
 
-class ArrayCollectionDepthTest extends \PHPUnit\Framework\TestCase
+class ArrayCollectionDepthTest extends TestCase
 {
-
-    /** @var \JMS\Serializer\Serializer */
+    /** @var JMSSerializer */
     private $serializer;
 
     public function setUp()
@@ -22,6 +25,7 @@ class ArrayCollectionDepthTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider getCollections
+     * @param array|Collection $collection
      */
     public function testDepth($collection)
     {
@@ -36,14 +40,13 @@ class ArrayCollectionDepthTest extends \PHPUnit\Framework\TestCase
         $data = [new Node('lvl1', new Node('lvl2', new Node('lvl3')))];
         return [
             [$data],
-            [new \Doctrine\Common\Collections\ArrayCollection($data)],
+            [new ArrayCollection($data)],
         ];
     }
 }
 
 class CollectionWrapper
 {
-
     /**
      * @Serializer\MaxDepth(2)
      */
@@ -57,7 +60,6 @@ class CollectionWrapper
 
 class Node
 {
-
     public $name;
 
     public $next;

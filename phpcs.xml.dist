@@ -11,6 +11,7 @@
     <arg value="nps"/>
 
     <file>src/</file>
+    <file>tests/</file>
 
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>
@@ -70,16 +71,28 @@
     </rule>
 
      <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
-            <properties>
-                <property name="spacesCountBeforeColon" value="0"/>
-            </properties>
-        </rule>
+        <properties>
+            <property name="spacesCountBeforeColon" value="0"/>
+        </properties>
+    </rule>
 
     <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR2.Classes.PropertyDeclaration.Multiple">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
     <rule ref="Squiz.Classes.ClassFileName.NoMatch">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
+
+    <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
 </ruleset>

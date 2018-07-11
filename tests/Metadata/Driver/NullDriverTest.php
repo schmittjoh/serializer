@@ -6,8 +6,9 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\NullDriver;
+use PHPUnit\Framework\TestCase;
 
-class NullDriverTest extends \PHPUnit\Framework\TestCase
+class NullDriverTest extends TestCase
 {
     public function testReturnsValidMetadata()
     {

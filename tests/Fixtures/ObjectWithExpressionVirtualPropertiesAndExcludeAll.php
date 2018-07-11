@@ -16,7 +16,6 @@ use JMS\Serializer\Annotation\VirtualProperty;
  */
 class ObjectWithExpressionVirtualPropertiesAndExcludeAll
 {
-
     public function getVirtualValue()
     {
         return 'value';

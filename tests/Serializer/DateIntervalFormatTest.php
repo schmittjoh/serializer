@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Handler\DateHandler;
+use PHPUnit\Framework\TestCase;
 
-class DateIntervalFormatTest extends \PHPUnit\Framework\TestCase
+class DateIntervalFormatTest extends TestCase
 {
     public function testFormat()
     {

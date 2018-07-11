@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use PHPUnit\Framework\TestCase;
 
-class IdenticalPropertyNamingStrategyTest extends \PHPUnit\Framework\TestCase
+class IdenticalPropertyNamingStrategyTest extends TestCase
 {
     public function providePropertyNames()
     {
         return [
             ['createdAt'],
             ['my_field'],
-            ['identical']
+            ['identical'],
         ];
     }
 

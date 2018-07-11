@@ -14,5 +14,4 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class ObjectWithXmlNotCDataDiscriminatorParent
 {
-
 }

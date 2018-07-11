@@ -88,7 +88,7 @@ class AccessorSetterElement
      */
     public function setAttributeDifferent($attribute)
     {
-        $this->attribute = $attribute . "-different";
+        $this->attribute = $attribute . '-different';
     }
 
     /**
@@ -96,7 +96,7 @@ class AccessorSetterElement
      */
     public function setElementDifferent($element)
     {
-        $this->element = $element . "-different";
+        $this->element = $element . '-different';
     }
 
     /**

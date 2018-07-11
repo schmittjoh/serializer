@@ -6,8 +6,9 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use PHPUnit\Framework\TestCase;
 
-class ClassMetadataTest extends \PHPUnit\Framework\TestCase
+class ClassMetadataTest extends TestCase
 {
     public function getAccessOrderCases()
     {
@@ -86,7 +87,7 @@ class ClassMetadataTest extends \PHPUnit\Framework\TestCase
             ['a', null, null, 'geta', 'seta'],
             ['b', null, null, 'isb', 'setb'],
             ['c', null, null, 'hasc', 'setc'],
-            ['d', 'fetchd', 'saved', 'fetchd', 'saved']
+            ['d', 'fetchd', 'saved', 'fetchd', 'saved'],
         ];
     }
 
