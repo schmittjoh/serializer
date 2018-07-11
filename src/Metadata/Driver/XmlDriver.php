@@ -117,10 +117,10 @@ class XmlDriver extends AbstractFileDriver
 
         foreach ($elem->xpath('./xml-discriminator') as $xmlDiscriminator) {
             if (isset($xmlDiscriminator->attributes()->attribute)) {
-                $metadata->xmlDiscriminatorAttribute = (string) $xmlDiscriminator->attributes()->attribute === 'true';
+                $metadata->xmlDiscriminatorAttribute = 'true' === (string) $xmlDiscriminator->attributes()->attribute;
             }
             if (isset($xmlDiscriminator->attributes()->cdata)) {
-                $metadata->xmlDiscriminatorCData = (string) $xmlDiscriminator->attributes()->cdata === 'true';
+                $metadata->xmlDiscriminatorCData = 'true' === (string) $xmlDiscriminator->attributes()->cdata;
             }
             if (isset($xmlDiscriminator->attributes()->namespace)) {
                 $metadata->xmlDiscriminatorNamespace = (string) $xmlDiscriminator->attributes()->namespace;

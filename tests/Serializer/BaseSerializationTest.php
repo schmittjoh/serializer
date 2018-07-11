@@ -551,7 +551,7 @@ abstract class BaseSerializationTest extends TestCase
 
         if ($this->hasDeserializer()) {
             // skip XML deserialization
-            if ($this->getFormat() === 'xml') {
+            if ('xml' === $this->getFormat()) {
                 return;
             }
 

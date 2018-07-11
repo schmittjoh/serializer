@@ -100,7 +100,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     private function emptyStringToSpaceCharacter($data): string
     {
-        return $data === '' ? ' ' : (string) $data;
+        return '' === $data ? ' ' : (string) $data;
     }
 
     /**
@@ -172,10 +172,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
         $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
-        if ($namespace === null && $this->objectMetadataStack->count()) {
+        if (null === $namespace && $this->objectMetadataStack->count()) {
             $classMetadata = $this->objectMetadataStack->top();
             $namespace = $classMetadata->xmlNamespaces[''] ?? $namespace;
-            if ($namespace === null) {
+            if (null === $namespace) {
                 $namespaces = $data->getDocNamespaces();
                 if (isset($namespaces[''])) {
                     $namespace = $namespaces[''];
@@ -400,10 +400,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $braces = 0;
         do {
             $char = $data[$endPos++];
-            if ($char === '<') {
+            if ('<' === $char) {
                 ++$braces;
             }
-            if ($char === '>') {
+            if ('>' === $char) {
                 --$braces;
             }
         } while ($braces > 0);
@@ -425,19 +425,19 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
             // If the "name" is empty means that we are on an not-existent node and subsequent operations on the object will trigger the warning:
             // "Node no longer exists"
-            if ($value->getName() === '') {
+            if ('' === $value->getName()) {
                 // @todo should be "true", but for collections needs a default collection value. maybe something for the 2.0
                 return false;
             }
 
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
             if (isset($xsiAttributes['nil'])
-                && ((string) $xsiAttributes['nil'] === 'true' || (string) $xsiAttributes['nil'] === '1')
+                && ('true' === (string) $xsiAttributes['nil'] || '1' === (string) $xsiAttributes['nil'])
             ) {
                 return true;
             }
         }
 
-        return $value === null;
+        return null === $value;
     }
 }

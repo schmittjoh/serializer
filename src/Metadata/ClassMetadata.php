@@ -224,7 +224,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap = $object->discriminatorMap;
         }
 
-        if ($object->discriminatorDisabled !== null) {
+        if (null !== $object->discriminatorDisabled) {
             $this->discriminatorDisabled = $object->discriminatorDisabled;
         }
 
@@ -278,7 +278,7 @@ class ClassMetadata extends MergeableClassMetadata
             throw new InvalidMetadataException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
-        if ($prefix !== null) {
+        if (null !== $prefix) {
             if (!\is_string($prefix)) {
                 throw new InvalidMetadataException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }

@@ -249,7 +249,7 @@ class AnnotationDriver implements DriverInterface
                 }
 
                 foreach ($propertyAnnotations as $annot) {
-                    if ($annot instanceof VirtualProperty && $annot->name !== null) {
+                    if ($annot instanceof VirtualProperty && null !== $annot->name) {
                         $propertyMetadata->name = $annot->name;
                     }
                 }

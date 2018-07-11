@@ -36,13 +36,13 @@ final class TypeVisitor implements Visit
         $token = $tokenNode->getValueToken();
         $value = $tokenNode->getValueValue();
 
-        if ($token === 'name') {
+        if ('name' === $token) {
             return ['name' => $value, 'params' => []];
         }
 
-        $escapeChar = $token === 'quoted_string' ? '"' : "'";
+        $escapeChar = 'quoted_string' === $token ? '"' : "'";
 
-        if (strpos($value, $escapeChar) === false) {
+        if (false === strpos($value, $escapeChar)) {
             return $value;
         }
 

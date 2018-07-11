@@ -59,11 +59,11 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         // do not initialize the proxy if is going to be excluded by-class by some exclusion strategy
-        if ($this->initializeExcluded === false && !$virtualType) {
+        if (false === $this->initializeExcluded && !$virtualType) {
             $context = $event->getContext();
             $exclusionStrategy = $context->getExclusionStrategy();
             $metadata = $context->getMetadataFactory()->getMetadataForClass(get_parent_class($object));
-            if ($metadata !== null && $exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
+            if (null !== $metadata && null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                 return;
             }
         }

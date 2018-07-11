@@ -124,7 +124,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($this->visitor instanceof NullAwareVisitorInterface && $this->visitor->isNull($data) === true) {
+        if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
             $type = ['name' => 'NULL', 'params' => []];
         }
 
@@ -197,7 +197,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
-                if ($metadata->usingExpression && $this->expressionExclusionStrategy === null) {
+                if ($metadata->usingExpression && null === $this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
                 }
 
@@ -225,7 +225,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                     $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
 
-                    if (null === $v && $this->shouldSerializeNull !== true) {
+                    if (null === $v && true !== $this->shouldSerializeNull) {
                         continue;
                     }
 

@@ -35,6 +35,8 @@
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversablePropertyTypeHintSpecification"/>
     </rule>
 
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireYodaComparison"/>
+
      <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
         <properties>
             <property

@@ -131,7 +131,7 @@ final class DateHandler implements SubscribingHandlerInterface
     private function isDataXmlNull($data): bool
     {
         $attributes = $data->attributes('xsi', true);
-        return isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true';
+        return isset($attributes['nil'][0]) && 'true' === (string) $attributes['nil'][0];
     }
 
     /**
@@ -231,7 +231,7 @@ final class DateHandler implements SubscribingHandlerInterface
             throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
 
-        if ($format === 'U') {
+        if ('U' === $format) {
             $datetime = $datetime->setTimezone($timezone);
         }
 
@@ -304,7 +304,7 @@ final class DateHandler implements SubscribingHandlerInterface
             $format .= $dateInterval->s . 'S';
         }
 
-        if ($format === 'P') {
+        if ('P' === $format) {
             $format = 'P0DT0S';
         }
 

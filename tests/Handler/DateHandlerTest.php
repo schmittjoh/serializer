@@ -71,7 +71,7 @@ class DateHandlerTest extends TestCase
         $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
         // if the test is executed exactly at midnight, it might not detect a possible failure since the time component will be "00:00:00
         // I know, this is a bit paranoid
-        if ($expectedDateTime->format('H:i:s') === '00:00:00') {
+        if ('00:00:00' === $expectedDateTime->format('H:i:s')) {
             sleep(1);
             $expectedDateTime = \DateTime::createFromFormat('Y-m-d', '2017-06-18', $this->timezone);
         }

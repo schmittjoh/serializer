@@ -188,7 +188,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public static function isCollectionList(?array $type = null): bool
     {
         return is_array($type)
-            && $type['name'] === 'array'
+            && 'array' === $type['name']
             && isset($type['params'][0])
             && !isset($type['params'][1]);
     }
@@ -196,7 +196,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public static function isCollectionMap(?array $type = null): bool
     {
         return is_array($type)
-            && $type['name'] === 'array'
+            && 'array' === $type['name']
             && isset($type['params'][0])
             && isset($type['params'][1]);
     }

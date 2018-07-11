@@ -106,7 +106,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     private function findInitialType(?string $type, SerializationContext $context): ?string
     {
-        if ($type !== null) {
+        if (null !== $type) {
             return $type;
         } elseif ($context->hasAttribute('initial_type')) {
             return $context->getAttribute('initial_type');
@@ -120,7 +120,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new RuntimeException(
                 sprintf(
                     'Can not find a graph navigator for the direction "%s".',
-                    $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
+                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization'
                 )
             );
         }
@@ -130,7 +130,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     private function getVisitor(int $direction, string $format): VisitorInterface
     {
-        $factories = $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION
+        $factories = GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction
             ? $this->serializationVisitors
             : $this->deserializationVisitors;
 
@@ -139,7 +139,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
                 sprintf(
                     'The format "%s" is not supported for %s.',
                     $format,
-                    $direction === GraphNavigatorInterface::DIRECTION_SERIALIZATION ? 'serialization' : 'deserialization'
+                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization'
                 )
             );
         }
@@ -244,7 +244,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $data = $visitor->prepare($data);
         }
 
-        if ($type !== null) {
+        if (null !== $type) {
             $type = $this->typeParser->parse($type);
         }
         return $navigator->accept($data, $type);

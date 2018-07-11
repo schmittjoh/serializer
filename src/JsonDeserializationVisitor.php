@@ -169,7 +169,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
         }
 
-        $v = $data[$name] !== null ? $this->navigator->accept($data[$name], $metadata->type) : null;
+        $v = null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;
         return $v;
     }
 

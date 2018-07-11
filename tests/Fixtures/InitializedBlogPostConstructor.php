@@ -21,7 +21,7 @@ class InitializedBlogPostConstructor implements ObjectConstructorInterface
 
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
-        if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
+        if ('JMS\Serializer\Tests\Fixtures\BlogPost' !== $type['name']) {
             return $this->fallback->construct($visitor, $metadata, $data, $type, $context);
         }
 

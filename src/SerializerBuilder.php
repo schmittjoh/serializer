@@ -521,7 +521,7 @@ final class SerializerBuilder
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
-        if ($this->metadataCache !== null) {
+        if (null !== $this->metadataCache) {
             $metadataFactory->setCache($this->metadataCache);
         } elseif (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir . '/metadata');

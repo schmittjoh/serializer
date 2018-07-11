@@ -117,7 +117,7 @@ class ContextTest extends TestCase
             ->will($this->returnCallback(function (PropertyMetadata $propertyMetadata, SerializationContext $context) use ($self, $object, $child) {
                 $stack = $context->getMetadataStack();
 
-                if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && $propertyMetadata->name === 'children') {
+                if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && 'children' === $propertyMetadata->name) {
                     $self->assertEquals(1, $stack->count());
                     $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[0]->name);
                 }
