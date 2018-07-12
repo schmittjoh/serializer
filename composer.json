@@ -61,8 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-1.x": "1.11-dev",
-            "dev-2.0-compat": "1.13-dev"
+            "dev-1.x": "1.13-dev"
         }
     }
 }
