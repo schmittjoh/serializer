@@ -14,7 +14,14 @@ class Event
      */
     private $propagationStopped = false;
 
+    /**
+     * @var array
+     */
     protected $type;
+
+    /**
+     * @var Context
+     */
     private $context;
 
     public function __construct(Context $context, array $type)

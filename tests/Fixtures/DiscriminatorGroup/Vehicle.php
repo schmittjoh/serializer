@@ -21,6 +21,6 @@ abstract class Vehicle
 
     public function __construct($km)
     {
-        $this->km = (integer)$km;
+        $this->km = (int) $km;
     }
 }

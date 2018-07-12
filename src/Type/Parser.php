@@ -22,7 +22,7 @@ final class Parser implements ParserInterface
         $this->visitor = new TypeVisitor();
     }
 
-    public function parse(string $type) : array
+    public function parse(string $type): array
     {
         try {
             $ast = $this->parser->parse($type, 'type');

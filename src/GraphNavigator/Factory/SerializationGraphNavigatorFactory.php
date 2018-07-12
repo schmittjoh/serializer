@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\GraphNavigator\Factory;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -38,10 +40,10 @@ final class SerializationGraphNavigatorFactory implements GraphNavigatorFactoryI
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
-        AccessorStrategyInterface $accessor = null,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null)
-    {
+        ?AccessorStrategyInterface $accessor = null,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->accessor = $accessor ?: new DefaultAccessorStrategy();

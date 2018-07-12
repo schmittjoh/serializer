@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use PHPUnit\Framework\TestCase;
 
-class CamelCaseNamingStrategyTest extends \PHPUnit\Framework\TestCase
+class CamelCaseNamingStrategyTest extends TestCase
 {
-
     public function providePropertyNames()
     {
         return [
             ['getUrl', 'get_url'],
-            ['getURL', 'get_url']
+            ['getURL', 'get_url'],
         ];
     }
 
@@ -28,5 +28,4 @@ class CamelCaseNamingStrategyTest extends \PHPUnit\Framework\TestCase
         $strategy = new CamelCaseNamingStrategy();
         self::assertEquals($expected, $strategy->translateName($mockProperty));
     }
-
 }

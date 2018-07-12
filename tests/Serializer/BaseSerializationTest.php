@@ -27,7 +27,6 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
-use JMS\Serializer\Tests\Fixtures\Article;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
@@ -44,6 +43,7 @@ use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
@@ -91,9 +91,13 @@ use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -101,7 +105,7 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
+abstract class BaseSerializationTest extends TestCase
 {
     protected $factory;
 
@@ -145,7 +149,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testObjectUsingTypeCasting()
     {
         $typeAliasing = new ObjectUsingTypeCasting();
-        $typeAliasing->asString = new ObjectWithToString("8");
+        $typeAliasing->asString = new ObjectWithToString('8');
 
         self::assertEquals(
             $this->getContent('type_casting'),
@@ -188,7 +192,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testNull($type)
     {
-
         if ($this->hasDeserializer()) {
             self::assertEquals(null, $this->deserialize($this->getContent('null'), $type));
         }
@@ -252,7 +255,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $language = new ExpressionLanguage();
         $language->addFunction(new ExpressionFunction('show_data', function () {
-            return "true";
+            return 'true';
         }, function () {
             return true;
         }));
@@ -283,13 +286,13 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $personMoreSecretVirtual->name = 'mike';
 
         $showGender = new ExpressionFunction('show_data', function () {
-            return "true";
+            return 'true';
         }, function () {
             return true;
         });
 
         $hideGender = new ExpressionFunction('show_data', function () {
-            return "false";
+            return 'false';
         }, function () {
             return false;
         });
@@ -298,43 +301,43 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
             [
                 $person,
                 $showGender,
-                'person_secret_hide'
+                'person_secret_hide',
             ],
             [
                 $person,
                 $hideGender,
-                'person_secret_show'
+                'person_secret_show',
             ],
             [
                 $personMoreSecret,
                 $showGender,
-                'person_secret_show'
+                'person_secret_show',
             ],
             [
                 $personMoreSecret,
                 $hideGender,
-                'person_secret_hide'
+                'person_secret_hide',
             ],
             [
                 $personVirtual,
                 $showGender,
-                'person_secret_hide'
+                'person_secret_hide',
             ],
             [
                 $personVirtual,
                 $hideGender,
-                'person_secret_show'
+                'person_secret_show',
             ],
             [
                 $personMoreSecretVirtual,
                 $showGender,
-                'person_secret_show'
+                'person_secret_show',
             ],
             [
                 $personMoreSecretVirtual,
                 $hideGender,
-                'person_secret_hide'
-            ]
+                'person_secret_hide',
+            ],
         ];
     }
 
@@ -342,7 +345,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      * @dataProvider expressionFunctionProvider
      * @param PersonSecret|PersonSecretMore $person
      * @param ExpressionFunction $function
-     * @param $json
+     * @param string $json
      */
     public function testExpressionExclusion($person, ExpressionFunction $function, $json)
     {
@@ -400,8 +403,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
         $builder->setMetadataDirs([
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ .'/metadata/SimpleInternalObject',
-            '' => __DIR__ .'/metadata/SimpleInternalObject'
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/metadata/SimpleInternalObject',
+            '' => __DIR__ . '/metadata/SimpleInternalObject',
         ]);
 
         $this->serializer = $builder->build();
@@ -509,7 +512,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $data = [
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC')),
         ];
 
         $object = new DateTimeArraysObject($data, $data);
@@ -538,7 +541,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $data = [
             new \DateTime('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTime('2016-12-05 00:00:00', new \DateTimeZone('UTC')),
         ];
 
         $object = new NamedDateTimeArraysObject(['testdate1' => $data[0], 'testdate2' => $data[1]]);
@@ -547,9 +550,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($this->getContent('array_named_datetimes_object'), $serializedObject);
 
         if ($this->hasDeserializer()) {
-
             // skip XML deserialization
-            if ($this->getFormat() === 'xml') {
+            if ('xml' === $this->getFormat()) {
                 return;
             }
 
@@ -572,7 +574,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $data = [
             new \DateTimeImmutable('2047-01-01 12:47:47', new \DateTimeZone('UTC')),
-            new \DateTimeImmutable('2016-12-05 00:00:00', new \DateTimeZone('UTC'))
+            new \DateTimeImmutable('2016-12-05 00:00:00', new \DateTimeZone('UTC')),
         ];
 
         $object = new NamedDateTimeImmutableArraysObject(['testdate1' => $data[0], 'testdate2' => $data[1]]);
@@ -581,9 +583,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
 
         if ($this->hasDeserializer()) {
-
-            if ('xml' == $this->getFormat()) {
-                $this->markTestSkipped("XML deserialization does not support key-val pairs mode");
+            if ('xml' === $this->getFormat()) {
+                $this->markTestSkipped('XML deserialization does not support key-val pairs mode');
             }
             /** @var NamedDateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
@@ -684,8 +685,8 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
         $post->addComment($comment = new Comment($author, 'foo'));
 
-        $post->addTag($tag1 = New Tag("tag1"));
-        $post->addTag($tag2 = New Tag("tag2"));
+        $post->addTag($tag1 = new Tag('tag1'));
+        $post->addTag($tag2 = new Tag('tag2'));
 
         self::assertEquals($this->getContent('blog_post'), $this->serialize($post));
 
@@ -738,7 +739,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $builder->setExpressionEvaluator($evaluator);
         $serializer = $builder->build();
 
-        $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
+        $author = new AuthorExpressionAccess(123, 'Ruud', 'Kamphuis');
         self::assertEquals($this->getContent('author_expression'), $serializer->serialize($author, $this->getFormat()));
     }
 
@@ -750,7 +751,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $builder->setExpressionEvaluator($evaluator);
         $serializer = $builder->build();
 
-        $author = new AuthorExpressionAccessContext("Ruud");
+        $author = new AuthorExpressionAccessContext('Ruud');
         self::assertEquals($this->getContent('author_expression_context'), $serializer->serialize($author, $this->getFormat()));
     }
 
@@ -761,7 +762,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
      */
     public function testExpressionAccessorStrategNotEnabled()
     {
-        $author = new AuthorExpressionAccess(123, "Ruud", "Kamphuis");
+        $author = new AuthorExpressionAccess(123, 'Ruud', 'Kamphuis');
         self::assertEquals($this->getContent('author_expression'), $this->serialize($author));
     }
 
@@ -886,9 +887,6 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($this->getContent('empty_child_skip'), $this->serialize($inline, $context));
     }
 
-    /**
-     * @group log
-     */
     public function testLog()
     {
         self::assertEquals($this->getContent('log'), $this->serialize($log = new Log()));
@@ -946,7 +944,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $errors = [
             new FormError('This is the form error'),
-            new FormError('Another error')
+            new FormError('Another error'),
         ];
 
         self::assertEquals($this->getContent('form_errors'), $this->serialize($errors));
@@ -956,7 +954,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     {
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
 
-        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
+        $formConfigBuilder = new FormConfigBuilder('foo', null, $dispatcher);
         $formConfigBuilder->setCompound(true);
         $formConfigBuilder->setDataMapper($this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock());
         $fooConfig = $formConfigBuilder->getFormConfig();
@@ -964,7 +962,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $form = new Form($fooConfig);
         $form->addError(new FormError('This is the form error'));
 
-        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('bar', null, $dispatcher);
+        $formConfigBuilder = new FormConfigBuilder('bar', null, $dispatcher);
         $barConfig = $formConfigBuilder->getFormConfig();
         $child = new Form($barConfig);
         $child->addError(new FormError('Error of the child form'));
@@ -985,22 +983,22 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
 
         $factoryBuilder = new FormFactoryBuilder();
-        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\SubmitType);
-        $factoryBuilder->addType(new \Symfony\Component\Form\Extension\Core\Type\ButtonType);
+        $factoryBuilder->addType(new SubmitType());
+        $factoryBuilder->addType(new ButtonType());
         $factory = $factoryBuilder->getFormFactory();
 
-        $formConfigBuilder = new \Symfony\Component\Form\FormConfigBuilder('foo', null, $dispatcher);
+        $formConfigBuilder = new FormConfigBuilder('foo', null, $dispatcher);
         $formConfigBuilder->setFormFactory($factory);
         $formConfigBuilder->setCompound(true);
         $formConfigBuilder->setDataMapper($this->getMockBuilder('Symfony\Component\Form\DataMapperInterface')->getMock());
         $fooConfig = $formConfigBuilder->getFormConfig();
 
         $form = new Form($fooConfig);
-        $form->add('save', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class);
+        $form->add('save', SubmitType::class);
 
         try {
             $this->serialize($form);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::assertTrue(false, 'Serialization should not throw an exception');
         }
     }
@@ -1127,7 +1125,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
                 new GroupsUser(
                     'John friend 2',
                     new GroupsUser('John friend 2 manager')
-                )
+                ),
             ]
         );
 
@@ -1150,7 +1148,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
                     'friends' => [
                         'manager_group',
                         'nickname_group',
-                    ]
+                    ],
                 ])
             )
         );
@@ -1239,11 +1237,11 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
     public function testPolymorphicObjectsWithGroup()
     {
         $context = SerializationContext::create();
-        $context->setGroups(["foo"]);
+        $context->setGroups(['foo']);
 
         self::assertEquals(
             $this->getContent('car'),
-            $this->serialize(new \JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car(5), $context)
+            $this->serialize(new DiscriminatorGroupCar(5), $context)
         );
     }
 
@@ -1422,7 +1420,7 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
 
         $serializationContext = SerializationContext::create();
         $serializationContext->setSerializeNull($serializeNull);
-        $serializationContext->setInitialType("array<" . SimpleObject::class . ">");
+        $serializationContext->setInitialType('array<' . SimpleObject::class . '>');
         $serializationContext->addExclusionStrategy(new AlwaysExcludeExclusionStrategy());
         self::assertEquals(
             $this->getContent('array_objects_nullable'),
@@ -1465,31 +1463,36 @@ abstract class BaseSerializationTest extends \PHPUnit\Framework\TestCase
         return true;
     }
 
-    protected function serialize($data, Context $context = null)
+    protected function serialize($data, ?Context $context = null)
     {
         return $this->serializer->serialize($data, $this->getFormat(), $context);
     }
 
-    protected function deserialize($content, $type, Context $context = null)
+    protected function deserialize($content, $type, ?Context $context = null)
     {
         return $this->serializer->deserialize($content, $type, $this->getFormat(), $context);
     }
 
     protected function setUp()
     {
-
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            'AuthorList',
+            $this->getFormat(),
             function (SerializationVisitorInterface $visitor, $object, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type);
             }
         );
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+            'AuthorList',
+            $this->getFormat(),
             function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
                 $type = [
                     'name' => 'array',

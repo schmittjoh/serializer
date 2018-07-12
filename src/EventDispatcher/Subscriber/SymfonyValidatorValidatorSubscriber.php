@@ -21,6 +21,9 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         $this->validator = $validator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -28,7 +31,7 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         ];
     }
 
-    public function onPostDeserialize(Event $event)
+    public function onPostDeserialize(Event $event): void
     {
         $context = $event->getContext();
 

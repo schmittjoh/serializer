@@ -41,5 +41,4 @@ class AuthorExpressionAccess
     {
         return $this->lastName;
     }
-
 }

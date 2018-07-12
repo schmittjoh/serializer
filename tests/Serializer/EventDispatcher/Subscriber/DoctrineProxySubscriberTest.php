@@ -13,8 +13,9 @@ use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrate
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\TestCase;
 
-class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
+class DoctrineProxySubscriberTest extends TestCase
 {
     /** @var Context */
     private $context;
@@ -47,7 +48,6 @@ class DoctrineProxySubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testExcludedPropDoesNotGetInitialized()
     {
-
         $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
         $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface
         {

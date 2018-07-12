@@ -18,8 +18,19 @@ use JMS\Serializer\SerializationContext;
  */
 final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
+    /**
+     * @var callable[]
+     */
     private $readAccessors = [];
+
+    /**
+     * @var callable[]
+     */
     private $writeAccessors = [];
+
+    /**
+     * @var \ReflectionProperty[]
+     */
     private $propertyReflectionCache = [];
 
     /**
@@ -27,11 +38,15 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
      */
     private $evaluator;
 
-    public function __construct(ExpressionEvaluatorInterface $evaluator = null)
+    public function __construct(?ExpressionEvaluatorInterface $evaluator = null)
     {
         $this->evaluator = $evaluator;
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if ($metadata instanceof StaticPropertyMetadata) {
@@ -39,7 +54,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         }
 
         if ($metadata instanceof ExpressionPropertyMetadata) {
-            if ($this->evaluator === null) {
+            if (null === $this->evaluator) {
                 throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $metadata->name, $metadata->class));
             }
             return $this->evaluator->evaluate($metadata->expression, ['object' => $object, 'context' => $context, 'property_metadata' => $metadata ]);
@@ -47,11 +62,10 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->getter) {
             if (!isset($this->readAccessors[$metadata->class])) {
-                if ($metadata->forceReflectionAccess === true) {
+                if (true === $metadata->forceReflectionAccess) {
                     $this->readAccessors[$metadata->class] = function ($o, $name) use ($metadata) {
-
                         $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
-                        if ($ref === null) {
+                        if (null === $ref) {
                             $ref = new \ReflectionProperty($metadata->class, $name);
                             $ref->setAccessible(true);
                             $this->propertyReflectionCache[$metadata->class][$name] = $ref;
@@ -72,18 +86,21 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         return $object->{$metadata->getter}();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
-        if ($metadata->readOnly) {
+        if (true === $metadata->readOnly) {
             throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
         }
 
         if (null === $metadata->setter) {
             if (!isset($this->writeAccessors[$metadata->class])) {
-                if ($metadata->forceReflectionAccess === true) {
-                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use ($metadata) {
+                if (true === $metadata->forceReflectionAccess) {
+                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use ($metadata): void {
                         $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
-                        if ($ref === null) {
+                        if (null === $ref) {
                             $ref = new \ReflectionProperty($metadata->class, $name);
                             $ref->setAccessible(true);
                             $this->propertyReflectionCache[$metadata->class][$name] = $ref;
@@ -92,7 +109,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         $ref->setValue($o, $value);
                     };
                 } else {
-                    $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value) {
+                    $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value): void {
                         $o->$name = $value;
                     }, null, $metadata->class);
                 }

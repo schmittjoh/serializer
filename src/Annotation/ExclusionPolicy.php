@@ -12,9 +12,12 @@ use JMS\Serializer\Exception\RuntimeException;
  */
 final class ExclusionPolicy
 {
-    const NONE = 'NONE';
-    const ALL = 'ALL';
+    public const NONE = 'NONE';
+    public const ALL = 'ALL';
 
+    /**
+     * @var string
+     */
     public $policy;
 
     public function __construct(array $values)

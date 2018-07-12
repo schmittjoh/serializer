@@ -8,8 +8,14 @@ use JMS\Serializer\Context;
 
 class ObjectEvent extends Event
 {
+    /**
+     * @var mixed
+     */
     private $object;
 
+    /**
+     * @param mixed $object
+     */
     public function __construct(Context $context, $object, array $type)
     {
         parent::__construct($context, $type);
@@ -17,6 +23,9 @@ class ObjectEvent extends Event
         $this->object = $object;
     }
 
+    /**
+     * @return mixed
+     */
     public function getObject()
     {
         return $this->object;

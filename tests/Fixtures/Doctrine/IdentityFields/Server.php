@@ -35,7 +35,7 @@ class Server
     private $name;
 
     /**
-     * Server constructor.
+     *
      * @param string $name
      * @param string $ipAddress
      * @param string $serverId

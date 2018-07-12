@@ -20,7 +20,7 @@ class DateTimeArraysObject
      */
     private $arrayWithFormattedDateTime;
 
-    function __construct($arrayWithDefaultDateTime, $arrayWithFormattedDateTime)
+    public function __construct($arrayWithDefaultDateTime, $arrayWithFormattedDateTime)
     {
         $this->arrayWithDefaultDateTime = $arrayWithDefaultDateTime;
         $this->arrayWithFormattedDateTime = $arrayWithFormattedDateTime;
@@ -41,5 +41,4 @@ class DateTimeArraysObject
     {
         return $this->arrayWithFormattedDateTime;
     }
-
 }

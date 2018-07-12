@@ -7,13 +7,15 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Serializer;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
+    /**
+     * @var callable[]
+     */
     protected $handlers;
 
-    public static function getDefaultMethod($direction, $type, $format)
+    public static function getDefaultMethod(int $direction, string $type, string $format): string
     {
         if (false !== $pos = strrpos($type, '\\')) {
             $type = substr($type, $pos + 1);
@@ -49,17 +51,23 @@ class HandlerRegistry implements HandlerRegistryInterface
             }
 
             foreach ($directions as $direction) {
-                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
+                $method = $methodData['method'] ?? self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
                 $this->registerHandler($direction, $methodData['type'], $methodData['format'], [$handler, $method]);
             }
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
         $this->handlers[$direction][$typeName][$format] = $handler;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHandler(int $direction, string $typeName, string $format)
     {
         if (!isset($this->handlers[$direction][$typeName][$format])) {

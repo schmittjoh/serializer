@@ -20,9 +20,9 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  */
 class ClassMetadata extends MergeableClassMetadata
 {
-    const ACCESSOR_ORDER_UNDEFINED = 'undefined';
-    const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
-    const ACCESSOR_ORDER_CUSTOM = 'custom';
+    public const ACCESSOR_ORDER_UNDEFINED = 'undefined';
+    public const ACCESSOR_ORDER_ALPHABETICAL = 'alphabetical';
+    public const ACCESSOR_ORDER_CUSTOM = 'custom';
 
     /** @var \ReflectionMethod[] */
     public $preSerializeMethods = [];
@@ -33,11 +33,33 @@ class ClassMetadata extends MergeableClassMetadata
     /** @var \ReflectionMethod[] */
     public $postDeserializeMethods = [];
 
+    /**
+     * @var string
+     */
     public $xmlRootName;
+
+    /**
+     * @var string
+     */
     public $xmlRootNamespace;
+
+    /**
+     * @var string
+     */
     public $xmlRootPrefix;
+    /**
+     * @var string[]
+     */
     public $xmlNamespaces = [];
+
+    /**
+     * @var string
+     */
     public $accessorOrder;
+
+    /**
+     * @var string[]
+     */
     public $customOrder;
 
     /**
@@ -45,7 +67,7 @@ class ClassMetadata extends MergeableClassMetadata
      * @var bool
      */
     public $usingExpression = false;
-    
+
     /**
      * @internal
      * @var bool
@@ -58,18 +80,50 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public $isMap = false;
 
+    /**
+     * @var bool
+     */
     public $discriminatorDisabled = false;
+
+    /**
+     * @var string
+     */
     public $discriminatorBaseClass;
+    /**
+     * @var string
+     */
     public $discriminatorFieldName;
+    /**
+     * @var string
+     */
     public $discriminatorValue;
+
+    /**
+     * @var string[]
+     */
     public $discriminatorMap = [];
+
+    /**
+     * @var string[]
+     */
     public $discriminatorGroups = [];
 
+    /**
+     * @var bool
+     */
     public $xmlDiscriminatorAttribute = false;
+
+    /**
+     * @var bool
+     */
     public $xmlDiscriminatorCData = true;
+
+    /**
+     * @var string
+     */
     public $xmlDiscriminatorNamespace;
 
-    public function setDiscriminator($fieldName, array $map, array $groups = []):void
+    public function setDiscriminator(string $fieldName, array $map, array $groups = []): void
     {
         if (empty($fieldName)) {
             throw new InvalidMetadataException('The $fieldName cannot be empty.');
@@ -93,13 +147,12 @@ class ClassMetadata extends MergeableClassMetadata
     /**
      * Sets the order of properties in the class.
      *
-     * @param string $order
      * @param array $customOrder
      *
-     * @throws InvalidMetadataException When the accessor order is not valid
-     * @throws InvalidMetadataException When the custom order is not valid
+     * @throws InvalidMetadataException When the accessor order is not valid.
+     * @throws InvalidMetadataException When the custom order is not valid.
      */
-    public function setAccessorOrder(string $order, array $customOrder = []):void
+    public function setAccessorOrder(string $order, array $customOrder = []): void
     {
         if (!in_array($order, [self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM], true)) {
             throw new InvalidMetadataException(sprintf('The accessor order "%s" is invalid.', $order));
@@ -116,7 +169,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    public function addPropertyMetadata(BasePropertyMetadata $metadata):void
+    public function addPropertyMetadata(BasePropertyMetadata $metadata): void
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
@@ -125,22 +178,22 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 
-    public function addPreSerializeMethod(MethodMetadata $method):void
+    public function addPreSerializeMethod(MethodMetadata $method): void
     {
         $this->preSerializeMethods[] = $method;
     }
 
-    public function addPostSerializeMethod(MethodMetadata $method):void
+    public function addPostSerializeMethod(MethodMetadata $method): void
     {
         $this->postSerializeMethods[] = $method;
     }
 
-    public function addPostDeserializeMethod(MethodMetadata $method):void
+    public function addPostDeserializeMethod(MethodMetadata $method): void
     {
         $this->postDeserializeMethods[] = $method;
     }
 
-    public function merge(MergeableInterface $object):void
+    public function merge(MergeableInterface $object): void
     {
         if (!$object instanceof ClassMetadata) {
             throw new InvalidMetadataException('$object must be an instance of ClassMetadata.');
@@ -171,7 +224,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap = $object->discriminatorMap;
         }
 
-        if ($object->discriminatorDisabled !== null) {
+        if (null !== $object->discriminatorDisabled) {
             $this->discriminatorDisabled = $object->discriminatorDisabled;
         }
 
@@ -219,23 +272,30 @@ class ClassMetadata extends MergeableClassMetadata
         $this->sortProperties();
     }
 
-    public function registerNamespace(string $uri, ?string $prefix = null):void
+    public function registerNamespace(string $uri, ?string $prefix = null): void
     {
         if (!\is_string($uri)) {
             throw new InvalidMetadataException(sprintf('$uri is expected to be a strings, but got value %s.', json_encode($uri)));
         }
 
-        if ($prefix !== null) {
+        if (null !== $prefix) {
             if (!\is_string($prefix)) {
                 throw new InvalidMetadataException(sprintf('$prefix is expected to be a strings, but got value %s.', json_encode($prefix)));
             }
         } else {
-            $prefix = "";
+            $prefix = '';
         }
 
         $this->xmlNamespaces[$prefix] = $uri;
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
+     *
+     * @return string
+     */
     public function serialize()
     {
         $this->sortProperties();
@@ -266,6 +326,14 @@ class ClassMetadata extends MergeableClassMetadata
         ]);
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
+     *
+     * @param string $str
+     * @return void
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);
@@ -316,7 +384,7 @@ class ClassMetadata extends MergeableClassMetadata
         parent::unserialize($parentStr);
     }
 
-    private function sortProperties()
+    private function sortProperties(): void
     {
         switch ($this->accessorOrder) {
             case self::ACCESSOR_ORDER_UNDEFINED:
@@ -333,4 +401,3 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 }
-

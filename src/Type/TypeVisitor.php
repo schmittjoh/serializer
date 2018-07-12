@@ -12,12 +12,15 @@ use function strpos;
 
 final class TypeVisitor implements Visit
 {
+    /**
+     * {@inheritdoc}
+     */
     public function visit(Element $element, &$handle = null, $eldnah = null)
     {
         switch ($element->getId()) {
-            case '#simple_type' :
+            case '#simple_type':
                 return $this->visitSimpleType($element);
-            case '#compound_type' :
+            case '#compound_type':
                 return $this->visitCompoundType($element, $handle, $eldnah);
         }
 
@@ -33,20 +36,20 @@ final class TypeVisitor implements Visit
         $token = $tokenNode->getValueToken();
         $value = $tokenNode->getValueValue();
 
-        if ($token === 'name') {
+        if ('name' === $token) {
             return ['name' => $value, 'params' => []];
         }
 
-        $escapeChar = $token === 'quoted_string' ? '"' : "'";
+        $escapeChar = 'quoted_string' === $token ? '"' : "'";
 
-        if (strpos($value, $escapeChar) === false) {
+        if (false === strpos($value, $escapeChar)) {
             return $value;
         }
 
         return str_replace($escapeChar . $escapeChar, $escapeChar, $value);
     }
 
-    private function visitCompoundType(TreeNode $element, ?int &$handle, ?int $eldnah) : array
+    private function visitCompoundType(TreeNode $element, ?int &$handle, ?int $eldnah): array
     {
         $nameToken = $element->getChild(0);
         $parameters = array_slice($element->getChildren(), 1);

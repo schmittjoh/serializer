@@ -33,5 +33,4 @@ class SimpleClassObject
      * @XmlElement(namespace="http://new.foo.example.org")
      */
     public $moo;
-
 }

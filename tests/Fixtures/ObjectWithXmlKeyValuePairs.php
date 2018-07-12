@@ -15,18 +15,16 @@ class ObjectWithXmlKeyValuePairs
     private $array = [
         'key-one' => 'foo',
         'key-two' => 1,
-        'nested-array' => [
-            'bar' => 'foo',
-        ],
+        'nested-array' => ['bar' => 'foo'],
         'without-keys' => [
             1,
-            'test'
+            'test',
         ],
         'mixed' => [
             'test',
             'foo' => 'bar',
-            '1_foo' => 'bar'
+            '1_foo' => 'bar',
         ],
-        1 => 'foo'
+        1 => 'foo',
     ];
 }

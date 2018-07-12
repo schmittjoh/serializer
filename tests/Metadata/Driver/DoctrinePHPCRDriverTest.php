@@ -11,8 +11,9 @@ use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use PHPUnit\Framework\TestCase;
 
-class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
+class DoctrinePHPCRDriverTest extends TestCase
 {
     public function getMetadata()
     {
@@ -45,8 +46,11 @@ class DoctrinePHPCRDriverTest extends \PHPUnit\Framework\TestCase
         $metadata = $this->getMetadata();
 
         self::assertEquals(
-            ['name' => 'ArrayCollection', 'params' => [
-                ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []]]
+            [
+            'name' => 'ArrayCollection',
+            'params' => [
+                ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []],
+            ],
             ],
             $metadata->propertyMetadata['comments']->type
         );

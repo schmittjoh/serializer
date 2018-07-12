@@ -27,6 +27,7 @@ script:
     - phpenv config-rm xdebug.ini || true
     - php tests/benchmark.php json 3
     - php tests/benchmark.php xml 3
+    - vendor/bin/phpcs
 
 after_success:
     - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi

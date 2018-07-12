@@ -16,7 +16,7 @@ class NamedDateTimeImmutableArraysObject
      */
     private $namedArrayWithFormattedDate;
 
-    function __construct($namedArrayWithFormattedDate)
+    public function __construct($namedArrayWithFormattedDate)
     {
         $this->namedArrayWithFormattedDate = $namedArrayWithFormattedDate;
     }

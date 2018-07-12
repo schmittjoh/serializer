@@ -12,6 +12,9 @@ use JMS\Serializer\Exception\RuntimeException;
  */
 final class SerializedName
 {
+    /**
+     * @var string
+     */
     public $name;
 
     public function __construct(array $values)

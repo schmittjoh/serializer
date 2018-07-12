@@ -14,8 +14,19 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  */
 final class VirtualProperty
 {
+    /**
+     * @var string
+     */
     public $exp;
+
+    /**
+     * @var string
+     */
     public $name;
+
+    /**
+     * @var array
+     */
     public $options = [];
 
     public function __construct(array $data)
@@ -33,4 +44,3 @@ final class VirtualProperty
         }
     }
 }
-

@@ -20,7 +20,7 @@ final class CustomPropertyOrderingStrategy implements PropertyOrderingInterface
     /**
      * {@inheritdoc}
      */
-    public function order(array $properties) : array
+    public function order(array $properties): array
     {
         $currentSorting = $properties ? array_combine(array_keys($properties), range(1, \count($properties))) : [];
 

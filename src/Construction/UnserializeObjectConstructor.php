@@ -14,17 +14,17 @@ final class UnserializeObjectConstructor implements ObjectConstructorInterface
     /** @var Instantiator */
     private $instantiator;
 
+    /**
+     * {@inheritdoc}
+     */
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
         return $this->getInstantiator()->instantiate($metadata->name);
     }
 
-    /**
-     * @return Instantiator
-     */
-    private function getInstantiator()
+    private function getInstantiator(): Instantiator
     {
-        if (null == $this->instantiator) {
+        if (null === $this->instantiator) {
             $this->instantiator = new Instantiator();
         }
 

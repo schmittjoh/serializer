@@ -11,11 +11,11 @@ final class AlphabeticalPropertyOrderingStrategy implements PropertyOrderingInte
     /**
      * {@inheritdoc}
      */
-    public function order(array $properties) : array
+    public function order(array $properties): array
     {
         uasort(
             $properties,
-            function (PropertyMetadata $a, PropertyMetadata $b) : int {
+            function (PropertyMetadata $a, PropertyMetadata $b): int {
                 return strcmp($a->name, $b->name);
             }
         );

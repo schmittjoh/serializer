@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\BlogPost;
+use JMS\Serializer\Tests\Fixtures\Comment;
+use JMS\Serializer\Tests\Fixtures\Publisher;
+
 if (!isset($_SERVER['argv'][1], $_SERVER['argv'][2])) {
     echo 'Usage: php benchmark.php <format> <iterations> [output-file]' . PHP_EOL;
     exit(1);
@@ -11,7 +17,7 @@ list(, $format, $iterations) = $_SERVER['argv'];
 
 require_once 'bootstrap.php';
 
-function benchmark(\Closure $f, $times = 10)
+function benchmark(Closure $f, $times = 10)
 {
     $time = microtime(true);
     for ($i = 0; $i < $times; $i++) {
@@ -33,16 +39,16 @@ function createCollection()
 
 function createObject()
 {
-    $p = new \JMS\Serializer\Tests\Fixtures\Publisher('bar');
-    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime, $p);
+    $p = new Publisher('bar');
+    $post = new BlogPost('FooooooooooooooooooooooBAR', new Author('Foo'), new DateTime(), $p);
     for ($i = 0; $i < 100; $i++) {
-        $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
+        $post->addComment(new Comment(new Author('foo'), 'foobar'));
     }
 
     return $post;
 }
 
-$serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+$serializer = SerializerBuilder::create()->build();
 $collection = createCollection();
 $metrics = [];
 $f = function () use ($serializer, $collection, $format) {
@@ -59,7 +65,7 @@ $output = json_encode(['metrics' => $metrics]);
 
 if (isset($_SERVER['argv'][3])) {
     file_put_contents($_SERVER['argv'][3], $output);
-    echo "Done." . PHP_EOL;
+    echo 'Done.' . PHP_EOL;
 } else {
     echo $output . PHP_EOL;
 }

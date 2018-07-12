@@ -10,6 +10,9 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 final class VersionExclusionStrategy implements ExclusionStrategyInterface
 {
+    /**
+     * @var string
+     */
     private $version;
 
     public function __construct(string $version)

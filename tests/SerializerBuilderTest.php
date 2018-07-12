@@ -9,16 +9,16 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Tests\Fixtures\ContextualNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
+class SerializerBuilderTest extends TestCase
 {
     /** @var SerializerBuilder */
     private $builder;
@@ -74,9 +74,9 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->deserialize('"04-2020-10"', "XXX", 'json');
+        $result = $serializer->deserialize('"04-2020-10"', 'XXX', 'json');
         self::assertInstanceOf(\DateTimeImmutable::class, $result);
-        self::assertEquals("2020-10-04", $result->format("Y-m-d"));
+        self::assertEquals('2020-10-04', $result->format('Y-m-d'));
     }
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
@@ -196,27 +196,27 @@ class SerializerBuilderTest extends \PHPUnit\Framework\TestCase
         return [
             [
                 new ExpressionFunction('show_data', function () {
-                    return "true";
+                    return 'true';
                 }, function () {
                     return true;
                 }),
-                '{"name":"mike"}'
+                '{"name":"mike"}',
             ],
             [
                 new ExpressionFunction('show_data', function () {
-                    return "false";
+                    return 'false';
                 }, function () {
                     return false;
                 }),
-                '{"name":"mike","gender":"f"}'
-            ]
+                '{"name":"mike","gender":"f"}',
+            ],
         ];
     }
 
     /**
      * @dataProvider expressionFunctionProvider
      * @param ExpressionFunction $function
-     * @param $json
+     * @param string $json
      */
     public function testExpressionEngine(ExpressionFunction $function, $json)
     {

@@ -22,15 +22,54 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      */
     private $document;
 
+    /**
+     * @var string
+     */
     private $defaultRootName = 'result';
+
+    /**
+     * @var null|string
+     */
     private $defaultRootNamespace;
+
+    /**
+     * @var null|string
+     */
     private $defaultRootPrefix;
+
+    /**
+     * @var \SplStack
+     */
     private $stack;
+
+    /**
+     * @var \SplStack
+     */
     private $metadataStack;
+
+    /**
+     * @var \DOMNode|\DOMElement|null
+     */
     private $currentNode;
+
+    /**
+     * @var ClassMetadata|PropertyMetadata|null
+     */
     private $currentMetadata;
+
+    /**
+     * @var bool
+     */
     private $hasValue;
+
+    /**
+     * @var bool
+     */
     private $nullWasVisited;
+
+    /**
+     * @var \SplStack
+     */
     private $objectMetadataStack;
 
     public function __construct(
@@ -38,12 +77,12 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         string $defaultEncoding = 'UTF-8',
         string $defaultVersion = '1.0',
         string $defaultRootName = 'result',
-        string $defaultRootNamespace = null,
-        string $defaultRootPrefix = null
+        ?string $defaultRootNamespace = null,
+        ?string $defaultRootPrefix = null
     ) {
-        $this->objectMetadataStack = new \SplStack;
-        $this->stack = new \SplStack;
-        $this->metadataStack = new \SplStack;
+        $this->objectMetadataStack = new \SplStack();
+        $this->stack = new \SplStack();
+        $this->metadataStack = new \SplStack();
 
         $this->currentNode = null;
         $this->nullWasVisited = false;
@@ -63,9 +102,9 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $document;
     }
 
-    public function createRoot(ClassMetadata $metadata = null, ?string $rootName = null, ?string $rootNamespace = null, ?string $rootPrefix = null)
+    public function createRoot(?ClassMetadata $metadata = null, ?string $rootName = null, ?string $rootNamespace = null, ?string $rootPrefix = null): \DOMElement
     {
-        if ($metadata !== null && !empty($metadata->xmlRootName)) {
+        if (null !== $metadata && !empty($metadata->xmlRootName)) {
             $rootPrefix = $metadata->xmlRootPrefix;
             $rootName = $metadata->xmlRootName;
             $rootNamespace = $metadata->xmlRootNamespace ?: $this->getClassDefaultNamespace($metadata);
@@ -77,7 +116,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         $document = $this->getDocument();
         if ($rootNamespace) {
-            $rootNode = $document->createElementNS($rootNamespace, ($rootPrefix !== null ? ($rootPrefix . ':') : '') . $rootName);
+            $rootNode = $document->createElementNS($rootNamespace, (null !== $rootPrefix ? ($rootPrefix . ':') : '') . $rootName);
         } else {
             $rootNode = $document->createElement($rootName);
         }
@@ -86,7 +125,9 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         return $rootNode;
     }
-
+    /**
+     * {@inheritdoc}
+     */
     public function visitNull($data, array $type)
     {
         $node = $this->document->createAttribute('xsi:nil');
@@ -95,41 +136,59 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         return $node;
     }
-
+    /**
+     * {@inheritdoc}
+     */
     public function visitString(string $data, array $type)
     {
         $doCData = null !== $this->currentMetadata ? $this->currentMetadata->xmlElementCData : true;
 
-        return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string)$data);
+        return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string) $data);
     }
 
-    public function visitSimpleString($data, array $type)
+    /**
+     * @param mixed $data
+     * @param array $type
+     */
+    public function visitSimpleString($data, array $type): \DOMText
     {
-        return $this->document->createTextNode((string)$data);
+        return $this->document->createTextNode((string) $data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitBoolean(bool $data, array $type)
     {
         return $this->document->createTextNode($data ? 'true' : 'false');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitInteger(int $data, array $type)
     {
-        return $this->document->createTextNode((string)$data);
+        return $this->document->createTextNode((string) $data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitDouble(float $data, array $type)
     {
         if (floor($data) === $data) {
-            return $this->document->createTextNode($data . ".0");
+            return $this->document->createTextNode($data . '.0');
         } else {
-            return $this->document->createTextNode((string)$data);
+            return $this->document->createTextNode((string) $data);
         }
     }
 
-    public function visitArray(array $data, array $type)
+    /**
+     * {@inheritdoc}
+     */
+    public function visitArray(array $data, array $type): void
     {
-        if ($this->currentNode === null) {
+        if (null === $this->currentNode) {
             $this->createRoot();
         }
 
@@ -139,15 +198,14 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
-
-            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string)$k)) ? $k : $entryName;
+            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string) $k)) ? $k : $entryName;
 
             $entryNode = $this->createElement($tagName, $namespace);
             $this->currentNode->appendChild($entryNode);
             $this->setCurrentNode($entryNode);
 
             if (null !== $keyAttributeName) {
-                $entryNode->setAttribute($keyAttributeName, (string)$k);
+                $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
             try {
@@ -162,11 +220,14 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         $this->objectMetadataStack->push($metadata);
 
-        if ($this->currentNode === null) {
+        if (null === $this->currentNode) {
             $this->createRoot($metadata);
         }
 
@@ -175,6 +236,9 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         $this->hasValue = false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitProperty(PropertyMetadata $metadata, $v): void
     {
         if ($metadata->xmlAttribute) {
@@ -234,7 +298,6 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-
             $namespace = null !== $metadata->xmlNamespace
                 ? $metadata->xmlNamespace
                 : $this->getClassDefaultNamespace($this->objectMetadataStack->top());
@@ -263,7 +326,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         if ($addEnclosingElement) {
             $this->revertCurrentNode();
 
-            if ($this->isElementEmpty($element) && ($v === null || $this->isSkippableCollection($metadata) || $this->isSkippableEmptyObject($node, $metadata))) {
+            if ($this->isElementEmpty($element) && (null === $v || $this->isSkippableCollection($metadata) || $this->isSkippableEmptyObject($node, $metadata))) {
                 $this->currentNode->removeChild($element);
             }
         }
@@ -271,34 +334,37 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         $this->hasValue = false;
     }
 
-    private function isInLineCollection(PropertyMetadata $metadata)
+    private function isInLineCollection(PropertyMetadata $metadata): bool
     {
         return $metadata->xmlCollection && $metadata->xmlCollectionInline;
     }
 
-    private function isSkippableEmptyObject($node, PropertyMetadata $metadata)
+    private function isSkippableEmptyObject(?\DOMElement $node, PropertyMetadata $metadata): bool
     {
-        return $node === null && !$metadata->xmlCollection && $metadata->skipWhenEmpty;
+        return null === $node && !$metadata->xmlCollection && $metadata->skipWhenEmpty;
     }
 
-    private function isSkippableCollection(PropertyMetadata $metadata)
+    private function isSkippableCollection(PropertyMetadata $metadata): bool
     {
         return $metadata->xmlCollection && $metadata->xmlCollectionSkipWhenEmpty;
     }
 
-    private function isElementEmpty(\DOMElement $element)
+    private function isElementEmpty(\DOMElement $element): bool
     {
         return !$element->hasChildNodes() && !$element->hasAttributes();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
+    public function endVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         $this->objectMetadataStack->pop();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResult($node)
     {
-        if ($this->document->documentElement === null) {
+        if (null === $this->document->documentElement) {
             if ($node instanceof \DOMElement) {
                 $this->document->appendChild($node);
             } else {
@@ -365,6 +431,9 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->currentMetadata = $this->metadataStack->pop();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepare($data)
     {
         $this->nullWasVisited = false;
@@ -374,27 +443,20 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
     /**
      * Checks that the name is a valid XML element name.
-     *
-     * @param string $name
-     *
-     * @return boolean
      */
-    private function isElementNameValid($name)
+    private function isElementNameValid(string $name): bool
     {
         return $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
     }
 
     /**
      * Adds namespace attributes to the XML root element
-     *
-     * @param \JMS\Serializer\Metadata\ClassMetadata $metadata
-     * @param \DOMElement $element
      */
-    private function addNamespaceAttributes(ClassMetadata $metadata, \DOMElement $element)
+    private function addNamespaceAttributes(ClassMetadata $metadata, \DOMElement $element): void
     {
         foreach ($metadata->xmlNamespaces as $prefix => $uri) {
             $attribute = 'xmlns';
-            if ($prefix !== '') {
+            if ('' !== $prefix) {
                 $attribute .= ':' . $prefix;
             } elseif ($element->namespaceURI === $uri) {
                 continue;
@@ -403,7 +465,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
     }
 
-    private function createElement($tagName, $namespace = null)
+    private function createElement(string $tagName, ?string $namespace = null): \DOMElement
     {
         if (null === $namespace) {
             return $this->document->createElement($tagName);
@@ -417,7 +479,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
-    private function setAttributeOnNode(\DOMElement $node, $name, $value, $namespace = null)
+    private function setAttributeOnNode(\DOMElement $node, string $name, string $value, ?string $namespace = null): void
     {
         if (null !== $namespace) {
             if (!$prefix = $node->lookupPrefix($namespace)) {
@@ -429,8 +491,8 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
     }
 
-    private function getClassDefaultNamespace(ClassMetadata $metadata)
+    private function getClassDefaultNamespace(ClassMetadata $metadata): ?string
     {
-        return (isset($metadata->xmlNamespaces['']) ? $metadata->xmlNamespaces[''] : null);
+        return $metadata->xmlNamespaces[''] ?? null;
     }
 }

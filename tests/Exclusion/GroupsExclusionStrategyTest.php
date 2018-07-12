@@ -7,14 +7,15 @@ namespace JMS\Serializer\Tests\Exclusion;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use PHPUnit\Framework\TestCase;
 
-class GroupsExclusionStrategyTest extends \PHPUnit\Framework\TestCase
+class GroupsExclusionStrategyTest extends TestCase
 {
     /**
      * @dataProvider getExclusionRules
      * @param array $propertyGroups
      * @param array $groups
-     * @param $exclude
+     * @param bool $exclude
      */
     public function testUninitializedContextIsWorking(array $propertyGroups, array $groups, $exclude)
     {

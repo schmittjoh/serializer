@@ -12,14 +12,12 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\Tests\Fixtures\FirstClassCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 class JsonSerializationTest extends BaseSerializationTest
@@ -138,8 +136,8 @@ class JsonSerializationTest extends BaseSerializationTest
 
     /**
      * @dataProvider getFirstClassListCollectionsValues
-     * @param $items
-     * @param $expected
+     * @param array $items
+     * @param array $expected
      */
     public function testFirstClassListCollections($items, $expected): void
     {
@@ -153,14 +151,14 @@ class JsonSerializationTest extends BaseSerializationTest
         return [
             [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
             [[], '{}'],
-            [["a" => "b", "c" => "d", 5], '{"a":0,"c":0,"0":5}'],
+            [['a' => 'b', 'c' => 'd', 5], '{"a":0,"c":0,"0":5}'],
         ];
     }
 
     /**
      * @dataProvider getFirstClassMapCollectionsValues
-     * @param $items
-     * @param $expected
+     * @param array $items
+     * @param array $expected
      */
     public function testFirstClassMapCollections($items, $expected): void
     {
@@ -181,7 +179,10 @@ class JsonSerializationTest extends BaseSerializationTest
             self::assertTrue($event->getVisitor()->hasData('_links'));
         }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
 
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            'JMS\Serializer\Tests\Fixtures\AuthorList',
+            'json',
             function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
@@ -197,7 +198,10 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testReplaceNameInOutput()
     {
         $this->dispatcher->addSubscriber(new ReplaceNameSubscriber());
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            'JMS\Serializer\Tests\Fixtures\AuthorList',
+            'json',
             function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
@@ -244,7 +248,7 @@ class JsonSerializationTest extends BaseSerializationTest
             ],
             [
                 'type' => 'string',
-                'data' => "hello",
+                'data' => 'hello',
             ],
             [
                 'type' => 'double',
@@ -265,7 +269,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $visitor->setNavigator($navigator);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, [], $this->getMockBuilder(SerializationContext::class)->getMock());
-        if ($primitiveType == 'double') {
+        if ('double' === $primitiveType) {
             $primitiveType = 'float';
         }
         self::assertInternalType($primitiveType, $result);
@@ -287,7 +291,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', '1');
-        $this->serialize(['foo' => 'bar', 'bar' => pack("H*", 'c32e')]);
+        $this->serialize(['foo' => 'bar', 'bar' => pack('H*', 'c32e')]);
     }
 
     /**
@@ -298,7 +302,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
         ini_set('display_errors', '0');
-        $this->serialize(['foo' => 'bar', 'bar' => pack("H*", 'c32e')]);
+        $this->serialize(['foo' => 'bar', 'bar' => pack('H*', 'c32e')]);
     }
 
     public function testSerializeArrayWithEmptyObject()
@@ -315,8 +319,8 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testSerializeRootArrayWithDefinedKeys()
     {
-        $author1 = new Author("Jim");
-        $author2 = new Author("Mark");
+        $author1 = new Author('Jim');
+        $author2 = new Author('Mark');
 
         $data = [
             'jim' => $author1,
@@ -383,7 +387,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $c2 = new \stdClass();
         $c2->foo = 'bar';
 
-        $tag = new Tag("tag");
+        $tag = new Tag('tag');
 
         $c3 = new \stdClass();
         $c3->foo = $tag;

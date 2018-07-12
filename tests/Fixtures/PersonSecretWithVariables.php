@@ -8,8 +8,6 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-/**
- */
 class PersonSecretWithVariables
 {
     /**

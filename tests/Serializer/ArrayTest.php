@@ -9,8 +9,9 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
+use PHPUnit\Framework\TestCase;
 
-class ArrayTest extends \PHPUnit\Framework\TestCase
+class ArrayTest extends TestCase
 {
     protected $serializer;
 
@@ -25,9 +26,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
         $order = new Order(new Price(5));
 
         $expected = [
-            'cost' => [
-                'price' => 5
-            ]
+            'cost' => ['price' => 5],
         ];
 
         $result = $this->serializer->toArray($order);
@@ -64,9 +63,7 @@ class ArrayTest extends \PHPUnit\Framework\TestCase
     public function testFromArray()
     {
         $data = [
-            'cost' => [
-                'price' => 2.5
-            ]
+            'cost' => ['price' => 2.5],
         ];
 
         $expected = new Order(new Price(2.5));

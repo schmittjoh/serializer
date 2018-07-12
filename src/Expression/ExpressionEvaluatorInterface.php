@@ -10,9 +10,8 @@ namespace JMS\Serializer\Expression;
 interface ExpressionEvaluatorInterface
 {
     /**
-     * @param  string $expression
      * @param  array $data
      * @return mixed
      */
-    public function evaluate($expression, array $data = []);
+    public function evaluate(string $expression, array $data = []);
 }

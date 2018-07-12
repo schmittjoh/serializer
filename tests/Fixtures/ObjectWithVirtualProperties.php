@@ -14,7 +14,6 @@ use JMS\Serializer\Annotation\VirtualProperty;
  */
 class ObjectWithVirtualProperties
 {
-
     /**
      * @Type("string")
      */

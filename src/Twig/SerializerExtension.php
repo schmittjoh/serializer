@@ -14,8 +14,15 @@ use JMS\Serializer\SerializerInterface;
  */
 class SerializerExtension extends \Twig_Extension
 {
+    /**
+     * @var SerializerInterface
+     */
     protected $serializer;
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @return string
+     */
     public function getName()
     {
         return 'jms_serializer';
@@ -26,6 +33,11 @@ class SerializerExtension extends \Twig_Extension
         $this->serializer = $serializer;
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return \Twig_Filter[]
+     */
     public function getFilters()
     {
         return [
@@ -33,6 +45,11 @@ class SerializerExtension extends \Twig_Extension
         ];
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     *
+     * @return \Twig_Function[]
+     */
     public function getFunctions()
     {
         return [
@@ -40,12 +57,7 @@ class SerializerExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * @param object $object
-     * @param string $type
-     * @param SerializationContext $context
-     */
-    public function serialize($object, $type = 'json', SerializationContext $context = null)
+    public function serialize(object $object, string $type = 'json', ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);
     }

@@ -22,4 +22,3 @@ class ObjectWithNamespacesAndNestedList
      */
     public $personCollection;
 }
-

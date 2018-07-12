@@ -9,9 +9,6 @@ use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\ReadOnly;
 
 /**
- */
-
-/**
  * @AccessType("public_method")
  * @ReadOnly
  */

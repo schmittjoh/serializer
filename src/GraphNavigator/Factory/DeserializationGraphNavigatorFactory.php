@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\GraphNavigator\Factory;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -13,7 +15,6 @@ use Metadata\MetadataFactoryInterface;
 
 final class DeserializationGraphNavigatorFactory implements GraphNavigatorFactoryInterface
 {
-
     /**
      * @var MetadataFactoryInterface
      */
@@ -44,10 +45,9 @@ final class DeserializationGraphNavigatorFactory implements GraphNavigatorFactor
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
-
         $this->metadataFactory = $metadataFactory;
         $this->handlerRegistry = $handlerRegistry;
         $this->objectConstructor = $objectConstructor;

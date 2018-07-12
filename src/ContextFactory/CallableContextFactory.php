@@ -16,9 +16,6 @@ abstract class CallableContextFactory
      */
     private $callable;
 
-    /**
-     * @param callable $callable
-     */
     public function __construct(callable $callable)
     {
         $this->callable = $callable;

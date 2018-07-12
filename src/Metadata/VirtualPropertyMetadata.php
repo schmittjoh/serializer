@@ -20,10 +20,13 @@ class VirtualPropertyMetadata extends PropertyMetadata
         $this->readOnly = true;
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function serialize()
     {
         return serialize([
@@ -53,6 +56,9 @@ class VirtualPropertyMetadata extends PropertyMetadata
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);

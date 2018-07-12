@@ -16,8 +16,9 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
+use PHPUnit\Framework\TestCase;
 
-class SerializationContextFactoryTest extends \PHPUnit\Framework\TestCase
+class SerializationContextFactoryTest extends TestCase
 {
     protected $serializer;
     protected $metadataFactory;

@@ -85,6 +85,4 @@ class ObjectWithNamespacesAndList
      * @XmlMap(inline = false, entry = "address", keyAttribute = "id")
      */
     public $addressesAlternativeD;
-
 }
-

@@ -23,23 +23,37 @@ abstract class Context
      */
     private $attributes = [];
 
+    /**
+     * @var string
+     */
     private $format;
 
-    /** @var VisitorInterface */
+    /**
+     * @var VisitorInterface
+     */
     private $visitor;
 
-    /** @var GraphNavigatorInterface */
+    /**
+     * @var GraphNavigatorInterface
+     */
     private $navigator;
 
-    /** @var MetadataFactory */
+    /**
+     * @var MetadataFactory
+     */
     private $metadataFactory;
 
     /** @var DisjunctExclusionStrategy */
     private $exclusionStrategy;
 
-    /** @var boolean */
+    /**
+     * @var bool
+     */
     private $serializeNull = false;
 
+    /**
+     * @var bool
+     */
     private $initialized = false;
 
     /** @var \SplStack */
@@ -49,9 +63,6 @@ abstract class Context
     {
     }
 
-    /**
-     * @param string $format
-     */
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
@@ -99,6 +110,9 @@ abstract class Context
         return $this->exclusionStrategy;
     }
 
+    /**
+     * @return mixed
+     */
     public function getAttribute(string $key)
     {
         return $this->attributes[$key];
@@ -109,6 +123,9 @@ abstract class Context
         return isset($this->attributes[$key]);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setAttribute(string $key, $value): self
     {
         $this->assertMutable();
@@ -140,10 +157,10 @@ abstract class Context
             return $this;
         }
 
-        $this->exclusionStrategy = new DisjunctExclusionStrategy(array(
+        $this->exclusionStrategy = new DisjunctExclusionStrategy([
             $this->exclusionStrategy,
             $strategy,
-        ));
+        ]);
 
         return $this;
     }
@@ -164,7 +181,7 @@ abstract class Context
             throw new LogicException('The groups must not be empty.');
         }
 
-        $this->attributes['groups'] = (array)$groups;
+        $this->attributes['groups'] = (array) $groups;
 
         return $this;
     }
@@ -190,16 +207,12 @@ abstract class Context
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
      *
-     * @return bool
      */
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
     }
 
-    /**
-     * @return string
-     */
     public function getFormat(): string
     {
         return $this->format;
@@ -259,8 +272,5 @@ abstract class Context
 
     abstract public function getDepth(): int;
 
-    /**
-     * @return integer
-     */
     abstract public function getDirection(): int;
 }

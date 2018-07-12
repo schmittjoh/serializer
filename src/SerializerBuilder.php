@@ -10,7 +10,6 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Accessor\ExpressionAccessorStrategy;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -44,8 +43,8 @@ use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
-use Metadata\Cache\FileCache;
 use Metadata\Cache\CacheInterface;
+use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 
@@ -59,23 +58,94 @@ use Metadata\MetadataFactoryInterface;
  */
 final class SerializerBuilder
 {
+    /**
+     * @var string[]
+     */
     private $metadataDirs = [];
+
+    /**
+     * @var HandlerRegistryInterface
+     */
     private $handlerRegistry;
+
+    /**
+     * @var bool
+     */
     private $handlersConfigured = false;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
+
+    /**
+     * @var bool
+     */
     private $listenersConfigured = false;
+
+    /**
+     * @var ObjectConstructorInterface
+     */
     private $objectConstructor;
+
+    /**
+     * @var SerializationVisitorFactory[]
+     */
     private $serializationVisitors;
+
+    /**
+     * @var DeserializationVisitorFactory[]
+     */
     private $deserializationVisitors;
+
+    /**
+     * @var bool
+     */
     private $visitorsAdded = false;
+
+    /**
+     * @var PropertyNamingStrategyInterface
+     */
     private $propertyNamingStrategy;
+
+    /**
+     * @var bool
+     */
     private $debug = false;
+
+    /**
+     * @var string
+     */
     private $cacheDir;
+
+    /**
+     * @var AnnotationReader
+     */
     private $annotationReader;
+
+    /**
+     * @var bool
+     */
     private $includeInterfaceMetadata = false;
+
+    /**
+     * @var DriverFactoryInterface
+     */
     private $driverFactory;
+
+    /**
+     * @var SerializationContextFactoryInterface
+     */
     private $serializationContextFactory;
+
+    /**
+     * @var DeserializationContextFactoryInterface
+     */
     private $deserializationContextFactory;
+
+    /**
+     * @var ParserInterface
+     */
     private $typeParser;
 
     /**
@@ -93,12 +163,16 @@ final class SerializerBuilder
      */
     private $metadataCache;
 
-    public static function create(...$args)
+    /**
+     * @param mixed ...$args
+     * @return SerializerBuilder
+     */
+    public static function create(...$args): self
     {
         return new static(...$args);
     }
 
-    public function __construct(HandlerRegistryInterface $handlerRegistry = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?HandlerRegistryInterface $handlerRegistry = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->typeParser = new Parser();
         $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
@@ -218,7 +292,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setSerializationVisitor($format, SerializationVisitorFactory $visitor): self
+    public function setSerializationVisitor(string $format, SerializationVisitorFactory $visitor): self
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors[$format] = $visitor;
@@ -226,7 +300,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function setDeserializationVisitor($format, DeserializationVisitorFactory $visitor): self
+    public function setDeserializationVisitor(string $format, DeserializationVisitorFactory $visitor): self
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors[$format] = $visitor;
@@ -257,7 +331,7 @@ final class SerializerBuilder
     }
 
     /**
-     * @param Boolean $include Whether to include the metadata from the interfaces
+     * @param bool $include Whether to include the metadata from the interfaces
      *
      * @return SerializerBuilder
      */
@@ -277,7 +351,7 @@ final class SerializerBuilder
      *
      * @return SerializerBuilder
      *
-     * @throws InvalidArgumentException When a directory does not exist
+     * @throws InvalidArgumentException When a directory does not exist.
      */
     public function setMetadataDirs(array $namespacePrefixToDirMap): self
     {
@@ -310,13 +384,13 @@ final class SerializerBuilder
      *
      * Please keep in mind that you currently may only have one directory per namespace prefix.
      *
-     * @param string $dir The directory where metadata files are located.
+     * @param string $dir             The directory where metadata files are located.
      * @param string $namespacePrefix An optional prefix if you only store metadata for specific namespaces in this directory.
      *
      * @return SerializerBuilder
      *
-     * @throws InvalidArgumentException When a directory does not exist
-     * @throws InvalidArgumentException When a directory has already been registered
+     * @throws InvalidArgumentException When a directory does not exist.
+     * @throws InvalidArgumentException When a directory has already been registered.
      */
     public function addMetadataDir(string $dir, string $namespacePrefix = ''): self
     {
@@ -352,15 +426,13 @@ final class SerializerBuilder
     /**
      * Similar to addMetadataDir(), but overrides an existing entry.
      *
-     * @param string $dir
-     * @param string $namespacePrefix
      *
      * @return SerializerBuilder
      *
-     * @throws InvalidArgumentException When a directory does not exist
-     * @throws InvalidArgumentException When no directory is configured for the ns prefix
+     * @throws InvalidArgumentException When a directory does not exist.
+     * @throws InvalidArgumentException When no directory is configured for the ns prefix.
      */
-    public function replaceMetadataDir(string $dir, $namespacePrefix = ''): self
+    public function replaceMetadataDir(string $dir, string $namespacePrefix = ''): self
     {
         if (!is_dir($dir)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
@@ -385,7 +457,6 @@ final class SerializerBuilder
     /**
      * @param SerializationContextFactoryInterface|callable $serializationContextFactory
      *
-     * @return self
      */
     public function setSerializationContextFactory($serializationContextFactory): self
     {
@@ -405,7 +476,6 @@ final class SerializerBuilder
     /**
      * @param DeserializationContextFactoryInterface|callable $deserializationContextFactory
      *
-     * @return self
      */
     public function setDeserializationContextFactory($deserializationContextFactory): self
     {
@@ -451,7 +521,7 @@ final class SerializerBuilder
 
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
-        if ($this->metadataCache !== null) {
+        if (null !== $this->metadataCache) {
             $metadataFactory->setCache($this->metadataCache);
         } elseif (null !== $this->cacheDir) {
             $this->createDir($this->cacheDir . '/metadata');
@@ -511,7 +581,7 @@ final class SerializerBuilder
         );
     }
 
-    private function initializePropertyNamingStrategy()
+    private function initializePropertyNamingStrategy(): void
     {
         if (null !== $this->propertyNamingStrategy) {
             return;
@@ -520,7 +590,7 @@ final class SerializerBuilder
         $this->propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
     }
 
-    private function createDir($dir)
+    private function createDir(string $dir): void
     {
         if (is_dir($dir)) {
             return;
@@ -531,4 +601,3 @@ final class SerializerBuilder
         }
     }
 }
-

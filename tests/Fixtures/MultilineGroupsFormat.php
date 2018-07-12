@@ -18,7 +18,7 @@ class MultilineGroupsFormat
 
     public function __construct($amount, $currency)
     {
-        $this->amount = (int)$amount;
+        $this->amount = (int) $amount;
         $this->currency = $currency;
     }
 

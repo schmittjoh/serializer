@@ -21,17 +21,12 @@ interface VisitorInterface
      * before the actual serialization/deserialization process starts.
      *
      * @param mixed $data
-     *
      * @return mixed
      */
     public function prepare($data);
 
     /**
      * Called before serialization/deserialization starts.
-     *
-     * @param GraphNavigatorInterface $navigator
-     *
-     * @return void
      */
     public function setNavigator(GraphNavigatorInterface $navigator): void;
 
