@@ -153,7 +153,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'exclude-if'}) {
-                        $pMetadata->excludeIf = $excludeIf;
+                        $pMetadata->excludeIf = (string)$excludeIf;
                     }
 
                     if (null !== $skip = $pElem->attributes()->{'skip-when-empty'}) {
