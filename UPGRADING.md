@@ -6,13 +6,13 @@ in case you have heavily used internal-api here are the most important the chang
 
 **Main changes**
 
-- The minimum PHP version is 7.2, type hints are used almost everywhere. Most of the method signatures changed.
+- The minimum PHP version is 7.2, type hints are used almost everywhere, most of the method signatures changed
 - `JsonSerializationVisitor::getRoot` and `JsonSerializationVisitor::setRoot` have been removed, their
-  use is not necessary anymore.
+  use is not necessary anymore
 - Removed `AdvancedNamingStrategyInterface`, the serialized name is now compiled and can not be changed at runtime
-- "deeper branch group exclusion strategy" has a different behaviour. The latest group is used instead of falling back 
+- "deeper branch group exclusion strategy" has a different behaviour, the latest group is used instead of falling back 
   to "Default" 
-- Most of the classes are marked as `final`, extension is discouraged for all the cases, use composition instead
+- Most of the classes are marked as `final`, inheritance is discouraged for all the cases, use composition instead
 - Most of the visor configurations and options have been move to visitor factories
 - Removed the abstract classes `GenericSerializationVisito`r and `GenericDeserializationVisitor`.
 - Removed deprecated method `VisitorInterface::getNavigator`, use `Context::getNavigator` instead
