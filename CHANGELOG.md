@@ -1,5 +1,44 @@
 # Change Log
 
+## [1.12.1](https://github.com/schmittjoh/serializer/tree/1.12.1) (2018-06-01)
+
+**Fixed bugs:**
+
+- Accessing static property as non static [\#960](https://github.com/schmittjoh/serializer/issues/960)
+- creating JMS\Serializer\Metadata-\>closureAccessor on internal class failed [\#959](https://github.com/schmittjoh/serializer/issues/959)
+
+## [1.12.0](https://github.com/schmittjoh/serializer/tree/1.12.0) (2018-05-25)
+
+**Implemented enhancements:**
+
+- Add support for namespaced XML attribute on Discriminator + Tests [\#909](https://github.com/schmittjoh/serializer/pull/909) ([ArthurJam](https://github.com/ArthurJam))
+- Introduce graph navigator interface [\#876](https://github.com/schmittjoh/serializer/pull/876) ([goetas](https://github.com/goetas))
+- Use Bind closure accessor [\#875](https://github.com/schmittjoh/serializer/pull/875) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- DoctrineObjectConstructor and deserialize not work [\#806](https://github.com/schmittjoh/serializer/issues/806)
+- \[Symfony\] DoctrineObjectorConstructor always creates new entity because of camel case to snake case conversion [\#734](https://github.com/schmittjoh/serializer/issues/734)
+- Fix DoctrineObjectConstructor deserialization with naming strategies [\#951](https://github.com/schmittjoh/serializer/pull/951) ([re2bit](https://github.com/re2bit))
+
+**Closed issues:**
+
+- Feature proposal: dynamic property serialized name [\#225](https://github.com/schmittjoh/serializer/issues/225)
+- Mapping request payload works for JSON but not for XML [\#820](https://github.com/schmittjoh/serializer/issues/820)
+
+**Merged pull requests:**
+
+- Cange the spelling of a word [\#939](https://github.com/schmittjoh/serializer/pull/939) ([greg0ire](https://github.com/greg0ire))
+- Use dedicated PHPUnit assertions [\#928](https://github.com/schmittjoh/serializer/pull/928) ([carusogabriel](https://github.com/carusogabriel))
+- Update arrays.rst [\#907](https://github.com/schmittjoh/serializer/pull/907) ([burki](https://github.com/burki))
+- Change to MIT license [\#956](https://github.com/schmittjoh/serializer/pull/956) ([goetas](https://github.com/goetas))
+- Double logic for group exclusion \(20% faster\) [\#941](https://github.com/schmittjoh/serializer/pull/941) ([goetas](https://github.com/goetas))
+- Type casting tests [\#917](https://github.com/schmittjoh/serializer/pull/917) ([goetas](https://github.com/goetas))
+- Explicitly set serialization precision for tests [\#899](https://github.com/schmittjoh/serializer/pull/899) ([Majkl578](https://github.com/Majkl578))
+- Deprecations   [\#877](https://github.com/schmittjoh/serializer/pull/877) ([goetas](https://github.com/goetas))
+- Added note on SerializedName annotation valididity [\#874](https://github.com/schmittjoh/serializer/pull/874) ([bobvandevijver](https://github.com/bobvandevijver))
+- Optimizations [\#861](https://github.com/schmittjoh/serializer/pull/861) ([goetas](https://github.com/goetas))
+
 ## [1.11.0](https://github.com/schmittjoh/serializer/tree/1.11.0) (2018-02-04)
 
 **Implemented enhancements:**
