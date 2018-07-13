@@ -15,6 +15,10 @@ Your Pull-Request must be compliant with the said standard.
 To check your code you can run `vendor/bin/phpcs`. This command will give you a list of violations in your code (if any).
 The most common errors can be automatically fixed just by running `vendor/bin/phpcbf`.
 
+## Dependencies
+
+We're using [`composer/composer`](https://github.com/composer/composer) to manage dependencies
+
 ## Unit-Tests
 
 Please try to add a test for your pull-request. This project uses [PHPUnit](https://phpunit.de/) as testing framework.
@@ -22,6 +26,12 @@ Please try to add a test for your pull-request. This project uses [PHPUnit](http
 You can run the unit-tests by calling `vendor/bin/phpunit`.
 
 New features without tests can't be merged.
+
+
+## Documentation
+
+The documentation is stored in the `doc` folder and is written using the [rST](http://docutils.sourceforge.net/rst.html) language.
+If you are adding a new feature, you must update the documentation.
 
 ## CI
 
@@ -43,5 +53,18 @@ library.
 
 Please allow us time to review your pull requests.
 We will give our best to review everything as fast as possible, but cannot always live up to our own expectations.
+
+Please, write [commit messages that make
+sense](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
+and [rebase your branch](http://git-scm.com/book/en/Git-Branching-Rebasing)
+before submitting your Pull Request.
+
+One may ask you to [squash your
+commits](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html)
+too. This is used to "clean" your Pull Request before merging it (we don't want
+commits such as "fix tests", "fix 2", "fix 3", etc.).
+
+Pull requests without tests most probably will not be merged.
+Documentation PRs obviously do not require tests.
 
 Thank you very much again for your contribution!
