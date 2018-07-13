@@ -91,7 +91,7 @@ final class GraphNavigator implements GraphNavigatorInterface
 
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
-        if (null === $type) {
+        if (null === $type || 'mixed' === $type['name']) {
             if ($context instanceof DeserializationContext) {
                 throw new RuntimeException('The type must be given for all properties when deserializing.');
             }
