@@ -303,11 +303,17 @@ class JsonSerializationTest extends BaseSerializationTest
             [[1, 2], '[1,2]', null],
             [['a', 'b'], '["a","b"]', null],
             [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', null],
+            [
+                ['int' => 1, 'string' => 'a', 'dateTime' => new \DateTime('2018-07-07 10:10:10')],
+                '{"int":1,"string":"a","dateTime":"2018-07-07T10:10:10+0000"}',
+                null
+            ],
 
             [[], '[]', null],
             [[], '[]', SerializationContext::create()->setInitialType('array')],
             [[], '[]', SerializationContext::create()->setInitialType('array<integer>')],
             [[], '{}', SerializationContext::create()->setInitialType('array<string,integer>')],
+            [[], '{}', SerializationContext::create()->setInitialType('array<string,mixed>')],
 
 
             [[1, 2], '[1,2]', SerializationContext::create()->setInitialType('array')],
@@ -318,6 +324,12 @@ class JsonSerializationTest extends BaseSerializationTest
             [[1 => 'a', 2 => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
             [['a' => 'a', 'b' => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
 
+            [
+                ['int' => 1, 'string' => 'a', 'dateTime' => new \DateTime('2018-07-07 10:10:10')],
+                '[1,"a","2018-07-07T10:10:10+0000"]',
+                SerializationContext::create()->setInitialType('array<mixed>')
+            ],
+
 
             [[1, 2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<integer,integer>')],
             [[1, 2], '{"0":1,"1":2}', SerializationContext::create()->setInitialType('array<string,integer>')],
@@ -326,6 +338,11 @@ class JsonSerializationTest extends BaseSerializationTest
 
             [['a', 'b'], '{"0":"a","1":"b"}', SerializationContext::create()->setInitialType('array<integer,string>')],
             [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', SerializationContext::create()->setInitialType('array<string,string>')],
+            [
+                ['int' => 1, 'string' => 'a', 'dateTime' => new \DateTime('2018-07-07 10:10:10')],
+                '{"int":1,"string":"a","dateTime":"2018-07-07T10:10:10+0000"}',
+                SerializationContext::create()->setInitialType('array<string,mixed>')
+            ],
         ];
     }
 
