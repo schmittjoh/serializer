@@ -357,6 +357,10 @@ Available Types:
 +----------------------------------------------------------+--------------------------------------------------+
 | string                                                   | Primitive string                                 |
 +----------------------------------------------------------+--------------------------------------------------+
+| mixed                                                    | Same as no ``@Type`` annotation at all.          |
+|                                                          | This type is particularly useful to configure    |
+|                                                          | array values type*.                              |
++----------------------------------------------------------+--------------------------------------------------+
 | array                                                    | An array with arbitrary keys, and values.        |
 +----------------------------------------------------------+--------------------------------------------------+
 | array<T>                                                 | A list of type T (T can be any available type).  |
@@ -367,7 +371,7 @@ Available Types:
 |                                                          | Examples: array<string, string>,                 |
 |                                                          | array<string, MyNamespace\MyObject>, etc.        |
 +----------------------------------------------------------+--------------------------------------------------+
-| DateTime                                                 | PHP's DateTime object (default format*/timezone) |
+| DateTime                                                 | PHP's DateTime object (default format**/timezone)|
 +----------------------------------------------------------+--------------------------------------------------+
 | DateTime<'format'>                                       | PHP's DateTime object (custom format/default     |
 |                                                          | timezone)                                        |
@@ -404,7 +408,9 @@ Available Types:
 |                                                          | into Doctrine's ArrayCollection class.           |
 +----------------------------------------------------------+--------------------------------------------------+
 
-(*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in [configuration](https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0).
+(*) You can use mixed type to explicitly configure associative array of mixed values - ``array<string, mixed>`` (serialized to JSON as object), or when you have an associative array of mixed values, which you want to serialize as simple indexed array - ``array<mixed>.``
+
+(**) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in [configuration](https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0).
 
 Examples:
 
