@@ -32,54 +32,23 @@ class StaticPropertyMetadata extends PropertyMetadata
     public function serialize()
     {
         return serialize(array(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->class,
-            $this->name,
-            $this->value
+            $this->value,
+            parent::serialize()
         ));
     }
 
     public function unserialize($str)
     {
+        $parentStr = $this->unserializeProperties($str);
+        list($this->class, $this->name) = unserialize($parentStr);
+    }
+
+    protected function unserializeProperties($str)
+    {
         list(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->class,
-            $this->name,
-            $this->value
+            $this->value,
+            $parentStr
             ) = unserialize($str);
+        return parent::unserializeProperties($parentStr);
     }
 }

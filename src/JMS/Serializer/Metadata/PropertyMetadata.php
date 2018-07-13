@@ -156,6 +156,14 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public function unserialize($str)
     {
+        $parentStr = $this->unserializeProperties($str);
+        parent::unserialize($parentStr);
+
+        $this->initAccessor();
+    }
+
+    protected function unserializeProperties($str)
+    {
         $unserialized = unserialize($str);
         list(
             $this->sinceVersion,
@@ -194,8 +202,6 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
         }
 
-        parent::unserialize($parentStr);
-
-        $this->initAccessor();
+        return $parentStr;
     }
 }

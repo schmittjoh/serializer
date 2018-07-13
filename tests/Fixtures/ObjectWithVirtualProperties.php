@@ -6,6 +6,7 @@ use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Annotation\SkipWhenEmpty;
 
 /**
  * @AccessorOrder("custom", custom = {"prop_name", "existField", "foo" })
@@ -43,5 +44,14 @@ class ObjectWithVirtualProperties
     public function getTypedVirtualProperty()
     {
         return '1';
+    }
+
+    /**
+     * @VirtualProperty
+     * @SkipWhenEmpty()
+     */
+    public function getEmptyArray()
+    {
+        return [];
     }
 }

@@ -46,66 +46,23 @@ class ExpressionPropertyMetadata extends PropertyMetadata
     public function serialize()
     {
         return serialize(array(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->xmlAttributeMap,
-            $this->maxDepth,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->class,
-            $this->name,
-            'excludeIf' => $this->excludeIf,
-            'expression' => $this->expression,
+            $this->expression,
+            parent::serialize()
         ));
     }
 
     public function unserialize($str)
     {
-        $unserialized = unserialize($str);
-        list(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->xmlAttributeMap,
-            $this->maxDepth,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->class,
-            $this->name
-            ) = $unserialized;
+        $parentStr = $this->unserializeProperties($str);
+        list($this->class, $this->name) = unserialize($parentStr);
+    }
 
-        if (isset($unserialized['excludeIf'])) {
-            $this->excludeIf = $unserialized['excludeIf'];
-        }
-        if (isset($unserialized['expression'])) {
-            $this->expression = $unserialized['expression'];
-        }
+    protected function unserializeProperties($str)
+    {
+        list(
+            $this->expression,
+            $parentStr
+            ) = unserialize($str);
+        return parent::unserializeProperties($parentStr);
     }
 }
