@@ -13,7 +13,6 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorsInline;
-use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
@@ -154,12 +153,11 @@ class JsonSerializationTest extends BaseSerializationTest
             $collection,
             $this->deserialize($this->getContent('inline_empty_map'), get_class($collection))
         );
-
     }
 
     public function testInlineMapDeserialization()
     {
-        $collection = new FirstClassMapCollection(["a" => "b", "c" => "d", 5]);
+        $collection = new FirstClassMapCollection(['a' => 'b', 'c' => 'd', 5]);
         $serialized = $this->serialize($collection);
         self::assertSame(
             $this->getContent('inline_deserialization_map'),

@@ -164,7 +164,8 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         if (true === $metadata->inline) {
             if (!$metadata->type) {
                 throw new RuntimeException(sprintf(
-                    'You must define a type for %s::$%s.', $metadata->class,
+                    'You must define a type for %s::$%s.',
+                    $metadata->class,
                     $metadata->name
                 ));
             }

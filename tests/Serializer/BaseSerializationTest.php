@@ -47,7 +47,6 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
-use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
@@ -1481,7 +1480,6 @@ abstract class BaseSerializationTest extends TestCase
             $collection,
             $this->deserialize($this->getContent('inline_empty_list_collection'), get_class($collection))
         );
-
     }
 
     public function testInlineListCollectionDeserialization()
