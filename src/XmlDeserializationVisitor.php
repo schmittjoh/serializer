@@ -278,7 +278,9 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         if (!$metadata->type) {
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
         }
-
+        if (true === $metadata->inline) {
+            return $this->navigator->accept($data, $metadata->type);
+        }
         if ($metadata->xmlAttribute) {
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
@@ -311,7 +313,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             }
         } else {
             $namespaces = $data->getDocNamespaces();
-
             if (isset($namespaces[''])) {
                 $prefix = uniqid('ns-');
                 $data->registerXPathNamespace($prefix, $namespaces['']);

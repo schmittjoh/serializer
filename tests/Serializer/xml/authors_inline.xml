@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <entry>
+    <full_name><![CDATA[foo]]></full_name>
+  </entry>
+  <entry>
+    <full_name><![CDATA[bar]]></full_name>
+  </entry>
+</result>

@@ -270,9 +270,7 @@ In this example:
 This annotation can be defined on a property to indicate that the data of the property
 should be inlined.
 
-**Note**: This only works for serialization, the serializer will not be able to deserialize
-objects with this annotation. Also, AccessorOrder will be using the name of the property
-to determine the order.
+**Note**: AccessorOrder will be using the name of the property to determine the order.
 
 @ReadOnly
 ~~~~~~~~~

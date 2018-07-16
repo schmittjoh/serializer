@@ -33,6 +33,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
+use JMS\Serializer\Tests\Fixtures\AuthorsInline;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceCollection;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceParent;
@@ -45,6 +46,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
+use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
@@ -56,6 +58,7 @@ use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\InlineChildWithGroups;
 use JMS\Serializer\Tests\Fixtures\InlineParent;
+use JMS\Serializer\Tests\Fixtures\InlineParentWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\Log;
@@ -837,16 +840,20 @@ abstract class BaseSerializationTest extends TestCase
 
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline'), $result);
-        // no deserialization support
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($inline, $this->deserialize($this->getContent('inline'), get_class($inline)));
+        }
     }
 
     public function testInlineEmptyChild()
     {
-        $inline = new InlineParent(new InlineChildEmpty());
-
+        $inline = new InlineParentWithEmptyChild(new InlineChildEmpty());
         $result = $this->serialize($inline);
         self::assertEquals($this->getContent('inline_child_empty'), $result);
-        // no deserialization support
+        if ($this->hasDeserializer()) {
+            self::assertEquals($inline, $this->deserialize($this->getContent('inline'), get_class($inline)));
+        }
     }
 
     public function testEmptyChild()
@@ -1444,6 +1451,40 @@ abstract class BaseSerializationTest extends TestCase
 
         $this->serializer->serialize('foo', $this->getFormat(), null, 'Virtual');
         $this->assertTrue($invoked);
+    }
+
+    public function getFirstClassListCollectionsValues()
+    {
+        $collection = new FirstClassListCollection([1, 2]);
+
+        return [
+            [[1, 2, 3], $this->getContent('inline_list_collection')],
+            [[], $this->getContent('inline_empty_list_collection')],
+            [[1, 'a' => 2], $this->getContent('inline_deserialization_list_collection'), $collection],
+        ];
+    }
+
+    /**
+     * @dataProvider getFirstClassListCollectionsValues
+     * @param array $items
+     * @param array $expected
+     */
+    public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserializatrion = null)
+    {
+        $collection = new FirstClassListCollection($items);
+
+        self::assertSame($expected, $this->serialize($collection));
+        self::assertEquals(
+            $expectedDeserializatrion ?: $collection,
+            $this->deserialize($expected, get_class($collection))
+        );
+    }
+
+    public function testInlineCollection()
+    {
+        $list = new AuthorsInline(new Author('foo'), new Author('bar'));
+        self::assertEquals($this->getContent('authors_inline'), $this->serialize($list));
+        self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
     }
 
     public function getSerializeNullCases()

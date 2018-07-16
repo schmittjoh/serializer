@@ -12,7 +12,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
@@ -109,6 +108,13 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
+            $outputs['authors_inline'] = '[{"full_name":"foo"},{"full_name":"bar"}]';
+            $outputs['inline_list_collection'] = '[1,2,3]';
+            $outputs['inline_empty_list_collection'] = '[]';
+            $outputs['inline_deserialization_list_collection'] = '[1,2]';
+            $outputs['inline_map'] = '{"0":"1","1":"2","2":"3"}';
+            $outputs['inline_empty_map'] = '{}';
+            $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","0":"5"}';
         }
 
         if (!isset($outputs[$key])) {
@@ -125,33 +131,12 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{}', $this->serialize($object));
     }
 
-    public function getFirstClassListCollectionsValues()
-    {
-        return [
-            [[1, 2, 3], '[1,2,3]'],
-            [[], '[]'],
-            [[1, 'a' => 2], '[1,2]'],
-        ];
-    }
-
-    /**
-     * @dataProvider getFirstClassListCollectionsValues
-     * @param array $items
-     * @param array $expected
-     */
-    public function testFirstClassListCollections($items, $expected): void
-    {
-        $collection = new FirstClassListCollection($items);
-
-        self::assertSame($expected, $this->serialize($collection));
-    }
-
     public function getFirstClassMapCollectionsValues()
     {
         return [
-            [[1, 2, 3], '{"0":1,"1":2,"2":3}'],
-            [[], '{}'],
-            [['a' => 'b', 'c' => 'd', 5], '{"a":0,"c":0,"0":5}'],
+            [[1, 2, 3], $this->getContent('inline_map')],
+            [[], $this->getContent('inline_empty_map')],
+            [['a' => 'b', 'c' => 'd', 5], $this->getContent('inline_deserialization_map')],
         ];
     }
 
@@ -165,6 +150,10 @@ class JsonSerializationTest extends BaseSerializationTest
         $collection = new FirstClassMapCollection($items);
 
         self::assertSame($expected, $this->serialize($collection));
+        self::assertEquals(
+            $collection,
+            $this->deserialize($expected, get_class($collection))
+        );
     }
 
     public function testAddLinksToOutput()
@@ -313,8 +302,9 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testInlineArray()
     {
         $object = new ObjectWithInlineArray(['a' => 'b', 'c' => 'd']);
-
-        self::assertEquals('{"a":"b","c":"d"}', $this->serialize($object));
+        $serialized = $this->serialize($object);
+        self::assertEquals('{"a":"b","c":"d"}', $serialized);
+        self::assertEquals($object, $this->deserialize($serialized, ObjectWithInlineArray::class));
     }
 
     public function testSerializeRootArrayWithDefinedKeys()

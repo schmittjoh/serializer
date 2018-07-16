@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /** @Serializer\AccessorOrder("alphabetical") */
-class InlineParent
+class InlineParentWithEmptyChild
 {
     /**
      * @Type("string")
@@ -22,12 +22,12 @@ class InlineParent
 
     /**
      * @Serializer\Inline
-     * @Type("JMS\Serializer\Tests\Fixtures\InlineChild")
+     * @Type("JMS\Serializer\Tests\Fixtures\InlineChildEmpty")
      */
     private $child;
 
     public function __construct($child = null)
     {
-        $this->child = $child ?: new InlineChild();
+        $this->child = $child ?: new InlineChildEmpty();
     }
 }
