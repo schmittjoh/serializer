@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 class FirstClassMapCollection
 {
     /**
-     * @Serializer\Type("array<string,int>")
+     * @Serializer\Type("array<string,string>")
      * @Serializer\Inline
      * @var int[]
      */
