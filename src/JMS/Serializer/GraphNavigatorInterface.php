@@ -12,6 +12,8 @@ namespace JMS\Serializer;
  */
 interface GraphNavigatorInterface
 {
+    const DIRECTION_SERIALIZATION = 1;
+    const DIRECTION_DESERIALIZATION = 2;
     /**
      * Called for each node of the graph that is being traversed.
      *

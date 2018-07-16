@@ -17,6 +17,7 @@ use PhpCollection\Map;
 abstract class Context
 {
     /**
+     * @deprecated use has/get/set attribute methods
      * @var \PhpCollection\Map
      */
     public $attributes;
@@ -94,6 +95,16 @@ abstract class Context
     public function getExclusionStrategy()
     {
         return $this->exclusionStrategy;
+    }
+
+    public function hasAttribute($key)
+    {
+        return $this->attributes->get($key)->isDefined();
+    }
+
+    public function getAttribute($key)
+    {
+        return $this->attributes->get($key)->get();
     }
 
     public function setAttribute($key, $value)
