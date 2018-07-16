@@ -12,7 +12,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\Tests\Fixtures\AuthorsInline;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
@@ -109,7 +108,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
-            $outputs['authors_inline'] = '{"as_string":"8"}';
+            $outputs['authors_inline'] = '[{"full_name":"foo"},{"full_name":"bar"}]';
             $outputs['inline_list_collection'] = '[1,2,3]';
             $outputs['inline_empty_list_collection'] = '[]';
             $outputs['inline_deserialization_list_collection'] = '[1,2]';
@@ -314,14 +313,6 @@ class JsonSerializationTest extends BaseSerializationTest
         $serialized = $this->serialize($object);
         self::assertEquals('{"a":"b","c":"d"}', $serialized);
         self::assertEquals($object, $this->deserialize($serialized, ObjectWithInlineArray::class));
-    }
-
-    public function testInlineCollection()
-    {
-        $list = new AuthorsInline(new Author('foo'), new Author('bar'));
-        $serialized = $this->serialize($list);
-        self::assertEquals('[{"full_name":"foo"},{"full_name":"bar"}]', $serialized);
-        self::assertEquals($list, $this->deserialize($serialized, AuthorsInline::class));
     }
 
     public function testSerializeRootArrayWithDefinedKeys()
