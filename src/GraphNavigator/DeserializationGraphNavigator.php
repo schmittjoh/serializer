@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\GraphNavigator;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -66,9 +50,24 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      */
     private $expressionExclusionStrategy;
 
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
+
+    /**
+     * @var MetadataFactoryInterface
+     */
     private $metadataFactory;
+
+    /**
+     * @var HandlerRegistryInterface
+     */
     private $handlerRegistry;
+
+    /**
+     * @var ObjectConstructorInterface
+     */
     private $objectConstructor;
     /**
      * @var AccessorStrategyInterface
@@ -80,8 +79,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         HandlerRegistryInterface $handlerRegistry,
         ObjectConstructorInterface $objectConstructor,
         AccessorStrategyInterface $accessor,
-        EventDispatcherInterface $dispatcher = null,
-        ExpressionEvaluatorInterface $expressionEvaluator = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ExpressionEvaluatorInterface $expressionEvaluator = null
     ) {
         $this->dispatcher = $dispatcher ?: new EventDispatcher();
         $this->metadataFactory = $metadataFactory;
@@ -100,7 +99,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      * @param null|array $type array has the format ["name" => string, "params" => array]
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null)
+    public function accept($data, ?array $type = null)
     {
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
@@ -109,7 +108,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($this->visitor instanceof NullAwareVisitorInterface && $this->visitor->isNull($data) === true) {
+        if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
             $type = ['name' => 'NULL', 'params' => []];
         }
 
@@ -139,7 +138,6 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 throw new RuntimeException('Resources are not supported in serialized data.');
 
             default:
-
                 $this->context->increaseDepth();
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
@@ -160,18 +158,18 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     return $rs;
                 }
 
-                /** @var $metadata ClassMetadata */
+                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
-                    throw new ExpressionLanguageRequiredException("To use conditional exclude/expose in {$metadata->name} you must configure the expression language.");
+                    throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
                 }
 
                 if (!empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($data, $metadata);
                 }
 
-                if ($this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $this->context)) {
                     $this->context->decreaseDepth();
 
                     return null;
@@ -183,7 +181,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if ($this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
 
@@ -198,9 +196,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
-                        $this->accessor->setValue($object, $v, $propertyMetadata);
+                        $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
-
                     }
                     $this->context->popPropertyMetadata();
                 }
@@ -212,7 +209,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         }
     }
 
-    private function resolveMetadata($data, ClassMetadata $metadata)
+    /**
+     * @param mixed $data
+     */
+    private function resolveMetadata($data, ClassMetadata $metadata): ?ClassMetadata
     {
         $typeValue = $this->visitor->visitDiscriminatorMapProperty($data, $metadata);
 
@@ -228,7 +228,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type): void
+    private function afterVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->context->decreaseDepth();
         $this->context->popClassMetadata();

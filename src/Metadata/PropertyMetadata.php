@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
@@ -25,37 +9,140 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
 {
-    const ACCESS_TYPE_PROPERTY = 'property';
-    const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
+    public const ACCESS_TYPE_PROPERTY = 'property';
+    public const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
+    /**
+     * @var string
+     */
     public $sinceVersion;
+    /**
+     * @var string
+     */
     public $untilVersion;
+    /**
+     * @var string[]
+     */
     public $groups;
+    /**
+     * @var string
+     */
     public $serializedName;
+    /**
+     * @var array
+     */
     public $type;
+
+    /**
+     * @var bool
+     */
     public $xmlCollection = false;
+
+    /**
+     * @var bool
+     */
     public $xmlCollectionInline = false;
+
+    /**
+     * @var bool
+     */
     public $xmlCollectionSkipWhenEmpty = true;
+
+    /**
+     * @var string
+     */
     public $xmlEntryName;
+
+    /**
+     * @var string
+     */
     public $xmlEntryNamespace;
+
+    /**
+     * @var string
+     */
     public $xmlKeyAttribute;
+
+    /**
+     * @var bool
+     */
     public $xmlAttribute = false;
+
+    /**
+     * @var bool
+     */
     public $xmlValue = false;
+
+    /**
+     * @var string
+     */
     public $xmlNamespace;
+
+    /**
+     * @var bool
+     */
     public $xmlKeyValuePairs = false;
+
+    /**
+     * @var bool
+     */
     public $xmlElementCData = true;
+
+    /**
+     * @var string
+     */
     public $getter;
+
+    /**
+     * @var string
+     */
     public $setter;
+
+    /**
+     * @var bool
+     */
     public $inline = false;
+
+    /**
+     * @var bool
+     */
     public $skipWhenEmpty = false;
+
+    /**
+     * @var bool
+     */
     public $readOnly = false;
+
+    /**
+     * @var bool
+     */
     public $xmlAttributeMap = false;
+
+    /**
+     * @var int|null
+     */
     public $maxDepth = null;
+
+    /**
+     * @var string
+     */
     public $excludeIf = null;
+
+    /**
+     * @internal
+     * @var bool
+     */
+    public $forceReflectionAccess = false;
 
     public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
+
+        try {
+            $class = $this->getReflection()->getDeclaringClass();
+            $this->forceReflectionAccess = $class->isInternal() || $class->getProperty($name)->isStatic();
+        } catch (\ReflectionException $e) {
+        }
     }
 
     private function getReflection(): \ReflectionProperty
@@ -63,7 +150,7 @@ class PropertyMetadata extends BasePropertyMetadata
         return new \ReflectionProperty($this->class, $this->name);
     }
 
-    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null):void
+    public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
         if (self::ACCESS_TYPE_PUBLIC_METHOD === $type) {
             $class = $this->getReflection()->getDeclaringClass();
@@ -93,27 +180,34 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
-    public function setType(array $type)
+    public function setType(array $type): void
     {
         $this->type = $type;
     }
 
-    public static function isCollectionList(array $type = null): bool
+    public static function isCollectionList(?array $type = null): bool
     {
         return is_array($type)
-            && $type['name'] === 'array'
+            && 'array' === $type['name']
             && isset($type['params'][0])
             && !isset($type['params'][1]);
     }
 
-    public static function isCollectionMap(array $type = null): bool
+    public static function isCollectionMap(?array $type = null): bool
     {
         return is_array($type)
-            && $type['name'] === 'array'
+            && 'array' === $type['name']
             && isset($type['params'][0])
             && isset($type['params'][1]);
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
+     *
+     * @return string
+     */
     public function serialize()
     {
         return serialize([
@@ -142,9 +236,18 @@ class PropertyMetadata extends BasePropertyMetadata
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
+            'forceReflectionAccess' => $this->forceReflectionAccess,
         ]);
     }
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
+     *
+     * @param string $str
+     * @return void
+     */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);
@@ -183,6 +286,9 @@ class PropertyMetadata extends BasePropertyMetadata
         }
         if (isset($unserialized['skipWhenEmpty'])) {
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
+        }
+        if (isset($unserialized['forceReflectionAccess'])) {
+            $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
         }
 
         parent::unserialize($parentStr);

@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
@@ -59,26 +43,34 @@ use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
+use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
 class AnnotationDriver implements DriverInterface
 {
+    /**
+     * @var Reader
+     */
     private $reader;
+
+    /**
+     * @var ParserInterface
+     */
     private $typeParser;
     /**
      * @var PropertyNamingStrategyInterface
      */
     private $namingStrategy;
 
-    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ParserInterface $typeParser = null)
+    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null)
     {
         $this->reader = $reader;
         $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class): ?\Metadata\ClassMetadata
+    public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
         $classMetadata = new ClassMetadata($name = $class->name);
         $classMetadata->fileResources[] = $class->getFilename();
@@ -114,9 +106,9 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups);
                 }
             } elseif ($annot instanceof XmlDiscriminator) {
-                $classMetadata->xmlDiscriminatorAttribute = (bool)$annot->attribute;
-                $classMetadata->xmlDiscriminatorCData = (bool)$annot->cdata;
-                $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string)$annot->namespace : null;
+                $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
+                $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
+                $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string) $annot->namespace : null;
             } elseif ($annot instanceof VirtualProperty) {
                 $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $annot->name, $annot->exp);
                 $propertiesMetadata[] = $virtualPropertyMetadata;
@@ -181,7 +173,7 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
                         if (null !== $annot->if) {
-                            $propertyMetadata->excludeIf = "!(" . $annot->if . ")";
+                            $propertyMetadata->excludeIf = '!(' . $annot->if . ')';
                         }
                     } elseif ($annot instanceof Exclude) {
                         if (null !== $annot->if) {
@@ -225,7 +217,7 @@ class AnnotationDriver implements DriverInterface
                         $accessor = [$annot->getter, $annot->setter];
                     } elseif ($annot instanceof Groups) {
                         $propertyMetadata->groups = $annot->groups;
-                        foreach ((array)$propertyMetadata->groups as $groupName) {
+                        foreach ((array) $propertyMetadata->groups as $groupName) {
                             if (false !== strpos($groupName, ',')) {
                                 throw new InvalidMetadataException(sprintf(
                                     'Invalid group name "%s" on "%s", did you mean to create multiple groups?',
@@ -248,7 +240,7 @@ class AnnotationDriver implements DriverInterface
                     $classMetadata->isMap = $classMetadata->isMap || PropertyMetadata::isCollectionMap($propertyMetadata->type);
 
                     if ($classMetadata->isMap && $classMetadata->isList) {
-                        throw new InvalidMetadataException("Can not have an inline map and and inline map on the same class");
+                        throw new InvalidMetadataException('Can not have an inline map and and inline map on the same class');
                     }
                 }
 
@@ -257,7 +249,7 @@ class AnnotationDriver implements DriverInterface
                 }
 
                 foreach ($propertyAnnotations as $annot) {
-                    if ($annot instanceof VirtualProperty && $annot->name !== null) {
+                    if ($annot instanceof VirtualProperty && null !== $annot->name) {
                         $propertyMetadata->name = $annot->name;
                     }
                 }

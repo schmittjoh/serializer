@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\LogicException;
@@ -39,23 +23,37 @@ abstract class Context
      */
     private $attributes = [];
 
+    /**
+     * @var string
+     */
     private $format;
 
-    /** @var VisitorInterface */
+    /**
+     * @var VisitorInterface
+     */
     private $visitor;
 
-    /** @var GraphNavigatorInterface */
+    /**
+     * @var GraphNavigatorInterface
+     */
     private $navigator;
 
-    /** @var MetadataFactory */
+    /**
+     * @var MetadataFactory
+     */
     private $metadataFactory;
 
     /** @var DisjunctExclusionStrategy */
     private $exclusionStrategy;
 
-    /** @var boolean */
+    /**
+     * @var bool
+     */
     private $serializeNull = false;
 
+    /**
+     * @var bool
+     */
     private $initialized = false;
 
     /** @var \SplStack */
@@ -63,12 +61,8 @@ abstract class Context
 
     public function __construct()
     {
-        $this->exclusionStrategy = new DisjunctExclusionStrategy();
     }
 
-    /**
-     * @param string $format
-     */
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
@@ -111,11 +105,14 @@ abstract class Context
         return $this->navigator;
     }
 
-    public function getExclusionStrategy(): ExclusionStrategyInterface
+    public function getExclusionStrategy(): ?ExclusionStrategyInterface
     {
         return $this->exclusionStrategy;
     }
 
+    /**
+     * @return mixed
+     */
     public function getAttribute(string $key)
     {
         return $this->attributes[$key];
@@ -126,6 +123,9 @@ abstract class Context
         return isset($this->attributes[$key]);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setAttribute(string $key, $value): self
     {
         $this->assertMutable();
@@ -147,7 +147,20 @@ abstract class Context
     {
         $this->assertMutable();
 
-        $this->exclusionStrategy->addStrategy($strategy);
+        if (null === $this->exclusionStrategy) {
+            $this->exclusionStrategy = $strategy;
+            return $this;
+        }
+
+        if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
+            $this->exclusionStrategy->addStrategy($strategy);
+            return $this;
+        }
+
+        $this->exclusionStrategy = new DisjunctExclusionStrategy([
+            $this->exclusionStrategy,
+            $strategy,
+        ]);
 
         return $this;
     }
@@ -168,7 +181,7 @@ abstract class Context
             throw new LogicException('The groups must not be empty.');
         }
 
-        $this->attributes['groups'] = (array)$groups;
+        $this->attributes['groups'] = (array) $groups;
 
         return $this;
     }
@@ -194,16 +207,12 @@ abstract class Context
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
      *
-     * @return bool
      */
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
     }
 
-    /**
-     * @return string
-     */
     public function getFormat(): string
     {
         return $this->format;
@@ -263,8 +272,5 @@ abstract class Context
 
     abstract public function getDepth(): int;
 
-    /**
-     * @return integer
-     */
     abstract public function getDirection(): int;
 }

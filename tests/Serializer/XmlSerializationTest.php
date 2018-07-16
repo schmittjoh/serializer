@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
@@ -29,6 +13,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\AccessorSetter;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceAttributeDiscriminatorChild;
@@ -87,8 +72,9 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testAccessorSetterDeserialization()
     {
-        /** @var \JMS\Serializer\Tests\Fixtures\AccessorSetter $object */
-        $object = $this->deserialize('<?xml version="1.0"?>
+        /** @var AccessorSetter $object */
+        $object = $this->deserialize(
+            '<?xml version="1.0"?>
             <AccessorSetter>
                 <element attribute="attribute">element</element>
                 <collection>
@@ -107,8 +93,8 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testPropertyIsObjectWithAttributeAndValue()
     {
-        $personCollection = new PersonLocation;
-        $person = new Person;
+        $personCollection = new PersonLocation();
+        $person = new Person();
         $person->name = 'Matthias Noback';
         $person->age = 28;
         $personCollection->person = $person;
@@ -119,8 +105,8 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testPropertyIsCollectionOfObjectsWithAttributeAndValue()
     {
-        $personCollection = new PersonCollection;
-        $person = new Person;
+        $personCollection = new PersonCollection();
+        $person = new Person();
         $person->name = 'Matthias Noback';
         $person->age = 28;
         $personCollection->persons->add($person);
@@ -162,7 +148,8 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $xmlVisitor->setDoctypeWhitelist([
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>']);
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>',
+        ]);
 
         $builder = SerializerBuilder::create();
         $builder->setDeserializationVisitor('xml', $xmlVisitor);
@@ -223,7 +210,7 @@ class XmlSerializationTest extends BaseSerializationTest
                     </absent_and_ns>
                   </result>';
         $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
-        self::assertEquals($object->absentAndNs, ["foo"]);
+        self::assertEquals($object->absentAndNs, ['foo']);
     }
 
     public function testObjectWithNamespacesAndList()
@@ -346,9 +333,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testXmlAttributeMapWithoutArray()
     {
-        $attributes = new \ArrayObject([
-            'type' => 'text',
-        ]);
+        $attributes = new \ArrayObject(['type' => 'text']);
 
         $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
@@ -391,9 +376,9 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertEquals($this->getContent('object_with_xml_namespaces'), $serialized);
 
         $xml = simplexml_load_string($this->serialize($object));
-        $xml->registerXPathNamespace('ns1', "http://purl.org/dc/elements/1.1/");
-        $xml->registerXPathNamespace('ns2', "http://schemas.google.com/g/2005");
-        $xml->registerXPathNamespace('ns3', "http://www.w3.org/2005/Atom");
+        $xml->registerXPathNamespace('ns1', 'http://purl.org/dc/elements/1.1/');
+        $xml->registerXPathNamespace('ns2', 'http://schemas.google.com/g/2005');
+        $xml->registerXPathNamespace('ns3', 'http://www.w3.org/2005/Atom');
 
         self::assertEquals('2011-07-30T00:00:00+00:00', $this->xpathFirstToString($xml, './@created_at'));
         self::assertEquals('e86ce85cdb1253e4fc6352f5cf297248bceec62b', $this->xpathFirstToString($xml, './@ns2:etag'));
@@ -423,7 +408,10 @@ class XmlSerializationTest extends BaseSerializationTest
         $author = new ObjectWithXmlNamespacesAndObjectPropertyAuthor('mr', 'smith');
         $object = new ObjectWithXmlNamespacesAndObjectPropertyVirtual('This is a nice title.', new \stdClass());
 
-        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual', $this->getFormat(),
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual',
+            $this->getFormat(),
             function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
                 $factory = $context->getMetadataFactory(get_class($author));
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
@@ -474,7 +462,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $builder->setSerializationVisitor('xml', $xmlVisitor);
         $serializer = $builder->build();
 
-        $object = new SimpleClassObject;
+        $object = new SimpleClassObject();
         $object->foo = 'foo';
         $object->bar = 'bar';
         $object->moo = 'moo';
@@ -562,7 +550,7 @@ class XmlSerializationTest extends BaseSerializationTest
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
-        return (string)reset($nodes);
+        return (string) reset($nodes);
     }
 
     /**

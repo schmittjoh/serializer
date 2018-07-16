@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -29,6 +13,7 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
+use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -73,18 +58,22 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
      * @var ManagerRegistry
      */
     protected $registry;
+
+    /**
+     * @var ParserInterface
+     */
     protected $typeParser;
 
-    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ParserInterface $typeParser = null)
+    public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ?ParserInterface $typeParser = null)
     {
         $this->delegate = $delegate;
         $this->registry = $registry;
         $this->typeParser = $typeParser ?: new Parser();
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class): ?\Metadata\ClassMetadata
+    public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
-        /** @var $classMetadata ClassMetadata */
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->delegate->loadMetadataForClass($class);
 
         // Abort if the given class is not a mapped entity
@@ -114,43 +103,26 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata)
+    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
     {
         return $propertyMetadata instanceof VirtualPropertyMetadata
             || $propertyMetadata instanceof StaticPropertyMetadata
             || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param ClassMetadata $classMetadata
-     */
     protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata): void
     {
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param PropertyMetadata $propertyMetadata
-     */
     protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): bool
     {
         return false;
     }
 
-    /**
-     * @param DoctrineClassMetadata $doctrineMetadata
-     * @param PropertyMetadata $propertyMetadata
-     */
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
     }
 
-    /**
-     * @param string $className
-     *
-     * @return null|DoctrineClassMetadata
-     */
     protected function tryLoadingDoctrineMetadata(string $className): ?DoctrineClassMetadata
     {
         if (!$manager = $this->registry->getManagerForClass($className)) {
@@ -164,7 +136,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $manager->getClassMetadata($className);
     }
 
-    protected function normalizeFieldType($type): ?string
+    protected function normalizeFieldType(string $type): ?string
     {
         if (!isset($this->fieldMapping[$type])) {
             return null;

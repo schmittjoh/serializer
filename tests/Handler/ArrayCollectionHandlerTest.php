@@ -9,11 +9,11 @@ use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
-use JMS\Serializer\Visitor\SeerializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\TestCase;
 
-class ArrayCollectionHandlerTest extends \PHPUnit\Framework\TestCase
+class ArrayCollectionHandlerTest extends TestCase
 {
     /**
      * @doesNotPerformAssertions

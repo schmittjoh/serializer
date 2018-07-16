@@ -4,7 +4,7 @@
     "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
     "homepage": "http://jmsyst.com/libs/serializer",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "authors": [
         {
             "name": "Johannes M. Schmitt",
@@ -41,7 +41,8 @@
         "symfony/form": "^3.0|^4.0",
         "symfony/filesystem": "^3.0|^4.0",
         "symfony/expression-language": "^3.0|^4.0",
-        "phpunit/phpunit": "^7.1"
+        "phpunit/phpunit": "^7.1",
+        "doctrine/coding-standard": "^4.0"
     },
     "conflict": {
         "hoa/core": "*",

@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\EventDispatcher\Subscriber;
 
 use Doctrine\Common\Persistence\Proxy;
@@ -41,13 +25,13 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
      */
     private $initializeExcluded = false;
 
-    public function __construct($skipVirtualTypeInit = true, $initializeExcluded = false)
+    public function __construct(bool $skipVirtualTypeInit = true, bool $initializeExcluded = false)
     {
-        $this->skipVirtualTypeInit = (bool)$skipVirtualTypeInit;
-        $this->initializeExcluded = (bool)$initializeExcluded;
+        $this->skipVirtualTypeInit = (bool) $skipVirtualTypeInit;
+        $this->initializeExcluded = (bool) $initializeExcluded;
     }
 
-    public function onPreSerialize(PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event): void
     {
         $object = $event->getObject();
         $type = $event->getType();
@@ -75,11 +59,11 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         // do not initialize the proxy if is going to be excluded by-class by some exclusion strategy
-        if ($this->initializeExcluded === false && !$virtualType) {
+        if (false === $this->initializeExcluded && !$virtualType) {
             $context = $event->getContext();
             $exclusionStrategy = $context->getExclusionStrategy();
             $metadata = $context->getMetadataFactory()->getMetadataForClass(get_parent_class($object));
-            if ($metadata !== null && $exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
+            if (null !== $metadata && null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                 return;
             }
         }
@@ -91,7 +75,7 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onPreSerializeTypedProxy(PreSerializeEvent $event, $eventName, $class, $format, EventDispatcherInterface $dispatcher)
+    public function onPreSerializeTypedProxy(PreSerializeEvent $event, string $eventName, string $class, string $format, EventDispatcherInterface $dispatcher): void
     {
         $type = $event->getType();
         // is a virtual type? then there is no need to change the event name
@@ -116,6 +100,9 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [

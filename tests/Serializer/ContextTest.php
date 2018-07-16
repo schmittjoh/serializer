@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -30,16 +14,15 @@ use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\VersionedObject;
+use PHPUnit\Framework\TestCase;
 
-class ContextTest extends \PHPUnit\Framework\TestCase
+class ContextTest extends TestCase
 {
     public function testSerializationContextPathAndDepth()
     {
         $object = new Node([
             new Node(),
-            new Node([
-                new Node()
-            ]),
+            new Node([new Node()]),
         ]);
         $objects = [$object, $object->children[0], $object->children[1], $object->children[1]->children[0]];
 
@@ -134,7 +117,7 @@ class ContextTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnCallback(function (PropertyMetadata $propertyMetadata, SerializationContext $context) use ($self, $object, $child) {
                 $stack = $context->getMetadataStack();
 
-                if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && $propertyMetadata->name === 'children') {
+                if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && 'children' === $propertyMetadata->name) {
                     $self->assertEquals(1, $stack->count());
                     $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[0]->name);
                 }
@@ -156,10 +139,10 @@ class ContextTest extends \PHPUnit\Framework\TestCase
     public function getScalars()
     {
         return [
-            ["string"],
+            ['string'],
             [5],
             [5.5],
-            [[]]
+            [[]],
         ];
     }
 
@@ -192,16 +175,16 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         $serializer = SerializerBuilder::create()->build();
 
         $context = SerializationContext::create();
-        $context->setGroups(["foo", "Default"]);
-        $context->setGroups("post");
+        $context->setGroups(['foo', 'Default']);
+        $context->setGroups('post');
 
         $object = new BlogPost('serializer', new Author('me'), new \DateTime(), new Publisher('php'));
         $serialized = $serializer->serialize($object, 'json', $context);
 
         $data = json_decode($serialized, true);
 
-        self::assertArrayHasKey("id", $data);
-        self::assertArrayNotHasKey("created_at", $data);
+        self::assertArrayHasKey('id', $data);
+        self::assertArrayNotHasKey('created_at', $data);
     }
 
     public function testMultipleCallsOnVersionDoNotCreateMultipleExclusionStrategies()
@@ -209,15 +192,15 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         $serializer = SerializerBuilder::create()->build();
 
         $context = SerializationContext::create();
-        $context->setVersion("1.0.1");
-        $context->setVersion("1.0.0");
+        $context->setVersion('1.0.1');
+        $context->setVersion('1.0.0');
 
-        $object = new VersionedObject("a", "b");
+        $object = new VersionedObject('a', 'b');
         $serialized = $serializer->serialize($object, 'json', $context);
 
         $data = json_decode($serialized, true);
 
-        self::assertEquals("a", $data["name"]);
+        self::assertEquals('a', $data['name']);
     }
 
     public function testSerializeNullOption()
@@ -232,4 +215,3 @@ class ContextTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($context->shouldSerializeNull());
     }
 }
-

@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\NotAcceptableException;
@@ -28,8 +12,14 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
+    /**
+     * @var int
+     */
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
+    /**
+     * @var array
+     */
     private $dataStack = [];
     /**
      * @var \ArrayObject
@@ -37,32 +27,47 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     private $data;
 
     public function __construct(
-        int $options = JSON_PRESERVE_ZERO_FRACTION)
-    {
+        int $options = JSON_PRESERVE_ZERO_FRACTION
+    ) {
         $this->dataStack = [];
         $this->options = $options;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitNull($data, array $type)
     {
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitString(string $data, array $type)
     {
         return $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitBoolean(bool $data, array $type)
     {
         return $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitInteger(int $data, array $type)
     {
         return $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitDouble(float $data, array $type)
     {
         return $data;
@@ -71,7 +76,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     /**
      * @param array $data
      * @param array $type
-     * @return mixed
+     * @return array|\ArrayObject
      */
     public function visitArray(array $data, array $type)
     {
@@ -83,7 +88,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
-
             try {
                 $v = $this->navigator->accept($v, $elType);
             } catch (NotAcceptableException $e) {
@@ -104,20 +108,27 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
         \array_push($this->dataStack, $this->data);
-        $this->data = $metadata->isMap === true ? new \ArrayObject() : [];
+        $this->data = true === $metadata->isMap ? new \ArrayObject() : [];
     }
 
+    /**
+     * @return array|\ArrayObject
+     */
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type)
     {
         $rs = $this->data;
         $this->data = \array_pop($this->dataStack);
 
-        if ($metadata->isList !== true && empty($rs)) {
+        if (true !== $metadata->isList && empty($rs)) {
             return new \ArrayObject();
         }
+
         return $rs;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function visitProperty(PropertyMetadata $metadata, $v): void
     {
         try {
@@ -147,8 +158,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      * @deprecated Will be removed in 3.0
      *
      * Checks if some data key exists.
-     * @param string $key
-     * @return boolean
      */
     public function hasData(string $key): bool
     {
@@ -160,7 +169,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      *
      * Allows you to replace existing data on the current object element.
      *
-     * @param string $key
      * @param mixed $value This value must either be a regular scalar, or an array.
      *                                                       It must not contain any objects anymore.
      */
@@ -169,6 +177,9 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         $this->data[$key] = $value;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResult($data)
     {
         $result = @json_encode($data, $this->options);

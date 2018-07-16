@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\AbstractManagerRegistry;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -27,12 +28,14 @@ use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
-use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
+use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use PHPUnit\Framework\TestCase;
 
-class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
+class ObjectConstructorTest extends TestCase
 {
     /** @var ManagerRegistry */
     private $registry;
@@ -114,7 +117,7 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
 
     public function testMissingNotManaged()
     {
-        $author = new \JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author('foo');
+        $author = new DoctrinePHPCRAuthor('foo');
 
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
         $fallback->expects($this->once())->method('construct')->willReturn($author);
@@ -199,9 +202,9 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
         $em->flush();
         $em->clear();
 
-        $jsonData = '{"ip":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
+        $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
         /** @var Server $serverDeserialized */
-        $serverDeserialized = $serializer->deserialize($jsonData, Server::class ,'json');
+        $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
 
         static::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
@@ -280,12 +283,11 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return \JMS\Serializer\SerializerInterface
+     * @return SerializerInterface
      */
     private function createSerializerWithDoctrineObjectConstructor()
     {
         return SerializerBuilder::create()
-
             ->setObjectConstructor(
                 new DoctrineObjectConstructor(
                     $this->registry,
@@ -298,8 +300,8 @@ class ObjectConstructorTest extends \PHPUnit\Framework\TestCase
     }
 }
 
-\Doctrine\DBAL\Types\Type::addType('Author', 'Doctrine\DBAL\Types\StringType');
-\Doctrine\DBAL\Types\Type::addType('some_custom_type', 'Doctrine\DBAL\Types\StringType');
+Type::addType('Author', 'Doctrine\DBAL\Types\StringType');
+Type::addType('some_custom_type', 'Doctrine\DBAL\Types\StringType');
 
 class SimpleBaseManagerRegistry extends AbstractManagerRegistry
 {

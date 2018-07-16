@@ -2,22 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,11 +19,14 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
      */
     private $initializeExcluded = true;
 
-    public function __construct($initializeExcluded = true)
+    public function __construct(bool $initializeExcluded = true)
     {
         $this->initializeExcluded = $initializeExcluded;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribingMethods()
     {
         $methods = [];
@@ -73,6 +60,9 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+    /**
+     * @return array|\ArrayObject
+     */
     public function serializeCollection(SerializationVisitorInterface $visitor, Collection $collection, array $type, SerializationContext $context)
     {
         // We change the base type, and pass through possible parameters.
@@ -80,9 +70,9 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
         $context->stopVisiting($collection);
 
-        if ($this->initializeExcluded === false) {
+        if (false === $this->initializeExcluded) {
             $exclusionStrategy = $context->getExclusionStrategy();
-            if ($exclusionStrategy !== null && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(\get_class($collection)), $context)) {
+            if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(\get_class($collection)), $context)) {
                 $context->startVisiting($collection);
 
                 return $visitor->visitArray([], $type, $context);
@@ -94,7 +84,10 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         return $result;
     }
 
-    public function deserializeCollection(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context)
+    /**
+     * @param mixed $data
+     */
+    public function deserializeCollection(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context): ArrayCollection
     {
         // See above.
         $type['name'] = 'array';

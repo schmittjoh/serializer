@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Serializer;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
+    /**
+     * @var callable[]
+     */
     protected $handlers;
 
-    public static function getDefaultMethod($direction, $type, $format)
+    public static function getDefaultMethod(int $direction, string $type, string $format): string
     {
         if (false !== $pos = strrpos($type, '\\')) {
             $type = substr($type, $pos + 1);
@@ -65,17 +51,23 @@ class HandlerRegistry implements HandlerRegistryInterface
             }
 
             foreach ($directions as $direction) {
-                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
+                $method = $methodData['method'] ?? self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
                 $this->registerHandler($direction, $methodData['type'], $methodData['format'], [$handler, $method]);
             }
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerHandler(int $direction, string $typeName, string $format, $handler): void
     {
         $this->handlers[$direction][$typeName][$format] = $handler;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHandler(int $direction, string $typeName, string $format)
     {
         if (!isset($this->handlers[$direction][$typeName][$format])) {

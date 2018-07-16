@@ -10,12 +10,12 @@ use Metadata\Driver\DriverInterface;
 
 final class CallbackDriverFactory implements DriverFactoryInterface
 {
+    /**
+     * @var callable
+     */
     private $callback;
 
-    /**
-     * @param callable $callable
-     */
-    public function __construct($callable)
+    public function __construct(callable $callable)
     {
         $this->callback = $callable;
     }

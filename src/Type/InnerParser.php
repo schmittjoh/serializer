@@ -2,29 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright 2016 Johannes M. Schmitt <schmittjoh@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace JMS\Serializer\Type;
+
+use Hoa\Compiler\Llk\Parser;
+use Hoa\Compiler\Llk\Rule\Choice;
+use Hoa\Compiler\Llk\Rule\Concatenation;
+use Hoa\Compiler\Llk\Rule\Repetition;
+use Hoa\Compiler\Llk\Rule\Token;
 
 /**
  * @internal
  * @generated Use regenerate-parser.php to refresh this class.
  */
-final class InnerParser extends \Hoa\Compiler\Llk\Parser
+final class InnerParser extends Parser
 {
     public function __construct()
     {
@@ -49,28 +39,27 @@ final class InnerParser extends \Hoa\Compiler\Llk\Parser
                 ],
             ],
             [
-                'type' => new \Hoa\Compiler\Llk\Rule\Choice('type', ['simple_type', 'compound_type'], null),
-                1 => new \Hoa\Compiler\Llk\Rule\Token(1, 'name', null, -1, true),
-                2 => new \Hoa\Compiler\Llk\Rule\Concatenation(2, [1], '#simple_type'),
-                3 => new \Hoa\Compiler\Llk\Rule\Token(3, 'quote_', null, -1, false),
-                4 => new \Hoa\Compiler\Llk\Rule\Token(4, 'quoted_string', null, -1, true),
-                5 => new \Hoa\Compiler\Llk\Rule\Token(5, '_quote', null, -1, false),
-                6 => new \Hoa\Compiler\Llk\Rule\Concatenation(6, [3, 4, 5], '#simple_type'),
-                7 => new \Hoa\Compiler\Llk\Rule\Token(7, 'apostrophe_', null, -1, false),
-                8 => new \Hoa\Compiler\Llk\Rule\Token(8, 'apostrophed_string', null, -1, true),
-                9 => new \Hoa\Compiler\Llk\Rule\Token(9, '_apostrophe', null, -1, false),
-                10 => new \Hoa\Compiler\Llk\Rule\Concatenation(10, [7, 8, 9], '#simple_type'),
-                'simple_type' => new \Hoa\Compiler\Llk\Rule\Choice('simple_type', [2, 6, 10], null),
-                12 => new \Hoa\Compiler\Llk\Rule\Token(12, 'name', null, -1, true),
-                13 => new \Hoa\Compiler\Llk\Rule\Token(13, 'parenthesis_', null, -1, false),
-                14 => new \Hoa\Compiler\Llk\Rule\Token(14, 'comma', null, -1, false),
-                15 => new \Hoa\Compiler\Llk\Rule\Concatenation(15, [14, 'type'], '#compound_type'),
-                16 => new \Hoa\Compiler\Llk\Rule\Repetition(16, 0, -1, 15, null),
-                17 => new \Hoa\Compiler\Llk\Rule\Token(17, '_parenthesis', null, -1, false),
-                'compound_type' => new \Hoa\Compiler\Llk\Rule\Concatenation('compound_type', [12, 13, 'type', 16, 17], null),
+                'type' => new Choice('type', ['simple_type', 'compound_type'], null),
+                1 => new Token(1, 'name', null, -1, true),
+                2 => new Concatenation(2, [1], '#simple_type'),
+                3 => new Token(3, 'quote_', null, -1, false),
+                4 => new Token(4, 'quoted_string', null, -1, true),
+                5 => new Token(5, '_quote', null, -1, false),
+                6 => new Concatenation(6, [3, 4, 5], '#simple_type'),
+                7 => new Token(7, 'apostrophe_', null, -1, false),
+                8 => new Token(8, 'apostrophed_string', null, -1, true),
+                9 => new Token(9, '_apostrophe', null, -1, false),
+                10 => new Concatenation(10, [7, 8, 9], '#simple_type'),
+                'simple_type' => new Choice('simple_type', [2, 6, 10], null),
+                12 => new Token(12, 'name', null, -1, true),
+                13 => new Token(13, 'parenthesis_', null, -1, false),
+                14 => new Token(14, 'comma', null, -1, false),
+                15 => new Concatenation(15, [14, 'type'], '#compound_type'),
+                16 => new Repetition(16, 0, -1, 15, null),
+                17 => new Token(17, '_parenthesis', null, -1, false),
+                'compound_type' => new Concatenation('compound_type', [12, 13, 'type', 16, 17], null),
             ],
-            [
-            ]
+            []
         );
 
         $this->getRule('type')->setPPRepresentation(' simple_type() | compound_type()');

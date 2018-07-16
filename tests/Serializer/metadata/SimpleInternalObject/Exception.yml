@@ -1,0 +1,6 @@
+Exception:
+    exclusion_policy: ALL
+    properties:
+        message:
+            type: string
+            serialized_name: foo
