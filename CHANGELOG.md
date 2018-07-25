@@ -1,5 +1,24 @@
 # Change Log
 
+## [1.13.0](https://github.com/schmittjoh/serializer/tree/1.13.0)
+
+**Implemented enhancements:**
+
+- Bugfix/metadata serialization [\#969](https://github.com/schmittjoh/serializer/pull/969) ([supersmile2009](https://github.com/supersmile2009))
+
+**Fixed bugs:**
+
+- Exception on deserialization using XML and exclude-if [\#975](https://github.com/schmittjoh/serializer/issues/975)
+
+**Closed issues:**
+
+- Serialization fails if root element has custom handler [\#961](https://github.com/schmittjoh/serializer/issues/961)
+- Make inline property work with deserialization too [\#937](https://github.com/schmittjoh/serializer/issues/937)
+
+**Merged pull requests:**
+
+- Serializer 2.0 compatibility features [\#967](https://github.com/schmittjoh/serializer/pull/967) ([goetas](https://github.com/goetas))
+
 ## [1.12.1](https://github.com/schmittjoh/serializer/tree/1.12.1) (2018-06-01)
 
 **Fixed bugs:**
