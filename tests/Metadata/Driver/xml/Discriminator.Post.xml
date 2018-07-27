@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\Discriminator\Post" discriminator-field-name="type">
+        <discriminator-class value="post">JMS\Serializer\Tests\Fixtures\Discriminator\Post</discriminator-class>
+        <discriminator-class value="image_post">JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost</discriminator-class>
+        <property name="title" type="string" />
+    </class>
+</serializer>

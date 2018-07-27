@@ -183,6 +183,23 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testLoadDiscriminatorWhenParentIsInDiscriminatorMap()
+    {
+        /** @var ClassMetadata $m */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Post'));
+
+        self::assertNotNull($m);
+        self::assertEquals('type', $m->discriminatorFieldName);
+        self::assertEquals($m->name, $m->discriminatorBaseClass);
+        self::assertEquals(
+            [
+                'post' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Post',
+                'image_post' => 'JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost',
+            ],
+            $m->discriminatorMap
+        );
+    }
+
     public function testLoadXmlDiscriminator()
     {
         /** @var $m ClassMetadata */
@@ -279,6 +296,18 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($m->discriminatorBaseClass);
         $this->assertNull($m->discriminatorFieldName);
         $this->assertEquals(array(), $m->discriminatorMap);
+    }
+
+    public function testLoadDiscriminatorSubClassWhenParentIsInDiscriminatorMap()
+    {
+        /** @var ClassMetadata $m */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost'));
+
+        self::assertNotNull($m);
+        self::assertNull($m->discriminatorValue);
+        self::assertNull($m->discriminatorBaseClass);
+        self::assertNull($m->discriminatorFieldName);
+        self::assertEquals([], $m->discriminatorMap);
     }
 
     public function testLoadXmlObjectWithNamespacesMetadata()
