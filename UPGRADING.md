@@ -32,6 +32,8 @@ in case you have heavily used internal-api here are the most important the chang
 - Removed `Serializer::setSerializationContextFactory` and `Serializer::setDeserializationContextFactory`
 - Removed `Serializer::getMetadataFactory` 
 - As default now JSON preserve trailing zeros when serializing a float
+- When using a discriminator map, parent class should either be declared abstract, or included into the discriminator
+  map
 
 **Deprecations** (will be removed in 3.0)
 
