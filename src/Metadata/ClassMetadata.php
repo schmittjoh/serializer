@@ -138,7 +138,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->discriminatorMap = $map;
         $this->discriminatorGroups = $groups;
 
-        $this->setDiscriminatorProperty();
+        $this->handleDiscriminatorProperty();
     }
 
     private function getReflection(): \ReflectionClass
@@ -236,7 +236,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
         }
 
-        $this->setDiscriminatorProperty();
+        $this->handleDiscriminatorProperty();
 
         $this->sortProperties();
     }
@@ -353,7 +353,7 @@ class ClassMetadata extends MergeableClassMetadata
         parent::unserialize($parentStr);
     }
 
-    private function setDiscriminatorProperty()
+    private function handleDiscriminatorProperty(): void
     {
         if ($this->discriminatorMap
             && !$this->getReflection()->isAbstract()
@@ -392,7 +392,6 @@ class ClassMetadata extends MergeableClassMetadata
             $discriminatorProperty->xmlNamespace = $this->xmlDiscriminatorNamespace;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
-
     }
 
     private function sortProperties(): void
