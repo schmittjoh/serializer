@@ -47,7 +47,9 @@ use JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
+use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GetSetObject;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
@@ -1237,6 +1239,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->getContent('car'),
             $this->serialize(new Car(5))
         );
+        self::assertEquals(
+            $this->getContent('post'),
+            $this->serialize(new Post('Post Title'))
+        );
+        self::assertEquals(
+            $this->getContent('image_post'),
+            $this->serialize(new ImagePost('Image Post Title'))
+        );
 
         if ($this->hasDeserializer()) {
             $this->assertEquals(
@@ -1262,6 +1272,33 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 $this->deserialize(
                     $this->getContent('car_without_type'),
                     'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
+
+            self::assertEquals(
+                new Post('Post Title'),
+                $this->deserialize(
+                    $this->getContent('post'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\Post'
+                ),
+                'Class is resolved correctly when parent class is used and type is set.'
+            );
+
+            self::assertEquals(
+                new ImagePost('Image Post Title'),
+                $this->deserialize(
+                    $this->getContent('image_post'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\Post'
+                ),
+                'Class is resolved correctly when least supertype is used.'
+            );
+
+            self::assertEquals(
+                new ImagePost('Image Post Title'),
+                $this->deserialize(
+                    $this->getContent('image_post'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost'
                 ),
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
             );
