@@ -309,7 +309,6 @@ class ClassMetadata extends MergeableClassMetadata
             $discriminatorProperty->xmlNamespace = $this->xmlDiscriminatorNamespace;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
-
     }
 
     private function sortProperties()
