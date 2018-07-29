@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace JMS\Serializer\Tests\Fixtures\Discriminator;
 
 use JMS\Serializer\Annotation as Serializer;
@@ -17,7 +15,7 @@ class Post
     /** @Serializer\Type("string") */
     public $title;
 
-    public function __construct(string $title)
+    public function __construct($title)
     {
         $this->title = $title;
     }
