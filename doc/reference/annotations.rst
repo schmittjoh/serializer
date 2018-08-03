@@ -385,7 +385,7 @@ Available Types:
 |                                                          | into Doctrine's ArrayCollection class.           |
 +----------------------------------------------------------+--------------------------------------------------+
 
-(*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in [configuration](https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0).
+(*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
 Examples:
 
@@ -444,6 +444,8 @@ Examples:
          */
         private $keyValueStore;
     }
+
+.. _configuration: https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0
 
 @XmlRoot
 ~~~~~~~~
