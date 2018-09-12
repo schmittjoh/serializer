@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\SkipWhenEmpty;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\VirtualProperty;
 
@@ -44,5 +45,14 @@ class ObjectWithVirtualProperties
     public function getTypedVirtualProperty()
     {
         return '1';
+    }
+
+    /**
+     * @VirtualProperty
+     * @SkipWhenEmpty()
+     */
+    public function getEmptyArray()
+    {
+        return [];
     }
 }

@@ -250,6 +250,12 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public function unserialize($str)
     {
+        $parentStr = $this->unserializeProperties($str);
+        parent::unserialize($parentStr);
+    }
+
+    protected function unserializeProperties(string $str): string
+    {
         $unserialized = unserialize($str);
         list(
             $this->sinceVersion,
@@ -291,6 +297,6 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
         }
 
-        parent::unserialize($parentStr);
+        return $parentStr;
     }
 }
