@@ -1,0 +1,10 @@
+JMS\Serializer\Tests\Fixtures\Discriminator\Post:
+    discriminator:
+        field_name: type
+        map:
+            post: JMS\Serializer\Tests\Fixtures\Discriminator\Post
+            image_post: JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost
+
+    properties:
+        title:
+            type: string
