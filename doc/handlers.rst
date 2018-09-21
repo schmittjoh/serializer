@@ -23,6 +23,11 @@ You can register simple callables on the builder object::
         })
     ;
 
+.. note ::
+
+        Be aware that when you call `configureHandlers` default handlers (like `DateHandler`)
+        won't be added and you will have to call `addDefaultHandlers` on the Builder
+
 Subscribing Handlers
 --------------------
 Subscribing handlers contain the configuration themselves which makes them easier to share with other users,
@@ -31,25 +36,37 @@ and easier to set-up in general::
     use JMS\Serializer\Handler\SubscribingHandlerInterface;
     use JMS\Serializer\GraphNavigator;
     use JMS\Serializer\JsonSerializationVisitor;
+    use JMS\Serializer\JsonDeserializationVisitor;
     use JMS\Serializer\Context;
 
     class MyHandler implements SubscribingHandlerInterface
     {
         public static function getSubscribingMethods()
         {
-            return array(
-                array(
+            return [
+                [
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                     'format' => 'json',
                     'type' => 'DateTime',
                     'method' => 'serializeDateTimeToJson',
-                ),
-            );
+                ],
+                [
+                    'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
+                    'format' => 'json',
+                    'type' => 'DateTime',
+                    'method' => 'deserializeDateTimeToJson',
+                ],
+            ];
         }
 
         public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type, Context $context)
         {
             return $date->format($type['params'][0]);
+        }
+
+        public function deserializeDateTimeToJson(JsonDeserializationVisitor $visitor, $dateAsString, array $type, Context $context)
+        {
+            return new \DateTime($dateAsString);
         }
     }
 
