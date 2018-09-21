@@ -72,7 +72,7 @@ replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the
 at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.
 
 Setting a default SerializationContext factory
---------------------------------------------
+----------------------------------------------
 To avoid to pass an instance of SerializationContext
 every time you call method ``serialize()`` (or ``toArray()``),
 you can set a ``SerializationContextFactory`` to the Serializer.

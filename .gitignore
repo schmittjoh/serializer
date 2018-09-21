@@ -4,3 +4,4 @@ composer.lock
 .idea/
 phpcs.xml
 .phpcs-cache
+/doc/_build/*
