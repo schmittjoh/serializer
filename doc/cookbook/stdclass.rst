@@ -7,8 +7,8 @@ The serializer offers support for serializing ``stdClass`` objects, however the 
 The current implementation serializes all the properties of a ``stdClass`` object in
 the order they appear.
 
-There are may know limitations wen dealing with ``stdClass`` objects,
-more in detail, is not possible to:
+There are many known limitations when dealing with ``stdClass`` objects.
+More in detail, it is not possible to:
 
 - change serialization order of properties
 - apply per-property exclusion policies
