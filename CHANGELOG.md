@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.0-RC1](https://github.com/schmittjoh/serializer/tree/2.0.0-RC1) (2018-10-17)
+
+**Merged pull requests:**
+
+- Fixed typo in documentation \(stdclass.rst\) [\#998](https://github.com/schmittjoh/serializer/pull/998) ([moritzwachter](https://github.com/moritzwachter))
+- Improve handlers doc [\#996](https://github.com/schmittjoh/serializer/pull/996) ([kunicmarko20](https://github.com/kunicmarko20))
+
 ## [2.0.0-beta1](https://github.com/schmittjoh/serializer/tree/2.0.0-beta1) (2018-09-12)
 
 **Breaking changes:**
