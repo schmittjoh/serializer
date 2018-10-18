@@ -93,7 +93,6 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @param mixed $data
      * @param array $type
-     *
      */
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object;
 

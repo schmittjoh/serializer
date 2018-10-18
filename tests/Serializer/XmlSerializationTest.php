@@ -304,7 +304,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDateTimeNoCData($key, $value, $type)
     {
         $builder = SerializerBuilder::create();
-        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
+        $builder->configureHandlers(static function (HandlerRegistryInterface $handlerRegistry) {
             $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         });
         $serializer = $builder->build();
@@ -319,7 +319,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
         $builder = SerializerBuilder::create();
-        $builder->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
+        $builder->configureHandlers(static function (HandlerRegistryInterface $handlerRegistry) {
             $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         });
         $serializer = $builder->build();
@@ -412,7 +412,7 @@ class XmlSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual',
             $this->getFormat(),
-            function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
+            static function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
                 $factory = $context->getMetadataFactory(get_class($author));
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
 

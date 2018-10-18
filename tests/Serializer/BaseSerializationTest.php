@@ -259,9 +259,9 @@ abstract class BaseSerializationTest extends TestCase
         $person->name = 'mike';
 
         $language = new ExpressionLanguage();
-        $language->addFunction(new ExpressionFunction('show_data', function () {
+        $language->addFunction(new ExpressionFunction('show_data', static function () {
             return 'true';
-        }, function () {
+        }, static function () {
             return true;
         }));
 
@@ -290,15 +290,15 @@ abstract class BaseSerializationTest extends TestCase
         $personMoreSecretVirtual->gender = 'f';
         $personMoreSecretVirtual->name = 'mike';
 
-        $showGender = new ExpressionFunction('show_data', function () {
+        $showGender = new ExpressionFunction('show_data', static function () {
             return 'true';
-        }, function () {
+        }, static function () {
             return true;
         });
 
-        $hideGender = new ExpressionFunction('show_data', function () {
+        $hideGender = new ExpressionFunction('show_data', static function () {
             return 'false';
-        }, function () {
+        }, static function () {
             return false;
         });
 
@@ -347,10 +347,11 @@ abstract class BaseSerializationTest extends TestCase
     }
 
     /**
-     * @dataProvider expressionFunctionProvider
      * @param PersonSecret|PersonSecretMore $person
      * @param ExpressionFunction $function
      * @param string $json
+     *
+     * @dataProvider expressionFunctionProvider
      */
     public function testExpressionExclusion($person, ExpressionFunction $function, $json)
     {
@@ -1203,7 +1204,7 @@ abstract class BaseSerializationTest extends TestCase
             return;
         }
 
-        $handler = function () {
+        $handler = static function () {
             return new CustomDeserializationObject('customly_unserialized_value');
         };
 
@@ -1502,9 +1503,10 @@ abstract class BaseSerializationTest extends TestCase
     }
 
     /**
-     * @dataProvider getFirstClassListCollectionsValues
      * @param array $items
      * @param array $expected
+     *
+     * @dataProvider getFirstClassListCollectionsValues
      */
     public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserializatrion = null)
     {
@@ -1563,7 +1565,7 @@ abstract class BaseSerializationTest extends TestCase
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
             $this->getFormat(),
-            function (SerializationVisitorInterface $visitor, $object, array $type, Context $context) {
+            static function (SerializationVisitorInterface $visitor, $object, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type);
             }
         );
@@ -1571,7 +1573,7 @@ abstract class BaseSerializationTest extends TestCase
             GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
             'AuthorList',
             $this->getFormat(),
-            function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
+            static function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
                 $type = [
                     'name' => 'array',
                     'params' => [

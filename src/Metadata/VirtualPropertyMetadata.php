@@ -30,6 +30,6 @@ class VirtualPropertyMetadata extends PropertyMetadata
     public function unserialize($str)
     {
         $parentStr = $this->unserializeProperties($str);
-        list($this->class, $this->name) = unserialize($parentStr);
+        [$this->class, $this->name] = unserialize($parentStr);
     }
 }

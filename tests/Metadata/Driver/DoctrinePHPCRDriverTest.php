@@ -18,9 +18,7 @@ class DoctrinePHPCRDriverTest extends TestCase
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\BlogPost');
-        $metadata = $this->getDoctrinePHPCRDriver()->loadMetadataForClass($refClass);
-
-        return $metadata;
+        return $this->getDoctrinePHPCRDriver()->loadMetadataForClass($refClass);
     }
 
     public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
@@ -47,10 +45,10 @@ class DoctrinePHPCRDriverTest extends TestCase
 
         self::assertEquals(
             [
-            'name' => 'ArrayCollection',
-            'params' => [
-                ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []],
-            ],
+                'name' => 'ArrayCollection',
+                'params' => [
+                    ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []],
+                ],
             ],
             $metadata->propertyMetadata['comments']->type
         );

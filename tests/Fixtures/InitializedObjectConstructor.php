@@ -18,8 +18,6 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
     private $fallbackConstructor;
 
     /**
-     *
-     *
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
     public function __construct(ObjectConstructorInterface $fallbackConstructor)

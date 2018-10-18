@@ -14,7 +14,6 @@ class PreDeserializeEvent extends Event
     private $data;
 
     /**
-     *
      * @param mixed $data
      * @param array $type
      */

@@ -87,8 +87,6 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     /**
      * Parses a direction string to one of the direction constants.
-     *
-     *
      */
     public static function parseDirection(string $dirStr): int
     {
@@ -226,6 +224,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     /**
      * @param mixed $data
+     *
      * @return mixed
      */
     private function visit(GraphNavigatorInterface $navigator, VisitorInterface $visitor, Context $context, $data, string $format, ?string $type = null, bool $prepare = true)
@@ -252,6 +251,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
     /**
      * @param mixed $data
+     *
      * @return mixed
      */
     private function convertArrayObjects($data)

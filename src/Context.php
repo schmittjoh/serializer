@@ -206,7 +206,6 @@ abstract class Context
     /**
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
-     *
      */
     public function shouldSerializeNull(): bool
     {

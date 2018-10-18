@@ -81,7 +81,7 @@ class SerializerBuilderTest extends TestCase
 
     public function testDoesNotAddDefaultHandlersWhenExplicitlyConfigured()
     {
-        self::assertSame($this->builder, $this->builder->configureHandlers(function (HandlerRegistry $registry) {
+        self::assertSame($this->builder, $this->builder->configureHandlers(static function (HandlerRegistry $registry) {
         }));
 
         self::assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
@@ -165,7 +165,7 @@ class SerializerBuilderTest extends TestCase
 
     public function testSetCallbackSerializationContextWithSerializeNull()
     {
-        $this->builder->setSerializationContextFactory(function () {
+        $this->builder->setSerializationContextFactory(static function () {
             return SerializationContext::create()
                 ->setSerializeNull(true);
         });
@@ -179,7 +179,7 @@ class SerializerBuilderTest extends TestCase
 
     public function testSetCallbackSerializationContextWithNotSerializeNull()
     {
-        $this->builder->setSerializationContextFactory(function () {
+        $this->builder->setSerializationContextFactory(static function () {
             return SerializationContext::create()
                 ->setSerializeNull(false);
         });
@@ -195,17 +195,17 @@ class SerializerBuilderTest extends TestCase
     {
         return [
             [
-                new ExpressionFunction('show_data', function () {
+                new ExpressionFunction('show_data', static function () {
                     return 'true';
-                }, function () {
+                }, static function () {
                     return true;
                 }),
                 '{"name":"mike"}',
             ],
             [
-                new ExpressionFunction('show_data', function () {
+                new ExpressionFunction('show_data', static function () {
                     return 'false';
-                }, function () {
+                }, static function () {
                     return false;
                 }),
                 '{"name":"mike","gender":"f"}',
@@ -214,9 +214,10 @@ class SerializerBuilderTest extends TestCase
     }
 
     /**
-     * @dataProvider expressionFunctionProvider
      * @param ExpressionFunction $function
      * @param string $json
+     *
+     * @dataProvider expressionFunctionProvider
      */
     public function testExpressionEngine(ExpressionFunction $function, $json)
     {

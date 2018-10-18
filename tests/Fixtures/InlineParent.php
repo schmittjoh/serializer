@@ -22,6 +22,7 @@ class InlineParent
 
     /**
      * @Serializer\Inline
+     *
      * @Type("JMS\Serializer\Tests\Fixtures\InlineChild")
      */
     private $child;

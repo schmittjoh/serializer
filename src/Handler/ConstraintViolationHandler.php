@@ -75,11 +75,9 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
 
     public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, ?array $type = null): array
     {
-        $data = [
+        return [
             'property_path' => $violation->getPropertyPath(),
             'message' => $violation->getMessage(),
         ];
-
-        return $data;
     }
 }

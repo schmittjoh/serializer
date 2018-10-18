@@ -8,7 +8,6 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
- *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
 final class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory

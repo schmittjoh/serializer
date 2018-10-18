@@ -14,6 +14,7 @@ class ParentSkipWithEmptyChild
 
     /**
      * @Serializer\SkipWhenEmpty()
+     *
      * @var InlineChild
      */
     private $child;

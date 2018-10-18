@@ -12,10 +12,11 @@ use PHPUnit\Framework\TestCase;
 class GroupsExclusionStrategyTest extends TestCase
 {
     /**
-     * @dataProvider getExclusionRules
      * @param array $propertyGroups
      * @param array $groups
      * @param bool $exclude
+     *
+     * @dataProvider getExclusionRules
      */
     public function testUninitializedContextIsWorking(array $propertyGroups, array $groups, $exclude)
     {

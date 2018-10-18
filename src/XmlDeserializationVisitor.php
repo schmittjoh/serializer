@@ -31,7 +31,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     private $objectMetadataStack;
 
     /**
-     * @var null|object
+     * @var object|null
      */
     private $currentObject;
 
@@ -158,7 +158,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             }
             $this->revertCurrentMetadata();
 
-            list($keyType, $entryType) = $type['params'];
+            [$keyType, $entryType] = $type['params'];
 
             $result = [];
             foreach ($data as $key => $v) {
@@ -213,7 +213,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                     throw new RuntimeException('Maps are not supported on top-level without metadata.');
                 }
 
-                list($keyType, $entryType) = $type['params'];
+                [$keyType, $entryType] = $type['params'];
                 $result = [];
 
                 $nodes = $data->children($namespace)->$entryName;
@@ -393,7 +393,6 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
     /**
      * Retrieves internalSubset even in bugfixed php versions
-     *
      */
     private function getDomDocumentTypeEntitySubset(string $data): string
     {

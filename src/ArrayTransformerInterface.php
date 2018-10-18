@@ -17,6 +17,7 @@ interface ArrayTransformerInterface
      * This is useful when the data needs to be passed on to other methods which expect array data.
      *
      * @param mixed $data anything that converts to an array, typically an object or an array of objects
+     *
      * @return array
      */
     public function toArray($data, ?SerializationContext $context = null, ?string $type = null): array;

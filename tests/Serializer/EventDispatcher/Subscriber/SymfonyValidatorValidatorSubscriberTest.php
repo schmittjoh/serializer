@@ -70,7 +70,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
 
         $subscriber = $this->subscriber;
         $list = SerializerBuilder::create()
-            ->configureListeners(function (EventDispatcher $dispatcher) use ($subscriber) {
+            ->configureListeners(static function (EventDispatcher $dispatcher) use ($subscriber) {
                 $dispatcher->addSubscriber($subscriber);
             })
             ->build()

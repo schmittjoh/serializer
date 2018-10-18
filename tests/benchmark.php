@@ -13,7 +13,7 @@ if (!isset($_SERVER['argv'][1], $_SERVER['argv'][2])) {
     exit(1);
 }
 
-list(, $format, $iterations) = $_SERVER['argv'];
+[, $format, $iterations] = $_SERVER['argv'];
 
 require_once 'bootstrap.php';
 
@@ -51,7 +51,7 @@ function createObject()
 $serializer = SerializerBuilder::create()->build();
 $collection = createCollection();
 $metrics = [];
-$f = function () use ($serializer, $collection, $format) {
+$f = static function () use ($serializer, $collection, $format) {
     $serializer->serialize($collection, $format);
 };
 

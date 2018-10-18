@@ -24,6 +24,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
 {
     /**
      * Map of doctrine 2 field types to JMS\Serializer types
+     *
      * @var array
      */
     protected $fieldMapping = [

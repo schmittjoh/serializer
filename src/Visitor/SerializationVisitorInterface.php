@@ -72,13 +72,11 @@ interface SerializationVisitorInterface extends VisitorInterface
      *
      * @param mixed $data
      * @param array $type
-     *
      */
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
 
     /**
      * @param mixed $data
-     *
      */
     public function visitProperty(PropertyMetadata $metadata, $data): void;
 

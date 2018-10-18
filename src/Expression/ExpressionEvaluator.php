@@ -43,6 +43,7 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
 
     /**
      * @param  array $data
+     *
      * @return mixed
      */
     public function evaluate(string $expression, array $data = [])

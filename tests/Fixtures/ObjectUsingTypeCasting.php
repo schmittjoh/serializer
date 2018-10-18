@@ -9,8 +9,9 @@ use JMS\Serializer\Annotation as Serializer;
 class ObjectUsingTypeCasting
 {
     /**
-     * @var ObjectWithToString
      * @Serializer\Type("string")
+     *
+     * @var ObjectWithToString
      */
     public $asString;
 }

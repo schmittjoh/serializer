@@ -110,7 +110,6 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     *
      * @return array An array of listeners
      */
     protected function initializeListeners(string $eventName, string $loweredClass, string $format): array

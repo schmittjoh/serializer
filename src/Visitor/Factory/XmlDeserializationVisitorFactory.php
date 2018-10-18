@@ -8,7 +8,6 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 
 /**
- *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
 final class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory

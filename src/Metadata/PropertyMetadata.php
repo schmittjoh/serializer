@@ -130,6 +130,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     /**
      * @internal
+     *
      * @var bool
      */
     public $forceReflectionAccess = false;
@@ -202,11 +203,11 @@ class PropertyMetadata extends BasePropertyMetadata
     }
 
     /**
+     * @return string
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     *
-     * @return string
      */
     public function serialize()
     {
@@ -241,12 +242,13 @@ class PropertyMetadata extends BasePropertyMetadata
     }
 
     /**
+     * @param string $str
+     *
+     * @return void
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     *
-     * @param string $str
-     * @return void
      */
     public function unserialize($str)
     {
@@ -257,7 +259,7 @@ class PropertyMetadata extends BasePropertyMetadata
     protected function unserializeProperties(string $str): string
     {
         $unserialized = unserialize($str);
-        list(
+        [
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -278,8 +280,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
-            $parentStr
-            ) = $unserialized;
+            $parentStr,
+        ] = $unserialized;
 
         if (isset($unserialized['xmlEntryNamespace'])) {
             $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];

@@ -163,7 +163,6 @@ abstract class BaseDriverTest extends TestCase
     {
         $a = new ObjectWithExpressionVirtualPropertiesAndExcludeAll();
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
-        ;
 
         self::assertArrayHasKey('virtualValue', $m->propertyMetadata);
 

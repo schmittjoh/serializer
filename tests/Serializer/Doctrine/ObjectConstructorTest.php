@@ -221,7 +221,7 @@ class ObjectConstructorTest extends TestCase
         $entityManager = $this->createEntityManager($connection);
 
         $this->registry = $registry = new SimpleBaseManagerRegistry(
-            function ($id) use ($connection, $entityManager) {
+            static function ($id) use ($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
                         return $connection;
@@ -237,7 +237,7 @@ class ObjectConstructorTest extends TestCase
 
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function (array $metadataDirs, Reader $annotationReader) use ($registry) {
+                static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
@@ -259,12 +259,10 @@ class ObjectConstructorTest extends TestCase
 
     private function createConnection()
     {
-        $con = DriverManager::getConnection([
+        return DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ]);
-
-        return $con;
     }
 
     private function createEntityManager(Connection $con)
@@ -277,9 +275,7 @@ class ObjectConstructorTest extends TestCase
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
-        $em = EntityManager::create($con, $cfg);
-
-        return $em;
+        return EntityManager::create($con, $cfg);
     }
 
     /**

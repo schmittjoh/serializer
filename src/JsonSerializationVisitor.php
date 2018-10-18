@@ -76,6 +76,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     /**
      * @param array $data
      * @param array $type
+     *
      * @return array|\ArrayObject
      */
     public function visitArray(array $data, array $type)

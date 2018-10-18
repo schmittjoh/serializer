@@ -64,18 +64,21 @@ class ClassMetadata extends MergeableClassMetadata
 
     /**
      * @internal
+     *
      * @var bool
      */
     public $usingExpression = false;
 
     /**
      * @internal
+     *
      * @var bool
      */
     public $isList = false;
 
     /**
      * @internal
+     *
      * @var bool
      */
     public $isMap = false;
@@ -259,11 +262,11 @@ class ClassMetadata extends MergeableClassMetadata
     }
 
     /**
+     * @return string
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     *
-     * @return string
      */
     public function serialize()
     {
@@ -296,18 +299,19 @@ class ClassMetadata extends MergeableClassMetadata
     }
 
     /**
+     * @param string $str
+     *
+     * @return void
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     *
-     * @param string $str
-     * @return void
      */
     public function unserialize($str)
     {
         $unserialized = unserialize($str);
 
-        list(
+        [
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
@@ -322,8 +326,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $this->discriminatorGroups,
-            $parentStr
-            ) = $unserialized;
+            $parentStr,
+        ] = $unserialized;
 
         if (isset($unserialized['discriminatorGroups'])) {
             $this->discriminatorGroups = $unserialized['discriminatorGroups'];

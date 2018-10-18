@@ -11,6 +11,7 @@ class FirstClassListCollection
     /**
      * @Serializer\Type("array<int>")
      * @Serializer\Inline
+     *
      * @var int[]
      */
     public $items = [];

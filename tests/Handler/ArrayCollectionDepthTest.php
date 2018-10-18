@@ -24,8 +24,9 @@ class ArrayCollectionDepthTest extends TestCase
     }
 
     /**
-     * @dataProvider getCollections
      * @param array|Collection $collection
+     *
+     * @dataProvider getCollections
      */
     public function testDepth($collection)
     {

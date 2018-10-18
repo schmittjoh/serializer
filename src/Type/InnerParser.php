@@ -12,6 +12,7 @@ use Hoa\Compiler\Llk\Rule\Token;
 
 /**
  * @internal
+ *
  * @generated Use regenerate-parser.php to refresh this class.
  */
 final class InnerParser extends Parser

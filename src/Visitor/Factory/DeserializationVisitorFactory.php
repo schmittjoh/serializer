@@ -7,7 +7,6 @@ namespace JMS\Serializer\Visitor\Factory;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
- *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
 interface DeserializationVisitorFactory

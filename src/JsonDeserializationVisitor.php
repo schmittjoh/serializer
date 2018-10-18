@@ -107,7 +107,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
                 return $result;
 
             case 2: // Array is a map.
-                list($keyType, $entryType) = $type['params'];
+                [$keyType, $entryType] = $type['params'];
 
                 $result = [];
 
@@ -180,8 +180,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
         }
 
-        $v = null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;
-        return $v;
+        return null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;
     }
 
     /**

@@ -9,17 +9,19 @@ use JMS\Serializer\Annotation as Serializer;
 class AccessorSetter
 {
     /**
-     * @var \stdClass
      * @Serializer\Type("JMS\Serializer\Tests\Fixtures\AccessorSetterElement")
      * @Serializer\Accessor(setter="setElementDifferent")
+     *
+     * @var \stdClass
      */
     protected $element;
 
     /**
-     * @var array
      * @Serializer\Type("array<string>")
      * @Serializer\Accessor(setter="setCollectionDifferent")
      * @Serializer\XmlList(inline=false)
+     *
+     * @var array
      */
     protected $collection;
 
@@ -60,18 +62,20 @@ class AccessorSetter
 class AccessorSetterElement
 {
     /**
-     * @var string
      * @Serializer\Type("string")
      * @Serializer\Accessor(setter="setAttributeDifferent")
      * @Serializer\XmlAttribute
+     *
+     * @var string
      */
     protected $attribute;
 
     /**
-     * @var string
      * @Serializer\Type("string")
      * @Serializer\Accessor(setter="setElementDifferent")
      * @Serializer\XmlValue
+     *
+     * @var string
      */
     protected $element;
 

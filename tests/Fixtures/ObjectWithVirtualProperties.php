@@ -21,7 +21,6 @@ class ObjectWithVirtualProperties
     protected $existField = 'value';
 
     /**
-     *
      * @VirtualProperty
      */
     public function getVirtualValue()

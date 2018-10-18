@@ -35,7 +35,7 @@ class ParserTest extends TestCase
      */
     public function validTypesProvider(): iterable
     {
-        $type = function (string $name, array $params = []): array {
+        $type = static function (string $name, array $params = []): array {
             return ['name' => $name, 'params' => $params];
         };
 

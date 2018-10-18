@@ -37,8 +37,6 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 
     /**
      * Whether the class should be skipped.
-     *
-     *
      */
     public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
@@ -54,8 +52,6 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 
     /**
      * Whether the property should be skipped.
-     *
-     *
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {

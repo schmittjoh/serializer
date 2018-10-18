@@ -11,6 +11,7 @@ class FirstClassMapCollection
     /**
      * @Serializer\Type("array<string,string>")
      * @Serializer\Inline
+     *
      * @var int[]
      */
     public $items = [];
