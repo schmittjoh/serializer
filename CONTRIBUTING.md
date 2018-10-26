@@ -33,6 +33,20 @@ New features without tests can't be merged.
 The documentation is stored in the `doc` folder and is written using the [rST](http://docutils.sourceforge.net/rst.html) language.
 If you are adding a new feature, you must update the documentation.
 
+To test doc rendering before submitting your PR, you will need [Sphinx](http://www.sphinx-doc.org/en/stable/).
+
+To install `Sphinx` just run:
+
+```bash
+pip install --requirement doc/requirements.txt --user
+```
+
+When that is done, just run:
+
+```bash
+cd doc && sphinx-build -W -b html -d _build/doctrees . _build/html
+```
+
 ## CI
 
 We automatically run your pull request through [Travis CI](https://www.travis-ci.org) 

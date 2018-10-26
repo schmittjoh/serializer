@@ -9,27 +9,24 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+env:
+  global:
+  - TARGET=test
+
 matrix:
     include:
         - php: 7.2
         - php: 7.2
           env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
+        - php: 7.2
+          env: TARGET=docs
     fast_finish: true
 
-before_script:
-    - if [[ $TRAVIS_PHP_VERSION  = '7.2' ]]; then PHPUNIT_FLAGS="--coverage-clover clover"; else PHPUNIT_FLAGS=""; fi
-    - if [[ $TRAVIS_PHP_VERSION != '7.2' ]]; then phpenv config-rm xdebug.ini; fi
-    - composer self-update
-    - composer update $COMPOSER_FLAGS -n
+install:
+  - if [ -x .travis/install_${TARGET}.sh ]; then .travis/install_${TARGET}.sh; fi;
 
 script:
-    - vendor/bin/phpunit $PHPUNIT_FLAGS
-    - phpenv config-rm xdebug.ini || true
-    - php tests/benchmark.php json 3
-    - php tests/benchmark.php xml 3
-    - vendor/bin/phpcs
+  - if [ -x .travis/script_${TARGET}.sh ]; then .travis/script_${TARGET}.sh; fi;
 
 after_success:
-    - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-    - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then php ocular.phar code-coverage:upload --format=php-clover clover; fi
-
+  - if [ -x .travis/sucess_${TARGET}.sh ]; then .travis/sucess_${TARGET}.sh; fi;
