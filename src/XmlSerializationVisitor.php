@@ -28,12 +28,12 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     private $defaultRootName = 'result';
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $defaultRootNamespace;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $defaultRootPrefix;
 
@@ -109,7 +109,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             $rootName = $metadata->xmlRootName;
             $rootNamespace = $metadata->xmlRootNamespace ?: $this->getClassDefaultNamespace($metadata);
         } else {
-            $rootName = $rootName ?: ($this->defaultRootName);
+            $rootName = $rootName ?: $this->defaultRootName;
             $rootNamespace = $rootNamespace ?: $this->defaultRootNamespace;
             $rootPrefix = $rootPrefix ?: $this->defaultRootPrefix;
         }
@@ -192,13 +192,13 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             $this->createRoot();
         }
 
-        $entryName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryName) ? $this->currentMetadata->xmlEntryName : 'entry';
-        $keyAttributeName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute) ? $this->currentMetadata->xmlKeyAttribute : null;
-        $namespace = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryNamespace) ? $this->currentMetadata->xmlEntryNamespace : null;
+        $entryName = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
+        $keyAttributeName = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute ? $this->currentMetadata->xmlKeyAttribute : null;
+        $namespace = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
-            $tagName = (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string) $k)) ? $k : $entryName;
+            $tagName = null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs && $this->isElementNameValid((string) $k) ? $k : $entryName;
 
             $entryNode = $this->createElement($tagName, $namespace);
             $this->currentNode->appendChild($entryNode);

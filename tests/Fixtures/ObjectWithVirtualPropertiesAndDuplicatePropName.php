@@ -13,7 +13,6 @@ class ObjectWithVirtualPropertiesAndDuplicatePropName
     protected $name;
 
     /**
-     *
      * @VirtualProperty(name="foo")
      */
     public function getId()
@@ -22,9 +21,9 @@ class ObjectWithVirtualPropertiesAndDuplicatePropName
     }
 
     /**
+     * @Serializer\SerializedName("mood")
      *
      * @VirtualProperty(name="bar")
-     * @Serializer\SerializedName("mood")
      */
     public function getName()
     {

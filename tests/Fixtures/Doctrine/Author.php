@@ -17,6 +17,7 @@ class Author
 
     /**
      * @ORM\Column(type="string")
+     *
      * @SerializedName("full_name")
      */
     private $name;

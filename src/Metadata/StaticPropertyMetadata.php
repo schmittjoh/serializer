@@ -13,6 +13,7 @@ class StaticPropertyMetadata extends PropertyMetadata
 
     /**
      * StaticPropertyMetadata constructor.
+     *
      * @param mixed $fieldValue
      * @param array $groups
      */
@@ -55,15 +56,15 @@ class StaticPropertyMetadata extends PropertyMetadata
     public function unserialize($str)
     {
         $parentStr = $this->unserializeProperties($str);
-        list($this->class, $this->name) = unserialize($parentStr);
+        [$this->class, $this->name] = unserialize($parentStr);
     }
 
     protected function unserializeProperties(string $str): string
     {
-        list(
+        [
             $this->value,
-            $parentStr
-            ) = unserialize($str);
+            $parentStr,
+        ] = unserialize($str);
         return parent::unserializeProperties($parentStr);
     }
 }

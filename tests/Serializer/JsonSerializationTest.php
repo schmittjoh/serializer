@@ -144,9 +144,10 @@ class JsonSerializationTest extends BaseSerializationTest
     }
 
     /**
-     * @dataProvider getFirstClassMapCollectionsValues
      * @param array $items
      * @param array $expected
+     *
+     * @dataProvider getFirstClassMapCollectionsValues
      */
     public function testFirstClassMapCollections($items, $expected): void
     {
@@ -161,13 +162,13 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testAddLinksToOutput()
     {
-        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+        $this->dispatcher->addListener('serializer.post_serialize', static function (Event $event) {
             self::assertFalse($event->getVisitor()->hasData('_links'));
         }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
 
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
 
-        $this->dispatcher->addListener('serializer.post_serialize', function (Event $event) {
+        $this->dispatcher->addListener('serializer.post_serialize', static function (Event $event) {
             self::assertTrue($event->getVisitor()->hasData('_links'));
         }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
 
@@ -175,7 +176,7 @@ class JsonSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
             'json',
-            function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
         );
@@ -194,7 +195,7 @@ class JsonSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
             'json',
-            function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
         );
@@ -364,10 +365,11 @@ class JsonSerializationTest extends BaseSerializationTest
     }
 
     /**
-     * @dataProvider getTypeHintedArrays
      * @param array $array
      * @param string $expected
      * @param SerializationContext|null $context
+     *
+     * @dataProvider getTypeHintedArrays
      */
     public function testTypeHintedArraySerialization(array $array, $expected, $context = null)
     {
@@ -404,10 +406,11 @@ class JsonSerializationTest extends BaseSerializationTest
     }
 
     /**
-     * @dataProvider getTypeHintedArraysAndStdClass
      * @param array $array
      * @param string $expected
      * @param SerializationContext|null $context
+     *
+     * @dataProvider getTypeHintedArraysAndStdClass
      */
     public function testTypeHintedArrayAndStdClassSerialization(array $array, $expected, $context = null)
     {

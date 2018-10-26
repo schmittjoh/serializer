@@ -90,6 +90,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param array $type
+     *
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateTime(SerializationVisitorInterface $visitor, \DateTime $date, array $type, SerializationContext $context)
@@ -99,6 +100,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param array $type
+     *
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateTimeImmutable(
@@ -112,6 +114,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param array $type
+     *
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateInterval(SerializationVisitorInterface $visitor, \DateInterval $date, array $type, SerializationContext $context)

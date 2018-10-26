@@ -15,7 +15,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
     /**
-     * @var null|TranslatorInterface
+     * @var TranslatorInterface|null
      */
     private $translator;
 

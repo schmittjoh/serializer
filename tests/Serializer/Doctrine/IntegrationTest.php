@@ -87,7 +87,7 @@ class IntegrationTest extends TestCase
         $entityManager = $this->createEntityManager($connection);
 
         $this->registry = $registry = new SimpleManagerRegistry(
-            function ($id) use ($connection, $entityManager) {
+            static function ($id) use ($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
                         return $connection;
@@ -103,7 +103,7 @@ class IntegrationTest extends TestCase
 
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                function (array $metadataDirs, Reader $annotationReader) use ($registry) {
+                static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
@@ -125,12 +125,10 @@ class IntegrationTest extends TestCase
 
     private function createConnection()
     {
-        $con = DriverManager::getConnection([
+        return DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
         ]);
-
-        return $con;
     }
 
     private function createEntityManager(Connection $con)
@@ -143,9 +141,7 @@ class IntegrationTest extends TestCase
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
-        $em = EntityManager::create($con, $cfg);
-
-        return $em;
+        return EntityManager::create($con, $cfg);
     }
 }
 

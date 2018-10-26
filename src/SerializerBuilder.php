@@ -165,6 +165,7 @@ final class SerializerBuilder
 
     /**
      * @param mixed ...$args
+     *
      * @return SerializerBuilder
      */
     public static function create(...$args): self
@@ -426,7 +427,6 @@ final class SerializerBuilder
     /**
      * Similar to addMetadataDir(), but overrides an existing entry.
      *
-     *
      * @return SerializerBuilder
      *
      * @throws InvalidArgumentException When a directory does not exist.
@@ -456,7 +456,6 @@ final class SerializerBuilder
 
     /**
      * @param SerializationContextFactoryInterface|callable $serializationContextFactory
-     *
      */
     public function setSerializationContextFactory($serializationContextFactory): self
     {
@@ -475,7 +474,6 @@ final class SerializerBuilder
 
     /**
      * @param DeserializationContextFactoryInterface|callable $deserializationContextFactory
-     *
      */
     public function setDeserializationContextFactory($deserializationContextFactory): self
     {
@@ -545,7 +543,7 @@ final class SerializerBuilder
             GraphNavigatorInterface::DIRECTION_DESERIALIZATION => $this->getDeserializationNavigatorFactory($metadataFactory),
         ];
 
-        $serializer = new Serializer(
+        return new Serializer(
             $metadataFactory,
             $navigatorFactories,
             $this->serializationVisitors,
@@ -554,8 +552,6 @@ final class SerializerBuilder
             $this->deserializationContextFactory,
             $this->typeParser
         );
-
-        return $serializer;
     }
 
     private function getSerializationNavigatorFactory(MetadataFactoryInterface $metadataFactory): GraphNavigatorFactoryInterface

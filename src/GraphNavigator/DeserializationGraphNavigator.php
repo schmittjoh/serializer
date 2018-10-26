@@ -96,7 +96,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param array|null $type array has the format ["name" => string, "params" => array]
+     *
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public function accept($data, ?array $type = null)

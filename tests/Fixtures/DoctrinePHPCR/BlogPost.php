@@ -47,7 +47,6 @@ class BlogPost
      * This boolean to integer conversion is one of the few changes between this
      * and the standard BlogPost class. It's used to test the override behavior
      * of the DoctrineTypeDriver so notice it, but please don't change it.
-     *
      * @SerializedName("is_published")
      * @Groups({"post"})
      * @XmlAttribute

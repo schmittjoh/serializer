@@ -16,7 +16,6 @@ class ExcludePublicAccessor
 {
     /**
      * @Exclude
-     *
      * @var mixed
      */
     private $iShallNotBeAccessed;

@@ -22,6 +22,7 @@ class InlineParentWithEmptyChild
 
     /**
      * @Serializer\Inline
+     *
      * @Type("JMS\Serializer\Tests\Fixtures\InlineChildEmpty")
      */
     private $child;

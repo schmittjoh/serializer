@@ -18,8 +18,6 @@ interface PropertyNamingStrategyInterface
 {
     /**
      * Translates the name of the property to the serialized version.
-     *
-     *
      */
     public function translateName(PropertyMetadata $property): string;
 }

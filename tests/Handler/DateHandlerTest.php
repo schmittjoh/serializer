@@ -37,9 +37,10 @@ class DateHandlerTest extends TestCase
     }
 
     /**
+     * @param array $params
+     *
      * @doesNotPerformAssertions
      * @dataProvider getParams
-     * @param array $params
      */
     public function testSerializeDate(array $params)
     {

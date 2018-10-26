@@ -25,6 +25,7 @@ class GetSetObject
 
     /**
      * This property should be exlcluded
+     *
      * @Exclude()
      */
     private $excludedProperty;

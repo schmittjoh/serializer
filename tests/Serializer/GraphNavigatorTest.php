@@ -57,14 +57,14 @@ class GraphNavigatorTest extends TestCase
         $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->will($this->returnCallback(function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
+            ->will($this->returnCallback(static function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
                 $self->assertSame($metadata, $passedMetadata);
                 $self->assertSame($context, $passedContext);
                 return false;
             }));
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->will($this->returnCallback(function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
+            ->will($this->returnCallback(static function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
                 $self->assertSame($metadata->propertyMetadata['foo'], $propertyMetadata);
                 $self->assertSame($context, $passedContext);
                 return false;
@@ -90,13 +90,13 @@ class GraphNavigatorTest extends TestCase
         $exclusionStrategy = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->with($metadata, $this->callback(function ($navigatorContext) use ($context) {
+            ->with($metadata, $this->callback(static function ($navigatorContext) use ($context) {
                 return $navigatorContext === $context;
             }));
 
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->with($metadata->propertyMetadata['foo'], $this->callback(function ($navigatorContext) use ($context) {
+            ->with($metadata->propertyMetadata['foo'], $this->callback(static function ($navigatorContext) use ($context) {
                 return $navigatorContext === $context;
             }));
 
@@ -117,7 +117,7 @@ class GraphNavigatorTest extends TestCase
         $object = new SerializableClass();
         $typeName = 'JsonSerializable';
 
-        $this->dispatcher->addListener('serializer.pre_serialize', function ($event) use ($typeName) {
+        $this->dispatcher->addListener('serializer.pre_serialize', static function ($event) use ($typeName) {
             $type = $event->getType();
             $type['name'] = $typeName;
             $event->setType($type['name'], $type['params']);

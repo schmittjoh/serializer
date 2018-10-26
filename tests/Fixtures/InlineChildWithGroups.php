@@ -10,14 +10,16 @@ use JMS\Serializer\Annotation\Type;
 class InlineChildWithGroups
 {
     /**
-     * @Type("string")
      * @Serializer\Groups({"a"})
+     *
+     * @Type("string")
      */
     public $a = 'a';
 
     /**
-     * @Type("string")
      * @Serializer\Groups({"b"})
+     *
+     * @Type("string")
      */
     public $b = 'b';
 }

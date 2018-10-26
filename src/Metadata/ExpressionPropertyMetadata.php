@@ -46,15 +46,15 @@ class ExpressionPropertyMetadata extends PropertyMetadata
     public function unserialize($str)
     {
         $parentStr = $this->unserializeProperties($str);
-        list($this->class, $this->name) = unserialize($parentStr);
+        [$this->class, $this->name] = unserialize($parentStr);
     }
 
     protected function unserializeProperties(string $str): string
     {
-        list(
+        [
             $this->expression,
-            $parentStr
-            ) = unserialize($str);
+            $parentStr,
+        ] = unserialize($str);
         return parent::unserializeProperties($parentStr);
     }
 }

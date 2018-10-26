@@ -97,4 +97,32 @@
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
+    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
+        <properties>
+            <property name="annotationsGroups" type="array">
+                <element value="
+                    @Annotation,
+                    @Target,
+                "/>
+                <element value="
+                    @internal,
+                    @deprecated,
+                "/>
+                <element value="@author"/>
+                <element value="
+                    @link,
+                    @see,
+                    @uses,
+                "/>
+                <element value="
+                    @Serializer\,
+                    @ORM\,
+                    @ODM\,
+                "/>
+                <element value="@param"/>
+                <element value="@return"/>
+                <element value="@throws"/>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

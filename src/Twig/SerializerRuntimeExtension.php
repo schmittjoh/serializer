@@ -10,9 +10,9 @@ namespace JMS\Serializer\Twig;
 final class SerializerRuntimeExtension extends \Twig_Extension
 {
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     *
      * @return string
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
     public function getName()
     {
@@ -20,9 +20,9 @@ final class SerializerRuntimeExtension extends \Twig_Extension
     }
 
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     *
      * @return \Twig_Filter[]
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
     public function getFilters()
     {
@@ -32,9 +32,9 @@ final class SerializerRuntimeExtension extends \Twig_Extension
     }
 
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     *
      * @return \Twig_Function[]
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
     public function getFunctions()
     {
