@@ -74,7 +74,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         return $ref->getValue($o);
                     };
                 } else {
-                    $this->readAccessors[$metadata->class] = \Closure::bind(function ($o, $name) {
+                    $this->readAccessors[$metadata->class] = \Closure::bind(static function ($o, $name) {
                         return $o->$name;
                     }, null, $metadata->class);
                 }
@@ -109,7 +109,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         $ref->setValue($o, $value);
                     };
                 } else {
-                    $this->writeAccessors[$metadata->class] = \Closure::bind(function ($o, $name, $value): void {
+                    $this->writeAccessors[$metadata->class] = \Closure::bind(static function ($o, $name, $value): void {
                         $o->$name = $value;
                     }, null, $metadata->class);
                 }
