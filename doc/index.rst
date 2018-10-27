@@ -1,6 +1,8 @@
 Serializer
 ==========
 
+.. image:: logo-small.png
+
 Introduction
 ------------
 This library allows you to (de-)serialize data of any complexity. Currently, it supports XML and JSON.
