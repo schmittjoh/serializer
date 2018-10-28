@@ -32,6 +32,14 @@ be serialized/unserialized. Works only in combination with AllExclusionPolicy.
 If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
 be possible to use ``@Expose(if="expression")`` to expose dynamically a property.
 
+@DeserializeNull
+~~~~~~~~~~~~~~~~
+This annotation can be defined on a property to indicate that the property should
+be deserialized even if the value is null. By default, if you have a custom handler
+it won't be invoked if the value is null.
+
+Use case for this is if you use a Null Object to represent your null values.
+
 @SkipWhenEmpty
 ~~~~~~~~~~~~~~
 This annotation can be defined on a property to indicate that the property should
