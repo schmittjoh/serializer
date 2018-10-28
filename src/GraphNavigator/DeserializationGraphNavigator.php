@@ -6,6 +6,7 @@ namespace JMS\Serializer\GraphNavigator;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -23,6 +24,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -74,6 +76,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      */
     private $accessor;
 
+    /**
+     * @var bool
+     */
+    private $shouldDeserializeNull;
+
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         HandlerRegistryInterface $handlerRegistry,
@@ -90,6 +97,12 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         if ($expressionEvaluator) {
             $this->expressionExclusionStrategy = new ExpressionLanguageExclusionStrategy($expressionEvaluator);
         }
+    }
+
+    public function initialize(VisitorInterface $visitor, Context $context): void
+    {
+        parent::initialize($visitor, $context);
+        $this->shouldDeserializeNull = $context->shouldDeserializeNull();
     }
 
     /**
@@ -109,7 +122,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         }
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
+        // If null is explicitly allowed we should skip this
+        if ($this->visitor instanceof NullAwareVisitorInterface
+            && true === $this->visitor->isNull($data)
+            && (!empty($type['nullable']) || false === $this->shouldDeserializeNull)
+        ) {
             $type = ['name' => 'NULL', 'params' => []];
         }
 
@@ -201,7 +218,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
-                        $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
+
+                        if (null !== $v || true === $this->shouldDeserializeNull) {
+                            $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
+                        }
                     } catch (NotAcceptableException $e) {
                     }
                     $this->context->popPropertyMetadata();

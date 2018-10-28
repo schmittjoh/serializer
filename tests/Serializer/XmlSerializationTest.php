@@ -368,6 +368,11 @@ class XmlSerializationTest extends BaseSerializationTest
         $this->markTestSkipped('Not supported in XML.');
     }
 
+    public function testDeserializingNullAllowed()
+    {
+        $this->markTestSkipped('Not supported in XML.');
+    }
+
     public function testObjectWithXmlNamespaces()
     {
         $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');

@@ -13,6 +13,11 @@ class DeserializationContext extends Context
      */
     private $depth = 0;
 
+    /**
+     * @var bool
+     */
+    private $deserializeNull = false;
+
     public static function create(): self
     {
         return new self();
@@ -31,6 +36,25 @@ class DeserializationContext extends Context
     public function increaseDepth(): void
     {
         $this->depth += 1;
+    }
+
+    /**
+     * Set if NULLs should be deserialized (TRUE) ot not (FALSE)
+     */
+    public function setDeserializeNull(bool $bool): self
+    {
+        $this->deserializeNull = $bool;
+
+        return $this;
+    }
+
+    /**
+     * Returns TRUE when NULLs should be deserialized
+     * Returns FALSE when NULLs should not be deserialized
+     */
+    public function shouldDeserializeNull(): bool
+    {
+        return $this->deserializeNull;
     }
 
     public function decreaseDepth(): void

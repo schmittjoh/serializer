@@ -11,7 +11,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
-final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
+final class JsonDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface, DeserializationVisitorInterface
 {
     /**
      * @var int
@@ -236,5 +236,13 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             default:
                 throw new RuntimeException('Could not decode JSON.');
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isNull($value): bool
+    {
+        return null === $value;
     }
 }
