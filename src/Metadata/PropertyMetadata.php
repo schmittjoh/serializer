@@ -135,6 +135,11 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $forceReflectionAccess = false;
 
+    /**
+     * @var bool
+     */
+    public $deserializeNull = false;
+
     public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
@@ -238,6 +243,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
             'forceReflectionAccess' => $this->forceReflectionAccess,
+            'deserializeNull' => $this->deserializeNull,
         ]);
     }
 
@@ -297,6 +303,9 @@ class PropertyMetadata extends BasePropertyMetadata
         }
         if (isset($unserialized['forceReflectionAccess'])) {
             $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
+        }
+        if (isset($unserialized['deserializeNull'])) {
+            $this->deserializeNull = $unserialized['deserializeNull'];
         }
 
         return $parentStr;

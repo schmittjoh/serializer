@@ -21,6 +21,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
@@ -107,9 +108,24 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         if (null === $type) {
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
+
+        $shouldDeserializeNull = false;
+        $metadataStack = $this->context->getMetadataStack();
+
+        if (!$metadataStack->isEmpty()) {
+            $currentPropertyMetadata = $metadataStack->top();
+            if ($currentPropertyMetadata instanceof PropertyMetadata) {
+                $shouldDeserializeNull = $currentPropertyMetadata->deserializeNull;
+            }
+        }
+
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
+        // If null is explicitly allowed we should skip this
+        if ($this->visitor instanceof NullAwareVisitorInterface
+            && true === $this->visitor->isNull($data)
+            && !$shouldDeserializeNull
+        ) {
             $type = ['name' => 'NULL', 'params' => []];
         }
 
