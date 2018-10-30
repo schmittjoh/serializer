@@ -73,6 +73,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNullObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
@@ -172,7 +173,7 @@ abstract class BaseSerializationTest extends TestCase
         );
     }
 
-    public function testDeserializeNullObject()
+    public function testDeserializeNullProperty()
     {
         if (!$this->hasDeserializer()) {
             $this->markTestSkipped(sprintf('No deserializer available for format `%s`', $this->getFormat()));
@@ -189,6 +190,22 @@ abstract class BaseSerializationTest extends TestCase
 
         self::assertEquals($obj, $dObj);
         self::assertNull($dObj->getNullProperty());
+    }
+
+    public function testDeserializeNullObject()
+    {
+        if (!$this->hasDeserializer()) {
+            $this->markTestSkipped(sprintf('No deserializer available for format `%s`', $this->getFormat()));
+        }
+
+        /** @var ObjectWithNullObject $dObj */
+        $dObj = $this->serializer->deserialize(
+            $this->getContent('simple_object_nullable'),
+            ObjectWithNullObject::class,
+            $this->getFormat()
+        );
+
+        self::assertSame('nullObject', $dObj->getNullProperty());
     }
 
     /**
@@ -1591,7 +1608,14 @@ abstract class BaseSerializationTest extends TestCase
                 return $list;
             }
         );
-
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+            'NullObject',
+            $this->getFormat(),
+            static function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
+                return 'nullObject';
+            }
+        );
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 

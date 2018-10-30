@@ -123,7 +123,7 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pConfig['deserialize_null'])) {
-                        $pMetadata->excludeIf = (bool) $pConfig['deserialize_null'];
+                        $pMetadata->deserializeNull = (bool) $pConfig['deserialize_null'];
                     }
 
                     if (isset($pConfig['expose_if'])) {
