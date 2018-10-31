@@ -49,11 +49,6 @@ abstract class Context
     /**
      * @var bool
      */
-    private $serializeNull = false;
-
-    /**
-     * @var bool
-     */
     private $initialized = false;
 
     /** @var \SplStack */
@@ -191,25 +186,6 @@ abstract class Context
         $this->attributes['max_depth_checks'] = true;
 
         return $this;
-    }
-
-    /**
-     * Set if NULLs should be serialized (TRUE) ot not (FALSE)
-     */
-    public function setSerializeNull(bool $bool): self
-    {
-        $this->serializeNull = $bool;
-
-        return $this;
-    }
-
-    /**
-     * Returns TRUE when NULLs should be serialized
-     * Returns FALSE when NULLs should not be serialized
-     */
-    public function shouldSerializeNull(): bool
-    {
-        return $this->serializeNull;
     }
 
     public function getFormat(): string
