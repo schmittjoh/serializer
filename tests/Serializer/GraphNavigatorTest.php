@@ -32,6 +32,7 @@ class GraphNavigatorTest extends TestCase
     private $serializationNavigator;
     private $deserializationNavigator;
     private $context;
+    private $deserializationContext;
     private $accessor;
 
     private $serializationVisitor;
@@ -140,6 +141,11 @@ class GraphNavigatorTest extends TestCase
             ->setMethodsExcept(['getExclusionStrategy'])
             ->getMock();
 
+        $this->deserializationContext = $this->getMockBuilder(DeserializationContext::class)
+            ->enableOriginalConstructor()
+            ->setMethodsExcept(['getExclusionStrategy'])
+            ->getMock();
+
         $this->dispatcher = new EventDispatcher();
         $this->accessor = new DefaultAccessorStrategy();
         $this->handlerRegistry = new HandlerRegistry();
@@ -151,7 +157,7 @@ class GraphNavigatorTest extends TestCase
         $this->serializationNavigator->initialize($this->serializationVisitor, $this->context);
 
         $this->deserializationNavigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->accessor, $this->dispatcher);
-        $this->deserializationNavigator->initialize($this->deserializationVisitor, $this->context);
+        $this->deserializationNavigator->initialize($this->deserializationVisitor, $this->deserializationContext);
     }
 }
 

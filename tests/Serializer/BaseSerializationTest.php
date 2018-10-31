@@ -726,7 +726,7 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post, SerializationContext::create()->setSerializeNull(true)));
 
         if ($this->hasDeserializer()) {
-            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), DeserializationContext::create()->setSerializeNull(true));
+            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), DeserializationContext::create());
 
             self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
             self::assertAttributeEquals('This is a nice title.', 'title', $deserialized);

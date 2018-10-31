@@ -20,6 +20,11 @@ class SerializationContext extends Context
      */
     private $initialType;
 
+    /**
+     * @var bool
+     */
+    private $serializeNull = false;
+
     public static function create(): self
     {
         return new self();
@@ -31,6 +36,25 @@ class SerializationContext extends Context
 
         $this->visitingSet = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();
+    }
+
+    /**
+     * Set if NULLs should be serialized (TRUE) ot not (FALSE)
+     */
+    public function setSerializeNull(bool $bool): self
+    {
+        $this->serializeNull = $bool;
+
+        return $this;
+    }
+
+    /**
+     * Returns TRUE when NULLs should be serialized
+     * Returns FALSE when NULLs should not be serialized
+     */
+    public function shouldSerializeNull(): bool
+    {
+        return $this->serializeNull;
     }
 
     /**
