@@ -17,7 +17,7 @@ in case you have heavily used internal-api here are the most important the chang
 - Removed the abstract classes `GenericSerializationVisito`r and `GenericDeserializationVisitor`.
 - Removed deprecated method `VisitorInterface::getNavigator`, use `Context::getNavigator` instead
 - Removed deprecated method `JsonSerializationVisitor::addData`, 
-  use `:visitProperty(new StaticPropertyMetadata(null, 'name', 'value'), null)` instead
+  use `:visitProperty(new StaticPropertyMetadata('', 'name', 'value'), null)` instead
 - Removed Propel and PhpCollection support
 - Changed default date format from ISO8601 to RFC3339  
 - Event listeners/handlers class names are case sensitive now
@@ -38,7 +38,7 @@ in case you have heavily used internal-api here are the most important the chang
 **Deprecations** (will be removed in 3.0)
 
 - `JsonSerializationVisitor::setData` will be removed, 
-  use `::visitProperty(new StaticPropertyMetadata(null, 'name', 'value'), null)` instead 
+  use `::visitProperty(new StaticPropertyMetadata('', 'name', 'value'), null)` instead 
 - `JsonSerializationVisitor::hasData` will be removed 
 - `VisitorInterface` is internal use `SerializationVisitorInterface` and `DeserializationVisitorInterface` instead
 - `GraphNavigator` is internal use `GraphNavigatorInterface` instead
