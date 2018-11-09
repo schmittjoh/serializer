@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.0.0](https://github.com/schmittjoh/serializer/tree/2.0.0) (2018-11-09)
+**Implemented enhancements:**
+
+- Move serialization info to the serialization context class [\#1006](https://github.com/schmittjoh/serializer/pull/1006) ([goetas](https://github.com/goetas))
+- Upgrade to Doctrine CS 5.0 [\#1002](https://github.com/schmittjoh/serializer/pull/1002) ([Majkl578](https://github.com/Majkl578))
+- Add travis build for docs [\#997](https://github.com/schmittjoh/serializer/pull/997) ([kunicmarko20](https://github.com/kunicmarko20))
+
+**Merged pull requests:**
+
+- Added missing comma in 'Overriding Groups' example [\#1001](https://github.com/schmittjoh/serializer/pull/1001) ([skuhnow](https://github.com/skuhnow))
+
 ## [2.0.0-RC1](https://github.com/schmittjoh/serializer/tree/2.0.0-RC1) (2018-10-17)
 
 **Merged pull requests:**
