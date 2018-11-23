@@ -9,7 +9,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionEvaluator implements ExpressionEvaluatorInterface
+class ExpressionEvaluator implements CompilableExpressionEvaluatorInterface
 {
     /**
      * @var ExpressionLanguage
@@ -21,16 +21,10 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
      */
     private $context = [];
 
-    /**
-     * @var array
-     */
-    private $cache = [];
-
-    public function __construct(ExpressionLanguage $expressionLanguage, array $context = [], array $cache = [])
+    public function __construct(ExpressionLanguage $expressionLanguage, array $context = [])
     {
         $this->expressionLanguage = $expressionLanguage;
         $this->context = $context;
-        $this->cache = $cache;
     }
 
     /**
@@ -42,22 +36,23 @@ class ExpressionEvaluator implements ExpressionEvaluatorInterface
     }
 
     /**
-     * @param  array $data
-     *
      * @return mixed
      */
     public function evaluate(string $expression, array $data = [])
     {
-        if (!\is_string($expression)) {
-            return $expression;
-        }
+        return $this->expressionLanguage->evaluate($expression, $data + $this->context);
+    }
 
-        $context = $data + $this->context;
+    /**
+     * @return mixed
+     */
+    public function evaluateParsed(Expression $expression, array $data = [])
+    {
+        return $this->expressionLanguage->evaluate($expression->getExpression(), $data + $this->context);
+    }
 
-        if (!array_key_exists($expression, $this->cache)) {
-            $this->cache[$expression] = $this->expressionLanguage->parse($expression, array_keys($context));
-        }
-
-        return $this->expressionLanguage->evaluate($this->cache[$expression], $context);
+    public function parse(string $expression, array $names = []): Expression
+    {
+        return new Expression($this->expressionLanguage->parse($expression, array_merge(array_keys($this->context), $names)));
     }
 }
