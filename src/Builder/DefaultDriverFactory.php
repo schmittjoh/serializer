@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -21,15 +22,22 @@ final class DefaultDriverFactory implements DriverFactoryInterface
      * @var ParserInterface
      */
     private $typeParser;
+
     /**
      * @var PropertyNamingStrategyInterface
      */
     private $propertyNamingStrategy;
 
-    public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, ?ParserInterface $typeParser = null)
+    /**
+     * @var CompilableExpressionEvaluatorInterface
+     */
+    private $expressionEvaluator;
+
+    public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         $this->typeParser = $typeParser ?: new Parser();
         $this->propertyNamingStrategy = $propertyNamingStrategy;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
@@ -38,9 +46,9 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $fileLocator = new FileLocator($metadataDirs);
 
             return new DriverChain([
-                new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
-                new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser),
-                new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser),
+                new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
+                new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
+                new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
             ]);
         }
 

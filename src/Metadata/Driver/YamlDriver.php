@@ -6,6 +6,7 @@ namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -21,6 +22,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlDriver extends AbstractFileDriver
 {
+    use ExpressionMetadataTrait;
+
     /**
      * @var ParserInterface
      */
@@ -30,11 +33,12 @@ class YamlDriver extends AbstractFileDriver
      */
     private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?BaseClassMetadata
@@ -63,7 +67,11 @@ class YamlDriver extends AbstractFileDriver
         if (array_key_exists('virtual_properties', $config)) {
             foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
                 if (isset($propertySettings['exp'])) {
-                    $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $methodName, $propertySettings['exp']);
+                    $virtualPropertyMetadata = new ExpressionPropertyMetadata(
+                        $name,
+                        $methodName,
+                        $this->parseExpression($propertySettings['exp'])
+                    );
                     unset($propertySettings['exp']);
                 } else {
                     if (!$class->hasMethod($methodName)) {
@@ -123,11 +131,11 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     if (isset($pConfig['exclude_if'])) {
-                        $pMetadata->excludeIf = (string) $pConfig['exclude_if'];
+                        $pMetadata->excludeIf = $this->parseExpression((string) $pConfig['exclude_if']);
                     }
 
                     if (isset($pConfig['expose_if'])) {
-                        $pMetadata->excludeIf = '!(' . $pConfig['expose_if'] . ')';
+                        $pMetadata->excludeIf = $this->parseExpression('!(' . $pConfig['expose_if'] . ')');
                     }
 
                     if (isset($pConfig['serialized_name'])) {

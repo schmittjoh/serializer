@@ -36,6 +36,7 @@ use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlValue;
 use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -49,6 +50,8 @@ use Metadata\MethodMetadata;
 
 class AnnotationDriver implements DriverInterface
 {
+    use ExpressionMetadataTrait;
+
     /**
      * @var Reader
      */
@@ -63,11 +66,12 @@ class AnnotationDriver implements DriverInterface
      */
     private $namingStrategy;
 
-    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null)
+    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         $this->reader = $reader;
         $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
@@ -113,7 +117,11 @@ class AnnotationDriver implements DriverInterface
                 $classMetadata->xmlDiscriminatorCData = (bool) $annot->cdata;
                 $classMetadata->xmlDiscriminatorNamespace = $annot->namespace ? (string) $annot->namespace : null;
             } elseif ($annot instanceof VirtualProperty) {
-                $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, $annot->name, $annot->exp);
+                $virtualPropertyMetadata = new ExpressionPropertyMetadata(
+                    $name,
+                    $annot->name,
+                    $this->parseExpression($annot->exp)
+                );
                 $propertiesMetadata[] = $virtualPropertyMetadata;
                 $propertiesAnnotations[] = $annot->options;
             }
@@ -176,11 +184,11 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
                         if (null !== $annot->if) {
-                            $propertyMetadata->excludeIf = '!(' . $annot->if . ')';
+                            $propertyMetadata->excludeIf = $this->parseExpression('!(' . $annot->if . ')');
                         }
                     } elseif ($annot instanceof Exclude) {
                         if (null !== $annot->if) {
-                            $propertyMetadata->excludeIf = $annot->if;
+                            $propertyMetadata->excludeIf = $this->parseExpression($annot->if);
                         } else {
                             $isExclude = true;
                         }

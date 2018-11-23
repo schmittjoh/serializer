@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression">
+        <property name="existField"  exclude-if="invalid"/>
+        <property name="existField"  exclude-if="invalid"/>
+        <virtual-property expression="invalid" />
+    </class>
+</serializer>

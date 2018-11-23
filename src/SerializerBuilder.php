@@ -23,6 +23,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator\Factory\DeserializationGraphNavigatorFactory;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
@@ -511,7 +512,11 @@ final class SerializerBuilder
 
         if (null === $this->driverFactory) {
             $this->initializePropertyNamingStrategy();
-            $this->driverFactory = new DefaultDriverFactory($this->propertyNamingStrategy, $this->typeParser);
+            $this->driverFactory = new DefaultDriverFactory(
+                $this->propertyNamingStrategy,
+                $this->typeParser,
+                $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
+            );
         }
 
         $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);
