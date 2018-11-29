@@ -75,6 +75,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
+use JMS\Serializer\Tests\Fixtures\ObjectWithTypedArraySetter;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\Order;
@@ -139,6 +140,20 @@ abstract class BaseSerializationTest extends TestCase
             $this->getContent('nullable'),
             $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeNull(true))
         );
+    }
+
+    public function testDeserializeObjectWithMissingTypedArrayProp()
+    {
+        /** @var ObjectWithTypedArraySetter $dObj */
+        $dObj = $this->serializer->deserialize(
+            $this->getContent('empty_object'),
+            ObjectWithTypedArraySetter::class,
+            $this->getFormat()
+        );
+
+        self::assertInstanceOf(ObjectWithTypedArraySetter::class, $dObj);
+
+        self::assertSame([], $dObj->getEmpty());
     }
 
     public function testSerializeNullArrayExcludingNulls()

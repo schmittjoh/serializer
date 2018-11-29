@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -173,7 +174,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (!array_key_exists($name, $data)) {
-            return;
+            throw new NotAcceptableException();
         }
 
         if (!$metadata->type) {
