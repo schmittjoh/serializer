@@ -117,6 +117,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['inline_deserialization_list_collection'] = '[1,2]';
             $outputs['inline_map'] = '{"0":"1","1":"2","2":"3"}';
             $outputs['inline_empty_map'] = '{}';
+            $outputs['empty_object'] = '{}';
             $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","0":"5"}';
         }
 
