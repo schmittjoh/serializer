@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.0.1](https://github.com/schmittjoh/serializer/tree/2.0.1) (2018-11-29)
+**Fixed bugs:**
+
+- BC Break on deserialize with non existing properties in JSON payload? [\#1011](https://github.com/schmittjoh/serializer/issues/1011)
+
+**Merged pull requests:**
+
+- when a typed array is missing, do not try to de-serialize it [\#1012](https://github.com/schmittjoh/serializer/pull/1012) ([goetas](https://github.com/goetas))
+- Update UPGRADING.md [\#1008](https://github.com/schmittjoh/serializer/pull/1008) ([kunicmarko20](https://github.com/kunicmarko20))
+
 ## [2.0.0](https://github.com/schmittjoh/serializer/tree/2.0.0) (2018-11-09)
 **Implemented enhancements:**
 
