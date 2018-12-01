@@ -73,7 +73,10 @@ class AnnotationDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
         $classMetadata = new ClassMetadata($name = $class->name);
-        $classMetadata->fileResources[] = $class->getFilename();
+        $fileResource =  $class->getFilename();
+        if (false !== $fileResource) {
+            $classMetadata->fileResources[] = $fileResource;
+        }
 
         $propertiesMetadata = [];
         $propertiesAnnotations = [];

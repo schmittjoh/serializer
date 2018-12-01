@@ -48,7 +48,11 @@ class YamlDriver extends AbstractFileDriver
         $config = $config[$name];
         $metadata = new ClassMetadata($name);
         $metadata->fileResources[] = $file;
-        $metadata->fileResources[] = $class->getFileName();
+        $fileResource =  $class->getFilename();
+        if (false !== $fileResource) {
+            $metadata->fileResources[] = $fileResource;
+        }
+
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
         $excludeAll = isset($config['exclude']) ? (bool) $config['exclude'] : false;
         $classAccessType = $config['access_type'] ?? PropertyMetadata::ACCESS_TYPE_PROPERTY;
