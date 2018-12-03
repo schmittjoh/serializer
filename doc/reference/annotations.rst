@@ -46,7 +46,7 @@ property. If this is not defined, the property will be translated from camel-cas
 to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
 Note that this annotation is not used when you're using any other naming 
-stategy than the default configuration (which includes the 
+strategy than the default configuration (which includes the 
 ``SerializedNameAnnotationStrategy``). In order to re-enable the annotation, you
 will need to wrap your custom strategy with the ``SerializedNameAnnotationStrategy``.
 
