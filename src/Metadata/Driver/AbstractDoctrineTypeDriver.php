@@ -137,7 +137,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         return $manager->getClassMetadata($className);
     }
 
-    protected function normalizeFieldType(string $type): ?string
+    protected function normalizeFieldType(?string $type): ?string
     {
         if (!isset($this->fieldMapping[$type])) {
             return null;
