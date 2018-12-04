@@ -21,6 +21,9 @@ use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\BlogPost;
+use JMS\Serializer\Tests\Fixtures\Doctrine\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
@@ -36,6 +39,27 @@ class IntegrationTest extends TestCase
 
     /** @var Serializer */
     private $serializer;
+
+    public function testEmbeddedSerialization()
+    {
+        $blogPost = new BlogPost('test', new Author('jim'), new \DateTime('2011-01-01'));
+        $blogPostSeo = new BlogPostSeo();
+        $blogPostSeo
+            ->setMetaTitle('test meta')
+            ->setMetaDescription('test description')
+        ;
+
+        $blogPost->setSeo($blogPostSeo);
+
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
+        $em->persist($blogPost);
+        $em->flush();
+
+        $json = $this->serializer->serialize($blogPost, 'json');
+        self::assertEquals('qweqwe', $json);
+
+    }
 
     public function testDiscriminatorIsInferredForEntityBaseClass()
     {

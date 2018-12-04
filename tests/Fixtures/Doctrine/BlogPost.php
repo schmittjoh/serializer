@@ -79,6 +79,11 @@ class BlogPost
      */
     private $ref;
 
+    /**
+     * @ORM\Embedded(class="BlogPostSeo", columnPrefix="seo_")
+     */
+    private $seo;
+
     public function __construct($title, Author $author, \DateTime $createdAt)
     {
         $this->title = $title;
@@ -86,6 +91,17 @@ class BlogPost
         $this->published = false;
         $this->comments = new ArrayCollection();
         $this->createdAt = $createdAt;
+        $this->seo = new BlogPostSeo();
+    }
+
+    public function getSeo()
+    {
+        return $this->seo;
+    }
+
+    public function setSeo(BlogPostSeo $seo)
+    {
+        $this->seo = $seo;
     }
 
     public function setPublished()
