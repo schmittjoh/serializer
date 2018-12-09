@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\Doctrine\BlogPostWithEmbedded;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineDriverTest extends TestCase
@@ -19,6 +20,13 @@ class DoctrineDriverTest extends TestCase
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\BlogPost');
         return $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+    }
+
+    public function testMetadataForEmbedded()
+    {
+        $refClass = new \ReflectionClass(BlogPostWithEmbedded::class);
+        $meta = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+        self::assertNotNull($meta);
     }
 
     public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()

@@ -23,7 +23,9 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
         $propertyName = $propertyMetadata->name;
-        if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {
+        if ($doctrineMetadata->hasField($propertyName)
+            && ($typeOfFiled = $doctrineMetadata->getTypeOfField($propertyName))
+            && ($fieldType = $this->normalizeFieldType($typeOfFiled))) {
             $field = $doctrineMetadata->getFieldMapping($propertyName);
             if (!empty($field['multivalue'])) {
                 $fieldType = 'array';
