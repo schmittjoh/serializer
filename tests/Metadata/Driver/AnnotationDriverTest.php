@@ -14,4 +14,9 @@ class AnnotationDriverTest extends BaseDriverTest
     {
         return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
     }
+
+    public function testCanDefineMetadataForInternalClass()
+    {
+        $this->markTestSkipped('Can not define annotation metadata for internal classes');
+    }
 }

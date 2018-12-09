@@ -271,6 +271,17 @@ abstract class BaseDriverTest extends TestCase
         self::assertFalse($m->xmlDiscriminatorAttribute);
     }
 
+    public function testCanDefineMetadataForInternalClass()
+    {
+        /** @var ClassMetadata $m */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(\PDOStatement::class));
+
+        self::assertNotNull($m);
+        self::assertSame('int', $m->propertyMetadata['queryString']->type['name']);
+
+        self::assertCount(1, $m->fileResources);
+    }
+
     public function testLoadXmlDiscriminatorWithAttributeNamespaces()
     {
         /** @var ClassMetadata $m */

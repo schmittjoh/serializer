@@ -96,6 +96,7 @@ class XmlDriverTest extends BaseDriverTest
 
         return new XmlDriver(new FileLocator([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
+            '' => __DIR__ . '/xml/_' . $append,
         ]), new IdenticalPropertyNamingStrategy());
     }
 }
