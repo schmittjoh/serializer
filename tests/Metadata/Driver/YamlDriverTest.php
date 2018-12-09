@@ -76,6 +76,7 @@ class YamlDriverTest extends BaseDriverTest
     {
         return new YamlDriver(new FileLocator([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/yml' . ($subDir ? '/' . $subDir : ''),
+            '' => __DIR__ . '/yml/_' . ($subDir ? '/' . $subDir : ''),
         ]), new IdenticalPropertyNamingStrategy());
     }
 
