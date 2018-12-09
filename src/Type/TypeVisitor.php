@@ -44,6 +44,10 @@ final class TypeVisitor implements Visit
             return '';
         }
 
+        if ('null' === $token) {
+            return null;
+        }
+
         if ('number' === $token) {
             return false === strpos($value, '.') ? intval($value) : floatval($value);
         }

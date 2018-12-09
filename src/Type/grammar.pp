@@ -4,6 +4,7 @@
 %token _parenthesis >
 %token empty_string ""|''
 %token number        (\+|\-)?(0|[1-9]\d*)(\.\d+)?
+%token null          null
 %token comma        ,
 %token name         (?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 
@@ -21,6 +22,7 @@ type:
 #simple_type:
     <name>
     | <number>
+    | <null>
     | <empty_string>
     | ::quote_:: <quoted_string> ::_quote::
     | ::apostrophe_:: <apostrophed_string> ::_apostrophe::

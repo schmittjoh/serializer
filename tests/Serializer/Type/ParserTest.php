@@ -60,6 +60,10 @@ class ParserTest extends TestCase
             $type('Foo', [5.5]),
         ];
         yield [
+            'Foo<null>',
+            $type('Foo', [null]),
+        ];
+        yield [
             'Foo<\'a\',\'b\',\'c\'>',
             $type('Foo', ['a', 'b', 'c']),
         ];
