@@ -40,6 +40,14 @@ final class TypeVisitor implements Visit
             return ['name' => $value, 'params' => []];
         }
 
+        if ('empty_string' === $token) {
+            return '';
+        }
+
+        if ('number' === $token) {
+            return false === strpos($value, '.') ? intval($value) : floatval($value);
+        }
+
         $escapeChar = 'quoted_string' === $token ? '"' : "'";
 
         if (false === strpos($value, $escapeChar)) {

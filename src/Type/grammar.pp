@@ -2,15 +2,17 @@
 
 %token parenthesis_ <
 %token _parenthesis >
+%token empty_string ""|''
+%token number        (\+|\-)?(0|[1-9]\d*)(\.\d+)?
 %token comma        ,
 %token name         (?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 
 %token quote_                      "            -> quoted_string
-%token quoted_string:quoted_string (?:[^"]|"")+
+%token quoted_string:quoted_string [^"]+
 %token quoted_string:_quote        "            -> default
 
 %token apostrophe_                           '            -> apostrophed_string
-%token apostrophed_string:apostrophed_string (?:[^']|'')+
+%token apostrophed_string:apostrophed_string [^']+
 %token apostrophed_string:_apostrophe        '            -> default
 
 type:
@@ -18,6 +20,8 @@ type:
 
 #simple_type:
     <name>
+    | <number>
+    | <empty_string>
     | ::quote_:: <quoted_string> ::_quote::
     | ::apostrophe_:: <apostrophed_string> ::_apostrophe::
 
