@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.0.2](https://github.com/schmittjoh/serializer/tree/2.0.2) (2018-12-12)
+**Fixed bugs:**
+
+- jms serialzier 2.0 Error in debug mode [\#1018](https://github.com/schmittjoh/serializer/issues/1018)
+- AbstractDoctrineTypeDriver::normalizeFieldType\(\) must be of the type string, null given [\#1015](https://github.com/schmittjoh/serializer/issues/1015)
+- internal classes have false in reflection::getFilename\(\) [\#1013](https://github.com/schmittjoh/serializer/pull/1013) ([chregu](https://github.com/chregu))
+
+**Closed issues:**
+
+- DateTime converted to ArrayObject instead of string in custom visitor class [\#1017](https://github.com/schmittjoh/serializer/issues/1017)
+
+**Merged pull requests:**
+
+- Doctrine driver normalizeFieldType method does not handle nulls [\#1020](https://github.com/schmittjoh/serializer/pull/1020) ([goetas](https://github.com/goetas))
+- fixed a typo [\#1014](https://github.com/schmittjoh/serializer/pull/1014) ([themasch](https://github.com/themasch))
+
 ## [2.0.1](https://github.com/schmittjoh/serializer/tree/2.0.1) (2018-11-29)
 **Fixed bugs:**
 
