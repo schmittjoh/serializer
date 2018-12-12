@@ -48,6 +48,30 @@ class ParserTest extends TestCase
             $type('array', [['name' => 'Foo', 'params' => []]]),
         ];
         yield [
+            'Foo<\'a\'>',
+            $type('Foo', ['a']),
+        ];
+        yield [
+            'Foo<5>',
+            $type('Foo', [5]),
+        ];
+        yield [
+            'Foo<5.5>',
+            $type('Foo', [5.5]),
+        ];
+        yield [
+            'Foo<null>',
+            $type('Foo', [null]),
+        ];
+        yield [
+            'Foo<\'a\',\'b\',\'c\'>',
+            $type('Foo', ['a', 'b', 'c']),
+        ];
+        yield [
+            'Foo<\'a\',\'\'>',
+            $type('Foo', ['a', '']),
+        ];
+        yield [
             'array<Foo,Bar>',
             $type('array', [['name' => 'Foo', 'params' => []], ['name' => 'Bar', 'params' => []]]),
         ];
@@ -71,14 +95,6 @@ class ParserTest extends TestCase
         yield [
             'Foo<"asdf asdf">',
             $type('Foo', ['asdf asdf']),
-        ];
-        yield [
-            'Foo<"""bar""">',
-            $type('Foo', ['"bar"']),
-        ];
-        yield [
-            "Foo<'a''b'>",
-            $type('Foo', ["a'b"]),
         ];
     }
 
