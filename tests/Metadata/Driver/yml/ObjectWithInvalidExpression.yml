@@ -1,0 +1,10 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression:
+    properties:
+        prop1:
+            exclude_if: invalid
+        prop2:
+            expose_if: invalid
+    virtual_properties:
+      invalid:
+        exp: invalid
+

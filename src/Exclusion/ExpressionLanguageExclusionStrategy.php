@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
@@ -46,6 +48,10 @@ final class ExpressionLanguageExclusionStrategy
             $variables['object'] = $navigatorContext->getObject();
         } else {
             $variables['object'] = null;
+        }
+
+        if (($property->excludeIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+            return $this->expressionEvaluator->evaluateParsed($property->excludeIf, $variables);
         }
 
         return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);

@@ -7,6 +7,7 @@ namespace JMS\Serializer\Metadata\Driver;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\XmlErrorException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -21,6 +22,8 @@ use Metadata\MethodMetadata;
 
 class XmlDriver extends AbstractFileDriver
 {
+    use ExpressionMetadataTrait;
+
     /**
      * @var ParserInterface
      */
@@ -30,11 +33,12 @@ class XmlDriver extends AbstractFileDriver
      */
     private $namingStrategy;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null)
+    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
     protected function loadMetadataFromFile(\ReflectionClass $class, string $path): ?BaseClassMetadata
@@ -133,7 +137,11 @@ class XmlDriver extends AbstractFileDriver
 
         foreach ($elem->xpath('./virtual-property') as $method) {
             if (isset($method->attributes()->expression)) {
-                $virtualPropertyMetadata = new ExpressionPropertyMetadata($name, (string) $method->attributes()->name, (string) $method->attributes()->expression);
+                $virtualPropertyMetadata = new ExpressionPropertyMetadata(
+                    $name,
+                    (string) $method->attributes()->name,
+                    $this->parseExpression((string) $method->attributes()->expression)
+                );
             } else {
                 if (!isset($method->attributes()->method)) {
                     throw new InvalidMetadataException('The method attribute must be set for all virtual-property elements.');
@@ -177,7 +185,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'exclude-if'}) {
-                        $pMetadata->excludeIf = (string) $excludeIf;
+                        $pMetadata->excludeIf = $this->parseExpression((string) $excludeIf);
                     }
 
                     if (null !== $skip = $pElem->attributes()->{'skip-when-empty'}) {
@@ -185,7 +193,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'expose-if'}) {
-                        $pMetadata->excludeIf = '!(' . (string) $excludeIf . ')';
+                        $pMetadata->excludeIf = $this->parseExpression('!(' . (string) $excludeIf . ')');
                         $isExpose = true;
                     }
 

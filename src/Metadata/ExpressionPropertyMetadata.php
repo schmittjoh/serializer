@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata;
 
+use JMS\Serializer\Expression\Expression;
+
 /**
  * @Annotation
  * @Target("METHOD")
@@ -13,11 +15,14 @@ namespace JMS\Serializer\Metadata;
 class ExpressionPropertyMetadata extends PropertyMetadata
 {
     /**
-     * @var string
+     * @var string|Expression
      */
     public $expression;
 
-    public function __construct(string $class, string $fieldName, string $expression)
+    /**
+     * @param string|Expression $expression
+     */
+    public function __construct(string $class, string $fieldName, $expression)
     {
         $this->class = $class;
         $this->name = $fieldName;

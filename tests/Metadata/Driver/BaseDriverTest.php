@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -17,11 +19,14 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscrimina
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
+use JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 abstract class BaseDriverTest extends TestCase
 {
@@ -157,6 +162,14 @@ abstract class BaseDriverTest extends TestCase
 
         self::assertArrayHasKey('array', $m->propertyMetadata);
         self::assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
+    }
+
+    public function testInvalidExpression()
+    {
+        $this->expectException(InvalidMetadataException::class);
+
+        $a = new ObjectWithInvalidExpression();
+        $this->getDriver()->loadMetadataForClass(new \ReflectionClass($a));
     }
 
     public function testExpressionVirtualPropertyWithExcludeAll()
@@ -594,4 +607,16 @@ abstract class BaseDriverTest extends TestCase
      * @return DriverInterface
      */
     abstract protected function getDriver();
+
+    protected function getExpressionEvaluator()
+    {
+        $language = new ExpressionLanguage();
+
+        $language->addFunction(new ExpressionFunction('show_data', static function () {
+            return 'true';
+        }, static function () {
+            return true;
+        }));
+        return new ExpressionEvaluator($language);
+    }
 }

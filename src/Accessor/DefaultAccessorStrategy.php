@@ -7,6 +7,8 @@ namespace JMS\Serializer\Accessor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -57,7 +59,13 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             if (null === $this->evaluator) {
                 throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $metadata->name, $metadata->class));
             }
-            return $this->evaluator->evaluate($metadata->expression, ['object' => $object, 'context' => $context, 'property_metadata' => $metadata ]);
+
+            $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+
+            if (($metadata->expression instanceof Expression) && ($this->evaluator instanceof CompilableExpressionEvaluatorInterface)) {
+                return $this->evaluator->evaluateParsed($metadata->expression, $variables);
+            }
+            return $this->evaluator->evaluate($metadata->expression, $variables);
         }
 
         if (null === $metadata->getter) {
