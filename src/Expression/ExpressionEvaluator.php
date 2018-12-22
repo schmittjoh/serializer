@@ -9,7 +9,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-class ExpressionEvaluator implements CompilableExpressionEvaluatorInterface
+class ExpressionEvaluator implements CompilableExpressionEvaluatorInterface, ExpressionEvaluatorInterface
 {
     /**
      * @var ExpressionLanguage

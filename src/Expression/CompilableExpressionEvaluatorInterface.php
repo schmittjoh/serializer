@@ -7,7 +7,7 @@ namespace JMS\Serializer\Expression;
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-interface CompilableExpressionEvaluatorInterface extends ExpressionEvaluatorInterface
+interface CompilableExpressionEvaluatorInterface
 {
     public function parse(string $expression, array $names = []): Expression;
 
