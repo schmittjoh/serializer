@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.1.0](https://github.com/schmittjoh/serializer/tree/2.1.0)
+
+**Implemented enhancements:**
+
+- Add compilable expression language [\#1010](https://github.com/schmittjoh/serializer/pull/1010) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Compile error  Declaration of \[...\] must be compatible with \[...\] [\#1024](https://github.com/schmittjoh/serializer/issues/1024)
+- Exclude field for depth [\#1022](https://github.com/schmittjoh/serializer/issues/1022)
+- Add class properties inheritance for extending classes \(e.g. XmlRoot\) [\#396](https://github.com/schmittjoh/serializer/issues/396)
+
+**Merged pull requests:**
+
+- fixed typo [\#1029](https://github.com/schmittjoh/serializer/pull/1029) ([sasezaki](https://github.com/sasezaki))
+
 ## [2.0.2](https://github.com/schmittjoh/serializer/tree/2.0.2) (2018-12-12)
 **Fixed bugs:**
 
