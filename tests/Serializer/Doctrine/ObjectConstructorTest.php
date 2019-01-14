@@ -11,9 +11,11 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\Version as ORMVersion;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Construction\DoctrineObjectConstructor;
@@ -25,6 +27,7 @@ use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Excursion;
 use JMS\Serializer\VisitorInterface;
@@ -206,6 +209,40 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testFallbackOnEmbeddableClassWithXmlDriver()
+    {
+        if (ORMVersion::compare('2.5') >= 0) {
+            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
+        }
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct');
+
+        $connection = $this->createConnection();
+        $entityManager = $this->createXmlEntityManager($connection);
+
+        $this->registry = $registry = new SimpleBaseManagerRegistry(
+            static function ($id) use ($connection, $entityManager) {
+                switch ($id) {
+                    case 'default_connection':
+                        return $connection;
+
+                    case 'default_manager':
+                        return $entityManager;
+
+                    default:
+                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                }
+            }
+        );
+
+        $type = array('name' => BlogPostSeo::class, 'params' => array());
+        $class = new ClassMetadata(BlogPostSeo::class);
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $constructor->construct($this->visitor, $class, array('metaTitle' => 'test'), $type, $this->context);
+    }
+
     protected function setUp()
     {
         $this->visitor = $this->getMockBuilder('JMS\Serializer\VisitorInterface')->getMock();
@@ -261,12 +298,16 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         return $con;
     }
 
-    private function createEntityManager(Connection $con)
+    private function createEntityManager(Connection $con, Configuration $cfg = null)
     {
-        $cfg = new Configuration();
-        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
-            __DIR__ . '/../../Fixtures/Doctrine',
-        )));
+        if (!$cfg) {
+            $cfg = new Configuration();
+            $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
+                __DIR__ . '/../../Fixtures/Doctrine/Entity',
+                __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+            )));
+        }
+
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
@@ -274,6 +315,21 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         $em = EntityManager::create($con, $cfg);
 
         return $em;
+    }
+
+    /**
+     * @param Connection $con
+     *
+     * @return EntityManager
+     */
+    private function createXmlEntityManager(Connection $con)
+    {
+        $cfg = new Configuration();
+        $cfg->setMetadataDriverImpl(new XmlDriver(array(
+            __DIR__ . '/../../Fixtures/Doctrine/XmlMapping',
+        )));
+
+        return $this->createEntityManager($con, $cfg);
     }
 
     /**
