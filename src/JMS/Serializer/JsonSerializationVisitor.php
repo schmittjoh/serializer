@@ -7,6 +7,10 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\AdvancedNamingStrategyInterface;
 
+/**
+ * Class JsonSerializationVisitor
+ * @package JMS\Serializer
+ */
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
     private $options = 0;
@@ -69,7 +73,24 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
             $this->root = $data;
         }
 
-        return (float)$data;
+        $options = $this->getOptions();
+        $decimals = null;
+        $dec_point = null;
+        $thousands_sep = null;
+        if (array_key_exists('float', $options)) {
+            $float = $options['float'];
+            if (array_key_exists('decimals', $float)) {
+                $decimals = $float['decimals'];
+            }
+            if (array_key_exists('dec_point', $float)) {
+                $dec_point = $float['dec_point'];
+            }
+            if (array_key_exists('thousands_sep', $float)) {
+                $thousands_sep = $float['thousands_sep'];
+            }
+        }
+
+        return number_format((float)$data, $decimals, $dec_point, $thousands_sep);
     }
 
     /**
@@ -157,7 +178,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
         if ($metadata->inline) {
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
-                $this->data = array_merge($this->data, (array) $v);
+                $this->data = array_merge($this->data, (array)$v);
             }
         } else {
             $this->data[$k] = $v;
