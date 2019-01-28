@@ -18,28 +18,22 @@ final class IteratorHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $formats = ['json', 'xml', 'yml'];
-        $iteratorTypes = [
-            \Iterator::class,
-            \ArrayIterator::class,
-        ];
+        $formats = ['json', 'xml' ];
 
-        foreach ($iteratorTypes as $type) {
-            foreach ($formats as $format) {
-                $methods[] = [
-                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                    'type' => $type,
-                    'format' => $format,
-                    'method' => 'serializeIterator',
-                ];
+        foreach ($formats as $format) {
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'type' => \ArrayIterator::class,
+                'format' => $format,
+                'method' => 'serializeIterator',
+            ];
 
-                $methods[] = [
-                    'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                    'type' => $type,
-                    'format' => $format,
-                    'method' => 'deserializeIterator',
-                ];
-            }
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                'type' => \ArrayIterator::class,
+                'format' => $format,
+                'method' => 'deserializeIterator',
+            ];
         }
 
         foreach ($formats as $format) {
