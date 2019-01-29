@@ -12,15 +12,16 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class IteratorHandler implements SubscribingHandlerInterface
 {
+    private const SUPPORTED_FORMATS = ['json', 'xml'];
+
     /**
      * {@inheritdoc}
      */
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $formats = ['json', 'xml' ];
 
-        foreach ($formats as $format) {
+        foreach (self::SUPPORTED_FORMATS as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => \ArrayIterator::class,
@@ -36,7 +37,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
             ];
         }
 
-        foreach ($formats as $format) {
+        foreach (self::SUPPORTED_FORMATS as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => \Generator::class,
@@ -56,7 +57,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @return array|\ArrayObject
+     * @return mixed[]|\ArrayObject
      */
     public function serializeIterator(
         SerializationVisitorInterface $visitor,
