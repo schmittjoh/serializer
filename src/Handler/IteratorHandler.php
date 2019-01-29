@@ -75,7 +75,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param mixed $data
+     * @param mixed[] $data
      */
     public function deserializeIterator(
         DeserializationVisitorInterface $visitor,
@@ -90,7 +90,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
 
 
     /**
-     * @param mixed $data
+     * @param mixed[] $data
      */
     public function deserializeGenerator(
         DeserializationVisitorInterface $visitor,
