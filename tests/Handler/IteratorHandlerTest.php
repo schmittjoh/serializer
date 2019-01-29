@@ -11,7 +11,7 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\TestCase;
 
-class IteratorHandlerTest extends TestCase
+final class IteratorHandlerTest extends TestCase
 {
     public function testSerializeIterator()
     {
