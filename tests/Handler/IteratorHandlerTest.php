@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class IteratorHandlerTest extends TestCase
 {
-    public function testSerializeIterator()
+    public function testSerializeIterator(): void
     {
         $handler = new IteratorHandler();
 
@@ -28,11 +28,11 @@ final class IteratorHandlerTest extends TestCase
 
         $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
         $this->assertCount(2, $results);
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
     }
 
 
-    public function testSerializeGenerator()
+    public function testSerializeGenerator(): void
     {
         $handler = new IteratorHandler();
 
@@ -51,10 +51,10 @@ final class IteratorHandlerTest extends TestCase
 
         $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
         $this->assertCount(2, $results);
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
     }
 
-    public function testDeserializeIterator()
+    public function testDeserializeIterator(): void
     {
         $handler = new IteratorHandler();
 
@@ -71,7 +71,7 @@ final class IteratorHandlerTest extends TestCase
     }
 
 
-    public function testDeserializeGenerator()
+    public function testDeserializeGenerator(): void
     {
         $handler = new IteratorHandler();
 
