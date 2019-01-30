@@ -27,8 +27,8 @@ final class IteratorHandlerTest extends TestCase
         $iterator = new \ArrayIterator($data);
 
         $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
-        $this->assertCount(2, $results);
-        $this->assertIsArray($results);
+        self::assertCount(2, $results);
+        self::assertIsArray($results);
     }
 
 
@@ -50,8 +50,8 @@ final class IteratorHandlerTest extends TestCase
         })();
 
         $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
-        $this->assertCount(2, $results);
-        $this->assertIsArray($results);
+        self::assertCount(2, $results);
+        self::assertIsArray($results);
     }
 
     public function testDeserializeIterator(): void
@@ -66,8 +66,8 @@ final class IteratorHandlerTest extends TestCase
         $type = ['name' => \Iterator::class, 'params' => []];
 
         $results = $handler->deserializeIterator($visitor, $data, $type, $context);
-        $this->assertCount(2, $results);
-        $this->assertInstanceOf(\Iterator::class, $results);
+        self::assertCount(2, $results);
+        self::assertInstanceOf(\Iterator::class, $results);
     }
 
 
@@ -83,7 +83,7 @@ final class IteratorHandlerTest extends TestCase
         $type = ['name' => \Iterator::class, 'params' => []];
 
         $results = $handler->deserializeGenerator($visitor, $data, $type, $context);
-        $this->assertCount(2, $results);
-        $this->assertInstanceOf(\Generator::class, $results);
+        self::assertCount(2, $results);
+        self::assertInstanceOf(\Generator::class, $results);
     }
 }
