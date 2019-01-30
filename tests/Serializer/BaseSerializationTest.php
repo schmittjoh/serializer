@@ -1544,9 +1544,9 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
     }
 
-    public function testGenerator()
+    public function testGenerator(): void
     {
-        $generator = static function () {
+        $generator = static function (): \Generator {
             yield 'foo' => 'bar';
             yield 'bar' => 'foo';
         };
@@ -1562,7 +1562,7 @@ abstract class BaseSerializationTest extends TestCase
         );
     }
 
-    public function testIterator()
+    public function testIterator(): void
     {
         $iterator = new \ArrayIterator([
             'foo' => 'bar',
