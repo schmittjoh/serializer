@@ -44,7 +44,7 @@ final class IteratorHandlerTest extends TestCase
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
         $type = ['name' => \Generator::class, 'params' => []];
 
-        $iterator = (static function () {
+        $iterator = (static function (): \Generator {
             yield 'foo';
             yield 'bar';
         })();

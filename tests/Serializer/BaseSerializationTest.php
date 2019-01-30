@@ -1553,12 +1553,13 @@ abstract class BaseSerializationTest extends TestCase
         $withGenerator = new ObjectWithGenerator($generator());
         self::assertEquals($this->getContent('generator'), $this->serialize($withGenerator));
 
-        if ($this->hasDeserializer()) {
-            self::assertEquals(
-                $withGenerator,
-                $this->deserialize($this->getContent('generator'), get_class($withGenerator))
-            );
+        if (!$this->hasDeserializer()) {
+            return;
         }
+        self::assertEquals(
+            $withGenerator,
+            $this->deserialize($this->getContent('generator'), get_class($withGenerator))
+        );
     }
 
     public function testIterator()
@@ -1570,12 +1571,13 @@ abstract class BaseSerializationTest extends TestCase
         $withIterator = new ObjectWithIterator($iterator);
         self::assertEquals($this->getContent('iterator'), $this->serialize($withIterator));
 
-        if ($this->hasDeserializer()) {
-            self::assertEquals(
-                $withIterator,
-                $this->deserialize($this->getContent('iterator'), get_class($withIterator))
-            );
+        if (!$this->hasDeserializer()) {
+            return;
         }
+        self::assertEquals(
+            $withIterator,
+            $this->deserialize($this->getContent('iterator'), get_class($withIterator))
+        );
     }
 
     public function getSerializeNullCases()
