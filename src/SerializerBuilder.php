@@ -32,6 +32,7 @@ use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -252,6 +253,7 @@ final class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
 
         return $this;
     }

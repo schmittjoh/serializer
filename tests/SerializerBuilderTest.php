@@ -59,6 +59,7 @@ class SerializerBuilderTest extends TestCase
         $serializer = $this->builder->build();
 
         self::assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
+        self::assertEquals('[1,2,3]', $serializer->serialize(new \ArrayIterator([1, 2, 3]), 'json'));
     }
 
     public function testCustomTypeParser()

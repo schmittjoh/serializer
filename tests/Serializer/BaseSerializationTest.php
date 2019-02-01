@@ -20,6 +20,7 @@ use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -71,7 +72,9 @@ use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
+use JMS\Serializer\Tests\Fixtures\ObjectWithGenerator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\ObjectWithIterator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
@@ -1541,6 +1544,42 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
     }
 
+    public function testGenerator(): void
+    {
+        $generator = static function (): \Generator {
+            yield 'foo' => 'bar';
+            yield 'bar' => 'foo';
+        };
+        $withGenerator = new ObjectWithGenerator($generator());
+        self::assertEquals($this->getContent('generator'), $this->serialize($withGenerator));
+
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+        self::assertEquals(
+            $withGenerator,
+            $this->deserialize($this->getContent('generator'), get_class($withGenerator))
+        );
+    }
+
+    public function testIterator(): void
+    {
+        $iterator = new \ArrayIterator([
+            'foo' => 'bar',
+            'bar' => 'foo',
+        ]);
+        $withIterator = new ObjectWithIterator($iterator);
+        self::assertEquals($this->getContent('iterator'), $this->serialize($withIterator));
+
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+        self::assertEquals(
+            $withIterator,
+            $this->deserialize($this->getContent('iterator'), get_class($withIterator))
+        );
+    }
+
     public function getSerializeNullCases()
     {
         return [
@@ -1576,6 +1615,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',

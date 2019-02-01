@@ -384,6 +384,24 @@ Available Types:
 | ArrayCollection<K, V>                                    | Similar to array<K, V>, but will be deserialized |
 |                                                          | into Doctrine's ArrayCollection class.           |
 +----------------------------------------------------------+--------------------------------------------------+
+| Generator                                                | Similar to array, but will be deserialized       |
+|                                                          | into Generator class.                            |
++----------------------------------------------------------+--------------------------------------------------+
+| Generator<T>                                             | Similar to array<T>, but will be deserialized    |
+|                                                          | into Generator class.                            |
++----------------------------------------------------------+--------------------------------------------------+
+| Generator<K, V>                                          | Similar to array<K, V>, but will be deserialized |
+|                                                          | into Generator class.                            |
++----------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator                                            | Similar to array, but will be deserialized       |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator<T>                                         | Similar to array<T>, but will be deserialized    |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator<K, V>                                      | Similar to array<K, V>, but will be deserialized |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
