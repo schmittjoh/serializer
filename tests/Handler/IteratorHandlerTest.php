@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -13,77 +15,82 @@ use PHPUnit\Framework\TestCase;
 
 final class IteratorHandlerTest extends TestCase
 {
-    public function testSerializeIterator(): void
+    private const DATA = ['foo', 'bar'];
+
+    /**
+     * @var HandlerRegistry
+     */
+    private $handlerRegistry;
+
+    public function iteratorsProvider(): array
     {
-        $handler = new IteratorHandler();
-
-        $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
-        $data = ['foo', 'bar'];
-        $visitor->method('visitArray')->with($data)->willReturn($data);
-
-        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
-        $type = ['name' => \Iterator::class, 'params' => []];
-
-        $iterator = new \ArrayIterator($data);
-
-        $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
-        self::assertCount(2, $results);
-        self::assertIsArray($results);
+        return [
+            [
+                new \ArrayIterator(self::DATA),
+            ],
+            [
+                (static function (): \Generator {
+                    yield 'foo';
+                    yield 'bar';
+                })(),
+            ],
+        ];
     }
 
-
-    public function testSerializeGenerator(): void
+    /**
+     * @dataProvider iteratorsProvider
+     */
+    public function testSerialize(\Iterator $iterator): void
     {
-        $handler = new IteratorHandler();
+        $type = get_class($iterator);
+        $serializationHandler = $this->handlerRegistry->getHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            $type,
+            'json'
+        );
+        self::assertIsCallable($serializationHandler);
 
-        $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
+        $serialized = $serializationHandler(
+            $this->createSerializationVisitor(),
+            $iterator,
+            ['name' => $type, 'params' => []],
+            $this->getMockBuilder(SerializationContext::class)->getMock()
+        );
+        self::assertSame(self::DATA, $serialized);
 
-        $data = ['foo', 'bar'];
-        $visitor->method('visitArray')->with($data)->willReturn($data);
+        $deserializationHandler = $this->handlerRegistry->getHandler(
+            GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+            $type,
+            'json'
+        );
+        self::assertIsCallable($deserializationHandler);
 
-        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
-        $type = ['name' => \Generator::class, 'params' => []];
-
-        $iterator = (static function (): \Generator {
-            yield 'foo';
-            yield 'bar';
-        })();
-
-        $results= $handler->serializeIterator($visitor, $iterator, $type, $context);
-        self::assertCount(2, $results);
-        self::assertIsArray($results);
+        $deserialized = $deserializationHandler(
+            $this->createDeserializationVisitor(),
+            $serialized,
+            ['name' => $type, 'params' => []],
+            $this->getMockBuilder(DeserializationContext::class)->getMock()
+        );
+        self::assertEquals($iterator, $deserialized);
     }
 
-    public function testDeserializeIterator(): void
+    protected function setUp(): void
     {
-        $handler = new IteratorHandler();
+        $this->handlerRegistry = new HandlerRegistry();
+        $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
+    }
 
+    private function createDeserializationVisitor(): DeserializationVisitorInterface
+    {
         $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
-        $data = ['foo', 'bar'];
-        $visitor->method('visitArray')->with($data)->willReturn($data);
-
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $type = ['name' => \Iterator::class, 'params' => []];
-
-        $results = $handler->deserializeIterator($visitor, $data, $type, $context);
-        self::assertCount(2, $results);
-        self::assertInstanceOf(\Iterator::class, $results);
+        $visitor->method('visitArray')->with(self::DATA)->willReturn(self::DATA);
+        return $visitor;
     }
 
-
-    public function testDeserializeGenerator(): void
+    private function createSerializationVisitor(): SerializationVisitorInterface
     {
-        $handler = new IteratorHandler();
-
-        $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
-        $data = ['foo', 'bar'];
-        $visitor->method('visitArray')->with($data)->willReturn($data);
-
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $type = ['name' => \Iterator::class, 'params' => []];
-
-        $results = $handler->deserializeGenerator($visitor, $data, $type, $context);
-        self::assertCount(2, $results);
-        self::assertInstanceOf(\Generator::class, $results);
+        $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
+        $visitor->method('visitArray')->with(self::DATA)->willReturn(self::DATA);
+        return $visitor;
     }
 }
