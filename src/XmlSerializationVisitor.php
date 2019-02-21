@@ -179,7 +179,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         if (floor($data) === $data) {
             return $this->document->createTextNode($data . '.0');
         } else {
-            return $this->document->createTextNode((string) $data);
+            return $this->document->createTextNode(json_encode((float) $data));
         }
     }
 
