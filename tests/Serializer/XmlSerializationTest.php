@@ -547,6 +547,28 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertTrue($visitor->isNull(null));
     }
 
+    public function testDoubleEncoding()
+    {
+        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
+        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
+
+        $visitor = (new XmlSerializationVisitorFactory())->getVisitor($navigator, $context);
+
+        // Setting locale with comma fractional separator
+        $locale = setlocale(LC_ALL, 0);
+        if (!setlocale(LC_ALL, 'ru_RU.UTF-8')) {
+            $this->markTestIncomplete('Required locale not available');
+        }
+
+        self::assertEquals('0.0', $visitor->visitDouble(0, [])->data);
+        self::assertEquals('1.0', $visitor->visitDouble(1, [])->data);
+        self::assertEquals('1.1', $visitor->visitDouble(1.1, [])->data);
+        self::assertEquals('1.123456789', $visitor->visitDouble(1.123456789, [])->data);
+
+        // Switching locale back
+        setlocale(LC_ALL, $locale);
+    }
+
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
