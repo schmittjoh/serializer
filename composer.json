@@ -13,7 +13,7 @@
         {
             "name": "Asmir Mustafic",
             "email": "goetas@gmail.com"
-        }        
+        }
     ],
     "require": {
         "php": "^7.2",
