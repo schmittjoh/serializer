@@ -1200,19 +1200,25 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testVirtualVersions()
     {
+        $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator($evaluator);
+        $serializer = $builder->build();
+
         self::assertEquals(
             $this->getContent('virtual_properties_low'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('2'))
+            $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat(), SerializationContext::create()->setVersion('2'))
         );
 
         self::assertEquals(
             $this->getContent('virtual_properties_all'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('7'))
+            $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat(), SerializationContext::create()->setVersion('7'))
         );
 
         self::assertEquals(
             $this->getContent('virtual_properties_high'),
-            $this->serialize(new ObjectWithVersionedVirtualProperties(), SerializationContext::create()->setVersion('9'))
+            $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat(), SerializationContext::create()->setVersion('9'))
         );
     }
 
