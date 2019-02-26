@@ -78,9 +78,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
             $outputs['groups_advanced'] = '{"name":"John","manager":{"name":"John Manager","friends":[{"nickname":"nickname"},{"nickname":"nickname"}]},"friends":[{"nickname":"nickname","manager":{"nickname":"nickname"}},{"nickname":"nickname","manager":{"nickname":"nickname"}}]}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
-            $outputs['virtual_properties_low'] = '{"low":1}';
-            $outputs['virtual_properties_high'] = '{"high":8}';
-            $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['virtual_properties_low'] = '{"classlow":1,"low":1}';
+            $outputs['virtual_properties_high'] = '{"classhigh":8,"high":8}';
+            $outputs['virtual_properties_all'] = '{"classlow":1,"classhigh":8,"low":1,"high":8}';
             $outputs['nullable'] = '{"foo":"bar","baz":null,"0":null}';
             $outputs['nullable_skip'] = '{"foo":"bar"}';
             $outputs['person_secret_show'] = '{"name":"mike","gender":"f"}';
