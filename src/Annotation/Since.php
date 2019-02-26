@@ -6,7 +6,7 @@ namespace JMS\Serializer\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY", "METHOD"})
+ * @Target({"ALL"})
  */
 final class Since extends Version
 {
