@@ -35,9 +35,6 @@ For standalone projects usage of the provided builder is encouraged::
     $jsonContent = $serializer->serialize($data, 'json');
     echo $jsonContent; // or return it in a Response
 
-To enable the Serializer to process the data annotions, the annotation registry must be initialized::
-
-    Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
 
 Documentation
 -------------
