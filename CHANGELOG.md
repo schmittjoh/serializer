@@ -1,5 +1,32 @@
 # Change Log
 
+## [2.2.0](https://github.com/schmittjoh/serializer/tree/2.2.0)
+
+**Implemented enhancements:**
+
+- Add Iterator Handler [\#1034](https://github.com/schmittjoh/serializer/pull/1034) ([scyzoryck](https://github.com/scyzoryck))
+
+
+**Fixed bugs:**
+
+- xmlRootPrefix missing from unserialized metadata [\#1050](https://github.com/schmittjoh/serializer/issues/1050)
+- Non-locale aware encoding of doubles, closes \#1041 [\#1042](https://github.com/schmittjoh/serializer/pull/1042) ([Grundik](https://github.com/Grundik))
+
+**Closed issues:**
+
+- Using @Until and @Since on class level [\#1048](https://github.com/schmittjoh/serializer/issues/1048)
+- Add use of annotation registry to docs [\#1044](https://github.com/schmittjoh/serializer/issues/1044)
+- Values of type "double" should not use locale-specific encoding [\#1041](https://github.com/schmittjoh/serializer/issues/1041)
+- Serialize Generator [\#1023](https://github.com/schmittjoh/serializer/issues/1023)
+
+**Merged pull requests:**
+
+- Test on php 7.3 [\#1054](https://github.com/schmittjoh/serializer/pull/1054) ([goetas](https://github.com/goetas))
+- xmlRootPrefix missing from unserialized metadata [\#1053](https://github.com/schmittjoh/serializer/pull/1053) ([goetas](https://github.com/goetas))
+- Allow @Since and @Until within @VirtualProperty on class level [\#1049](https://github.com/schmittjoh/serializer/pull/1049) ([tjveldhuizen](https://github.com/tjveldhuizen))
+- Document use of AnnotationRegistry [\#1047](https://github.com/schmittjoh/serializer/pull/1047) ([andig](https://github.com/andig))
+- Fix result of code example [\#1039](https://github.com/schmittjoh/serializer/pull/1039) ([henrikthesing](https://github.com/henrikthesing))
+
 ## [2.1.0](https://github.com/schmittjoh/serializer/tree/2.1.0)
 
 **Implemented enhancements:**
