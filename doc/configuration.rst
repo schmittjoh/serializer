@@ -8,6 +8,12 @@ Configuration
     using another framework, there also might be a module, or other special integration. Please check packagist, or
     whatever registry usually holds such information for your framework.
 
+
+If you are using the standalone library and you want to use annotations, the annotation registry must be initialized::
+
+    Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
+
+
 Constructing a Serializer
 -------------------------
 

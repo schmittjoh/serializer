@@ -35,6 +35,7 @@ For standalone projects usage of the provided builder is encouraged::
     $jsonContent = $serializer->serialize($data, 'json');
     echo $jsonContent; // or return it in a Response
 
+
 Documentation
 -------------
 
