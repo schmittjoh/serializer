@@ -293,6 +293,7 @@ class ClassMetadata extends MergeableClassMetadata
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
             'usingExpression' => $this->usingExpression,
             'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
+            'xmlRootPrefix' => $this->xmlRootPrefix,
             'isList' => $this->isList,
             'isMap' => $this->isMap,
         ]);
@@ -348,12 +349,18 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlDiscriminatorCData = $unserialized['xmlDiscriminatorCData'];
         }
 
+        if (isset($unserialized['xmlRootPrefix'])) {
+            $this->xmlRootPrefix = $unserialized['xmlRootPrefix'];
+        }
+
         if (isset($unserialized['isList'])) {
             $this->isList = $unserialized['isList'];
         }
+
         if (isset($unserialized['isMap'])) {
             $this->isMap = $unserialized['isMap'];
         }
+
         parent::unserialize($parentStr);
     }
 

@@ -28,6 +28,18 @@ class ClassMetadataTest extends TestCase
         self::assertEquals($meta, $restoredMeta);
     }
 
+    public function testSerializationClass()
+    {
+        $meta = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
+        $meta->xmlRootPrefix = 'foo';
+        $meta->xmlDiscriminatorCData = 'foo';
+        $meta->xmlDiscriminatorAttribute = 'foo';
+        $meta->xmlRootName = 'foo';
+
+        $restoredMeta = unserialize(serialize($meta));
+        self::assertEquals($meta, $restoredMeta);
+    }
+
     /**
      * @dataProvider getAccessOrderCases
      */
