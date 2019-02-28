@@ -11,7 +11,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
-final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
+class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
     /**
      * @var int
