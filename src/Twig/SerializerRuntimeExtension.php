@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Twig;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+
 /**
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class SerializerRuntimeExtension extends \Twig_Extension
+final class SerializerRuntimeExtension extends AbstractExtension
 {
     /**
      * @return string
@@ -20,26 +24,26 @@ final class SerializerRuntimeExtension extends \Twig_Extension
     }
 
     /**
-     * @return \Twig_Filter[]
+     * @return TwigFilter[]
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('serialize', [SerializerRuntimeHelper::class, 'serialize']),
+            new TwigFilter('serialize', [SerializerRuntimeHelper::class, 'serialize']),
         ];
     }
 
     /**
-     * @return \Twig_Function[]
+     * @return TwigFunction[]
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
+            new TwigFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
         ];
     }
 }
