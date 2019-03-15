@@ -34,6 +34,7 @@ in case you have heavily used internal-api here are the most important the chang
 - As default now JSON preserve trailing zeros when serializing a float
 - When using a discriminator map, parent class should either be declared abstract, or included into the discriminator
   map
+- For the `Context` class (and its childs `SerializationContext` and `DeserializationContext`), `$attributes` property has become `private`, so it's no longer accesible; use `getAttribute()` instead
 
 **Deprecations** (will be removed in 3.0)
 
