@@ -98,8 +98,8 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
 
         $paths = $navigatorContext->getCurrentPath();
-
         $groups = $this->groups;
+        $single = array_filter($groups, 'is_string');
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
                 break;
@@ -110,6 +110,13 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
             }
 
             $groups = $groups[$path];
+
+            $newSingle = array_filter($groups, 'is_string');
+            if (!count($newSingle)) {
+                $groups += $single;
+            } else {
+                $single = $newSingle;
+            }
         }
 
         return $groups;

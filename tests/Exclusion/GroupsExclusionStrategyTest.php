@@ -56,11 +56,8 @@ class GroupsExclusionStrategyTest extends TestCase
 
     /**
      * @dataProvider getGroupsFor
-     * @param $groups
-     * @param $propsVisited
-     * @param $resultingGroups
      */
-    public function testGroupsFor($groups, $propsVisited, $resultingGroups)
+    public function testGroupsFor(array $groups, array $propsVisited, array $resultingGroups)
     {
         $exclusion = new GroupsExclusionStrategy($groups);
         $context = SerializationContext::create();
@@ -87,6 +84,8 @@ class GroupsExclusionStrategyTest extends TestCase
 
             [['foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], ['def']],
             [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], ['def', 'prop3' => ['def']]],
+
+            [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], ['foo', 'prop3' => ['def']]],
         ];
     }
 }
