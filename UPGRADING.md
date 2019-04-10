@@ -1,3 +1,16 @@
+From 2.x to 3.0.0
+====================
+
+The "deeper branch group exclusion strategy" change introduced in 2.0.0 has been reverted, 
+now it behaves as it as in 1.x.
+
+From 1.x to 3.0.0
+====================
+
+Please follow the upgrade **"From 1.12.0 to 2.0.0"**, skipping the section:
+
+> "deeper branch group exclusion strategy" has a different behaviour, the latest group is used instead of falling back to "Default"
+
 From 1.12.0 to 2.0.0
 ====================
 
