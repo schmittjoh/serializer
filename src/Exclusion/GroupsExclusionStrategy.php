@@ -19,6 +19,11 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
     private $groups = [];
 
     /**
+     * @var array|null
+     */
+    private $fallback = null;
+
+    /**
      * @var bool
      */
     private $nestedGroups = false;
@@ -37,6 +42,11 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
 
         if ($this->nestedGroups) {
+            if (!empty($groups['__fallback'])) {
+                $this->fallback = $groups['__fallback'];
+                unset($groups['__fallback']);
+            }
+
             $this->groups = $groups;
         } else {
             foreach ($groups as $group) {
@@ -102,6 +112,10 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         $single = array_filter($groups, 'is_string');
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
+                if (!empty($this->fallback)) {
+                    $groups = $this->fallback;
+                }
+
                 break;
             }
 

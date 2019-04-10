@@ -86,6 +86,11 @@ class GroupsExclusionStrategyTest extends TestCase
             [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], ['def', 'prop3' => ['def']]],
 
             [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], ['foo', 'prop3' => ['def']]],
+
+            // v1 emulation
+            [['__fallback' => ['Default'], 'foo', 'prop' => ['bar']], ['prop2'], ['Default']],
+            [['__fallback' => ['Default'], 'foo', 'prop' => ['bar']], ['prop', 'prop2'], ['Default']],
+            [['__fallback' => ['Default'], 'foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], ['Default']],
         ];
     }
 }
