@@ -47,6 +47,7 @@ abstract class Context
     public function __construct()
     {
         $this->attributes = new Map();
+        $this->metadataStack = new \SplStack();
     }
 
     /**
