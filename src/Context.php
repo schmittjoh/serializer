@@ -56,6 +56,7 @@ abstract class Context
 
     public function __construct()
     {
+        $this->metadataStack = new \SplStack();
     }
 
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void

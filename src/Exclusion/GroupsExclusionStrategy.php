@@ -91,8 +91,12 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         return true;
     }
 
-    private function getGroupsFor(Context $navigatorContext): array
+    public function getGroupsFor(Context $navigatorContext): array
     {
+        if (!$this->nestedGroups) {
+            return array_keys($this->groups);
+        }
+
         $paths = $navigatorContext->getCurrentPath();
 
         $groups = $this->groups;
