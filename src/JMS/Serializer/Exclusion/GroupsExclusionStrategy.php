@@ -105,6 +105,10 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
             }
 
             $groups = $groups[$path];
+
+            if (!array_filter($groups, 'is_string')) {
+                $groups += array(self::DEFAULT_GROUP);
+            }
         }
 
         return $groups;
