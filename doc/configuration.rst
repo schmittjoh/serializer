@@ -51,7 +51,7 @@ If you have created custom handlers, you can add them to the serializer easily::
         JMS\Serializer\SerializerBuilder::create()
             ->addDefaultHandlers()
             ->configureHandlers(function(JMS\Serializer\Handler\HandlerRegistry $registry) {
-                $registry->registerHandler('serialization', 'MyObject', 'json',
+                $registry->registerHandler(JMS\Serializer\GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'MyObject', 'json',
                     function($visitor, MyObject $obj, array $type) {
                         return $obj->getName();
                     }
