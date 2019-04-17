@@ -1,9 +1,8 @@
 # jms/serializer 
 
-| [Master][Master] | [1.x][1.x] |
-|:----------------:|:----------:|
-| [![Build status][Master image]][Master] | [![Build status][1.x image]][1.x] |
-| [![Coverage Status][Master coverage image]][Master coverage] | [![Coverage Status][1.x coverage image]][1.x coverage] | 
+
+[![Build status][Master image]][Master] 
+[![Coverage Status][Master coverage image]][Master coverage] 
 
 ![alt text](doc/logo-small.png)
 
@@ -28,17 +27,16 @@ Learn more about the serializer in its [documentation](http://jmsyst.com/libs/se
 
 ## Notes
 
-You are browsing the code for the 2.x version, if you are interested in the 1.x version, 
-check the [1.x][1.x] branch.
+You are browsing the code for the 3.x version, if you are interested in the 1.x or 2.x version, 
+check the [1.x][1.x] and [2.x][2.x] branches.
 
-Differences between the 1.x and 2.x can be found in the [CHANGELOG][CHANGELOG]. 
-Upgrading from 1.x to 2.x should be almost transparent for most of the userland code, in the  
-case you have heavily used internal-api or you are relaying on some of the removed features,
-the [UPGRADING][UPGRADING] document is a short guide on how to upgrade. 
+Instructions on how to upgrade available in the [UPGRADING][UPGRADING] document. 
 
-Pull requests for new features are accepted only on the master branch. 
-Bug fixes are accepted for both master and 1.x branches. 
-Bug fixes sent on the 1.x branch, will be ported to the master branch when possible. 
+- `3.x` is the active and supported version (`master` branch).
+- `2.x` is not supported anymore (`2.x` branch).
+- `1.x` is in maintenance mode, there will be no active development but PRs are accepted (`1.x` branch). 
+ 
+Bug fixes sent on the 1.x branch, will be ported to the master branch when possible.
 
   [CHANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
   [UPGRADING]: https://github.com/schmittjoh/serializer/blob/master/UPGRADING.md
@@ -48,8 +46,5 @@ Bug fixes sent on the 1.x branch, will be ported to the master branch when possi
   [Master coverage image]: https://img.shields.io/scrutinizer/coverage/g/schmittjoh/serializer/master.svg?style=flat-square
   [Master coverage]: https://scrutinizer-ci.com/g/schmittjoh/serializer/?branch=master
   
-  [1.x image]: https://img.shields.io/travis/schmittjoh/serializer/1.x.svg?style=flat-square
   [1.x]: https://github.com/schmittjoh/serializer/tree/1.x
-  [1.x coverage image]: https://img.shields.io/scrutinizer/coverage/g/schmittjoh/serializer/1.x.svg?style=flat-square
-  [1.x coverage]: https://scrutinizer-ci.com/g/schmittjoh/serializer/?branch=1.x
-  
+  [2.x]: https://github.com/schmittjoh/serializer/tree/2.x
