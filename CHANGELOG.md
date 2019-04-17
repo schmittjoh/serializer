@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.14.0](https://github.com/schmittjoh/serializer/tree/1.14.0) (2019-04-17)
+
+**Implemented enhancements:**
+
+- Discriminator property serialization when parent is in discriminator map for v1 [\#982](https://github.com/schmittjoh/serializer/pull/982) ([supersmile2009](https://github.com/supersmile2009))
+- Expose and test GroupsExclusionStrategy::getGroupsFor\(\) [\#1069](https://github.com/schmittjoh/serializer/pull/1069) ([goetas](https://github.com/goetas))
+
 ## [1.13.0](https://github.com/schmittjoh/serializer/tree/1.13.0)
 
 **Implemented enhancements:**
