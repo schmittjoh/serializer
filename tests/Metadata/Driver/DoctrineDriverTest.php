@@ -25,7 +25,7 @@ class DoctrineDriverTest extends TestCase
 
     public function testMetadataForEmbedded()
     {
-        if (ORMVersion::compare('2.5')) {
+        if (ORMVersion::compare('2.5') >= 0) {
             $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
         }
 
