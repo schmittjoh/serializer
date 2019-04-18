@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Tests\Fixtures\Doctrine;
+namespace JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable;
 
 use Doctrine\ORM\Mapping as ORM;
 

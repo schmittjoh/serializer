@@ -12,14 +12,14 @@ use Doctrine\ORM\Version as ORMVersion;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Tests\Fixtures\Doctrine\BlogPostWithEmbedded;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostWithEmbedded;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineDriverTest extends TestCase
 {
     public function getMetadata()
     {
-        $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\BlogPost');
+        $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\Entity\BlogPost');
         return $this->getDoctrineDriver()->loadMetadataForClass($refClass);
     }
 
@@ -48,7 +48,7 @@ class DoctrineDriverTest extends TestCase
     {
         $metadata = $this->getMetadata();
         self::assertEquals(
-            ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => []],
+            ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author', 'params' => []],
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -61,7 +61,7 @@ class DoctrineDriverTest extends TestCase
             [
                 'name' => 'ArrayCollection',
                 'params' => [
-                    ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => []],
+                    ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Comment', 'params' => []],
                 ],
             ],
             $metadata->propertyMetadata['comments']->type

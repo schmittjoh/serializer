@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Tests\Fixtures\Doctrine;
+namespace JMS\Serializer\Tests\Fixtures\Doctrine\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\SerializedName;
