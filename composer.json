@@ -41,7 +41,7 @@
         "symfony/form": "^3.0|^4.0",
         "symfony/filesystem": "^3.0|^4.0",
         "symfony/expression-language": "^3.0|^4.0",
-        "phpunit/phpunit": "^7.1",
+        "phpunit/phpunit": "^7.5",
         "doctrine/coding-standard": "^5.0"
     },
     "conflict": {
@@ -61,7 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev"
+            "dev-master": "3.0-dev"
         }
     }
 }

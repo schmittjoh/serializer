@@ -49,16 +49,22 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      * @var string[]
      */
     private $doctypeWhitelist = [];
+    /**
+     * @var int
+     */
+    private $options;
 
     public function __construct(
         bool $disableExternalEntities = true,
-        array $doctypeWhitelist = []
+        array $doctypeWhitelist = [],
+        int $options = 0
     ) {
         $this->objectStack = new \SplStack();
         $this->metadataStack = new \SplStack();
         $this->objectMetadataStack = new \SplStack();
         $this->disableExternalEntities = $disableExternalEntities;
         $this->doctypeWhitelist = $doctypeWhitelist;
+        $this->options = $options;
     }
 
     /**
@@ -83,7 +89,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             }
         }
 
-        $doc = simplexml_load_string($data);
+        $doc = simplexml_load_string($data, 'SimpleXMLElement', $this->options);
 
         libxml_use_internal_errors($previous);
         libxml_disable_entity_loader($previousEntityLoaderState);

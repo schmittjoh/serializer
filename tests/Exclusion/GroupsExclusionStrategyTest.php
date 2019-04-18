@@ -53,4 +53,39 @@ class GroupsExclusionStrategyTest extends TestCase
             [['foo'], [GroupsExclusionStrategy::DEFAULT_GROUP, 'foo'], false],
         ];
     }
+
+    /**
+     * @dataProvider getGroupsFor
+     */
+    public function testGroupsFor(array $groups, array $propsVisited, array $resultingGroups)
+    {
+        $exclusion = new GroupsExclusionStrategy($groups);
+        $context = SerializationContext::create();
+
+        foreach ($propsVisited as $prop) {
+            $metadata = new StaticPropertyMetadata('stdClass', $prop, 'propVal');
+            $context->pushPropertyMetadata($metadata);
+        }
+
+        $groupsFor = $exclusion->getGroupsFor($context);
+        $this->assertEquals($groupsFor, $resultingGroups);
+    }
+
+    public function getGroupsFor()
+    {
+        return [
+            [['foo'], ['prop'], ['foo']],
+            [[], ['prop'], ['Default']],
+
+            [['foo', 'prop' => ['bar']], ['prop'], ['bar']],
+            [['foo', 'prop' => ['bar']], ['prop2'], ['foo', 'prop' => ['bar']]],
+
+            [['foo', 'prop' => ['bar']], ['prop', 'prop2'], ['Default']],
+
+            [['foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], ['Default']],
+            [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], ['def', 'prop3' => ['def']]],
+
+            [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], ['Default', 'prop3' => ['def']]],
+        ];
+    }
 }

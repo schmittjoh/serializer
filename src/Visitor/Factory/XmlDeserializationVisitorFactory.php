@@ -22,9 +22,14 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
      */
     private $doctypeWhitelist = [];
 
+    /**
+     * @var int
+     */
+    private $options = 0;
+
     public function getVisitor(): DeserializationVisitorInterface
     {
-        return new XmlDeserializationVisitor($this->disableExternalEntities, $this->doctypeWhitelist);
+        return new XmlDeserializationVisitor($this->disableExternalEntities, $this->doctypeWhitelist, $this->options);
     }
 
     public function enableExternalEntities(bool $enable = true): self
@@ -39,6 +44,12 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
     public function setDoctypeWhitelist(array $doctypeWhitelist): self
     {
         $this->doctypeWhitelist = $doctypeWhitelist;
+        return $this;
+    }
+
+    public function setOptions(int $options): self
+    {
+        $this->options = $options;
         return $this;
     }
 }

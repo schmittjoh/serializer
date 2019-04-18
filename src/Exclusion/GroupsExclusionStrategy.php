@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\Serializer\Exclusion;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
@@ -91,23 +90,26 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         return true;
     }
 
-    private function getGroupsFor(Context $navigatorContext): array
+    public function getGroupsFor(Context $navigatorContext): array
     {
-        $paths = $navigatorContext->getCurrentPath();
+        if (!$this->nestedGroups) {
+            return array_keys($this->groups);
+        }
 
+        $paths = $navigatorContext->getCurrentPath();
         $groups = $this->groups;
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
+                if ($index > 0) {
+                    $groups = [self::DEFAULT_GROUP];
+                }
                 break;
             }
-
-            if (!is_array($groups[$path])) {
-                throw new RuntimeException(sprintf('The group value for the property path "%s" should be an array, "%s" given', $index, gettype($groups[$path])));
-            }
-
             $groups = $groups[$path];
+            if (!array_filter($groups, 'is_string')) {
+                $groups += [self::DEFAULT_GROUP];
+            }
         }
-
         return $groups;
     }
 }

@@ -76,7 +76,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
             $outputs['groups_default'] = '{"bar":"bar","none":"none"}';
-            $outputs['groups_advanced'] = '{"name":"John","manager":{"name":"John Manager","friends":[{"nickname":"nickname"},{"nickname":"nickname"}]},"friends":[{"nickname":"nickname","manager":{"nickname":"nickname"}},{"nickname":"nickname","manager":{"nickname":"nickname"}}]}';
+            $outputs['groups_advanced'] = '{"name":"John","manager":{"name":"John Manager","friends":[{"nickname":"nickname"},{"nickname":"nickname"}]},"friends":[{"nickname":"nickname","manager":{"name":"John friend 1 manager"}},{"nickname":"nickname","manager":{"name":"John friend 2 manager"}}]}';
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"classlow":1,"low":1}';
             $outputs['virtual_properties_high'] = '{"classhigh":8,"high":8}';

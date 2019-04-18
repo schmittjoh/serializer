@@ -1,5 +1,23 @@
 # Change Log
 
+## [2.3.0](https://github.com/schmittjoh/serializer/tree/2.3.0) (2019-04-17)
+**Implemented enhancements:**
+
+- add options property to XmlDeserializationVisitorFactory and XmlDeserializationVisitor, propagate defined value from factory to simplexml\_load\_string call [\#1068](https://github.com/schmittjoh/serializer/pull/1068) ([kopeckyales](https://github.com/kopeckyales))
+
+**Closed issues:**
+
+- Override existing property with another [\#1067](https://github.com/schmittjoh/serializer/issues/1067)
+- disabling cdata by default [\#1065](https://github.com/schmittjoh/serializer/issues/1065)
+- unwrap child class instance [\#1064](https://github.com/schmittjoh/serializer/issues/1064)
+- Make JsonDeserializationVisitor extendable [\#1055](https://github.com/schmittjoh/serializer/issues/1055)
+
+**Merged pull requests:**
+
+- doc update: registerHandler\(\) example [\#1072](https://github.com/schmittjoh/serializer/pull/1072) ([cebe](https://github.com/cebe))
+- Updated suggestion for `JsonSerializationVisitor::addData` replacement [\#1066](https://github.com/schmittjoh/serializer/pull/1066) ([theoboldt](https://github.com/theoboldt))
+- Add fix to UPGRADING.md [\#1062](https://github.com/schmittjoh/serializer/pull/1062) ([Jean85](https://github.com/Jean85))
+
 ## [2.2.0](https://github.com/schmittjoh/serializer/tree/2.2.0)
 
 **Implemented enhancements:**

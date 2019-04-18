@@ -189,7 +189,8 @@ You can override groups on specific paths::
         ),
 
         'friends' => array( // Override the groups for the friends of John
-            'manager_group', // Serialize John friends' managers.
+            'manager_group' // Serialize John friends' managers.
+
             'manager' => array( // Override the groups for the John friends' manager
                 'Default', // This would be the default if you did not override the groups of the manager property.
             ),
