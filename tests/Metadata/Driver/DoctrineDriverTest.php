@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use Doctrine\ORM\Version as ORMVersion;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -24,6 +25,10 @@ class DoctrineDriverTest extends TestCase
 
     public function testMetadataForEmbedded()
     {
+        if (ORMVersion::compare('2.5')) {
+            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
+        }
+
         $refClass = new \ReflectionClass(BlogPostWithEmbedded::class);
         $meta = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
         self::assertNotNull($meta);
