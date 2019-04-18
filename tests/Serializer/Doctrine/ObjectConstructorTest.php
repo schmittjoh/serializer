@@ -29,7 +29,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\Tests\Fixtures\Doctrine\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -269,7 +269,8 @@ class ObjectConstructorTest extends TestCase
     {
         $cfg = new Configuration();
         $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
-            __DIR__ . '/../../Fixtures/Doctrine',
+            __DIR__ . '/../../Fixtures/Doctrine/Entity',
+            __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
         ]));
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
