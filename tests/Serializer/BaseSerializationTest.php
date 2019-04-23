@@ -1239,6 +1239,22 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals('customly_unserialized_value', $object->someProperty);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testCustomHandlerVisitingNull()
+    {
+        $handler = static function ($visitor, $attachment, array $type, Context $context) {
+            return $context->getNavigator()->accept(null);
+        };
+
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, Author::class, $this->getFormat(), $handler);
+
+        $author = new Author('me');
+        $comment = new Comment($author, 'too');
+        $this->serializer->serialize($comment, $this->getFormat());
+    }
+
     public function testInput()
     {
         self::assertEquals($this->getContent('input'), $this->serializer->serialize(new Input(), $this->getFormat()));

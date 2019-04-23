@@ -189,8 +189,11 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    $this->context->stopVisiting($data);
+                    try {
+                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                    } finally {
+                        $this->context->stopVisiting($data);
+                    }
 
                     return $rs;
                 }
