@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.0.1](https://github.com/schmittjoh/serializer/tree/3.0.1) (2019-04-23)
+**Fixed bugs:**
+
+- Do not throw exception when visiting null in custom handler [\#1076](https://github.com/schmittjoh/serializer/pull/1076) ([goetas](https://github.com/goetas))
+
 ## [3.0.0](https://github.com/schmittjoh/serializer/tree/3.0.0) (2019-04-23)
 
 **Backward incompatible changes:**
