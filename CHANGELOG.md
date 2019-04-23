@@ -1,5 +1,23 @@
 # Change Log
 
+## [3.0.0](https://github.com/schmittjoh/serializer/tree/3.0.0) (2019-04-23)
+
+**Backward incompatible changes:**
+
+- Revert v2 nested groups and release 3.0 [\#1071](https://github.com/schmittjoh/serializer/pull/1071) ([goetas](https://github.com/goetas))
+
+**Implemented enhancements:**
+
+- use Twig 2.7 namespaces [\#1061](https://github.com/schmittjoh/serializer/pull/1061) ([IonBazan](https://github.com/IonBazan))
+
+**Merged pull requests:**
+
+- Fix Travis-CI scripts always passing [\#1075](https://github.com/schmittjoh/serializer/pull/1075) ([IonBazan](https://github.com/IonBazan))
+
+**Closed issues:**
+
+- \[RFC\] revert \#946 and release new major  [\#1058](https://github.com/schmittjoh/serializer/issues/1058)
+
 ## [2.3.0](https://github.com/schmittjoh/serializer/tree/2.3.0) (2019-04-17)
 **Implemented enhancements:**
 
@@ -17,6 +35,7 @@
 - doc update: registerHandler\(\) example [\#1072](https://github.com/schmittjoh/serializer/pull/1072) ([cebe](https://github.com/cebe))
 - Updated suggestion for `JsonSerializationVisitor::addData` replacement [\#1066](https://github.com/schmittjoh/serializer/pull/1066) ([theoboldt](https://github.com/theoboldt))
 - Add fix to UPGRADING.md [\#1062](https://github.com/schmittjoh/serializer/pull/1062) ([Jean85](https://github.com/Jean85))
+
 
 ## [2.2.0](https://github.com/schmittjoh/serializer/tree/2.2.0)
 
