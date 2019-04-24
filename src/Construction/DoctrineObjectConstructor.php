@@ -89,6 +89,12 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             $identifierList[$name] = $data[$dataName];
         }
 
+        if (empty($identifierList)) {
+            // $classMetadataFactory->isTransient() fails on embeddable class with file metadata driver
+            // https://github.com/doctrine/persistence/issues/37
+            return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+        }
+
         // Entity update, load it from database
         $object = $objectManager->find($metadata->name, $identifierList);
 
