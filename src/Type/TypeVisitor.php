@@ -32,12 +32,17 @@ final class TypeVisitor implements Visit
      */
     private function visitSimpleType(TreeNode $element)
     {
-        $tokenNode = $element->getChild(0);
+        $nullable = 'nullable' === $element->getChild(0)->getValueToken();
+        $tokenNode = $nullable ? $element->getChild(1) : $element->getChild(0);
         $token = $tokenNode->getValueToken();
         $value = $tokenNode->getValueValue();
 
         if ('name' === $token) {
-            return ['name' => $value, 'params' => []];
+            $ret = ['name' => $value, 'params' => []];
+            if ($nullable) {
+                $ret['nullable'] = $nullable;
+            }
+            return $ret;
         }
 
         if ('empty_string' === $token) {
@@ -63,10 +68,12 @@ final class TypeVisitor implements Visit
 
     private function visitCompoundType(TreeNode $element, ?int &$handle, ?int $eldnah): array
     {
-        $nameToken = $element->getChild(0);
-        $parameters = array_slice($element->getChildren(), 1);
+        $nullable = 'nullable' === $element->getChild(0)->getValueToken();
+        $nameToken = $nullable ? $element->getChild(1) : $element->getChild(0);
 
-        return [
+        $parameters = array_slice($element->getChildren(), 1 + ($nullable ? 1 : 0));
+
+        $ret = [
             'name' => $nameToken->getValueValue(),
             'params' => array_map(
                 function (TreeNode $node) use ($handle, $eldnah) {
@@ -75,5 +82,10 @@ final class TypeVisitor implements Visit
                 $parameters
             ),
         ];
+        if ($nullable) {
+            $ret['nullable'] = $nullable;
+        }
+
+        return $ret;
     }
 }

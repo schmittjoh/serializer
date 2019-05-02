@@ -35,8 +35,13 @@ class ParserTest extends TestCase
      */
     public function validTypesProvider(): iterable
     {
-        $type = static function (string $name, array $params = []): array {
-            return ['name' => $name, 'params' => $params];
+        $type = static function (string $name, array $params = [], $nullable = null): array {
+            $ret = ['name' => $name, 'params' => $params];
+
+            if (null!== $nullable) {
+                $ret['nullable'] = $nullable;
+            }
+            return $ret;
         };
 
         yield [
@@ -95,6 +100,18 @@ class ParserTest extends TestCase
         yield [
             'Foo<"asdf asdf">',
             $type('Foo', ['asdf asdf']),
+        ];
+        yield [
+            '?string',
+            $type('string', [], true),
+        ];
+        yield [
+            'array<?Foo>',
+            $type('array', [['name' => 'Foo', 'params' => [], 'nullable' => true]]),
+        ];
+        yield [
+            '?Foo\Bar',
+            $type('Foo\Bar', [], true),
         ];
     }
 
