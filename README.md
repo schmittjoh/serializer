@@ -30,13 +30,19 @@ Learn more about the serializer in its [documentation](http://jmsyst.com/libs/se
 You are browsing the code for the 3.x version, if you are interested in the 1.x or 2.x version, 
 check the [1.x][1.x] and [2.x][2.x] branches.
 
-Instructions on how to upgrade available in the [UPGRADING][UPGRADING] document. 
+The version `3.x` is the supported version (`master` branch).
+The `1.x` and `2.x` versions are not supported anymore. 
 
-- `3.x` is the active and supported version (`master` branch).
-- `2.x` is not supported anymore (`2.x` branch).
-- `1.x` is in maintenance mode, there will be no active development but PRs are accepted (`1.x` branch). 
+For the `1.x` and `2.x` branches there will be no additional feature releases.  
+Security issues will be fixed till the 1st January 2010 and 
+only critical bugs might receive fixes until the 1st September 2019.
+
+Instructions on how to upgrade to 3.x are available in the [UPGRADING][UPGRADING] document.
+
+## Professional Support
+
+For eventual paid support please write an email to [goetas@gmail.com](mailto:goetas@gmail.com).
  
-Bug fixes sent on the 1.x branch, will be ported to the master branch when possible.
 
   [CHANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
   [UPGRADING]: https://github.com/schmittjoh/serializer/blob/master/UPGRADING.md
