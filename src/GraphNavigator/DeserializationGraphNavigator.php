@@ -125,11 +125,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         // If null is explicitly allowed we should skip this
         if ($this->visitor instanceof NullAwareVisitorInterface
             && true === $this->visitor->isNull($data)
-            && (!empty($type['nullable']) || false === $this->shouldDeserializeNull)
+            && true === $this->shouldDeserializeNull
         ) {
             $type = ['name' => 'NULL', 'params' => []];
         }
-
         switch ($type['name']) {
             case 'NULL':
                 return $this->visitor->visitNull($data, $type);
@@ -170,9 +169,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    $this->context->decreaseDepth();
-
+                    try {
+                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                    } finally {
+                        $this->context->decreaseDepth();
+                    }
                     return $rs;
                 }
 
@@ -219,9 +220,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
 
-                        if (null !== $v || true === $this->shouldDeserializeNull) {
-                            $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
-                        }
+                        $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                     }
                     $this->context->popPropertyMetadata();

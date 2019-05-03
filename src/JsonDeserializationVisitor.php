@@ -169,7 +169,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements NullAw
             throw new NotAcceptableException();
         }
 
-        return null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;
+        return $this->navigator->accept($data[$name], $metadata->type);
     }
 
     /**

@@ -16,7 +16,7 @@ class DeserializationContext extends Context
     /**
      * @var bool
      */
-    private $deserializeNull = false;
+    private $deserializeNull = true;
 
     public static function create(): self
     {

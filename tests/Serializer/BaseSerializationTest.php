@@ -216,7 +216,7 @@ abstract class BaseSerializationTest extends TestCase
             $this->markTestSkipped(sprintf('No deserializer available for format `%s`', $this->getFormat()));
         }
         $ctx = DeserializationContext::create()
-            ->setDeserializeNull(true);
+            ->setDeserializeNull(false);
 
         /** @var ObjectWithNullObject $dObj */
         $dObj = $this->serializer->deserialize(
@@ -750,13 +750,12 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testDeserializingNull()
     {
-        $objectConstructor = new InitializedBlogPostConstructor();
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        $objectConstructor = new InitializedBlogPostConstructor($post);
 
         $builder = SerializerBuilder::create();
         $builder->setObjectConstructor($objectConstructor);
         $this->serializer = $builder->build();
-
-        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
 
         $this->setField($post, 'author', null);
         $this->setField($post, 'publisher', null);
@@ -771,37 +770,42 @@ abstract class BaseSerializationTest extends TestCase
             self::assertAttributeSame(false, 'published', $deserialized);
             self::assertAttributeSame(false, 'reviewed', $deserialized);
             self::assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
-            self::assertAttributeEquals(null, 'author', $deserialized);
+            self::assertAttributeSame(null, 'author', $deserialized);
+            self::assertAttributeSame(null, 'tag', $deserialized);
         }
     }
 
     public function testDeserializingNullAllowed()
     {
-        $objectConstructor = new InitializedBlogPostConstructor();
+        $savedPost = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), $publisher = new Publisher('Bar Foo'));
+        $savedPost->addTag(new Tag('foo'));
+        $initialTag = $this->getField($savedPost, 'tag');
+
+        $objectConstructor = new InitializedBlogPostConstructor($savedPost);
 
         $builder = SerializerBuilder::create();
         $builder->setObjectConstructor($objectConstructor);
         $this->serializer = $builder->build();
 
-        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
-
+        $post = clone $savedPost;
         $this->setField($post, 'author', null);
         $this->setField($post, 'publisher', null);
-
-        self::assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post, SerializationContext::create()->setSerializeNull(true)));
+        $this->setField($post, 'tag', null);
 
         if ($this->hasDeserializer()) {
             $ctx =  DeserializationContext::create();
-            $ctx->setDeserializeNull(true);
+            $ctx->setDeserializeNull(false);
 
-            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post), $ctx);
+            $deserialized = $this->deserialize($this->serialize($post), get_class($post), $ctx);
 
             self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
             self::assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             self::assertAttributeSame(false, 'published', $deserialized);
             self::assertAttributeSame(false, 'reviewed', $deserialized);
             self::assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
-            self::assertEquals(null, $this->getField($deserialized, 'author'));
+            self::assertAttributeEquals($author, 'author', $deserialized);
+            self::assertAttributeEquals($publisher, 'publisher', $deserialized);
+            self::assertAttributeEquals($initialTag, 'tag', $deserialized);
         }
     }
 
