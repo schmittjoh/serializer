@@ -194,6 +194,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         continue;
                     }
 
+                    if (!$propertyMetadata->type) {
+                        throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $propertyMetadata->class, $propertyMetadata->name));
+                    }
+
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);

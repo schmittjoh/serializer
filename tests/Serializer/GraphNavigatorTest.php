@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -163,6 +164,11 @@ class GraphNavigatorTest extends TestCase
 
 class SerializableClass
 {
+    /**
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
     public $foo = 'bar';
 }
 
