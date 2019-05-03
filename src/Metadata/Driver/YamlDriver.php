@@ -16,8 +16,11 @@ use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\AdvancedFileLocatorInterface;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
+use ReflectionClass;
+use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlDriver extends AbstractFileDriver
@@ -32,27 +35,74 @@ class YamlDriver extends AbstractFileDriver
      * @var PropertyNamingStrategyInterface
      */
     private $namingStrategy;
+    /**
+     * @var FileLocatorInterface
+     */
+    private $locator;
 
     public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
-        parent::__construct($locator);
+        $this->locator = $locator;
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
     }
 
-    protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?BaseClassMetadata
+    public function loadMetadataForClass(ReflectionClass $class): ?BaseClassMetadata
+    {
+        $path = null;
+        foreach ($this->getExtensions() as $extension) {
+            $path = $this->locator->findFileForClass($class, $extension);
+            if (null !== $path) {
+                break;
+            }
+        }
+
+        if (null === $path) {
+            return null;
+        }
+
+        return $this->loadMetadataFromFile($class, $path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAllClassNames(): array
+    {
+        if (!$this->locator instanceof AdvancedFileLocatorInterface) {
+            throw new RuntimeException(
+                sprintf(
+                    'Locator "%s" must be an instance of "AdvancedFileLocatorInterface".',
+                    get_class($this->locator)
+                )
+            );
+        }
+
+        $classes = [];
+        foreach ($this->getExtensions() as $extension) {
+            foreach ($this->locator->findAllClasses($extension) as $class) {
+                $classes[$class] = $class;
+            }
+        }
+
+        return array_values($classes);
+    }
+
+    protected function loadMetadataFromFile(ReflectionClass $class, string $file): ?BaseClassMetadata
     {
         $config = Yaml::parse(file_get_contents($file));
 
         if (!isset($config[$name = $class->name])) {
-            throw new InvalidMetadataException(sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file));
+            throw new InvalidMetadataException(
+                sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file)
+            );
         }
 
         $config = $config[$name];
         $metadata = new ClassMetadata($name);
         $metadata->fileResources[] = $file;
-        $fileResource =  $class->getFilename();
+        $fileResource = $class->getFilename();
         if (false !== $fileResource) {
             $metadata->fileResources[] = $fileResource;
         }
@@ -75,7 +125,9 @@ class YamlDriver extends AbstractFileDriver
                     unset($propertySettings['exp']);
                 } else {
                     if (!$class->hasMethod($methodName)) {
-                        throw new InvalidMetadataException('The method ' . $methodName . ' not found in class ' . $class->name);
+                        throw new InvalidMetadataException(
+                            'The method ' . $methodName . ' not found in class ' . $class->name
+                        );
                     }
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 }
@@ -285,6 +337,17 @@ class YamlDriver extends AbstractFileDriver
         return $metadata;
     }
 
+    /**
+     * @return string[]
+     */
+    protected function getExtensions(): array
+    {
+        return array_unique([$this->getExtension(), 'yaml', 'yml']);
+    }
+
+    /**
+     * @deprecated use getExtensions instead.
+     */
     protected function getExtension(): string
     {
         return 'yml';
@@ -326,11 +389,17 @@ class YamlDriver extends AbstractFileDriver
                     throw new InvalidMetadataException('The "field_name" attribute must be set for discriminators.');
                 }
 
-                if (!isset($config['discriminator']['map']) || !\is_array($config['discriminator']['map'])) {
-                    throw new InvalidMetadataException('The "map" attribute must be set, and be an array for discriminators.');
+                if (!isset($config['discriminator']['map']) || !is_array($config['discriminator']['map'])) {
+                    throw new InvalidMetadataException(
+                        'The "map" attribute must be set, and be an array for discriminators.'
+                    );
                 }
                 $groups = $config['discriminator']['groups'] ?? [];
-                $metadata->setDiscriminator($config['discriminator']['field_name'], $config['discriminator']['map'], $groups);
+                $metadata->setDiscriminator(
+                    $config['discriminator']['field_name'],
+                    $config['discriminator']['map'],
+                    $groups
+                );
 
                 if (isset($config['discriminator']['xml_attribute'])) {
                     $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
@@ -350,18 +419,25 @@ class YamlDriver extends AbstractFileDriver
     /**
      * @param string|string[] $config
      */
-    private function getCallbackMetadata(\ReflectionClass $class, $config): array
+    private function getCallbackMetadata(ReflectionClass $class, $config): array
     {
-        if (\is_string($config)) {
+        if (is_string($config)) {
             $config = [$config];
-        } elseif (!\is_array($config)) {
-            throw new InvalidMetadataException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
+        } elseif (!is_array($config)) {
+            throw new InvalidMetadataException(
+                sprintf(
+                    'callback methods expects a string, or an array of strings that represent method names, but got %s.',
+                    json_encode($config['pre_serialize'])
+                )
+            );
         }
 
         $methods = [];
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
-                throw new InvalidMetadataException(sprintf('The method %s does not exist in class %s.', $name, $class->name));
+                throw new InvalidMetadataException(
+                    sprintf('The method %s does not exist in class %s.', $name, $class->name)
+                );
             }
 
             $methods[] = new MethodMetadata($class->name, $name);
