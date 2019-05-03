@@ -34,7 +34,7 @@ The version `3.x` is the supported version (`master` branch).
 The `1.x` and `2.x` versions are not supported anymore. 
 
 For the `1.x` and `2.x` branches there will be no additional feature releases.  
-Security issues will be fixed till the 1st January 2010 and 
+Security issues will be fixed till the 1st January 2020 and 
 only critical bugs might receive fixes until the 1st September 2019.
 
 Instructions on how to upgrade to 3.x are available in the [UPGRADING][UPGRADING] document.
