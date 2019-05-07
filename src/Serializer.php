@@ -148,7 +148,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * {@InheritDoc}
      */
-    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string
+    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null)
     {
         if (null === $context) {
             $context = $this->serializationContextFactory->createSerializationContext();

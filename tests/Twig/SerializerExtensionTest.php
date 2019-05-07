@@ -20,7 +20,8 @@ class SerializerExtensionTest extends TestCase
         $mockSerializer
             ->expects($this->once())
             ->method('serialize')
-            ->with($this->equalTo($obj), $this->equalTo('json'));
+            ->with($this->equalTo($obj), $this->equalTo('json'))
+            ->willReturn('{}');
         $serializerExtension = new SerializerExtension($mockSerializer);
         $serializerExtension->serialize($obj);
 
@@ -44,7 +45,8 @@ class SerializerExtensionTest extends TestCase
         $mockSerializer
             ->expects($this->once())
             ->method('serialize')
-            ->with($this->equalTo($obj), $this->equalTo('json'));
+            ->with($this->equalTo($obj), $this->equalTo('json'))
+            ->willReturn('{}');
 
         $serializerExtension = new SerializerRuntimeHelper($mockSerializer);
         $serializerExtension->serialize($obj);

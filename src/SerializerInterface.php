@@ -15,8 +15,10 @@ interface SerializerInterface
      * Serializes the given data to the specified output format.
      *
      * @param mixed $data
+     *
+     * @return mixed
      */
-    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string;
+    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null);
 
     /**
      * Deserializes the given data to the specified type.
