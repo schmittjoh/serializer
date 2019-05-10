@@ -22,7 +22,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"attributes"})
      * @XmlAttribute
      */
-    public function getVirualXmlAttributeValue()
+    public function getVirtualXmlAttributeValue()
     {
         return 'bar';
     }
@@ -33,7 +33,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"values"})
      * @XmlValue
      */
-    public function getVirualXmlValue()
+    public function getVirtualXmlValue()
     {
         return 'xml-value';
     }
@@ -44,7 +44,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"list"})
      * @XmlList(inline = true, entry = "val")
      */
-    public function getVirualXmlList()
+    public function getVirtualXmlList()
     {
         return ['One', 'Two'];
     }
@@ -55,7 +55,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"map"})
      * @XmlMap(keyAttribute = "key")
      */
-    public function getVirualXmlMap()
+    public function getVirtualXmlMap()
     {
         return [
             'key-one' => 'One',
@@ -69,7 +69,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"versions"})
      * @Until("8")
      */
-    public function getVirualLowValue()
+    public function getVirtualLowValue()
     {
         return 1;
     }
@@ -80,7 +80,7 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"versions"})
      * @Since("8")
      */
-    public function getVirualHighValue()
+    public function getVirtualHighValue()
     {
         return 8;
     }

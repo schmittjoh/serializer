@@ -32,7 +32,7 @@ class ObjectWithVersionedVirtualProperties
      * @SerializedName("low")
      * @Until("8")
      */
-    public function getVirualLowValue()
+    public function getVirtualLowValue()
     {
         return 1;
     }
@@ -43,7 +43,7 @@ class ObjectWithVersionedVirtualProperties
      * @SerializedName("high")
      * @Since("6")
      */
-    public function getVirualHighValue()
+    public function getVirtualHighValue()
     {
         return 8;
     }
