@@ -70,6 +70,29 @@ class HandlerRegistry implements HandlerRegistryInterface
      */
     public function getHandler(int $direction, string $typeName, string $format)
     {
+        $currentType = $typeName;
+        do {
+            $handler = $this->getSingleHandler($direction, $currentType, $format);
+            if (null !== $handler) {
+                return $handler;
+            }
+        } while ($currentType = get_parent_class($currentType));
+
+        $interfaces = class_implements($typeName);
+        if ($interfaces !== false) {
+            foreach ($interfaces as $interface) {
+                $handler = $this->getSingleHandler($direction, $interface, $format);
+                if (null !== $handler) {
+                    return $handler;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected function getSingleHandler(int $direction, string $typeName, string $format)
+    {
         if (!isset($this->handlers[$direction][$typeName][$format])) {
             return null;
         }

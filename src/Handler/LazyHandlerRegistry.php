@@ -46,7 +46,7 @@ final class LazyHandlerRegistry extends HandlerRegistry
     /**
      * {@inheritdoc}
      */
-    public function getHandler(int $direction, string $typeName, string $format)
+    protected function getSingleHandler(int $direction, string $typeName, string $format)
     {
         if (isset($this->initializedHandlers[$direction][$typeName][$format])) {
             return $this->initializedHandlers[$direction][$typeName][$format];
