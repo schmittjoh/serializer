@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.4.1@99a2d866611c6478490bfba1377a30d527e6b874">
+  <file src="src/Accessor/DefaultAccessorStrategy.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$metadata-&gt;expression</code>
+    </PossiblyInvalidArgument>
+    <PossiblyInvalidFunctionCall occurrences="2">
+      <code>$this-&gt;readAccessors[$metadata-&gt;class]($object, $metadata-&gt;name)</code>
+      <code>$this-&gt;writeAccessors[$metadata-&gt;class]($object, $metadata-&gt;name, $value)</code>
+    </PossiblyInvalidFunctionCall>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$evaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <TooManyArguments occurrences="1">
+      <code>getValue</code>
+    </TooManyArguments>
+    <UndefinedMethod occurrences="4">
+      <code>$this-&gt;propertyReflectionCache[$metadata-&gt;class]</code>
+      <code>$this-&gt;propertyReflectionCache[$metadata-&gt;class]</code>
+      <code>$this-&gt;propertyReflectionCache[$metadata-&gt;class]</code>
+      <code>$this-&gt;propertyReflectionCache[$metadata-&gt;class]</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Builder/DefaultDriverFactory.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$expressionEvaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Construction/DoctrineObjectConstructor.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getReference</code>
+    </UndefinedInterfaceMethod>
+    <UndefinedPropertyFetch occurrences="1">
+      <code>$metadata-&gt;propertyMetadata[$name]-&gt;serializedName</code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="src/Context.php">
+    <PropertyTypeCoercion occurrences="2">
+      <code>$factory</code>
+      <code>$strategy</code>
+    </PropertyTypeCoercion>
+  </file>
+  <file src="src/ContextFactory/CallableContextFactory.php">
+    <MismatchingDocblockReturnType occurrences="1">
+      <code>mixed</code>
+    </MismatchingDocblockReturnType>
+  </file>
+  <file src="src/EventDispatcher/EventDispatcher.php">
+    <PossiblyNullIterator occurrences="1">
+      <code>$this-&gt;classListeners[$eventName][$objectClass][$format]</code>
+    </PossiblyNullIterator>
+  </file>
+  <file src="src/EventDispatcher/Subscriber/DoctrineProxySubscriber.php">
+    <UndefinedClass occurrences="2">
+      <code>MongoDBPersistentCollection</code>
+      <code>MongoDBPersistentCollection</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/EventDispatcher/Subscriber/SymfonyValidatorValidatorSubscriber.php">
+    <UndefinedMethod occurrences="1">
+      <code>getObject</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/GraphNavigator.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$context-&gt;getExclusionStrategy()</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/GraphNavigator/DeserializationGraphNavigator.php">
+    <ArgumentTypeCoercion occurrences="5">
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+    </ArgumentTypeCoercion>
+    <InvalidReturnStatement occurrences="1">
+      <code>$this-&gt;metadataFactory-&gt;getMetadataForClass($metadata-&gt;discriminatorMap[$typeValue])</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>?ClassMetadata</code>
+    </InvalidReturnType>
+    <PossiblyNullArgument occurrences="3">
+      <code>$metadata</code>
+      <code>$metadata</code>
+      <code>$object</code>
+    </PossiblyNullArgument>
+    <UndefinedPropertyFetch occurrences="2">
+      <code>$propertyMetadata-&gt;readOnly</code>
+      <code>$propertyMetadata-&gt;type</code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="src/GraphNavigator/Factory/DeserializationGraphNavigatorFactory.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$dispatcher</code>
+      <code>$expressionEvaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/GraphNavigator/Factory/SerializationGraphNavigatorFactory.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$expressionEvaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/GraphNavigator/SerializationGraphNavigator.php">
+    <ArgumentTypeCoercion occurrences="5">
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+    </ArgumentTypeCoercion>
+    <UndefinedMethod occurrences="1">
+      <code>shouldSerializeNull</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Handler/ArrayCollectionHandler.php">
+    <InvalidArgument occurrences="1">
+      <code>$context-&gt;getMetadataFactory()-&gt;getMetadataForClass(\get_class($collection))</code>
+    </InvalidArgument>
+    <TooManyArguments occurrences="1">
+      <code>visitArray</code>
+    </TooManyArguments>
+  </file>
+  <file src="src/Handler/DateHandler.php">
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+  </file>
+  <file src="src/Handler/FormErrorHandler.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>$this-&gt;getErrorMessage($formError)</code>
+    </NullableReturnStatement>
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$error</code>
+      <code>$error</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullArgument occurrences="2">
+      <code>$this-&gt;getErrorMessage($formError)</code>
+      <code>$error-&gt;getMessagePluralization()</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="src/Handler/HandlerRegistry.php">
+    <InvalidArrayAccess occurrences="2">
+      <code>$this-&gt;handlers[$direction][$typeName]</code>
+      <code>$this-&gt;handlers[$direction][$typeName]</code>
+    </InvalidArrayAccess>
+    <InvalidArrayAssignment occurrences="1">
+      <code>$this-&gt;handlers[$direction][$typeName]</code>
+    </InvalidArrayAssignment>
+  </file>
+  <file src="src/Handler/LazyHandlerRegistry.php">
+    <InvalidArrayAccess occurrences="2">
+      <code>$this-&gt;handlers[$direction][$typeName]</code>
+      <code>$this-&gt;handlers[$direction][$typeName]</code>
+    </InvalidArrayAccess>
+  </file>
+  <file src="src/Handler/StdClassHandler.php">
+    <InvalidArgument occurrences="2">
+      <code>$classMetadata</code>
+      <code>$classMetadata</code>
+    </InvalidArgument>
+    <TooManyArguments occurrences="2">
+      <code>startVisitingObject</code>
+      <code>endVisitingObject</code>
+    </TooManyArguments>
+  </file>
+  <file src="src/JsonDeserializationVisitor.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>object</code>
+    </InvalidNullableReturnType>
+    <MismatchingDocblockReturnType occurrences="5">
+      <code>string</code>
+      <code>bool</code>
+      <code>int</code>
+      <code>float</code>
+      <code>array</code>
+    </MismatchingDocblockReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>$obj</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="src/JsonSerializationVisitor.php">
+    <MoreSpecificImplementedParamType occurrences="7">
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+    </MoreSpecificImplementedParamType>
+    <PossiblyInvalidPropertyAssignmentValue occurrences="1">
+      <code>true === $metadata-&gt;isMap ? new \ArrayObject() : []</code>
+    </PossiblyInvalidPropertyAssignmentValue>
+  </file>
+  <file src="src/Metadata/ClassMetadata.php">
+    <ArgumentTypeCoercion occurrences="3">
+      <code>$this-&gt;propertyMetadata</code>
+      <code>$this-&gt;propertyMetadata</code>
+      <code>$this-&gt;propertyMetadata</code>
+    </ArgumentTypeCoercion>
+    <InvalidPropertyAssignmentValue occurrences="3">
+      <code>$this-&gt;preSerializeMethods</code>
+      <code>$this-&gt;postSerializeMethods</code>
+      <code>$this-&gt;postDeserializeMethods</code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidScalarArgument occurrences="1">
+      <code>$this-&gt;customOrder</code>
+    </InvalidScalarArgument>
+    <TypeDoesNotContainType occurrences="2">
+      <code>\is_string($uri)</code>
+      <code>\is_string($prefix)</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="src/Metadata/Driver/AbstractDoctrineTypeDriver.php">
+    <ArgumentTypeCoercion occurrences="3">
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+      <code>$propertyMetadata</code>
+    </ArgumentTypeCoercion>
+    <UndefinedPropertyFetch occurrences="1">
+      <code>$propertyMetadata-&gt;type</code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="src/Metadata/Driver/AnnotationDriver.php">
+    <ImplicitToStringCast occurrences="2">
+      <code>$this-&gt;parseExpression('!(' . $annot-&gt;if . ')')</code>
+      <code>$this-&gt;parseExpression($annot-&gt;if)</code>
+    </ImplicitToStringCast>
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$expressionEvaluator</code>
+      <code>$annot-&gt;namespace ? (string) $annot-&gt;namespace : null</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Metadata/Driver/DoctrinePHPCRTypeDriver.php">
+    <NoInterfaceProperties occurrences="2">
+      <code>$doctrineMetadata-&gt;parentMapping</code>
+      <code>$doctrineMetadata-&gt;node</code>
+    </NoInterfaceProperties>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getFieldMapping</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Metadata/Driver/DoctrineTypeDriver.php">
+    <NoInterfaceProperties occurrences="2">
+      <code>$doctrineMetadata-&gt;discriminatorMap</code>
+      <code>$doctrineMetadata-&gt;discriminatorColumn</code>
+    </NoInterfaceProperties>
+    <UndefinedInterfaceMethod occurrences="2">
+      <code>isRootEntity</code>
+      <code>isInheritanceTypeNone</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Metadata/Driver/XmlDriver.php">
+    <ImplicitToStringCast occurrences="2">
+      <code>$this-&gt;parseExpression((string) $excludeIf)</code>
+      <code>$this-&gt;parseExpression('!(' . (string) $excludeIf . ')')</code>
+    </ImplicitToStringCast>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$expressionEvaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <PossiblyNullPropertyFetch occurrences="46">
+      <code>$elem-&gt;attributes()-&gt;{'exclusion-policy'}</code>
+      <code>$elem-&gt;attributes()-&gt;exclude</code>
+      <code>$elem-&gt;attributes()-&gt;{'access-type'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'accessor-order'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'custom-accessor-order'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'xml-root-name'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'xml-root-namespace'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'xml-root-prefix'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'read-only'}</code>
+      <code>$elem-&gt;attributes()-&gt;{'discriminator-field-name'}</code>
+      <code>$entry-&gt;attributes()-&gt;value</code>
+      <code>$elem-&gt;attributes()-&gt;{'discriminator-disabled'}</code>
+      <code>$xmlNamespace-&gt;attributes()-&gt;prefix</code>
+      <code>$xmlNamespace-&gt;attributes()-&gt;uri</code>
+      <code>$xmlDiscriminator-&gt;attributes()-&gt;attribute</code>
+      <code>$xmlDiscriminator-&gt;attributes()-&gt;cdata</code>
+      <code>$xmlDiscriminator-&gt;attributes()-&gt;namespace</code>
+      <code>$method-&gt;attributes()-&gt;name</code>
+      <code>$method-&gt;attributes()-&gt;expression</code>
+      <code>$method-&gt;attributes()-&gt;method</code>
+      <code>$pElem-&gt;attributes()-&gt;exclude</code>
+      <code>$pElem-&gt;attributes()-&gt;expose</code>
+      <code>$pElem-&gt;attributes()-&gt;{'exclude-if'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'skip-when-empty'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'expose-if'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'since-version'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'until-version'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'serialized-name'}</code>
+      <code>$pElem-&gt;attributes()-&gt;type</code>
+      <code>$pElem-&gt;attributes()-&gt;groups</code>
+      <code>$pElem-&gt;attributes()-&gt;{'xml-attribute'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'xml-attribute-map'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'xml-value'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'xml-key-value-pairs'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'max-depth'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'read-only'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'accessor-getter'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'accessor-setter'}</code>
+      <code>$pElem-&gt;attributes()-&gt;{'access-type'}</code>
+      <code>$pElem-&gt;attributes()-&gt;inline</code>
+      <code>$pElem-&gt;attributes()-&gt;name</code>
+      <code>$method-&gt;attributes()-&gt;type</code>
+      <code>$method-&gt;attributes()-&gt;name</code>
+      <code>$method-&gt;attributes()-&gt;name</code>
+      <code>$method-&gt;attributes()-&gt;name</code>
+      <code>$method-&gt;attributes()-&gt;name</code>
+    </PossiblyNullPropertyFetch>
+  </file>
+  <file src="src/Metadata/Driver/YamlDriver.php">
+    <ImplicitToStringCast occurrences="2">
+      <code>$this-&gt;parseExpression((string) $pConfig['exclude_if'])</code>
+      <code>$this-&gt;parseExpression('!(' . $pConfig['expose_if'] . ')')</code>
+    </ImplicitToStringCast>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$expressionEvaluator</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Metadata/PropertyMetadata.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="3">
+      <code>$getter</code>
+      <code>$setter</code>
+      <code>null</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Serializer.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$typeParser ?? new Parser()</code>
+    </InvalidPropertyAssignmentValue>
+    <UndefinedDocblockClass occurrences="2">
+      <code>TypeParser</code>
+      <code>$this-&gt;typeParser</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="src/SerializerBuilder.php">
+    <PropertyTypeCoercion occurrences="1">
+      <code>$reader</code>
+    </PropertyTypeCoercion>
+  </file>
+  <file src="src/Type/InnerParser.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>1</code>
+    </InvalidScalarArgument>
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+  </file>
+  <file src="src/Type/TypeVisitor.php">
+    <ArgumentTypeCoercion occurrences="2">
+      <code>$element</code>
+      <code>$element</code>
+    </ArgumentTypeCoercion>
+    <InvalidReturnStatement occurrences="1">
+      <code>false === strpos($value, '.') ? intval($value) : floatval($value)</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>string|mixed[]</code>
+    </InvalidReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>null</code>
+    </NullableReturnStatement>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getId</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Visitor/DeserializationVisitorInterface.php">
+    <MismatchingDocblockReturnType occurrences="6">
+      <code>mixed</code>
+      <code>mixed</code>
+      <code>mixed</code>
+      <code>mixed</code>
+      <code>mixed</code>
+      <code>mixed</code>
+    </MismatchingDocblockReturnType>
+  </file>
+  <file src="src/XmlDeserializationVisitor.php">
+    <InvalidArrayOffset occurrences="1">
+      <code>$data[$endPos++]</code>
+    </InvalidArrayOffset>
+    <InvalidNullableReturnType occurrences="1">
+      <code>object</code>
+    </InvalidNullableReturnType>
+    <MismatchingDocblockReturnType occurrences="5">
+      <code>string</code>
+      <code>bool</code>
+      <code>int</code>
+      <code>float</code>
+      <code>array</code>
+    </MismatchingDocblockReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>$rs</code>
+    </NullableReturnStatement>
+    <PossiblyFalseArgument occurrences="1">
+      <code>$startPos</code>
+    </PossiblyFalseArgument>
+    <PossiblyFalseOperand occurrences="3">
+      <code>$endPos</code>
+      <code>$endPos</code>
+      <code>$startPos</code>
+    </PossiblyFalseOperand>
+  </file>
+  <file src="src/XmlSerializationVisitor.php">
+    <ArgumentTypeCoercion occurrences="3">
+      <code>$this-&gt;currentNode</code>
+      <code>$this-&gt;currentNode</code>
+      <code>$this-&gt;currentNode</code>
+    </ArgumentTypeCoercion>
+    <ImplementedReturnTypeMismatch occurrences="2">
+      <code>void</code>
+      <code>void</code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement occurrences="1">
+      <code>$this-&gt;currentMetadata</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>?PropertyMetadata</code>
+    </InvalidReturnType>
+    <MoreSpecificImplementedParamType occurrences="5">
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+      <code>$data</code>
+    </MoreSpecificImplementedParamType>
+    <NullReference occurrences="1">
+      <code>appendChild</code>
+    </NullReference>
+    <PossiblyNullArgument occurrences="4">
+      <code>$this-&gt;currentNode</code>
+      <code>$this-&gt;currentNode</code>
+      <code>$this-&gt;currentNode</code>
+      <code>$this-&gt;currentNode</code>
+    </PossiblyNullArgument>
+    <PossiblyNullPropertyFetch occurrences="2">
+      <code>$this-&gt;currentNode-&gt;childNodes</code>
+      <code>$this-&gt;currentNode-&gt;parentNode</code>
+    </PossiblyNullPropertyFetch>
+    <PossiblyNullReference occurrences="6">
+      <code>appendChild</code>
+      <code>appendChild</code>
+      <code>appendChild</code>
+      <code>appendChild</code>
+      <code>removeChild</code>
+      <code>isDefaultNamespace</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedVariable occurrences="1">
+      <code>$element</code>
+    </PossiblyUndefinedVariable>
+    <TooFewArguments occurrences="1">
+      <code>createDocument</code>
+    </TooFewArguments>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>null === $this-&gt;document-&gt;documentElement</code>
+    </TypeDoesNotContainNull>
+    <UndefinedPropertyFetch occurrences="6">
+      <code>$this-&gt;currentMetadata-&gt;xmlElementCData</code>
+      <code>$this-&gt;currentMetadata-&gt;xmlEntryName</code>
+      <code>$this-&gt;currentMetadata-&gt;xmlKeyAttribute</code>
+      <code>$this-&gt;currentMetadata-&gt;xmlEntryNamespace</code>
+      <code>$this-&gt;currentMetadata-&gt;xmlKeyValuePairs</code>
+      <code>$metadata-&gt;reflection</code>
+    </UndefinedPropertyFetch>
+  </file>
+</files>
