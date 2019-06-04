@@ -42,7 +42,8 @@
         "symfony/filesystem": "^3.0|^4.0",
         "symfony/expression-language": "^3.0|^4.0",
         "phpunit/phpunit": "^7.5",
-        "doctrine/coding-standard": "^5.0"
+        "doctrine/coding-standard": "^5.0",
+        "psalm/phar": "3.4.1"
     },
     "conflict": {
         "hoa/core": "*",
