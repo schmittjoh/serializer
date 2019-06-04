@@ -2,7 +2,7 @@
 
 set -ex
 
-vendor/bin/psalm.phar
+vendor/bin/psalm.phar --show-info=false
 vendor/bin/phpunit $PHPUNIT_FLAGS
 phpenv config-rm xdebug.ini || true
 php tests/benchmark.php json 3
