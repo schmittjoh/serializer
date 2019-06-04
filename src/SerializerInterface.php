@@ -23,7 +23,7 @@ interface SerializerInterface
      *
      * @return mixed
      *
-     * @psalm-template T
+     * @psalm-templateeeeeeeeeeeeeee T
      * @psalm-param class-string<T> $type
      * @psalm-return T
      */
