@@ -342,6 +342,7 @@ class YamlDriver extends AbstractFileDriver
      */
     protected function getExtensions(): array
     {
+        /** @psalm-suppress DeprecatedMethod */
         return array_unique([$this->getExtension(), 'yaml', 'yml']);
     }
 
