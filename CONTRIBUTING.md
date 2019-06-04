@@ -19,6 +19,16 @@ The most common errors can be automatically fixed just by running `vendor/bin/ph
 
 We're using [`composer/composer`](https://github.com/composer/composer) to manage dependencies
 
+## Static Analysis
+
+We use [Psalm](https://psalm.dev/) to run static analysis checks on the codebase. You can
+check for errors by calling `vendor/bin/psalm.phar --show-info=false`.
+
+Issues from before the point we started using Psalm are listed in the 'baseline file', and are ignored when running
+psalm. If you have made substantial changes, or you have fixed one of these errors and want to ensure it doesn't come
+back, run `vendor/bin/psalm.phar --update-baseline` and commit the changes it will make
+in [baseline.xml](./.psalm/baseline.xml).
+
 ## Unit-Tests
 
 Please try to add a test for your pull-request. This project uses [PHPUnit](https://phpunit.de/) as testing framework.
