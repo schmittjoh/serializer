@@ -17,6 +17,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -131,6 +132,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
             case 'double':
             case 'float':
                 return $this->visitor->visitDouble($data, $type);
+
+            case 'iterable':
+                return $this->visitor->visitArray(Functions::iterableToArray($data), $type);
 
             case 'array':
                 return $this->visitor->visitArray($data, $type);
