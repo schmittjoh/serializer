@@ -378,6 +378,18 @@ Available Types:
 +----------------------------------------------------------+--------------------------------------------------+
 | T                                                        | Where T is a fully qualified class name.         |
 +----------------------------------------------------------+--------------------------------------------------+
+| iterable                                                 | Similar to array. Will always be deserialized    |
+|                                                          | into array as implementation info is lost during |
+|                                                          | serialization.                                   |
++----------------------------------------------------------+--------------------------------------------------+
+| iterable<T>                                              | Similar to array<T>. Will always be deserialized |
+|                                                          | into array as implementation info is lost during |
+|                                                          | serialization.                                   |
++----------------------------------------------------------+--------------------------------------------------+
+| iterable<K, V>                                           | Similar to array<K, V>. Will always be           |
+|                                                          | deserialized into array as implementation info   |
+|                                                          | is lost during serialization.                    |
++----------------------------------------------------------+--------------------------------------------------+
 | ArrayCollection<T>                                       | Similar to array<T>, but will be deserialized    |
 |                                                          | into Doctrine's ArrayCollection class.           |
 +----------------------------------------------------------+--------------------------------------------------+
@@ -400,6 +412,15 @@ Available Types:
 |                                                          | into ArrayIterator class.                        |
 +----------------------------------------------------------+--------------------------------------------------+
 | ArrayIterator<K, V>                                      | Similar to array<K, V>, but will be deserialized |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
+| Iterator                                                 | Similar to array, but will be deserialized       |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
+| Iterator<T>                                              | Similar to array<T>, but will be deserialized    |
+|                                                          | into ArrayIterator class.                        |
++----------------------------------------------------------+--------------------------------------------------+
+| Iterator<K, V>                                           | Similar to array<K, V>, but will be deserialized |
 |                                                          | into ArrayIterator class.                        |
 +----------------------------------------------------------+--------------------------------------------------+
 

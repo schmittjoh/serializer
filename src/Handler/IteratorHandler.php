@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Handler;
 
+use ArrayIterator;
+use Generator;
+use Iterator;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -24,14 +28,30 @@ final class IteratorHandler implements SubscribingHandlerInterface
         foreach (self::SUPPORTED_FORMATS as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => \ArrayIterator::class,
+                'type' => iterable::class,
                 'format' => $format,
-                'method' => 'serializeIterator',
+                'method' => 'serializeIterable',
             ];
 
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'type' => \ArrayIterator::class,
+                'type' => iterable::class,
+                'format' => $format,
+                'method' => 'deserializeIterable',
+            ];
+        }
+
+        foreach (self::SUPPORTED_FORMATS as $format) {
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'type' => Iterator::class,
+                'format' => $format,
+                'method' => 'serializeIterable',
+            ];
+
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                'type' => Iterator::class,
                 'format' => $format,
                 'method' => 'deserializeIterator',
             ];
@@ -40,14 +60,30 @@ final class IteratorHandler implements SubscribingHandlerInterface
         foreach (self::SUPPORTED_FORMATS as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => \Generator::class,
+                'type' => ArrayIterator::class,
                 'format' => $format,
-                'method' => 'serializeIterator',
+                'method' => 'serializeIterable',
             ];
 
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'type' => \Generator::class,
+                'type' => ArrayIterator::class,
+                'format' => $format,
+                'method' => 'deserializeIterator',
+            ];
+        }
+
+        foreach (self::SUPPORTED_FORMATS as $format) {
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'type' => Generator::class,
+                'format' => $format,
+                'method' => 'serializeIterable',
+            ];
+
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                'type' => Generator::class,
                 'format' => $format,
                 'method' => 'deserializeGenerator',
             ];
@@ -57,19 +93,19 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @return mixed[]|\ArrayObject
+     * @return mixed
      */
-    public function serializeIterator(
+    public function serializeIterable(
         SerializationVisitorInterface $visitor,
-        \Iterator $iterator,
+        iterable $iterable,
         array $type,
         SerializationContext $context
     ) {
         $type['name'] = 'array';
 
-        $context->stopVisiting($iterator);
-        $result = $visitor->visitArray(iterator_to_array($iterator), $type);
-        $context->startVisiting($iterator);
+        $context->stopVisiting($iterable);
+        $result = $visitor->visitArray(Functions::iterableToArray($iterable), $type);
+        $context->startVisiting($iterable);
 
         return $result;
     }
@@ -85,7 +121,26 @@ final class IteratorHandler implements SubscribingHandlerInterface
     ): \Iterator {
         $type['name'] = 'array';
 
-        return new \ArrayIterator($visitor->visitArray($data, $type));
+        return new ArrayIterator($visitor->visitArray($data, $type));
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function deserializeIterable(
+        DeserializationVisitorInterface $visitor,
+        $data,
+        array $type,
+        DeserializationContext $context
+    ): array {
+        $type['name'] = 'array';
+
+        $return = [];
+        foreach ($visitor->visitArray($data, $type) as $key => $item) {
+            $return[$key] = $item;
+        }
+
+        return $return;
     }
 
 
@@ -97,12 +152,10 @@ final class IteratorHandler implements SubscribingHandlerInterface
         $data,
         array $type,
         DeserializationContext $context
-    ): \Generator {
-        return (static function () use (&$visitor, &$data, &$type): \Generator {
+    ): Generator {
+        return (static function () use (&$visitor, &$data, &$type): Generator {
             $type['name'] = 'array';
-            foreach ($visitor->visitArray($data, $type) as $key => $item) {
-                yield $key => $item;
-            }
+            yield from $visitor->visitArray($data, $type);
         })();
     }
 }

@@ -13,6 +13,7 @@ use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;
@@ -70,10 +71,12 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
+use JMS\Serializer\Tests\Fixtures\ObjectWithArrayIterator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\ObjectWithGenerator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
+use JMS\Serializer\Tests\Fixtures\ObjectWithIterable;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIterator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
@@ -1566,6 +1569,24 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
     }
 
+    public function testIterable(): void
+    {
+        $generator = static function (): iterable {
+            yield 'foo' => 'bar';
+            yield 'bar' => 'foo';
+        };
+        $withIterable = new ObjectWithIterable($generator());
+        self::assertEquals($this->getContent('iterable'), $this->serialize($withIterable));
+
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+        self::assertEquals(
+            new ObjectWithIterable(Functions::iterableToArray($generator())),
+            $this->deserialize($this->getContent('iterable'), get_class($withIterable))
+        );
+    }
+
     public function testGenerator(): void
     {
         $generator = static function (): \Generator {
@@ -1599,6 +1620,24 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals(
             $withIterator,
             $this->deserialize($this->getContent('iterator'), get_class($withIterator))
+        );
+    }
+
+    public function testArrayIterator(): void
+    {
+        $iterator = new \ArrayIterator([
+            'foo' => 'bar',
+            'bar' => 'foo',
+        ]);
+        $withArrayIterator = new ObjectWithArrayIterator($iterator);
+        self::assertEquals($this->getContent('iterator'), $this->serialize($withArrayIterator));
+
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+        self::assertEquals(
+            $withArrayIterator,
+            $this->deserialize($this->getContent('iterator'), get_class($withArrayIterator))
         );
     }
 

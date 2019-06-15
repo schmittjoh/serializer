@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use Iterator;
 use JMS\Serializer\Annotation as Serializer;
 
-class ObjectWithIterator
+class ObjectWithArrayIterator
 {
     /**
-     * @Serializer\Type("Iterator<string,string>")
+     * @Serializer\Type("ArrayIterator<string,string>")
      * @Serializer\XmlKeyValuePairs
      *
-     * @var Iterator
+     * @var \ArrayIterator
      */
     public $iterator;
 
-    public function __construct(Iterator $iterator)
+    public function __construct(\ArrayIterator $iterator)
     {
         $this->iterator = $iterator;
     }

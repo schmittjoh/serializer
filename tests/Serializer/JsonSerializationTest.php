@@ -119,7 +119,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['inline_empty_map'] = '{}';
             $outputs['empty_object'] = '{}';
             $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","0":"5"}';
+            $outputs['iterable'] = '{"iterable":{"foo":"bar","bar":"foo"}}';
             $outputs['iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
+            $outputs['array_iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['generator'] = '{"generator":{"foo":"bar","bar":"foo"}}';
         }
 
