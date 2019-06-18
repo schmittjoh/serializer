@@ -2,4 +2,5 @@
 <test-object xmlns="http://example.com/namespace" created_at="2011-07-30T00:00:00+00:00" etag="e86ce85cdb1253e4fc6352f5cf297248bceec62b" language="en">
   <title><![CDATA[This is a nice title.]]></title>
   <author><![CDATA[Foo Bar]]></author>
+  <empty_ns_element xmlns=""><![CDATA[value for empty namespace property]]></empty_ns_element>
 </test-object>

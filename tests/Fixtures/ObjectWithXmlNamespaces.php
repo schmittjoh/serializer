@@ -48,12 +48,19 @@ class ObjectWithXmlNamespaces
      */
     private $language;
 
-    public function __construct($title, $author, \DateTime $createdAt, $language)
+    /**
+     * @Type("string")
+     * @XmlElement(namespace="")
+     */
+    private $emptyNsElement;
+
+    public function __construct($title, $author, \DateTime $createdAt, $language, $emptyNsElement)
     {
         $this->title = $title;
         $this->author = $author;
         $this->createdAt = $createdAt;
         $this->language = $language;
+        $this->emptyNsElement = $emptyNsElement;
         $this->etag = sha1($this->createdAt->format(\DateTime::ATOM));
     }
 }

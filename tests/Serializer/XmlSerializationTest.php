@@ -370,7 +370,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testObjectWithXmlNamespaces()
     {
-        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
+        $object = new ObjectWithXmlNamespaces('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en', 'value for empty namespace property');
 
         $serialized = $this->serialize($object);
         self::assertEquals($this->getContent('object_with_xml_namespaces'), $serialized);
@@ -385,6 +385,7 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertEquals('en', $this->xpathFirstToString($xml, './@ns1:language'));
         self::assertEquals('This is a nice title.', $this->xpathFirstToString($xml, './ns1:title'));
         self::assertEquals('Foo Bar', $this->xpathFirstToString($xml, './ns3:author'));
+        self::assertEquals('value for empty namespace property', $this->xpathFirstToString($xml, './empty_ns_element'));
 
         $deserialized = $this->deserialize($this->getContent('object_with_xml_namespacesalias'), get_class($object));
         self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
@@ -392,6 +393,7 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertAttributeSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', 'etag', $deserialized);
         self::assertAttributeSame('en', 'language', $deserialized);
         self::assertAttributeEquals('Foo Bar', 'author', $deserialized);
+        self::assertEquals('value for empty namespace property', $this->getField($deserialized, 'emptyNsElement'));
     }
 
     public function testObjectWithXmlNamespacesAndBackReferencedNamespaces()
@@ -430,7 +432,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testObjectWithXmlRootNamespace()
     {
-        $object = new ObjectWithXmlRootNamespace('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en');
+        $object = new ObjectWithXmlRootNamespace('This is a nice title.', 'Foo Bar', new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), 'en', 'value for empty namespace property');
         self::assertEquals($this->getContent('object_with_xml_root_namespace'), $this->serialize($object));
     }
 

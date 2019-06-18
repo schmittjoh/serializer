@@ -314,6 +314,14 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (!$node->count()) {
                 throw new NotAcceptableException();
             }
+        } elseif ('' === $metadata->xmlNamespace) {
+            // See #1087 - element must be like: <element xmlns="" /> - https://www.w3.org/TR/REC-xml-names/#iri-use
+            // Use of an empty string in a namespace declaration turns it into an "undeclaration".
+            $nodes = $data->xpath('./' . $name);
+            if (empty($nodes)) {
+                throw new NotAcceptableException();
+            }
+            $node = reset($nodes);
         } else {
             $namespaces = $data->getDocNamespaces();
             if (isset($namespaces[''])) {

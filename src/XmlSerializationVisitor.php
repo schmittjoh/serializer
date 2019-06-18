@@ -463,6 +463,15 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
     private function createElement(string $tagName, ?string $namespace = null): \DOMElement
     {
+        // See #1087 - element must be like: <element xmlns="" /> - https://www.w3.org/TR/REC-xml-names/#iri-use
+        // Use of an empty string in a namespace declaration turns it into an "undeclaration".
+        if ('' === $namespace) {
+            // If we have a default namespace, we need to create namespaced.
+            if ($this->parentHasNonEmptyDefaultNs()) {
+                return $this->document->createElementNS($namespace, $tagName);
+            }
+            return $this->document->createElement($tagName);
+        }
         if (null === $namespace) {
             return $this->document->createElement($tagName);
         }
@@ -490,5 +499,10 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     private function getClassDefaultNamespace(ClassMetadata $metadata): ?string
     {
         return $metadata->xmlNamespaces[''] ?? null;
+    }
+
+    private function parentHasNonEmptyDefaultNs(): bool
+    {
+        return null !== ($uri = $this->currentNode->lookupNamespaceUri(null)) && ('' !== $uri);
     }
 }
