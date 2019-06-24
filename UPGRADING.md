@@ -53,6 +53,33 @@ If you are on version `1.x`, is suggested to migrate directly to `3.0.0` (since 
 - When using a discriminator map, parent class should either be declared abstract, or included into the discriminator
   map
 - For the `Context` class (and its childs `SerializationContext` and `DeserializationContext`), `$attributes` property has become `private`, so it's no longer accesible; use `getAttribute()` instead
+- When implementing custom type handlers and `$context->shouldSerializeNull()` is `false` (it is `false` by default),
+  handlers should throw `NotAcceptableException` exception when `null` is visited.
+  
+  Before:
+  ```php
+      public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, $data, array $type, Context $context)
+      {
+        
+        // handle custom serialization here
+        return $data;
+      }
+  ```
+  
+  After:  
+  ```php
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, $data, array $type, Context $context)
+    {
+      if (!$context->shouldSerializeNull() && $data === null) {
+          throw new NotAcceptableException();
+      }
+      
+      // handle custom serialization here
+      return $data;
+    }
+  ```
+   
+   
 
 **Deprecations** (will be removed in 3.0)
 
