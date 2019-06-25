@@ -1,5 +1,30 @@
 # Change Log
 
+## [3.1.0](https://github.com/schmittjoh/serializer/tree/3.1.0) (2019-06-24)
+**Implemented enhancements:**
+
+- Add support for iterable and Iterator [\#1096](https://github.com/schmittjoh/serializer/pull/1096) ([simPod](https://github.com/simPod))
+- Implement "empty" XML namespace handling [\#1095](https://github.com/schmittjoh/serializer/pull/1095) ([discordier](https://github.com/discordier))
+- Move type check when deserializing into the graph navigator [\#1080](https://github.com/schmittjoh/serializer/pull/1080) ([goetas](https://github.com/goetas))
+- Allow loading different YAML extensions [\#1078](https://github.com/schmittjoh/serializer/pull/1078) ([scaytrase](https://github.com/scaytrase))
+
+**Fixed bugs:**
+
+- Fix for failing doctrine object constructor on embeddable class [\#1031](https://github.com/schmittjoh/serializer/pull/1031) ([notrix](https://github.com/notrix))
+
+**Closed issues:**
+
+- Behavior serializeNull -\> not always honored in 2.\* \(but was in 1.\*\) [\#1101](https://github.com/schmittjoh/serializer/issues/1101)
+- Support for iterable [\#1094](https://github.com/schmittjoh/serializer/issues/1094)
+- Prevent deserialisation with missing required field [\#1090](https://github.com/schmittjoh/serializer/issues/1090)
+- Allow using @XmlValue together with @Accessor/@AccessType [\#1083](https://github.com/schmittjoh/serializer/issues/1083)
+- Support \*.yaml extension [\#1077](https://github.com/schmittjoh/serializer/issues/1077)
+
+**Merged pull requests:**
+
+- Add psalm specific generic return type for deserialize [\#1091](https://github.com/schmittjoh/serializer/pull/1091) ([bdsl](https://github.com/bdsl))
+- Fix: Typo [\#1084](https://github.com/schmittjoh/serializer/pull/1084) ([localheinz](https://github.com/localheinz))
+
 ## [3.0.1](https://github.com/schmittjoh/serializer/tree/3.0.1) (2019-04-23)
 **Fixed bugs:**
 
