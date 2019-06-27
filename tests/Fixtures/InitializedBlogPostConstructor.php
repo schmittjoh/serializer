@@ -14,9 +14,15 @@ class InitializedBlogPostConstructor implements ObjectConstructorInterface
 {
     private $fallback;
 
-    public function __construct()
+    /**
+     * @var BlogPost
+     */
+    private $blogPost;
+
+    public function __construct(BlogPost $blogPost)
     {
         $this->fallback = new UnserializeObjectConstructor();
+        $this->blogPost = $blogPost;
     }
 
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
@@ -25,6 +31,6 @@ class InitializedBlogPostConstructor implements ObjectConstructorInterface
             return $this->fallback->construct($visitor, $metadata, $data, $type, $context);
         }
 
-        return new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        return $this->blogPost;
     }
 }

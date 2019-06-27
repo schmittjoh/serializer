@@ -141,7 +141,6 @@ class GraphNavigatorTest extends TestCase
             ->enableOriginalConstructor()
             ->setMethodsExcept(['getExclusionStrategy'])
             ->getMock();
-
         $this->deserializationContext = $this->getMockBuilder(DeserializationContext::class)
             ->enableOriginalConstructor()
             ->setMethodsExcept(['getExclusionStrategy'])

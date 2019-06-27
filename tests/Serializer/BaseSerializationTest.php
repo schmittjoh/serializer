@@ -79,6 +79,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIterable;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIterator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithLifecycleCallbacks;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNullObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithTypedArraySetter;
@@ -210,6 +211,25 @@ abstract class BaseSerializationTest extends TestCase
 
         self::assertEquals($obj, $dObj);
         self::assertNull($dObj->getNullProperty());
+    }
+
+    public function testDeserializeNullObjectWithHandler()
+    {
+        if (!$this->hasDeserializer()) {
+            $this->markTestSkipped(sprintf('No deserializer available for format `%s`', $this->getFormat()));
+        }
+        $ctx = DeserializationContext::create()
+            ->setDeserializeNull(false);
+
+        /** @var ObjectWithNullObject $dObj */
+        $dObj = $this->serializer->deserialize(
+            $this->getContent('simple_object_nullable'),
+            ObjectWithNullObject::class,
+            $this->getFormat(),
+            $ctx
+        );
+
+        self::assertSame('nullObject', $dObj->getNullProperty());
     }
 
     /**
@@ -733,13 +753,12 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testDeserializingNull()
     {
-        $objectConstructor = new InitializedBlogPostConstructor();
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        $objectConstructor = new InitializedBlogPostConstructor($post);
 
         $builder = SerializerBuilder::create();
         $builder->setObjectConstructor($objectConstructor);
         $this->serializer = $builder->build();
-
-        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
 
         $this->setField($post, 'author', null);
         $this->setField($post, 'publisher', null);
@@ -754,7 +773,42 @@ abstract class BaseSerializationTest extends TestCase
             self::assertAttributeSame(false, 'published', $deserialized);
             self::assertAttributeSame(false, 'reviewed', $deserialized);
             self::assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
-            self::assertEquals(null, $this->getField($deserialized, 'author'));
+            self::assertAttributeSame(null, 'author', $deserialized);
+            self::assertAttributeSame(null, 'tag', $deserialized);
+        }
+    }
+
+    public function testDeserializingNullAllowed()
+    {
+        $savedPost = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), $publisher = new Publisher('Bar Foo'));
+        $savedPost->addTag(new Tag('foo'));
+        $initialTag = $this->getField($savedPost, 'tag');
+
+        $objectConstructor = new InitializedBlogPostConstructor($savedPost);
+
+        $builder = SerializerBuilder::create();
+        $builder->setObjectConstructor($objectConstructor);
+        $this->serializer = $builder->build();
+
+        $post = clone $savedPost;
+        $this->setField($post, 'author', null);
+        $this->setField($post, 'publisher', null);
+        $this->setField($post, 'tag', null);
+
+        if ($this->hasDeserializer()) {
+            $ctx =  DeserializationContext::create();
+            $ctx->setDeserializeNull(false);
+
+            $deserialized = $this->deserialize($this->serialize($post), get_class($post), $ctx);
+
+            self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
+            self::assertAttributeEquals('This is a nice title.', 'title', $deserialized);
+            self::assertAttributeSame(false, 'published', $deserialized);
+            self::assertAttributeSame(false, 'reviewed', $deserialized);
+            self::assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
+            self::assertAttributeEquals($author, 'author', $deserialized);
+            self::assertAttributeEquals($publisher, 'publisher', $deserialized);
+            self::assertAttributeEquals($initialTag, 'tag', $deserialized);
         }
     }
 
@@ -1707,7 +1761,14 @@ abstract class BaseSerializationTest extends TestCase
                 return $list;
             }
         );
-
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+            'NullObject',
+            $this->getFormat(),
+            static function (DeserializationVisitorInterface $visitor, $data, $type, Context $context) {
+                return 'nullObject';
+            }
+        );
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
