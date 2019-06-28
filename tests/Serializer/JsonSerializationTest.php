@@ -123,6 +123,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['array_iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['generator'] = '{"generator":{"foo":"bar","bar":"foo"}}';
+            $outputs['ParentNoMetadataChildObject'] = '{"bar":"John"}';
         }
 
         if (!isset($outputs[$key])) {
