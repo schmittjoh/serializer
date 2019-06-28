@@ -164,11 +164,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
 
         if (true === $metadata->inline) {
             if (!$metadata->type) {
-                throw new RuntimeException(sprintf(
-                    'You must define a type for %s::$%s.',
-                    $metadata->class,
-                    $metadata->name
-                ));
+                throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
             return $this->navigator->accept($data, $metadata->type);
         }
@@ -178,7 +174,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+            throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
         }
 
         return null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;

@@ -11,4 +11,12 @@ namespace JMS\Serializer\Exception;
  */
 class RuntimeException extends \RuntimeException implements Exception
 {
+    public static function noMetadataForProperty(string $class, string $prop): self
+    {
+        return new RuntimeException(sprintf(
+            'You must define a type for %s::$%s.',
+            $class,
+            $prop
+        ));
+    }
 }
