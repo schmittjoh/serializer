@@ -152,8 +152,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitProperty(PropertyMetadata $metadata, $data)
     {
+        $name = $metadata->serializedName;
+
         if (null === $data) {
-            return null;
+            return;
         }
 
         if (!\is_array($data)) {
@@ -161,12 +163,18 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
         }
 
         if (true === $metadata->inline) {
+            if (!$metadata->type) {
+                throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
+            }
             return $this->navigator->accept($data, $metadata->type);
         }
 
-        $name = $metadata->serializedName;
         if (!array_key_exists($name, $data)) {
             throw new NotAcceptableException();
+        }
+
+        if (!$metadata->type) {
+            throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
         }
 
         return null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;

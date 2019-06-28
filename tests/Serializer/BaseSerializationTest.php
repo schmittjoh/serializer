@@ -86,6 +86,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\ParentDoNotSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\ParentNoMetadataChildObject;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
@@ -146,6 +147,15 @@ abstract class BaseSerializationTest extends TestCase
             $this->getContent('nullable'),
             $this->serializer->serialize($arr, $this->getFormat(), SerializationContext::create()->setSerializeNull(true))
         );
+    }
+
+    public function testNoMetadataNeededWhenDeSerializingNotUsedProperty()
+    {
+        /** @var ParentNoMetadataChildObject $dObj */
+        $object = $this->deserialize($this->getContent('ParentNoMetadataChildObject'), ParentNoMetadataChildObject::class);
+
+        self::assertSame('John', $object->bar);
+        self::assertNull($object->foo);
     }
 
     public function testDeserializeObjectWithMissingTypedArrayProp()
