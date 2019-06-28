@@ -281,15 +281,18 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         $name = $metadata->serializedName;
 
-        if (!$metadata->type) {
-            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
-        }
         if (true === $metadata->inline) {
+            if (!$metadata->type) {
+                throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+            }
             return $this->navigator->accept($data, $metadata->type);
         }
         if ($metadata->xmlAttribute) {
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
+                if (!$metadata->type) {
+                    throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+                }
                 return $this->navigator->accept($attributes[$name], $metadata->type);
             }
 
@@ -297,6 +300,9 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         }
 
         if ($metadata->xmlValue) {
+            if (!$metadata->type) {
+                throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+            }
             return $this->navigator->accept($data, $metadata->type);
         }
 
@@ -307,6 +313,9 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             }
 
             $this->setCurrentMetadata($metadata);
+            if (!$metadata->type) {
+                throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+            }
             $v = $this->navigator->accept($enclosingElem, $metadata->type);
             $this->revertCurrentMetadata();
             return $v;
@@ -344,6 +353,9 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             $this->setCurrentMetadata($metadata);
         }
 
+        if (!$metadata->type) {
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->class, $metadata->name));
+        }
         return $this->navigator->accept($node, $metadata->type);
     }
 
