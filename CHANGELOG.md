@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.1.1](https://github.com/schmittjoh/serializer/tree/3.1.1) (2019-06-28)
+**Fixed bugs:**
+
+- Could not deserialize object if all properties have not type [\#1102](https://github.com/schmittjoh/serializer/issues/1102)
+
+**Merged pull requests:**
+
+- Revert "Move type check when deserializing into the graph navigator" [\#1103](https://github.com/schmittjoh/serializer/pull/1103) ([goetas](https://github.com/goetas))
+
 ## [3.1.0](https://github.com/schmittjoh/serializer/tree/3.1.0) (2019-06-24)
 **Implemented enhancements:**
 
