@@ -189,11 +189,11 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $context = $this->serializationContextFactory->createSerializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, SerializerInterface::FORMAT_JSON);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
 
         $type = $this->findInitialType($type, $context);
-        $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
+        $result = $this->visit($navigator, $visitor, $context, $data, SerializerInterface::FORMAT_JSON, $type);
         $result = $this->convertArrayObjects($result);
 
         if (!\is_array($result)) {
@@ -216,10 +216,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $context = $this->deserializationContextFactory->createDeserializationContext();
         }
 
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, SerializerInterface::FORMAT_JSON);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
-        return $this->visit($navigator, $visitor, $context, $data, 'json', $type, false);
+        return $this->visit($navigator, $visitor, $context, $data, SerializerInterface::FORMAT_JSON, $type, false);
     }
 
     /**

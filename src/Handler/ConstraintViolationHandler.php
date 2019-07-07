@@ -7,6 +7,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -19,7 +20,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $formats = ['xml', 'json'];
+        $formats = SerializerInterface::FORMATS_SUPPORTED;
         $types = ['Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation'];
 
         foreach ($types as $type => $method) {

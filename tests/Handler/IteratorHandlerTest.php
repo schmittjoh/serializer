@@ -9,6 +9,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\TestCase;
@@ -46,7 +47,7 @@ final class IteratorHandlerTest extends TestCase
         $serializationHandler = $this->handlerRegistry->getHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             $type,
-            'json'
+            SerializerInterface::FORMAT_JSON
         );
         self::assertIsCallable($serializationHandler);
 
@@ -61,7 +62,7 @@ final class IteratorHandlerTest extends TestCase
         $deserializationHandler = $this->handlerRegistry->getHandler(
             GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
             $type,
-            'json'
+            SerializerInterface::FORMAT_JSON
         );
         self::assertIsCallable($deserializationHandler);
 

@@ -8,6 +8,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
@@ -83,7 +84,7 @@ class ContextTest extends TestCase
 
         $serializer = SerializerBuilder::create()->build();
 
-        $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
+        $serializer->serialize($object, SerializerInterface::FORMAT_JSON, SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 
     public function testSerializationMetadataStack()
@@ -133,7 +134,7 @@ class ContextTest extends TestCase
             }));
 
         $serializer = SerializerBuilder::create()->build();
-        $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
+        $serializer->serialize($object, SerializerInterface::FORMAT_JSON, SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 
     public function getScalars()
@@ -179,7 +180,7 @@ class ContextTest extends TestCase
         $context->setGroups('post');
 
         $object = new BlogPost('serializer', new Author('me'), new \DateTime(), new Publisher('php'));
-        $serialized = $serializer->serialize($object, 'json', $context);
+        $serialized = $serializer->serialize($object, SerializerInterface::FORMAT_JSON, $context);
 
         $data = json_decode($serialized, true);
 
@@ -196,7 +197,7 @@ class ContextTest extends TestCase
         $context->setVersion('1.0.0');
 
         $object = new VersionedObject('a', 'b');
-        $serialized = $serializer->serialize($object, 'json', $context);
+        $serialized = $serializer->serialize($object, SerializerInterface::FORMAT_JSON, $context);
 
         $data = json_decode($serialized, true);
 

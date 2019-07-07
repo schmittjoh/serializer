@@ -10,6 +10,7 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -77,7 +78,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
             ->deserialize(
                 '{"authors":[{"full_name":"foo"},{"full_name":"bar"}]}',
                 'JMS\Serializer\Tests\Fixtures\AuthorList',
-                'json',
+                SerializerInterface::FORMAT_JSON,
                 DeserializationContext::create()->setAttribute('validation_groups', ['Foo'])
             );
 

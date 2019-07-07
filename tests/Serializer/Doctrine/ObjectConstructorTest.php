@@ -207,7 +207,7 @@ class ObjectConstructorTest extends TestCase
 
         $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
         /** @var Server $serverDeserialized */
-        $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
+        $serverDeserialized = $serializer->deserialize($jsonData, Server::class, SerializerInterface::FORMAT_JSON);
 
         static::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),

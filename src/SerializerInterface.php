@@ -11,6 +11,14 @@ namespace JMS\Serializer;
  */
 interface SerializerInterface
 {
+    public const FORMAT_JSON = 'json';
+    public const FORMAT_XML = 'xml';
+
+    public const FORMATS_SUPPORTED = [
+        self::FORMAT_JSON,
+        self::FORMAT_XML,
+    ];
+
     /**
      * Serializes the given data to the specified output format.
      *

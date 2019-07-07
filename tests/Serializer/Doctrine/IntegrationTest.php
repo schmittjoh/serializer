@@ -21,6 +21,7 @@ use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
@@ -40,20 +41,20 @@ class IntegrationTest extends TestCase
     public function testDiscriminatorIsInferredForEntityBaseClass()
     {
         $school = new School();
-        $json = $this->serializer->serialize($school, 'json');
+        $json = $this->serializer->serialize($school, SerializerInterface::FORMAT_JSON);
         self::assertEquals('{"type":"school"}', $json);
 
-        $deserialized = $this->serializer->deserialize($json, Organization::class, 'json');
+        $deserialized = $this->serializer->deserialize($json, Organization::class, SerializerInterface::FORMAT_JSON);
         self::assertEquals($school, $deserialized);
     }
 
     public function testDiscriminatorIsInferredForGenericBaseClass()
     {
         $student = new Student();
-        $json = $this->serializer->serialize($student, 'json');
+        $json = $this->serializer->serialize($student, SerializerInterface::FORMAT_JSON);
         self::assertEquals('{"type":"student"}', $json);
 
-        $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
+        $deserialized = $this->serializer->deserialize($json, Person::class, SerializerInterface::FORMAT_JSON);
         self::assertEquals($student, $deserialized);
     }
 
@@ -77,7 +78,7 @@ class IntegrationTest extends TestCase
         $reloadedClass = $em->find(get_class($class), $class->getId());
         self::assertNotSame($class, $reloadedClass);
 
-        $json = $this->serializer->serialize($reloadedClass, 'json');
+        $json = $this->serializer->serialize($reloadedClass, SerializerInterface::FORMAT_JSON);
         self::assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
     }
 

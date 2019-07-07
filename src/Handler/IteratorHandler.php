@@ -11,13 +11,12 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class IteratorHandler implements SubscribingHandlerInterface
 {
-    private const SUPPORTED_FORMATS = ['json', 'xml'];
-
     /**
      * {@inheritdoc}
      */
@@ -25,7 +24,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
     {
         $methods = [];
 
-        foreach (self::SUPPORTED_FORMATS as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => iterable::class,
@@ -41,7 +40,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
             ];
         }
 
-        foreach (self::SUPPORTED_FORMATS as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => Iterator::class,
@@ -57,7 +56,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
             ];
         }
 
-        foreach (self::SUPPORTED_FORMATS as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => ArrayIterator::class,
@@ -73,7 +72,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
             ];
         }
 
-        foreach (self::SUPPORTED_FORMATS as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => Generator::class,

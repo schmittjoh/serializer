@@ -8,6 +8,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -38,7 +39,7 @@ final class DateHandler implements SubscribingHandlerInterface
         $deserializationTypes = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
         $serialisationTypes = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
 
-        foreach (['json', 'xml'] as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             foreach ($deserializationTypes as $type) {
                 $methods[] = [
                     'type' => $type,

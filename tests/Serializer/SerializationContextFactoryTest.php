@@ -13,6 +13,7 @@ use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
@@ -36,8 +37,8 @@ class SerializationContextFactoryTest extends TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->unserializeObjectConstructor = new UnserializeObjectConstructor();
 
-        $this->serializationVisitors = ['json' => new JsonSerializationVisitorFactory()];
-        $this->deserializationVisitors = ['json' => new JsonDeserializationVisitorFactory()];
+        $this->serializationVisitors = [SerializerInterface::FORMAT_JSON => new JsonSerializationVisitorFactory()];
+        $this->deserializationVisitors = [SerializerInterface::FORMAT_JSON => new JsonDeserializationVisitorFactory()];
     }
 
     public function testSerializeUseProvidedSerializationContext()
@@ -55,7 +56,7 @@ class SerializationContextFactoryTest extends TestCase
         $builder->setSerializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 
-        $result = $serializer->serialize(['value' => null], 'json');
+        $result = $serializer->serialize(['value' => null], SerializerInterface::FORMAT_JSON);
 
         self::assertEquals('{"value":null}', $result);
     }
@@ -74,7 +75,7 @@ class SerializationContextFactoryTest extends TestCase
         $builder->setDeserializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 
-        $result = $serializer->deserialize('{"value":null}', 'array', 'json');
+        $result = $serializer->deserialize('{"value":null}', 'array', SerializerInterface::FORMAT_JSON);
 
         self::assertEquals(['value' => null], $result);
     }

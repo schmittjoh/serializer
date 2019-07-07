@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use JMS\Serializer\EventDispatcher\LazyEventDispatcher;
+use JMS\Serializer\SerializerInterface;
 
 abstract class LazyEventDispatcherTest extends EventDispatcherTest
 {
@@ -22,9 +23,9 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $a = new MockListener();
         $this->registerListenerService('a', $a);
 
-        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', SerializerInterface::FORMAT_JSON));
         $this->dispatcher->addListener('foo', ['a', 'foo']);
-        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', SerializerInterface::FORMAT_JSON));
     }
 
     public function testDispatchWithListenerAsService()
@@ -43,10 +44,10 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $this->dispatcher->addListener('pre', ['b', 'foo'], 'Foo');
         $this->dispatcher->addListener('pre', ['b', 'all']);
 
-        $b->bar($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
-        $b->foo($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
+        $b->bar($this->event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->all($this->event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->foo($this->event, 'pre', 'Foo', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->all($this->event, 'pre', 'Foo', SerializerInterface::FORMAT_JSON, $this->dispatcher);
         $b->_replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');

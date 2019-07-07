@@ -9,6 +9,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
@@ -105,7 +106,7 @@ class DoctrineProxySubscriberTest extends TestCase
         }, get_parent_class($proxy));
 
         $event = $this->createEvent($proxy, ['name' => get_class($proxy), 'params' => []]);
-        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
+        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), SerializerInterface::FORMAT_JSON, $event);
 
         self::assertTrue($realClassEventTriggered1);
     }
@@ -120,7 +121,7 @@ class DoctrineProxySubscriberTest extends TestCase
         }, get_parent_class($proxy));
 
         $event = $this->createEvent($proxy, ['name' => get_class($proxy), 'params' => []]);
-        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
+        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), SerializerInterface::FORMAT_JSON, $event);
 
         self::assertSame(['name' => 'foo', 'params' => ['bar']], $event->getType());
     }
@@ -130,7 +131,7 @@ class DoctrineProxySubscriberTest extends TestCase
         $proxy = new SimpleObjectProxy('foo', 'bar');
 
         $event = $this->createEvent($proxy, ['name' => 'foo', 'params' => []]);
-        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), 'json', $event);
+        $this->dispatcher->dispatch('serializer.pre_serialize', get_class($proxy), SerializerInterface::FORMAT_JSON, $event);
 
         self::assertSame(['name' => 'foo', 'params' => []], $event->getType());
     }

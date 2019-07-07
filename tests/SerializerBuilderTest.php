@@ -9,6 +9,7 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
@@ -29,13 +30,13 @@ class SerializerBuilderTest extends TestCase
     {
         $serializer = $this->builder->build();
 
-        self::assertEquals('"foo"', $serializer->serialize('foo', 'json'));
+        self::assertEquals('"foo"', $serializer->serialize('foo', SerializerInterface::FORMAT_JSON));
         self::assertEquals('<?xml version="1.0" encoding="UTF-8"?>
 <result><![CDATA[foo]]></result>
-', $serializer->serialize('foo', 'xml'));
+', $serializer->serialize('foo', SerializerInterface::FORMAT_XML));
 
-        self::assertEquals('foo', $serializer->deserialize('"foo"', 'string', 'json'));
-        self::assertEquals('foo', $serializer->deserialize('<?xml version="1.0" encoding="UTF-8"?><result><![CDATA[foo]]></result>', 'string', 'xml'));
+        self::assertEquals('foo', $serializer->deserialize('"foo"', 'string', SerializerInterface::FORMAT_JSON));
+        self::assertEquals('foo', $serializer->deserialize('<?xml version="1.0" encoding="UTF-8"?><result><![CDATA[foo]]></result>', 'string', SerializerInterface::FORMAT_XML));
     }
 
     public function testWithCache()
@@ -58,8 +59,8 @@ class SerializerBuilderTest extends TestCase
     {
         $serializer = $this->builder->build();
 
-        self::assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), 'json'));
-        self::assertEquals('[1,2,3]', $serializer->serialize(new \ArrayIterator([1, 2, 3]), 'json'));
+        self::assertEquals('"2020-04-16T00:00:00+00:00"', $serializer->serialize(new \DateTime('2020-04-16', new \DateTimeZone('UTC')), SerializerInterface::FORMAT_JSON));
+        self::assertEquals('[1,2,3]', $serializer->serialize(new \ArrayIterator([1, 2, 3]), SerializerInterface::FORMAT_JSON));
     }
 
     public function testCustomTypeParser()
@@ -75,7 +76,7 @@ class SerializerBuilderTest extends TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->deserialize('"04-2020-10"', 'XXX', 'json');
+        $result = $serializer->deserialize('"04-2020-10"', 'XXX', SerializerInterface::FORMAT_JSON);
         self::assertInstanceOf(\DateTimeImmutable::class, $result);
         self::assertEquals('2020-10-04', $result->format('Y-m-d'));
     }
@@ -85,7 +86,7 @@ class SerializerBuilderTest extends TestCase
         self::assertSame($this->builder, $this->builder->configureHandlers(static function (HandlerRegistry $registry) {
         }));
 
-        self::assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
+        self::assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), SerializerInterface::FORMAT_JSON));
     }
 
     /**
@@ -96,10 +97,10 @@ class SerializerBuilderTest extends TestCase
     {
         self::assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
+            $this->builder->setSerializationVisitor(SerializerInterface::FORMAT_JSON, new JsonSerializationVisitorFactory())
         );
 
-        $this->builder->build()->serialize('foo', 'xml');
+        $this->builder->build()->serialize('foo', SerializerInterface::FORMAT_XML);
     }
 
     public function testIncludeInterfaceMetadata()
@@ -140,7 +141,7 @@ class SerializerBuilderTest extends TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(['value' => null], 'json');
+        $result = $serializer->serialize(['value' => null], SerializerInterface::FORMAT_JSON);
 
         self::assertEquals('{"value":null}', $result);
     }
@@ -159,7 +160,7 @@ class SerializerBuilderTest extends TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->deserialize('{"value":null}', 'array', 'json');
+        $result = $serializer->deserialize('{"value":null}', 'array', SerializerInterface::FORMAT_JSON);
 
         self::assertEquals(['value' => null], $result);
     }
@@ -173,7 +174,7 @@ class SerializerBuilderTest extends TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(['value' => null], 'json');
+        $result = $serializer->serialize(['value' => null], SerializerInterface::FORMAT_JSON);
 
         self::assertEquals('{"value":null}', $result);
     }
@@ -187,7 +188,7 @@ class SerializerBuilderTest extends TestCase
 
         $serializer = $this->builder->build();
 
-        $result = $serializer->serialize(['value' => null, 'not_null' => 'ok'], 'json');
+        $result = $serializer->serialize(['value' => null, 'not_null' => 'ok'], SerializerInterface::FORMAT_JSON);
 
         self::assertEquals('{"not_null":"ok"}', $result);
     }
@@ -233,7 +234,7 @@ class SerializerBuilderTest extends TestCase
         $person->gender = 'f';
         $person->name = 'mike';
 
-        self::assertEquals($json, $serializer->serialize($person, 'json'));
+        self::assertEquals($json, $serializer->serialize($person, SerializerInterface::FORMAT_JSON));
     }
 
     public function testExpressionEngineWhenDeserializing()
@@ -247,10 +248,10 @@ class SerializerBuilderTest extends TestCase
         $person->gender = 'f';
         $person->name = 'mike';
 
-        $serialized = $serializer->serialize($person, 'json');
+        $serialized = $serializer->serialize($person, SerializerInterface::FORMAT_JSON);
         self::assertEquals('{"name":"mike","gender":"f"}', $serialized);
 
-        $object = $serializer->deserialize($serialized, PersonSecretWithVariables::class, 'json');
+        $object = $serializer->deserialize($serialized, PersonSecretWithVariables::class, SerializerInterface::FORMAT_JSON);
         self::assertEquals($person, $object);
     }
 

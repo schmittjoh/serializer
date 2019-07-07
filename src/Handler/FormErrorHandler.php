@@ -6,6 +6,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Form\Form;
@@ -31,7 +32,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        foreach (['xml', 'json'] as $format) {
+        foreach (SerializerInterface::FORMATS_SUPPORTED as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => 'Symfony\Component\Form\Form',

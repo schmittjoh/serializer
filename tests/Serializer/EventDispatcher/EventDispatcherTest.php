@@ -11,6 +11,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use PHPUnit\Framework\Assert;
@@ -27,28 +28,28 @@ class EventDispatcherTest extends TestCase
 
     public function testHasListeners()
     {
-        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('foo', 'Foo', SerializerInterface::FORMAT_JSON));
         $this->dispatcher->addListener('foo', static function () {
         });
-        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
+        self::assertTrue($this->dispatcher->hasListeners('foo', 'Foo', SerializerInterface::FORMAT_JSON));
 
-        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', SerializerInterface::FORMAT_JSON));
         $this->dispatcher->addListener('bar', static function () {
         }, 'Foo');
-        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', SerializerInterface::FORMAT_JSON));
         $this->dispatcher->addListener('bar', static function () {
-        }, 'Bar', 'xml');
-        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        }, 'Bar', SerializerInterface::FORMAT_XML);
+        self::assertFalse($this->dispatcher->hasListeners('bar', 'Bar', SerializerInterface::FORMAT_JSON));
         $this->dispatcher->addListener('bar', static function () {
-        }, null, 'json');
-        self::assertTrue($this->dispatcher->hasListeners('bar', 'Baz', 'json'));
-        self::assertTrue($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
+        }, null, SerializerInterface::FORMAT_JSON);
+        self::assertTrue($this->dispatcher->hasListeners('bar', 'Baz', SerializerInterface::FORMAT_JSON));
+        self::assertTrue($this->dispatcher->hasListeners('bar', 'Bar', SerializerInterface::FORMAT_JSON));
 
-        self::assertFalse($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
+        self::assertFalse($this->dispatcher->hasListeners('baz', 'Bar', SerializerInterface::FORMAT_XML));
         $this->dispatcher->addListener('baz', static function () {
         }, 'Bar');
-        self::assertTrue($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
-        //self::assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
+        self::assertTrue($this->dispatcher->hasListeners('baz', 'Bar', SerializerInterface::FORMAT_XML));
+        //self::assertTrue($this->dispatcher->hasListeners('baz', 'bAr', SerializerInterface::FORMAT_XML));
     }
 
     public function testDispatch()
@@ -63,10 +64,10 @@ class EventDispatcherTest extends TestCase
         $this->dispatcher->addListener('pre', [$b, 'foo'], 'Foo');
         $this->dispatcher->addListener('pre', [$b, 'all']);
 
-        $b->bar($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
-        $b->foo($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
-        $b->all($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
+        $b->bar($this->event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->all($this->event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->foo($this->event, 'pre', 'Foo', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $b->all($this->event, 'pre', 'Foo', SerializerInterface::FORMAT_JSON, $this->dispatcher);
 
         $b->_replay();
         $this->dispatch('pre', 'Bar');
@@ -78,18 +79,18 @@ class EventDispatcherTest extends TestCase
     {
         $a = new MockListener();
 
-        $this->dispatcher->addListener('pre', [$a, 'onlyProxy'], 'Bar', 'json', Proxy::class);
-        $this->dispatcher->addListener('pre', [$a, 'all'], 'Bar', 'json');
+        $this->dispatcher->addListener('pre', [$a, 'onlyProxy'], 'Bar', SerializerInterface::FORMAT_JSON, Proxy::class);
+        $this->dispatcher->addListener('pre', [$a, 'all'], 'Bar', SerializerInterface::FORMAT_JSON);
 
         $object = new SimpleObjectProxy('a', 'b');
         $event = new ObjectEvent($this->context, $object, ['name' => 'foo', 'params' => []]);
 
         // expected
-        $a->onlyProxy($event, 'pre', 'Bar', 'json', $this->dispatcher);
-        $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
+        $a->onlyProxy($event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
+        $a->all($event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
 
         $a->_replay();
-        $this->dispatch('pre', 'Bar', 'json', $event);
+        $this->dispatch('pre', 'Bar', SerializerInterface::FORMAT_JSON, $event);
         $a->_verify();
     }
 
@@ -97,17 +98,17 @@ class EventDispatcherTest extends TestCase
     {
         $a = new MockListener();
 
-        $this->dispatcher->addListener('pre', [$a, 'onlyProxy'], 'Bar', 'json', Proxy::class);
-        $this->dispatcher->addListener('pre', [$a, 'all'], 'Bar', 'json');
+        $this->dispatcher->addListener('pre', [$a, 'onlyProxy'], 'Bar', SerializerInterface::FORMAT_JSON, Proxy::class);
+        $this->dispatcher->addListener('pre', [$a, 'all'], 'Bar', SerializerInterface::FORMAT_JSON);
 
         $object = new SimpleObject('a', 'b');
         $event = new ObjectEvent($this->context, $object, ['name' => 'foo', 'params' => []]);
 
         // expected
-        $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
+        $a->all($event, 'pre', 'Bar', SerializerInterface::FORMAT_JSON, $this->dispatcher);
 
         $a->_replay();
-        $this->dispatch('pre', 'Bar', 'json', $event);
+        $this->dispatch('pre', 'Bar', SerializerInterface::FORMAT_JSON, $event);
         $a->_verify();
     }
 
@@ -143,10 +144,10 @@ class EventDispatcherTest extends TestCase
             $event = new Event($event->getContext(), $event->getType());
 
             self::assertSame('pre', $eventName);
-            self::assertSame('json', $format);
+            self::assertSame(SerializerInterface::FORMAT_JSON, $format);
             self::assertSame('Foo', $loweredClass);
 
-            $dispatcher->dispatch('post', 'Blah', 'xml', $event);
+            $dispatcher->dispatch('post', 'Blah', SerializerInterface::FORMAT_XML, $event);
         });
 
         $this->dispatcher->addListener('pre', static function () use (&$listener2) {
@@ -157,7 +158,7 @@ class EventDispatcherTest extends TestCase
             $listener3 = true;
 
             self::assertSame('post', $eventName);
-            self::assertSame('xml', $format);
+            self::assertSame(SerializerInterface::FORMAT_XML, $format);
             self::assertSame('Blah', $loweredClass);
         });
 
@@ -200,7 +201,7 @@ class EventDispatcherTest extends TestCase
         return new EventDispatcher();
     }
 
-    protected function dispatch($eventName, $class = 'Foo', $format = 'json', ?Event $event = null)
+    protected function dispatch($eventName, $class = 'Foo', $format = SerializerInterface::FORMAT_JSON, ?Event $event = null)
     {
         $this->dispatcher->dispatch($eventName, $class, $format, $event ?: $this->event);
     }

@@ -61,7 +61,7 @@ class SerializerExtension extends AbstractExtension
         ];
     }
 
-    public function serialize(object $object, string $type = 'json', ?SerializationContext $context = null): string
+    public function serialize(object $object, string $type = SerializerInterface::FORMAT_JSON, ?SerializationContext $context = null): string
     {
         return $this->serializer->serialize($object, $type, $context);
     }

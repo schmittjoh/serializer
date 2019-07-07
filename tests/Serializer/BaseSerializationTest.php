@@ -26,6 +26,7 @@ use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
@@ -505,7 +506,7 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testArrayEmpty()
     {
-        if ('xml' === $this->getFormat()) {
+        if (SerializerInterface::FORMAT_XML === $this->getFormat()) {
             $this->markTestSkipped('XML can\'t be tested for empty array');
         }
 
@@ -588,7 +589,7 @@ abstract class BaseSerializationTest extends TestCase
 
         if ($this->hasDeserializer()) {
             // skip XML deserialization
-            if ('xml' === $this->getFormat()) {
+            if (SerializerInterface::FORMAT_XML === $this->getFormat()) {
                 return;
             }
 
@@ -620,7 +621,7 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('array_named_datetimeimmutables_object'), $serializedObject);
 
         if ($this->hasDeserializer()) {
-            if ('xml' === $this->getFormat()) {
+            if (SerializerInterface::FORMAT_XML === $this->getFormat()) {
                 $this->markTestSkipped('XML deserialization does not support key-val pairs mode');
             }
             /** @var NamedDateTimeArraysObject $deserializedObject */

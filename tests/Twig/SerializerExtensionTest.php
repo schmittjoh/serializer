@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Twig;
 
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Twig\SerializerExtension;
 use JMS\Serializer\Twig\SerializerRuntimeExtension;
 use JMS\Serializer\Twig\SerializerRuntimeHelper;
@@ -20,7 +21,7 @@ class SerializerExtensionTest extends TestCase
         $mockSerializer
             ->expects($this->once())
             ->method('serialize')
-            ->with($this->equalTo($obj), $this->equalTo('json'));
+            ->with($this->equalTo($obj), $this->equalTo(SerializerInterface::FORMAT_JSON));
         $serializerExtension = new SerializerExtension($mockSerializer);
         $serializerExtension->serialize($obj);
 
@@ -44,7 +45,7 @@ class SerializerExtensionTest extends TestCase
         $mockSerializer
             ->expects($this->once())
             ->method('serialize')
-            ->with($this->equalTo($obj), $this->equalTo('json'));
+            ->with($this->equalTo($obj), $this->equalTo(SerializerInterface::FORMAT_JSON));
 
         $serializerExtension = new SerializerRuntimeHelper($mockSerializer);
         $serializerExtension->serialize($obj);

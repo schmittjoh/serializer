@@ -10,6 +10,7 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
@@ -170,18 +171,18 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $this->dispatcher->addListener('serializer.post_serialize', static function (Event $event) {
             self::assertFalse($event->getVisitor()->hasData('_links'));
-        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+        }, 'JMS\Serializer\Tests\Fixtures\Author', SerializerInterface::FORMAT_JSON);
 
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
 
         $this->dispatcher->addListener('serializer.post_serialize', static function (Event $event) {
             self::assertTrue($event->getVisitor()->hasData('_links'));
-        }, 'JMS\Serializer\Tests\Fixtures\Author', 'json');
+        }, 'JMS\Serializer\Tests\Fixtures\Author', SerializerInterface::FORMAT_JSON);
 
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
-            'json',
+            SerializerInterface::FORMAT_JSON,
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
@@ -200,7 +201,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
-            'json',
+            SerializerInterface::FORMAT_JSON,
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
             }
@@ -425,7 +426,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
     protected function getFormat()
     {
-        return 'json';
+        return SerializerInterface::FORMAT_JSON;
     }
 }
 
@@ -444,7 +445,7 @@ class LinkAddingSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
+            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => SerializerInterface::FORMAT_JSON, 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
         ];
     }
 }
@@ -459,7 +460,7 @@ class ReplaceNameSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => 'json', 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
+            ['event' => 'serializer.post_serialize', 'method' => 'onPostSerialize', 'format' => SerializerInterface::FORMAT_JSON, 'class' => 'JMS\Serializer\Tests\Fixtures\Author'],
         ];
     }
 }

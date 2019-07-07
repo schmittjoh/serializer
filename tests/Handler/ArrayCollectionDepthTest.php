@@ -11,6 +11,7 @@ use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer as JMSSerializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 
 class ArrayCollectionDepthTest extends TestCase
@@ -32,7 +33,7 @@ class ArrayCollectionDepthTest extends TestCase
     {
         $context = SerializationContext::create()
             ->addExclusionStrategy(new DepthExclusionStrategy());
-        $result = $this->serializer->serialize(new CollectionWrapper($collection), 'json', $context);
+        $result = $this->serializer->serialize(new CollectionWrapper($collection), SerializerInterface::FORMAT_JSON, $context);
         self::assertSame('{"collection":[{"name":"lvl1","next":{"name":"lvl2"}}]}', $result);
     }
 

@@ -316,8 +316,8 @@ final class SerializerBuilder
     {
         $this->visitorsAdded = true;
         $this->serializationVisitors = [
-            'xml' => new XmlSerializationVisitorFactory(),
-            'json' => new JsonSerializationVisitorFactory(),
+            SerializerInterface::FORMAT_XML => new XmlSerializationVisitorFactory(),
+            SerializerInterface::FORMAT_JSON => new JsonSerializationVisitorFactory(),
         ];
 
         return $this;
@@ -327,8 +327,8 @@ final class SerializerBuilder
     {
         $this->visitorsAdded = true;
         $this->deserializationVisitors = [
-            'xml' => new XmlDeserializationVisitorFactory(),
-            'json' => new JsonDeserializationVisitorFactory(),
+            SerializerInterface::FORMAT_XML => new XmlDeserializationVisitorFactory(),
+            SerializerInterface::FORMAT_JSON => new JsonDeserializationVisitorFactory(),
         ];
 
         return $this;

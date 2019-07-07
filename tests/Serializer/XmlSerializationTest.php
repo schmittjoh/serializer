@@ -13,6 +13,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\AccessorSetter;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
@@ -152,18 +153,18 @@ class XmlSerializationTest extends BaseSerializationTest
         ]);
 
         $builder = SerializerBuilder::create();
-        $builder->setDeserializationVisitor('xml', $xmlVisitor);
+        $builder->setDeserializationVisitor(SerializerInterface::FORMAT_XML, $xmlVisitor);
         $serializer = $builder->build();
 
         $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
-            <foo></foo>', 'stdClass', 'xml');
+            <foo></foo>', 'stdClass', SerializerInterface::FORMAT_XML);
 
         $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
-            <foo></foo>', 'stdClass', 'xml');
+            <foo></foo>', 'stdClass', SerializerInterface::FORMAT_XML);
     }
 
     public function testVirtualAttributes()
@@ -201,7 +202,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testUnserializeMissingArray()
     {
         $xml = '<result></result>';
-        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', SerializerInterface::FORMAT_XML);
         self::assertEquals($object->absentAndNs, []);
 
         $xml = '<result xmlns:x="http://www.example.com">
@@ -209,7 +210,7 @@ class XmlSerializationTest extends BaseSerializationTest
                         <x:entry>foo</x:entry>
                     </absent_and_ns>
                   </result>';
-        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
+        $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', SerializerInterface::FORMAT_XML);
         self::assertEquals($object->absentAndNs, ['foo']);
     }
 
@@ -270,19 +271,19 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testArrayKeyValues()
     {
-        self::assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+        self::assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), SerializerInterface::FORMAT_XML));
     }
 
     public function testDeserializeArrayKeyValues()
     {
         $xml = $this->getContent('array_key_values_with_type_1');
-        $result = $this->serializer->deserialize($xml, ObjectWithXmlKeyValuePairsWithType::class, 'xml');
+        $result = $this->serializer->deserialize($xml, ObjectWithXmlKeyValuePairsWithType::class, SerializerInterface::FORMAT_XML);
 
         self::assertInstanceOf(ObjectWithXmlKeyValuePairsWithType::class, $result);
         self::assertEquals(ObjectWithXmlKeyValuePairsWithType::create1(), $result);
 
         $xml2 = $this->getContent('array_key_values_with_type_2');
-        $result2 = $this->serializer->deserialize($xml2, ObjectWithXmlKeyValuePairsWithType::class, 'xml');
+        $result2 = $this->serializer->deserialize($xml2, ObjectWithXmlKeyValuePairsWithType::class, SerializerInterface::FORMAT_XML);
 
         self::assertInstanceOf(ObjectWithXmlKeyValuePairsWithType::class, $result2);
         self::assertEquals(ObjectWithXmlKeyValuePairsWithType::create2(), $result2);
@@ -291,7 +292,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDeserializeTypedAndNestedArrayKeyValues()
     {
         $xml = $this->getContent('array_key_values_with_nested_type');
-        $result = $this->serializer->deserialize($xml, ObjectWithXmlKeyValuePairsWithObjectType::class, 'xml');
+        $result = $this->serializer->deserialize($xml, ObjectWithXmlKeyValuePairsWithObjectType::class, SerializerInterface::FORMAT_XML);
 
         self::assertInstanceOf(ObjectWithXmlKeyValuePairsWithObjectType::class, $result);
         self::assertEquals(ObjectWithXmlKeyValuePairsWithObjectType::create1(), $result);
@@ -461,7 +462,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $xmlVisitor->setFormatOutput(false);
 
         $builder = SerializerBuilder::create();
-        $builder->setSerializationVisitor('xml', $xmlVisitor);
+        $builder->setSerializationVisitor(SerializerInterface::FORMAT_XML, $xmlVisitor);
         $serializer = $builder->build();
 
         $object = new SimpleClassObject();
@@ -591,6 +592,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
     protected function getFormat()
     {
-        return 'xml';
+        return SerializerInterface::FORMAT_XML;
     }
 }
