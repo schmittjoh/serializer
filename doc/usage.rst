@@ -34,3 +34,15 @@ example, when accepting data via an API.
     $serializer = JMS\Serializer\SerializerBuilder::create()->build();
     $object = $serializer->deserialize($jsonData, 'MyNamespace\MyObject', 'json');
 
+Format constants
+----------------
+
+If you're respecting "clean code" guidelines, you are able to use constants instead of string format names:
+
+.. code-block :: php
+
+    <?php
+
+        $serializer = JMS\Serializer\SerializerBuilder::create()->build();
+        $serializer->serialize($object, JMS\Serializer\SerializerInterface::FORMAT_JSON);
+        $serializer->serialize($object, JMS\Serializer\SerializerInterface::FORMAT_XML);
