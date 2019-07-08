@@ -22,14 +22,26 @@ final class ExclusionPolicy
 
     public function __construct(array $values)
     {
-        if (!\is_string($values['value'])) {
-            throw new RuntimeException('"value" must be a string.');
+        $value = self::NONE;
+
+        if (array_key_exists('value', $values)) {
+            $value = $values['value'];
         }
 
-        $this->policy = strtoupper($values['value']);
+        if (array_key_exists('policy', $values)) {
+            $value = $values['policy'];
+        }
 
-        if (self::NONE !== $this->policy && self::ALL !== $this->policy) {
+        if (!\is_string($value)) {
+            throw new RuntimeException('Exclusion policy value must be of string type.');
+        }
+
+        $value = strtoupper($value);
+
+        if (self::NONE !== $value && self::ALL !== $value) {
             throw new RuntimeException('Exclusion policy must either be "ALL", or "NONE".');
         }
+
+        $this->policy = $value;
     }
 }

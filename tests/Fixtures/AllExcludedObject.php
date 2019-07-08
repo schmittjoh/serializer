@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation\Expose;
 /**
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  *
- * @ExclusionPolicy("all")
+ * @ExclusionPolicy(policy="all")
  */
 class AllExcludedObject
 {

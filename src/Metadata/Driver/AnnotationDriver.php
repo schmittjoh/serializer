@@ -85,7 +85,7 @@ class AnnotationDriver implements DriverInterface
         $propertiesMetadata = [];
         $propertiesAnnotations = [];
 
-        $exclusionPolicy = 'NONE';
+        $exclusionPolicy = ExclusionPolicy::NONE;
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
