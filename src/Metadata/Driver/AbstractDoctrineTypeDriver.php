@@ -42,6 +42,11 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'time' => 'DateTime',
         'date' => 'DateTime',
 
+        'datetime_immutable' => 'DateTimeImmutable',
+        'datetimetz_immutable' => 'DateTimeImmutable',
+        'time_immutable' => 'DateTimeImmutable',
+        'date_immutable' => 'DateTimeImmutable',
+
         'float' => 'float',
         'decimal' => 'float',
 
