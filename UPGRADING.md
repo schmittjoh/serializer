@@ -35,7 +35,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - Removed the abstract classes `GenericSerializationVisitor` and `GenericDeserializationVisitor`.
 - Removed deprecated method `VisitorInterface::getNavigator`, use `Context::getNavigator` instead
 - Removed deprecated method `JsonSerializationVisitor::addData`, 
-  use `::visitProperty(new StaticPropertyMetadata('', 'name', null), 'value')` instead
+  use `::visitProperty(new StaticPropertyMetadata('', 'name', 'value'), null)` instead
 - Removed Propel and PhpCollection support
 - Changed default date format from ISO8601 to RFC3339  
 - Event listeners/handlers class names are case sensitive now
