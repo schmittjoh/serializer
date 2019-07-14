@@ -75,16 +75,25 @@ final class DateHandler implements SubscribingHandlerInterface
         array $type,
         SerializationContext $context
     ) {
-        if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
-            return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type);
+        $formats = $this->getFormats($type);
+
+        foreach ($formats as $format) {
+            $dateFormatted = $date->format($format);
+
+            if (false !== $dateFormatted) {
+                if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
+                    return $visitor->visitSimpleString($dateFormatted, $type);
+                }
+
+                if ('U' === $format) {
+                    return $visitor->visitInteger((int) $dateFormatted, $type);
+                }
+
+                return $visitor->visitString($dateFormatted, $type);
+            }
         }
 
-        $format = $this->getFormat($type);
-        if ('U' === $format) {
-            return $visitor->visitInteger((int) $date->format($format), $type);
-        }
-
-        return $visitor->visitString($date->format($this->getFormat($type)), $type);
+        throw new RuntimeException(sprintf('The date "%s" could not be formatted', $date));
     }
 
     /**
@@ -220,24 +229,35 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
-        $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
-        $format = $this->getDeserializationFormat($type);
+        $formatsAndTimeZones = $this->getDeserializationFormatsAndTimeZones($type);
 
-        if ($immutable) {
-            $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
-        } else {
-            $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+        $formatTried = [];
+        foreach ($formatsAndTimeZones as $formatsAndTimeZone) {
+            $format = $formatsAndTimeZone['format'];
+            $timezone = $formatsAndTimeZone['timezone'];
+
+            if ($immutable) {
+                $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
+            } else {
+                $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+            }
+
+            if (false !== $datetime) {
+                if ('U' === $format) {
+                    $datetime = $datetime->setTimezone($timezone);
+                }
+
+                return $datetime;
+            }
+
+            $formatTried[] = $format;
         }
 
-        if (false === $datetime) {
-            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
-        }
-
-        if ('U' === $format) {
-            $datetime = $datetime->setTimezone($timezone);
-        }
-
-        return $datetime;
+        throw new RuntimeException(sprintf(
+            'Invalid datetime "%s", expected one of the format %s.',
+            $data,
+            '"' . implode('", "', $formatTried) . '"'
+        ));
     }
 
     private function parseDateInterval(string $data): \DateInterval
@@ -255,23 +275,37 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    private function getDeserializationFormat(array $type): string
+    private function getDeserializationFormatsAndTimeZones(array $type): array
     {
-        if (isset($type['params'][2])) {
-            return $type['params'][2];
+        if (isset($type['params'][0]) && is_array($type['params'][0])) {
+            return array_map(function ($param) {
+                return [
+                    'format' => $param[2] ?? $param[0] ?? $this->defaultFormat,
+                    'timezone' => !empty($param['params'][1]) ? new \DateTimeZone($param['params'][1]) : $this->defaultTimezone,
+                ];
+            }, $type['params']);
         }
-        if (isset($type['params'][0])) {
-            return $type['params'][0];
-        }
-        return $this->defaultFormat;
+
+        return [
+            [
+                'format' => $type['params'][2] ?? $type['params'][0] ?? $this->defaultFormat,
+                'timezone' => !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone,
+            ],
+        ];
     }
 
     /**
      * @param array $type
      */
-    private function getFormat(array $type): string
+    private function getFormats(array $type): array
     {
-        return $type['params'][0] ?? $this->defaultFormat;
+        if (isset($type['params'][0]) && is_array($type['params'][0])) {
+            return array_map(function ($param) {
+                return $param[0] ?? $this->defaultFormat;
+            }, $type['params']);
+        }
+
+        return [$type['params'][0] ?? $this->defaultFormat];
     }
 
     public function format(\DateInterval $dateInterval): string
