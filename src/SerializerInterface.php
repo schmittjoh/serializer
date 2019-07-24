@@ -42,6 +42,8 @@ interface SerializerInterface
      * Converts the given array to the specified type.
      *
      * @param mixed $data
+     *
+     * @return mixed
      */
     public function fromArray(array $data, string $type, ?DeserializationContext $context = null);
 }
