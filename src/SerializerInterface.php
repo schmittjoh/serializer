@@ -28,7 +28,7 @@ interface SerializerInterface
      * @psalm-return T
      */
     public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null);
-    
+
     /**
      * Converts the given data to an array.
      *
@@ -37,7 +37,7 @@ interface SerializerInterface
      * @return array
      */
     public function toArray($data, ?SerializationContext $context = null, ?string $type = null): array;
-    
+
     /**
      * Converts the given array to the specified type.
      *
