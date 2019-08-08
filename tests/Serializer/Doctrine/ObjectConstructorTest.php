@@ -249,7 +249,7 @@ class ObjectConstructorTest extends TestCase
         $constructor->construct($this->visitor, $class, ['metaTitle' => 'test'], $type, $this->context);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();

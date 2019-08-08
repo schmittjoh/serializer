@@ -1678,7 +1678,7 @@ abstract class BaseSerializationTest extends TestCase
         return $this->serializer->deserialize($content, $type, $this->getFormat(), $context);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());

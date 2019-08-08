@@ -18,7 +18,7 @@ class ArrayCollectionDepthTest extends TestCase
     /** @var JMSSerializer */
     private $serializer;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->serializer = SerializerBuilder::create()->build();
     }

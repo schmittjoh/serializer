@@ -27,7 +27,7 @@ class SerializationContextFactoryTest extends TestCase
     protected $serializationVisitors;
     protected $deserializationVisitors;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -21,7 +21,7 @@ class DateHandlerTest extends TestCase
      */
     private $timezone;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->handler = new DateHandler();
         $this->timezone = new \DateTimeZone('UTC');

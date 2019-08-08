@@ -12,7 +12,7 @@ class HandlerRegistryTest extends TestCase
 {
     protected $handlerRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->handlerRegistry = $this->createHandlerRegistry();
     }

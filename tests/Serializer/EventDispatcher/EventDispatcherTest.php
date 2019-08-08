@@ -187,7 +187,7 @@ class EventDispatcherTest extends TestCase
         ], 'listeners', $this->dispatcher);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->context = $this->getMockBuilder(Context::class)->getMock();
 
