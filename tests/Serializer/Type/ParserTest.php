@@ -80,6 +80,10 @@ class ParserTest extends TestCase
             $type('array', [['name' => 'Foo\Bar', 'params' => []], ['name' => 'Baz\Boo', 'params' => []]]),
         ];
         yield [
+            'DateTime<null, null, array<\'Y-m-d\TH:i:s\', \'Y-m-d\TH:i:sP\'>>',
+            $type('DateTime', [null, null, ['name' => 'array', 'params' => ['Y-m-d\TH:i:s', 'Y-m-d\TH:i:sP']]]),
+        ];
+        yield [
             'a<b<c,d>,e>',
             $type('a', [['name' => 'b', 'params' => [['name' => 'c', 'params' => []], ['name' => 'd', 'params' => []]]], ['name' => 'e', 'params' => []]]),
 
