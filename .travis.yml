@@ -22,6 +22,8 @@ matrix:
           env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
         - php: 7.2
           env: TARGET=docs
+        - php: 7.2
+          env: TARGET=cs
     fast_finish: true
 
 install:
