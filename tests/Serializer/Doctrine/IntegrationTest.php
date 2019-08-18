@@ -81,7 +81,7 @@ class IntegrationTest extends TestCase
         self::assertEquals('{"id":1,"teacher":{"id":1,"type":"teacher"},"students":[{"id":2,"type":"student"},{"id":3,"type":"student"}]}', $json);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);

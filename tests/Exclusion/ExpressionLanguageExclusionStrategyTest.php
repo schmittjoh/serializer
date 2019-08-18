@@ -20,7 +20,7 @@ class ExpressionLanguageExclusionStrategyTest extends TestCase
     private $expressionEvaluator;
     private $exclusionStrategy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->visitedObject = new \stdClass();
 

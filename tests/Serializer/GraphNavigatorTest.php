@@ -131,7 +131,7 @@ class GraphNavigatorTest extends TestCase
         $navigator->accept($object, null);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->deserializationVisitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $this->serializationVisitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();

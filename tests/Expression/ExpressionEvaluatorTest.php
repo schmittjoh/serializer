@@ -16,7 +16,7 @@ class ExpressionEvaluatorTest extends TestCase
      */
     private $evaluator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->evaluator = new ExpressionEvaluator(new ExpressionLanguage());
     }

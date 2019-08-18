@@ -146,7 +146,7 @@ class DoctrineProxySubscriberTest extends TestCase
         self::assertSame(['name' => SimpleObject::class, 'params' => ['baz']], $event->getType());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subscriber = new DoctrineProxySubscriber();
         $this->context = $this->getMockBuilder(Context::class)->getMock();

@@ -84,7 +84,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
         self::assertCount(2, $list);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->validator = $this->getMockBuilder('Symfony\Component\Validator\Validator\ValidatorInterface')->getMock();
         $this->subscriber = new SymfonyValidatorValidatorSubscriber($this->validator);

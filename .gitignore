@@ -5,3 +5,4 @@ composer.lock
 phpcs.xml
 .phpcs-cache
 /doc/_build/*
+/.phpunit.result.cache

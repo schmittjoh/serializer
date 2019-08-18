@@ -254,7 +254,7 @@ class SerializerBuilderTest extends TestCase
         self::assertEquals($person, $object);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->builder = SerializerBuilder::create();
         $this->fs = new Filesystem();
@@ -264,7 +264,7 @@ class SerializerBuilderTest extends TestCase
         clearstatcache();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->fs->remove($this->tmpDir);
     }

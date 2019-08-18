@@ -17,10 +17,13 @@ matrix:
     include:
         - php: 7.2
         - php: 7.3
+        - php: "7.4snapshot"
         - php: 7.2
           env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
         - php: 7.2
           env: TARGET=docs
+        - php: 7.2
+          env: TARGET=cs
     fast_finish: true
 
 install:

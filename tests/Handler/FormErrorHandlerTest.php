@@ -45,7 +45,7 @@ class FormErrorHandlerTest extends TestCase
      */
     protected $factory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->handler = new FormErrorHandler(new Translator('en'));
         $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
@@ -55,7 +55,7 @@ class FormErrorHandlerTest extends TestCase
         $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->handler = null;
         $this->visitor = null;

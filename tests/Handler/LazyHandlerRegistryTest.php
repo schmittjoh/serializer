@@ -11,7 +11,7 @@ abstract class LazyHandlerRegistryTest extends HandlerRegistryTest
 {
     protected $container;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->container = $this->createContainer();
 

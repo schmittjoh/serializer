@@ -15,7 +15,7 @@ class ArrayTest extends TestCase
 {
     protected $serializer;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $builder = SerializerBuilder::create();
         $this->serializer = $builder->build();
