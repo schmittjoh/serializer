@@ -34,7 +34,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - Most of the visitor configurations and options have been moved to visitor factories
 - Removed the abstract classes `GenericSerializationVisitor` and `GenericDeserializationVisitor`.
 - Removed deprecated method `VisitorInterface::getNavigator`, use `Context::getNavigator` instead
-- Removed deprecated method `JsonSerializationVisitor::setData`, 
+- Removed deprecated method `JsonSerializationVisitor::addData`, 
   use `::visitProperty(new StaticPropertyMetadata('', 'name', null), 'value')` instead
 - Removed Propel and PhpCollection support
 - Changed default date format from ISO8601 to RFC3339  
