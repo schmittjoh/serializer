@@ -166,7 +166,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     }
 
     /**
-     * @deprecated Use visitProperty(new StaticPropertyMetadata(null, 'name', 'value'), null) instead
+     * @deprecated Use visitProperty(new StaticPropertyMetadata('', 'name', null), 'value') instead
      *
      * Allows you to replace existing data on the current object element.
      *
