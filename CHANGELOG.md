@@ -1,5 +1,27 @@
 # Change Log
 
+## [3.2.0](https://github.com/schmittjoh/serializer/tree/3.2.0) (2019-09-04)
+**Fixed bugs:**
+
+- PHP7.4: Deprecated warning - serializationContext.php on line 152 [\#1111](https://github.com/schmittjoh/serializer/issues/1111)
+
+**Closed issues:**
+
+- StaticPropertyMetadata first constructor argument not nullable [\#1116](https://github.com/schmittjoh/serializer/issues/1116)
+- Add support for PSR-7 URIInterface objects [\#1115](https://github.com/schmittjoh/serializer/issues/1115)
+- Upgraded 2.4 -\> 3.4 / Symfony 4.3.3 [\#1112](https://github.com/schmittjoh/serializer/issues/1112)
+- Empty namespace [\#1087](https://github.com/schmittjoh/serializer/issues/1087)
+- Format constants \(JSON, XML\) [\#1079](https://github.com/schmittjoh/serializer/issues/1079)
+- @ExclusionPolicy\(policy="ALL"\) causes PHP notice message [\#1073](https://github.com/schmittjoh/serializer/issues/1073)
+
+**Merged pull requests:**
+
+- Explain once and for all the use of StaticPropertyMetadata [\#1118](https://github.com/schmittjoh/serializer/pull/1118) ([goetas](https://github.com/goetas))
+- PHP 7.4 compatibility  [\#1113](https://github.com/schmittjoh/serializer/pull/1113) ([goetas](https://github.com/goetas))
+- Fix typos in UPGRADING.md [\#1107](https://github.com/schmittjoh/serializer/pull/1107) ([jdreesen](https://github.com/jdreesen))
+- Fix exclusion policy bug [\#1106](https://github.com/schmittjoh/serializer/pull/1106) ([spam312sn](https://github.com/spam312sn))
+- Add Doctrine 2 immutable datetime types to field mapping. [\#1104](https://github.com/schmittjoh/serializer/pull/1104) ([Sonny812](https://github.com/Sonny812))
+
 ## [3.1.1](https://github.com/schmittjoh/serializer/tree/3.1.1) (2019-06-28)
 **Fixed bugs:**
 
