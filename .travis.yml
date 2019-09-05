@@ -16,6 +16,7 @@ matrix:
         - php: 7.0
         - php: 7.1
         - php: 7.2
+        - php: 7.3
         - php: 5.5
           env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
     fast_finish: true
