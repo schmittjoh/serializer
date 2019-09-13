@@ -77,7 +77,8 @@ class XmlDriverTest extends BaseDriverTest
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\GroupsTrim'));
 
         self::assertArrayHasKey('amount', $first->propertyMetadata);
-        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertContains('first.test.group', $first->propertyMetadata['currency']->groups);
+        self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
     public function testMultilineGroups()
@@ -85,7 +86,8 @@ class XmlDriverTest extends BaseDriverTest
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\MultilineGroupsFormat'));
 
         self::assertArrayHasKey('amount', $first->propertyMetadata);
-        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertContains('first.test.group', $first->propertyMetadata['currency']->groups);
+        self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
     protected function getDriver()
