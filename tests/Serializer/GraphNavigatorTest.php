@@ -9,6 +9,7 @@ use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
 use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
@@ -38,12 +39,11 @@ class GraphNavigatorTest extends TestCase
     private $serializationVisitor;
     private $deserializationVisitor;
 
-    /**
-     * @expectedException JMS\Serializer\Exception\RuntimeException
-     * @expectedExceptionMessage Resources are not supported in serialized data.
-     */
     public function testResourceThrowsException()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Resources are not supported in serialized data.');
+
         $this->serializationNavigator->accept(STDIN, null);
     }
 

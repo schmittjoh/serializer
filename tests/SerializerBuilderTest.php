@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
@@ -88,16 +89,15 @@ class SerializerBuilderTest extends TestCase
         self::assertEquals('{}', $this->builder->build()->serialize(new \DateTime('2020-04-16'), 'json'));
     }
 
-    /**
-     * @expectedException JMS\Serializer\Exception\UnsupportedFormatException
-     * @expectedExceptionMessage The format "xml" is not supported for serialization.
-     */
     public function testDoesNotAddOtherVisitorsWhenConfiguredExplicitly()
     {
         self::assertSame(
             $this->builder,
             $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
         );
+
+        $this->expectException(UnsupportedFormatException::class);
+        $this->expectExceptionMessage('The format "xml" is not supported for serialization.');
 
         $this->builder->build()->serialize('foo', 'xml');
     }

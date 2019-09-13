@@ -10,6 +10,9 @@ use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -223,7 +226,6 @@ abstract class BaseSerializationTest extends TestCase
     }
 
     /**
-     * @expectedException \JMS\Serializer\Exception\NotAcceptableException
      * @dataProvider getTypes
      */
     public function testNull($type)
@@ -234,6 +236,9 @@ abstract class BaseSerializationTest extends TestCase
 
         // this is the default, but we want to be explicit here
         $context = SerializationContext::create()->setSerializeNull(false);
+
+        $this->expectException(NotAcceptableException::class);
+
         $this->serialize(null, $context);
     }
 
@@ -271,15 +276,15 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     * @expectedExceptionMessage To use conditional exclude/expose in JMS\Serializer\Tests\Fixtures\PersonSecret you must configure the expression language.
-     */
     public function testExpressionExclusionNotConfigured()
     {
         $person = new PersonSecret();
         $person->gender = 'f';
         $person->name = 'mike';
+
+        $this->expectException(ExpressionLanguageRequiredException::class);
+        $this->expectExceptionMessage('To use conditional exclude/expose in JMS\Serializer\Tests\Fixtures\PersonSecret you must configure the expression language.');
+
         $this->serialize($person);
     }
 
@@ -793,14 +798,14 @@ abstract class BaseSerializationTest extends TestCase
     }
 
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     * @expectedExceptionMessage The property firstName on JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess requires the expression accessor strategy to be enabled.
-     */
     public function testExpressionAccessorStrategNotEnabled()
     {
         $author = new AuthorExpressionAccess(123, 'Ruud', 'Kamphuis');
-        self::assertEquals($this->getContent('author_expression'), $this->serialize($author));
+
+        $this->expectException(ExpressionLanguageRequiredException::class);
+        $this->expectExceptionMessage('The property firstName on JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess requires the expression accessor strategy to be enabled.');
+
+        $this->serialize($author);
     }
 
     public function testReadOnly()
@@ -1195,13 +1200,12 @@ abstract class BaseSerializationTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\InvalidMetadataException
-     * @expectedExceptionMessage Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?
-     */
     public function testInvalidGroupName()
     {
         $groupsObject = new InvalidGroupsObject();
+
+        $this->expectException(InvalidMetadataException::class);
+        $this->expectExceptionMessage('Invalid group name "foo, bar" on "JMS\Serializer\Tests\Fixtures\InvalidGroupsObject->foo", did you mean to create multiple groups?');
 
         $this->serializer->serialize($groupsObject, $this->getFormat());
     }
@@ -1429,10 +1433,11 @@ abstract class BaseSerializationTest extends TestCase
 
     /**
      * @group polymorphic
-     * @expectedException LogicException
      */
     public function testPolymorphicObjectsInvalidDeserialization()
     {
+        $this->expectException(\LogicException::class);
+
         if (!$this->hasDeserializer()) {
             throw new \LogicException('No deserializer');
         }

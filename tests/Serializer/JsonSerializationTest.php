@@ -213,16 +213,14 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('[{"full_name":"new name"},{"full_name":"new name"}]', $this->serialize($list));
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Invalid data "baz" (string), expected "JMS\Serializer\Tests\Fixtures\Author".
-     */
     public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
     {
         $content = $this->getContent('object_with_object_property_no_array_to_author');
-        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
-        self::assertEquals('bar', $object->getFoo());
-        self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Invalid data "baz" (string), expected "JMS\Serializer\Tests\Fixtures\Author".');
+
+        $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
     }
 
     public function testDeserializingObjectWithObjectProperty()
@@ -284,23 +282,27 @@ class JsonSerializationTest extends BaseSerializationTest
 
     /**
      * @group encoding
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
      */
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', '1');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Your data could not be encoded because it contains invalid UTF8 characters.');
+
         $this->serialize(['foo' => 'bar', 'bar' => pack('H*', 'c32e')]);
     }
 
     /**
      * @group encoding
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Your data could not be encoded because it contains invalid UTF8 characters.
      */
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
         ini_set('display_errors', '0');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Your data could not be encoded because it contains invalid UTF8 characters.');
+
         $this->serialize(['foo' => 'bar', 'bar' => pack('H*', 'c32e')]);
     }
 

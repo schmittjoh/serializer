@@ -25,6 +25,8 @@ use JMS\Serializer\Construction\DoctrineObjectConstructor;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -151,9 +153,6 @@ class ObjectConstructorTest extends TestCase
         self::assertSame($author, $authorFetched);
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ObjectConstructionException
-     */
     public function testMissingAuthorException()
     {
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
@@ -162,12 +161,12 @@ class ObjectConstructorTest extends TestCase
         $class = new ClassMetadata(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_EXCEPTION);
+
+        $this->expectException(ObjectConstructionException::class);
+
         $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\InvalidArgumentException
-     */
     public function testInvalidArg()
     {
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
@@ -176,6 +175,9 @@ class ObjectConstructorTest extends TestCase
         $class = new ClassMetadata(Author::class);
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
+
+        $this->expectException(InvalidArgumentException::class);
+
         $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
     }
 

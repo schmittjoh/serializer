@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -11,16 +12,16 @@ use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest
 {
-    /**
-     * @expectedException \JMS\Serializer\Exception\InvalidMetadataException
-     * @expectedExceptionMessage Invalid XML content for metadata
-     */
     public function testInvalidXml()
     {
         $driver = $this->getDriver();
 
         $ref = new \ReflectionMethod($driver, 'loadMetadataFromFile');
         $ref->setAccessible(true);
+
+        $this->expectException(InvalidMetadataException::class);
+        $this->expectExceptionMessage('Invalid XML content for metadata');
+
         $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__ . '/xml/invalid.xml');
     }
 

@@ -9,6 +9,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
+use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -35,10 +36,6 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
         $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ValidationFailedException
-     * @expectedExceptionMessage Validation failed with 1 error(s).
-     */
     public function testValidateThrowsExceptionWhenListIsNotEmpty()
     {
         $obj = new \stdClass();
@@ -49,6 +46,9 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
             ->will($this->returnValue(new ConstraintViolationList([new ConstraintViolation('foo', 'foo', [], 'a', 'b', 'c')])));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', ['foo']);
+
+        $this->expectException(ValidationFailedException::class);
+        $this->expectExceptionMessage('Validation failed with 1 error(s).');
 
         $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
