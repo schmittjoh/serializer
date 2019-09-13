@@ -266,10 +266,7 @@ class JsonSerializationTest extends BaseSerializationTest
         $visitor->setNavigator($navigator);
         $functionToCall = 'visit' . ucfirst($primitiveType);
         $result = $visitor->$functionToCall($data, [], $this->getMockBuilder(SerializationContext::class)->getMock());
-        if ('double' === $primitiveType) {
-            $primitiveType = 'float';
-        }
-        self::assertInternalType($primitiveType, $result);
+        self::{'assertIs' . (['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'][$primitiveType] ?? $primitiveType)}($result);
     }
 
     /**

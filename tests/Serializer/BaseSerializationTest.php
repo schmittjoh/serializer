@@ -656,7 +656,7 @@ abstract class BaseSerializationTest extends TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
 
-            self::assertInternalType('object', $deserialized);
+            self::assertIsObject($deserialized);
             self::assertInstanceOf(get_class($value), $deserialized);
             self::assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
         }
@@ -680,7 +680,7 @@ abstract class BaseSerializationTest extends TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
 
-            self::assertInternalType('object', $deserialized);
+            self::assertIsObject($deserialized);
             self::assertInstanceOf(get_class($value), $deserialized);
             self::assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
         }
