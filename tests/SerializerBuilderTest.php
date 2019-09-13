@@ -51,8 +51,8 @@ class SerializerBuilderTest extends TestCase
         self::assertFileExists($this->tmpDir . '/metadata');
 
         $factory = $this->getField($serializer, 'factory');
-        self::assertAttributeSame(false, 'debug', $factory);
-        self::assertAttributeNotSame(null, 'cache', $factory);
+        self::assertFalse($this->getField($factory, 'debug'));
+        self::assertNotNull($this->getField($factory, 'cache'));
     }
 
     public function testDoesAddDefaultHandlers()

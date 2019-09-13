@@ -177,14 +177,18 @@ class EventDispatcherTest extends TestCase
         ];
 
         $this->dispatcher->addSubscriber($subscriber);
-        self::assertAttributeEquals([
+
+        $listenersReflection = new \ReflectionProperty(EventDispatcher::class, 'listeners');
+        $listenersReflection->setAccessible(true);
+
+        self::assertSame([
             'foo.bar_baz' => [
                 [[$subscriber, 'onfoobarbaz'], null, 'foo', null],
             ],
             'bar' => [
                 [[$subscriber, 'bar'], 'foo', null, null],
             ],
-        ], 'listeners', $this->dispatcher);
+        ], $listenersReflection->getValue($this->dispatcher));
     }
 
     protected function setUp(): void

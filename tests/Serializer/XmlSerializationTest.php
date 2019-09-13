@@ -388,10 +388,10 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $deserialized = $this->deserialize($this->getContent('object_with_xml_namespacesalias'), get_class($object));
         self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
-        self::assertAttributeEquals('This is a nice title.', 'title', $deserialized);
-        self::assertAttributeSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', 'etag', $deserialized);
-        self::assertAttributeSame('en', 'language', $deserialized);
-        self::assertAttributeEquals('Foo Bar', 'author', $deserialized);
+        self::assertSame('This is a nice title.', $this->getField($deserialized, 'title'));
+        self::assertSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', $this->getField($deserialized, 'etag'));
+        self::assertSame('en', $this->getField($deserialized, 'language'));
+        self::assertSame('Foo Bar', $this->getField($deserialized, 'author'));
         self::assertEquals('value for empty namespace property', $this->getField($deserialized, 'emptyNsElement'));
     }
 
