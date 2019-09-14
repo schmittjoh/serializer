@@ -7,6 +7,8 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -46,12 +48,12 @@ use JMS\Serializer\XmlSerializationVisitor;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
-    /**
-     * @expectedException \JMS\Serializer\Exception\RuntimeException
-     */
     public function testInvalidUsageOfXmlValue()
     {
         $obj = new InvalidUsageOfXmlValue();
+
+        $this->expectException(RuntimeException::class);
+
         $this->serialize($obj);
     }
 
@@ -115,12 +117,11 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertEquals($this->getContent('person_collection'), $this->serialize($personCollection));
     }
 
-    /**
-     * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.
-     */
     public function testExternalEntitiesAreDisabledByDefault()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.');
+
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
                 <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
@@ -130,12 +131,11 @@ class XmlSerializationTest extends BaseSerializationTest
             </result>', 'stdClass');
     }
 
-    /**
-     * @expectedException JMS\Serializer\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.
-     */
     public function testDocumentTypesAreNotAllowed()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.');
+
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }
 
@@ -327,13 +327,12 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertEquals($this->getContent($key . '_no_cdata'), $serializer->serialize($value, $this->getFormat()));
     }
 
-    /**
-     * @expectedException JMS\Serializer\Exception\RuntimeException
-     * @expectedExceptionMessage Unsupported value type for XML attribute map. Expected array but got object
-     */
     public function testXmlAttributeMapWithoutArray()
     {
         $attributes = new \ArrayObject(['type' => 'text']);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported value type for XML attribute map. Expected array but got object');
 
         $this->serializer->serialize(new Input($attributes), $this->getFormat());
     }
@@ -389,10 +388,10 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $deserialized = $this->deserialize($this->getContent('object_with_xml_namespacesalias'), get_class($object));
         self::assertEquals('2011-07-30T00:00:00+00:00', $this->getField($deserialized, 'createdAt')->format(\DateTime::ATOM));
-        self::assertAttributeEquals('This is a nice title.', 'title', $deserialized);
-        self::assertAttributeSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', 'etag', $deserialized);
-        self::assertAttributeSame('en', 'language', $deserialized);
-        self::assertAttributeEquals('Foo Bar', 'author', $deserialized);
+        self::assertSame('This is a nice title.', $this->getField($deserialized, 'title'));
+        self::assertSame('e86ce85cdb1253e4fc6352f5cf297248bceec62b', $this->getField($deserialized, 'etag'));
+        self::assertSame('en', $this->getField($deserialized, 'language'));
+        self::assertSame('Foo Bar', $this->getField($deserialized, 'author'));
         self::assertEquals('value for empty namespace property', $this->getField($deserialized, 'emptyNsElement'));
     }
 
@@ -527,11 +526,10 @@ class XmlSerializationTest extends BaseSerializationTest
         );
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\XmlErrorException
-     */
     public function testDeserializeEmptyString()
     {
+        $this->expectException(XmlErrorException::class);
+
         $this->deserialize('', 'stdClass');
     }
 

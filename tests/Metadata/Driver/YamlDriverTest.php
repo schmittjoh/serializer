@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -74,11 +75,10 @@ class YamlDriverTest extends BaseDriverTest
         self::assertEquals($p, $m->propertyMetadata['title']);
     }
 
-    /**
-     * @expectedException  \JMS\Serializer\Exception\InvalidMetadataException
-     */
     public function testInvalidMetadataFileCausesException(): void
     {
+        $this->expectException(InvalidMetadataException::class);
+
         $this->getDriverForSubDir('invalid_metadata')->loadMetadataForClass(new \ReflectionClass(BlogPost::class));
     }
 

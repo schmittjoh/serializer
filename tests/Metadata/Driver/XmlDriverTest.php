@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -11,16 +12,16 @@ use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest
 {
-    /**
-     * @expectedException \JMS\Serializer\Exception\InvalidMetadataException
-     * @expectedExceptionMessage Invalid XML content for metadata
-     */
     public function testInvalidXml()
     {
         $driver = $this->getDriver();
 
         $ref = new \ReflectionMethod($driver, 'loadMetadataFromFile');
         $ref->setAccessible(true);
+
+        $this->expectException(InvalidMetadataException::class);
+        $this->expectExceptionMessage('Invalid XML content for metadata');
+
         $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__ . '/xml/invalid.xml');
     }
 
@@ -76,7 +77,8 @@ class XmlDriverTest extends BaseDriverTest
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\GroupsTrim'));
 
         self::assertArrayHasKey('amount', $first->propertyMetadata);
-        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertContains('first.test.group', $first->propertyMetadata['currency']->groups);
+        self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
     public function testMultilineGroups()
@@ -84,7 +86,8 @@ class XmlDriverTest extends BaseDriverTest
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\MultilineGroupsFormat'));
 
         self::assertArrayHasKey('amount', $first->propertyMetadata);
-        self::assertArraySubset(['first.test.group', 'second.test.group'], $first->propertyMetadata['currency']->groups);
+        self::assertContains('first.test.group', $first->propertyMetadata['currency']->groups);
+        self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
     protected function getDriver()
