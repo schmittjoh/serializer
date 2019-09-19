@@ -23,6 +23,8 @@ final class InnerParser extends Parser
             [
                 'default' => [
                     'skip' => '\s+',
+                    'array_' => '\[',
+                    '_array' => '\]',
                     'parenthesis_' => '<',
                     '_parenthesis' => '>',
                     'empty_string' => '""|\'\'',
@@ -60,22 +62,33 @@ final class InnerParser extends Parser
                 14 => new Token(14, 'apostrophed_string', null, -1, true),
                 15 => new Token(15, '_apostrophe', null, -1, false),
                 16 => new Concatenation(16, [13, 14, 15], '#simple_type'),
-                'simple_type' => new Choice('simple_type', [2, 4, 6, 8, 12, 16], null),
-                18 => new Token(18, 'name', null, -1, true),
-                19 => new Token(19, 'parenthesis_', null, -1, false),
-                20 => new Token(20, 'comma', null, -1, false),
-                21 => new Concatenation(21, [20, 'type'], '#compound_type'),
-                22 => new Repetition(22, 0, -1, 21, null),
-                23 => new Token(23, '_parenthesis', null, -1, false),
-                'compound_type' => new Concatenation('compound_type', [18, 19, 'type', 22, 23], null),
+                17 => new Concatenation(17, ['array'], '#simple_type'),
+                'simple_type' => new Choice('simple_type', [2, 4, 6, 8, 12, 16, 17], null),
+                19 => new Token(19, 'name', null, -1, true),
+                20 => new Token(20, 'parenthesis_', null, -1, false),
+                21 => new Token(21, 'comma', null, -1, false),
+                22 => new Concatenation(22, [21, 'type'], '#compound_type'),
+                23 => new Repetition(23, 0, -1, 22, null),
+                24 => new Token(24, '_parenthesis', null, -1, false),
+                'compound_type' => new Concatenation('compound_type', [19, 20, 'type', 23, 24], null),
+                26 => new Token(26, 'array_', null, -1, false),
+                27 => new Token(27, 'comma', null, -1, false),
+                28 => new Concatenation(28, [27, 'simple_type'], '#array'),
+                29 => new Repetition(29, 0, -1, 28, null),
+                30 => new Concatenation(30, ['simple_type', 29], null),
+                31 => new Repetition(31, 0, 1, 30, null),
+                32 => new Token(32, '_array', null, -1, false),
+                'array' => new Concatenation('array', [26, 31, 32], null),
             ],
             []
         );
 
         $this->getRule('type')->setPPRepresentation(' simple_type() | compound_type()');
         $this->getRule('simple_type')->setDefaultId('#simple_type');
-        $this->getRule('simple_type')->setPPRepresentation(' <name> | <number> | <null> | <empty_string> | ::quote_:: <quoted_string> ::_quote:: | ::apostrophe_:: <apostrophed_string> ::_apostrophe::');
+        $this->getRule('simple_type')->setPPRepresentation(' <name> | <number> | <null> | <empty_string> | ::quote_:: <quoted_string> ::_quote:: | ::apostrophe_:: <apostrophed_string> ::_apostrophe:: | array()');
         $this->getRule('compound_type')->setDefaultId('#compound_type');
         $this->getRule('compound_type')->setPPRepresentation(' <name> ::parenthesis_:: type() ( ::comma:: type() )* ::_parenthesis::');
+        $this->getRule('array')->setDefaultId('#array');
+        $this->getRule('array')->setPPRepresentation(' ::array_:: ( simple_type() ( ::comma:: simple_type() )* )? ::_array::');
     }
 }

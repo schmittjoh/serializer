@@ -96,6 +96,30 @@ class ParserTest extends TestCase
             'Foo<"asdf asdf">',
             $type('Foo', ['asdf asdf']),
         ];
+        yield [
+            'Foo<[]>',
+            $type('Foo', [[]]),
+        ];
+        yield [
+            'Foo<[[]]>',
+            $type('Foo', [[[]]]),
+        ];
+        yield [
+            'Foo<[123]>',
+            $type('Foo', [[123]]),
+        ];
+        yield [
+            'Foo<[123, 456]>',
+            $type('Foo', [[123, 456]]),
+        ];
+        yield [
+            'Foo<[[123], 456, "bar"]>',
+            $type('Foo', [[[123], 456, 'bar']]),
+        ];
+        yield [
+            'DateTime<null, null, [\'Y-m-d\TH:i:s\', \'Y-m-d\TH:i:sP\']>',
+            $type('DateTime', [null, null, ['Y-m-d\TH:i:s', 'Y-m-d\TH:i:sP']]),
+        ];
     }
 
     public function testEmptyString(): void

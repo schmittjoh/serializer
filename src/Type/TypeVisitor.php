@@ -22,6 +22,8 @@ final class TypeVisitor implements Visit
                 return $this->visitSimpleType($element);
             case '#compound_type':
                 return $this->visitCompoundType($element, $handle, $eldnah);
+            case '#array':
+                return $this->visitArrayType($element, $handle, $eldnah);
         }
 
         throw new InvalidNode();
@@ -33,6 +35,11 @@ final class TypeVisitor implements Visit
     private function visitSimpleType(TreeNode $element)
     {
         $tokenNode = $element->getChild(0);
+
+        if (!$tokenNode->isToken()) {
+            return $tokenNode->accept($this);
+        }
+
         $token = $tokenNode->getValueToken();
         $value = $tokenNode->getValueValue();
 
@@ -75,5 +82,15 @@ final class TypeVisitor implements Visit
                 $parameters
             ),
         ];
+    }
+
+    private function visitArrayType(TreeNode $node, ?int &$handle, ?int $eldnah): array
+    {
+        return array_map(
+            function (TreeNode $child) {
+                return $child->accept($this);
+            },
+            $node->getChildren()
+        );
     }
 }

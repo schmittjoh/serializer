@@ -1,5 +1,7 @@
 %skip whitespace \s+
 
+%token array_ \[
+%token _array \]
 %token parenthesis_ <
 %token _parenthesis >
 %token empty_string ""|''
@@ -26,6 +28,7 @@ type:
     | <empty_string>
     | ::quote_:: <quoted_string> ::_quote::
     | ::apostrophe_:: <apostrophed_string> ::_apostrophe::
+    | array()
 
 #compound_type:
     <name>
@@ -33,3 +36,6 @@ type:
     type()
     ( ::comma:: type() )*
     ::_parenthesis::
+
+#array:
+    ::array_:: ( simple_type() ( ::comma:: simple_type() )* )? ::_array::
