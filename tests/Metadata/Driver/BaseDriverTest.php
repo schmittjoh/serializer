@@ -24,6 +24,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNam
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\Person;
 use Metadata\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -616,10 +617,18 @@ abstract class BaseDriverTest extends TestCase
         self::assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
     }
 
+    public function testShortExposeSyntax(): void
+    {
+        $m = $this->getDriver('short_expose')->loadMetadataForClass(new \ReflectionClass(Person::class));
+
+        self::assertArrayHasKey('name', $m->propertyMetadata);
+        self::assertArrayNotHasKey('age', $m->propertyMetadata);
+    }
+
     /**
      * @return DriverInterface
      */
-    abstract protected function getDriver();
+    abstract protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface;
 
     protected function getExpressionEvaluator()
     {
