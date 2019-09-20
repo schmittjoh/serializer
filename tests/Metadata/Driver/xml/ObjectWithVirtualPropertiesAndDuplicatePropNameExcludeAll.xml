@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll" exclusion-policy="ALL">
+        <virtual-property method="getName" serialized-name="mood"/>
+    </class>
+</serializer>

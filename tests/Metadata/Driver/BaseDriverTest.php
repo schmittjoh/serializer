@@ -21,6 +21,7 @@ use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
+use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use Metadata\Driver\DriverInterface;
@@ -564,6 +565,18 @@ abstract class BaseDriverTest extends TestCase
         $p->type = ['name' => 'string', 'params' => []];
         $p->excludeIf = "!(show_data('age'))";
         self::assertEquals($p, $m->propertyMetadata['age']);
+    }
+
+    public function testObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll()
+    {
+        $class = ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll::class;
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+
+        $p = new VirtualPropertyMetadata($class, 'name');
+        $p->serializedName = 'mood';
+        $p->getter = 'getName';
+
+        self::assertEquals($p, $m->propertyMetadata['name']);
     }
 
     public function testObjectWithVirtualPropertiesAndDuplicatePropName()
