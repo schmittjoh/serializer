@@ -158,8 +158,8 @@ class XmlDriver extends AbstractFileDriver
                 if ($property->class !== $name || (isset($property->info) && $property->info['class'] !== $name)) {
                     continue;
                 }
-
-                $propertiesMetadata[] = new PropertyMetadata($name, $pName = $property->getName());
+                $pName = $property->getName();
+                $propertiesMetadata[] = new PropertyMetadata($name, $pName);
                 $pElems = $elem->xpath("./property[@name = '" . $pName . "']");
 
                 $propertiesNodes[] = $pElems ? reset($pElems) : null;
