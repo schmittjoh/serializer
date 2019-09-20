@@ -1,0 +1,5 @@
+JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll:
+  exclusion_policy:   all
+  virtual_properties:
+    getName:
+      serialized_name: mood
