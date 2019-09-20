@@ -1,5 +1,25 @@
 # Change Log
 
+## [3.3.0](https://github.com/schmittjoh/serializer/tree/3.3.0) (2019-09-20)
+**Implemented enhancements:**
+
+- Implement short expose syntax for XML as it is available for YAML [\#1127](https://github.com/schmittjoh/serializer/pull/1127) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Avoid implicit expose of a property instead of virtual-property  [\#1126](https://github.com/schmittjoh/serializer/pull/1126) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Accessing static property as non static [\#1122](https://github.com/schmittjoh/serializer/issues/1122)
+- Travis builds on 1.x are failing [\#1120](https://github.com/schmittjoh/serializer/issues/1120)
+
+**Merged pull requests:**
+
+- Allow failures on php "7.4snapshot" \(waiting for stable symfony 4.4\) [\#1128](https://github.com/schmittjoh/serializer/pull/1128) ([goetas](https://github.com/goetas))
+- Fix PHPUnit deprecations [\#1123](https://github.com/schmittjoh/serializer/pull/1123) ([Majkl578](https://github.com/Majkl578))
+- Test 1.x on PHP 7.3 on Travis; fix builds for PHP 5.5 [\#1119](https://github.com/schmittjoh/serializer/pull/1119) ([sanmai](https://github.com/sanmai))
+
 ## [3.2.0](https://github.com/schmittjoh/serializer/tree/3.2.0) (2019-09-04)
 **Fixed bugs:**
 
