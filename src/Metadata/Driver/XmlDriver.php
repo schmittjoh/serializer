@@ -160,15 +160,16 @@ class XmlDriver extends AbstractFileDriver
                 }
                 $pName = $property->getName();
                 $propertiesMetadata[] = new PropertyMetadata($name, $pName);
-                $pElems = $elem->xpath("./property[@name = '" . $pName . "']");
 
+                $pElems = $elem->xpath("./property[@name = '" . $pName . "']");
                 $propertiesNodes[] = $pElems ? reset($pElems) : null;
             }
 
             foreach ($propertiesMetadata as $propertyKey => $pMetadata) {
                 $isExclude = false;
                 $isExpose = $pMetadata instanceof VirtualPropertyMetadata
-                    || $pMetadata instanceof ExpressionPropertyMetadata;
+                    || $pMetadata instanceof ExpressionPropertyMetadata
+                    || isset($propertiesNodes[$propertyKey]);
 
                 $pElem = $propertiesNodes[$propertyKey];
                 if (!empty($pElem)) {

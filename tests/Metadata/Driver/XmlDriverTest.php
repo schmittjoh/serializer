@@ -8,6 +8,7 @@ use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
 class XmlDriverTest extends BaseDriverTest
@@ -90,16 +91,16 @@ class XmlDriverTest extends BaseDriverTest
         self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
-    protected function getDriver()
+    protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
-        $append = '';
-        if (1 === func_num_args()) {
-            $append = '/' . func_get_arg(0);
+        $dirs = [
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . ($subDir ? '/' . $subDir : ''),
+        ];
+
+        if ($addUnderscoreDir) {
+            $dirs[''] = __DIR__ . '/xml/_' . ($subDir ? '/' . $subDir : '');
         }
 
-        return new XmlDriver(new FileLocator([
-            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
-            '' => __DIR__ . '/xml/_' . $append,
-        ]), new IdenticalPropertyNamingStrategy(), null, $this->getExpressionEvaluator());
+        return new XmlDriver(new FileLocator($dirs), new IdenticalPropertyNamingStrategy(), null, $this->getExpressionEvaluator());
     }
 }
