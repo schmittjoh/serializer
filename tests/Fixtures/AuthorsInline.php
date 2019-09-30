@@ -14,7 +14,7 @@ class AuthorsInline
      */
     private $collection;
 
-    public function __construct(Author ... $authors)
+    public function __construct(Author ...$authors)
     {
         $this->collection = $authors;
     }

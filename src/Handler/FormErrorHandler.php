@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -56,7 +54,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type): \DOMElement
+    public function serializeFormToXml(SerializationVisitorInterface $visitor, Form $form, array $type): \DOMElement
     {
         $formNode = $visitor->getDocument()->createElement('form');
 
@@ -83,7 +81,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type): \ArrayObject
+    public function serializeFormToJson(SerializationVisitorInterface $visitor, Form $form, array $type): \ArrayObject
     {
         return $this->convertFormToArray($visitor, $form);
     }
@@ -91,7 +89,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type): \DOMCdataSection
+    public function serializeFormErrorToXml(SerializationVisitorInterface $visitor, FormError $formError, array $type): \DOMCdataSection
     {
         return $visitor->getDocument()->createCDATASection($this->getErrorMessage($formError));
     }
@@ -99,7 +97,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type): string
+    public function serializeFormErrorToJson(SerializationVisitorInterface $visitor, FormError $formError, array $type): string
     {
         return $this->getErrorMessage($formError);
     }
