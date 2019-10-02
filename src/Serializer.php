@@ -185,15 +185,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     public function toArray($data, ?SerializationContext $context = null, ?string $type = null): array
     {
-        if (null === $context) {
-            $context = $this->serializationContextFactory->createSerializationContext();
-        }
-
-        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
-        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
-
-        $type = $this->findInitialType($type, $context);
-        $result = $this->visit($navigator, $visitor, $context, $data, 'json', $type);
+        $result = $this->toRawResult($data, $context, $type);
         $result = $this->convertArrayObjects($result);
 
         if (!\is_array($result)) {
@@ -205,6 +197,23 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * {@InheritDoc}
+     */
+    public function toRawResult($data, ?SerializationContext $context = null, ?string $type = null): array
+    {
+        if (null === $context) {
+            $context = $this->serializationContextFactory->createSerializationContext();
+        }
+
+        $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
+        $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
+
+        $type = $this->findInitialType($type, $context);
+
+        return $this->visit($navigator, $visitor, $context, $data, 'json', $type);
     }
 
     /**
