@@ -200,6 +200,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     }
 
     /**
+     * @param mixed $data
+     *
      * @return mixed
      */
     public function toRawResult($data, ?SerializationContext $context = null, ?string $type = null)
