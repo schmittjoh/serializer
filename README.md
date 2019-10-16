@@ -1,6 +1,5 @@
 # jms/serializer 
 
-
 [![Build status][Master image]][Master] 
 [![Coverage Status][Master coverage image]][Master coverage] 
 
