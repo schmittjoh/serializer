@@ -6,7 +6,7 @@ Upgrading from 2.x to 3.x should require almost no effort.
 The only change is the revert of "deeper branch group exclusion strategy" introduced in 2.0.0 and now reverted as it
 was in 1.x. If you are not using this feature, then upgrading requires no changes at all.
 
-The deprecations introduced in 2.x are still present in 3.0.0, said features are most likley to be removed in an next major. 
+The deprecations introduced in 2.x are still present in 3.0.0, said features are most likely to be removed in the next major version. 
 
 From 1.x to 3.0.0
 =================
@@ -81,7 +81,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
    
    
 
-**Deprecations** (will be removed in 3.0)
+**Deprecations** (will be removed in 4.0)
 
 - `JsonSerializationVisitor::setData` will be removed, 
   use `::visitProperty(new StaticPropertyMetadata('', 'name', 'value'), 'value')` instead 
