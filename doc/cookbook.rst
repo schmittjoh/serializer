@@ -1,7 +1,0 @@
-Cookbook
-========
-
-.. toctree ::
-    :glob:
-
-    cookbook/*

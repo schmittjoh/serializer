@@ -1,9 +1,9 @@
 {
-    "name": "si_jms/serializer",
+    "name": "si/serializer",
     "type": "library",
     "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
-    "homepage": "http://jmsyst.com/libs/serializer",
+
     "license": "MIT",
     "authors": [
         {
