@@ -1,5 +1,5 @@
 {
-    "name": "jms/serializer",
+    "name": "si_jms/serializer",
     "type": "library",
     "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
@@ -7,12 +7,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Johannes M. Schmitt",
-            "email": "schmittjoh@gmail.com"
-        },
-        {
-            "name": "Asmir Mustafic",
-            "email": "goetas@gmail.com"
+            "name": "Shuba Ivan",
+            "email": "shuba.ivan.vikt@gmail.com"
         }
     ],
     "require": {
