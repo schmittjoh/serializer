@@ -27,8 +27,6 @@ matrix:
         - php: 7.3
         - php: "7.4snapshot"
     fast_finish: true
-    allow_failures:
-      - php: "7.4snapshot"
 
 install:
   - if [ -x .travis/install_${TARGET}.sh ]; then .travis/install_${TARGET}.sh; fi;
