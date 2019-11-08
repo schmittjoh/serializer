@@ -6,10 +6,9 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
 final class DateHandler implements SubscribingHandlerInterface
@@ -141,7 +140,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type): ?\DateTimeInterface
+    public function deserializeDateTimeFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -154,7 +153,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateTimeImmutableFromXml(XmlDeserializationVisitor $visitor, $data, array $type): ?\DateTimeInterface
+    public function deserializeDateTimeImmutableFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -167,7 +166,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateIntervalFromXml(XmlDeserializationVisitor $visitor, $data, array $type): ?\DateInterval
+    public function deserializeDateIntervalFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
         if ($this->isDataXmlNull($data)) {
             return null;
@@ -180,7 +179,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type): ?\DateTimeInterface
+    public function deserializeDateTimeFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
         if (null === $data) {
             return null;
@@ -193,7 +192,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateTimeImmutableFromJson(JsonDeserializationVisitor $visitor, $data, array $type): ?\DateTimeInterface
+    public function deserializeDateTimeImmutableFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
         if (null === $data) {
             return null;
@@ -206,7 +205,7 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param array $type
      */
-    public function deserializeDateIntervalFromJson(JsonDeserializationVisitor $visitor, $data, array $type): ?\DateInterval
+    public function deserializeDateIntervalFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
         if (null === $data) {
             return null;
