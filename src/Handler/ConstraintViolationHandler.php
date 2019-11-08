@@ -7,6 +7,7 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -35,7 +36,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeListToXml(SerializationVisitorInterface $visitor, ConstraintViolationList $list, array $type): void
+    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type): void
     {
         $currentNode = $visitor->getCurrentNode();
         if (!$currentNode) {
@@ -55,7 +56,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $visitor->visitArray(iterator_to_array($list), $type);
     }
 
-    public function serializeViolationToXml(SerializationVisitorInterface $visitor, ConstraintViolation $violation, ?array $type = null): void
+    public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, ?array $type = null): void
     {
         $violationNode = $visitor->getDocument()->createElement('violation');
 
