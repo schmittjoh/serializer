@@ -8,10 +8,10 @@ use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ODM\MongoDB\PersistentCollection as MongoDBPersistentCollection;
 use Doctrine\ODM\PHPCR\PersistentCollection as PHPCRPersistentCollection;
 use Doctrine\ORM\PersistentCollection;
-use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use ProxyManager\Proxy\LazyLoadingInterface;
 
 final class DoctrineProxySubscriber implements EventSubscriberInterface
 {
@@ -53,7 +53,7 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
         }
 
         if (($this->skipVirtualTypeInit && $virtualType) ||
-            (!$object instanceof Proxy && !$object instanceof ORMProxy)
+            (!$object instanceof Proxy && !$object instanceof LazyLoadingInterface)
         ) {
             return;
         }
@@ -68,7 +68,11 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
             }
         }
 
-        $object->__load();
+        if ($object instanceof LazyLoadingInterface) {
+            $object->initializeProxy();
+        } else {
+            $object->__load();
+        }
 
         if (!$virtualType) {
             $event->setType(get_parent_class($object), $type['params']);
@@ -111,6 +115,7 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => MongoDBPersistentCollection::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PHPCRPersistentCollection::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => Proxy::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => LazyLoadingInterface::class],
         ];
     }
 }
