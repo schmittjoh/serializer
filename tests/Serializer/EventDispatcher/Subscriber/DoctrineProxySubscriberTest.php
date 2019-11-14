@@ -11,6 +11,7 @@ use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
+use JMS\Serializer\Tests\Fixtures\SimpleObjectLazyLoading;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -144,6 +145,15 @@ class DoctrineProxySubscriberTest extends TestCase
         $this->subscriber->onPreSerialize($event);
 
         self::assertSame(['name' => SimpleObject::class, 'params' => ['baz']], $event->getType());
+    }
+
+    public function testRewritesLazyLoadingClassName()
+    {
+        $event = $this->createEvent($obj = new SimpleObjectLazyLoading('a', 'b'), ['name' => get_class($obj), 'params' => []]);
+        $this->subscriber->onPreSerialize($event);
+
+        self::assertEquals(['name' => get_parent_class($obj), 'params' => []], $event->getType());
+        self::assertTrue($obj->__isInitialized());
     }
 
     protected function setUp(): void
