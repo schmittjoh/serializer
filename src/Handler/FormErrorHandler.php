@@ -10,6 +10,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface as TranslatorContract;
 
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
@@ -46,8 +47,16 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function __construct(?TranslatorInterface $translator = null, string $translationDomain = 'validators')
+    public function __construct(?object $translator = null, string $translationDomain = 'validators')
     {
+        if (null!== $translator && (!$translator instanceof TranslatorInterface && !$translator instanceof TranslatorContract)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The first argument passed to %s must be instance of %s or %s, %s given',
+                self::class,
+                TranslatorInterface::class,
+                TranslatorContract::class
+            ));
+        }
         $this->translator = $translator;
         $this->translationDomain = $translationDomain;
     }
@@ -110,7 +119,11 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         if (null !== $error->getMessagePluralization()) {
-            return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), $this->translationDomain);
+            if ($this->translator instanceof TranslatorContract) {
+                return $this->translator->trans($error->getMessageTemplate(), ['%count%' => $error->getMessagePluralization()] + $error->getMessageParameters(), $this->translationDomain);
+            } else {
+                return $this->translator->transChoice($error->getMessageTemplate(), $error->getMessagePluralization(), $error->getMessageParameters(), $this->translationDomain);
+            }
         }
 
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), $this->translationDomain);

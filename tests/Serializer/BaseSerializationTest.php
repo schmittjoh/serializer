@@ -117,7 +117,6 @@ use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -1689,7 +1688,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
+        $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator()));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerHandler(
