@@ -33,7 +33,7 @@ class DateHandlerTest extends TestCase
             [['Y-m-d']],
             [['Y-m-d', '', 'Y-m-d|']],
             [['Y-m-d', '', 'Y']],
-            [[['Y-m-d', '', 'Y'], ['Y/m/d']]],
+            [[['Y-m-d', 'Y/m/d'], '', 'Y']],
         ];
     }
 
@@ -70,7 +70,7 @@ class DateHandlerTest extends TestCase
     {
         $visitor = new JsonDeserializationVisitor();
 
-        $type = ['name' => 'DateTime', 'params' => [['Y-m-d', '', 'Y-m-d|'], ['Y/m/d']]];
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', ['Y-m-d|', 'Y/m/d']]];
         self::assertEquals(
             \DateTime::createFromFormat('Y/m/d', '2017/06/18', $this->timezone),
             $this->handler->deserializeDateTimeFromJson($visitor, '2017/06/18', $type)

@@ -229,13 +229,11 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
-        $formatsAndTimeZones = $this->getDeserializationFormatsAndTimeZones($type);
+        $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
+        $formats = $this->getDeserializationFormats($type);
 
         $formatTried = [];
-        foreach ($formatsAndTimeZones as $formatsAndTimeZone) {
-            $format = $formatsAndTimeZone['format'];
-            $timezone = $formatsAndTimeZone['timezone'];
-
+        foreach ($formats as $format) {
             if ($immutable) {
                 $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
             } else {
@@ -275,23 +273,15 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    private function getDeserializationFormatsAndTimeZones(array $type): array
+    private function getDeserializationFormats(array $type): array
     {
-        if (isset($type['params'][0]) && is_array($type['params'][0])) {
-            return array_map(function ($param) {
-                return [
-                    'format' => $param[2] ?? $param[0] ?? $this->defaultFormat,
-                    'timezone' => !empty($param['params'][1]) ? new \DateTimeZone($param['params'][1]) : $this->defaultTimezone,
-                ];
-            }, $type['params']);
+        if (isset($type['params'][2])) {
+            return is_array($type['params'][2]) ? $type['params'][2] : [$type['params'][2]];
         }
-
-        return [
-            [
-                'format' => $type['params'][2] ?? $type['params'][0] ?? $this->defaultFormat,
-                'timezone' => !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone,
-            ],
-        ];
+        if (isset($type['params'][0])) {
+            return is_array($type['params'][0]) ? $type['params'][0] : [$type['params'][0]];
+        }
+        return [$this->defaultFormat];
     }
 
     /**
@@ -299,13 +289,10 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private function getFormats(array $type): array
     {
-        if (isset($type['params'][0]) && is_array($type['params'][0])) {
-            return array_map(function ($param) {
-                return $param[0] ?? $this->defaultFormat;
-            }, $type['params']);
+        if (isset($type['params'][0])) {
+            return is_array($type['params'][0]) ? $type['params'][0] : [$type['params'][0]];
         }
-
-        return [$type['params'][0] ?? $this->defaultFormat];
+        return [$this->defaultFormat];
     }
 
     public function format(\DateInterval $dateInterval): string
