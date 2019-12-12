@@ -8,6 +8,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
@@ -328,6 +329,14 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         $this->hasValue = false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function visitStaticProperty(string $name, $v): void
+    {
+        $this->visitProperty(new StaticPropertyMetadata('', $name, $v), $v);
     }
 
     private function isInLineCollection(PropertyMetadata $metadata): bool

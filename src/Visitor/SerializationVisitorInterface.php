@@ -81,6 +81,11 @@ interface SerializationVisitorInterface extends VisitorInterface
     public function visitProperty(PropertyMetadata $metadata, $data): void;
 
     /**
+     * @param mixed $data
+     */
+    public function visitStaticProperty(string $name, $data): void;
+
+    /**
      * Called after all properties of the object have been visited.
      *
      * @param mixed $data

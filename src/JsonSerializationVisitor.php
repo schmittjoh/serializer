@@ -8,6 +8,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
@@ -153,6 +154,14 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         } else {
             $this->data[$metadata->serializedName] = $v;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function visitStaticProperty(string $name, $v): void
+    {
+        $this->visitProperty(new StaticPropertyMetadata('', $name, $v), $v);
     }
 
     /**
