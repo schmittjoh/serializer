@@ -1,5 +1,24 @@
 # Change Log
 
+## [3.4.0](https://github.com/schmittjoh/serializer/tree/3.4.0) (2019-12-14)
+**Implemented enhancements:**
+
+- Symfony 5.0 compatibility [\#1145](https://github.com/schmittjoh/serializer/pull/1145) ([goetas](https://github.com/goetas))
+- Support new doctrine ODM proxy objects [\#1139](https://github.com/schmittjoh/serializer/pull/1139) ([notrix](https://github.com/notrix))
+- Update major version that v2.x deprecation will be removed [\#1134](https://github.com/schmittjoh/serializer/pull/1134) ([carusogabriel](https://github.com/carusogabriel))
+- Visitor interfaces in handlers [\#1129](https://github.com/schmittjoh/serializer/pull/1129) ([derzkiy](https://github.com/derzkiy))
+
+**Closed issues:**
+
+- \[Improvement\] Ability to define a global exclusion\_policy: ALL for all classes. [\#1144](https://github.com/schmittjoh/serializer/issues/1144)
+- Embed JSON string without extra escape [\#1142](https://github.com/schmittjoh/serializer/issues/1142)
+- Make possible to set ArrayCollectionHandler classes from outside [\#1131](https://github.com/schmittjoh/serializer/issues/1131)
+
+**Merged pull requests:**
+
+- Remove PHP 7.4 from `allow\_failures` matrix [\#1138](https://github.com/schmittjoh/serializer/pull/1138) ([carusogabriel](https://github.com/carusogabriel))
+- Remove unnecessary cast [\#1133](https://github.com/schmittjoh/serializer/pull/1133) ([carusogabriel](https://github.com/carusogabriel))
+
 ## [3.3.0](https://github.com/schmittjoh/serializer/tree/3.3.0) (2019-09-20)
 **Implemented enhancements:**
 
