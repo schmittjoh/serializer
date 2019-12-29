@@ -20,7 +20,7 @@ interface SubscribingHandlerInterface
      *
      * The direction and method keys can be omitted.
      *
-     * @return iterable<array{format:int, type:class-string} | array{direction:int, format:string, type:class-string, method:string}>
+     * @return iterable<array{format:int, type:string} | array{direction:int, format:string, type:string, method:string}>
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
      */
