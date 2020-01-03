@@ -25,7 +25,7 @@ matrix:
           env: TARGET=cs
 
         - php: 7.3
-        - php: "7.4snapshot"
+        - php: 7.4
     fast_finish: true
 
 install:
