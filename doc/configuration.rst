@@ -75,7 +75,7 @@ are located::
 
 The serializer would expect the metadata files to be named like the fully qualified class names where all ``\`` are
 replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
-at ``$someDir/Vendor.Package.Foo.(xml|yml)``. For more information, see the :doc:`reference <reference>`.
+at ``$someDir/Vendor.Package.Foo.(xml|yml)``. If not found, ``$someDir/Vendor.Package.(xml|yml)`` will be tried, then ``$someDir/Vendor.Package.(xml|yml)`` and so on. For more information, see the :doc:`reference <reference>`.
 
 Setting a default SerializationContext factory
 ----------------------------------------------
