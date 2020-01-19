@@ -350,28 +350,27 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTime                                                   | PHP's DateTime object (default format*/timezone) |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTime<'formats'>                                        | PHP's DateTime object (custom format/default     |
-|                                                            | timezone). Formats can either be a string or an  |
-|                                                            | array of string.                                 |
+| DateTime<'format'>                                         | PHP's DateTime object (custom format/default     |
+|                                                            | timezone).                                       |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTime<'formats', 'zone'>                                | PHP's DateTime object (custom format/timezone)   |
+| DateTime<'format', 'zone'>                                 | PHP's DateTime object (custom format/timezone)   |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTime<'formats', 'zone', 'deserializeFormats'>          | PHP's DateTime object (custom format/timezone,   |
+| DateTime<'format', 'zone', 'deserializeFormats'>           | PHP's DateTime object (custom format/timezone,   |
 |                                                            | deserialize format). If you do not want to       |
 |                                                            | specify a specific timezone, use an empty        |
-|                                                            | string ('').                                     |
+|                                                            | string (''). DeserializeFormats can either be a  |
+|                                                            | string or an array of string.                    |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTimeImmutable                                          | PHP's DateTimeImmutable object (default format*/ |
-|                                                            | timezone). Formats can either be a string or an  |
-|                                                            | array of string.                                 |
+|                                                            | timezone).                                       |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'formats'>                               | PHP's DateTimeImmutable object (custom format/   |
+| DateTimeImmutable<'format'>                                | PHP's DateTimeImmutable object (custom format/   |
 |                                                            | default timezone)                                |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'formats', 'zone'>                       | PHP's DateTimeImmutable object (custom format/   |
+| DateTimeImmutable<'format', 'zone'>                        | PHP's DateTimeImmutable object (custom format/   |
 |                                                            | timezone)                                        |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'formats', 'zone', 'deserializeFormats'> | PHP's DateTimeImmutable object (custom format/   |
+| DateTimeImmutable<'format', 'zone', 'deserializeFormats'>  | PHP's DateTimeImmutable object (custom format/   |
 |                                                            | timezone/deserialize format). If you do not want |
 |                                                            | to specify a specific timezone, use an empty     |
 |                                                            | string (''). DeserializeFormats can either be a  |
@@ -467,7 +466,7 @@ Examples:
         private $endAt;
 
         /**
-         * @Type("DateTime<['Y-m-d', 'Y/m/d']>")
+         * @Type("DateTime<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
          */
         private $publishedAt;
 
@@ -482,7 +481,7 @@ Examples:
         private $updatedAt;
 
         /**
-         * @Type("DateTimeImmutable<['Y-m-d', 'Y/m/d']>")
+         * @Type("DateTimeImmutable<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
          */
         private $deletedAt;
 

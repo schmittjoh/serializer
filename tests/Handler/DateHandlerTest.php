@@ -33,7 +33,7 @@ class DateHandlerTest extends TestCase
             [['Y-m-d']],
             [['Y-m-d', '', 'Y-m-d|']],
             [['Y-m-d', '', 'Y']],
-            [[['Y-m-d', 'Y/m/d'], '', 'Y']],
+            [['Y-m-d', '', ['Y-m-d', 'Y/m/d']]],
         ];
     }
 

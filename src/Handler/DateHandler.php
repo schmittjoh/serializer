@@ -75,25 +75,16 @@ final class DateHandler implements SubscribingHandlerInterface
         array $type,
         SerializationContext $context
     ) {
-        $formats = $this->getFormats($type);
-
-        foreach ($formats as $format) {
-            $dateFormatted = $date->format($format);
-
-            if (false !== $dateFormatted) {
-                if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
-                    return $visitor->visitSimpleString($dateFormatted, $type);
-                }
-
-                if ('U' === $format) {
-                    return $visitor->visitInteger((int) $dateFormatted, $type);
-                }
-
-                return $visitor->visitString($dateFormatted, $type);
-            }
+        if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
+            return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type);
         }
 
-        throw new RuntimeException(sprintf('The date "%s" could not be formatted', $date));
+        $format = $this->getFormat($type);
+        if ('U' === $format) {
+            return $visitor->visitInteger((int) $date->format($format), $type);
+        }
+
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
     /**
@@ -278,21 +269,16 @@ final class DateHandler implements SubscribingHandlerInterface
         if (isset($type['params'][2])) {
             return is_array($type['params'][2]) ? $type['params'][2] : [$type['params'][2]];
         }
-        if (isset($type['params'][0])) {
-            return is_array($type['params'][0]) ? $type['params'][0] : [$type['params'][0]];
-        }
-        return [$this->defaultFormat];
+
+        return [$this->getFormat($type)];
     }
 
     /**
      * @param array $type
      */
-    private function getFormats(array $type): array
+    private function getFormat(array $type): string
     {
-        if (isset($type['params'][0])) {
-            return is_array($type['params'][0]) ? $type['params'][0] : [$type['params'][0]];
-        }
-        return [$this->defaultFormat];
+        return $type['params'][0] ?? $this->defaultFormat;
     }
 
     public function format(\DateInterval $dateInterval): string
