@@ -665,6 +665,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         return [
             ['date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'],
+            ['date_time_multi_format', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), "DateTime<'Y-m-d', '', ['Y-m-d','Y-m-d\TH:i:sP']>"],
         ];
     }
 

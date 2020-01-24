@@ -45,8 +45,8 @@ This annotation can be defined on a property to define the serialized name for a
 property. If this is not defined, the property will be translated from camel-case
 to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
-Note that this annotation is not used when you're using any other naming 
-strategy than the default configuration (which includes the 
+Note that this annotation is not used when you're using any other naming
+strategy than the default configuration (which includes the
 ``SerializedNameAnnotationStrategy``). In order to re-enable the annotation, you
 will need to wrap your custom strategy with the ``SerializedNameAnnotationStrategy``.
 
@@ -142,7 +142,7 @@ be called to retrieve, or set the value of the given property:
             $this->name = $name;
         }
     }
-    
+
 .. note ::
 
     If you need only to serialize your data, you can avoid providing a setter by
@@ -327,102 +327,104 @@ used when deserializing them.
 
 Available Types:
 
-+----------------------------------------------------------+--------------------------------------------------+
-| Type                                                     | Description                                      |
-+==========================================================+==================================================+
-| boolean or bool                                          | Primitive boolean                                |
-+----------------------------------------------------------+--------------------------------------------------+
-| integer or int                                           | Primitive integer                                |
-+----------------------------------------------------------+--------------------------------------------------+
-| double or float                                          | Primitive double                                 |
-+----------------------------------------------------------+--------------------------------------------------+
-| string                                                   | Primitive string                                 |
-+----------------------------------------------------------+--------------------------------------------------+
-| array                                                    | An array with arbitrary keys, and values.        |
-+----------------------------------------------------------+--------------------------------------------------+
-| array<T>                                                 | A list of type T (T can be any available type).  |
-|                                                          | Examples:                                        |
-|                                                          | array<string>, array<MyNamespace\MyObject>, etc. |
-+----------------------------------------------------------+--------------------------------------------------+
-| array<K, V>                                              | A map of keys of type K to values of type V.     |
-|                                                          | Examples: array<string, string>,                 |
-|                                                          | array<string, MyNamespace\MyObject>, etc.        |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTime                                                 | PHP's DateTime object (default format*/timezone) |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTime<'format'>                                       | PHP's DateTime object (custom format/default     |
-|                                                          | timezone)                                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTime<'format', 'zone'>                               | PHP's DateTime object (custom format/timezone)   |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTime<'format', 'zone', 'deserializeFormat'>          | PHP's DateTime object (custom format/timezone,   |
-|                                                          | deserialize format). If you do not want to       |
-|                                                          | specify a specific timezone, use an empty        |
-|                                                          | string ('').                                     |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable                                        | PHP's DateTimeImmutable object (default format*/ |
-|                                                          | timezone)                                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'format'>                              | PHP's DateTimeImmutable object (custom format/   |
-|                                                          | default timezone)                                |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'format', 'zone'>                      | PHP's DateTimeImmutable object (custom format/   |
-|                                                          | timezone)                                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateTimeImmutable<'format', 'zone', 'deserializeFormat'> | PHP's DateTimeImmutable object (custom format/   |
-|                                                          | timezone/deserialize format). If you do not want |
-|                                                          | to specify a specific timezone, use an empty     |
-|                                                          | string ('').                                     |
-+----------------------------------------------------------+--------------------------------------------------+
-| DateInterval                                             | PHP's DateInterval object using ISO 8601 format  |
-+----------------------------------------------------------+--------------------------------------------------+
-| T                                                        | Where T is a fully qualified class name.         |
-+----------------------------------------------------------+--------------------------------------------------+
-| iterable                                                 | Similar to array. Will always be deserialized    |
-|                                                          | into array as implementation info is lost during |
-|                                                          | serialization.                                   |
-+----------------------------------------------------------+--------------------------------------------------+
-| iterable<T>                                              | Similar to array<T>. Will always be deserialized |
-|                                                          | into array as implementation info is lost during |
-|                                                          | serialization.                                   |
-+----------------------------------------------------------+--------------------------------------------------+
-| iterable<K, V>                                           | Similar to array<K, V>. Will always be           |
-|                                                          | deserialized into array as implementation info   |
-|                                                          | is lost during serialization.                    |
-+----------------------------------------------------------+--------------------------------------------------+
-| ArrayCollection<T>                                       | Similar to array<T>, but will be deserialized    |
-|                                                          | into Doctrine's ArrayCollection class.           |
-+----------------------------------------------------------+--------------------------------------------------+
-| ArrayCollection<K, V>                                    | Similar to array<K, V>, but will be deserialized |
-|                                                          | into Doctrine's ArrayCollection class.           |
-+----------------------------------------------------------+--------------------------------------------------+
-| Generator                                                | Similar to array, but will be deserialized       |
-|                                                          | into Generator class.                            |
-+----------------------------------------------------------+--------------------------------------------------+
-| Generator<T>                                             | Similar to array<T>, but will be deserialized    |
-|                                                          | into Generator class.                            |
-+----------------------------------------------------------+--------------------------------------------------+
-| Generator<K, V>                                          | Similar to array<K, V>, but will be deserialized |
-|                                                          | into Generator class.                            |
-+----------------------------------------------------------+--------------------------------------------------+
-| ArrayIterator                                            | Similar to array, but will be deserialized       |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| ArrayIterator<T>                                         | Similar to array<T>, but will be deserialized    |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| ArrayIterator<K, V>                                      | Similar to array<K, V>, but will be deserialized |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| Iterator                                                 | Similar to array, but will be deserialized       |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| Iterator<T>                                              | Similar to array<T>, but will be deserialized    |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
-| Iterator<K, V>                                           | Similar to array<K, V>, but will be deserialized |
-|                                                          | into ArrayIterator class.                        |
-+----------------------------------------------------------+--------------------------------------------------+
++------------------------------------------------------------+--------------------------------------------------+
+| Type                                                       | Description                                      |
++============================================================+==================================================+
+| boolean or bool                                            | Primitive boolean                                |
++------------------------------------------------------------+--------------------------------------------------+
+| integer or int                                             | Primitive integer                                |
++------------------------------------------------------------+--------------------------------------------------+
+| double or float                                            | Primitive double                                 |
++------------------------------------------------------------+--------------------------------------------------+
+| string                                                     | Primitive string                                 |
++------------------------------------------------------------+--------------------------------------------------+
+| array                                                      | An array with arbitrary keys, and values.        |
++------------------------------------------------------------+--------------------------------------------------+
+| array<T>                                                   | A list of type T (T can be any available type).  |
+|                                                            | Examples:                                        |
+|                                                            | array<string>, array<MyNamespace\MyObject>, etc. |
++------------------------------------------------------------+--------------------------------------------------+
+| array<K, V>                                                | A map of keys of type K to values of type V.     |
+|                                                            | Examples: array<string, string>,                 |
+|                                                            | array<string, MyNamespace\MyObject>, etc.        |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTime                                                   | PHP's DateTime object (default format*/timezone) |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format'>                                         | PHP's DateTime object (custom format/default     |
+|                                                            | timezone).                                       |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone'>                                 | PHP's DateTime object (custom format/timezone)   |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTime<'format', 'zone', 'deserializeFormats'>           | PHP's DateTime object (custom format/timezone,   |
+|                                                            | deserialize format). If you do not want to       |
+|                                                            | specify a specific timezone, use an empty        |
+|                                                            | string (''). DeserializeFormats can either be a  |
+|                                                            | string or an array of string.                    |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable                                          | PHP's DateTimeImmutable object (default format*/ |
+|                                                            | timezone).                                       |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format'>                                | PHP's DateTimeImmutable object (custom format/   |
+|                                                            | default timezone)                                |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone'>                        | PHP's DateTimeImmutable object (custom format/   |
+|                                                            | timezone)                                        |
++------------------------------------------------------------+--------------------------------------------------+
+| DateTimeImmutable<'format', 'zone', 'deserializeFormats'>  | PHP's DateTimeImmutable object (custom format/   |
+|                                                            | timezone/deserialize format). If you do not want |
+|                                                            | to specify a specific timezone, use an empty     |
+|                                                            | string (''). DeserializeFormats can either be a  |
+|                                                            | string or an array of string.                    |
++------------------------------------------------------------+--------------------------------------------------+
+| DateInterval                                               | PHP's DateInterval object using ISO 8601 format  |
++------------------------------------------------------------+--------------------------------------------------+
+| T                                                          | Where T is a fully qualified class name.         |
++------------------------------------------------------------+--------------------------------------------------+
+| iterable                                                   | Similar to array. Will always be deserialized    |
+|                                                            | into array as implementation info is lost during |
+|                                                            | serialization.                                   |
++------------------------------------------------------------+--------------------------------------------------+
+| iterable<T>                                                | Similar to array<T>. Will always be deserialized |
+|                                                            | into array as implementation info is lost during |
+|                                                            | serialization.                                   |
++------------------------------------------------------------+--------------------------------------------------+
+| iterable<K, V>                                             | Similar to array<K, V>. Will always be           |
+|                                                            | deserialized into array as implementation info   |
+|                                                            | is lost during serialization.                    |
++------------------------------------------------------------+--------------------------------------------------+
+| ArrayCollection<T>                                         | Similar to array<T>, but will be deserialized    |
+|                                                            | into Doctrine's ArrayCollection class.           |
++------------------------------------------------------------+--------------------------------------------------+
+| ArrayCollection<K, V>                                      | Similar to array<K, V>, but will be deserialized |
+|                                                            | into Doctrine's ArrayCollection class.           |
++------------------------------------------------------------+--------------------------------------------------+
+| Generator                                                  | Similar to array, but will be deserialized       |
+|                                                            | into Generator class.                            |
++------------------------------------------------------------+--------------------------------------------------+
+| Generator<T>                                               | Similar to array<T>, but will be deserialized    |
+|                                                            | into Generator class.                            |
++------------------------------------------------------------+--------------------------------------------------+
+| Generator<K, V>                                            | Similar to array<K, V>, but will be deserialized |
+|                                                            | into Generator class.                            |
++------------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator                                              | Similar to array, but will be deserialized       |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator<T>                                           | Similar to array<T>, but will be deserialized    |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
+| ArrayIterator<K, V>                                        | Similar to array<K, V>, but will be deserialized |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
+| Iterator                                                   | Similar to array, but will be deserialized       |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
+| Iterator<T>                                                | Similar to array<T>, but will be deserialized    |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
+| Iterator<K, V>                                             | Similar to array<K, V>, but will be deserialized |
+|                                                            | into ArrayIterator class.                        |
++------------------------------------------------------------+--------------------------------------------------+
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
@@ -464,6 +466,11 @@ Examples:
         private $endAt;
 
         /**
+         * @Type("DateTime<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
+         */
+        private $publishedAt;
+
+        /**
          * @Type("DateTimeImmutable")
          */
         private $createdAt;
@@ -472,6 +479,11 @@ Examples:
          * @Type("DateTimeImmutable<'Y-m-d'>")
          */
         private $updatedAt;
+
+        /**
+         * @Type("DateTimeImmutable<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
+         */
+        private $deletedAt;
 
         /**
          * @Type("boolean")

@@ -221,23 +221,32 @@ final class DateHandler implements SubscribingHandlerInterface
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
         $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
-        $format = $this->getDeserializationFormat($type);
+        $formats = $this->getDeserializationFormats($type);
 
-        if ($immutable) {
-            $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
-        } else {
-            $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+        $formatTried = [];
+        foreach ($formats as $format) {
+            if ($immutable) {
+                $datetime = \DateTimeImmutable::createFromFormat($format, (string) $data, $timezone);
+            } else {
+                $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+            }
+
+            if (false !== $datetime) {
+                if ('U' === $format) {
+                    $datetime = $datetime->setTimezone($timezone);
+                }
+
+                return $datetime;
+            }
+
+            $formatTried[] = $format;
         }
 
-        if (false === $datetime) {
-            throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
-        }
-
-        if ('U' === $format) {
-            $datetime = $datetime->setTimezone($timezone);
-        }
-
-        return $datetime;
+        throw new RuntimeException(sprintf(
+            'Invalid datetime "%s", expected one of the format %s.',
+            $data,
+            '"' . implode('", "', $formatTried) . '"'
+        ));
     }
 
     private function parseDateInterval(string $data): \DateInterval
@@ -255,15 +264,13 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    private function getDeserializationFormat(array $type): string
+    private function getDeserializationFormats(array $type): array
     {
         if (isset($type['params'][2])) {
-            return $type['params'][2];
+            return is_array($type['params'][2]) ? $type['params'][2] : [$type['params'][2]];
         }
-        if (isset($type['params'][0])) {
-            return $type['params'][0];
-        }
-        return $this->defaultFormat;
+
+        return [$this->getFormat($type)];
     }
 
     /**
