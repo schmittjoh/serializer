@@ -130,7 +130,7 @@ abstract class Context
         return $this;
     }
 
-    private function assertMutable(): void
+    final protected function assertMutable(): void
     {
         if (!$this->initialized) {
             return;

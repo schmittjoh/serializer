@@ -43,6 +43,8 @@ class SerializationContext extends Context
      */
     public function setSerializeNull(bool $bool): self
     {
+        $this->assertMutable();
+
         $this->serializeNull = $bool;
 
         return $this;
@@ -142,6 +144,8 @@ class SerializationContext extends Context
      */
     public function setInitialType(string $type): self
     {
+        $this->assertMutable();
+
         $this->initialType = $type;
         $this->setAttribute('initial_type', $type);
         return $this;

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
@@ -14,6 +16,8 @@ use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\VersionedObject;
+use JMS\Serializer\VisitorInterface;
+use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ContextTest extends TestCase
@@ -213,5 +217,21 @@ class ContextTest extends TestCase
 
         $context->setSerializeNull(true);
         self::assertTrue($context->shouldSerializeNull());
+    }
+
+    public function testContextBecomesImmutableWhenStartingProcess()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('This context was already initialized and is immutable; you cannot modify it anymore.');
+
+        $visitor = $this->createMock(VisitorInterface::class);
+        $navigator = $this->createMock(GraphNavigator::class);
+        $metadataFactory = $this->createMock(MetadataFactoryInterface::class);
+
+        $context = SerializationContext::create();
+
+        $context->initialize('json', $visitor, $navigator, $metadataFactory);
+
+        $context->setSerializeNull(false);
     }
 }
