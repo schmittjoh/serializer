@@ -121,6 +121,8 @@ abstract class Context
 
     /**
      * @param mixed $value
+     *
+     * @return $this
      */
     public function setAttribute(string $key, $value): self
     {
@@ -139,6 +141,9 @@ abstract class Context
         throw new LogicException('This context was already initialized and is immutable; you cannot modify it anymore.');
     }
 
+    /**
+     * @return $this
+     */
     public function addExclusionStrategy(ExclusionStrategyInterface $strategy): self
     {
         $this->assertMutable();
@@ -161,6 +166,9 @@ abstract class Context
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function setVersion(string $version): self
     {
         $this->attributes['version'] = $version;
@@ -170,6 +178,8 @@ abstract class Context
 
     /**
      * @param array|string $groups
+     *
+     * @return $this
      */
     public function setGroups($groups): self
     {
@@ -182,6 +192,9 @@ abstract class Context
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function enableMaxDepthChecks(): self
     {
         $this->attributes['max_depth_checks'] = true;
