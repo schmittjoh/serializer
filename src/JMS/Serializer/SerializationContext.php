@@ -122,6 +122,6 @@ class SerializationContext extends Context
     {
         return $this->initialType
             ? $this->initialType
-            : $this->attributes->containsKey('initial_type') ? $this->attributes->get('initial_type')->get() : null;
+            : ($this->attributes->containsKey('initial_type') ? $this->attributes->get('initial_type')->get() : null);
     }
 }
