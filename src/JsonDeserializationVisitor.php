@@ -54,6 +54,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitString($data, array $type): string
     {
+        if (!\is_string($data)) {
+            throw new RuntimeException(sprintf('Expected string, but got %s: %s', \gettype($data), json_encode($data)));
+        }
+
         return (string) $data;
     }
 
@@ -62,6 +66,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitBoolean($data, array $type): bool
     {
+        if (!\is_bool($data)) {
+            throw new RuntimeException(sprintf('Expected boolean, but got %s: %s', \gettype($data), json_encode($data)));
+        }
+
         return (bool) $data;
     }
 
@@ -70,6 +78,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitInteger($data, array $type): int
     {
+        if (!\is_int($data)) {
+            throw new RuntimeException(sprintf('Expected boolean, but got %s: %s', \gettype($data), json_encode($data)));
+        }
+
         return (int) $data;
     }
 
@@ -78,6 +90,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitDouble($data, array $type): float
     {
+        if (!\is_float($data)) {
+            throw new RuntimeException(sprintf('Expected double, but got %s: %s', \gettype($data), json_encode($data)));
+        }
+
         return (float) $data;
     }
 
