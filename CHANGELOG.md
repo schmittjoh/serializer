@@ -1,5 +1,22 @@
 # Change Log
 
+## [3.5.0](https://github.com/schmittjoh/serializer/tree/3.5.0) (2020-02-22)
+
+**Implemented enhancements:**
+
+- Improved return type for fluent methods in Context [\#1162](https://github.com/schmittjoh/serializer/pull/1162) ([wouterj](https://github.com/wouterj))
+- Handle array format for dateHandler [\#1108](https://github.com/schmittjoh/serializer/pull/1108) ([VincentLanglet](https://github.com/VincentLanglet))
+
+**Fixed bugs:**
+
+- Make sure serialzation context is immutable [\#1159](https://github.com/schmittjoh/serializer/pull/1159) ([goetas](https://github.com/goetas))
+
+**Merged pull requests:**
+
+- Allow for newer PHPUnit [\#1166](https://github.com/schmittjoh/serializer/pull/1166) ([sanmai](https://github.com/sanmai))
+- \[Docs\] Explain recursion in FileLocator [\#1155](https://github.com/schmittjoh/serializer/pull/1155) ([ruudk](https://github.com/ruudk))
+- Changed CI environment to stable PHP 7.4 [\#1153](https://github.com/schmittjoh/serializer/pull/1153) ([grogy](https://github.com/grogy))
+
 ## [3.4.0](https://github.com/schmittjoh/serializer/tree/3.4.0) (2019-12-14)
 **Implemented enhancements:**
 
