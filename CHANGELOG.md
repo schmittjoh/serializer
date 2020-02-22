@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.14.1](https://github.com/schmittjoh/serializer/tree/1.14.1) (2020-02-22)
+
+**Merged pull requests:**
+
+- PHP7.4 ternary operator deprecation [\#1163](https://github.com/schmittjoh/serializer/pull/1163) ([adhocore](https://github.com/adhocore))
+
 ## [1.14.0](https://github.com/schmittjoh/serializer/tree/1.14.0) (2019-04-17)
 
 **Implemented enhancements:**
