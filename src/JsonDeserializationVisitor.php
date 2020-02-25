@@ -54,6 +54,8 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitString($data, array $type): string
     {
+        $this->assertValueCanBeCastToString($data);
+
         return (string) $data;
     }
 
@@ -70,6 +72,8 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitInteger($data, array $type): int
     {
+        $this->assertValueCanBeCastToInt($data);
+
         return (int) $data;
     }
 
@@ -78,6 +82,8 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function visitDouble($data, array $type): float
     {
+        $this->assertValueCanCastToFloat($data);
+
         return (float) $data;
     }
 
