@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace JMS\Serializer\Exception;
 
@@ -9,7 +11,10 @@ class NonCastableTypeException extends RuntimeException
      */
     private $value;
 
-    public function __construct($expectedType, $value)
+    /**
+     * @param mixed $value
+     */
+    public function __construct(string $expectedType, $value)
     {
         $this->value = $value;
 
@@ -22,6 +27,9 @@ class NonCastableTypeException extends RuntimeException
         );
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
