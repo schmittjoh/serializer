@@ -63,11 +63,17 @@ class YamlSerializationTest extends BaseSerializationTest
             [[1, 2], "- 1\n- 2\n", null],
             [['a', 'b'], "- a\n- b\n", null],
             [['a' => 'a', 'b' => 'b'], "a: a\nb: b\n", null],
+            [
+                ['int' => 1, 'string' => 'a', 'dateTime' => new \DateTime('2018-07-07 10:10:10')],
+                "int: 1\nstring: a\ndateTime: 2018-07-07 10:10:10\n",
+                null
+            ],
 
             [[], " []\n", null],
             [[], " []\n", SerializationContext::create()->setInitialType('array')],
             [[], " []\n", SerializationContext::create()->setInitialType('array<integer>')],
             [[], " {}\n", SerializationContext::create()->setInitialType('array<string,integer>')],
+            [[], " {}\n", SerializationContext::create()->setInitialType('array<string,mixed>')],
 
 
             [[1, 2], "- 1\n- 2\n", SerializationContext::create()->setInitialType('array')],
@@ -86,6 +92,11 @@ class YamlSerializationTest extends BaseSerializationTest
 
             [['a', 'b'], "0: a\n1: b\n", SerializationContext::create()->setInitialType('array<integer,string>')],
             [['a' => 'a', 'b' => 'b'], "a: a\nb: b\n", SerializationContext::create()->setInitialType('array<string,string>')],
+            [
+                ['int' => 1, 'string' => 'a', 'dateTime' => new \DateTime('2018-07-07 10:10:10')],
+                "int: 1\nstring: a\ndateTime: 2018-07-07 10:10:10\n",
+                SerializationContext::create()->setInitialType('array<string,mixed>')
+            ],
         ];
     }
 
