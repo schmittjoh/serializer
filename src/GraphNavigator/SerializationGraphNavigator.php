@@ -195,9 +195,11 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
                     try {
                         $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    } finally {
+                    } catch (NotAcceptableException $e) {
                         $this->context->stopVisiting($data);
+                        throw $e;
                     }
+                    $this->context->stopVisiting($data);
 
                     return $rs;
                 }
