@@ -51,6 +51,8 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
@@ -1309,6 +1311,32 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals(
             $this->getContent('car'),
             $this->serialize(new DiscriminatorGroupCar(5), $context)
+        );
+    }
+
+    /**
+     * Test serializing entity that uses Discriminator and extends some base model class
+     */
+    public function testDiscrimatorObjects()
+    {
+        $u1 = new User(5, 'userName', 'userDesc');
+        $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extednedContent');
+        $arr = new ArrayCollection([$u1, $u2]);
+        $context = SerializationContext::create()->setGroups(['entity.identification']);
+
+        self::assertEquals(
+            $this->getContent('user_discriminator_extended'),
+            $this->serialize($u2, $context)
+        );
+
+        self::assertEquals(
+            $this->getContent('user_discriminator'),
+            $this->serialize($u1, $context)
+        );
+
+        self::assertEquals(
+            $this->getContent('user_discriminator_array'),
+            $this->serialize($arr, $context)
         );
     }
 

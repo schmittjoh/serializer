@@ -125,6 +125,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['generator'] = '{"generator":{"foo":"bar","bar":"foo"}}';
             $outputs['ParentNoMetadataChildObject'] = '{"bar":"John"}';
+            $outputs['user_discriminator_array'] = '[{"entityName": "User"},{"entityName": "ExtendedUser"}]';
+            $outputs['user_discriminator'] = '{"entityName": "User"}';
+            $outputs['user_discriminator_extended'] = '{"entityName": "ExtendedUser"}';
         }
 
         if (!isset($outputs[$key])) {
