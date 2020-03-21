@@ -1,4 +1,26 @@
-# Change Log
+# Changelog
+
+## [3.6.0](https://github.com/schmittjoh/serializer/tree/3.6.0) (2020-03-21)
+
+**Implemented enhancements:**
+
+- DateTime parsed invalid date [\#1152](https://github.com/schmittjoh/serializer/issues/1152)
+- do not hide Exceptions from custom handlers but correctly handle null [\#1169](https://github.com/schmittjoh/serializer/pull/1169) ([Hikariii](https://github.com/Hikariii))
+- Handle ObjectConstructor returning NULL [\#1172](https://github.com/schmittjoh/serializer/pull/1172) ([jankramer](https://github.com/jankramer))
+
+**Fixed bugs:**
+
+- Handle discriminator groups [\#1175](https://github.com/schmittjoh/serializer/pull/1175) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Serialize using interface metadata [\#1170](https://github.com/schmittjoh/serializer/issues/1170)
+- thrown Exceptions are hidden when serializing complex objects with a handler [\#1168](https://github.com/schmittjoh/serializer/issues/1168)
+
+**Merged pull requests:**
+
+- test serializing entity that uses Discriminator and extends some base… [\#1174](https://github.com/schmittjoh/serializer/pull/1174) ([FrKevin](https://github.com/FrKevin))
+- test symfony translator contract [\#1171](https://github.com/schmittjoh/serializer/pull/1171) ([goetas](https://github.com/goetas))
 
 ## [3.5.0](https://github.com/schmittjoh/serializer/tree/3.5.0) (2020-02-22)
 
