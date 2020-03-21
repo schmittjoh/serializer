@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
+use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -154,6 +155,19 @@ class GraphNavigatorTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage($msg);
         $navigator->accept($object, ['name' => $typeName, 'params' => []]);
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testNavigatorDoesNotCrashWhenObjectConstructorReturnsNull()
+    {
+        $objectConstructor = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $objectConstructor->method('construct')->willReturn(null);
+        $navigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $objectConstructor, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->deserializationVisitor, $this->deserializationContext);
+
+        $navigator->accept(['id' => 1234], ['name' => SerializableClass::class]);
     }
 
     protected function setUp(): void
