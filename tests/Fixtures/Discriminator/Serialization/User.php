@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\Discriminator\Serialization;
 
@@ -8,7 +9,6 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class User
  *
- * @package JMS\Serializer\Tests\Fixtures\Discriminator\Serialization
  * @JMS\Discriminator(field = "entityName",
  *     groups={"entity.identification"},
  *     map = {
@@ -31,19 +31,10 @@ class User extends Entity
      */
     public $description;
 
-    /**
-     * User constructor.
-     *
-     * @param        $id
-     * @param string $name
-     * @param string $description
-     */
-    public function __construct($id, $name, $description)
+    public function __construct(int $id, string $name, string $description)
     {
         parent::__construct($id);
         $this->name = $name;
         $this->description = $description;
     }
-
-
 }

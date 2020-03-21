@@ -1314,29 +1314,30 @@ abstract class BaseSerializationTest extends TestCase
         );
     }
 
-    /**
-     * Test serializing entity that uses Discriminator and extends some base model class
-     */
-    public function testDiscrimatorObjects()
+    public function getDiscrimatorObjectsSamples(): array
     {
         $u1 = new User(5, 'userName', 'userDesc');
         $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extednedContent');
         $arr = new ArrayCollection([$u1, $u2]);
+
+        return [
+            [$u1, 'user_discriminator'],
+            [$u2, 'user_discriminator_extended'],
+            [$arr, 'user_discriminator_array'],
+        ];
+    }
+
+    /**
+     * Test serializing entity that uses Discriminator and extends some base model class
+     *
+     * @dataProvider getDiscrimatorObjectsSamples
+     */
+    public function testDiscrimatorObjects($data, $contentId)
+    {
         $context = SerializationContext::create()->setGroups(['entity.identification']);
-
         self::assertEquals(
-            $this->getContent('user_discriminator_extended'),
-            $this->serialize($u2, $context)
-        );
-
-        self::assertEquals(
-            $this->getContent('user_discriminator'),
-            $this->serialize($u1, $context)
-        );
-
-        self::assertEquals(
-            $this->getContent('user_discriminator_array'),
-            $this->serialize($arr, $context)
+            $this->getContent($contentId),
+            $this->serialize($data, $context)
         );
     }
 
