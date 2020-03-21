@@ -237,6 +237,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorFieldName = $object->discriminatorFieldName;
             $this->discriminatorMap = $object->discriminatorMap;
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
+            $this->discriminatorGroups = $object->discriminatorGroups;
         }
 
         $this->handleDiscriminatorProperty();
