@@ -178,7 +178,7 @@ class ClassMetadata extends MergeableClassMetadata
     {
         parent::addPropertyMetadata($metadata);
         $this->sortProperties();
-        if ($metadata instanceof PropertyMetadata && ( $metadata->excludeIf || $metadata->readOnlyIf ) ) {
+        if ($metadata instanceof PropertyMetadata && ($metadata->excludeIf || $metadata->readOnlyIf)) {
             $this->usingExpression = true;
         }
     }

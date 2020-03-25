@@ -19,7 +19,6 @@ use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnly;
-use JMS\Serializer\Annotation\ReadOnlyIf;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;

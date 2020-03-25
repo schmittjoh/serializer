@@ -72,7 +72,7 @@ final class ExpressionLanguageExclusionStrategy
         ];
         $variables['object'] = null;
 
-        if (($property->readOnly instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+        if (($property->readOnlyIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
             return $this->expressionEvaluator->evaluateParsed($property->readOnlyIf, $variables);
         }
 
