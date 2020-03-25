@@ -14,4 +14,9 @@ final class ReadOnly
      * @var bool
      */
     public $readOnly = true;
+
+    /**
+     * @var string
+     */
+    public $if;
 }

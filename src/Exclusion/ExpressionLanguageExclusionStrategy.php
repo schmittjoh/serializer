@@ -56,4 +56,26 @@ final class ExpressionLanguageExclusionStrategy
 
         return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function shouldSkipPropertyOnDeserialize(PropertyMetadata $property, Context $navigatorContext): bool
+    {
+        if (null === $property->readOnlyIf) {
+            return false;
+        }
+
+        $variables = [
+            'context' => $navigatorContext,
+            'property_metadata' => $property,
+        ];
+        $variables['object'] = null;
+
+        if (($property->readOnly instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+            return $this->expressionEvaluator->evaluateParsed($property->readOnlyIf, $variables);
+        }
+
+        return $this->expressionEvaluator->evaluate($property->readOnlyIf, $variables);
+    }
 }

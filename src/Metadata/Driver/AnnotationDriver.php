@@ -19,6 +19,7 @@ use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\ReadOnlyIf;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;
@@ -88,6 +89,7 @@ class AnnotationDriver implements DriverInterface
         $exclusionPolicy = ExclusionPolicy::NONE;
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
+        $readOnlyIfClass = null;
         $readOnlyClass = false;
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
@@ -103,7 +105,11 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
             } elseif ($annot instanceof ReadOnly) {
-                $readOnlyClass = true;
+                if (null !== $annot->if) {
+                    $readOnlyIfClass = $this->parseExpression($annot->if);
+                } else {
+                    $readOnlyClass = $annot->readOnly;
+                }
             } elseif ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
             } elseif ($annot instanceof Discriminator) {
@@ -167,6 +173,7 @@ class AnnotationDriver implements DriverInterface
                 $isExpose = $propertyMetadata instanceof VirtualPropertyMetadata
                     || $propertyMetadata instanceof ExpressionPropertyMetadata;
                 $propertyMetadata->readOnly = $propertyMetadata->readOnly || $readOnlyClass;
+                $propertyMetadata->readOnlyIf = $readOnlyIfClass;
                 $accessType = $classAccessType;
                 $accessor = [null, null];
 
@@ -223,7 +230,13 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {
-                        $propertyMetadata->readOnly = $annot->readOnly;
+                        if (null !== $annot->if) {
+                            $propertyMetadata->readOnlyIf = $this->parseExpression($annot->if);
+                            $propertyMetadata->readOnly = false;
+                        } else {
+                            $propertyMetadata->readOnly = $annot->readOnly;
+                            $propertyMetadata->readOnlyIf = null;
+                        }
                     } elseif ($annot instanceof Accessor) {
                         $accessor = [$annot->getter, $annot->setter];
                     } elseif ($annot instanceof Groups) {

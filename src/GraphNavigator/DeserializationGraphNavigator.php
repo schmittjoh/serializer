@@ -201,7 +201,11 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         continue;
                     }
 
-                    if ($propertyMetadata->readOnly) {
+                    if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipPropertyOnDeserialize($propertyMetadata, $this->context)) {
+                        continue;
+                    }
+
+                    if ($propertyMetadata->readOnly === true) {
                         continue;
                     }
 
