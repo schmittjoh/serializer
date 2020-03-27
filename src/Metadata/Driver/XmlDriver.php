@@ -87,7 +87,13 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootPrefix = (string) $xmlRootPrefix;
         }
 
-        $readOnlyClass = 'true' === strtolower((string) $elem->attributes()->{'read-only'});
+        $readOnlyClass = false;
+        $readOnlyIfClass = null;
+        if(null === $readOnlyIf = $elem->attributes()->{'read-only-if'}) {
+            $readOnlyClass = 'true' === strtolower((string) $elem->attributes()->{'read-only'});
+        } else {
+            $readOnlyIfClass = $this->parseExpression((string) $readOnlyIf);
+        }
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = [];
@@ -298,10 +304,16 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     //we need read-only before setter and getter set, because that method depends on flag being set
-                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower((string) $readOnly);
+                    $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
+                    $pMetadata->readOnlyIf = $readOnlyIfClass;
+                    if (null !== $readOnlyIf = $pElem->attributes()->{'read-only-if'}) {
+                        $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnlyIf);
+                        $pMetadata->readOnly = false;
                     } else {
-                        $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
+                        if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
+                            $pMetadata->readOnly = 'true' === strtolower((string) $readOnly);
+                            $pMetadata->readOnlyIf = null;
+                        }
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};

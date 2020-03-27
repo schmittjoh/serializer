@@ -36,7 +36,7 @@ final class ExpressionLanguageExclusionStrategy
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
-        if (null === $property->excludeIf) {
+        if (null === $property->excludeIf && null === $property->readOnlyIf) {
             return false;
         }
 
@@ -44,38 +44,31 @@ final class ExpressionLanguageExclusionStrategy
             'context' => $navigatorContext,
             'property_metadata' => $property,
         ];
+        $readOnlyIf = false;
+        $excludeIf = false;
+
         if ($navigatorContext instanceof SerializationContext) {
             $variables['object'] = $navigatorContext->getObject();
         } else {
             $variables['object'] = null;
+
+            if (null !== $property->readOnlyIf) {
+                if (($property->readOnlyIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+                    $readOnlyIf = $this->expressionEvaluator->evaluateParsed($property->readOnlyIf, $variables);
+                } else {
+                    $readOnlyIf = $this->expressionEvaluator->evaluate($property->readOnlyIf, $variables);
+                }
+            }
         }
 
-        if (($property->excludeIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
-            return $this->expressionEvaluator->evaluateParsed($property->excludeIf, $variables);
+        if (null !== $property->excludeIf) {
+            if (($property->excludeIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+                $excludeIf = $this->expressionEvaluator->evaluateParsed($property->excludeIf, $variables);
+            } else {
+                $excludeIf = $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
+            }
         }
 
-        return $this->expressionEvaluator->evaluate($property->excludeIf, $variables);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function shouldSkipPropertyOnDeserialize(PropertyMetadata $property, Context $navigatorContext): bool
-    {
-        if (null === $property->readOnlyIf) {
-            return false;
-        }
-
-        $variables = [
-            'context' => $navigatorContext,
-            'property_metadata' => $property,
-        ];
-        $variables['object'] = null;
-
-        if (($property->readOnlyIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
-            return $this->expressionEvaluator->evaluateParsed($property->readOnlyIf, $variables);
-        }
-
-        return $this->expressionEvaluator->evaluate($property->readOnlyIf, $variables);
+        return $excludeIf || $readOnlyIf;
     }
 }
