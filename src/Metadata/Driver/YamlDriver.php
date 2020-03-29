@@ -110,8 +110,7 @@ class YamlDriver extends AbstractFileDriver
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
         $excludeAll = isset($config['exclude']) ? (bool) $config['exclude'] : false;
         $classAccessType = $config['access_type'] ?? PropertyMetadata::ACCESS_TYPE_PROPERTY;
-        $readOnlyClass = (isset($config['read_only']) && !isset($config['read_only_if']))  ? (bool) $config['read_only'] : false;
-        $readOnlyIfClass = isset($config['read_only_if']) ? $this->parseExpression((string) $config['read_only_if']) : null;
+        $readOnlyClass = $config['read_only'] ?? null;
         $this->addClassProperties($metadata, $config);
 
         $propertiesMetadata = [];
@@ -276,25 +275,15 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     //we need read_only before setter and getter set, because that method depends on flag being set
-                    $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
-                    $pMetadata->readOnlyIf = $readOnlyIfClass;
-                    if (isset($pConfig['read_only_if'])) {
-                        $pMetadata->readOnlyIf = $this->parseExpression($pConfig['read_only_if']);
-                        $pMetadata->readOnly = false;
-                    } else {
-                        if (isset($pConfig['read_only'])) {
-                            $pMetadata->readOnly = (bool) $pConfig['read_only'];
-                            $pMetadata->readOnlyIf = null;
+                    $readOnly = $pConfig['read_only'] ?? $readOnlyClass;
+                    if (null !== $readOnly) {
+                        if (is_bool($readOnly)) {
+                            $pMetadata->readOnly = $pMetadata->readOnly || $readOnly;
+                        } else {
+                            $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnly);
                         }
                     }
 
-/*
-                    if (isset($pConfig['read_only'])) {
-                        $pMetadata->readOnly = (bool) $pConfig['read_only'];
-                    } else {
-                        $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
-                    }
-*/
                     $pMetadata->setAccessor(
                         $pConfig['access_type'] ?? $classAccessType,
                         $pConfig['accessor']['getter'] ?? null,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Exclusion;
 
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
@@ -17,6 +18,7 @@ class ExpressionLanguageExclusionStrategyTest extends TestCase
 {
     private $visitedObject;
     private $context;
+    private $dContext;
     private $expressionEvaluator;
     private $exclusionStrategy;
 
@@ -26,6 +28,8 @@ class ExpressionLanguageExclusionStrategyTest extends TestCase
 
         $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
         $this->context->method('getObject')->willReturn($this->visitedObject);
+
+        $this->dContext = $this->getMockBuilder(DeserializationContext::class)->getMock();
 
         $this->expressionEvaluator = $this->getMockBuilder(ExpressionEvaluator::class)
             ->disableOriginalConstructor()
@@ -58,5 +62,22 @@ class ExpressionLanguageExclusionStrategyTest extends TestCase
         $this->expressionEvaluator->expects($this->never())->method('evaluate');
 
         self::assertFalse($this->exclusionStrategy->shouldSkipProperty($metadata, $this->context));
+    }
+
+    public function testExpressionLanguageReadOnlyWorks()
+    {
+        $metadata = new StaticPropertyMetadata('stdClass', 'prop', 'propVal');
+        $metadata->readOnlyIf = 'foo';
+
+        $this->expressionEvaluator->expects($this->once())
+            ->method('evaluate')
+            ->with('foo', [
+                'context' => $this->dContext,
+                'property_metadata' => $metadata,
+                'object' => null,
+            ])
+            ->willReturn(true);
+
+        self::assertTrue($this->exclusionStrategy->shouldSkipProperty($metadata, $this->dContext));
     }
 }

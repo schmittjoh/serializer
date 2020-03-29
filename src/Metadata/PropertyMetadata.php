@@ -173,7 +173,7 @@ class PropertyMetadata extends BasePropertyMetadata
                 }
             }
 
-            if (empty($setter) && !$this->readOnly) {
+            if (empty($setter) && (!$this->readOnly || null !== $this->readOnlyIf)) {
                 if ($class->hasMethod('set' . $this->name) && $class->getMethod('set' . $this->name)->isPublic()) {
                     $setter = 'set' . $this->name;
                 } else {

@@ -8,7 +8,6 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -297,18 +296,13 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->maxDepth = (int) $pElem->attributes()->{'max-depth'};
                     }
 
-
-                    if (null !== $elem->attributes()->{'read-only'}) {
-                        $metadata->xmlRootPrefix = (string) $xmlRootPrefix;
-                    }
-
                     //we need read-only before setter and getter set, because that method depends on flag being set
                     $readOnly = null === $pElem->attributes()->{'read-only'} ? $readOnlyClass : $pElem->attributes()->{'read-only'};
-                    if(null !== $readOnly) {
-                        if ($readOnly === 'true' || $readOnly === 'false') {
-                            $pMetadata->readOnly = $pMetadata->readOnly || $readOnly === 'true' ? true : false;
+                    if (null !== $readOnly) {
+                        if ('true' === (string) $readOnly || 'false' === (string) $readOnly) {
+                            $pMetadata->readOnly = $pMetadata->readOnly || ('true' === (string) $readOnly ? true : false);
                         } else {
-                            $pMetadata->readOnlyIf = $this->parseExpression((string)$readOnly);
+                            $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnly);
                         }
                     }
 

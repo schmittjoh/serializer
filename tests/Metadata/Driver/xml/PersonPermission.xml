@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\PersonPermission">
+        <property name="name" type="string" />
+        <property name="permissions" type="string" read-only="user.isAdmin()"/>
+        <property name="userAgent" type="string" read-only="!(user.isAdmin())"/>
+    </class>
+</serializer>
