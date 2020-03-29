@@ -8,6 +8,7 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -68,6 +69,7 @@ class XmlDriver extends AbstractFileDriver
         $exclude = $elem->attributes()->exclude;
         $excludeAll = null !== $exclude ? 'true' === strtolower((string) $exclude) : false;
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
+        $readOnlyClass = $elem->attributes()->{'read-only'};
 
         $propertiesMetadata = [];
         $propertiesNodes = [];
@@ -85,14 +87,6 @@ class XmlDriver extends AbstractFileDriver
         }
         if (null !== $xmlRootPrefix = $elem->attributes()->{'xml-root-prefix'}) {
             $metadata->xmlRootPrefix = (string) $xmlRootPrefix;
-        }
-
-        $readOnlyClass = false;
-        $readOnlyIfClass = null;
-        if(null === $readOnlyIf = $elem->attributes()->{'read-only-if'}) {
-            $readOnlyClass = 'true' === strtolower((string) $elem->attributes()->{'read-only'});
-        } else {
-            $readOnlyIfClass = $this->parseExpression((string) $readOnlyIf);
         }
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
@@ -303,16 +297,18 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->maxDepth = (int) $pElem->attributes()->{'max-depth'};
                     }
 
+
+                    if (null !== $elem->attributes()->{'read-only'}) {
+                        $metadata->xmlRootPrefix = (string) $xmlRootPrefix;
+                    }
+
                     //we need read-only before setter and getter set, because that method depends on flag being set
-                    $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
-                    $pMetadata->readOnlyIf = $readOnlyIfClass;
-                    if (null !== $readOnlyIf = $pElem->attributes()->{'read-only-if'}) {
-                        $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnlyIf);
-                        $pMetadata->readOnly = false;
-                    } else {
-                        if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                            $pMetadata->readOnly = 'true' === strtolower((string) $readOnly);
-                            $pMetadata->readOnlyIf = null;
+                    $readOnly = null === $pElem->attributes()->{'read-only'} ? $readOnlyClass : $pElem->attributes()->{'read-only'};
+                    if(null !== $readOnly) {
+                        if ($readOnly === 'true' || $readOnly === 'false') {
+                            $pMetadata->readOnly = $pMetadata->readOnly || $readOnly === 'true' ? true : false;
+                        } else {
+                            $pMetadata->readOnlyIf = $this->parseExpression((string)$readOnly);
                         }
                     }
 
