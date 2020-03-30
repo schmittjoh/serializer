@@ -324,7 +324,7 @@ By default the serializer exposes three variables (`object`, `context` and `prop
         private $name;
 
        /**
-         * @Exclude(if="someMethod(object, context, property_metadata)")
+         * @Expose(if="someMethod(object, context, property_metadata)")
          */
         private $name2;
     }
