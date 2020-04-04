@@ -14,6 +14,6 @@ class StaticPropertyMetadataTest extends AbstractPropertyMetadataTest
         $this->setNonDefaultMetadataValues($meta);
 
         $restoredMeta = unserialize(serialize($meta));
-        $this->assertEquals($meta, $restoredMeta);
+        self::assertEquals($meta, $restoredMeta);
     }
 }

@@ -68,7 +68,7 @@ class GroupsExclusionStrategyTest extends TestCase
         }
 
         $groupsFor = $exclusion->getGroupsFor($context);
-        $this->assertEquals($groupsFor, $resultingGroups);
+        self::assertEquals($groupsFor, $resultingGroups);
     }
 
     public function getGroupsFor()

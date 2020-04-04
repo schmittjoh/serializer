@@ -454,10 +454,10 @@ abstract class BaseSerializationTest extends TestCase
 
         $obj = new SimpleInternalObject('foo', 'bar');
 
-        $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj));
+        self::assertEquals($this->getContent('simple_object'), $this->serialize($obj));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+            self::assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
         }
     }
 
@@ -472,10 +472,10 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testSimpleObjectStaticProp()
     {
-        $this->assertEquals($this->getContent('simple_object'), $this->serialize($obj = new SimpleObjectWithStaticProp('foo', 'bar')));
+        self::assertEquals($this->getContent('simple_object'), $this->serialize($obj = new SimpleObjectWithStaticProp('foo', 'bar')));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
+            self::assertEquals($obj, $this->deserialize($this->getContent('simple_object'), get_class($obj)));
         }
     }
 
@@ -1567,15 +1567,15 @@ abstract class BaseSerializationTest extends TestCase
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'Virtual',
             $this->getFormat(),
-            function ($visitor, $data) use (&$invoked) {
+            static function ($visitor, $data) use (&$invoked) {
                 $invoked = true;
-                $this->assertEquals('foo', $data);
+                self::assertEquals('foo', $data);
                 return null;
             }
         );
 
         $this->serializer->serialize('foo', $this->getFormat(), null, 'Virtual');
-        $this->assertTrue($invoked);
+        self::assertTrue($invoked);
     }
 
     public function getFirstClassListCollectionsValues()
