@@ -18,6 +18,6 @@ class PropertyMetadataTest extends AbstractPropertyMetadataTest
         $meta->readOnly = true;
 
         $restoredMeta = unserialize(serialize($meta));
-        $this->assertEquals($meta, $restoredMeta);
+        self::assertEquals($meta, $restoredMeta);
     }
 }

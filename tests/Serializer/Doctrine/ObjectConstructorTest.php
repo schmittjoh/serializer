@@ -211,7 +211,7 @@ class ObjectConstructorTest extends TestCase
         /** @var Server $serverDeserialized */
         $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
 
-        static::assertSame(
+        self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
             UnitOfWork::STATE_MANAGED
         );
