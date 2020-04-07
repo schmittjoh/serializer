@@ -1,0 +1,10 @@
+JMS\Serializer\Tests\Fixtures\PersonPermission:
+    properties:
+        name:
+            type: string
+        permissions:
+            type: string
+            read_only: "user.isAdmin()"
+        userAgent:
+            type: string
+            read_only: "!(user.isAdmin())"

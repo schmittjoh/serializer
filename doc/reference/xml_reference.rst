@@ -7,7 +7,7 @@ XML Reference
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
             accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
-            access-type="public_method" discriminator-field-name="type" discriminator-disabled="false" read-only="false">
+            access-type="public_method" discriminator-field-name="type" discriminator-disabled="false" read-only="bool|expr">
             <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
             <xml-discriminator attribute="true" cdata="false" namespace=""/>
             <discriminator-class value="some-value">ClassName</discriminator-class>
@@ -30,7 +30,7 @@ XML Reference
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
                       inline="true"
-                      read-only="true"
+                      read-only="bool|expr"
                       groups="foo,bar"
                       xml-key-value-pairs="true"
                       xml-attribute-map="true"
@@ -84,7 +84,7 @@ XML Reference
                       accessor-getter="getSomeProperty"
                       accessor-setter="setSomeProperty"
                       inline="true"
-                      read-only="true"
+                      read-only="bool|expr"
                       groups="foo,bar"
                       xml-key-value-pairs="true"
                       xml-attribute-map="true"

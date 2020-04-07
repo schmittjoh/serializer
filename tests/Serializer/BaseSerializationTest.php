@@ -37,6 +37,8 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
+use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyExpression;
+use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyExpressionPerClass;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\AuthorsInline;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
@@ -829,6 +831,42 @@ abstract class BaseSerializationTest extends TestCase
 
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testReadOnlyExpression()
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator($evaluator);
+        $serializer = $builder->build();
+
+        $author = new AuthorReadOnlyExpression(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $serializer->serialize($author, $this->getFormat()));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $serializer->deserialize($this->getContent('readonly'), get_class($author), $this->getFormat());
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testReadOnlyExpressionPerClass()
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator($evaluator);
+        $serializer = $builder->build();
+
+        $author = new AuthorReadOnlyExpressionPerClass(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $serializer->serialize($author, $this->getFormat()));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $serializer->deserialize($this->getContent('readonly'), get_class($author), $this->getFormat());
             self::assertNull($this->getField($deserialized, 'id'));
             self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }

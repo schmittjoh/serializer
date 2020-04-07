@@ -18,6 +18,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscrimina
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNamespaceDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
+use JMS\Serializer\Tests\Fixtures\NoAdminUser;
 use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
@@ -568,6 +569,31 @@ abstract class BaseDriverTest extends TestCase
         self::assertEquals($p, $m->propertyMetadata['age']);
     }
 
+    public function testReadOnlyIf()
+    {
+        $class = 'JMS\Serializer\Tests\Fixtures\PersonPermission';
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+
+        $p = new PropertyMetadata($class, 'name');
+        $p->serializedName = 'name';
+        $p->type = ['name' => 'string', 'params' => []];
+        self::assertEquals($p, $m->propertyMetadata['name']);
+
+        $p = new PropertyMetadata($class, 'permissions');
+        $p->serializedName = 'permissions';
+        $p->type = ['name' => 'string', 'params' => []];
+        $p->readOnly = false;
+        $p->readOnlyIf = 'user.isAdmin()';
+        self::assertEquals($p, $m->propertyMetadata['permissions']);
+
+        $p = new PropertyMetadata($class, 'userAgent');
+        $p->serializedName = 'userAgent';
+        $p->type = ['name' => 'string', 'params' => []];
+        $p->readOnly = false;
+        $p->readOnlyIf = '!(user.isAdmin())';
+        self::assertEquals($p, $m->propertyMetadata['userAgent']);
+    }
+
     public function testObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll()
     {
         $class = ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll::class;
@@ -634,11 +660,13 @@ abstract class BaseDriverTest extends TestCase
     {
         $language = new ExpressionLanguage();
 
+        $noAdminUser = new NoAdminUser();
+
         $language->addFunction(new ExpressionFunction('show_data', static function () {
             return 'true';
         }, static function () {
             return true;
         }));
-        return new ExpressionEvaluator($language);
+        return new ExpressionEvaluator($language, ['user' => $noAdminUser]);
     }
 }

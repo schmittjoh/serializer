@@ -279,6 +279,9 @@ is read only and cannot be set during deserialization.
 
 A property can be marked as non read only with ``@ReadOnly(false)`` annotation (useful when a class is marked as read only).
 
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
+be possible to use ``@ReadOnly(if="expression")`` to dynamically set to read-only.
+
 @PreSerialize
 ~~~~~~~~~~~~~
 This annotation can be defined on a method which is supposed to be called before

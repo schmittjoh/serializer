@@ -114,6 +114,11 @@ class PropertyMetadata extends BasePropertyMetadata
     public $readOnly = false;
 
     /**
+     * @var string
+     */
+    public $readOnlyIf = null;
+
+    /**
      * @var bool
      */
     public $xmlAttributeMap = false;
@@ -168,7 +173,7 @@ class PropertyMetadata extends BasePropertyMetadata
                 }
             }
 
-            if (empty($setter) && !$this->readOnly) {
+            if (empty($setter) && (!$this->readOnly || null !== $this->readOnlyIf)) {
                 if ($class->hasMethod('set' . $this->name) && $class->getMethod('set' . $this->name)->isPublic()) {
                     $setter = 'set' . $this->name;
                 } else {
@@ -236,6 +241,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'xmlEntryNamespace' => $this->xmlEntryNamespace,
             'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
             'excludeIf' => $this->excludeIf,
+            'readOnlyIf' => $this->readOnlyIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
             'forceReflectionAccess' => $this->forceReflectionAccess,
         ]);
@@ -291,6 +297,9 @@ class PropertyMetadata extends BasePropertyMetadata
         }
         if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];
+        }
+        if (isset($unserialized['readOnlyIf'])) {
+            $this->readOnlyIf = $unserialized['readOnlyIf'];
         }
         if (isset($unserialized['skipWhenEmpty'])) {
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];

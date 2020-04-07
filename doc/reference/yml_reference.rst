@@ -8,7 +8,7 @@ YAML Reference
         xml_root_name: foobar
         xml_root_namespace: http://your.default.namespace
         exclude: true
-        read_only: false
+        read_only: bool|expr
         access_type: public_method # defaults to property
         accessor_order: custom
         custom_accessor_order: [propertyName1, propertyName2, ..., propertyNameN]
@@ -54,7 +54,7 @@ YAML Reference
                 xml_attribute: true
                 xml_value: true
                 inline: true
-                read_only: true
+                read_only: bool|expr
                 xml_key_value_pairs: true
                 xml_list:
                     inline: true

@@ -68,6 +68,7 @@ class XmlDriver extends AbstractFileDriver
         $exclude = $elem->attributes()->exclude;
         $excludeAll = null !== $exclude ? 'true' === strtolower((string) $exclude) : false;
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
+        $readOnlyClass = $elem->attributes()->{'read-only'};
 
         $propertiesMetadata = [];
         $propertiesNodes = [];
@@ -86,8 +87,6 @@ class XmlDriver extends AbstractFileDriver
         if (null !== $xmlRootPrefix = $elem->attributes()->{'xml-root-prefix'}) {
             $metadata->xmlRootPrefix = (string) $xmlRootPrefix;
         }
-
-        $readOnlyClass = 'true' === strtolower((string) $elem->attributes()->{'read-only'});
 
         $discriminatorFieldName = (string) $elem->attributes()->{'discriminator-field-name'};
         $discriminatorMap = [];
@@ -298,10 +297,13 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     //we need read-only before setter and getter set, because that method depends on flag being set
-                    if (null !== $readOnly = $pElem->attributes()->{'read-only'}) {
-                        $pMetadata->readOnly = 'true' === strtolower((string) $readOnly);
-                    } else {
-                        $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
+                    $readOnly = null === $pElem->attributes()->{'read-only'} ? $readOnlyClass : $pElem->attributes()->{'read-only'};
+                    if (null !== $readOnly) {
+                        if ('true' === (string) $readOnly || 'false' === (string) $readOnly) {
+                            $pMetadata->readOnly = $pMetadata->readOnly || ('true' === (string) $readOnly ? true : false);
+                        } else {
+                            $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnly);
+                        }
                     }
 
                     $getter = $pElem->attributes()->{'accessor-getter'};

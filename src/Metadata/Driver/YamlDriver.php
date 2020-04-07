@@ -110,7 +110,7 @@ class YamlDriver extends AbstractFileDriver
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
         $excludeAll = isset($config['exclude']) ? (bool) $config['exclude'] : false;
         $classAccessType = $config['access_type'] ?? PropertyMetadata::ACCESS_TYPE_PROPERTY;
-        $readOnlyClass = isset($config['read_only']) ? (bool) $config['read_only'] : false;
+        $readOnlyClass = $config['read_only'] ?? null;
         $this->addClassProperties($metadata, $config);
 
         $propertiesMetadata = [];
@@ -275,10 +275,13 @@ class YamlDriver extends AbstractFileDriver
                     }
 
                     //we need read_only before setter and getter set, because that method depends on flag being set
-                    if (isset($pConfig['read_only'])) {
-                        $pMetadata->readOnly = (bool) $pConfig['read_only'];
-                    } else {
-                        $pMetadata->readOnly = $pMetadata->readOnly || $readOnlyClass;
+                    $readOnly = $pConfig['read_only'] ?? $readOnlyClass;
+                    if (null !== $readOnly) {
+                        if (is_bool($readOnly)) {
+                            $pMetadata->readOnly = $pMetadata->readOnly || $readOnly;
+                        } else {
+                            $pMetadata->readOnlyIf = $this->parseExpression((string) $readOnly);
+                        }
                     }
 
                     $pMetadata->setAccessor(
