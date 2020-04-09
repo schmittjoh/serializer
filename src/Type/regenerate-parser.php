@@ -6,6 +6,8 @@ declare(strict_types=1);
 use Hoa\Compiler\Llk\Llk;
 use Hoa\File\Read;
 
+@trigger_error(sprintf('This script, "%s" is deprecated and will be removed in the next major version.', __FILE__), E_USER_DEPRECATED);
+
 require __DIR__ . '/../../vendor/autoload.php';
 
 $compiler = Llk::load(new Read(__DIR__ . '/grammar.pp'));

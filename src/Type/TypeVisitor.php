@@ -10,6 +10,12 @@ use Hoa\Visitor\Visit;
 use JMS\Serializer\Type\Exception\InvalidNode;
 use function strpos;
 
+@trigger_error(sprintf('Class "%s" is deprecated and will be removed in the next major version, use %s instead.', TypeVisitor::class, ''), E_USER_DEPRECATED);
+
+/**
+ * @deprecated This class is no longer in use and will be removed in the next major version,
+ *             @see https://github.com/schmittjoh/serializer/issues/1182
+ */
 final class TypeVisitor implements Visit
 {
     /**
