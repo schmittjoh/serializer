@@ -8,6 +8,8 @@ use Hoa\Exception\Exception;
 use Hoa\Visitor\Visit;
 use JMS\Serializer\Type\Exception\SyntaxError;
 
+@trigger_error(sprintf('Class "%s" is deprecated and will be removed in the next major version, use %s instead.', TypeVisitor::class, Lexer::class), E_USER_DEPRECATED);
+
 final class Parser implements ParserInterface
 {
     /** @var InnerParser */

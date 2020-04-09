@@ -20,6 +20,7 @@
         "jms/metadata": "^2.0",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
+        "doctrine/lexer": "^1.2",
         "hoa/compiler": "^3.17.08.08"
     },
     "suggest": {

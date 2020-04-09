@@ -13,6 +13,8 @@ use Hoa\Compiler\Llk\Rule\Token;
 /**
  * @internal
  *
+ * @deprecated This class is no longer in use and will be removed in the next major version, 
+ *             @see https://github.com/schmittjoh/serializer/issues/1182
  * @generated Use regenerate-parser.php to refresh this class.
  */
 final class InnerParser extends Parser
