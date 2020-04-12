@@ -501,6 +501,8 @@ class Parser
      *
      * @param   int      $i         Current trace index.
      * @param   array    &$children Collected children.
+     *
+     * @return TreeNode|int
      */
     final protected function _buildTree(int $i = 0, array &$children = [])
     {
@@ -756,7 +758,7 @@ class Parser
      *
      * @return Rule[]
      */
-    final public function getRules()
+    final public function getRules(): array
     {
         return $this->_rules;
     }

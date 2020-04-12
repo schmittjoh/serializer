@@ -45,7 +45,11 @@ namespace JMS\Serializer\Type\Compiler;
  */
 class Exception extends \Exception
 {
-    public function __construct($message, $code = 0, $arguments = [])
+    /**
+     * @param number $code
+     * @param array $arguments
+     */
+    public function __construct(string $message, int $code = 0, array $arguments = [])
     {
         parent::__construct(vsprintf($message, (array) $arguments), $code);
     }

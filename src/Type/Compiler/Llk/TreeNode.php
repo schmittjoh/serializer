@@ -74,7 +74,7 @@ final class TreeNode implements Visitor\Element
     /**
      * Parent.
      *
-     * @var \JMS\Serializer\Type\Compiler\Llk\TreeNode|null
+     * @var TreeNode|null
      */
     protected $_parent = null;
 
@@ -91,7 +91,7 @@ final class TreeNode implements Visitor\Element
      * @param   string                      $id       ID.
      * @param   array                       $value    Value.
      * @param   array                       $children Children.
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent   Parent.
+     * @param   TreeNode  $parent   Parent.
      */
     public function __construct(
         string $id,
@@ -195,9 +195,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Prepend a child.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child Child.
+     * @param   TreeNode  $child Child.
      */
-    public function prependChild(self $child): \JMS\Serializer\Type\Compiler\Llk\TreeNode
+    public function prependChild(self $child): TreeNode
     {
         array_unshift($this->_children, $child);
 
@@ -207,9 +207,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Append a child.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child Child.
+     * @param   TreeNode  $child Child.
      */
-    public function appendChild(self $child): \JMS\Serializer\Type\Compiler\Llk\TreeNode
+    public function appendChild(self $child): TreeNode
     {
         $this->_children[] = $child;
 
@@ -236,7 +236,7 @@ final class TreeNode implements Visitor\Element
      *
      * @param   int  $i Index.
      */
-    public function getChild(int $i): \JMS\Serializer\Type\Compiler\Llk\TreeNode
+    public function getChild(int $i): TreeNode
     {
         return true === $this->childExists($i)
                 ? $this->_children[$i]
@@ -274,9 +274,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Set parent.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent Parent.
+     * @param   TreeNode  $parent Parent.
      */
-    public function setParent(self $parent): ?\JMS\Serializer\Type\Compiler\Llk\TreeNode
+    public function setParent(self $parent): ?TreeNode
     {
         $old           = $this->_parent;
         $this->_parent = $parent;
@@ -287,7 +287,7 @@ final class TreeNode implements Visitor\Element
     /**
      * Get parent.
      */
-    public function getParent(): ?\JMS\Serializer\Type\Compiler\Llk\TreeNode
+    public function getParent(): ?TreeNode
     {
         return $this->_parent;
     }

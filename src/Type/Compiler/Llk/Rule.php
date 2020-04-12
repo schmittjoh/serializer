@@ -123,7 +123,9 @@ abstract class Rule
     /**
      * Set rule name.
      *
-     * @param   string|int|null  $name Rule name.
+     * @param  string|int|null  $name Rule name.
+     *
+     * @return string|int|null
      */
     public function setName($name)
     {

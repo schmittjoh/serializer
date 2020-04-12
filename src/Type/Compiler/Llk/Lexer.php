@@ -193,7 +193,7 @@ final class Lexer
      *
      * @return (array|bool|int|string)[]|array[]|null
      *
-     * @throws \JMS\Serializer\Type\Compiler\Exception\Lexer
+     * @throws Compiler\Exception\Lexer
      *
      * @psalm-return array{token: string, value: string, length: int|false, namespace: array, keep: bool}|null
      */
@@ -281,7 +281,7 @@ final class Lexer
      *
      * @return (int|false|string)[]|null
      *
-     * @throws \JMS\Serializer\Type\Compiler\Exception\Lexer
+     * @throws Compiler\Exception\Lexer
      *
      * @psalm-return array{token: string, value: string, length: int|false}|null
      */
@@ -324,10 +324,7 @@ final class Lexer
         ];
     }
 
-    /**
-     * @return bool
-     */
-    private function validateInputInUnicodeMode(string $text)
+    private function validateInputInUnicodeMode(string $text): void
     {
         if (false !== strpos($this->_pcreOptions, 'u') && false === preg_match('##u', $text)) {
             throw new Compiler\Exception\Lexer(
