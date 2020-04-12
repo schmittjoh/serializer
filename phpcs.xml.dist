@@ -12,7 +12,6 @@
 
     <file>src/</file>
     <file>tests/</file>
-    <exclude-pattern>src/Type/Compiler/*</exclude-pattern>
 
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>

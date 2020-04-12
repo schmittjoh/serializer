@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,18 +36,16 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Exception;
+
+use JMS\Serializer\Type\Compiler\Exception;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Exception\UnrecognizedToken.
  *
  * Extending the \JMS\Serializer\Type\Compiler\Exception class.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 class UnrecognizedToken extends Exception
 {
@@ -60,13 +61,13 @@ class UnrecognizedToken extends Exception
     /**
      * Override line and add column support.
      *
-     * @param   string  $message    Formatted message.
-     * @param   int     $code       Code (the ID).
-     * @param   array   $arg        RaiseError string arguments.
-     * @param   int     $line       Line.
-     * @param   int     $column     Column.
+     * @param   string  $message Formatted message.
+     * @param   int     $code    Code (the ID).
+     * @param   array   $arg     RaiseError string arguments.
+     * @param   int     $line    Line.
+     * @param   int     $column  Column.
      */
-    public function __construct($message, $code, $arg, $line, $column)
+    public function __construct(string $message, int $code, array $arg, int $line, int $column)
     {
         parent::__construct($message, $code, $arg);
 
@@ -78,10 +79,8 @@ class UnrecognizedToken extends Exception
 
     /**
      * Get column.
-     *
-     * @return  int
      */
-    public function getColumn()
+    public function getColumn(): int
     {
         return $this->column;
     }

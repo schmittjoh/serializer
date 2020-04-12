@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,7 +36,6 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Exception;
@@ -42,9 +44,6 @@ namespace JMS\Serializer\Type\Compiler\Exception;
  * Class \JMS\Serializer\Type\Compiler\Exception\UnexpectedToken.
  *
  * Extending the \JMS\Serializer\Type\Compiler\Exception\UnrecognizedToken class.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 class UnexpectedToken extends UnrecognizedToken
 {

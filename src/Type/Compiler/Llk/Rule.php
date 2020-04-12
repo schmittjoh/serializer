@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,7 +36,6 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk;
@@ -42,9 +44,6 @@ namespace JMS\Serializer\Type\Compiler\Llk;
  * Class \JMS\Serializer\Type\Compiler\Llk\Rule.
  *
  * Rule parent.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 abstract class Rule
 {
@@ -108,11 +107,9 @@ abstract class Rule
 
 
     /**
-     * Constructor.
-     *
-     * @param   string|int  $name        Rule name.
-     * @param   mixed   $children    Children.
-     * @param   string  $nodeId      Node ID.
+     * @param   string|int  $name     Rule name.
+     * @param   mixed   $children Children.
+     * @param   string  $nodeId   Node ID.
      */
     public function __construct($name, $children, $nodeId = null)
     {
@@ -126,8 +123,7 @@ abstract class Rule
     /**
      * Set rule name.
      *
-     * @param   string  $name    Rule name.
-     * @return  string
+     * @param   string|int|null  $name Rule name.
      */
     public function setName($name)
     {
@@ -140,7 +136,7 @@ abstract class Rule
     /**
      * Get rule name.
      *
-     * @return  string
+     * @return string|int|null
      */
     public function getName()
     {
@@ -150,7 +146,8 @@ abstract class Rule
     /**
      * Set rule's children.
      *
-     * @param   mixed  $children    Children.
+     * @param   mixed  $children Children.
+     *
      * @return  mixed
      */
     protected function setChildren($children)
@@ -174,14 +171,13 @@ abstract class Rule
     /**
      * Set node ID.
      *
-     * @param   string  $nodeId    Node ID.
-     * @return  string
+     * @param   string  $nodeId Node ID.
      */
-    public function setNodeId($nodeId)
+    public function setNodeId(?string $nodeId): ?string
     {
         $old = $this->_nodeId;
 
-        if (false !== $pos = strpos($nodeId, ':')) {
+        if (null !== $nodeId && false !== $pos = strpos($nodeId, ':')) {
             $this->_nodeId      = substr($nodeId, 0, $pos);
             $this->_nodeOptions = str_split(substr($nodeId, $pos + 1));
         } else {
@@ -194,10 +190,8 @@ abstract class Rule
 
     /**
      * Get node ID.
-     *
-     * @return  string
      */
-    public function getNodeId()
+    public function getNodeId(): ?string
     {
         return $this->_nodeId;
     }
@@ -215,10 +209,9 @@ abstract class Rule
     /**
      * Set default ID.
      *
-     * @param   string  $defaultId    Default ID.
-     * @return  string
+     * @param   string  $defaultId Default ID.
      */
-    public function setDefaultId($defaultId)
+    public function setDefaultId(string $defaultId): ?string
     {
         $old = $this->_defaultId;
 
@@ -235,10 +228,8 @@ abstract class Rule
 
     /**
      * Get default ID.
-     *
-     * @return  string
      */
-    public function getDefaultId()
+    public function getDefaultId(): ?string
     {
         return $this->_defaultId;
     }
@@ -248,7 +239,7 @@ abstract class Rule
      *
      * @return  array
      */
-    public function getDefaultOptions()
+    public function getDefaultOptions(): array
     {
         return $this->_defaultOptions;
     }
@@ -256,10 +247,9 @@ abstract class Rule
     /**
      * Set PP representation of the rule.
      *
-     * @param   string  $pp    PP representation.
-     * @return  string
+     * @param   string  $pp PP representation.
      */
-    public function setPPRepresentation($pp)
+    public function setPPRepresentation(string $pp): ?string
     {
         $old                 = $this->_pp;
         $this->_pp           = $pp;
@@ -270,20 +260,16 @@ abstract class Rule
 
     /**
      * Get PP representation of the rule.
-     *
-     * @return  string
      */
-    public function getPPRepresentation()
+    public function getPPRepresentation(): string
     {
         return $this->_pp;
     }
 
     /**
      * Check whether the rule is transitional or not.
-     *
-     * @return  bool
      */
-    public function isTransitional()
+    public function isTransitional(): bool
     {
         return $this->_transitional;
     }

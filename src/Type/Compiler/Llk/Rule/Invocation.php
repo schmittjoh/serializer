@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,7 +36,6 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk\Rule;
@@ -42,9 +44,6 @@ namespace JMS\Serializer\Type\Compiler\Llk\Rule;
  * Class \JMS\Serializer\Type\Compiler\Llk\Rule\Invocation.
  *
  * Parent of entry and ekzit rules.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 abstract class Invocation
 {
@@ -85,18 +84,16 @@ abstract class Invocation
     protected $_transitional = false;
 
     /**
-     * Constructor.
-     *
-     * @param   string|int  $rule     Rule name.
-     * @param   mixed   $data     Data.
-     * @param   array   $todo     Todo.
-     * @param   int     $depth    Depth.
+     * @param   string|int  $rule  Rule name.
+     * @param   mixed   $data  Data.
+     * @param   array   $todo  Todo.
+     * @param   int     $depth Depth.
      */
     public function __construct(
         $rule,
         $data,
-        array $todo = null,
-        $depth      = -1
+        ?array $todo = null,
+        $depth = -1
     ) {
         $this->_rule         = $rule;
         $this->_data         = $data;
@@ -110,7 +107,7 @@ abstract class Invocation
     /**
      * Get rule name.
      *
-     * @return  string
+     * @return string|int
      */
     public function getRule()
     {
@@ -132,7 +129,7 @@ abstract class Invocation
      *
      * @return  array
      */
-    public function getTodo()
+    public function getTodo(): array
     {
         return $this->_todo;
     }
@@ -140,10 +137,9 @@ abstract class Invocation
     /**
      * Set depth in trace.
      *
-     * @param   int  $depth    Depth.
-     * @return  int
+     * @param   int  $depth Depth.
      */
-    public function setDepth($depth)
+    public function setDepth(int $depth): int
     {
         $old          = $this->_depth;
         $this->_depth = $depth;
@@ -153,20 +149,16 @@ abstract class Invocation
 
     /**
      * Get depth in trace.
-     *
-     * @return  int
      */
-    public function getDepth()
+    public function getDepth(): int
     {
         return $this->_depth;
     }
 
     /**
      * Check whether the rule is transitional or not.
-     *
-     * @return  bool
      */
-    public function isTransitional()
+    public function isTransitional(): bool
     {
         return $this->_transitional;
     }

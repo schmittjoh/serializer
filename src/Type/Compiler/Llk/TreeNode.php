@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,20 +36,17 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk;
 
 use Hoa\Visitor;
+use Hoa\Visitor\Visit;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Llk\TreeNode.
  *
  * Provide a generic node for the AST produced by LL(k) parser.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 final class TreeNode implements Visitor\Element
 {
@@ -88,18 +88,16 @@ final class TreeNode implements Visitor\Element
 
 
     /**
-     * Constructor.
-     *
-     * @param   string                      $id          ID.
-     * @param   array                       $value       Value.
-     * @param   array                       $children    Children.
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent    Parent.
+     * @param   string                      $id       ID.
+     * @param   array                       $value    Value.
+     * @param   array                       $children Children.
+     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent   Parent.
      */
     public function __construct(
         string $id,
-        array $value    = null,
+        ?array $value = null,
         array $children = [],
-        self  $parent   = null
+        ?self $parent = null
     ) {
         $this->setId($id);
 
@@ -119,10 +117,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Set ID.
      *
-     * @param   string  $id    ID.
-     * @return  string
+     * @param   string  $id ID.
      */
-    public function setId(string $id)
+    public function setId(string $id): string
     {
         $old       = $this->_id;
         $this->_id = $id;
@@ -132,10 +129,8 @@ final class TreeNode implements Visitor\Element
 
     /**
      * Get ID.
-     *
-     * @return  string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->_id;
     }
@@ -143,10 +138,11 @@ final class TreeNode implements Visitor\Element
     /**
      * Set value.
      *
-     * @param   array  $value    Value (token & value).
+     * @param   array  $value Value (token & value).
+     *
      * @return  array|null
      */
-    public function setValue(array $value)
+    public function setValue(array $value): ?array
     {
         $old          = $this->_value;
         $this->_value = $value;
@@ -159,56 +155,39 @@ final class TreeNode implements Visitor\Element
      *
      * @return  array|null
      */
-    public function getValue()
+    public function getValue(): ?array
     {
         return $this->_value;
     }
 
     /**
      * Get value token.
-     *
-     * @return  string
      */
-    public function getValueToken()
+    public function getValueToken(): string
     {
-        return
-            isset($this->_value['token'])
-                ? $this->_value['token']
-                : null;
+        return $this->_value['token'] ?? null;
     }
 
     /**
      * Get value value.
-     *
-     * @return  string
      */
-    public function getValueValue()
+    public function getValueValue(): string
     {
-        return
-            isset($this->_value['value'])
-                ? $this->_value['value']
-                : null;
+        return $this->_value['value'] ?? null;
     }
 
     /**
      * Get token offset.
-     *
-     * @return  int
      */
-    public function getOffset()
+    public function getOffset(): int
     {
-        return
-            isset($this->_value['offset'])
-                ? $this->_value['offset']
-                : 0;
+        return $this->_value['offset'] ?? 0;
     }
 
     /**
      * Check if the node represents a token or not.
-     *
-     * @return  bool
      */
-    public function isToken()
+    public function isToken(): bool
     {
         return !empty($this->_value);
     }
@@ -216,10 +195,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Prepend a child.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child    Child.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child Child.
      */
-    public function prependChild(self $child)
+    public function prependChild(self $child): \JMS\Serializer\Type\Compiler\Llk\TreeNode
     {
         array_unshift($this->_children, $child);
 
@@ -229,10 +207,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Append a child.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child    Child.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $child Child.
      */
-    public function appendChild(self $child)
+    public function appendChild(self $child): \JMS\Serializer\Type\Compiler\Llk\TreeNode
     {
         $this->_children[] = $child;
 
@@ -242,10 +219,11 @@ final class TreeNode implements Visitor\Element
     /**
      * Set children.
      *
-     * @param   array  $children    Children.
+     * @param   array  $children Children.
+     *
      * @return  array
      */
-    public function setChildren(array $children)
+    public function setChildren(array $children): array
     {
         $old             = $this->_children;
         $this->_children = $children;
@@ -256,13 +234,11 @@ final class TreeNode implements Visitor\Element
     /**
      * Get child.
      *
-     * @param   int  $i    Index.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @param   int  $i Index.
      */
-    public function getChild($i)
+    public function getChild(int $i): \JMS\Serializer\Type\Compiler\Llk\TreeNode
     {
-        return
-            true === $this->childExists($i)
+        return true === $this->childExists($i)
                 ? $this->_children[$i]
                 : null;
     }
@@ -272,17 +248,15 @@ final class TreeNode implements Visitor\Element
      *
      * @return  array
      */
-    public function getChildren()
+    public function getChildren(): array
     {
         return $this->_children;
     }
 
     /**
      * Get number of children.
-     *
-     * @return  int
      */
-    public function getChildrenNumber()
+    public function getChildrenNumber(): int
     {
         return count($this->_children);
     }
@@ -290,10 +264,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Check if a child exists.
      *
-     * @param   int  $i    Index.
-     * @return  bool
+     * @param   int  $i Index.
      */
-    public function childExists($i)
+    public function childExists(int $i): bool
     {
         return array_key_exists($i, $this->_children);
     }
@@ -301,10 +274,9 @@ final class TreeNode implements Visitor\Element
     /**
      * Set parent.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent    Parent.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode|null
+     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $parent Parent.
      */
-    public function setParent(self $parent)
+    public function setParent(self $parent): ?\JMS\Serializer\Type\Compiler\Llk\TreeNode
     {
         $old           = $this->_parent;
         $this->_parent = $parent;
@@ -314,10 +286,8 @@ final class TreeNode implements Visitor\Element
 
     /**
      * Get parent.
-     *
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode|null
      */
-    public function getParent()
+    public function getParent(): ?\JMS\Serializer\Type\Compiler\Llk\TreeNode
     {
         return $this->_parent;
     }
@@ -327,7 +297,7 @@ final class TreeNode implements Visitor\Element
      *
      * @return  array
      */
-    public function &getData()
+    public function &getData(): array
     {
         return $this->_data;
     }
@@ -335,15 +305,16 @@ final class TreeNode implements Visitor\Element
     /**
      * Accept a visitor.
      *
-     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
-     * @param   mixed               &$handle    Handle (reference).
-     * @param   mixed               $eldnah     Handle (no reference).
+     * @param   Visit  $visitor Visitor.
+     * @param   mixed               &$handle Handle (reference).
+     * @param   mixed               $eldnah  Handle (no reference).
+     *
      * @return  mixed
      */
     public function accept(
         Visitor\Visit $visitor,
         &$handle = null,
-        $eldnah  = null
+        $eldnah = null
     ) {
         return $visitor->visit($this, $handle, $eldnah);
     }

@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,20 +36,17 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk;
 
 use JMS\Serializer\Type\Compiler;
+use JMS\Serializer\Type\Compiler\Exception\UnrecognizedToken;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Llk\Lexer.
  *
  * Lexical analyser, i.e. split a string into a set of lexeme, i.e. tokens.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 final class Lexer
 {
@@ -88,9 +88,7 @@ final class Lexer
 
 
     /**
-     * Constructor.
-     *
-     * @param   array  $pragmas    Pragmas.
+     * @param   array  $pragmas Pragmas.
      */
     public function __construct(array $pragmas = [])
     {
@@ -105,16 +103,16 @@ final class Lexer
      * Text tokenizer: splits the text in parameter in an ordered array of
      * tokens.
      *
-     * @param string  $text      Text to tokenize.
-     * @param array[]   $tokens    Tokens to be returned.
+     * @param string  $text   Text to tokenize.
+     * @param array[]   $tokens Tokens to be returned.
      *
      * @return \Generator|array[]
      *
-     * @throws \JMS\Serializer\Type\Compiler\Exception\UnrecognizedToken
+     * @throws UnrecognizedToken
      *
      * @psalm-return \Generator<int, array{token: string, value: string, length: int|false, namespace: array|string, keep: true, offset: int}>
      */
-    public function lexMe($text, array $tokens): \Generator
+    public function lexMe(string $text, array $tokens): \Generator
     {
         $this->validateInputInUnicodeMode($text);
 
@@ -136,7 +134,7 @@ final class Lexer
                     continue;
                 }
 
-                list($lexeme, $namespace) = explode(':', $fullLexeme, 2);
+                [$lexeme, $namespace] = explode(':', $fullLexeme, 2);
 
                 $stack |= ('__shift__' === substr($namespace, 0, 9));
 
@@ -147,7 +145,7 @@ final class Lexer
             $tokens = $_tokens;
         }
 
-        if (true == $stack) {
+        if (true === $stack) {
             $this->_nsStack = new \SplStack();
         }
 
@@ -163,7 +161,7 @@ final class Lexer
                     [
                         mb_substr(substr($text, $offset), 0, 1),
                         $offset + 1,
-                        $text
+                        $text,
                     ],
                     1,
                     $offset
@@ -184,14 +182,14 @@ final class Lexer
             'length'    => 0,
             'namespace' => 'default',
             'keep'      => true,
-            'offset'    => $offset
+            'offset'    => $offset,
         ];
     }
 
     /**
      * Compute the next token recognized at the beginning of the string.
      *
-     * @param int  $offset    Offset.
+     * @param int  $offset Offset.
      *
      * @return (array|bool|int|string)[]|array[]|null
      *
@@ -199,13 +197,13 @@ final class Lexer
      *
      * @psalm-return array{token: string, value: string, length: int|false, namespace: array, keep: bool}|null
      */
-    protected function nextToken($offset)
+    protected function nextToken(int $offset)
     {
         $tokenArray = &$this->_tokens[$this->_lexerState];
 
         $previousNamespace = null;
         foreach ($tokenArray as $lexeme => $bucket) {
-            list($regex, $nextState) = $bucket;
+            [$regex, $nextState] = $bucket;
 
             if (null === $nextState) {
                 $nextState = $this->_lexerState;
@@ -234,7 +232,7 @@ final class Lexer
                                     $i,
                                     $lexeme,
                                     $this->_lexerState,
-                                    $c
+                                    $c,
                                 ]
                             );
                         }
@@ -255,7 +253,7 @@ final class Lexer
                             [
                                 $nextState,
                                 $lexeme,
-                                $this->_lexerState
+                                $this->_lexerState,
                             ]
                         );
                     }
@@ -277,9 +275,9 @@ final class Lexer
     /**
      * Check if a given lexeme is matched at the beginning of the text.
      *
-     * @param string  $lexeme    Name of the lexeme.
-     * @param string  $regex     Regular expression describing the lexeme.
-     * @param int     $offset    Offset.
+     * @param string  $lexeme Name of the lexeme.
+     * @param string  $regex  Regular expression describing the lexeme.
+     * @param int     $offset Offset.
      *
      * @return (int|false|string)[]|null
      *
@@ -287,7 +285,7 @@ final class Lexer
      *
      * @psalm-return array{token: string, value: string, length: int|false}|null
      */
-    protected function matchLexeme($lexeme, $regex, $offset)
+    protected function matchLexeme(string $lexeme, string $regex, int $offset)
     {
         $_regex = str_replace('#', '\#', $regex);
         $preg   = @preg_match(
@@ -322,17 +320,16 @@ final class Lexer
         return [
             'token'  => $lexeme,
             'value'  => $matches[0],
-            'length' => mb_strlen($matches[0])
+            'length' => mb_strlen($matches[0]),
         ];
     }
 
     /**
-     * @param string $text
      * @return bool
      */
-    private function validateInputInUnicodeMode($text)
+    private function validateInputInUnicodeMode(string $text)
     {
-        if (strpos($this->_pcreOptions, 'u') !== false && preg_match('##u', $text) === false) {
+        if (false !== strpos($this->_pcreOptions, 'u') && false === preg_match('##u', $text)) {
             throw new Compiler\Exception\Lexer(
                 'Text is not valid utf-8 string, you probably need to switch "lexer.unicode" setting off.'
             );

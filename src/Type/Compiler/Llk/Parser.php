@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,21 +36,19 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk;
 
-use JMS\Serializer\Type\Compiler;
 use Hoa\Iterator;
+use Hoa\Iterator\Buffer;
+use JMS\Serializer\Type\Compiler;
+use JMS\Serializer\Type\Compiler\Exception\UnexpectedToken;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Llk\Parser.
  *
  * LL(k) parser.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 class Parser
 {
@@ -83,7 +84,7 @@ class Parser
     /**
      * Lexer iterator.
      *
-     * @var \Hoa\Iterator\Buffer
+     * @var Buffer
      */
     protected $_tokenSequence = null;
 
@@ -111,7 +112,7 @@ class Parser
     /**
      * AST.
      *
-     * @var \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @var TreeNode
      */
     protected $_tree          = null;
 
@@ -127,13 +128,13 @@ class Parser
     /**
      * Construct the parser.
      *
-     * @param   array  $tokens     Tokens.
-     * @param   array  $rules      Rules.
-     * @param   array  $pragmas    Pragmas.
+     * @param   array  $tokens  Tokens.
+     * @param   array  $rules   Rules.
+     * @param   array  $pragmas Pragmas.
      */
     public function __construct(
-        array $tokens  = [],
-        array $rules   = [],
+        array $tokens = [],
+        array $rules = [],
         array $pragmas = []
     ) {
         $this->_tokens  = $tokens;
@@ -146,13 +147,15 @@ class Parser
     /**
      * Parse :-).
      *
-     * @param   string  $text    Text to parse.
-     * @param   string  $rule    The axiom, i.e. root rule.
-     * @param   bool    $tree    Whether build tree or not.
+     * @param   string  $text Text to parse.
+     * @param   string  $rule The axiom, i.e. root rule.
+     * @param   bool    $tree Whether build tree or not.
+     *
      * @return  mixed
-     * @throws  \JMS\Serializer\Type\Compiler\Exception\UnexpectedToken
+     *
+     * @throws  UnexpectedToken
      */
-    final public function parse(string $text, string $rule = null, bool $tree = true)
+    final public function parse(string $text, ?string $rule = null, bool $tree = true)
     {
         $k = 1024;
 
@@ -223,7 +226,7 @@ class Parser
                         $token['token'],
                         $line,
                         $column,
-                        $text
+                        $text,
                     ],
                     $line,
                     $column
@@ -282,11 +285,10 @@ class Parser
     /**
      * Parse current rule.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\Rule  $zeRule    Current rule.
-     * @param   int                     $next      Next rule index.
-     * @return  bool
+     * @param   Rule  $zeRule Current rule.
+     * @param   int                     $next   Next rule index.
      */
-    final protected function _parse(Rule $zeRule, $next)
+    final protected function _parse(Rule $zeRule, int $next): bool
     {
         $regex = null;
         if ($zeRule instanceof Rule\Token) {
@@ -436,7 +438,7 @@ class Parser
             } else {
                 $max = $zeRule->getMax();
 
-                if (-1 != $max && $next > $max) {
+                if (-1 !== $max && $next > $max) {
                     return false;
                 }
 
@@ -457,10 +459,8 @@ class Parser
 
     /**
      * Backtrack the trace.
-     *
-     * @return  bool
      */
-    final protected function backtrack()
+    final protected function backtrack(): bool
     {
         $found = false;
 
@@ -499,11 +499,10 @@ class Parser
      * Build AST from trace.
      * Walk through the trace iteratively and recursively.
      *
-     * @param   int      $i            Current trace index.
-     * @param   array    &$children    Collected children.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @param   int      $i         Current trace index.
+     * @param   array    &$children Collected children.
      */
-    final protected function _buildTree($i = 0, &$children = [])
+    final protected function _buildTree(int $i = 0, array &$children = [])
     {
         $max = count($this->_trace);
 
@@ -519,7 +518,7 @@ class Parser
 
                 // Optimization: Skip empty trace sequence.
                 if ($nextTrace instanceof Rule\Ekzit &&
-                    $ruleName == $nextTrace->getRule()) {
+                    $ruleName === $nextTrace->getRule()) {
                     $i += 2;
 
                     continue;
@@ -532,7 +531,7 @@ class Parser
                 if (null !== $id) {
                     $children[] = [
                         'id'      => $id,
-                        'options' => $rule->getNodeOptions()
+                        'options' => $rule->getNodeOptions(),
                     ];
                 }
 
@@ -554,7 +553,7 @@ class Parser
                     } elseif (true === is_array($pop) && null === $cId) {
                         $cId      = $pop['id'];
                         $cOptions = $pop['options'];
-                    } elseif ($ruleName == $pop) {
+                    } elseif ($ruleName === $pop) {
                         break;
                     }
                 } while (null !== $pop);
@@ -603,7 +602,7 @@ class Parser
                     'token'     => $trace->getTokenName(),
                     'value'     => $trace->getValue(),
                     'namespace' => $trace->getNamespace(),
-                    'offset'    => $trace->getOffset()
+                    'offset'    => $trace->getOffset(),
                 ]);
 
                 $children[] = $child;
@@ -617,19 +616,18 @@ class Parser
     /**
      * Try to merge directly children into an existing node.
      *
-     * @param   array   &$children    Current children being gathering.
-     * @param   array   &$handle      Children of the new node.
-     * @param   string  $cId          Node ID.
-     * @param   bool    $recursive    Whether we should merge recursively or
-     *                                not.
-     * @return  bool
+     * @param   array   &$children Current children being gathering.
+     * @param   array   &$handle   Children of the new node.
+     * @param   string  $cId       Node ID.
+     * @param   bool    $recursive Whether we should merge recursively or
+     *                             not.
      */
     final protected function mergeTree(
-        &$children,
-        &$handle,
-        $cId,
-        $recursive = false
-    ) {
+        array &$children,
+        array &$handle,
+        string $cId,
+        bool $recursive = false
+    ): bool {
         end($children);
         $last = current($children);
 
@@ -661,11 +659,10 @@ class Parser
      * Merge recursively.
      * Please, see self::mergeTree() to know the context.
      *
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $node       Node that receives.
-     * @param   \JMS\Serializer\Type\Compiler\Llk\TreeNode  $newNode    Node to merge.
-     * @return  void
+     * @param   TreeNode  $node    Node that receives.
+     * @param   TreeNode  $newNode Node to merge.
      */
-    final protected function mergeTreeRecursive(TreeNode $node, TreeNode $newNode)
+    final protected function mergeTreeRecursive(TreeNode $node, TreeNode $newNode): void
     {
         $nNId = $newNode->getId();
 
@@ -696,10 +693,8 @@ class Parser
 
     /**
      * Get AST.
-     *
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
      */
-    final public function getTree()
+    final public function getTree(): TreeNode
     {
         return $this->_tree;
     }
@@ -709,7 +704,7 @@ class Parser
      *
      * @return  array
      */
-    final public function getTrace()
+    final public function getTrace(): array
     {
         return $this->_trace;
     }
@@ -719,7 +714,7 @@ class Parser
      *
      * @return  array
      */
-    final public function getPragmas()
+    final public function getPragmas(): array
     {
         return $this->_pragmas;
     }
@@ -729,17 +724,15 @@ class Parser
      *
      * @return  array
      */
-    final public function getTokens()
+    final public function getTokens(): array
     {
         return $this->_tokens;
     }
 
     /**
      * Get the lexer iterator.
-     *
-     * @return  \Hoa\Iterator\Buffer
      */
-    final public function getTokenSequence()
+    final public function getTokenSequence(): Buffer
     {
         return $this->_tokenSequence;
     }
@@ -747,10 +740,9 @@ class Parser
     /**
      * Get rule by name.
      *
-     * @param   string  $name    Rule name.
-     * @return  \JMS\Serializer\Type\Compiler\Llk\Rule
+     * @param   string  $name Rule name.
      */
-    final public function getRule($name)
+    final public function getRule(string $name): Rule
     {
         if (!isset($this->_rules[$name])) {
             return null;
@@ -771,10 +763,8 @@ class Parser
 
     /**
      * Get root rule.
-     *
-     * @return string
      */
-    final public function getRootRule()
+    final public function getRootRule(): string
     {
         \assert([] !== $this->_rules);
 

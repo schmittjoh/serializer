@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,28 +36,25 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk\Rule;
 
-use JMS\Serializer\Type\Compiler;
-use Hoa\File;
+use JMS\Serializer\Type\Compiler\Llk\Parser;
+use JMS\Serializer\Type\Compiler\Llk\Rule;
+use JMS\Serializer\Type\Compiler\Llk\TreeNode;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Llk\Rule\Token.
  *
  * The token rule.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 final class Token extends Rule
 {
     /**
      * LL(k) compiler of hoa://Library/Regex/Grammar.pp.
      *
-     * @var \JMS\Serializer\Type\Compiler\Llk\Parser|null
+     * @var Parser|null
      */
     protected static $_regexCompiler = null;
 
@@ -82,7 +82,7 @@ final class Token extends Rule
     /**
      * AST of the regex.
      *
-     * @var \JMS\Serializer\Type\Compiler\Llk\TreeNode
+     * @var TreeNode
      */
     protected $_ast;
 
@@ -115,13 +115,11 @@ final class Token extends Rule
     protected $_offset               = 0;
 
     /**
-     * Constructor.
-     *
-     * @param   string|int  $name           Name.
-     * @param   string  $tokenName      Token name.
-     * @param   string|null  $nodeId         Node ID.
-     * @param   int     $unification    Unification index.
-     * @param   bool    $kept           Whether the token is kept or not in the AST.
+     * @param   string|int  $name        Name.
+     * @param   string  $tokenName   Token name.
+     * @param   string|null  $nodeId      Node ID.
+     * @param   int     $unification Unification index.
+     * @param   bool    $kept        Whether the token is kept or not in the AST.
      */
     public function __construct(
         $name,
@@ -141,10 +139,8 @@ final class Token extends Rule
 
     /**
      * Get token name.
-     *
-     * @return string|null
      */
-    public function getTokenName()
+    public function getTokenName(): ?string
     {
         return $this->_tokenName;
     }
@@ -152,10 +148,9 @@ final class Token extends Rule
     /**
      * Set token namespace.
      *
-     * @param   string  $namespace    Namespace.
-     * @return  string
+     * @param   string  $namespace Namespace.
      */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): ?string
     {
         $old              = $this->_namespace;
         $this->_namespace = $namespace;
@@ -165,10 +160,8 @@ final class Token extends Rule
 
     /**
      * Get token namespace.
-     *
-     * @return  string
      */
-    public function getNamespace()
+    public function getNamespace(): ?string
     {
         return $this->_namespace;
     }
@@ -176,10 +169,9 @@ final class Token extends Rule
     /**
      * Set representation.
      *
-     * @param   string  $regex    Representation.
-     * @return  string|null
+     * @param   string  $regex Representation.
      */
-    public function setRepresentation(string $regex)
+    public function setRepresentation(string $regex): ?string
     {
         $old          = $this->_regex;
         $this->_regex = $regex;
@@ -189,44 +181,18 @@ final class Token extends Rule
 
     /**
      * Get token representation.
-     *
-     * @return  string|null
      */
-    public function getRepresentation()
+    public function getRepresentation(): ?string
     {
         return $this->_regex;
     }
 
     /**
-     * Get AST of the token representation.
-     *
-     * @return  \JMS\Serializer\Type\Compiler\Llk\TreeNode
-     */
-    public function getAST()
-    {
-        if (null === static::$_regexCompiler) {
-            $stream = new File\Read('hoa://Library/Regex/Grammar.pp');
-            $stream->rewind();
-
-            static::$_regexCompiler = Compiler\Llk::load($stream);
-        }
-
-        if (null === $this->_ast) {
-            $this->_ast = static::$_regexCompiler->parse(
-                (string) $this->getRepresentation()
-            );
-        }
-
-        return $this->_ast;
-    }
-
-    /**
      * Set token value.
      *
-     * @param   string  $value    Value.
-     * @return  string
+     * @param   ?string  $value Value.
      */
-    public function setValue(string $value)
+    public function setValue(string $value): ?string
     {
         $old          = $this->_value;
         $this->_value = $value;
@@ -236,8 +202,6 @@ final class Token extends Rule
 
     /**
      * Get token value.
-     *
-     * @return  string
      */
     public function getValue(): string
     {
@@ -247,10 +211,9 @@ final class Token extends Rule
     /**
      * Set token offset.
      *
-     * @param   int  $offset    Offset.
-     * @return  int
+     * @param   int  $offset Offset.
      */
-    public function setOffset($offset)
+    public function setOffset(int $offset): int
     {
         $old           = $this->_offset;
         $this->_offset = $offset;
@@ -260,10 +223,8 @@ final class Token extends Rule
 
     /**
      * Get token offset.
-     *
-     * @return int
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->_offset;
     }
@@ -271,10 +232,9 @@ final class Token extends Rule
     /**
      * Set whether the token is kept or not in the AST.
      *
-     * @param   bool  $kept    Kept.
-     * @return  bool
+     * @param   bool  $kept Kept.
      */
-    public function setKept($kept)
+    public function setKept(bool $kept): bool
     {
         $old         = $this->_kept;
         $this->_kept = $kept;
@@ -284,20 +244,16 @@ final class Token extends Rule
 
     /**
      * Check whether the token is kept in the AST or not.
-     *
-     * @return  bool
      */
-    public function isKept()
+    public function isKept(): bool
     {
         return $this->_kept;
     }
 
     /**
      * Get unification index.
-     *
-     * @return  int
      */
-    public function getUnificationIndex()
+    public function getUnificationIndex(): int
     {
         return $this->_unification;
     }

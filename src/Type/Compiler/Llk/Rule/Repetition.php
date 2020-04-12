@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Hoa
  *
  *
- * @license
+ *
  *
  * BSD 3-Clause License
  *
@@ -33,20 +36,17 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace JMS\Serializer\Type\Compiler\Llk\Rule;
 
 use JMS\Serializer\Type\Compiler;
+use JMS\Serializer\Type\Compiler\Llk\Rule;
 
 /**
  * Class \JMS\Serializer\Type\Compiler\Llk\Rule\Repetition.
  *
  * The repetition rule.
- *
- * @copyright  Copyright © 2007-2017 Hoa community
- * @license    New BSD License
  */
 final class Repetition extends Rule
 {
@@ -67,15 +67,13 @@ final class Repetition extends Rule
 
 
     /**
-     * Constructor.
-     *
-     * @param   string  $name        Name.
-     * @param   int     $min         Minimum bound.
-     * @param   int     $max         Maximum bound.
-     * @param   mixed   $children    Children.
-     * @param   string  $nodeId      Node ID.
+     * @param   mixed  $name     Name.
+     * @param   int     $min      Minimum bound.
+     * @param   int     $max      Maximum bound.
+     * @param   mixed   $children Children.
+     * @param   string  $nodeId   Node ID.
      */
-    public function __construct($name, $min, $max, $children, $nodeId)
+    public function __construct($name, int $min, int $max, $children, $nodeId)
     {
         parent::__construct($name, $children, $nodeId);
 
@@ -98,30 +96,24 @@ final class Repetition extends Rule
 
     /**
      * Get minimum bound.
-     *
-     * @return  int
      */
-    public function getMin()
+    public function getMin(): int
     {
         return $this->_min;
     }
 
     /**
      * Get maximum bound.
-     *
-     * @return  int
      */
-    public function getMax()
+    public function getMax(): int
     {
         return $this->_max;
     }
 
     /**
      * Check whether the maximum repetition is unbounded.
-     *
-     * @return   bool
      */
-    public function isInfinite()
+    public function isInfinite(): bool
     {
         return -1 === $this->getMax();
     }
