@@ -109,6 +109,11 @@ class YamlDriver extends AbstractFileDriver
 
         $exclusionPolicy = isset($config['exclusion_policy']) ? strtoupper($config['exclusion_policy']) : 'NONE';
         $excludeAll = isset($config['exclude']) ? (bool) $config['exclude'] : false;
+
+        if (isset($config['exclude_if'])) {
+            $metadata->excludeIf = $this->parseExpression((string) $config['exclude_if']);
+        }
+
         $classAccessType = $config['access_type'] ?? PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = isset($config['read_only']) ? (bool) $config['read_only'] : false;
         $this->addClassProperties($metadata, $config);

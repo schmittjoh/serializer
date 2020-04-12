@@ -126,6 +126,11 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public $xmlDiscriminatorNamespace;
 
+    /**
+     * @var string
+     */
+    public $excludeIf;
+
     public function setDiscriminator(string $fieldName, array $map, array $groups = []): void
     {
         if (empty($fieldName)) {
@@ -288,6 +293,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $this->discriminatorGroups,
+            $this->excludeIf,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
@@ -328,6 +334,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $this->discriminatorGroups,
+            $this->excludeIf,
             $parentStr,
         ] = $unserialized;
 

@@ -67,6 +67,11 @@ class XmlDriver extends AbstractFileDriver
         $exclusionPolicy = strtoupper((string) $elem->attributes()->{'exclusion-policy'}) ?: 'NONE';
         $exclude = $elem->attributes()->exclude;
         $excludeAll = null !== $exclude ? 'true' === strtolower((string) $exclude) : false;
+
+        if (null !== $excludeIf = $elem->attributes()->{'exclude-if'}) {
+            $metadata->excludeIf = $this->parseExpression((string) $excludeIf);
+        }
+
         $classAccessType = (string) ($elem->attributes()->{'access-type'} ?: PropertyMetadata::ACCESS_TYPE_PROPERTY);
 
         $propertiesMetadata = [];

@@ -217,6 +217,12 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                     throw new ExcludedClassException();
                 }
 
+                if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipClass($metadata, $this->context)) {
+                    $this->context->stopVisiting($data);
+
+                    throw new ExcludedClassException();
+                }
+
                 $this->context->pushClassMetadata($metadata);
 
                 foreach ($metadata->preSerializeMethods as $method) {
