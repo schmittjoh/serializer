@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Type;
 
-use JMS\Serializer\Type\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
+use JMS\Serializer\Type\Compiler\Llk\TreeNode;
 use JMS\Serializer\Type\Exception\InvalidNode;
 use function strpos;
 
