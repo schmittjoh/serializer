@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Type;
 
-use Hoa\Compiler\Exception;
+use JMS\Serializer\Type\Compiler\Exception;
 use Hoa\Visitor\Visit;
 use JMS\Serializer\Type\Exception\SyntaxError;
 

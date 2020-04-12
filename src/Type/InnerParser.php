@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Type;
 
-use Hoa\Compiler\Llk\Parser;
-use Hoa\Compiler\Llk\Rule\Choice;
-use Hoa\Compiler\Llk\Rule\Concatenation;
-use Hoa\Compiler\Llk\Rule\Repetition;
-use Hoa\Compiler\Llk\Rule\Token;
+use JMS\Serializer\Type\Compiler\Llk\Parser;
+use JMS\Serializer\Type\Compiler\Llk\Rule\Choice;
+use JMS\Serializer\Type\Compiler\Llk\Rule\Concatenation;
+use JMS\Serializer\Type\Compiler\Llk\Rule\Repetition;
+use JMS\Serializer\Type\Compiler\Llk\Rule\Token;
 
 /**
  * @internal

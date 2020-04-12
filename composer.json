@@ -20,7 +20,8 @@
         "jms/metadata": "^2.0",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
-        "sanmai/hoa-compiler": "^0.1"
+        "hoa/iterator": "^2.17",
+        "hoa/visitor": "^2.17"
     },
     "suggest": {
         "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
