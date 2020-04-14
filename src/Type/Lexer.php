@@ -11,16 +11,21 @@ class Lexer extends AbstractLexer implements ParserInterface
     public function parse(string $type): array
     {
         try {
-            // TODO: Implement parse() method.
+            return $this->getType($type);
         } catch (Exception $e) {
             throw new SyntaxError($e->getMessage(), 0, $e);
         }
     }
 
-    protected function getCatchablePatterns()
+    protected function getCatchablePatterns(): array
     {
         return [
-            // TODO: Implement getCatchablePatterns() method.
+            '(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\)*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*', // name
+            '(\+|\-)?(0|[1-9]\d*)(\.\d+)?', // number
+            'null',
+            '""|\'\'', // empty string
+            '"[^"]+"', // quoted string
+            "'[^']+'", // apostrophed string
         ];
     }
 
