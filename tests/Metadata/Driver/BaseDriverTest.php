@@ -568,6 +568,16 @@ abstract class BaseDriverTest extends TestCase
         self::assertEquals($p, $m->propertyMetadata['age']);
     }
 
+    public function testExclusionIfOnClass()
+    {
+        $class = 'JMS\Serializer\Tests\Fixtures\PersonAccount';
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+
+        $c = new ClassMetadata($class);
+        $c->excludeIf = $this->getExpressionEvaluator()->parse('!(object && object.expired != true)', ['context', 'class_metadata', 'object']);
+        self::assertEquals($c->excludeIf->serialize(), $m->excludeIf->serialize());
+    }
+
     public function testObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll()
     {
         $class = ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll::class;

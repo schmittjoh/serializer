@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\Expression;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 class PropertyMetadata extends BasePropertyMetadata
@@ -124,7 +125,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
 
     /**
-     * @var string
+     * @var string|Expression
      */
     public $excludeIf = null;
 

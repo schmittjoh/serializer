@@ -44,7 +44,7 @@ final class ExpressionLanguageExclusionStrategy
 
         $variables = [
             'context' => $navigatorContext,
-            'property_metadata' => $class,
+            'class_metadata' => $class,
         ];
         if ($navigatorContext instanceof SerializationContext) {
             $variables['object'] = $navigatorContext->getObject();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Ordering\AlphabeticalPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\IdenticalPropertyOrderingStrategy;
@@ -127,7 +128,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlDiscriminatorNamespace;
 
     /**
-     * @var string
+     * @var string|Expression
      */
     public $excludeIf;
 
