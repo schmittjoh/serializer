@@ -100,7 +100,7 @@ class AnnotationDriver implements DriverInterface
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
                 if (null !== $annot->if) {
-                    $classMetadata->excludeIf = $this->parseExpression('!(' . $annot->if . ')');
+                    $classMetadata->excludeIf = $this->parseExpression($annot->if);
                 } else {
                     $excludeAll = true;
                 }
