@@ -211,12 +211,13 @@ class TestSubscribingHandler implements SubscribingHandlerInterface
 
     public static function getSubscribingMethods()
     {
-        return [[
-            'type' => 'JsonSerializable',
-            'format' => self::FORMAT,
-            'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-            'method' => 'serialize',
-        ],
+        return [
+            [
+                'type' => 'JsonSerializable',
+                'format' => self::FORMAT,
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'method' => 'serialize',
+            ],
         ];
     }
 }

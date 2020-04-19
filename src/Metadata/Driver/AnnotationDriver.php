@@ -99,7 +99,11 @@ class AnnotationDriver implements DriverInterface
             } elseif ($annot instanceof XmlNamespace) {
                 $classMetadata->registerNamespace($annot->uri, $annot->prefix);
             } elseif ($annot instanceof Exclude) {
-                $excludeAll = true;
+                if (null !== $annot->if) {
+                    $classMetadata->excludeIf = $this->parseExpression('!(' . $annot->if . ')');
+                } else {
+                    $excludeAll = true;
+                }
             } elseif ($annot instanceof AccessType) {
                 $classAccessType = $annot->type;
             } elseif ($annot instanceof ReadOnly) {

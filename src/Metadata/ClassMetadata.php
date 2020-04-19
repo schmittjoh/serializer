@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Ordering\AlphabeticalPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\IdenticalPropertyOrderingStrategy;
@@ -125,6 +126,11 @@ class ClassMetadata extends MergeableClassMetadata
      * @var string
      */
     public $xmlDiscriminatorNamespace;
+
+    /**
+     * @var string|Expression
+     */
+    public $excludeIf;
 
     public function setDiscriminator(string $fieldName, array $map, array $groups = []): void
     {
@@ -288,6 +294,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $this->discriminatorGroups,
+            $this->excludeIf,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
@@ -328,6 +335,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorValue,
             $this->discriminatorMap,
             $this->discriminatorGroups,
+            $this->excludeIf,
             $parentStr,
         ] = $unserialized;
 

@@ -93,10 +93,12 @@ use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\ParentDoNotSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\ParentNoMetadataChildObject;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
+use JMS\Serializer\Tests\Fixtures\PersonAccount;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
 use JMS\Serializer\Tests\Fixtures\PersonSecretVirtual;
+use JMS\Serializer\Tests\Fixtures\PersonWithAccounts;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\SimpleInternalObject;
@@ -275,6 +277,35 @@ abstract class BaseSerializationTest extends TestCase
         if ($this->hasDeserializer()) {
             self::assertEquals('foo', $this->deserialize($this->getContent('string'), 'string'));
         }
+    }
+
+    public function testExcludeIfOnClass()
+    {
+        $person = new PersonWithAccounts();
+        $person->name = 'mike';
+
+        $accountNotExpired = new PersonAccount();
+        $accountNotExpired->name='Not expired account';
+        $accountNotExpired->expired = false;
+        $person->accounts[] = $accountNotExpired;
+
+        $accountExpired = new PersonAccount();
+        $accountExpired->name='Expired account';
+        $accountExpired->expired = true;
+        $person->accounts[] = $accountExpired;
+
+        $language = new ExpressionLanguage();
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+        $serializer = $builder->build();
+
+        $serialized  = $serializer->serialize($person, $this->getFormat());
+
+        $deserialized = $serializer->deserialize($serialized, PersonWithAccounts::class, $this->getFormat());
+
+        $this->assertEquals(1, count($deserialized->accounts));
+        $this->assertEquals($accountNotExpired->name, $deserialized->accounts[0]->name);
     }
 
     public function testExpressionExclusionNotConfigured()

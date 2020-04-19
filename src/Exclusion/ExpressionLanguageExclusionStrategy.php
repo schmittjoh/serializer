@@ -8,6 +8,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 
@@ -29,6 +30,33 @@ final class ExpressionLanguageExclusionStrategy
     public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)
     {
         $this->expressionEvaluator = $expressionEvaluator;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function shouldSkipClass(ClassMetadata $class, Context $navigatorContext): bool
+    {
+        if (null === $class->excludeIf) {
+            return false;
+        }
+
+        $variables = [
+            'context' => $navigatorContext,
+            'class_metadata' => $class,
+        ];
+        if ($navigatorContext instanceof SerializationContext) {
+            $variables['object'] = $navigatorContext->getObject();
+        } else {
+            $variables['object'] = null;
+        }
+
+        if (($class->excludeIf instanceof Expression) && ($this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface)) {
+            return $this->expressionEvaluator->evaluateParsed($class->excludeIf, $variables);
+        }
+
+        return $this->expressionEvaluator->evaluate($class->excludeIf, $variables);
     }
 
     /**

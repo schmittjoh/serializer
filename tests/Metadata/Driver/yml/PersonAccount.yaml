@@ -1,0 +1,6 @@
+JMS\Serializer\Tests\Fixtures\PersonAccount:
+  exclude_if: 'object && object.expired != true'
+  properties:
+    title:
+      name: string
+      expired: boolean
