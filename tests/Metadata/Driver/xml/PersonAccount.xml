@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-    <class name="JMS\Serializer\Tests\Fixtures\PersonAccount" exclude-if="object &amp;&amp; object.expired != true">
+    <class name="JMS\Serializer\Tests\Fixtures\PersonAccount" exclude-if="object.expired">
         <property name="name" type="string" />
         <property name="expired" type="boolean"/>
     </class>

@@ -574,7 +574,7 @@ abstract class BaseDriverTest extends TestCase
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
 
         $c = new ClassMetadata($class);
-        $c->excludeIf = $this->getExpressionEvaluator()->parse('!(object && object.expired != true)', ['context', 'class_metadata', 'object']);
+        $c->excludeIf = $this->getExpressionEvaluator()->parse('object.expired', ['context', 'class_metadata', 'object']);
         self::assertEquals($c->excludeIf->serialize(), $m->excludeIf->serialize());
     }
 

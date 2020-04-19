@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\Exclude(if="object && object.expired != true")
+ * @Serializer\Exclude(if="object.expired")
  */
 class PersonAccount
 {
