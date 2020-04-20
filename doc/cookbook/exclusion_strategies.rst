@@ -336,7 +336,7 @@ By default the serializer exposes three variables (`object`, `context` and `prop
 .. _GroupExclusionStrategy: https://github.com/schmittjoh/serializer/blob/master/src/Exclusion/GroupsExclusionStrategy.php
 
 Using dynamic excludes on class level is also handy when you need to filter out certain objects in a collection, for example based on user permissions.
-The following example shows how to exclude `Account` objects when serializing the `Person` object, if th `Account` is either expired or the user does not have the permission to view the account by calling `is_granted` with the `Account` object.
+The following example shows how to exclude `Account` objects when serializing the `Person` object, if the `Account` is either expired or the user does not have the permission to view the account by calling `is_granted` with the `Account` object.
 
 .. code-block :: php
 
