@@ -6,7 +6,7 @@ XML Reference
     <?xml version="1.0" encoding="UTF-8" ?>
     <serializer>
         <class name="Fully\Qualified\ClassName" exclusion-policy="ALL" xml-root-name="foo-bar" exclude="true"
-            accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
+            exclude-if="expr" accessor-order="custom" custom-accessor-order="propertyName1,propertyName2,...,propertyNameN"
             access-type="public_method" discriminator-field-name="type" discriminator-disabled="false" read-only="false">
             <xml-namespace prefix="atom" uri="http://www.w3.org/2005/Atom"/>
             <xml-discriminator attribute="true" cdata="false" namespace=""/>

@@ -8,6 +8,7 @@ YAML Reference
         xml_root_name: foobar
         xml_root_namespace: http://your.default.namespace
         exclude: true
+        exclude_if: expr
         read_only: false
         access_type: public_method # defaults to property
         accessor_order: custom
