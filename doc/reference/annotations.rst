@@ -18,11 +18,12 @@ that should be used for the class.
 
 @Exclude
 ~~~~~~~~
-This annotation can be defined on a property to indicate that the property should
-not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
+This annotation can be defined on a property or a class to indicate that the property or class
+should not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
-If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
-be possible to use ``@Exclude(if="expression")`` to exclude dynamically a property.
+If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, it will
+be possible to use ``@Exclude(if="expression")`` to exclude dynamically a property
+or an object if used on class level.
 
 @Expose
 ~~~~~~~
