@@ -303,8 +303,7 @@ class ObjectConstructorTest extends \PHPUnit_Framework_TestCase
         if (!$cfg) {
             $cfg = new Configuration();
             $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), array(
-                __DIR__ . '/../../Fixtures/Doctrine/Entity',
-                __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                __DIR__ . '/../../Fixtures/Doctrine',
             )));
         }
 
