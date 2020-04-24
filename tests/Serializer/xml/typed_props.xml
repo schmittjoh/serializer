@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <id>1</id>
+  <role>
+    <id>5</id>
+  </role>
+  <created><![CDATA[2010-10-01T00:00:00+00:00]]></created>
+  <updated><![CDATA[2011-10-01T00:00:00+00:00]]></updated>
+  <tags>
+    <entry><![CDATA[a]]></entry>
+    <entry><![CDATA[b]]></entry>
+  </tags>
+</result>
