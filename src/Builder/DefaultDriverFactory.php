@@ -7,6 +7,7 @@ namespace JMS\Serializer\Builder;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -45,13 +46,19 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
 
-            return new DriverChain([
+            $driver = new DriverChain([
                 new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
                 new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
                 new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
             ]);
+        } else {
+            $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
         }
 
-        return new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
+        if (PHP_VERSION_ID >= 70400) {
+            $driver = new TypedPropertiesDriver($driver, $this->typeParser);
+        }
+
+        return $driver;
     }
 }

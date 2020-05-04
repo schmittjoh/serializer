@@ -108,6 +108,7 @@ use JMS\Serializer\Tests\Fixtures\SimpleObjectWithStaticProp;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
+use JMS\Serializer\Tests\Fixtures\TypedProperties;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -1287,6 +1288,34 @@ abstract class BaseSerializationTest extends TestCase
         $serialized = $this->serializer->serialize(new CustomDeserializationObject('sometext'), $this->getFormat());
         $object = $this->serializer->deserialize($serialized, 'CustomDeserializationObject', $this->getFormat());
         self::assertEquals('customly_unserialized_value', $object->someProperty);
+    }
+
+    public function testTypedProperties()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+
+        $user = new TypedProperties\User();
+        $user->id = 1;
+        $user->created = new \DateTime('2010-10-01 00:00:00');
+        $user->updated = new \DateTime('2011-10-01 00:00:00');
+        $user->tags = ['a', 'b'];
+        $role = new TypedProperties\Role();
+        $role->id = 5;
+        $user->role = $role;
+
+        $result = $this->serialize($user);
+
+        self::assertEquals($this->getContent('typed_props'), $result);
+
+        if ($this->hasDeserializer()) {
+            // updated is read only
+            $user->updated = null;
+            $user->tags = [];
+
+            self::assertEquals($user, $this->deserialize($this->getContent('typed_props'), get_class($user)));
+        }
     }
 
     /**
