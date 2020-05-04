@@ -16,7 +16,7 @@ class DateTimeArraysObject
 
     /**
      * @var \DateTime[]
-     * @Type("array<DateTime<'d.m.Y H:i:s'>>")
+     * @Type("array<DateTimeInterface<'d.m.Y H:i:s'>>")
      */
     private $arrayWithFormattedDateTime;
 
