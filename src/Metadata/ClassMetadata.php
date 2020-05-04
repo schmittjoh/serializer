@@ -29,6 +29,9 @@ class ClassMetadata extends MergeableClassMetadata
     public $preSerializeMethods = [];
 
     /** @var \ReflectionMethod[] */
+    public $preDeserializeMethods = [];
+
+    /** @var \ReflectionMethod[] */
     public $postSerializeMethods = [];
 
     /** @var \ReflectionMethod[] */
@@ -194,6 +197,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->preSerializeMethods[] = $method;
     }
 
+    public function addPreDeserializeMethod(MethodMetadata $method): void
+    {
+        $this->preDeserializeMethods[] = $method;
+    }
+
     public function addPostSerializeMethod(MethodMetadata $method): void
     {
         $this->postSerializeMethods[] = $method;
@@ -212,6 +220,7 @@ class ClassMetadata extends MergeableClassMetadata
         parent::merge($object);
 
         $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
+        $this->preDeserializeMethods = array_merge($this->preDeserializeMethods, $object->preDeserializeMethods);
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
@@ -281,6 +290,7 @@ class ClassMetadata extends MergeableClassMetadata
 
         return serialize([
             $this->preSerializeMethods,
+            $this->preDeserializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,
@@ -322,6 +332,7 @@ class ClassMetadata extends MergeableClassMetadata
 
         [
             $this->preSerializeMethods,
+            $this->preDeserializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
             $this->xmlRootName,

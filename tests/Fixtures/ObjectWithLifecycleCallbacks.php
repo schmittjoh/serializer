@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PostSerialize;
+use JMS\Serializer\Annotation\PreDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\Type;
 
@@ -31,6 +32,13 @@ class ObjectWithLifecycleCallbacks
     {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
+    }
+
+    /**
+     * @PreDeserialize()
+     */
+    private function prepareForDeserialization($data)
+    {
     }
 
     /**

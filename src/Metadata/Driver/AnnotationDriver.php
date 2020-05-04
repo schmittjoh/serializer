@@ -17,6 +17,7 @@ use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\MaxDepth;
 use JMS\Serializer\Annotation\PostDeserialize;
 use JMS\Serializer\Annotation\PostSerialize;
+use JMS\Serializer\Annotation\PreDeserialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
@@ -139,7 +140,10 @@ class AnnotationDriver implements DriverInterface
             $methodAnnotations = $this->reader->getMethodAnnotations($method);
 
             foreach ($methodAnnotations as $annot) {
-                if ($annot instanceof PreSerialize) {
+                if ($annot instanceof PreDeserialize) {
+                    $classMetadata->addPreDeserializeMethod(new MethodMetadata($name, $method->name));
+                    continue 2;
+                } elseif ($annot instanceof PreSerialize) {
                     $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->name));
                     continue 2;
                 } elseif ($annot instanceof PostDeserialize) {

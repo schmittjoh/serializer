@@ -328,6 +328,9 @@ class YamlDriver extends AbstractFileDriver
             if (isset($cConfig['pre_serialize'])) {
                 $metadata->preSerializeMethods = $this->getCallbackMetadata($class, $cConfig['pre_serialize']);
             }
+            if (isset($cConfig['pre_deserialize'])) {
+                $metadata->preDeserializeMethods = $this->getCallbackMetadata($class, $cConfig['pre_deserialize']);
+            }
             if (isset($cConfig['post_serialize'])) {
                 $metadata->postSerializeMethods = $this->getCallbackMetadata($class, $cConfig['post_serialize']);
             }
