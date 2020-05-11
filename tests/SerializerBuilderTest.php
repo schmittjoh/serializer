@@ -14,6 +14,8 @@ use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use PHPUnit\Framework\Constraint\FileExists;
+use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -41,7 +43,8 @@ class SerializerBuilderTest extends TestCase
 
     public function testWithCache()
     {
-        self::assertFileNotExists($this->tmpDir);
+        // @todo change to static::assertFileNotExists when support for PHPUnit 8 and PHP 7.2 is dropped
+        static::assertThat($this->tmpDir, new LogicalNot(new FileExists()));
 
         self::assertSame($this->builder, $this->builder->setCacheDir($this->tmpDir));
         $serializer = $this->builder->build();
