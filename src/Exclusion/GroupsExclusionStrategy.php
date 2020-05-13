@@ -12,10 +12,17 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
     public const DEFAULT_GROUP = 'Default';
 
+    private $groups;
+
     /**
      * @var array<string,array<string,boolean>>
      */
     private $parsedGroups = [];
+
+    /**
+     * @var array<string,boolean>>
+     */
+    private $rootGroups = [];
 
     /**
      * @var bool
@@ -24,7 +31,11 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
     public function __construct(array $groups)
     {
-        $this->prepare($groups, 'root');
+        $this->groups = $groups;
+        $this->prepare($groups, '');
+        $this->parsedGroups['.'] = $this->parsedGroups[''];
+        unset($this->parsedGroups['']);
+        $this->rootGroups = $this->parsedGroups['.'];
     }
 
     private function prepare(array $groups, $path)
@@ -60,18 +71,24 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
-        $groups = $property->groups ?: [self::DEFAULT_GROUP];
-
         if (!$this->nestedGroups) {
-            // Group are not nested so we
-            $path = 'root';
-        } else {
-            $path = $this->buildPathFromContext($navigatorContext);
-        }
+            if(!$property->groups) {
+                return !isset($this->rootGroups[self::DEFAULT_GROUP]);
+            }
 
-        if(!isset($this->parsedGroups[$path])) {
-            // If we reach that path it's because we were allowed so we fallback on default group
-            $this->parsedGroups[$path] = [self::DEFAULT_GROUP => true];
+            foreach ($property->groups as $group) {
+                if (isset($this->rootGroups[$group])) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            $groups = $property->groups ?: [self::DEFAULT_GROUP];
+            $path = $this->buildPathFromContext($navigatorContext);
+            if(!isset($this->parsedGroups[$path])) {
+                // If we reach that path it's because we were allowed so we fallback on default group
+                $this->parsedGroups[$path] = [self::DEFAULT_GROUP => true];
+            }
         }
 
         $againstGroups = $this->parsedGroups[$path];
@@ -87,23 +104,32 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
     private function buildPathFromContext(Context $navigatorContext): string
     {
-        $path = $navigatorContext->getCurrentPath();
-        array_unshift($path, 'root');
-        return implode('.', $path);
+        return '.' . implode('.', $navigatorContext->getCurrentPath());
     }
 
+    /**
+     * @deprecated 
+     */
     public function getGroupsFor(Context $navigatorContext): array
     {
         if (!$this->nestedGroups) {
-            return array_keys($this->parsedGroups['root']);
+            return array_keys($this->rootGroups);
         }
 
-        $path = $this->buildPathFromContext($navigatorContext);
-
-        if (!isset($this->parsedGroups[$path])) {
-            return [self::DEFAULT_GROUP];
+        $paths = $navigatorContext->getCurrentPath();
+        $groups = $this->groups;
+        foreach ($paths as $index => $path) {
+            if (!array_key_exists($path, $groups)) {
+                if ($index > 0) {
+                    $groups = [self::DEFAULT_GROUP];
+                }
+                break;
+            }
+            $groups = $groups[$path];
+            if (!array_filter($groups, 'is_string')) {
+                $groups += [self::DEFAULT_GROUP];
+            }
         }
-
-        return array_keys($this->parsedGroups[$path]);
+        return $groups;
     }
 }
