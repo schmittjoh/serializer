@@ -6,7 +6,10 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class PersonWithAccounts
+/**
+ * @Serializer\Exclude(if="object.expired")
+ */
+class PersonAccountWithParent extends PersonAccountParent
 {
     /**
      * @Serializer\Type("string")
@@ -14,7 +17,7 @@ class PersonWithAccounts
     public $name;
 
     /**
-     * @Serializer\Type("array<JMS\Serializer\Tests\Fixtures\PersonAccount>")
+     * @Serializer\Type("boolean")
      */
-    public $accounts = [];
+    public $expired;
 }
