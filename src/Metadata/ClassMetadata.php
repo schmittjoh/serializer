@@ -216,6 +216,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
         $this->xmlRootNamespace = $object->xmlRootNamespace;
+        $this->excludeIf = $object->excludeIf;
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
         if ($object->accessorOrder) {
