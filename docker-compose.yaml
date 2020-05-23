@@ -1,0 +1,11 @@
+version: '3'
+services:
+  php:
+    build:
+      context: '.'
+      dockerfile: '.docker/php/Dockerfile'
+      args:
+        xdebug: 1
+    container_name: 'serializer_php'
+    volumes:
+      - '.:/home/wwwroot'
