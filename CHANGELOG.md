@@ -1,5 +1,34 @@
 # Changelog
 
+## [3.7.0](https://github.com/schmittjoh/serializer/tree/3.7.0) (2020-05-23)
+
+**Implemented enhancements:**
+
+- Allow deserialization of typehinted DateTimeInterface to DateTime class [\#1193](https://github.com/schmittjoh/serializer/pull/1193) ([goetas](https://github.com/goetas))
+- Infer types from PHP 7.4 type declarations [\#1192](https://github.com/schmittjoh/serializer/pull/1192) ([goetas](https://github.com/goetas))
+- Support conditional exclude for classes [\#1099](https://github.com/schmittjoh/serializer/pull/1099) ([arneee](https://github.com/arneee))
+
+**Fixed bugs:**
+
+- Exclude if at class level are not merge [\#1203](https://github.com/schmittjoh/serializer/issues/1203)
+- Class level expression exclusion strategy should work with hierarchies   [\#1204](https://github.com/schmittjoh/serializer/pull/1204) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Specify Type as nullable? [\#1191](https://github.com/schmittjoh/serializer/issues/1191)
+- Does someone know how to use phpdoc with serializer? [\#1185](https://github.com/schmittjoh/serializer/issues/1185)
+- Serializer doesn't keep types but convert them if not it can [\#1181](https://github.com/schmittjoh/serializer/issues/1181)
+- ConditionalExpose/Exclude annotation does not work on class level [\#1098](https://github.com/schmittjoh/serializer/issues/1098)
+
+**Merged pull requests:**
+
+- Fix deprecated assertFileNotExist [\#1197](https://github.com/schmittjoh/serializer/pull/1197) ([mpoiriert](https://github.com/mpoiriert))
+- \[Docs\] Improve documentation on dynamic exclusion strategy [\#1188](https://github.com/schmittjoh/serializer/pull/1188) ([arneee](https://github.com/arneee))
+- Fix Support conditional exclude for classes [\#1187](https://github.com/schmittjoh/serializer/pull/1187) ([arneee](https://github.com/arneee))
+- Fix travis tests [\#1183](https://github.com/schmittjoh/serializer/pull/1183) ([peter279k](https://github.com/peter279k))
+- Replace "Exclude" by "Expose" [\#1180](https://github.com/schmittjoh/serializer/pull/1180) ([kpn13](https://github.com/kpn13))
+- add .gitattributes [\#1177](https://github.com/schmittjoh/serializer/pull/1177) ([Tobion](https://github.com/Tobion))
+
 ## [3.6.0](https://github.com/schmittjoh/serializer/tree/3.6.0) (2020-03-21)
 
 **Implemented enhancements:**
