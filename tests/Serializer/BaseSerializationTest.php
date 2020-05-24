@@ -94,6 +94,7 @@ use JMS\Serializer\Tests\Fixtures\ParentDoNotSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\ParentNoMetadataChildObject;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\PersonAccount;
+use JMS\Serializer\Tests\Fixtures\PersonAccountOnParent;
 use JMS\Serializer\Tests\Fixtures\PersonAccountWithParent;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretMore;
@@ -325,6 +326,31 @@ abstract class BaseSerializationTest extends TestCase
 
         $serialized  = $serializer->serialize($accounts, $this->getFormat(), null, sprintf('array<%s>', PersonAccountWithParent::class));
         $deserialized = $serializer->deserialize($serialized, sprintf('array<%s>', PersonAccountWithParent::class), $this->getFormat());
+
+        $this->assertEquals(1, count($deserialized));
+        $this->assertEquals($accountNotExpired->name, $deserialized[0]->name);
+    }
+
+    public function testExcludeIfOnParentClass()
+    {
+        $accountNotExpired = new PersonAccountOnParent();
+        $accountNotExpired->name='Not expired account';
+        $accountNotExpired->expired = false;
+
+        $accountExpired = new PersonAccountOnParent();
+        $accountExpired->name='Expired account';
+        $accountExpired->expired = true;
+
+        $accounts = [$accountNotExpired,$accountExpired];
+
+        $language = new ExpressionLanguage();
+
+        $builder = SerializerBuilder::create();
+        $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+        $serializer = $builder->build();
+
+        $serialized  = $serializer->serialize($accounts, $this->getFormat(), null, sprintf('array<%s>', PersonAccountOnParent::class));
+        $deserialized = $serializer->deserialize($serialized, sprintf('array<%s>', PersonAccountOnParent::class), $this->getFormat());
 
         $this->assertEquals(1, count($deserialized));
         $this->assertEquals($accountNotExpired->name, $deserialized[0]->name);
