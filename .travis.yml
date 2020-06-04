@@ -26,6 +26,9 @@ matrix:
 
         - php: 7.3
         - php: 7.4
+
+        - php: 7.4
+          env: VERY_LATEST=1
     fast_finish: true
 
 install:
