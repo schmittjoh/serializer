@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Persistence\Proxy;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcher;

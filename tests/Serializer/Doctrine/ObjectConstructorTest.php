@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Serializer\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Persistence\AbstractManagerRegistry;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
@@ -19,6 +17,8 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\ORM\Version as ORMVersion;
+use Doctrine\Persistence\AbstractManagerRegistry;
+use Doctrine\Persistence\Proxy;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Construction\DoctrineObjectConstructor;
@@ -42,7 +42,7 @@ use PHPUnit\Framework\TestCase;
 
 class ObjectConstructorTest extends TestCase
 {
-    /** @var ManagerRegistry */
+    /** @var AbstractManagerRegistry */
     private $registry;
 
     /** @var Serializer */
@@ -362,7 +362,7 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
     private $services = [];
     private $serviceCreator;
 
-    public function __construct($serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = 'Doctrine\Common\Persistence\Proxy')
+    public function __construct($serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = Proxy::class)
     {
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);

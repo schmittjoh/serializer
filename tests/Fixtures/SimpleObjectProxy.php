@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Persistence\Proxy;
 
 class SimpleObjectProxy extends SimpleObject implements Proxy
 {
