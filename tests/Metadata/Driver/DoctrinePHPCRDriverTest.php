@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\PHPCR\Configuration;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
+use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -15,6 +16,12 @@ use PHPUnit\Framework\TestCase;
 
 class DoctrinePHPCRDriverTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        if (!class_exists(Configuration::class)) {
+            $this->markTestSkipped('PHPCR not available');
+        }
+    }
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\BlogPost');
@@ -103,7 +110,7 @@ class DoctrinePHPCRDriverTest extends TestCase
 
     protected function getDoctrinePHPCRDriver()
     {
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->atLeastOnce())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->getDocumentManager()));

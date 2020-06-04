@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\EventDispatcher\Subscriber;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Common\Persistence\Proxy as LegacyProxy;
 use Doctrine\ODM\MongoDB\PersistentCollection as MongoDBPersistentCollection;
 use Doctrine\ODM\PHPCR\PersistentCollection as PHPCRPersistentCollection;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\Persistence\Proxy;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
@@ -111,10 +112,12 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
     {
         return [
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy', 'interface' => Proxy::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerializeTypedProxy', 'interface' => LegacyProxy::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PersistentCollection::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => MongoDBPersistentCollection::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => PHPCRPersistentCollection::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => Proxy::class],
+            ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => LegacyProxy::class],
             ['event' => 'serializer.pre_serialize', 'method' => 'onPreSerialize', 'interface' => LazyLoadingInterface::class],
         ];
     }
