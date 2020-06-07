@@ -20,8 +20,7 @@
         "jms/metadata": "^2.0",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
-        "doctrine/lexer": "^1.2",
-        "hoa/compiler": "^3.17.08.08"
+        "doctrine/lexer": "^1.1"
     },
     "suggest": {
         "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
