@@ -7,12 +7,12 @@ namespace JMS\Serializer\Metadata\Driver;
 class DocBlockTypeResolver
 {
     /** resolve type hints from property */
-    private const CLASS_PROPERTY_TYPE_HINT_REGEX = "#@var[\s]*([^\n\$\s]*)#";
+    private const CLASS_PROPERTY_TYPE_HINT_REGEX = '#@var[\s]*([^\n\$\s]*)#';
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
-    private const GLOBAL_NAMESPACE_PREFIX = "\\";
+    private const GLOBAL_NAMESPACE_PREFIX = '\\';
 
     public function getPropertyDocblockTypeHint(\ReflectionProperty $reflectionProperty): ?string
     {
@@ -20,31 +20,31 @@ class DocBlockTypeResolver
         $typeHint = trim($matchedDocBlockParameterTypes[1][0]);
 
         $unionTypeHint = [];
-        foreach (explode("|", $typeHint) as $singleTypeHint) {
-            if ($singleTypeHint !== "null") {
+        foreach (explode('|', $typeHint) as $singleTypeHint) {
+            if ($singleTypeHint !== 'null') {
                 $unionTypeHint[] = $singleTypeHint;
             }
         }
-        $typeHint = implode("|", $unionTypeHint);
+        $typeHint = implode('|', $unionTypeHint);
         if (count($unionTypeHint) > 1) {
             throw new \InvalidArgumentException("Can't use union type {$typeHint} for collection in {$reflectionProperty->getDeclaringClass()->getName()}:{$reflectionProperty->getName()}");
         }
 
-        if (strpos($typeHint, "[]") === false) {
+        if (strpos($typeHint, '[]') === false) {
             throw new \InvalidArgumentException("Can't use incorrect type {$typeHint} for collection in {$reflectionProperty->getDeclaringClass()->getName()}:{$reflectionProperty->getName()}");
         }
 
-        $typeHint = rtrim($typeHint, "[]");
+        $typeHint = rtrim($typeHint, '[]');
         if (!$this->hasGlobalNamespacePrefix($typeHint) && !$this->isPrimitiveType($typeHint)) {
             $typeHint = $this->expandClassNameUsingUseStatements($typeHint, $this->getDeclaringClassOrTrait($reflectionProperty), $reflectionProperty);
         }
 
-        return "array<" . ltrim($typeHint, "\\") . ">";
+        return 'array<' . ltrim($typeHint, '\\') . '>';
     }
 
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass): string
     {
-        $expandedClassName = $declaringClass->getNamespaceName() . "\\" . $typeHint;
+        $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if (class_exists($expandedClassName)) {
             return $expandedClassName;
         }
@@ -54,7 +54,7 @@ class DocBlockTypeResolver
         $foundUseStatements = array_merge($this->gatherSingleUseStatements($classContents), $foundUseStatements);
 
         foreach ($foundUseStatements as $statementClassName) {
-            if ($alias = explode("as", $statementClassName)) {
+            if ($alias = explode('as', $statementClassName)) {
                 if (array_key_exists(1, $alias) && trim($alias[1]) === $typeHint) {
                     return trim($alias[0]);
                 }
@@ -70,7 +70,7 @@ class DocBlockTypeResolver
 
     private function endsWith(string $statementClassToCheck, string $typeHintToSearchFor) : bool
     {
-        $typeHintToSearchFor = "\\" . $typeHintToSearchFor;
+        $typeHintToSearchFor = '\\' . $typeHintToSearchFor;
         $length = strlen($typeHintToSearchFor);
         if ($length == 0) {
             return true;
@@ -81,7 +81,7 @@ class DocBlockTypeResolver
 
     private function isPrimitiveType(string $type) : bool
     {
-        return in_array($type, ["int", "float", "bool", "string"]);
+        return in_array($type, ['int', 'float', 'bool', 'string']);
     }
 
     private function hasGlobalNamespacePrefix(string $typeHint): bool
@@ -94,7 +94,7 @@ class DocBlockTypeResolver
         $foundUseStatements = [];
         preg_match_all(self::GROUP_USE_STATEMENTS_REGEX, $classContents, $foundGroupUseStatements);
         for ($useStatementIndex = 0; $useStatementIndex < count($foundGroupUseStatements[0]); $useStatementIndex++) {
-            foreach (explode(",", $foundGroupUseStatements[2][$useStatementIndex]) as $singleUseStatement) {
+            foreach (explode(',', $foundGroupUseStatements[2][$useStatementIndex]) as $singleUseStatement) {
                 $foundUseStatements[] = trim($foundGroupUseStatements[1][$useStatementIndex]) . trim($singleUseStatement);
             }
         }
