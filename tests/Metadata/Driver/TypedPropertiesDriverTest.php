@@ -9,8 +9,8 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockTypeResolver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespaceUsingSingleAlias;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespaceUsingGroupAlias;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespaceUsingSingleAlias;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromGlobalNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromSameNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespace;
@@ -57,8 +57,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfScalars::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => "string", 'params' => []]]],
-            $m->propertyMetadata["productIds"]->type
+            ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
         );
     }
 
@@ -67,8 +67,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromSameNamespace::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata["productIds"]->type
+            ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
         );
     }
 
@@ -77,8 +77,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesWithNull::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata["productIds"]->type
+            ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
         );
     }
 
@@ -101,8 +101,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespace::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata["productDescriptions"]->type
+            ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
+            $m->propertyMetadata['productDescriptions']->type
         );
     }
 
@@ -111,8 +111,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromGlobalNamespace::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => \stdClass::class, 'params' => []]]],
-            $m->propertyMetadata["products"]->type
+            ['name' => 'array', 'params' => [['name' => \stdClass::class, 'params' => []]]],
+            $m->propertyMetadata['products']->type
         );
     }
 
@@ -121,8 +121,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingSingleAlias::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata["productDescriptions"]->type
+            ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
+            $m->propertyMetadata['productDescriptions']->type
         );
     }
 
@@ -131,12 +131,12 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingGroupAlias::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata["productDescriptions"]->type
+            ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
+            $m->propertyMetadata['productDescriptions']->type
         );
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductName::class, 'params' => []]]],
-            $m->propertyMetadata["productNames"]->type
+            ['name' => 'array', 'params' => [['name' => ProductName::class, 'params' => []]]],
+            $m->propertyMetadata['productNames']->type
         );
     }
 
@@ -145,12 +145,12 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromTrait::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata["productDescriptions"]->type
+            ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
+            $m->propertyMetadata['productDescriptions']->type
         );
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductName::class, 'params' => []]]],
-            $m->propertyMetadata["productNames"]->type
+            ['name' => 'array', 'params' => [['name' => ProductName::class, 'params' => []]]],
+            $m->propertyMetadata['productNames']->type
         );
     }
 
@@ -159,8 +159,8 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromTraitInsideTrait::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata["productDescriptions"]->type
+            ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
+            $m->propertyMetadata['productDescriptions']->type
         );
     }
 
