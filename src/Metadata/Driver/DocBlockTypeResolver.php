@@ -42,7 +42,7 @@ class DocBlockTypeResolver
         return 'array<' . ltrim($typeHint, '\\') . '>';
     }
 
-    private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass): string
+    private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $reflectionProperty): string
     {
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if (class_exists($expandedClassName)) {
@@ -65,7 +65,7 @@ class DocBlockTypeResolver
             }
         }
 
-        return $typeHint;
+        throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflectionProperty->getName()));
     }
 
     private function endsWith(string $statementClassToCheck, string $typeHintToSearchFor): bool

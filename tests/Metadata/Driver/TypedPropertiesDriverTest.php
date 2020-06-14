@@ -18,6 +18,7 @@ use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClasses
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTrait;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTraitInsideTrait;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesWithNull;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfUnionClasses;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Details\ProductDescription;
@@ -101,6 +102,13 @@ class TypedPropertiesDriverTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->resolve(IncorrectCollection::class);
+    }
+
+    public function testThrowingExceptionWhenNotExistingClassWasGiven()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->resolve(CollectionOfNotExistingClasses::class);
     }
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespace()
