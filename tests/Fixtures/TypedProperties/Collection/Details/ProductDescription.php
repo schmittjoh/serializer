@@ -6,5 +6,5 @@ namespace JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Details;
 
 class ProductDescription
 {
-
+    public string $description;
 }
