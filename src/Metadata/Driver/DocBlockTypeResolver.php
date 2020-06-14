@@ -21,7 +21,7 @@ class DocBlockTypeResolver
 
         $unionTypeHint = [];
         foreach (explode('|', $typeHint) as $singleTypeHint) {
-            if ($singleTypeHint !== 'null') {
+            if ('null' !== $singleTypeHint) {
                 $unionTypeHint[] = $singleTypeHint;
             }
         }
@@ -30,7 +30,7 @@ class DocBlockTypeResolver
             throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
-        if (strpos($typeHint, '[]') === false) {
+        if (false === strpos($typeHint, '[]')) {
             throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
@@ -68,21 +68,21 @@ class DocBlockTypeResolver
         return $typeHint;
     }
 
-    private function endsWith(string $statementClassToCheck, string $typeHintToSearchFor) : bool
+    private function endsWith(string $statementClassToCheck, string $typeHintToSearchFor): bool
     {
         $typeHintToSearchFor = '\\' . $typeHintToSearchFor;
 
         return substr($statementClassToCheck, -strlen($typeHintToSearchFor)) === $typeHintToSearchFor;
     }
 
-    private function isPrimitiveType(string $type) : bool
+    private function isPrimitiveType(string $type): bool
     {
         return in_array($type, ['int', 'float', 'bool', 'string']);
     }
 
     private function hasGlobalNamespacePrefix(string $typeHint): bool
     {
-        return $typeHint[0] === self::GLOBAL_NAMESPACE_PREFIX;
+        return self::GLOBAL_NAMESPACE_PREFIX === $typeHint[0];
     }
 
     private function gatherGroupUseStatements(string $classContents): array

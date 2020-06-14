@@ -60,7 +60,7 @@ class TypedPropertiesDriver implements DriverInterface
             'double',
             'iterable',
             'resource',
-            'array'
+            'array',
         ];
     }
 
@@ -86,7 +86,7 @@ class TypedPropertiesDriver implements DriverInterface
                 $propertyReflection = $this->getReflection($propertyMetadata);
                 if ($this->shouldTypeHint($propertyReflection)) {
                     $type = $propertyReflection->getType()->getName();
-                    if ($type === "array") {
+                    if ('array' === $type) {
                         $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint($propertyReflection);
                     }
 
@@ -98,6 +98,18 @@ class TypedPropertiesDriver implements DriverInterface
         }
 
         return $classMetadata;
+    }
+
+    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
+    {
+        return $propertyMetadata instanceof VirtualPropertyMetadata
+            || $propertyMetadata instanceof StaticPropertyMetadata
+            || $propertyMetadata instanceof ExpressionPropertyMetadata;
+    }
+
+    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
+    {
+        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
     }
 
     private function shouldTypeHint(ReflectionProperty $propertyReflection): bool
@@ -115,17 +127,5 @@ class TypedPropertiesDriver implements DriverInterface
         }
 
         return false;
-    }
-
-    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
-    {
-        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
-    }
-
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
-    {
-        return $propertyMetadata instanceof VirtualPropertyMetadata
-            || $propertyMetadata instanceof StaticPropertyMetadata
-            || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 }

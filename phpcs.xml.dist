@@ -71,8 +71,14 @@
             <property name="searchAnnotations" type="boolean" value="true"/>
         </properties>
     </rule>
-    <rule ref="PSR2.Namespaces.UseDeclaration">
-        <exclude-pattern>*</exclude-pattern>
+    <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine.MultipleUsesPerLine">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="PSR2.Namespaces.UseDeclaration.MultipleDeclarations">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse.DisallowedGroupUse">
+        <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
      <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">

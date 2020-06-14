@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use InvalidArgumentException;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockTypeResolver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespaceUsingGroupAlias;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespaceUsingSingleAlias;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromGlobalNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromSameNamespace;
-use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromDifferentNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTrait;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTraitInsideTrait;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesWithNull;
@@ -26,16 +27,11 @@ use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use Metadata\ClassMetadata;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use stdClass;
 
 class TypedPropertiesDriverTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-    }
-
     public function testInferPropertiesFromTypes()
     {
         $m = $this->resolve(User::class);
@@ -50,6 +46,17 @@ class TypedPropertiesDriverTest extends TestCase
         foreach ($expectedPropertyTypes as $property => $type) {
             self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type);
         }
+    }
+
+    private function resolve(string $classToResolve): ClassMetadata
+    {
+        $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+        $driver = new TypedPropertiesDriver($baseDriver, new DocBlockTypeResolver());
+
+        $m = $driver->loadMetadataForClass(new ReflectionClass($classToResolve));
+        self::assertNotNull($m);
+
+        return $m;
     }
 
     public function testInferDocBlockCollectionOfScalars()
@@ -84,14 +91,14 @@ class TypedPropertiesDriverTest extends TestCase
 
     public function testThrowingExceptionWhenUnionTypeIsUsedForCollection()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->resolve(CollectionOfUnionClasses::class);
     }
 
     public function testThrowingExceptionWhenIncorrectCollectionGiven()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->resolve(IncorrectCollection::class);
     }
@@ -111,7 +118,7 @@ class TypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(CollectionOfClassesFromGlobalNamespace::class);
 
         self::assertEquals(
-            ['name' => 'array', 'params' => [['name' => \stdClass::class, 'params' => []]]],
+            ['name' => 'array', 'params' => [['name' => stdClass::class, 'params' => []]]],
             $m->propertyMetadata['products']->type
         );
     }
@@ -164,14 +171,10 @@ class TypedPropertiesDriverTest extends TestCase
         );
     }
 
-    private function resolve(string $classToResolve) : ClassMetadata
+    protected function setUp(): void
     {
-        $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
-        $driver = new TypedPropertiesDriver($baseDriver, new DocBlockTypeResolver());
-
-        $m = $driver->loadMetadataForClass(new \ReflectionClass($classToResolve));
-        self::assertNotNull($m);
-
-        return $m;
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
     }
 }
