@@ -40,7 +40,7 @@ class DocBlockTypeResolver
         return "array<" . ltrim($typeHint, "\\") . ">";
     }
 
-    private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $classPropertyReflection): string
+    private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass): string
     {
         $expandedClassName = $declaringClass->getNamespaceName() . "\\" . $typeHint;
         if (class_exists($expandedClassName)) {
