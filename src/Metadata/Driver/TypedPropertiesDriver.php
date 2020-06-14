@@ -33,15 +33,20 @@ class TypedPropertiesDriver implements DriverInterface
      * @var string[]
      */
     private $whiteList;
+    /**
+     * @var DocBlockTypeResolver
+     */
+    private $docBlockTypeResolver;
 
     /**
      * @param string[] $whiteList
      */
-    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $whiteList = [])
+    public function __construct(DriverInterface $delegate, DocBlockTypeResolver $docBlockTypeResolver, ?ParserInterface $typeParser = null, array $whiteList = [])
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
         $this->whiteList = array_merge($whiteList, $this->getDefaultWhiteList());
+        $this->docBlockTypeResolver = $docBlockTypeResolver;
     }
 
     private function getDefaultWhiteList(): array
@@ -55,6 +60,7 @@ class TypedPropertiesDriver implements DriverInterface
             'double',
             'iterable',
             'resource',
+            'array'
         ];
     }
 
@@ -79,7 +85,12 @@ class TypedPropertiesDriver implements DriverInterface
             try {
                 $propertyReflection = $this->getReflection($propertyMetadata);
                 if ($this->shouldTypeHint($propertyReflection)) {
-                    $propertyMetadata->setType($this->typeParser->parse($propertyReflection->getType()->getName()));
+                    $type = $propertyReflection->getType()->getName();
+                    if ($type === "array") {
+                        $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint($propertyReflection);
+                    }
+
+                    $propertyMetadata->setType($this->typeParser->parse($type));
                 }
             } catch (ReflectionException $e) {
                 continue;
