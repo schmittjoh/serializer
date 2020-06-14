@@ -27,11 +27,11 @@ class DocBlockTypeResolver
         }
         $typeHint = implode('|', $unionTypeHint);
         if (count($unionTypeHint) > 1) {
-            throw new \InvalidArgumentException("Can't use union type {$typeHint} for collection in {$reflectionProperty->getDeclaringClass()->getName()}:{$reflectionProperty->getName()}");
+            throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
         if (strpos($typeHint, '[]') === false) {
-            throw new \InvalidArgumentException("Can't use incorrect type {$typeHint} for collection in {$reflectionProperty->getDeclaringClass()->getName()}:{$reflectionProperty->getName()}");
+            throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
         $typeHint = rtrim($typeHint, '[]');
@@ -71,12 +71,8 @@ class DocBlockTypeResolver
     private function endsWith(string $statementClassToCheck, string $typeHintToSearchFor) : bool
     {
         $typeHintToSearchFor = '\\' . $typeHintToSearchFor;
-        $length = strlen($typeHintToSearchFor);
-        if ($length == 0) {
-            return true;
-        }
 
-        return (substr($statementClassToCheck, -$length) === $typeHintToSearchFor);
+        return substr($statementClassToCheck, -strlen($typeHintToSearchFor)) === $typeHintToSearchFor;
     }
 
     private function isPrimitiveType(string $type) : bool
