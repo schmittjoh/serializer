@@ -274,13 +274,18 @@ class XmlSerializationTest extends BaseSerializationTest
         self::assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
     }
 
-    public function testArrayKeyMap()
+    public function testSerializationStringKeyMap()
     {
-        $map = [
-            'key-one' => 'value-1',
-            'key-two' => 'value-2',
-        ];
-        self::assertEquals($this->getContent('array_key_map'), $this->serializer->serialize(new ObjectWithStringKeyMap($map), 'xml'));
+        self::assertEquals($this->getContent('array_key_map'), $this->serializer->serialize(ObjectWithStringKeyMap::create1(), 'xml'));
+    }
+
+    public function testDeserializationStringKeyMap()
+    {
+        $xml = $this->getContent('array_key_map');
+        $result = $this->serializer->deserialize($xml, ObjectWithStringKeyMap::class, 'xml');
+
+        self::assertInstanceOf(ObjectWithStringKeyMap::class, $result);
+        self::assertEquals(ObjectWithStringKeyMap::create1(), $result);
     }
 
     public function testDeserializeArrayKeyValues()

@@ -18,4 +18,14 @@ class ObjectWithStringKeyMap
     {
         $this->map = $map;
     }
+
+    public static function create1()
+    {
+        return new self(
+            [
+                'key-one' => 'value-1',
+                'key-two' => 'value-2',
+            ]
+        );
+    }
 }
