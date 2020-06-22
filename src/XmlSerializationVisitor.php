@@ -190,6 +190,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         $entryName = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
         $keyAttributeName = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute ? $this->currentMetadata->xmlKeyAttribute : null;
+        $valueAttributeName = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlValueAttribute ? $this->currentMetadata->xmlValueAttribute : null;
         $namespace = null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
 
         $elType = $this->getElementType($type);
@@ -204,12 +205,16 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            try {
-                if (null !== $node = $this->navigator->accept($v, $elType)) {
-                    $this->currentNode->appendChild($node);
+            if (null !== $valueAttributeName) {
+                $entryNode->setAttribute($valueAttributeName, (string) $v);
+            } else {
+                try {
+                    if (null !== $node = $this->navigator->accept($v, $elType)) {
+                        $this->currentNode->appendChild($node);
+                    }
+                } catch (NotAcceptableException $e) {
+                    $this->currentNode->parentNode->removeChild($this->currentNode);
                 }
-            } catch (NotAcceptableException $e) {
-                $this->currentNode->parentNode->removeChild($this->currentNode);
             }
 
             $this->revertCurrentNode();
