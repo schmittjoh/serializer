@@ -15,10 +15,8 @@ final class XmlMap extends XmlCollection
      */
     public $keyAttribute = '_key';
 
-
     /**
      * @var string
      */
     public $valueAttribute;
-
 }
