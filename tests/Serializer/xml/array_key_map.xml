@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <array>
-    <entry key="key-one" value="value-1" />
-    <entry key="key-two" value="value-2" />
-  </array>
+  <map>
+    <entry key="key-one" value="value-1"/>
+    <entry key="key-two" value="value-2"/>
+  </map>
 </result>
