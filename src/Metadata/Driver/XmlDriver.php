@@ -269,6 +269,9 @@ class XmlDriver extends AbstractFileDriver
                         if (isset($colConfig->attributes()->{'key-attribute-name'})) {
                             $pMetadata->xmlKeyAttribute = (string) $colConfig->attributes()->{'key-attribute-name'};
                         }
+                        if (isset($colConfig->attributes()->{'value-attribute-name'})) {
+                            $pMetadata->xmlValueAttribute = (string) $colConfig->attributes()->{'value-attribute-name'};
+                        }
                     }
 
                     if (isset($pElem->{'xml-element'})) {

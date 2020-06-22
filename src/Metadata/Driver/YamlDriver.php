@@ -250,6 +250,10 @@ class YamlDriver extends AbstractFileDriver
                         if (isset($colConfig['key_attribute_name'])) {
                             $pMetadata->xmlKeyAttribute = $colConfig['key_attribute_name'];
                         }
+
+                        if (isset($colConfig['value_attribute_name'])) {
+                            $pMetadata->xmlValueAttribute = $colConfig['value_attribute_name'];
+                        }
                     }
 
                     if (isset($pConfig['xml_element'])) {
