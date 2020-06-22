@@ -230,7 +230,11 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                     }
 
                     $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
-                    $result[$k] = $this->navigator->accept($v, $entryType);
+                    if (null !== $this->currentMetadata->xmlValueAttribute) {
+                        $result[$k] = $this->navigator->accept($attrs[$this->currentMetadata->xmlValueAttribute], $entryType);
+                    } else {
+                        $result[$k] = $this->navigator->accept($v, $entryType);
+                    }
                 }
 
                 return $result;
