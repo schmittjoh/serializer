@@ -258,7 +258,7 @@ final class DateHandler implements SubscribingHandlerInterface
         try {
             $dateInterval = new \DateInterval($data);
         } catch (\Throwable $e) {
-            throw new RuntimeException(sprintf('Invalid dateinterval "%s", expected ISO 8601 format', $data), null, $e);
+            throw new RuntimeException(sprintf('Invalid dateinterval "%s", expected ISO 8601 format', $data), 0, $e);
         }
 
         return $dateInterval;
