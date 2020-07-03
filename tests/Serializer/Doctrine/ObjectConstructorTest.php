@@ -253,6 +253,9 @@ class ObjectConstructorTest extends TestCase
 
     protected function setUp(): void
     {
+        if (!extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('Install or load pdo_sqlite extension to run this test case');
+        }
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
 

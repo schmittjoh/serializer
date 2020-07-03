@@ -83,6 +83,9 @@ class IntegrationTest extends TestCase
 
     protected function setUp(): void
     {
+        if (!extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('Install or load pdo_sqlite extension to run this test case');
+        }
         $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);
 
