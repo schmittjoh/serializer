@@ -83,7 +83,8 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                     };
                 } else {
                     $this->readAccessors[$metadata->class] = \Closure::bind(static function ($o, $name) {
-                        return $o->$name;
+                        $ref = new \ReflectionProperty($o, $name);
+                        return $ref->isStatic() ? $o::$name : $o->$name;
                     }, null, $metadata->class);
                 }
             }
