@@ -251,6 +251,41 @@ class ObjectConstructorTest extends TestCase
         $constructor->construct($this->visitor, $class, ['metaTitle' => 'test'], $type, $this->context);
     }
 
+    public function testFallbackOnEmbeddableClassWithXmlDriverAndXmlData()
+    {
+        if (ORMVersion::compare('2.5') >= 0) {
+            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
+        }
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct');
+
+        $connection = $this->createConnection();
+        $entityManager = $this->createXmlEntityManager($connection);
+
+        $this->registry = $registry = new SimpleBaseManagerRegistry(
+            static function ($id) use ($connection, $entityManager) {
+                switch ($id) {
+                    case 'default_connection':
+                        return $connection;
+
+                    case 'default_manager':
+                        return $entityManager;
+
+                    default:
+                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                }
+            }
+        );
+
+        $type = ['name' => BlogPostSeo::class, 'params' => []];
+        $class = new ClassMetadata(BlogPostSeo::class);
+
+        $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $constructor->construct($this->visitor, $class, $data, $type, $this->context);
+    }
+
     protected function setUp(): void
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();

@@ -67,7 +67,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!\is_array($data)) {
+        if (!\is_array($data) && !(is_object($data) && 'SimpleXMLElement' === get_class($data))) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
