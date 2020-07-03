@@ -52,7 +52,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if ($metadata instanceof StaticPropertyMetadata) {
-            return $metadata->getValue(null);
+            return $metadata->getValue();
         }
 
         if ($metadata instanceof ExpressionPropertyMetadata) {
@@ -70,23 +70,25 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null === $metadata->getter) {
             if (!isset($this->readAccessors[$metadata->class])) {
-                if (true === $metadata->forceReflectionAccess) {
-                    $this->readAccessors[$metadata->class] = function ($o, $name) use ($metadata) {
-                        $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
-                        if (null === $ref) {
-                            $ref = new \ReflectionProperty($metadata->class, $name);
-                            $ref->setAccessible(true);
-                            $this->propertyReflectionCache[$metadata->class][$name] = $ref;
-                        }
+                $this->readAccessors[$metadata->class] = function ($o, $name) use ($metadata) {
+                    $className = $metadata->class;
+                    $property = $this->propertyReflectionCache[$className][$name] ?? null;
 
-                        return $ref->getValue($o);
-                    };
-                } else {
-                    $this->readAccessors[$metadata->class] = \Closure::bind(static function ($o, $name) {
-                        $ref = new \ReflectionProperty($o, $name);
-                        return $ref->isStatic() ? $o::$name : $o->$name;
-                    }, null, $metadata->class);
-                }
+                    if (null === $property) {
+                        $property = new \ReflectionProperty($className, $name);
+                        $property->setAccessible(true);
+                        $this->propertyReflectionCache[$className][$name] = $property;
+                    }
+                    if ($property->getDeclaringClass()->isInternal()) {
+                        return $property->getValue($o);
+                    }
+
+                    return \Closure::bind(function ($name) use ($property) {
+                        $isStaticProperty = $property->isStatic();
+
+                        return $isStaticProperty ? $this::$$name : $this->$name;
+                    }, $o, $className)($name);
+                };
             }
 
             return $this->readAccessors[$metadata->class]($object, $metadata->name);
