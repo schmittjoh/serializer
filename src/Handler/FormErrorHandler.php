@@ -28,7 +28,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): iterable
     {
         $methods = [];
         foreach (['xml', 'json'] as $format) {

@@ -31,7 +31,7 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): iterable
     {
         $methods = [];
         $types = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
