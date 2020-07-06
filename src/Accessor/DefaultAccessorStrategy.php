@@ -51,8 +51,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if ($metadata instanceof ExpressionPropertyMetadata) {
             if (null === $this->evaluator) {
-                throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.',
-                    $metadata->name, $metadata->class));
+                throw new ExpressionLanguageRequiredException(sprintf('The property %s on %s requires the expression accessor strategy to be enabled.', $metadata->name, $metadata->class));
             }
 
             $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
@@ -102,11 +101,11 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (!isset($this->writeAccessors[$metadata->class][$metadata->name])) {
             if ($metadata->forceReflectionAccess) {
-                $accessor = static function ($object, $name, $value) use ($metadata) {
+                $accessor = static function ($object, $name, $value) use ($metadata): void {
                     $metadata->reflection->setValue($object, $value);
                 };
             } else {
-                $accessor = \Closure::bind(static function ($object, $name, $value) {
+                $accessor = \Closure::bind(static function ($object, $name, $value): void {
                     $object->$name = $value;
                 }, null, $metadata->class);
             }
