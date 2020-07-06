@@ -79,7 +79,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         $property->setAccessible(true);
                         $this->propertyReflectionCache[$className][$name] = $property;
                     }
-                    if ($property->getDeclaringClass()->isInternal()) {
+                    if ($metadata->forceReflectionAccess) {
                         return $property->getValue($o);
                     }
 
