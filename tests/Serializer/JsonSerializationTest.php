@@ -237,6 +237,16 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('baz', $object->getAuthor()->getName());
     }
 
+    public function testSerializingObjectWithStaticProperty()
+    {
+        $content = $this->getContent('object_with_object_property');
+        $this->expectNotice();
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithStaticProperty');
+        self::assertEquals('bar', $object->getFoo());
+        self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+        self::assertEquals('baz', $object->getAuthor()->getName());
+    }
+
     public function getPrimitiveTypes()
     {
         return [

@@ -7,7 +7,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTodoAnnotatedTests="true"
     failOnRisky="true"
-    failOnWarning="false"
+    failOnWarning="true"
     bootstrap="tests/bootstrap.php"
 >
     <php>
