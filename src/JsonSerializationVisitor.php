@@ -15,12 +15,12 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     /**
      * @var int
      */
-    private $options = JSON_PRESERVE_ZERO_FRACTION;
+    private $options;
 
     /**
      * @var array
      */
-    private $dataStack = [];
+    private $dataStack;
     /**
      * @var \ArrayObject
      */

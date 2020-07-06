@@ -43,12 +43,12 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * @var bool
      */
-    private $disableExternalEntities = true;
+    private $disableExternalEntities;
 
     /**
      * @var string[]
      */
-    private $doctypeWhitelist = [];
+    private $doctypeWhitelist;
     /**
      * @var int
      */

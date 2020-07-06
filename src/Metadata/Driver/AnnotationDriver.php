@@ -222,8 +222,6 @@ class AnnotationDriver implements DriverInterface
                     } elseif ($annot instanceof XmlValue) {
                         $propertyMetadata->xmlValue = true;
                         $propertyMetadata->xmlElementCData = $annot->cdata;
-                    } elseif ($annot instanceof XmlElement) {
-                        $propertyMetadata->xmlElementCData = $annot->cdata;
                     } elseif ($annot instanceof AccessType) {
                         $accessType = $annot->type;
                     } elseif ($annot instanceof ReadOnly) {

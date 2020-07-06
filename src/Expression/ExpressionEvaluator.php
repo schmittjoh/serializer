@@ -19,7 +19,7 @@ class ExpressionEvaluator implements CompilableExpressionEvaluatorInterface, Exp
     /**
      * @var array
      */
-    private $context = [];
+    private $context;
 
     public function __construct(ExpressionLanguage $expressionLanguage, array $context = [])
     {

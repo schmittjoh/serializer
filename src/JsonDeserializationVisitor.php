@@ -16,12 +16,12 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     /**
      * @var int
      */
-    private $options = 0;
+    private $options;
 
     /**
      * @var int
      */
-    private $depth = 512;
+    private $depth;
 
     /**
      * @var \SplStack
