@@ -83,10 +83,8 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         return $property->getValue($o);
                     }
 
-                    return \Closure::bind(function ($name) use ($property) {
-                        $isStaticProperty = $property->isStatic();
-
-                        return $isStaticProperty ? $this::$$name : $this->$name;
+                    return \Closure::bind(function ($name) {
+                        return $this->$name;
                     }, $o, $className)($name);
                 };
             }
