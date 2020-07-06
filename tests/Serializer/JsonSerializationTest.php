@@ -15,6 +15,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
+use JMS\Serializer\Tests\Fixtures\ObjectWithStaticProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -232,6 +233,21 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $content = $this->getContent('object_with_object_property');
         $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
+        self::assertEquals('bar', $object->getFoo());
+        self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
+        self::assertEquals('baz', $object->getAuthor()->getName());
+    }
+
+    public function testSerializingObjectWithStaticProperty()
+    {
+        $class = new ObjectWithStaticProperty();
+        self::assertEquals('{}', $this->serialize($class));
+    }
+
+    public function testDeserializingObjectWithStaticProperty()
+    {
+        $content = $this->getContent('object_with_object_property');
+        $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithStaticProperty');
         self::assertEquals('bar', $object->getFoo());
         self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
         self::assertEquals('baz', $object->getAuthor()->getName());

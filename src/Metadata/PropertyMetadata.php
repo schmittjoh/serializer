@@ -136,20 +136,25 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $forceReflectionAccess = false;
 
+    /**
+     * @var \ReflectionProperty|null
+     */
+    public $reflection;
+
     public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
 
-        try {
-            $class = $this->getReflection()->getDeclaringClass();
-            $this->forceReflectionAccess = $class->isInternal() || $class->getProperty($name)->isStatic();
-        } catch (\ReflectionException $e) {
-        }
+        $this->reflection = $this->getReflection();
+        $this->forceReflectionAccess = $this->reflection->isStatic() || $this->reflection->getDeclaringClass()->isInternal();
     }
 
     private function getReflection(): \ReflectionProperty
     {
-        return new \ReflectionProperty($this->class, $this->name);
+        $ref = new \ReflectionProperty($this->class, $this->name);
+        $ref->setAccessible(true);
+
+        return $ref;
     }
 
     public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
@@ -239,6 +244,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
             'forceReflectionAccess' => $this->forceReflectionAccess,
+            'reflection' => null,
         ]);
     }
 
@@ -255,6 +261,7 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         $parentStr = $this->unserializeProperties($str);
         parent::unserialize($parentStr);
+        $this->reflection = $this->getReflection();
     }
 
     protected function unserializeProperties(string $str): string
