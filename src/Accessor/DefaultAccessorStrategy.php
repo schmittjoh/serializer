@@ -71,7 +71,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         if (null === $metadata->getter) {
             if (!isset($this->readAccessors[$metadata->class])) {
                 if (true === $metadata->forceReflectionAccess) {
-                    $this->readAccessors[$metadata->class] = function ($o, $name) use ($metadata) {
+                    $this->readAccessors[$metadata->class] = function (object $o, string $name) use ($metadata) {
                         $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
                         if (null === $ref) {
                             $ref = new \ReflectionProperty($metadata->class, $name);
@@ -82,8 +82,8 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         return $ref->getValue($o);
                     };
                 } else {
-                    $this->readAccessors[$metadata->class] = \Closure::bind(static function ($o, $name) {
-                        return $o->$name;
+                    $this->readAccessors[$metadata->class] = \Closure::bind(static function (object $o, string $name) {
+                        return $o->$name ?? null;
                     }, null, $metadata->class);
                 }
             }
@@ -106,7 +106,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         if (null === $metadata->setter) {
             if (!isset($this->writeAccessors[$metadata->class])) {
                 if (true === $metadata->forceReflectionAccess) {
-                    $this->writeAccessors[$metadata->class] = function ($o, $name, $value) use ($metadata): void {
+                    $this->writeAccessors[$metadata->class] = function (object $o, string $name, $value) use ($metadata): void {
                         $ref = $this->propertyReflectionCache[$metadata->class][$name] ?? null;
                         if (null === $ref) {
                             $ref = new \ReflectionProperty($metadata->class, $name);
@@ -117,7 +117,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                         $ref->setValue($o, $value);
                     };
                 } else {
-                    $this->writeAccessors[$metadata->class] = \Closure::bind(static function ($o, $name, $value): void {
+                    $this->writeAccessors[$metadata->class] = \Closure::bind(static function (object $o, string $name, $value): void {
                         $o->$name = $value;
                     }, null, $metadata->class);
                 }
