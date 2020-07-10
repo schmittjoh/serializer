@@ -17,6 +17,7 @@ use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClasses
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromSameNamespace;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTrait;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesFromTraitInsideTrait;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesWithFullNamespacePath;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClassesWithNull;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfScalars;
@@ -75,6 +76,16 @@ class TypedPropertiesDriverTest extends TestCase
     public function testInferDocBlockCollectionOfClassesFromSameNamespace()
     {
         $m = $this->resolve(CollectionOfClassesFromSameNamespace::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfClassesFromUsingFullNamespacePath()
+    {
+        $m = $this->resolve(CollectionOfClassesWithFullNamespacePath::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],

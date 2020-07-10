@@ -51,6 +51,9 @@ class DocBlockTypeResolver
 
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $reflectionProperty): string
     {
+        if (class_exists($typeHint)) {
+            return $typeHint;
+        }
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if (class_exists($expandedClassName)) {
             return $expandedClassName;
