@@ -347,7 +347,9 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | array<K, V>                                                | A map of keys of type K to values of type V.     |
 |                                                            | Examples: array<string, string>,                 |
-|                                                            | array<string, MyNamespace\MyObject>, etc.        |
+|                                                            | array<string, MyNamespace\MyObject>, etc. Note:  |
+|                                                            | the key type K is only used for deserialization  |
+|                                                            | and is completely ignored during serialization.  |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTime                                                   | PHP's DateTime object (default format*/timezone) |
 +------------------------------------------------------------+--------------------------------------------------+
