@@ -16,7 +16,15 @@ class DocBlockTypeResolver
 
     public function getPropertyDocblockTypeHint(\ReflectionProperty $reflectionProperty): ?string
     {
+        if (!$reflectionProperty->getDocComment()) {
+            return null;
+        }
+
         preg_match_all(self::CLASS_PROPERTY_TYPE_HINT_REGEX, $reflectionProperty->getDocComment(), $matchedDocBlockParameterTypes);
+        if (!isset($matchedDocBlockParameterTypes[1][0])) {
+            return null;
+        }
+
         $typeHint = trim($matchedDocBlockParameterTypes[1][0]);
 
         $unionTypeHint = [];
@@ -39,14 +47,14 @@ class DocBlockTypeResolver
             }
 
             return "array<" . implode(",", $resolvedTypes) . ">";
-        }elseif (false === strpos($typeHint, '[]')) {
-            throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
+        }elseif (false !== strpos($typeHint, '[]')) {
+            $typeHint = rtrim($typeHint, '[]');
+            $typeHint = $this->resolveType($typeHint, $reflectionProperty);
+
+            return 'array<' . $typeHint . '>';
         }
 
-        $typeHint = rtrim($typeHint, '[]');
-        $typeHint = $this->resolveType($typeHint, $reflectionProperty);
-
-        return 'array<' . ltrim($typeHint, '\\') . '>';
+        return $this->resolveType($typeHint, $reflectionProperty);
     }
 
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $reflectionProperty): string
@@ -138,6 +146,6 @@ class DocBlockTypeResolver
             $typeHint = $this->expandClassNameUsingUseStatements($typeHint, $this->getDeclaringClassOrTrait($reflectionProperty), $reflectionProperty);
         }
 
-        return $typeHint;
+        return ltrim($typeHint, '\\');
     }
 }

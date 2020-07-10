@@ -7,6 +7,8 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use PHPUnit\Framework\TestCase;
 
@@ -30,6 +32,24 @@ class DefaultDriverFactoryTest extends TestCase
             'role' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Role',
             'created' => 'DateTime',
             'tags' => 'iterable',
+        ];
+
+        foreach ($expectedPropertyTypes as $property => $type) {
+            self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type);
+        }
+    }
+
+    public function testDefaultDriverFactoryLoadsDocBlockDriver()
+    {
+        $factory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
+
+        $driver = $factory->createDriver([], new AnnotationReader());
+
+        $m = $driver->loadMetadataForClass(new \ReflectionClass(SingleClassFromDifferentNamespaceTypeHint::class));
+        self::assertNotNull($m);
+
+        $expectedPropertyTypes = [
+            'data' => ProductDescription::class
         ];
 
         foreach ($expectedPropertyTypes as $property => $type) {

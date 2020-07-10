@@ -7,6 +7,7 @@ namespace JMS\Serializer\Builder;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockTypeResolver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
@@ -60,6 +61,6 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $driver = new TypedPropertiesDriver($driver, $this->typeParser);
         }
 
-        return $driver;
+        return new DocBlockDriver($driver, $this->typeParser);
     }
 }
