@@ -26,6 +26,9 @@ class DocBlockTypeResolver
         }
 
         $typeHint = trim($matchedDocBlockParameterTypes[1][0]);
+        if ($this->isArrayWithoutAnyType($typeHint)) {
+            return null;
+        }
 
         $unionTypeHint = [];
         foreach (explode('|', $typeHint) as $singleTypeHint) {
@@ -147,5 +150,10 @@ class DocBlockTypeResolver
         }
 
         return ltrim($typeHint, '\\');
+    }
+
+    private function isArrayWithoutAnyType(string $typeHint): bool
+    {
+        return $typeHint === "array";
     }
 }
