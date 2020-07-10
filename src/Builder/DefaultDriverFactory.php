@@ -57,7 +57,7 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         }
 
         if (PHP_VERSION_ID >= 70400) {
-            $driver = new TypedPropertiesDriver($driver, new DocBlockTypeResolver(), $this->typeParser);
+            $driver = new TypedPropertiesDriver($driver, $this->typeParser);
         }
 
         return $driver;

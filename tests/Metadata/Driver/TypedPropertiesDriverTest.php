@@ -21,9 +21,11 @@ use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfClasses
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionOfUnionClasses;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\CollectionTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\IncorrectCollection;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\MapTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use Metadata\ClassMetadata;
@@ -52,7 +54,7 @@ class TypedPropertiesDriverTest extends TestCase
     private function resolve(string $classToResolve): ClassMetadata
     {
         $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
-        $driver = new TypedPropertiesDriver($baseDriver, new DocBlockTypeResolver());
+        $driver = new TypedPropertiesDriver($baseDriver);
 
         $m = $driver->loadMetadataForClass(new ReflectionClass($classToResolve));
         self::assertNotNull($m);
@@ -76,6 +78,26 @@ class TypedPropertiesDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionFromGenericLikeClass()
+    {
+        $m = $this->resolve(CollectionTypedAsGenericClass::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
+        );
+    }
+
+    public function testInferDocBlockMapFromGenericLikeClass()
+    {
+        $m = $this->resolve(MapTypedAsGenericClass::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => "int", 'params' => []], ['name' => Product::class, 'params' => []]]],
             $m->propertyMetadata['productIds']->type
         );
     }

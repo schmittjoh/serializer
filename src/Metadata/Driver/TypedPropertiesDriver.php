@@ -41,12 +41,12 @@ class TypedPropertiesDriver implements DriverInterface
     /**
      * @param string[] $whiteList
      */
-    public function __construct(DriverInterface $delegate, DocBlockTypeResolver $docBlockTypeResolver, ?ParserInterface $typeParser = null, array $whiteList = [])
+    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $whiteList = [])
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
         $this->whiteList = array_merge($whiteList, $this->getDefaultWhiteList());
-        $this->docBlockTypeResolver = $docBlockTypeResolver;
+        $this->docBlockTypeResolver = new DocBlockTypeResolver();
     }
 
     private function getDefaultWhiteList(): array

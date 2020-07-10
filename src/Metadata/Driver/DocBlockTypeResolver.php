@@ -7,7 +7,7 @@ namespace JMS\Serializer\Metadata\Driver;
 class DocBlockTypeResolver
 {
     /** resolve type hints from property */
-    private const CLASS_PROPERTY_TYPE_HINT_REGEX = '#@var[\s]*([^\n\$\s]*)#';
+    private const CLASS_PROPERTY_TYPE_HINT_REGEX = '#@var[\s]*([^\n\$]*)#';
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';
     /** resolve group use statements */
@@ -30,14 +30,21 @@ class DocBlockTypeResolver
             throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
-        if (false === strpos($typeHint, '[]')) {
+        if (false !== strpos($typeHint, 'array<')) {
+            $resolvedTypes = [];
+            preg_match_all("#array<(.*)>#", $typeHint, $genericTypesToResolve);
+            $genericTypesToResolve = $genericTypesToResolve[1][0];
+            foreach (explode(",", $genericTypesToResolve) as $genericTypeToResolve) {
+                $resolvedTypes[] = $this->resolveType(trim($genericTypeToResolve), $reflectionProperty);
+            }
+
+            return "array<" . implode(",", $resolvedTypes) . ">";
+        }elseif (false === strpos($typeHint, '[]')) {
             throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
         $typeHint = rtrim($typeHint, '[]');
-        if (!$this->hasGlobalNamespacePrefix($typeHint) && !$this->isPrimitiveType($typeHint)) {
-            $typeHint = $this->expandClassNameUsingUseStatements($typeHint, $this->getDeclaringClassOrTrait($reflectionProperty), $reflectionProperty);
-        }
+        $typeHint = $this->resolveType($typeHint, $reflectionProperty);
 
         return 'array<' . ltrim($typeHint, '\\') . '>';
     }
@@ -120,5 +127,14 @@ class DocBlockTypeResolver
         }
 
         return $reflectionProperty->getDeclaringClass();
+    }
+
+    private function resolveType(string $typeHint, \ReflectionProperty $reflectionProperty): string
+    {
+        if (!$this->hasGlobalNamespacePrefix($typeHint) && !$this->isPrimitiveType($typeHint)) {
+            $typeHint = $this->expandClassNameUsingUseStatements($typeHint, $this->getDeclaringClassOrTrait($reflectionProperty), $reflectionProperty);
+        }
+
+        return $typeHint;
     }
 }
