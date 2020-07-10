@@ -256,7 +256,13 @@ final class DateHandler implements SubscribingHandlerInterface
     {
         $dateInterval = null;
         try {
+            $f = 0.0;
+            if (preg_match('~\.\d+~', $data, $match)) {
+                $data = str_replace($match[0], '', $data);
+                $f = (float) $match[0];
+            }
             $dateInterval = new \DateInterval($data);
+            $dateInterval->f= $f;
         } catch (\Throwable $e) {
             throw new RuntimeException(sprintf('Invalid dateinterval "%s", expected ISO 8601 format', $data), 0, $e);
         }
