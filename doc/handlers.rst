@@ -78,3 +78,25 @@ Also, this type of handler is registered via the builder object::
         })
     ;
 
+Filterable Subscribing Handlers
+-------------------------------
+
+In case you need to be able to fall back to the default deserialization behavior instead of using your custom
+handler, you can implement the `FilterableSubscribingHandlerInterface` instead of the default
+`SubscribingHandlerInterface`. This interface add a single `shouldBeSkipped` method, which will be called
+before the handler will be used. If it returns `true`, the custom handler will be skipped and the default
+implementation of the serializer will be used instead::
+
+    use JMS\Serializer\Handler\SubscribingHandlerInterface;
+    use JMS\Serializer\GraphNavigator;
+    use JMS\Serializer\JsonSerializationVisitor;
+    use JMS\Serializer\JsonDeserializationVisitor;
+    use JMS\Serializer\Context;
+
+    class MyFilteredHandler implements FilterableSubscribingHandlerInterface
+    {
+        public function shouldBeSkipped($data, array $type, Context $context): bool
+        {
+            // Determine whether the handler should be skipped based on the passed arguments
+        }
+    }
