@@ -20,6 +20,7 @@ use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Handler\FilterableSubscribingHandlerInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
@@ -193,15 +194,19 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
-                    try {
-                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    } catch (NotAcceptableException $e) {
+                    // Test whether this handler must be skipped based on the context
+                    $handlerClass = is_array($handler) ? $handler[0] : $handler;
+                    if (!($handlerClass instanceof FilterableSubscribingHandlerInterface) || !$handlerClass->shouldBeSkipped($data, $type, $this->context)) {
+                        try {
+                            $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        } catch (NotAcceptableException $e) {
+                            $this->context->stopVisiting($data);
+                            throw $e;
+                        }
                         $this->context->stopVisiting($data);
-                        throw $e;
-                    }
-                    $this->context->stopVisiting($data);
 
-                    return $rs;
+                        return $rs;
+                    }
                 }
 
                 /** @var ClassMetadata $metadata */
