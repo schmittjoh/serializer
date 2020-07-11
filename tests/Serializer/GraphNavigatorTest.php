@@ -8,13 +8,16 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Accessor\DefaultAccessorStrategy;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
 use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Handler\FilterableSubscribingHandlerInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -22,6 +25,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -157,6 +161,54 @@ class GraphNavigatorTest extends TestCase
         $navigator->accept($object, ['name' => $typeName, 'params' => []]);
     }
 
+    public function testHandlerIsExecutedOnSerialization()
+    {
+        $object = new SerializableClass();
+        $this->handlerRegistry->registerSubscribingHandler(new TestSubscribingHandler());
+
+        $this->context->method('getFormat')->willReturn(TestSubscribingHandler::FORMAT);
+
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $this->context->initialize(TestSubscribingHandler::FORMAT, $this->serializationVisitor, $navigator, $this->metadataFactory);
+
+        $rt = $navigator->accept($object, null);
+        $this->assertEquals('foobar', $rt);
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testFilterableHandlerIsSkippedOnSerialization()
+    {
+        $object = new SerializableClass();
+        $this->handlerRegistry->registerSubscribingHandler(new TestFilterableSubscribingHandler());
+
+        $this->context->method('getFormat')->willReturn(TestFilterableSubscribingHandler::FORMAT);
+
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $this->context->initialize(TestFilterableSubscribingHandler::FORMAT, $this->serializationVisitor, $navigator, $this->metadataFactory);
+
+        $navigator->accept($object, null);
+    }
+
+    public function testFilterableHandlerIsNotSkippedOnSerialization()
+    {
+        $object = new SerializableClass();
+        $this->handlerRegistry->registerSubscribingHandler(new TestFilterableSubscribingHandler(false));
+
+        $this->context->method('getFormat')->willReturn(TestFilterableSubscribingHandler::FORMAT);
+
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $this->context->initialize(TestFilterableSubscribingHandler::FORMAT, $this->serializationVisitor, $navigator, $this->metadataFactory);
+
+        $this->expectException(NotAcceptableException::class);
+        $this->expectExceptionMessage(TestFilterableSubscribingHandler::EX_MSG);
+        $navigator->accept($object, null);
+    }
+
     /**
      * @doesNotPerformAssertions
      */
@@ -213,11 +265,51 @@ class TestSubscribingHandler implements SubscribingHandlerInterface
     {
         return [
             [
-                'type' => 'JsonSerializable',
+                'type' => SerializableClass::class,
                 'format' => self::FORMAT,
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'method' => 'serialize',
             ],
         ];
+    }
+
+    public function serialize(VisitorInterface $visitor, $userData, array $type, Context $context)
+    {
+        return 'foobar';
+    }
+}
+
+class TestFilterableSubscribingHandler implements FilterableSubscribingHandlerInterface
+{
+    public const FORMAT = 'foo';
+    public const EX_MSG = 'This method should be skipped!';
+
+    private $shouldSkip;
+
+    public function __construct(bool $shouldSkip = true)
+    {
+        $this->shouldSkip = $shouldSkip;
+    }
+
+    public static function getSubscribingMethods()
+    {
+        return [
+            [
+                'type' => SerializableClass::class,
+                'format' => self::FORMAT,
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'method' => 'serialize',
+            ],
+        ];
+    }
+
+    public function shouldBeSkipped($data, array $type, Context $context): bool
+    {
+        return $this->shouldSkip;
+    }
+
+    public function serialize(VisitorInterface $visitor, $userData, array $type, Context $context)
+    {
+        throw new NotAcceptableException(self::EX_MSG);
     }
 }

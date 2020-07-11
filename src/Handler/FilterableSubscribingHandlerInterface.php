@@ -15,8 +15,8 @@ use JMS\Serializer\Context;
 interface FilterableSubscribingHandlerInterface extends SubscribingHandlerInterface
 {
     /**
-     * @param mixed $data      The data which needs to be (de)serialized
-     * @param array $type      The type that needs to be (de)serialized
+     * @param mixed $data    The data which needs to be (de)serialized
+     * @param array $type    The type that needs to be (de)serialized
      * @param Context $context The (de)serialization context
      *
      * @return bool If true, skip this handler and use the default implementation
