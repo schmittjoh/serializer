@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation\Type;
 class SimpleObjectWithStaticProp
 {
     /** @Type("string") */
-    private static $foo;
+    private $foo;
 
     /**
      * @SerializedName("moo")
@@ -23,7 +23,7 @@ class SimpleObjectWithStaticProp
 
     public function __construct($foo, $bar)
     {
-        self::$foo = $foo;
+        $this->foo = $foo;
         self::$bar = $bar;
     }
 }
