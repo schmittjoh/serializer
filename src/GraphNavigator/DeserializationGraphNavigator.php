@@ -15,6 +15,7 @@ use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\SkipHandlerException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
@@ -156,10 +157,14 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    $this->context->decreaseDepth();
+                    try {
+                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        $this->context->decreaseDepth();
 
-                    return $rs;
+                        return $rs;
+                    } catch (SkipHandlerException $e) {
+                        // Skip handler, fallback to default behavior
+                    }
                 }
 
                 /** @var ClassMetadata $metadata */
