@@ -347,9 +347,7 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | array<K, V>                                                | A map of keys of type K to values of type V.     |
 |                                                            | Examples: array<string, string>,                 |
-|                                                            | array<string, MyNamespace\MyObject>, etc. Note:  |
-|                                                            | the key type K is only used for deserialization  |
-|                                                            | and is completely ignored during serialization.  |
+|                                                            | array<string, MyNamespace\MyObject>, etc.        |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTime                                                   | PHP's DateTime object (default format*/timezone) |
 +------------------------------------------------------------+--------------------------------------------------+
@@ -445,6 +443,9 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
+
+(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization, 
+for serializaiton is treated as ``string``.
 
 Examples:
 
