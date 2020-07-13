@@ -78,3 +78,8 @@ Also, this type of handler is registered via the builder object::
         })
     ;
 
+Skippable Subscribing Handlers
+-------------------------------
+
+In case you need to be able to fall back to the default deserialization behavior instead of using your custom
+handler, you can simply throw a `SkipHandlerException` from you custom handler method to do so.
