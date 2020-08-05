@@ -499,7 +499,7 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function build(): SerializerInterface
+    public function build(): Serializer
     {
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {
