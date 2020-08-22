@@ -156,8 +156,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     }
 
     /**
-     * @deprecated Will be removed in 3.0
-     *
      * Checks if some data key exists.
      */
     public function hasData(string $key): bool
