@@ -27,6 +27,7 @@ use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -38,6 +39,8 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use Metadata\Driver\AdvancedDriverInterface;
+use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ObjectConstructorTest extends TestCase
@@ -53,6 +56,9 @@ class ObjectConstructorTest extends TestCase
 
     /** @var DeserializationContext */
     private $context;
+
+    /** @var AdvancedDriverInterface */
+    private $driver;
 
     public function testFindEntity()
     {
@@ -72,6 +78,26 @@ class ObjectConstructorTest extends TestCase
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
 
         self::assertEquals($author, $authorFetched);
+    }
+
+    public function testFindEntityExcludedUsesFallback()
+    {
+        $graph = $this->createMock(GraphNavigatorInterface::class);
+        $metadata = $this->createMock(MetadataFactoryInterface::class);
+
+        $author = new Author('John');
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = ['name' => Author::class, 'params' => []];
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+
+        $context = DeserializationContext::create()->setGroups('foo');
+        $context->initialize('json', $this->visitor, $graph, $metadata);
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $context);
+
+        self::assertSame($author, $authorFetched);
     }
 
     public function testFindManagedEntity()
@@ -308,13 +334,14 @@ class ObjectConstructorTest extends TestCase
                 }
             }
         );
-
+        $driver = null;
+        $this->driver = &$driver;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
+                static function (array $metadataDirs, Reader $annotationReader) use ($registry, &$driver) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
+                    return $driver = new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
             ->build();
