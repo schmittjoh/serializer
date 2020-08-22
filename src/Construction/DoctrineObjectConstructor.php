@@ -8,7 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
@@ -35,14 +37,24 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
     private $fallbackConstructor;
 
     /**
+     * @var ExpressionLanguageExclusionStrategy|null
+     */
+    private $expressionLanguageExclusionStrategy;
+
+    /**
      * @param ManagerRegistry $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
-    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, string $fallbackStrategy = self::ON_MISSING_NULL)
-    {
+    public function __construct(
+        ManagerRegistry $managerRegistry,
+        ObjectConstructorInterface $fallbackConstructor,
+        string $fallbackStrategy = self::ON_MISSING_NULL,
+        ?ExpressionLanguageExclusionStrategy $expressionLanguageExclusionStrategy = null
+    ) {
         $this->managerRegistry = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
         $this->fallbackStrategy = $fallbackStrategy;
+        $this->expressionLanguageExclusionStrategy = $expressionLanguageExclusionStrategy;
     }
 
     /**
@@ -78,7 +90,14 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
             if (isset($metadata->propertyMetadata[$name])) {
-                $dataName = $metadata->propertyMetadata[$name]->serializedName;
+                $propertyMetadata = $metadata->propertyMetadata[$name];
+
+                // Avoid calling objectManager->find if some identification properties are excluded
+                if ($this->isIdentifierFieldExcluded($propertyMetadata, $context)) {
+                    return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+                }
+
+                $dataName = $propertyMetadata->serializedName;
             } else {
                 $dataName = $name;
             }
@@ -114,5 +133,15 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $objectManager->initializeObject($object);
 
         return $object;
+    }
+
+    private function isIdentifierFieldExcluded(PropertyMetadata $propertyMetadata, DeserializationContext $context): bool
+    {
+        $exclusionStrategy = $context->getExclusionStrategy();
+        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+            return true;
+        }
+
+        return null !== $this->expressionLanguageExclusionStrategy && $this->expressionLanguageExclusionStrategy->shouldSkipProperty($propertyMetadata, $context);
     }
 }
