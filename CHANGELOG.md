@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.9.0](https://github.com/schmittjoh/serializer/tree/3.9.0) (2020-08-26)
+
+**Implemented enhancements:**
+
+- Add support for skippable \(de\)serialization handlers [\#1238](https://github.com/schmittjoh/serializer/pull/1238) ([bobvandevijver](https://github.com/bobvandevijver))
+- added support for milliseconds in DateInterval deserialization [\#1234](https://github.com/schmittjoh/serializer/pull/1234) ([ivoba](https://github.com/ivoba))
+
+**Fixed bugs:**
+
+- Do not load entities when deserializing if their identifier is not ex… [\#1247](https://github.com/schmittjoh/serializer/pull/1247) ([goetas](https://github.com/goetas))
+- Do not use excluded fields when fetching entities [\#1246](https://github.com/schmittjoh/serializer/pull/1246) ([goetas](https://github.com/goetas))
+- Ensure accessors are cached per property when using reflection [\#1237](https://github.com/schmittjoh/serializer/pull/1237) ([goetas](https://github.com/goetas))
+
+**Merged pull requests:**
+
+- remove missing deprecated removal on hasData [\#1245](https://github.com/schmittjoh/serializer/pull/1245) ([rflavien](https://github.com/rflavien))
+- Change return type of SerializerBuilder::build\(\) to Serializer [\#1241](https://github.com/schmittjoh/serializer/pull/1241) ([icanhazstring](https://github.com/icanhazstring))
+- docs: add note about array key type being ignored when serializing [\#1235](https://github.com/schmittjoh/serializer/pull/1235) ([eduardoweiland](https://github.com/eduardoweiland))
+- Sort packages in composer.json [\#1228](https://github.com/schmittjoh/serializer/pull/1228) ([simPod](https://github.com/simPod))
+- fix xml embeddable data getReference for DoctrineObjectConstructor [\#1224](https://github.com/schmittjoh/serializer/pull/1224) ([gam6itko](https://github.com/gam6itko))
+- fixed exception for strict\_types [\#1222](https://github.com/schmittjoh/serializer/pull/1222) ([ivoba](https://github.com/ivoba))
+
 ## [3.8.0](https://github.com/schmittjoh/serializer/tree/3.8.0) (2020-06-28)
 
 **Implemented enhancements:**
