@@ -36,6 +36,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -72,7 +73,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -80,7 +81,7 @@ class ObjectConstructorTest extends TestCase
         self::assertEquals($author, $authorFetched);
     }
 
-    public function testFindEntityExcludedUsesFallback()
+    public function testFindEntityExcludedByGroupsUsesFallback()
     {
         $graph = $this->createMock(GraphNavigatorInterface::class);
         $metadata = $this->createMock(MetadataFactoryInterface::class);
@@ -100,6 +101,21 @@ class ObjectConstructorTest extends TestCase
         self::assertSame($author, $authorFetched);
     }
 
+    public function testFindEntityExcludedUsesFallback()
+    {
+        $author = new Author('John');
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = ['name' => AuthorExcludedId::class, 'params' => []];
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(AuthorExcludedId::class));
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
+
+        self::assertSame($author, $authorFetched);
+    }
+
     public function testFindManagedEntity()
     {
         $em = $this->registry->getManager();
@@ -111,7 +127,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -124,7 +140,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $author = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -139,7 +155,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -154,7 +170,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -172,7 +188,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
@@ -184,7 +200,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_EXCEPTION);
 
@@ -198,7 +214,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
 
@@ -215,7 +231,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
