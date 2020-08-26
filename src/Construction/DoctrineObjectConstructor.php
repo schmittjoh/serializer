@@ -89,23 +89,21 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (isset($metadata->propertyMetadata[$name])) {
-                $propertyMetadata = $metadata->propertyMetadata[$name];
-
-                // Avoid calling objectManager->find if some identification properties are excluded
-                if ($this->isIdentifierFieldExcluded($propertyMetadata, $context)) {
-                    return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
-                }
-
-                $dataName = $propertyMetadata->serializedName;
-            } else {
-                $dataName = $name;
-            }
-
-            if (!array_key_exists($dataName, $data)) {
+            // Avoid calling objectManager->find if some identification properties are excluded
+            if (!isset($metadata->propertyMetadata[$name])) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
-            $identifierList[$name] = $data[$dataName];
+            $propertyMetadata = $metadata->propertyMetadata[$name];
+
+            // Avoid calling objectManager->find if some identification properties are excluded by some exclusion strategy
+            if ($this->isIdentifierFieldExcluded($propertyMetadata, $context)) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+            }
+
+            if (!array_key_exists($propertyMetadata->serializedName, $data)) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+            }
+            $identifierList[$name] = $data[$propertyMetadata->serializedName];
         }
 
         if (empty($identifierList)) {
