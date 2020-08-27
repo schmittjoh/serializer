@@ -182,8 +182,8 @@ class GraphNavigatorTest extends TestCase
         $this->context->method('getFormat')->willReturn(TestSubscribingHandler::FORMAT);
 
         $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
-        $this->context->method('hasAttribute')->with($this->equalTo('allows_root_null'))->will($this->returnValue(true));
-        $this->context->method('getAttribute')->with($this->equalTo('allows_root_null'))->will($this->returnValue(true));
+        $this->context->method('hasAttribute')->with('allows_root_null')->willReturn(true);
+        $this->context->method('getAttribute')->with('allows_root_null')->willReturn(true);
         $this->context->method('getVisitingSet')->will($this->returnValue(new SplObjectStorage()));
 
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
