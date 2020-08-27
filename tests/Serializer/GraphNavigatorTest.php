@@ -28,6 +28,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactory;
 use PHPUnit\Framework\TestCase;
+use SplObjectStorage;
 
 class GraphNavigatorTest extends TestCase
 {
@@ -159,6 +160,37 @@ class GraphNavigatorTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage($msg);
         $navigator->accept($object, ['name' => $typeName, 'params' => []]);
+    }
+
+    public function testDoesNotAllowRootNullOnSerialization()
+    {
+        $this->context->method('getFormat')->willReturn(TestSubscribingHandler::FORMAT);
+
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $this->context->initialize(TestSubscribingHandler::FORMAT, $this->serializationVisitor, $navigator, $this->metadataFactory);
+
+        $this->expectException(NotAcceptableException::class);
+        $navigator->accept(null);
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testAllowRootNullOnSerialization()
+    {
+        $this->context->method('getFormat')->willReturn(TestSubscribingHandler::FORMAT);
+
+        $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
+        $this->context->method('hasAttribute')->with($this->equalTo('allows_root_null'))->will($this->returnValue(true));
+        $this->context->method('getAttribute')->with($this->equalTo('allows_root_null'))->will($this->returnValue(true));
+        $this->context->method('getVisitingSet')->will($this->returnValue(new SplObjectStorage()));
+
+        $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
+        $navigator->initialize($this->serializationVisitor, $this->context);
+        $this->context->initialize(TestSubscribingHandler::FORMAT, $this->serializationVisitor, $navigator, $this->metadataFactory);
+
+        $navigator->accept(null);
     }
 
     public function testHandlerIsExecutedOnSerialization()
