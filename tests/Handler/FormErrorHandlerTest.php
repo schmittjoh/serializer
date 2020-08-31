@@ -236,8 +236,8 @@ class FormErrorHandlerTest extends TestCase
 
     public function testCustomTranslationDomainWithPluralTranslation()
     {
-        /** @var Translator|\PHPUnit_Framework_MockObject_MockObject $translator */
         $translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
+        \assert($translator instanceof Translator || $translator instanceof \PHPUnit_Framework_MockObject_MockObject);
         $interface = interface_exists(TranslatorInterface::class)
             ? TranslatorInterface::class
             : LegacyTranslatorInterface::class;

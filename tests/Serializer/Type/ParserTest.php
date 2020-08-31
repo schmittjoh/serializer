@@ -43,83 +43,103 @@ class ParserTest extends TestCase
             'string',
             $type('string'),
         ];
+
         yield [
             'array<Foo>',
             $type('array', [['name' => 'Foo', 'params' => []]]),
         ];
+
         yield [
             'Foo<\'a\'>',
             $type('Foo', ['a']),
         ];
+
         yield [
             'Foo<>',
             $type('Foo', []),
         ];
+
         yield [
             'Foo<5>',
             $type('Foo', [5]),
         ];
+
         yield [
             'Foo<5.5>',
             $type('Foo', [5.5]),
         ];
+
         yield [
             'Foo<null>',
             $type('Foo', [null]),
         ];
+
         yield [
             'Foo<\'a\',\'b\',\'c\'>',
             $type('Foo', ['a', 'b', 'c']),
         ];
+
         yield [
             'Foo<\'a\',\'\'>',
             $type('Foo', ['a', '']),
         ];
+
         yield [
             'array<Foo,Bar>',
             $type('array', [['name' => 'Foo', 'params' => []], ['name' => 'Bar', 'params' => []]]),
         ];
+
         yield [
             'array<Foo\Bar, Baz\Boo>',
             $type('array', [['name' => 'Foo\Bar', 'params' => []], ['name' => 'Baz\Boo', 'params' => []]]),
         ];
+
         yield [
             'a<b<c,d>,e>',
             $type('a', [['name' => 'b', 'params' => [['name' => 'c', 'params' => []], ['name' => 'd', 'params' => []]]], ['name' => 'e', 'params' => []]]),
 
         ];
+
         yield [
             'Foo',
             $type('Foo'),
         ];
+
         yield [
             'Foo\Bar',
             $type('Foo\Bar'),
         ];
+
         yield [
             'Foo<"asdf asdf">',
             $type('Foo', ['asdf asdf']),
         ];
+
         yield [
             'Foo<[]>',
             $type('Foo', [[]]),
         ];
+
         yield [
             'Foo<[[]]>',
             $type('Foo', [[[]]]),
         ];
+
         yield [
             'Foo<[123]>',
             $type('Foo', [[123]]),
         ];
+
         yield [
             'Foo<[123, 456]>',
             $type('Foo', [[123, 456]]),
         ];
+
         yield [
             'Foo<[[123], 456, "bar"]>',
             $type('Foo', [[[123], 456, 'bar']]),
         ];
+
         yield [
             'DateTime<null, null, [\'Y-m-d\TH:i:s\', \'Y-m-d\TH:i:sP\']>',
             $type('DateTime', [null, null, ['Y-m-d\TH:i:s', 'Y-m-d\TH:i:sP']]),

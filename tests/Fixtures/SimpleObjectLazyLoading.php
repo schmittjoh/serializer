@@ -36,17 +36,11 @@ class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterfa
         $this->initializer = $initializer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getProxyInitializer(): ?Closure
     {
         return $this->initializer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function initializeProxy(): bool
     {
         if (!$this->__isInitialized__) {
@@ -59,9 +53,6 @@ class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterfa
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isProxyInitialized(): bool
     {
         return $this->__isInitialized__;

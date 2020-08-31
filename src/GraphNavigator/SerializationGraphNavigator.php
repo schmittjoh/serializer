@@ -125,6 +125,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
             // guarantee correct handling of null values, and not have any internal auto-casting behavior.
             $type = ['name' => 'NULL', 'params' => []];
         }
+
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
@@ -136,6 +137,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 if (!$this->shouldSerializeNull) {
                     throw new NotAcceptableException();
                 }
+
                 return $this->visitor->visitNull($data, $type);
 
             case 'string':
@@ -172,6 +174,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                     if ($this->context->isVisiting($data)) {
                         throw new CircularReferenceDetectedException();
                     }
+
                     $this->context->startVisiting($data);
                 }
 
@@ -203,12 +206,13 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                         // Skip handler, fallback to default behavior
                     } catch (NotAcceptableException $e) {
                         $this->context->stopVisiting($data);
+
                         throw $e;
                     }
                 }
 
-                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                \assert($metadata instanceof ClassMetadata);
 
                 if ($metadata->usingExpression && null === $this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));

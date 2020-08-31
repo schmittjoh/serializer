@@ -60,16 +60,17 @@ class TypedPropertiesDriver implements DriverInterface
 
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
-        /** @var SerializerClassMetadata $classMetadata */
         $classMetadata = $this->delegate->loadMetadataForClass($class);
+        \assert($classMetadata instanceof SerializerClassMetadata);
 
         if (null === $classMetadata) {
             return null;
         }
+
         // We base our scan on the internal driver's property list so that we
         // respect any internal white/blacklisting like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
-            /** @var $propertyMetadata PropertyMetadata */
+            /** @var PropertyMetadata $propertyMetadata */
 
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {

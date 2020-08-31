@@ -73,23 +73,31 @@ final class Lexer extends AbstractLexer implements ParserInterface
                 $value = str_replace("''", "'", substr($value, 1, strlen($value) - 2));
 
                 return self::T_STRING;
+
             case '"' === $value[0]:
                 $value = str_replace('""', '"', substr($value, 1, strlen($value) - 2));
 
                 return self::T_STRING;
+
             case 'null' === $value:
                 return self::T_NULL;
+
             // Recognize identifiers, aliased or qualified names
             case ctype_alpha($value[0]) || '\\' === $value[0]:
                 return self::T_IDENTIFIER;
+
             case ',' === $value:
                 return self::T_COMMA;
+
             case '>' === $value:
                 return self::T_TYPE_END;
+
             case '<' === $value:
                 return self::T_TYPE_START;
+
             case ']' === $value:
                 return self::T_ARRAY_END;
+
             case '[' === $value:
                 return self::T_ARRAY_START;
 

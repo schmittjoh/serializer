@@ -150,11 +150,13 @@ abstract class Context
 
         if (null === $this->exclusionStrategy) {
             $this->exclusionStrategy = $strategy;
+
             return $this;
         }
 
         if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
             $this->exclusionStrategy->addStrategy($strategy);
+
             return $this;
         }
 

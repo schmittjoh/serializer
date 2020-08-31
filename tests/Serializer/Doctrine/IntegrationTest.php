@@ -59,8 +59,8 @@ class IntegrationTest extends TestCase
 
     public function testDiscriminatorIsInferredFromDoctrine()
     {
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
 
         $student1 = new Student();
         $student2 = new Student();
@@ -116,8 +116,8 @@ class IntegrationTest extends TestCase
 
     private function prepareDatabase()
     {
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
 
         $tool = new SchemaTool($em);
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
@@ -155,6 +155,7 @@ class SimpleManagerRegistry extends AbstractManagerRegistry
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);
         }
+
         if (null === $defaultManager) {
             $defaultManager = key($managers);
         }
@@ -164,6 +165,7 @@ class SimpleManagerRegistry extends AbstractManagerRegistry
         if (!is_callable($serviceCreator)) {
             throw new \InvalidArgumentException('$serviceCreator must be a valid callable.');
         }
+
         $this->serviceCreator = $serviceCreator;
     }
 

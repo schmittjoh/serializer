@@ -40,6 +40,7 @@ final class VirtualProperty
             if (!property_exists(self::class, $key)) {
                 throw new InvalidArgumentException(sprintf('Unknown property "%s" on annotation "%s".', $key, self::class));
             }
+
             $this->{$key} = $value;
         }
     }

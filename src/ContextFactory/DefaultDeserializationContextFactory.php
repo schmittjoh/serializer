@@ -11,9 +11,6 @@ use JMS\Serializer\DeserializationContext;
  */
 final class DefaultDeserializationContextFactory implements DeserializationContextFactoryInterface
 {
-    /**
-     * {@InheritDoc}
-     */
     public function createDeserializationContext(): DeserializationContext
     {
         return new DeserializationContext();

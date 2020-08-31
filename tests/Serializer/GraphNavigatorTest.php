@@ -66,6 +66,7 @@ class GraphNavigatorTest extends TestCase
             ->will($this->returnCallback(static function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
                 $self->assertSame($metadata, $passedMetadata);
                 $self->assertSame($context, $passedContext);
+
                 return false;
             }));
         $exclusionStrategy->expects($this->once())
@@ -73,6 +74,7 @@ class GraphNavigatorTest extends TestCase
             ->will($this->returnCallback(static function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
                 $self->assertSame($metadata->propertyMetadata['foo'], $propertyMetadata);
                 $self->assertSame($context, $passedContext);
+
                 return false;
             }));
 
@@ -146,6 +148,7 @@ class GraphNavigatorTest extends TestCase
 
         $handler = static function ($visitor, $data, array $type, SerializationContext $context) use ($msg) {
             $context->startVisiting(new \stdClass());
+
             throw new \RuntimeException($msg);
         };
         $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $typeName, TestSubscribingHandler::FORMAT, $handler);

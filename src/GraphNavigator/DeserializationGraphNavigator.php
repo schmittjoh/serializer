@@ -108,6 +108,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         if (null === $type) {
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
+
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
@@ -167,8 +168,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     }
                 }
 
-                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                \assert($metadata instanceof ClassMetadata);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
@@ -215,6 +216,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                     }
+
                     $this->context->popPropertyMetadata();
                 }
 

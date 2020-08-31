@@ -168,12 +168,12 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testDeserializeObjectWithMissingTypedArrayProp()
     {
-        /** @var ObjectWithTypedArraySetter $dObj */
         $dObj = $this->serializer->deserialize(
             $this->getContent('empty_object'),
             ObjectWithTypedArraySetter::class,
             $this->getFormat()
         );
+        \assert($dObj instanceof ObjectWithTypedArraySetter);
 
         self::assertInstanceOf(ObjectWithTypedArraySetter::class, $dObj);
 
@@ -219,12 +219,12 @@ abstract class BaseSerializationTest extends TestCase
 
         $obj = new ObjectWithNullProperty('foo', 'bar');
 
-        /** @var ObjectWithNullProperty $dObj */
         $dObj = $this->serializer->deserialize(
             $this->getContent('simple_object_nullable'),
             ObjectWithNullProperty::class,
             $this->getFormat()
         );
+        \assert($dObj instanceof ObjectWithNullProperty);
 
         self::assertEquals($obj, $dObj);
         self::assertNull($dObj->getNullProperty());
@@ -284,11 +284,11 @@ abstract class BaseSerializationTest extends TestCase
     public function testExcludeIfOnClass()
     {
         $accountNotExpired = new PersonAccount();
-        $accountNotExpired->name='Not expired account';
+        $accountNotExpired->name = 'Not expired account';
         $accountNotExpired->expired = false;
 
         $accountExpired = new PersonAccount();
-        $accountExpired->name='Expired account';
+        $accountExpired->name = 'Expired account';
         $accountExpired->expired = true;
 
         $accounts = [$accountExpired, $accountNotExpired];
@@ -309,14 +309,14 @@ abstract class BaseSerializationTest extends TestCase
     public function testExcludeIfOnClassWithParent()
     {
         $accountNotExpired = new PersonAccountWithParent();
-        $accountNotExpired->name='Not expired account';
+        $accountNotExpired->name = 'Not expired account';
         $accountNotExpired->expired = false;
 
         $accountExpired = new PersonAccountWithParent();
-        $accountExpired->name='Expired account';
+        $accountExpired->name = 'Expired account';
         $accountExpired->expired = true;
 
-        $accounts = [$accountNotExpired,$accountExpired];
+        $accounts = [$accountNotExpired, $accountExpired];
 
         $language = new ExpressionLanguage();
 
@@ -334,14 +334,14 @@ abstract class BaseSerializationTest extends TestCase
     public function testExcludeIfOnParentClass()
     {
         $accountNotExpired = new PersonAccountOnParent();
-        $accountNotExpired->name='Not expired account';
+        $accountNotExpired->name = 'Not expired account';
         $accountNotExpired->expired = false;
 
         $accountExpired = new PersonAccountOnParent();
-        $accountExpired->name='Expired account';
+        $accountExpired->name = 'Expired account';
         $accountExpired->expired = true;
 
-        $accounts = [$accountNotExpired,$accountExpired];
+        $accounts = [$accountNotExpired, $accountExpired];
 
         $language = new ExpressionLanguage();
 
@@ -643,8 +643,8 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('array_datetimes_object'), $serializedObject);
 
         if ($this->hasDeserializer()) {
-            /** @var DateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
+            \assert($deserializedObject instanceof DateTimeArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
@@ -677,8 +677,8 @@ abstract class BaseSerializationTest extends TestCase
                 return;
             }
 
-            /** @var NamedDateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
+            \assert($deserializedObject instanceof NamedDateTimeArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
@@ -708,8 +708,9 @@ abstract class BaseSerializationTest extends TestCase
             if ('xml' === $this->getFormat()) {
                 $this->markTestSkipped('XML deserialization does not support key-val pairs mode');
             }
-            /** @var NamedDateTimeArraysObject $deserializedObject */
+
             $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
+            \assert($deserializedObject instanceof NamedDateTimeArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
@@ -877,7 +878,6 @@ abstract class BaseSerializationTest extends TestCase
         $author = new AuthorExpressionAccessContext('Ruud');
         self::assertEquals($this->getContent('author_expression_context'), $serializer->serialize($author, $this->getFormat()));
     }
-
 
     public function testExpressionAccessorStrategNotEnabled()
     {
@@ -1619,6 +1619,7 @@ abstract class BaseSerializationTest extends TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
+
         $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
 
         $builder = SerializerBuilder::create();
@@ -1677,6 +1678,7 @@ abstract class BaseSerializationTest extends TestCase
             static function ($visitor, $data) use (&$invoked) {
                 $invoked = true;
                 self::assertEquals('foo', $data);
+
                 return null;
             }
         );
@@ -1732,6 +1734,7 @@ abstract class BaseSerializationTest extends TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
+
         self::assertEquals(
             new ObjectWithIterable(Functions::iterableToArray($generator())),
             $this->deserialize($this->getContent('iterable'), get_class($withIterable))
@@ -1750,6 +1753,7 @@ abstract class BaseSerializationTest extends TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
+
         self::assertEquals(
             $withGenerator,
             $this->deserialize($this->getContent('generator'), get_class($withGenerator))
@@ -1768,6 +1772,7 @@ abstract class BaseSerializationTest extends TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
+
         self::assertEquals(
             $withIterator,
             $this->deserialize($this->getContent('iterator'), get_class($withIterator))
@@ -1786,6 +1791,7 @@ abstract class BaseSerializationTest extends TestCase
         if (!$this->hasDeserializer()) {
             return;
         }
+
         self::assertEquals(
             $withArrayIterator,
             $this->deserialize($this->getContent('iterator'), get_class($withArrayIterator))

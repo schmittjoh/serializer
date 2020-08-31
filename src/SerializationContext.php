@@ -67,6 +67,7 @@ class SerializationContext extends Context
         if (!\is_object($object)) {
             return;
         }
+
         $this->visitingSet->attach($object);
         $this->visitingStack->push($object);
     }
@@ -79,6 +80,7 @@ class SerializationContext extends Context
         if (!\is_object($object)) {
             return;
         }
+
         $this->visitingSet->detach($object);
         $poppedObject = $this->visitingStack->pop();
 
@@ -133,7 +135,6 @@ class SerializationContext extends Context
         return $this->visitingStack;
     }
 
-
     public function getVisitingSet(): \SplObjectStorage
     {
         return $this->visitingSet;
@@ -148,6 +149,7 @@ class SerializationContext extends Context
 
         $this->initialType = $type;
         $this->setAttribute('initial_type', $type);
+
         return $this;
     }
 

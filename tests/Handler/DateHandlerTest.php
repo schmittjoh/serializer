@@ -73,6 +73,7 @@ class DateHandlerTest extends TestCase
         if (isset($deserialized->f)) {
             $this->assertEquals($expected['f'], $deserialized->f);
         }
+
         $this->assertEquals($expected['s'], $deserialized->s);
     }
 

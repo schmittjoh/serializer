@@ -41,7 +41,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
-            /** @var $delegate ExclusionStrategyInterface */
+            \assert($delegate instanceof ExclusionStrategyInterface);
             if ($delegate->shouldSkipClass($metadata, $context)) {
                 return true;
             }
@@ -56,7 +56,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
-            /** @var $delegate ExclusionStrategyInterface */
+            \assert($delegate instanceof ExclusionStrategyInterface);
             if ($delegate->shouldSkipProperty($property, $context)) {
                 return true;
             }

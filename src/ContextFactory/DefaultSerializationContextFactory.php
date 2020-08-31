@@ -11,9 +11,6 @@ use JMS\Serializer\SerializationContext;
  */
 final class DefaultSerializationContextFactory implements SerializationContextFactoryInterface
 {
-    /**
-     * {@InheritDoc}
-     */
     public function createSerializationContext(): SerializationContext
     {
         return new SerializationContext();

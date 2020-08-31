@@ -103,6 +103,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         }
 
         \array_pop($this->dataStack);
+
         return $rs;
     }
 

@@ -26,6 +26,7 @@ final class Parser implements ParserInterface
         $this->lexer = new Lexer();
         $this->lexer->setInput($string);
         $this->lexer->moveNext();
+
         return $this->visit();
     }
 
@@ -56,6 +57,7 @@ final class Parser implements ParserInterface
             } elseif ($this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
                 return $this->visitArrayType();
             }
+
             return $this->visitSimpleType();
         } elseif (!$this->root && Lexer::T_ARRAY_START === $this->lexer->token['type']) {
             return $this->visitArrayType();
@@ -74,6 +76,7 @@ final class Parser implements ParserInterface
     private function visitSimpleType()
     {
         $value = $this->lexer->token['value'];
+
         return ['name' => $value, 'params' => []];
     }
 
@@ -91,10 +94,13 @@ final class Parser implements ParserInterface
                 if ($this->lexer->isNextToken(Lexer::T_TYPE_END)) {
                     break;
                 }
+
                 $this->match(Lexer::T_COMMA);
             }
         }
+
         $this->match(Lexer::T_TYPE_END);
+
         return [
             'name' => $name,
             'params' => $params,
@@ -115,10 +121,13 @@ final class Parser implements ParserInterface
                 if ($this->lexer->isNextToken(Lexer::T_ARRAY_END)) {
                     break;
                 }
+
                 $this->match(Lexer::T_COMMA);
             }
         }
+
         $this->match(Lexer::T_ARRAY_END);
+
         return $params;
     }
 
@@ -147,6 +156,7 @@ final class Parser implements ParserInterface
     private function getConstant(int $value): string
     {
         $oClass = new \ReflectionClass(Lexer::class);
+
         return array_search($value, $oClass->getConstants());
     }
 }

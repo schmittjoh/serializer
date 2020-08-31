@@ -123,6 +123,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         return (string) $data;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -138,6 +139,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -145,6 +147,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         return (int) $data;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -152,6 +155,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         return (float) $data;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -162,6 +166,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (2 !== count($type['params'])) {
                 throw new RuntimeException('The array type must be specified as "array<K,V>" for Key-Value-Pairs.');
             }
+
             $this->revertCurrentMetadata();
 
             [$keyType, $entryType] = $type['params'];
@@ -239,6 +244,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw new LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type['params'])));
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -256,6 +262,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             // Check XML element with namespace for discriminatorFieldName
             case !$metadata->xmlDiscriminatorAttribute && null !== $metadata->xmlDiscriminatorNamespace && isset($data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName}):
                 return (string) $data->children($metadata->xmlDiscriminatorNamespace)->{$metadata->discriminatorFieldName};
+
             // Check XML element for discriminatorFieldName
             case isset($data->{$metadata->discriminatorFieldName}):
                 return (string) $data->{$metadata->discriminatorFieldName};
@@ -274,6 +281,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -285,14 +293,17 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (!$metadata->type) {
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
+
             return $this->navigator->accept($data, $metadata->type);
         }
+
         if ($metadata->xmlAttribute) {
             $attributes = $data->attributes($metadata->xmlNamespace);
             if (isset($attributes[$name])) {
                 if (!$metadata->type) {
                     throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
                 }
+
                 return $this->navigator->accept($attributes[$name], $metadata->type);
             }
 
@@ -303,6 +314,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (!$metadata->type) {
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
+
             return $this->navigator->accept($data, $metadata->type);
         }
 
@@ -316,8 +328,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (!$metadata->type) {
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
+
             $v = $this->navigator->accept($enclosingElem, $metadata->type);
             $this->revertCurrentMetadata();
+
             return $v;
         }
 
@@ -333,6 +347,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (empty($nodes)) {
                 throw new NotAcceptableException();
             }
+
             $node = reset($nodes);
         } else {
             $namespaces = $data->getDocNamespaces();
@@ -343,9 +358,11 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             } else {
                 $nodes = $data->xpath('./' . $name);
             }
+
             if (empty($nodes)) {
                 throw new NotAcceptableException();
             }
+
             $node = reset($nodes);
         }
 
@@ -356,6 +373,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         if (!$metadata->type) {
             throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
         }
+
         return $this->navigator->accept($node, $metadata->type);
     }
 
@@ -429,6 +447,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if ('<' === $char) {
                 ++$braces;
             }
+
             if ('>' === $char) {
                 --$braces;
             }
@@ -457,7 +476,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             }
 
             $xsiAttributes = $value->attributes('http://www.w3.org/2001/XMLSchema-instance');
-            if (isset($xsiAttributes['nil'])
+            if (
+                isset($xsiAttributes['nil'])
                 && ('true' === (string) $xsiAttributes['nil'] || '1' === (string) $xsiAttributes['nil'])
             ) {
                 return true;

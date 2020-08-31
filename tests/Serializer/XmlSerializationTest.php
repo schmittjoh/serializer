@@ -74,7 +74,6 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testAccessorSetterDeserialization()
     {
-        /** @var AccessorSetter $object */
         $object = $this->deserialize(
             '<?xml version="1.0"?>
             <AccessorSetter>
@@ -85,6 +84,7 @@ class XmlSerializationTest extends BaseSerializationTest
             </AccessorSetter>',
             'JMS\Serializer\Tests\Fixtures\AccessorSetter'
         );
+        \assert($object instanceof AccessorSetter);
 
         self::assertInstanceOf('stdClass', $object->getElement());
         self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\AccessorSetterElement', $object->getElement()->element);
@@ -572,6 +572,7 @@ class XmlSerializationTest extends BaseSerializationTest
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
+
         return (string) reset($nodes);
     }
 

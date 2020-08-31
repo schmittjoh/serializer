@@ -209,8 +209,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testExpressionVirtualProperty()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess'));
+        \assert($m instanceof ClassMetadata);
 
         $keys = array_keys($m->propertyMetadata);
         self::assertEquals(['firstName', 'lastName', 'id'], $keys);
@@ -218,8 +218,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadDiscriminator()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -235,8 +235,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadDiscriminatorWhenParentIsInDiscriminatorMap()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Post'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -252,8 +252,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadXmlDiscriminator()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlAttributeDiscriminatorParent::class));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -270,8 +270,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadXmlDiscriminatorWithNamespaces()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlNamespaceDiscriminatorParent::class));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -288,8 +288,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testCanDefineMetadataForInternalClass()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(\PDOStatement::class));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertSame('int', $m->propertyMetadata['queryString']->type['name']);
@@ -299,8 +299,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadXmlDiscriminatorWithAttributeNamespaces()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithXmlNamespaceAttributeDiscriminatorParent::class));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -317,8 +317,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadDiscriminatorWithGroup()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Vehicle'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('type', $m->discriminatorFieldName);
@@ -332,8 +332,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testSkipWhenEmptyOption()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ParentSkipWithEmptyChild::class));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
 
@@ -347,8 +347,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadDiscriminatorSubClass()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\Car'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertNull($m->discriminatorValue);
@@ -359,8 +359,8 @@ abstract class BaseDriverTest extends TestCase
 
     public function testLoadDiscriminatorSubClassWhenParentIsInDiscriminatorMap()
     {
-        /** @var ClassMetadata $m */
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertNull($m->discriminatorValue);
@@ -623,6 +623,7 @@ abstract class BaseDriverTest extends TestCase
         if ($this instanceof PhpDriverTest) {
             return;
         }
+
         self::assertArrayHasKey('id', $first->propertyMetadata);
         self::assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
     }
@@ -635,9 +636,6 @@ abstract class BaseDriverTest extends TestCase
         self::assertArrayNotHasKey('age', $m->propertyMetadata);
     }
 
-    /**
-     * @return DriverInterface
-     */
     abstract protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface;
 
     protected function getExpressionEvaluator()
@@ -649,6 +647,7 @@ abstract class BaseDriverTest extends TestCase
         }, static function () {
             return true;
         }));
+
         return new ExpressionEvaluator($language);
     }
 }

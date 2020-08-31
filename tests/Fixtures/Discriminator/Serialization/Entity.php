@@ -32,6 +32,7 @@ abstract class Entity
     public function getEntityName(): string
     {
         $reflect = new ReflectionClass($this);
+
         return $reflect->getShortName();
     }
 }

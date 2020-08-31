@@ -186,6 +186,7 @@ final class SerializerBuilder
         if ($handlerRegistry) {
             $this->handlersConfigured = true;
         }
+
         if ($eventDispatcher) {
             $this->listenersConfigured = true;
         }
@@ -194,6 +195,7 @@ final class SerializerBuilder
     public function setAccessorStrategy(AccessorStrategyInterface $accessorStrategy): self
     {
         $this->accessorStrategy = $accessorStrategy;
+
         return $this;
     }
 
@@ -202,6 +204,7 @@ final class SerializerBuilder
         if (!$this->accessorStrategy) {
             $this->accessorStrategy = new DefaultAccessorStrategy($this->expressionEvaluator);
         }
+
         return $this->accessorStrategy;
     }
 
@@ -238,6 +241,7 @@ final class SerializerBuilder
         if (!is_dir($dir)) {
             $this->createDir($dir);
         }
+
         if (!is_writable($dir)) {
             throw new InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
@@ -496,6 +500,7 @@ final class SerializerBuilder
     public function setMetadataCache(CacheInterface $cache): self
     {
         $this->metadataCache = $cache;
+
         return $this;
     }
 
@@ -545,6 +550,7 @@ final class SerializerBuilder
             $this->addDefaultSerializationVisitors();
             $this->addDefaultDeserializationVisitors();
         }
+
         $navigatorFactories = [
             GraphNavigatorInterface::DIRECTION_SERIALIZATION => $this->getSerializationNavigatorFactory($metadataFactory),
             GraphNavigatorInterface::DIRECTION_DESERIALIZATION => $this->getDeserializationNavigatorFactory($metadataFactory),
