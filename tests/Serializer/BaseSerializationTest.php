@@ -126,6 +126,8 @@ use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
+use function assert;
+
 abstract class BaseSerializationTest extends TestCase
 {
     protected $factory;
@@ -159,8 +161,8 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testNoMetadataNeededWhenDeSerializingNotUsedProperty()
     {
-        /** @var ParentNoMetadataChildObject $dObj */
         $object = $this->deserialize($this->getContent('ParentNoMetadataChildObject'), ParentNoMetadataChildObject::class);
+        assert($object instanceof ParentNoMetadataChildObject);
 
         self::assertSame('John', $object->bar);
         self::assertNull($object->foo);
@@ -173,7 +175,7 @@ abstract class BaseSerializationTest extends TestCase
             ObjectWithTypedArraySetter::class,
             $this->getFormat()
         );
-        \assert($dObj instanceof ObjectWithTypedArraySetter);
+        assert($dObj instanceof ObjectWithTypedArraySetter);
 
         self::assertInstanceOf(ObjectWithTypedArraySetter::class, $dObj);
 
@@ -224,7 +226,7 @@ abstract class BaseSerializationTest extends TestCase
             ObjectWithNullProperty::class,
             $this->getFormat()
         );
-        \assert($dObj instanceof ObjectWithNullProperty);
+        assert($dObj instanceof ObjectWithNullProperty);
 
         self::assertEquals($obj, $dObj);
         self::assertNull($dObj->getNullProperty());
@@ -644,7 +646,7 @@ abstract class BaseSerializationTest extends TestCase
 
         if ($this->hasDeserializer()) {
             $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
-            \assert($deserializedObject instanceof DateTimeArraysObject);
+            assert($deserializedObject instanceof DateTimeArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
@@ -677,8 +679,8 @@ abstract class BaseSerializationTest extends TestCase
                 return;
             }
 
-            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeArraysObject');
-            \assert($deserializedObject instanceof NamedDateTimeArraysObject);
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimes_object'), NamedDateTimeArraysObject::class);
+            assert($deserializedObject instanceof NamedDateTimeArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
@@ -709,8 +711,8 @@ abstract class BaseSerializationTest extends TestCase
                 $this->markTestSkipped('XML deserialization does not support key-val pairs mode');
             }
 
-            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), 'Jms\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject');
-            \assert($deserializedObject instanceof NamedDateTimeArraysObject);
+            $deserializedObject = $this->deserialize($this->getContent('array_named_datetimeimmutables_object'), NamedDateTimeImmutableArraysObject::class);
+            assert($deserializedObject instanceof NamedDateTimeImmutableArraysObject);
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {

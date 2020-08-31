@@ -9,7 +9,7 @@ use ProxyManager\Proxy\LazyLoadingInterface;
 
 class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterface
 {
-    public $__isInitialized__ = false;
+    private $isInitialized = false;
 
     private $initializer;
 
@@ -17,15 +17,15 @@ class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterfa
 
     public function __load()
     {
-        if (!$this->__isInitialized__) {
+        if (!$this->isInitialized) {
             $this->camelCase = 'proxy-boo';
-            $this->__isInitialized__ = true;
+            $this->isInitialized = true;
         }
     }
 
     public function __isInitialized()
     {
-        return $this->__isInitialized__;
+        return $this->isInitialized;
     }
 
     /**
@@ -43,9 +43,9 @@ class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterfa
 
     public function initializeProxy(): bool
     {
-        if (!$this->__isInitialized__) {
+        if (!$this->isInitialized) {
             $this->camelCase = 'proxy-boo';
-            $this->__isInitialized__ = true;
+            $this->isInitialized = true;
 
             return !$this->initializer || call_user_func($this->initializer);
         }
@@ -55,6 +55,6 @@ class SimpleObjectLazyLoading extends SimpleObject implements LazyLoadingInterfa
 
     public function isProxyInitialized(): bool
     {
-        return $this->__isInitialized__;
+        return $this->isInitialized;
     }
 }
