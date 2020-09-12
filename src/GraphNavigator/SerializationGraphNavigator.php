@@ -133,7 +133,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
         switch ($type['name']) {
             case 'NULL':
-                if (!$this->shouldSerializeNull) {
+                if (!$this->shouldSerializeNull && !$this->isRootNullAllowed()) {
                     throw new NotAcceptableException();
                 }
                 return $this->visitor->visitNull($data, $type);
@@ -257,6 +257,11 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                 return $this->visitor->endVisitingObject($metadata, $data, $type);
         }
+    }
+
+    private function isRootNullAllowed(): bool
+    {
+        return $this->context->hasAttribute('allows_root_null') && $this->context->getAttribute('allows_root_null') && 0 === $this->context->getVisitingSet()->count();
     }
 
     private function afterVisitingObject(ClassMetadata $metadata, object $object, array $type): void
