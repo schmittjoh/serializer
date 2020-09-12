@@ -157,6 +157,17 @@ abstract class BaseSerializationTest extends TestCase
         );
     }
 
+    public function testSerializeNullRoot()
+    {
+        $context = SerializationContext::create()
+            ->setAttribute('allows_root_null', true);
+
+        self::assertEquals(
+            $this->getContent('nullable_root'),
+            $this->serializer->serialize(null, $this->getFormat(), $context)
+        );
+    }
+
     public function testNoMetadataNeededWhenDeSerializingNotUsedProperty()
     {
         /** @var ParentNoMetadataChildObject $dObj */
