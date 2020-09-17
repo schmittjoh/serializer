@@ -21,6 +21,7 @@ class DoctrineDriverTest extends TestCase
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\Entity\BlogPost');
+
         return $this->getDoctrineDriver()->loadMetadataForClass($refClass);
     }
 

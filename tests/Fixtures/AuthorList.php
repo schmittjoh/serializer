@@ -18,9 +18,6 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     protected $authors = [];
 
-    /**
-     * @param Author $author
-     */
     public function add(Author $author)
     {
         $this->authors[] = $author;

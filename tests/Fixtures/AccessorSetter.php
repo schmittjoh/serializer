@@ -33,9 +33,6 @@ class AccessorSetter
         return $this->element;
     }
 
-    /**
-     * @param AccessorSetterElement $element
-     */
     public function setElementDifferent(AccessorSetterElement $element)
     {
         $this->element = new \stdClass();

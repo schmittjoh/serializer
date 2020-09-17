@@ -116,15 +116,17 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         $document = $this->getDocument();
         if ($rootNamespace) {
-            $rootNode = $document->createElementNS($rootNamespace, (null !== $rootPrefix ? ($rootPrefix . ':') : '') . $rootName);
+            $rootNode = $document->createElementNS($rootNamespace, (null !== $rootPrefix ? $rootPrefix . ':' : '') . $rootName);
         } else {
             $rootNode = $document->createElement($rootName);
         }
+
         $document->appendChild($rootNode);
         $this->setCurrentNode($rootNode);
 
         return $rootNode;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -136,6 +138,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
         return $node;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -251,7 +254,8 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             return;
         }
 
-        if (($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
+        if (
+            ($metadata->xmlValue && $this->currentNode->childNodes->length > 0)
             || (!$metadata->xmlValue && $this->hasValue)
         ) {
             throw new RuntimeException(sprintf('If you make use of @XmlValue, all other properties in the class must have the @XmlAttribute annotation. Invalid usage detected in class %s.', $metadata->class));
@@ -314,6 +318,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             $this->revertCurrentMetadata();
             $this->revertCurrentNode();
             $this->hasValue = false;
+
             return;
         }
 
@@ -378,6 +383,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
                 'http://www.w3.org/2001/XMLSchema-instance'
             );
         }
+
         return $this->document->saveXML();
     }
 
@@ -396,6 +402,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         if (null === $this->document) {
             $this->document = $this->createDocument();
         }
+
         return $this->document;
     }
 
@@ -457,6 +464,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             } elseif ($element->namespaceURI === $uri) {
                 continue;
             }
+
             $element->setAttributeNS('http://www.w3.org/2000/xmlns/', $attribute, $uri);
         }
     }
@@ -470,17 +478,22 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             if ($this->parentHasNonEmptyDefaultNs()) {
                 return $this->document->createElementNS($namespace, $tagName);
             }
+
             return $this->document->createElement($tagName);
         }
+
         if (null === $namespace) {
             return $this->document->createElement($tagName);
         }
+
         if ($this->currentNode->isDefaultNamespace($namespace)) {
             return $this->document->createElementNS($namespace, $tagName);
         }
+
         if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
             $prefix = 'ns-' . substr(sha1($namespace), 0, 8);
         }
+
         return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
     }
 
@@ -490,6 +503,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             if (!$prefix = $node->lookupPrefix($namespace)) {
                 $prefix = 'ns-' . substr(sha1($namespace), 0, 8);
             }
+
             $node->setAttributeNS($namespace, $prefix . ':' . $name, $value);
         } else {
             $node->setAttribute($name, $value);

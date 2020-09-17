@@ -39,6 +39,7 @@ class ArrayCollectionDepthTest extends TestCase
     public static function getCollections()
     {
         $data = [new Node('lvl1', new Node('lvl2', new Node('lvl3')))];
+
         return [
             [$data],
             [new ArrayCollection($data)],

@@ -7,8 +7,6 @@ namespace JMS\Serializer\Tests\Fixtures\Discriminator\Serialization;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class User
- *
  * @JMS\Discriminator(field = "entityName",
  *     groups={"entity.identification"},
  *     map = {

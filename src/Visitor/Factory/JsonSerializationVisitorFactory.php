@@ -25,6 +25,7 @@ final class JsonSerializationVisitorFactory implements SerializationVisitorFacto
     public function setOptions(int $options): self
     {
         $this->options = $options;
+
         return $this;
     }
 }

@@ -109,6 +109,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         } elseif ($context->hasAttribute('initial_type')) {
             return $context->getAttribute('initial_type');
         }
+
         return null;
     }
 
@@ -160,6 +161,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $type = $this->findInitialType($type, $context);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
+
         return $visitor->getResult($result);
     }
 
@@ -246,6 +248,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (null !== $type) {
             $type = $this->typeParser->parse($type);
         }
+
         return $navigator->accept($data, $type);
     }
 
@@ -259,6 +262,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if ($data instanceof \ArrayObject || $data instanceof \stdClass) {
             $data = (array) $data;
         }
+
         if (\is_array($data)) {
             foreach ($data as $k => $v) {
                 $data[$k] = $this->convertArrayObjects($v);

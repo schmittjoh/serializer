@@ -242,16 +242,16 @@ class ObjectConstructorTest extends TestCase
     {
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
         $server = new Server('Linux', '127.0.0.1', 'home');
         $em->persist($server);
         $em->flush();
         $em->clear();
 
         $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
-        /** @var Server $serverDeserialized */
         $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
+        \assert($serverDeserialized instanceof Server);
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
@@ -367,8 +367,8 @@ class ObjectConstructorTest extends TestCase
 
     private function prepareDatabase()
     {
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
 
         $tool = new SchemaTool($em);
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
@@ -445,6 +445,7 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);
         }
+
         if (null === $defaultManager) {
             $defaultManager = key($managers);
         }
@@ -454,6 +455,7 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
         if (!is_callable($serviceCreator)) {
             throw new \InvalidArgumentException('$serviceCreator must be a valid callable.');
         }
+
         $this->serviceCreator = $serviceCreator;
     }
 

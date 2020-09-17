@@ -29,9 +29,6 @@ final class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
         $this->lowerCase = $lowerCase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function translateName(PropertyMetadata $property): string
     {
         $name = preg_replace('/[A-Z]+/', $this->separator . '\\0', $property->name);

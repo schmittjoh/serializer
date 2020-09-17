@@ -136,6 +136,7 @@ final class DateHandler implements SubscribingHandlerInterface
     private function isDataXmlNull($data): bool
     {
         $attributes = $data->attributes('xsi', true);
+
         return isset($attributes['nil'][0]) && 'true' === (string) $attributes['nil'][0];
     }
 
@@ -261,8 +262,9 @@ final class DateHandler implements SubscribingHandlerInterface
                 $data = str_replace($match[0], '', $data);
                 $f = (float) $match[0];
             }
+
             $dateInterval = new \DateInterval($data);
-            $dateInterval->f= $f;
+            $dateInterval->f = $f;
         } catch (\Throwable $e) {
             throw new RuntimeException(sprintf('Invalid dateinterval "%s", expected ISO 8601 format', $data), 0, $e);
         }

@@ -35,6 +35,7 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
     public function enableExternalEntities(bool $enable = true): self
     {
         $this->disableExternalEntities = !$enable;
+
         return $this;
     }
 
@@ -44,12 +45,14 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
     public function setDoctypeWhitelist(array $doctypeWhitelist): self
     {
         $this->doctypeWhitelist = $doctypeWhitelist;
+
         return $this;
     }
 
     public function setOptions(int $options): self
     {
         $this->options = $options;
+
         return $this;
     }
 }

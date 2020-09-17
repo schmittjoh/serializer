@@ -33,6 +33,7 @@ class CircularReferenceParent
         if (!$this->collection) {
             $this->collection = [];
         }
+
         foreach ($this->collection as $v) {
             $v->setParent($this);
         }
@@ -40,6 +41,7 @@ class CircularReferenceParent
         if (!$this->anotherCollection) {
             $this->anotherCollection = new ArrayCollection();
         }
+
         foreach ($this->anotherCollection as $v) {
             $v->setParent($this);
         }

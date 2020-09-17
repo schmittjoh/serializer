@@ -45,7 +45,6 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         $this->evaluator = $evaluator;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -86,7 +85,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         $accessor = $this->readAccessors[$metadata->class] ?? null;
         if (null === $accessor) {
-            $accessor =\Closure::bind(static function ($o, $name) {
+            $accessor = \Closure::bind(static function ($o, $name) {
                 return $o->$name;
             }, null, $metadata->class);
             $this->readAccessors[$metadata->class] = $accessor;
@@ -106,6 +105,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
 
         if (null !== $metadata->setter) {
             $object->{$metadata->setter}($value);
+
             return;
         }
 
@@ -118,6 +118,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             }
 
             $ref->setValue($object, $value);
+
             return;
         }
 
@@ -128,6 +129,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             }, null, $metadata->class);
             $this->writeAccessors[$metadata->class] = $accessor;
         }
+
         $accessor($object, $metadata->name, $value);
     }
 }

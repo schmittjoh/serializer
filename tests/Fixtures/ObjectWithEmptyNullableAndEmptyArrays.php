@@ -12,53 +12,53 @@ class ObjectWithEmptyNullableAndEmptyArrays
      * @Serializer\XmlList(inline = true, entry = "comment")
      * @Serializer\Type("array")
      */
-    public $null_inline = null;
+    public $nullInline = null;
 
     /**
      * @Serializer\XmlList(inline = true, entry = "comment")
      * @Serializer\Type("array")
      */
-    public $empty_inline = [];
+    public $emptyInline = [];
 
     /**
      * @Serializer\XmlList(inline = true, entry = "comment")
      * @Serializer\Type("array")
      */
-    public $not_empty_inline = ['not_empty_inline'];
+    public $notEmptyInline = ['not_empty_inline'];
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment")
      * @Serializer\Type("array")
      */
-    public $null_not_inline = null;
+    public $nullNotInline = null;
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment")
      * @Serializer\Type("array")
      */
-    public $empty_not_inline = [];
+    public $emptyNotInline = [];
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment", skipWhenEmpty=false)
      * @Serializer\Type("array")
      */
-    public $not_empty_not_inline = ['not_empty_not_inline'];
+    public $notEmptyNotInline = ['not_empty_not_inline'];
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment", skipWhenEmpty=false)
      * @Serializer\Type("array")
      */
-    public $null_not_inline_skip = null;
+    public $nullNotInlineSkip = null;
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment", skipWhenEmpty=false)
      * @Serializer\Type("array")
      */
-    public $empty_not_inline_skip = [];
+    public $emptyNotInlineSkip = [];
 
     /**
      * @Serializer\XmlList(inline = false, entry = "comment", skipWhenEmpty=false)
      * @Serializer\Type("array")
      */
-    public $not_empty_not_inline_skip = ['not_empty_not_inline_skip'];
+    public $notEmptyNotInlineSkip = ['not_empty_not_inline_skip'];
 }

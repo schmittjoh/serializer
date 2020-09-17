@@ -44,17 +44,11 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if ($this->nestedGroups) {
@@ -75,6 +69,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
                     return false;
                 }
             }
+
             return true;
         }
     }
@@ -103,13 +98,16 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
                 if ($index > 0) {
                     $groups = [self::DEFAULT_GROUP];
                 }
+
                 break;
             }
+
             $groups = $groups[$path];
             if (!array_filter($groups, 'is_string')) {
                 $groups += [self::DEFAULT_GROUP];
             }
         }
+
         return $groups;
     }
 }

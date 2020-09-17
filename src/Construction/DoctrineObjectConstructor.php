@@ -93,6 +93,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             if (!isset($metadata->propertyMetadata[$name])) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
+
             $propertyMetadata = $metadata->propertyMetadata[$name];
 
             // Avoid calling objectManager->find if some identification properties are excluded by some exclusion strategy
@@ -103,6 +104,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             if (!array_key_exists($propertyMetadata->serializedName, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
+
             $identifierList[$name] = $data[$propertyMetadata->serializedName];
         }
 
@@ -119,10 +121,13 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             switch ($this->fallbackStrategy) {
                 case self::ON_MISSING_NULL:
                     return null;
+
                 case self::ON_MISSING_EXCEPTION:
                     throw new ObjectConstructionException(sprintf('Entity %s can not be found', $metadata->name));
+
                 case self::ON_MISSING_FALLBACK:
                     return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+
                 default:
                     throw new InvalidArgumentException('The provided fallback strategy for the object constructor is not valid');
             }

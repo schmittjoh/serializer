@@ -84,6 +84,7 @@ final class IteratorHandlerTest extends TestCase
     {
         $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $visitor->method('visitArray')->with(self::DATA)->willReturn(self::DATA);
+
         return $visitor;
     }
 
@@ -91,6 +92,7 @@ final class IteratorHandlerTest extends TestCase
     {
         $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
         $visitor->method('visitArray')->with(self::DATA)->willReturn(self::DATA);
+
         return $visitor;
     }
 }

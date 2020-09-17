@@ -209,6 +209,7 @@ class ClassMetadata extends MergeableClassMetadata
         if (!$object instanceof ClassMetadata) {
             throw new InvalidMetadataException('$object must be an instance of ClassMetadata.');
         }
+
         parent::merge($object);
 
         $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
@@ -219,6 +220,7 @@ class ClassMetadata extends MergeableClassMetadata
         if (null !== $object->excludeIf) {
             $this->excludeIf = $object->excludeIf;
         }
+
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
         if ($object->accessorOrder) {
@@ -345,6 +347,7 @@ class ClassMetadata extends MergeableClassMetadata
         if (isset($unserialized['discriminatorGroups'])) {
             $this->discriminatorGroups = $unserialized['discriminatorGroups'];
         }
+
         if (isset($unserialized['usingExpression'])) {
             $this->usingExpression = $unserialized['usingExpression'];
         }
@@ -378,7 +381,8 @@ class ClassMetadata extends MergeableClassMetadata
 
     private function handleDiscriminatorProperty(): void
     {
-        if ($this->discriminatorMap
+        if (
+            $this->discriminatorMap
             && !$this->getReflection()->isAbstract()
             && !$this->getReflection()->isInterface()
         ) {
@@ -392,7 +396,8 @@ class ClassMetadata extends MergeableClassMetadata
 
             $this->discriminatorValue = $typeValue;
 
-            if (isset($this->propertyMetadata[$this->discriminatorFieldName])
+            if (
+                isset($this->propertyMetadata[$this->discriminatorFieldName])
                 && !$this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata
             ) {
                 throw new InvalidMetadataException(sprintf(

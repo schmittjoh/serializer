@@ -23,9 +23,6 @@ final class SerializedNameAnnotationStrategy implements PropertyNamingStrategyIn
         $this->delegate = $namingStrategy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function translateName(PropertyMetadata $property): string
     {
         if (null !== $name = $property->serializedName) {

@@ -90,7 +90,7 @@ class EventDispatcher implements EventDispatcherInterface
 
         $object = $event instanceof ObjectEvent ? $event->getObject() : null;
         $realClass = is_object($object) ? get_class($object) : '';
-        $objectClass = $realClass !== $class ? ($realClass . $class) : $class;
+        $objectClass = $realClass !== $class ? $realClass . $class : $class;
 
         if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
             $this->classListeners[$eventName][$objectClass][$format] = $this->initializeListeners($eventName, $class, $format);
@@ -119,6 +119,7 @@ class EventDispatcher implements EventDispatcherInterface
             if (null !== $listener[1] && $loweredClass !== $listener[1]) {
                 continue;
             }
+
             if (null !== $listener[2] && $format !== $listener[2]) {
                 continue;
             }

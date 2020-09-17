@@ -24,7 +24,6 @@ final class FormErrorHandler implements SubscribingHandlerInterface
      */
     private $translationDomain;
 
-
     /**
      * {@inheritdoc}
      */
@@ -49,7 +48,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     public function __construct(?object $translator = null, string $translationDomain = 'validators')
     {
-        if (null!== $translator && (!$translator instanceof TranslatorInterface && !$translator instanceof TranslatorContract)) {
+        if (null !== $translator && (!$translator instanceof TranslatorInterface && !$translator instanceof TranslatorContract)) {
             throw new \InvalidArgumentException(sprintf(
                 'The first argument passed to %s must be instance of %s or %s, %s given',
                 self::class,
@@ -57,6 +56,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
                 TranslatorContract::class
             ));
         }
+
         $this->translator = $translator;
         $this->translationDomain = $translationDomain;
     }
