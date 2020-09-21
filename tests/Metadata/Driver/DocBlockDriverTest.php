@@ -34,7 +34,12 @@ class DocBlockDriverTest extends TestCase
 {
     private function resolve(string $classToResolve): ClassMetadata
     {
-        $baseDriver = new TypedPropertiesDriver(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
+        if (PHP_VERSION_ID > 70400) {
+            $baseDriver = new TypedPropertiesDriver(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
+        }else {
+            $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+        }
+
         $driver = new DocBlockDriver($baseDriver);
 
         $m = $driver->loadMetadataForClass(new \ReflectionClass($classToResolve));
@@ -45,6 +50,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfScalars()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfScalars::class);
 
         self::assertEquals(
@@ -55,6 +64,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromSameNamespace()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromSameNamespace::class);
 
         self::assertEquals(
@@ -65,6 +78,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromUsingFullNamespacePath()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesWithFullNamespacePath::class);
 
         self::assertEquals(
@@ -75,6 +92,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionFromGenericLikeClass()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionTypedAsGenericClass::class);
 
         self::assertEquals(
@@ -85,6 +106,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockMapFromGenericLikeClass()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(MapTypedAsGenericClass::class);
 
         self::assertEquals(
@@ -95,6 +120,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesIgnoringNullTypeHint()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesWithNull::class);
 
         self::assertEquals(
@@ -105,6 +134,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testThrowingExceptionWhenUnionTypeIsUsedForCollection()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $this->expectException(\InvalidArgumentException::class);
 
         $this->resolve(CollectionOfUnionClasses::class);
@@ -112,6 +145,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testThrowingExceptionWhenNotExistingClassWasGiven()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $this->expectException(\InvalidArgumentException::class);
 
         $this->resolve(CollectionOfNotExistingClasses::class);
@@ -119,6 +156,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespace()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespace::class);
 
         self::assertEquals(
@@ -129,6 +170,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromGlobalNamespace()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromGlobalNamespace::class);
 
         self::assertEquals(
@@ -139,6 +184,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespaceUsingSingleAlias()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingSingleAlias::class);
 
         self::assertEquals(
@@ -149,6 +198,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespaceUsingGroupAlias()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingGroupAlias::class);
 
         self::assertEquals(
@@ -163,6 +216,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromTraits()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromTrait::class);
 
         self::assertEquals(
@@ -177,6 +234,10 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromTraitInsideTrait()
     {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
         $m = $this->resolve(CollectionOfClassesFromTraitInsideTrait::class);
 
         self::assertEquals(

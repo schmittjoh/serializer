@@ -6,5 +6,8 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details;
 
 class ProductDescription
 {
-    public string $description;
+    /**
+     * @var string
+     */
+    public $description;
 }
