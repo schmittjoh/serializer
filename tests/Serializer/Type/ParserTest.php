@@ -43,154 +43,128 @@ class ParserTest extends TestCase
             'string',
             $type('string'),
         ];
+
         yield [
             'array<Foo>',
             $type('array', [['name' => 'Foo', 'params' => []]]),
         ];
+
         yield [
             'Foo<\'a\'>',
             $type('Foo', ['a']),
         ];
+
+        yield [
+            'Foo<>',
+            $type('Foo', []),
+        ];
+
         yield [
             'Foo<5>',
             $type('Foo', [5]),
         ];
+
         yield [
             'Foo<5.5>',
             $type('Foo', [5.5]),
         ];
+
         yield [
             'Foo<null>',
             $type('Foo', [null]),
         ];
+
         yield [
             'Foo<\'a\',\'b\',\'c\'>',
             $type('Foo', ['a', 'b', 'c']),
         ];
+
         yield [
             'Foo<\'a\',\'\'>',
             $type('Foo', ['a', '']),
         ];
+
         yield [
             'array<Foo,Bar>',
             $type('array', [['name' => 'Foo', 'params' => []], ['name' => 'Bar', 'params' => []]]),
         ];
+
         yield [
             'array<Foo\Bar, Baz\Boo>',
             $type('array', [['name' => 'Foo\Bar', 'params' => []], ['name' => 'Baz\Boo', 'params' => []]]),
         ];
+
         yield [
             'a<b<c,d>,e>',
             $type('a', [['name' => 'b', 'params' => [['name' => 'c', 'params' => []], ['name' => 'd', 'params' => []]]], ['name' => 'e', 'params' => []]]),
 
         ];
+
         yield [
             'Foo',
             $type('Foo'),
         ];
+
         yield [
             'Foo\Bar',
             $type('Foo\Bar'),
         ];
+
         yield [
             'Foo<"asdf asdf">',
             $type('Foo', ['asdf asdf']),
         ];
+
         yield [
             'Foo<[]>',
             $type('Foo', [[]]),
         ];
+
         yield [
             'Foo<[[]]>',
             $type('Foo', [[[]]]),
         ];
+
         yield [
             'Foo<[123]>',
             $type('Foo', [[123]]),
         ];
+
         yield [
             'Foo<[123, 456]>',
             $type('Foo', [[123, 456]]),
         ];
+
         yield [
             'Foo<[[123], 456, "bar"]>',
             $type('Foo', [[[123], 456, 'bar']]),
         ];
+
         yield [
             'DateTime<null, null, [\'Y-m-d\TH:i:s\', \'Y-m-d\TH:i:sP\']>',
             $type('DateTime', [null, null, ['Y-m-d\TH:i:s', 'Y-m-d\TH:i:sP']]),
         ];
     }
 
-    public function testEmptyString(): void
+    /**
+     * @dataProvider wrongSyntax
+     */
+    public function testSyntaxError($value): void
     {
         $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unexpected token \"EOF\" (EOF) at line 1 and column 1:\n"
-            . "\n"
-            . '↑'
-        );
-
-        $this->parser->parse('');
+        $this->parser->parse($value);
     }
 
-    public function testParamTypeMustEndWithBracket(): void
+    public function wrongSyntax()
     {
-        $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unexpected token \"EOF\" (EOF) at line 1 and column 8:\n"
-            . "Foo<bar\n"
-            . '       ↑'
-        );
-
-        $this->parser->parse('Foo<bar');
-    }
-
-    public function testMustStartWithName(): void
-    {
-        $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unexpected token \",\" (comma) at line 1 and column 1:\n"
-            . ",\n"
-            . '↑'
-        );
-
-        $this->parser->parse(',');
-    }
-
-    public function testEmptyParams(): void
-    {
-        $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unexpected token \">\" (_parenthesis) at line 1 and column 5:\n"
-            . "Foo<>\n"
-            . '    ↑'
-        );
-
-        $this->parser->parse('Foo<>');
-    }
-
-    public function testNoTrailingComma(): void
-    {
-        $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unexpected token \",\" (comma) at line 1 and column 7:\n"
-            . "Foo<aa,>\n"
-            . '      ↑'
-        );
-
-        $this->parser->parse('Foo<aa,>');
-    }
-
-    public function testLeadingBackslash(): void
-    {
-        $this->expectException(SyntaxError::class);
-        $this->expectExceptionMessage(
-            "Unrecognized token \"\\\" at line 1 and column 5:\n"
-            . "Foo<\Bar>\n"
-            . '    ↑'
-        );
-
-        $this->parser->parse('Foo<\Bar>');
+        return [
+            ['Foo<\Bar>]'],
+            ['Foo<aa,>'],
+            ['Foo<bar'],
+            [''],
+            [','],
+            ['[]'],
+            ['<>'],
+        ];
     }
 }

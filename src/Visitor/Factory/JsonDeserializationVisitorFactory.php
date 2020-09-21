@@ -30,12 +30,14 @@ final class JsonDeserializationVisitorFactory implements DeserializationVisitorF
     public function setOptions(int $options): self
     {
         $this->options = $options;
+
         return $this;
     }
 
     public function setDepth(int $depth): self
     {
         $this->depth = $depth;
+
         return $this;
     }
 }

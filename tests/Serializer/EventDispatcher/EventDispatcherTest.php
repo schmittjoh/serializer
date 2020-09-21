@@ -56,7 +56,7 @@ class EventDispatcherTest extends TestCase
         $a = new MockListener();
         $this->dispatcher->addListener('foo', [$a, 'Foo']);
         $this->dispatch('bar');
-        $a->_verify('Listener is not called for other event.');
+        $a->verify('Listener is not called for other event.');
 
         $b = new MockListener();
         $this->dispatcher->addListener('pre', [$b, 'bar'], 'Bar');
@@ -68,10 +68,10 @@ class EventDispatcherTest extends TestCase
         $b->foo($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
         $b->all($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
 
-        $b->_replay();
+        $b->replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');
-        $b->_verify();
+        $b->verify();
     }
 
     public function testDispatchWithInstanceFilteringBothListenersInvoked()
@@ -88,9 +88,9 @@ class EventDispatcherTest extends TestCase
         $a->onlyProxy($event, 'pre', 'Bar', 'json', $this->dispatcher);
         $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
 
-        $a->_replay();
+        $a->replay();
         $this->dispatch('pre', 'Bar', 'json', $event);
-        $a->_verify();
+        $a->verify();
     }
 
     public function testDispatchWithInstanceFilteringOnlyGenericListenerInvoked()
@@ -106,9 +106,9 @@ class EventDispatcherTest extends TestCase
         // expected
         $a->all($event, 'pre', 'Bar', 'json', $this->dispatcher);
 
-        $a->_replay();
+        $a->replay();
         $this->dispatch('pre', 'Bar', 'json', $event);
-        $a->_verify();
+        $a->verify();
     }
 
     public function testListenerCanStopPropagation()
@@ -237,12 +237,12 @@ class MockListener
         $this->actual[] = [$method, $args];
     }
 
-    public function _replay()
+    public function replay()
     {
         $this->wasReplayed = true;
     }
 
-    public function _verify($message = '')
+    public function verify($message = '')
     {
         Assert::assertSame($this->expected, $this->actual, $message);
     }

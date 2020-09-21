@@ -15,6 +15,7 @@ use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\SkipHandlerException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
@@ -107,6 +108,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         if (null === $type) {
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
+
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
@@ -156,14 +158,18 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
-                    $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
-                    $this->context->decreaseDepth();
+                    try {
+                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        $this->context->decreaseDepth();
 
-                    return $rs;
+                        return $rs;
+                    } catch (SkipHandlerException $e) {
+                        // Skip handler, fallback to default behavior
+                    }
                 }
 
-                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                \assert($metadata instanceof ClassMetadata);
 
                 if ($metadata->usingExpression && !$this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
@@ -210,6 +216,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                     }
+
                     $this->context->popPropertyMetadata();
                 }
 

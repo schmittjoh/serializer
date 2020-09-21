@@ -22,9 +22,11 @@ class DoctrinePHPCRDriverTest extends TestCase
             $this->markTestSkipped('PHPCR not available');
         }
     }
+
     public function getMetadata()
     {
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\BlogPost');
+
         return $this->getDoctrinePHPCRDriver()->loadMetadataForClass($refClass);
     }
 

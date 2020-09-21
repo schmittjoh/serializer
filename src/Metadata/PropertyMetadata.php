@@ -287,15 +287,19 @@ class PropertyMetadata extends BasePropertyMetadata
         if (isset($unserialized['xmlEntryNamespace'])) {
             $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
         }
+
         if (isset($unserialized['xmlCollectionSkipWhenEmpty'])) {
             $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
         }
+
         if (isset($unserialized['excludeIf'])) {
             $this->excludeIf = $unserialized['excludeIf'];
         }
+
         if (isset($unserialized['skipWhenEmpty'])) {
             $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
         }
+
         if (isset($unserialized['forceReflectionAccess'])) {
             $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
         }

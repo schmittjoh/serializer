@@ -13,17 +13,11 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         return $this->isTooDeep($context);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         return $this->isTooDeep($context);

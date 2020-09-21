@@ -12,9 +12,6 @@ use JMS\Serializer\SerializationContext;
 final class CallableSerializationContextFactory extends CallableContextFactory implements
     SerializationContextFactoryInterface
 {
-    /**
-     * {@InheritDoc}
-     */
     public function createSerializationContext(): SerializationContext
     {
         return $this->createContext();

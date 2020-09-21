@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -53,6 +54,35 @@ class DateHandlerTest extends TestCase
         $datetime = new \DateTime('2017-06-18 14:30:59', $this->timezone);
         $type = ['name' => 'DateTime', 'params' => $params];
         $this->handler->serializeDateTime($visitor, $datetime, $type, $context);
+    }
+
+    /**
+     * @param string    $dateInterval
+     * @param \DateTime $expected
+     *
+     * @dataProvider getDeserializeDateInterval
+     */
+    public function testDeserializeDateInterval($dateInterval, $expected)
+    {
+        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
+
+        $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
+        $visitor->method('visitString')->with('2017-06-18');
+
+        $deserialized = $this->handler->deserializeDateIntervalFromJson($visitor, $dateInterval, [], $context);
+        if (isset($deserialized->f)) {
+            $this->assertEquals($expected['f'], $deserialized->f);
+        }
+
+        $this->assertEquals($expected['s'], $deserialized->s);
+    }
+
+    public function getDeserializeDateInterval()
+    {
+        return [
+            ['P0Y0M0DT3H5M7.520S', ['s' => 7, 'f' => 0.52]],
+            ['P0Y0M0DT3H5M7S', ['s' => 7, 'f' => 0]],
+        ];
     }
 
     public function testTimePartGetsRemoved()

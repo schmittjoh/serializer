@@ -20,27 +20,17 @@ final class VersionExclusionStrategy implements ExclusionStrategyInterface
         $this->version = $version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if ((null !== $version = $property->sinceVersion) && version_compare($this->version, $version, '<')) {
             return true;
         }
 
-        if ((null !== $version = $property->untilVersion) && version_compare($this->version, $version, '>')) {
-            return true;
-        }
-
-        return false;
+        return (null !== $version = $property->untilVersion) && version_compare($this->version, $version, '>');
     }
 }

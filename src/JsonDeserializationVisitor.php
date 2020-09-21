@@ -166,6 +166,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             if (!$metadata->type) {
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
+
             return $this->navigator->accept($data, $metadata->type);
         }
 

@@ -17,39 +17,34 @@
     ],
     "require": {
         "php": "^7.2",
-        "jms/metadata": "^2.0",
         "doctrine/annotations": "^1.0",
         "doctrine/instantiator": "^1.0.3",
-        "hoa/compiler": "^3.17.08.08"
+        "doctrine/lexer": "^1.1",
+        "jms/metadata": "^2.0"
     },
     "suggest": {
-        "symfony/yaml": "Required if you'd like to use the YAML metadata format.",
+        "doctrine/cache": "Required if you like to use cache functionality.",
         "doctrine/collections": "Required if you like to use doctrine collection types as ArrayCollection.",
-        "doctrine/cache": "Required if you like to use cache functionality."
+        "symfony/yaml": "Required if you'd like to use the YAML metadata format."
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
-        "twig/twig": "~1.34|~2.4",
+        "doctrine/coding-standard": "^8.1",
         "doctrine/orm": "~2.1",
-        "jackalope/jackalope-doctrine-dbal": "^1.1.5",
+        "doctrine/persistence": "^1.3.3|^2.0|^3.0",
         "doctrine/phpcr-odm": "^1.3|^2.0",
+        "jackalope/jackalope-doctrine-dbal": "^1.1.5",
         "ocramius/proxy-manager": "^1.0|^2.0",
+        "phpunit/phpunit": "^8.0||^9.0",
         "psr/container": "^1.0",
         "symfony/dependency-injection": "^3.0|^4.0|^5.0",
-        "symfony/yaml": "^3.3|^4.0|^5.0",
+        "symfony/expression-language": "^3.0|^4.0|^5.0",
+        "symfony/filesystem": "^3.0|^4.0|^5.0",
+        "symfony/form": "^3.0|^4.0|^5.0",
         "symfony/translation": "^3.0|^4.0|^5.0",
         "symfony/validator": "^3.1.9|^4.0|^5.0",
-        "symfony/form": "^3.0|^4.0|^5.0",
-        "symfony/filesystem": "^3.0|^4.0|^5.0",
-        "symfony/expression-language": "^3.0|^4.0|^5.0",
-        "phpunit/phpunit": "^8.0||^9.0",
-        "doctrine/coding-standard": "^5.0",
-        "doctrine/persistence": "^1.3.3|^2.0|^3.0"
-    },
-    "conflict": {
-        "hoa/core": "*",
-        "hoa/consistency": "<1.17.05.02",
-        "hoa/iterator": "<2.16.03.15"
+        "symfony/yaml": "^3.3|^4.0|^5.0",
+        "twig/twig": "~1.34|~2.4|^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -61,9 +56,12 @@
             "JMS\\Serializer\\Tests\\": "tests/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.7-dev"
+            "dev-master": "3.9-dev"
         }
     }
 }

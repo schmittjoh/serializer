@@ -12,9 +12,6 @@ use JMS\Serializer\DeserializationContext;
 final class CallableDeserializationContextFactory extends CallableContextFactory implements
     DeserializationContextFactoryInterface
 {
-    /**
-     * {@InheritDoc}
-     */
     public function createDeserializationContext(): DeserializationContext
     {
         return $this->createContext();

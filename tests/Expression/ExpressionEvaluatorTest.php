@@ -28,7 +28,7 @@ class ExpressionEvaluatorTest extends TestCase
 
     public function testParse()
     {
-        $parsed = $this->evaluator->parse('a + b', ['a', 'b' ]);
+        $parsed = $this->evaluator->parse('a + b', ['a', 'b']);
         self::assertInstanceOf(Expression::class, $parsed);
 
         $evaluated = $this->evaluator->evaluateParsed($parsed, ['a' => 1, 'b' => 2]);

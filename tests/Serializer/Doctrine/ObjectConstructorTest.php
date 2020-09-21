@@ -27,6 +27,7 @@ use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -35,9 +36,12 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use Metadata\Driver\AdvancedDriverInterface;
+use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ObjectConstructorTest extends TestCase
@@ -54,6 +58,9 @@ class ObjectConstructorTest extends TestCase
     /** @var DeserializationContext */
     private $context;
 
+    /** @var AdvancedDriverInterface */
+    private $driver;
+
     public function testFindEntity()
     {
         $em = $this->registry->getManager();
@@ -66,12 +73,47 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
 
         self::assertEquals($author, $authorFetched);
+    }
+
+    public function testFindEntityExcludedByGroupsUsesFallback()
+    {
+        $graph = $this->createMock(GraphNavigatorInterface::class);
+        $metadata = $this->createMock(MetadataFactoryInterface::class);
+
+        $author = new Author('John');
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = ['name' => Author::class, 'params' => []];
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+
+        $context = DeserializationContext::create()->setGroups('foo');
+        $context->initialize('json', $this->visitor, $graph, $metadata);
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $context);
+
+        self::assertSame($author, $authorFetched);
+    }
+
+    public function testFindEntityExcludedUsesFallback()
+    {
+        $author = new Author('John');
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = ['name' => AuthorExcludedId::class, 'params' => []];
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(AuthorExcludedId::class));
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
+
+        self::assertSame($author, $authorFetched);
     }
 
     public function testFindManagedEntity()
@@ -85,7 +127,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -98,7 +140,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $author = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -113,7 +155,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -128,7 +170,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -146,7 +188,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
@@ -158,7 +200,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_EXCEPTION);
 
@@ -172,7 +214,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
 
@@ -189,7 +231,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = new ClassMetadata(Author::class);
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
@@ -200,16 +242,16 @@ class ObjectConstructorTest extends TestCase
     {
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
         $server = new Server('Linux', '127.0.0.1', 'home');
         $em->persist($server);
         $em->flush();
         $em->clear();
 
         $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
-        /** @var Server $serverDeserialized */
         $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
+        \assert($serverDeserialized instanceof Server);
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
@@ -251,6 +293,41 @@ class ObjectConstructorTest extends TestCase
         $constructor->construct($this->visitor, $class, ['metaTitle' => 'test'], $type, $this->context);
     }
 
+    public function testFallbackOnEmbeddableClassWithXmlDriverAndXmlData()
+    {
+        if (ORMVersion::compare('2.5') >= 0) {
+            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
+        }
+
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct');
+
+        $connection = $this->createConnection();
+        $entityManager = $this->createXmlEntityManager($connection);
+
+        $this->registry = $registry = new SimpleBaseManagerRegistry(
+            static function ($id) use ($connection, $entityManager) {
+                switch ($id) {
+                    case 'default_connection':
+                        return $connection;
+
+                    case 'default_manager':
+                        return $entityManager;
+
+                    default:
+                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                }
+            }
+        );
+
+        $type = ['name' => BlogPostSeo::class, 'params' => []];
+        $class = new ClassMetadata(BlogPostSeo::class);
+
+        $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $constructor->construct($this->visitor, $class, $data, $type, $this->context);
+    }
+
     protected function setUp(): void
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
@@ -273,13 +350,14 @@ class ObjectConstructorTest extends TestCase
                 }
             }
         );
-
+        $driver = null;
+        $this->driver = &$driver;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
-                static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
+                static function (array $metadataDirs, Reader $annotationReader) use ($registry, &$driver) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
+                    return $driver = new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
                 }
             ))
             ->build();
@@ -289,8 +367,8 @@ class ObjectConstructorTest extends TestCase
 
     private function prepareDatabase()
     {
-        /** @var EntityManager $em */
         $em = $this->registry->getManager();
+        \assert($em instanceof EntityManager);
 
         $tool = new SchemaTool($em);
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
@@ -367,6 +445,7 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);
         }
+
         if (null === $defaultManager) {
             $defaultManager = key($managers);
         }
@@ -376,6 +455,7 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
         if (!is_callable($serviceCreator)) {
             throw new \InvalidArgumentException('$serviceCreator must be a valid callable.');
         }
+
         $this->serviceCreator = $serviceCreator;
     }
 

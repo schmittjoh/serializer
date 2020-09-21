@@ -135,6 +135,7 @@ class YamlDriver extends AbstractFileDriver
                             'The method ' . $methodName . ' not found in class ' . $class->name
                         );
                     }
+
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 }
 
@@ -314,7 +315,8 @@ class YamlDriver extends AbstractFileDriver
                     $pMetadata->name = (string) $pConfig['name'];
                 }
 
-                if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                if (
+                    (ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                     || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
                     $metadata->addPropertyMetadata($pMetadata);
@@ -328,9 +330,11 @@ class YamlDriver extends AbstractFileDriver
             if (isset($cConfig['pre_serialize'])) {
                 $metadata->preSerializeMethods = $this->getCallbackMetadata($class, $cConfig['pre_serialize']);
             }
+
             if (isset($cConfig['post_serialize'])) {
                 $metadata->postSerializeMethods = $this->getCallbackMetadata($class, $cConfig['post_serialize']);
             }
+
             if (isset($cConfig['post_deserialize'])) {
                 $metadata->postDeserializeMethods = $this->getCallbackMetadata($class, $cConfig['post_deserialize']);
             }
@@ -396,6 +400,7 @@ class YamlDriver extends AbstractFileDriver
                         'The "map" attribute must be set, and be an array for discriminators.'
                     );
                 }
+
                 $groups = $config['discriminator']['groups'] ?? [];
                 $metadata->setDiscriminator(
                     $config['discriminator']['field_name'],
@@ -406,10 +411,12 @@ class YamlDriver extends AbstractFileDriver
                 if (isset($config['discriminator']['xml_attribute'])) {
                     $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
                 }
+
                 if (isset($config['discriminator']['xml_element'])) {
                     if (isset($config['discriminator']['xml_element']['cdata'])) {
                         $metadata->xmlDiscriminatorCData = (bool) $config['discriminator']['xml_element']['cdata'];
                     }
+
                     if (isset($config['discriminator']['xml_element']['namespace'])) {
                         $metadata->xmlDiscriminatorNamespace = (string) $config['discriminator']['xml_element']['namespace'];
                     }

@@ -52,24 +52,28 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
     {
         $this->defaultRootName = $name;
         $this->defaultRootNamespace = $namespace;
+
         return $this;
     }
 
     public function setDefaultVersion(string $version): self
     {
         $this->defaultVersion = $version;
+
         return $this;
     }
 
     public function setDefaultEncoding(string $encoding): self
     {
         $this->defaultEncoding = $encoding;
+
         return $this;
     }
 
     public function setFormatOutput(bool $formatOutput): self
     {
         $this->formatOutput = (bool) $formatOutput;
+
         return $this;
     }
 }

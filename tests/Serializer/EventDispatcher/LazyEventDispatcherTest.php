@@ -34,7 +34,7 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
 
         $this->dispatcher->addListener('foo', ['a', 'foo']);
         $this->dispatch('bar');
-        $a->_verify('Listener is not called for other event.');
+        $a->verify('Listener is not called for other event.');
 
         $b = new MockListener();
         $this->registerListenerService('b', $b);
@@ -47,10 +47,10 @@ abstract class LazyEventDispatcherTest extends EventDispatcherTest
         $b->all($this->event, 'pre', 'Bar', 'json', $this->dispatcher);
         $b->foo($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
         $b->all($this->event, 'pre', 'Foo', 'json', $this->dispatcher);
-        $b->_replay();
+        $b->replay();
         $this->dispatch('pre', 'Bar');
         $this->dispatch('pre', 'Foo');
-        $b->_verify();
+        $b->verify();
     }
 
     protected function createEventDispatcher()

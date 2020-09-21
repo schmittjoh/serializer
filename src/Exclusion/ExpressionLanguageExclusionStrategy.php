@@ -32,10 +32,6 @@ final class ExpressionLanguageExclusionStrategy
         $this->expressionEvaluator = $expressionEvaluator;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipClass(ClassMetadata $class, Context $navigatorContext): bool
     {
         if (null === $class->excludeIf) {
@@ -59,9 +55,6 @@ final class ExpressionLanguageExclusionStrategy
         return $this->expressionEvaluator->evaluate($class->excludeIf, $variables);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if (null === $property->excludeIf) {

@@ -15,6 +15,7 @@ use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\SkipHandlerException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Functions;
@@ -124,6 +125,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
             // guarantee correct handling of null values, and not have any internal auto-casting behavior.
             $type = ['name' => 'NULL', 'params' => []];
         }
+
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
         if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
@@ -132,9 +134,10 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
         switch ($type['name']) {
             case 'NULL':
-                if (!$this->shouldSerializeNull) {
+                if (!$this->shouldSerializeNull && !$this->isRootNullAllowed()) {
                     throw new NotAcceptableException();
                 }
+
                 return $this->visitor->visitNull($data, $type);
 
             case 'string':
@@ -171,6 +174,7 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                     if ($this->context->isVisiting($data)) {
                         throw new CircularReferenceDetectedException();
                     }
+
                     $this->context->startVisiting($data);
                 }
 
@@ -195,17 +199,20 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
                     try {
                         $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        $this->context->stopVisiting($data);
+
+                        return $rs;
+                    } catch (SkipHandlerException $e) {
+                        // Skip handler, fallback to default behavior
                     } catch (NotAcceptableException $e) {
                         $this->context->stopVisiting($data);
+
                         throw $e;
                     }
-                    $this->context->stopVisiting($data);
-
-                    return $rs;
                 }
 
-                /** @var ClassMetadata $metadata */
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                \assert($metadata instanceof ClassMetadata);
 
                 if ($metadata->usingExpression && null === $this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
@@ -254,6 +261,11 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
                 return $this->visitor->endVisitingObject($metadata, $data, $type);
         }
+    }
+
+    private function isRootNullAllowed(): bool
+    {
+        return $this->context->hasAttribute('allows_root_null') && $this->context->getAttribute('allows_root_null') && 0 === $this->context->getVisitingSet()->count();
     }
 
     private function afterVisitingObject(ClassMetadata $metadata, object $object, array $type): void

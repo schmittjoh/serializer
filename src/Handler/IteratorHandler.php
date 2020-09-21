@@ -143,7 +143,6 @@ final class IteratorHandler implements SubscribingHandlerInterface
         return $return;
     }
 
-
     /**
      * @param mixed $data
      */

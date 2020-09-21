@@ -65,6 +65,7 @@ class StaticPropertyMetadata extends PropertyMetadata
             $this->value,
             $parentStr,
         ] = unserialize($str);
+
         return parent::unserializeProperties($parentStr);
     }
 }

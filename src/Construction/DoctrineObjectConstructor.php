@@ -8,7 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
@@ -35,14 +37,24 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
     private $fallbackConstructor;
 
     /**
+     * @var ExpressionLanguageExclusionStrategy|null
+     */
+    private $expressionLanguageExclusionStrategy;
+
+    /**
      * @param ManagerRegistry $managerRegistry     Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
-    public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor, string $fallbackStrategy = self::ON_MISSING_NULL)
-    {
+    public function __construct(
+        ManagerRegistry $managerRegistry,
+        ObjectConstructorInterface $fallbackConstructor,
+        string $fallbackStrategy = self::ON_MISSING_NULL,
+        ?ExpressionLanguageExclusionStrategy $expressionLanguageExclusionStrategy = null
+    ) {
         $this->managerRegistry = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
         $this->fallbackStrategy = $fallbackStrategy;
+        $this->expressionLanguageExclusionStrategy = $expressionLanguageExclusionStrategy;
     }
 
     /**
@@ -67,7 +79,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!\is_array($data)) {
+        if (!\is_array($data) && !(is_object($data) && 'SimpleXMLElement' === get_class($data))) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
@@ -77,16 +89,23 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $identifierList = [];
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if (isset($metadata->propertyMetadata[$name])) {
-                $dataName = $metadata->propertyMetadata[$name]->serializedName;
-            } else {
-                $dataName = $name;
-            }
-
-            if (!array_key_exists($dataName, $data)) {
+            // Avoid calling objectManager->find if some identification properties are excluded
+            if (!isset($metadata->propertyMetadata[$name])) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
-            $identifierList[$name] = $data[$dataName];
+
+            $propertyMetadata = $metadata->propertyMetadata[$name];
+
+            // Avoid calling objectManager->find if some identification properties are excluded by some exclusion strategy
+            if ($this->isIdentifierFieldExcluded($propertyMetadata, $context)) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+            }
+
+            if (!array_key_exists($propertyMetadata->serializedName, $data)) {
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+            }
+
+            $identifierList[$name] = $data[$propertyMetadata->serializedName];
         }
 
         if (empty($identifierList)) {
@@ -102,10 +121,13 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             switch ($this->fallbackStrategy) {
                 case self::ON_MISSING_NULL:
                     return null;
+
                 case self::ON_MISSING_EXCEPTION:
                     throw new ObjectConstructionException(sprintf('Entity %s can not be found', $metadata->name));
+
                 case self::ON_MISSING_FALLBACK:
                     return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
+
                 default:
                     throw new InvalidArgumentException('The provided fallback strategy for the object constructor is not valid');
             }
@@ -114,5 +136,15 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         $objectManager->initializeObject($object);
 
         return $object;
+    }
+
+    private function isIdentifierFieldExcluded(PropertyMetadata $propertyMetadata, DeserializationContext $context): bool
+    {
+        $exclusionStrategy = $context->getExclusionStrategy();
+        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+            return true;
+        }
+
+        return null !== $this->expressionLanguageExclusionStrategy && $this->expressionLanguageExclusionStrategy->shouldSkipProperty($propertyMetadata, $context);
     }
 }

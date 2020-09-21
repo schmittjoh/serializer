@@ -60,6 +60,7 @@ class ExpressionPropertyMetadata extends PropertyMetadata
             $this->expression,
             $parentStr,
         ] = unserialize($str);
+
         return parent::unserializeProperties($parentStr);
     }
 }
