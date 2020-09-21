@@ -538,6 +538,7 @@ final class SerializerBuilder
                 $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
             );
         }
+
         if ($this->docBlockTyperResolver) {
             $this->driverFactory = new DocBlockDriverFactory($this->driverFactory, $this->typeParser);
         }

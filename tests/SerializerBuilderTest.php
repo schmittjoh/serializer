@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
@@ -272,7 +269,7 @@ class SerializerBuilderTest extends TestCase
 
         $person = new SingleClassFromDifferentNamespaceTypeHint();
         $productDescription = new ProductDescription();
-        $productDescription->description = "info";
+        $productDescription->description = 'info';
         $person->data = $productDescription;
 
         $serialized = $serializer->serialize($person, 'json');

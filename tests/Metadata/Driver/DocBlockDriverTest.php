@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -24,7 +26,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescrip
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\IncorrectDocBlock;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use Metadata\ClassMetadata;
@@ -36,7 +37,7 @@ class DocBlockDriverTest extends TestCase
     {
         if (PHP_VERSION_ID > 70400) {
             $baseDriver = new TypedPropertiesDriver(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
-        }else {
+        } else {
             $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
         }
 
@@ -113,7 +114,7 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(MapTypedAsGenericClass::class);
 
         self::assertEquals(
-            ['name' => 'array', 'params' => [['name' => "int", 'params' => []], ['name' => Product::class, 'params' => []]]],
+            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => Product::class, 'params' => []]]],
             $m->propertyMetadata['productIds']->type
         );
     }

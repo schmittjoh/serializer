@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
-
 
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Builder\DriverFactoryInterface;

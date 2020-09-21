@@ -54,7 +54,7 @@ class TypedPropertiesDriver implements DriverInterface
             'string',
             'double',
             'iterable',
-            'resource'
+            'resource',
         ];
     }
 

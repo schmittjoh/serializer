@@ -7,8 +7,6 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use PHPUnit\Framework\TestCase;
 

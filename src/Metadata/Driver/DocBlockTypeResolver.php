@@ -36,6 +36,7 @@ class DocBlockTypeResolver
                 $unionTypeHint[] = $singleTypeHint;
             }
         }
+
         $typeHint = implode('|', $unionTypeHint);
         if (count($unionTypeHint) > 1) {
             throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
@@ -43,14 +44,14 @@ class DocBlockTypeResolver
 
         if (false !== strpos($typeHint, 'array<')) {
             $resolvedTypes = [];
-            preg_match_all("#array<(.*)>#", $typeHint, $genericTypesToResolve);
+            preg_match_all('#array<(.*)>#', $typeHint, $genericTypesToResolve);
             $genericTypesToResolve = $genericTypesToResolve[1][0];
-            foreach (explode(",", $genericTypesToResolve) as $genericTypeToResolve) {
+            foreach (explode(',', $genericTypesToResolve) as $genericTypeToResolve) {
                 $resolvedTypes[] = $this->resolveType(trim($genericTypeToResolve), $reflectionProperty);
             }
 
-            return "array<" . implode(",", $resolvedTypes) . ">";
-        }elseif (false !== strpos($typeHint, '[]')) {
+            return 'array<' . implode(',', $resolvedTypes) . '>';
+        } elseif (false !== strpos($typeHint, '[]')) {
             $typeHint = rtrim($typeHint, '[]');
             $typeHint = $this->resolveType($typeHint, $reflectionProperty);
 
@@ -65,6 +66,7 @@ class DocBlockTypeResolver
         if (class_exists($typeHint)) {
             return $typeHint;
         }
+
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if (class_exists($expandedClassName)) {
             return $expandedClassName;
@@ -154,6 +156,6 @@ class DocBlockTypeResolver
 
     private function isArrayWithoutAnyType(string $typeHint): bool
     {
-        return $typeHint === "array";
+        return 'array' === $typeHint;
     }
 }
