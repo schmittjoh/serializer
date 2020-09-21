@@ -61,6 +61,6 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $driver = new TypedPropertiesDriver($driver, $this->typeParser);
         }
 
-        return new DocBlockDriver($driver, $this->typeParser);
+        return $driver;
     }
 }

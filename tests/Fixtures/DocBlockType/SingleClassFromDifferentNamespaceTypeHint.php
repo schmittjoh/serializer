@@ -9,5 +9,5 @@ class SingleClassFromDifferentNamespaceTypeHint
     /**
      * @var ProductDescription
      */
-    private $data;
+    public $data;
 }
