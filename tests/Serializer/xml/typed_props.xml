@@ -4,6 +4,9 @@
   <role>
     <id>5</id>
   </role>
+  <vehicle>
+    <type><![CDATA[car]]></type>
+  </vehicle>
   <created><![CDATA[2010-10-01T00:00:00+00:00]]></created>
   <updated><![CDATA[2011-10-01T00:00:00+00:00]]></updated>
   <tags>

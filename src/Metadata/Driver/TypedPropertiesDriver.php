@@ -98,7 +98,8 @@ class TypedPropertiesDriver implements DriverInterface
             return true;
         }
 
-        return class_exists($propertyReflection->getType()->getName());
+        return class_exists($propertyReflection->getType()->getName())
+            || interface_exists($propertyReflection->getType()->getName());
     }
 
     private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
