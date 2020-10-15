@@ -18,14 +18,20 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFro
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromTraitInsideTrait;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithFullNamespacePath;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithNull;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromDifferentNamespace;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromGlobalNamespace;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromSameNamespace;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesWithFullNamespacePath;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfUnionClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionTypedAsGenericClass;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use Metadata\ClassMetadata;
@@ -244,6 +250,62 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
             $m->propertyMetadata['productDescriptions']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfInterfacesFromDifferentNamespace()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionOfInterfacesFromDifferentNamespace::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
+            $m->propertyMetadata['productColors']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfInterfacesFromGlobalNamespace()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionOfInterfacesFromGlobalNamespace::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
+            $m->propertyMetadata['productColors']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfInterfacesFromSameNamespace()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionOfInterfacesFromSameNamespace::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => Vehicle::class, 'params' => []]]],
+            $m->propertyMetadata['vehicles']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfInterfacesWithFullNamespacePath()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionOfInterfacesWithFullNamespacePath::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
+            $m->propertyMetadata['productColors']->type
         );
     }
 
