@@ -34,6 +34,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Metadata\Driver\DocBlockDriverFactory;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -164,6 +165,11 @@ final class SerializerBuilder
      * @var CacheInterface
      */
     private $metadataCache;
+
+    /**
+     * @var bool
+     */
+    private $docBlockTyperResolver;
 
     /**
      * @param mixed ...$args
@@ -504,6 +510,13 @@ final class SerializerBuilder
         return $this;
     }
 
+    public function setDocBlockTypeResolver(bool $docBlockTypeResolver): self
+    {
+        $this->docBlockTyperResolver = $docBlockTypeResolver;
+
+        return $this;
+    }
+
     public function build(): Serializer
     {
         $annotationReader = $this->annotationReader;
@@ -524,6 +537,10 @@ final class SerializerBuilder
                 $this->typeParser,
                 $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
             );
+        }
+
+        if ($this->docBlockTyperResolver) {
+            $this->driverFactory = new DocBlockDriverFactory($this->driverFactory, $this->typeParser);
         }
 
         $metadataDriver = $this->driverFactory->createDriver($this->metadataDirs, $annotationReader);

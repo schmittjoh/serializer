@@ -10,6 +10,8 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
@@ -254,6 +256,26 @@ class SerializerBuilderTest extends TestCase
         self::assertEquals('{"name":"mike","gender":"f"}', $serialized);
 
         $object = $serializer->deserialize($serialized, PersonSecretWithVariables::class, 'json');
+        self::assertEquals($person, $object);
+    }
+
+    public function testEnablingDocBlockResolver()
+    {
+        $language = new ExpressionLanguage();
+        $this->builder->setExpressionEvaluator(new ExpressionEvaluator($language));
+        $this->builder->setDocBlockTypeResolver(true);
+
+        $serializer = $this->builder->build();
+
+        $person = new SingleClassFromDifferentNamespaceTypeHint();
+        $productDescription = new ProductDescription();
+        $productDescription->description = 'info';
+        $person->data = $productDescription;
+
+        $serialized = $serializer->serialize($person, 'json');
+        self::assertEquals('{"data":{"description":"info"}}', $serialized);
+
+        $object = $serializer->deserialize($serialized, SingleClassFromDifferentNamespaceTypeHint::class, 'json');
         self::assertEquals($person, $object);
     }
 

@@ -17,7 +17,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 
-class TypedPropertiesDriver implements DriverInterface
+class DocBlockDriver implements DriverInterface
 {
     /**
      * @var DriverInterface
@@ -28,34 +28,16 @@ class TypedPropertiesDriver implements DriverInterface
      * @var ParserInterface
      */
     protected $typeParser;
-
     /**
-     * @var string[]
+     * @var DocBlockTypeResolver
      */
-    private $whiteList;
+    private $docBlockTypeResolver;
 
-    /**
-     * @param string[] $whiteList
-     */
-    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $whiteList = [])
+    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null)
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
-        $this->whiteList = array_merge($whiteList, $this->getDefaultWhiteList());
-    }
-
-    private function getDefaultWhiteList(): array
-    {
-        return [
-            'int',
-            'float',
-            'bool',
-            'boolean',
-            'string',
-            'double',
-            'iterable',
-            'resource',
-        ];
+        $this->docBlockTypeResolver = new DocBlockTypeResolver();
     }
 
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
@@ -77,9 +59,9 @@ class TypedPropertiesDriver implements DriverInterface
 
             try {
                 $propertyReflection = $this->getReflection($propertyMetadata);
-                if ($this->shouldTypeHint($propertyReflection)) {
-                    $type = $propertyReflection->getType()->getName();
 
+                $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint($propertyReflection);
+                if ($type) {
                     $propertyMetadata->setType($this->typeParser->parse($type));
                 }
             } catch (ReflectionException $e) {
@@ -100,18 +82,5 @@ class TypedPropertiesDriver implements DriverInterface
     private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
     {
         return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
-    }
-
-    private function shouldTypeHint(ReflectionProperty $propertyReflection): bool
-    {
-        if (null === $propertyReflection->getType()) {
-            return false;
-        }
-
-        if (in_array($propertyReflection->getType()->getName(), $this->whiteList, true)) {
-            return true;
-        }
-
-        return class_exists($propertyReflection->getType()->getName());
     }
 }
