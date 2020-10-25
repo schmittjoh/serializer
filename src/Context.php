@@ -10,6 +10,7 @@ use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
+use JMS\Serializer\Exclusion\SkipWhenEmptyExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -18,6 +19,7 @@ use Metadata\MetadataFactoryInterface;
 
 abstract class Context
 {
+    public const ATTR_SKIP_WHEN_EMPTY = 'default_skip_when_empty';
     /**
      * @var array
      */
@@ -81,6 +83,10 @@ abstract class Context
 
         if (!empty($this->attributes['max_depth_checks'])) {
             $this->addExclusionStrategy(new DepthExclusionStrategy());
+        }
+
+        if (!empty($this->attributes[self::ATTR_SKIP_WHEN_EMPTY])) {
+            $this->addExclusionStrategy(new SkipWhenEmptyExclusionStrategy());
         }
 
         $this->initialized = true;
@@ -200,6 +206,16 @@ abstract class Context
     public function enableMaxDepthChecks(): self
     {
         $this->attributes['max_depth_checks'] = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableSkipWhenEmpty(): self
+    {
+        $this->attributes[self::ATTR_SKIP_WHEN_EMPTY] = true;
 
         return $this;
     }

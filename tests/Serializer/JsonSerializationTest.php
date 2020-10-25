@@ -15,6 +15,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHashNotAnnotated;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
@@ -117,6 +118,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['maxdepth_0'] = '{"a":{}}';
             $outputs['maxdepth_1'] = '{"a":{"b":12345}}';
+            $outputs['default_skip_when_empty_enabled_object'] = '{}';
+            $outputs['default_skip_when_empty_disabled_object'] = '{"a":{"xxx":"yyy","inner":{"xxx":"yyy"}}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
             $outputs['authors_inline'] = '[{"full_name":"foo"},{"full_name":"bar"}]';
@@ -152,6 +155,25 @@ class JsonSerializationTest extends BaseSerializationTest
         $object = new ObjectWithEmptyArrayAndHash();
 
         self::assertEquals('{}', $this->serialize($object));
+    }
+
+    /**
+     * @param bool $flagEnabled
+     * @param string $expectedSerializedValue
+     *
+     * @dataProvider getSkipEmptyArrayAndHashValues
+     */
+    public function testSkipEmptyArrayAndHash1(bool $flagEnabled, string $expectedSerializedValue)
+    {
+        $object = new ObjectWithEmptyArrayAndHashNotAnnotated();
+
+        $context = SerializationContext::create();
+
+        if ($flagEnabled) {
+            $context->enableSkipWhenEmpty();
+        }
+
+        self::assertEquals($expectedSerializedValue, $this->serialize($object, $context));
     }
 
     public function getFirstClassMapCollectionsValues()
@@ -462,6 +484,20 @@ class JsonSerializationTest extends BaseSerializationTest
             . '}',
             $result
         );
+    }
+
+    public function getSkipEmptyArrayAndHashValues()
+    {
+        return [
+            'default skip_when_empty disabled' => [
+                false,
+                'expected' => '{"hash":{},"array":[],"object":{}}',
+            ],
+            'default skip_when_empty enabled' => [
+                true,
+                'expected' => '{}',
+            ],
+        ];
     }
 
     protected function getFormat()

@@ -1731,6 +1731,26 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('maxdepth_1'), $serialized);
     }
 
+    public function testSkipeWhenEmptyByDefaultEnabled()
+    {
+        $data = new Gh236Foo();
+
+        $context = SerializationContext::create()->enableSkipWhenEmpty();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('default_skip_when_empty_enabled_object'), $serialized);
+    }
+
+    public function testSkipWhenEmptyByDefaultDisabled()
+    {
+        $data = new Gh236Foo();
+
+        $context = SerializationContext::create();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('default_skip_when_empty_disabled_object'), $serialized);
+    }
+
     public function testDeserializingIntoExistingObject()
     {
         if (!$this->hasDeserializer()) {
