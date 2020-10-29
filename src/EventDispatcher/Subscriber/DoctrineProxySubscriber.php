@@ -19,17 +19,17 @@ final class DoctrineProxySubscriber implements EventSubscriberInterface
     /**
      * @var bool
      */
-    private $skipVirtualTypeInit = true;
+    private $skipVirtualTypeInit;
 
     /**
      * @var bool
      */
-    private $initializeExcluded = false;
+    private $initializeExcluded;
 
     public function __construct(bool $skipVirtualTypeInit = true, bool $initializeExcluded = false)
     {
-        $this->skipVirtualTypeInit = (bool) $skipVirtualTypeInit;
-        $this->initializeExcluded = (bool) $initializeExcluded;
+        $this->skipVirtualTypeInit = $skipVirtualTypeInit;
+        $this->initializeExcluded = $initializeExcluded;
     }
 
     public function onPreSerialize(PreSerializeEvent $event): void

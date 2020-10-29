@@ -25,7 +25,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     /**
      * @var string
      */
-    private $defaultRootName = 'result';
+    private $defaultRootName;
 
     /**
      * @var string|null

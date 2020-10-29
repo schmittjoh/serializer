@@ -20,7 +20,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     /**
      * @var ExclusionStrategyInterface[]
      */
-    private $delegates = [];
+    private $delegates;
 
     /**
      * @param ExclusionStrategyInterface[] $delegates

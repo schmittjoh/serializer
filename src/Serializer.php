@@ -38,12 +38,12 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     /**
      * @var SerializationVisitorFactory[]
      */
-    private $serializationVisitors = [];
+    private $serializationVisitors;
 
     /**
      * @var DeserializationVisitorFactory[]
      */
-    private $deserializationVisitors = [];
+    private $deserializationVisitors;
 
     /**
      * @var SerializationContextFactoryInterface

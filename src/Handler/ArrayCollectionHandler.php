@@ -17,7 +17,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     /**
      * @var bool
      */
-    private $initializeExcluded = true;
+    private $initializeExcluded;
 
     public function __construct(bool $initializeExcluded = true)
     {
