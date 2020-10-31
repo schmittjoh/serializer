@@ -48,6 +48,7 @@ class DocBlockTypeResolver
      * information and will return null if no helpful type information could be retrieved.
      *
      * @param \ReflectionProperty $reflectionProperty
+     *
      * @return string|null
      */
     public function getPropertyDocblockTypeHint(\ReflectionProperty $reflectionProperty): ?string
@@ -66,20 +67,20 @@ class DocBlockTypeResolver
         $typesWithoutNull = $this->filterNullFromTypes($types);
 
         // The PhpDoc does not contain additional type information.
-        if (count($typesWithoutNull) === 0) {
+        if (0 === count($typesWithoutNull)) {
             return null;
         }
 
         // The PhpDoc contains multiple non-null types which produces ambiguity when deserializing.
         if (count($typesWithoutNull) > 1) {
-            $typeHint = implode('|', array_map(function (TypeNode $type) {
+            $typeHint = implode('|', array_map(static function (TypeNode $type) {
                 return (string) $type;
             }, $types));
+
             throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
         // Only one type is left, so we only need to differentiate between arrays, generics and other types.
-        /** @var TypeNode $type */
         $type = $typesWithoutNull[0];
 
         // Simple array without concrete type: array
@@ -115,11 +116,12 @@ class DocBlockTypeResolver
      * Returns a flat list of types of the given var tags. Union types are flattened as well.
      *
      * @param VarTagValueNode[] $varTagValues
+     *
      * @return TypeNode[]
      */
     private function flattenVarTagValueTypes(array $varTagValues): array
     {
-        return array_merge(...array_map(function (VarTagValueNode $node) {
+        return array_merge(...array_map(static function (VarTagValueNode $node) {
             if ($node->type instanceof UnionTypeNode) {
                 return $node->type->types;
             }
@@ -132,6 +134,7 @@ class DocBlockTypeResolver
      * Filters the null type from the given types array. If no null type is found, the array is returned unchanged.
      *
      * @param TypeNode[] $types
+     *
      * @return TypeNode[]
      */
     private function filterNullFromTypes(array $types): array
@@ -145,7 +148,8 @@ class DocBlockTypeResolver
      * Determines if the given type is a null type.
      *
      * @param TypeNode $typeNode
-     * @return boolean
+     *
+     * @return bool
      */
     private function isNullType(TypeNode $typeNode): bool
     {
@@ -157,7 +161,8 @@ class DocBlockTypeResolver
      *
      * @param TypeNode $typeNode
      * @param string $simpleType
-     * @return boolean
+     *
+     * @return bool
      */
     private function isSimpleType(TypeNode $typeNode, string $simpleType): bool
     {
@@ -170,7 +175,9 @@ class DocBlockTypeResolver
      *
      * @param TypeNode $typeNode
      * @param \ReflectionProperty $reflectionProperty
+     *
      * @return string
+     *
      * @throws \InvalidArgumentException
      */
     private function resolveTypeFromTypeNode(TypeNode $typeNode, \ReflectionProperty $reflectionProperty): string
