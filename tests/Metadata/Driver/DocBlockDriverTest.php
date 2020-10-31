@@ -22,6 +22,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfaces
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromGlobalNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromSameNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesWithFullNamespacePath;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithNullSingleLinePhpDoc;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfUnionClasses;
@@ -132,6 +133,20 @@ class DocBlockDriverTest extends TestCase
         }
 
         $m = $this->resolve(CollectionOfClassesWithNull::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionOfClassesIgnoringNullTypeHintWithSingleLinePhpDoc()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionOfClassesWithNullSingleLinePhpDoc::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
