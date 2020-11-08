@@ -63,12 +63,12 @@ class DocBlockTypeResolver
 
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $reflectionProperty): string
     {
-        if (class_exists($typeHint)) {
+        if ($this->isClassOrInterface($typeHint)) {
             return $typeHint;
         }
 
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
-        if (class_exists($expandedClassName)) {
+        if ($this->isClassOrInterface($expandedClassName)) {
             return $expandedClassName;
         }
 
@@ -157,5 +157,10 @@ class DocBlockTypeResolver
     private function isArrayWithoutAnyType(string $typeHint): bool
     {
         return 'array' === $typeHint;
+    }
+
+    private function isClassOrInterface(string $typeHint): bool
+    {
+        return class_exists($typeHint) || interface_exists($typeHint);
     }
 }
