@@ -1356,6 +1356,10 @@ abstract class BaseSerializationTest extends TestCase
             $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
         }
 
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->includeInterfaceMetadata(true);
+        $this->serializer = $builder->build();
+
         $user = new TypedProperties\User();
         $user->id = 1;
         $user->created = new \DateTime('2010-10-01 00:00:00');
@@ -1364,6 +1368,7 @@ abstract class BaseSerializationTest extends TestCase
         $role = new TypedProperties\Role();
         $role->id = 5;
         $user->role = $role;
+        $user->vehicle = new TypedProperties\Car();
 
         $result = $this->serialize($user);
 

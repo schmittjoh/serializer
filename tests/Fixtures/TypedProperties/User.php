@@ -10,6 +10,7 @@ class User
 {
     public int $id;
     public Role $role;
+    public Vehicle $vehicle;
     public \DateTime $created;
 
     /**
