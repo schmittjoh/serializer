@@ -4,61 +4,189 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
+use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
+use PHPStan\PhpDocParser\Parser\TypeParser;
+
 class DocBlockTypeResolver
 {
-    /** resolve type hints from property */
-    private const CLASS_PROPERTY_TYPE_HINT_REGEX = '#@var[\s]*([^\n\$]*)#';
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
 
+    /**
+     * @var PhpDocParser
+     */
+    protected $phpDocParser;
+
+    /**
+     * @var Lexer
+     */
+    protected $lexer;
+
+    public function __construct()
+    {
+        $constExprParser = new ConstExprParser();
+        $typeParser = new TypeParser($constExprParser);
+
+        $this->phpDocParser = new PhpDocParser($typeParser, $constExprParser);
+        $this->lexer = new Lexer();
+    }
+
+    /**
+     * Attempts to retrieve additional type information from a PhpDoc block. Throws in case of ambiguous type
+     * information and will return null if no helpful type information could be retrieved.
+     *
+     * @param \ReflectionProperty $reflectionProperty
+     *
+     * @return string|null
+     */
     public function getPropertyDocblockTypeHint(\ReflectionProperty $reflectionProperty): ?string
     {
         if (!$reflectionProperty->getDocComment()) {
             return null;
         }
 
-        preg_match_all(self::CLASS_PROPERTY_TYPE_HINT_REGEX, $reflectionProperty->getDocComment(), $matchedDocBlockParameterTypes);
-        if (!isset($matchedDocBlockParameterTypes[1][0])) {
+        // First we tokenize the PhpDoc comment and parse the tokens into a PhpDocNode.
+        $tokens = $this->lexer->tokenize($reflectionProperty->getDocComment());
+        $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
+
+        // Then we retrieve a flattened list of annotated types excluding null.
+        $varTagValues = $phpDocNode->getVarTagValues();
+        $types = $this->flattenVarTagValueTypes($varTagValues);
+        $typesWithoutNull = $this->filterNullFromTypes($types);
+
+        // The PhpDoc does not contain additional type information.
+        if (0 === count($typesWithoutNull)) {
             return null;
         }
 
-        $typeHint = trim($matchedDocBlockParameterTypes[1][0]);
-        if ($this->isArrayWithoutAnyType($typeHint)) {
-            return null;
-        }
+        // The PhpDoc contains multiple non-null types which produces ambiguity when deserializing.
+        if (count($typesWithoutNull) > 1) {
+            $typeHint = implode('|', array_map(static function (TypeNode $type) {
+                return (string) $type;
+            }, $types));
 
-        $unionTypeHint = [];
-        foreach (explode('|', $typeHint) as $singleTypeHint) {
-            if ('null' !== $singleTypeHint) {
-                $unionTypeHint[] = $singleTypeHint;
-            }
-        }
-
-        $typeHint = implode('|', $unionTypeHint);
-        if (count($unionTypeHint) > 1) {
             throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
-        if (false !== strpos($typeHint, 'array<')) {
-            $resolvedTypes = [];
-            preg_match_all('#array<(.*)>#', $typeHint, $genericTypesToResolve);
-            $genericTypesToResolve = $genericTypesToResolve[1][0];
-            foreach (explode(',', $genericTypesToResolve) as $genericTypeToResolve) {
-                $resolvedTypes[] = $this->resolveType(trim($genericTypeToResolve), $reflectionProperty);
-            }
+        // Only one type is left, so we only need to differentiate between arrays, generics and other types.
+        $type = $typesWithoutNull[0];
 
-            return 'array<' . implode(',', $resolvedTypes) . '>';
-        } elseif (false !== strpos($typeHint, '[]')) {
-            $typeHint = rtrim($typeHint, '[]');
-            $typeHint = $this->resolveType($typeHint, $reflectionProperty);
-
-            return 'array<' . $typeHint . '>';
+        // Simple array without concrete type: array
+        if ($this->isSimpleType($type, 'array')) {
+            return null;
         }
 
-        return $this->resolveType($typeHint, $reflectionProperty);
+        // Normal array syntax: Product[] | \Foo\Bar\Product[]
+        if ($type instanceof ArrayTypeNode) {
+            $resolvedType = $this->resolveTypeFromTypeNode($type->type, $reflectionProperty);
+
+            return 'array<' . $resolvedType . '>';
+        }
+
+        // Generic array syntax: array<Product> | array<\Foo\Bar\Product> | array<int,Product>
+        if ($type instanceof GenericTypeNode) {
+            if (!$this->isSimpleType($type->type, 'array')) {
+                throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
+            }
+
+            $resolvedTypes = array_map(function (TypeNode $node) use ($reflectionProperty) {
+                return $this->resolveTypeFromTypeNode($node, $reflectionProperty);
+            }, $type->genericTypes);
+
+            return 'array<' . implode(',', $resolvedTypes) . '>';
+        }
+
+        // Primitives and class names: Collection | \Foo\Bar\Product | string
+        return $this->resolveTypeFromTypeNode($type, $reflectionProperty);
+    }
+
+    /**
+     * Returns a flat list of types of the given var tags. Union types are flattened as well.
+     *
+     * @param VarTagValueNode[] $varTagValues
+     *
+     * @return TypeNode[]
+     */
+    private function flattenVarTagValueTypes(array $varTagValues): array
+    {
+        return array_merge(...array_map(static function (VarTagValueNode $node) {
+            if ($node->type instanceof UnionTypeNode) {
+                return $node->type->types;
+            }
+
+            return [$node->type];
+        }, $varTagValues));
+    }
+
+    /**
+     * Filters the null type from the given types array. If no null type is found, the array is returned unchanged.
+     *
+     * @param TypeNode[] $types
+     *
+     * @return TypeNode[]
+     */
+    private function filterNullFromTypes(array $types): array
+    {
+        return array_filter(array_map(function (TypeNode $node) {
+            return $this->isNullType($node) ? null : $node;
+        }, $types));
+    }
+
+    /**
+     * Determines if the given type is a null type.
+     *
+     * @param TypeNode $typeNode
+     *
+     * @return bool
+     */
+    private function isNullType(TypeNode $typeNode): bool
+    {
+        return $this->isSimpleType($typeNode, 'null');
+    }
+
+    /**
+     * Determines if the given node represents a simple type.
+     *
+     * @param TypeNode $typeNode
+     * @param string $simpleType
+     *
+     * @return bool
+     */
+    private function isSimpleType(TypeNode $typeNode, string $simpleType): bool
+    {
+        return $typeNode instanceof IdentifierTypeNode && $typeNode->name === $simpleType;
+    }
+
+    /**
+     * Attempts to resolve the fully qualified type from the given node. If the node is not suitable for type
+     * retrieval, an exception is thrown.
+     *
+     * @param TypeNode $typeNode
+     * @param \ReflectionProperty $reflectionProperty
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function resolveTypeFromTypeNode(TypeNode $typeNode, \ReflectionProperty $reflectionProperty): string
+    {
+        if (!($typeNode instanceof IdentifierTypeNode)) {
+            throw new \InvalidArgumentException(sprintf("Can't use unsupported type %s for collection in %s:%s", (string) $typeNode, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
+        }
+
+        return $this->resolveType($typeNode->name, $reflectionProperty);
     }
 
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, \ReflectionProperty $reflectionProperty): string
@@ -152,11 +280,6 @@ class DocBlockTypeResolver
         }
 
         return ltrim($typeHint, '\\');
-    }
-
-    private function isArrayWithoutAnyType(string $typeHint): bool
-    {
-        return 'array' === $typeHint;
     }
 
     private function isClassOrInterface(string $typeHint): bool
