@@ -18,11 +18,11 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFro
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromTraitInsideTrait;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithFullNamespacePath;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithNull;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithNullSingleLinePhpDoc;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromDifferentNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromGlobalNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesFromSameNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesWithFullNamespacePath;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesWithNullSingleLinePhpDoc;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfUnionClasses;
