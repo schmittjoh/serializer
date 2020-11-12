@@ -77,7 +77,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();
 
-        $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
+        $previousEntityLoaderState = @libxml_disable_entity_loader($this->disableExternalEntities);
 
         if (false !== stripos($data, '<!doctype')) {
             $internalSubset = $this->getDomDocumentTypeEntitySubset($data);
@@ -92,7 +92,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $doc = simplexml_load_string($data, 'SimpleXMLElement', $this->options);
 
         libxml_use_internal_errors($previous);
-        libxml_disable_entity_loader($previousEntityLoaderState);
+        @libxml_disable_entity_loader($previousEntityLoaderState);
 
         if (false === $doc) {
             throw new XmlErrorException(libxml_get_last_error());
