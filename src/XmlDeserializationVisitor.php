@@ -207,7 +207,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             $nodes = $data->xpath($entryName);
         }
 
-        if (!\count($nodes)) {
+        if (null === $nodes || !\count($nodes)) {
             return [];
         }
 
