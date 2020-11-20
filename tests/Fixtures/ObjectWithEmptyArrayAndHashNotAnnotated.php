@@ -19,6 +19,19 @@ class ObjectWithEmptyArrayAndHashNotAnnotated
 
     private $object = [];
 
+    /**
+     * @Serializer\Type("array<string>")
+     * @Serializer\SkipWhenEmpty()
+     */
+    private $someEmptyAnnotatedProp = [];
+
+    /**
+     * @Serializer\Type("array<string>")
+     */
+    private $someEmptyNonAnnotatedProp = [];
+
+    private $someNonEmptyProp = 'test-value';
+
     public function __construct()
     {
         $this->object = new InlineChildEmpty();

@@ -86,6 +86,7 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
 use JMS\Serializer\Tests\Fixtures\ObjectWithArrayIterator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHashNotAnnotated;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\ObjectWithGenerator;
@@ -1731,9 +1732,9 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('maxdepth_1'), $serialized);
     }
 
-    public function testSkipeWhenEmptyByDefaultEnabled()
+    public function testSkipWhenEmptyByDefaultEnabled()
     {
-        $data = new Gh236Foo();
+        $data = new ObjectWithEmptyArrayAndHashNotAnnotated();
 
         $context = SerializationContext::create()->enableSkipWhenEmpty();
         $serialized = $this->serialize($data, $context);
@@ -1743,7 +1744,7 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testSkipWhenEmptyByDefaultDisabled()
     {
-        $data = new Gh236Foo();
+        $data = new ObjectWithEmptyArrayAndHashNotAnnotated();
 
         $context = SerializationContext::create();
         $serialized = $this->serialize($data, $context);

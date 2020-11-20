@@ -186,6 +186,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->serializedName = $annot->name;
                     } elseif ($annot instanceof SkipWhenEmpty) {
                         $propertyMetadata->skipWhenEmpty = true;
+                        // @Todo: Check the context about the configuration whether skipWhenEmpty on all properties.
                     } elseif ($annot instanceof Expose) {
                         $isExpose = true;
                         if (null !== $annot->if) {

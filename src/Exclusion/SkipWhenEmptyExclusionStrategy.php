@@ -17,9 +17,12 @@ class SkipWhenEmptyExclusionStrategy implements ExclusionStrategyInterface
 
     public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
-        return $property->skipWhenEmpty
-            || ($context->hasAttribute(Context::ATTR_SKIP_WHEN_EMPTY)
+        if (!$property->skipWhenEmpty
+            && $context->hasAttribute(Context::ATTR_SKIP_WHEN_EMPTY)
                 && $context->getAttribute(Context::ATTR_SKIP_WHEN_EMPTY)
-            );
+            ) {
+            $property->skipWhenEmpty = true;
+        }
+        return false;
     }
 }

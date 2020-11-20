@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <a>
-    <xxx><![CDATA[yyy]]></xxx>
-    <inner>
-      <xxx><![CDATA[yyy]]></xxx>
-    </inner>
-  </a>
+  <hash/>
+  <array/>
+  <object/>
+  <some_empty_non_annotated_prop/>
+  <some_non_empty_prop><![CDATA[test-value]]></some_non_empty_prop>
 </result>
