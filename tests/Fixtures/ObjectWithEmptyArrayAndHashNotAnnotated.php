@@ -20,6 +20,11 @@ class ObjectWithEmptyArrayAndHashNotAnnotated
     private $object = [];
 
     /**
+     * @Serializer\SkipWhenEmpty()
+     */
+    private $objectAnnotated = [];
+
+    /**
      * @Serializer\Type("array<string>")
      * @Serializer\SkipWhenEmpty()
      */

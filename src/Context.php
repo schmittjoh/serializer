@@ -11,6 +11,7 @@ use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\SkipWhenEmptyExclusionStrategy;
+use JMS\Serializer\Exclusion\ValueExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -107,7 +108,7 @@ abstract class Context
         return $this->navigator;
     }
 
-    public function getExclusionStrategy(): ?ExclusionStrategyInterface
+    public function getExclusionStrategy(): ?DisjunctExclusionStrategy
     {
         return $this->exclusionStrategy;
     }
@@ -148,17 +149,13 @@ abstract class Context
     }
 
     /**
+     * @param ExclusionStrategyInterface|ValueExclusionStrategyInterface $strategy
+     *
      * @return $this
      */
-    public function addExclusionStrategy(ExclusionStrategyInterface $strategy): self
+    public function addExclusionStrategy($strategy): self
     {
         $this->assertMutable();
-
-        if (null === $this->exclusionStrategy) {
-            $this->exclusionStrategy = $strategy;
-
-            return $this;
-        }
 
         if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
             $this->exclusionStrategy->addStrategy($strategy);
@@ -166,10 +163,7 @@ abstract class Context
             return $this;
         }
 
-        $this->exclusionStrategy = new DisjunctExclusionStrategy([
-            $this->exclusionStrategy,
-            $strategy,
-        ]);
+        $this->exclusionStrategy = new DisjunctExclusionStrategy([$strategy]);
 
         return $this;
     }

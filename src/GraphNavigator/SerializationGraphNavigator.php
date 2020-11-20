@@ -262,6 +262,10 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipPropertyWithValue($propertyMetadata, $this->context, $v)) {
+                        continue;
+                    }
+
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     $this->visitor->visitProperty($propertyMetadata, $v);
                     $this->context->popPropertyMetadata();
