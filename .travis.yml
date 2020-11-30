@@ -1,13 +1,12 @@
 language: php
 
-sudo: false
-
 git:
     depth: 1
 
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.cache/composer
 
 env:
   global:
