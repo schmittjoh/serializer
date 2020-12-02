@@ -18,6 +18,10 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\AbstractManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadataFactory;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\Proxy;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
@@ -30,6 +34,7 @@ use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -326,6 +331,57 @@ class ObjectConstructorTest extends TestCase
         $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $constructor->construct($this->visitor, $class, $data, $type, $this->context);
+    }
+
+    /**
+     * php7.4 Using array_key_exists() on objects is deprecated.
+     */
+    public function testArrayKeyExistsOnObject(): void
+    {
+        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
+
+        $ormClassMetadata = $this->createMock(DoctrineClassMetadata::class);
+        $ormClassMetadata
+            ->expects(self::atLeastOnce())
+            ->method('getIdentifierFieldNames')
+            ->willReturn(['id']);
+
+        $om = $this->createMock(ObjectManager::class);
+        $om
+            ->expects(self::atLeastOnce())
+            ->method('getMetadataFactory')
+            ->willReturn($metadataFactory);
+        $om
+            ->expects(self::atLeastOnce())
+            ->method('getClassMetadata')
+            ->willReturnMap([
+                [BlogPostSeo::class, $ormClassMetadata],
+            ]);
+
+        $registry = $this->createMock(ManagerRegistry::class);
+        $registry
+            ->expects(self::atLeastOnce())
+            ->method('getManagerForClass')
+            ->willReturnMap([
+                [BlogPostSeo::class, $om],
+            ]);
+
+        $fallback = $this->createMock(ObjectConstructorInterface::class);
+        $fallback
+            ->expects(self::once())
+            ->method('construct');
+
+        $type = ['name' => BlogPostSeo::class, 'params' => []];
+
+        $pm = $this->createMock(PropertyMetadata::class);
+        $pm->serializedName = 'id';
+
+        $classMetadata = new ClassMetadata(BlogPostSeo::class);
+        $classMetadata->propertyMetadata['id'] = $pm;
+
+        $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
+        $constructor = new DoctrineObjectConstructor($registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
+        $constructor->construct($this->visitor, $classMetadata, $data, $type, $this->context);
     }
 
     protected function setUp(): void
