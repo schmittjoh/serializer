@@ -13,6 +13,7 @@
     <php>
         <ini name="error_reporting" value="-1" />
         <ini name="serialize_precision" value="14"/>
+        <ini name="date.timezone" value="UTC"/>
     </php>
 
     <testsuites>

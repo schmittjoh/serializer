@@ -28,6 +28,8 @@ matrix:
 
         - php: 7.4
           env: VERY_LATEST=1
+        - php: 8.0snapshot
+          env: COMPOSER_FLAGS='--ignore-platform-req=php'
     fast_finish: true
 
 install:
