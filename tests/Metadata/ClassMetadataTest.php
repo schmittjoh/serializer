@@ -6,6 +6,8 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Ordering\PropertyOrderingInterface;
+use JMS\Serializer\Ordering\PropertyOrderingRegistry;
 use PHPUnit\Framework\TestCase;
 
 class ClassMetadataTest extends TestCase
@@ -63,6 +65,20 @@ class ClassMetadataTest extends TestCase
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
         self::assertEquals(['a', 'b'], array_keys($metadata->propertyMetadata));
+    }
+
+    public function testSetAccessorOrderCustomStrategy()
+    {
+        $propertyOrderingStrategy = new PropertyOrderingRegistry();
+        $propertyOrderingStrategy->add('alphabetical_desc', new CustomAlphabeticalStrategy());
+
+        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', $propertyOrderingStrategy);
+        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
+        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
+        self::assertEquals(['a', 'b'], array_keys($metadata->propertyMetadata));
+
+        $metadata->setAccessorOrder('alphabetical_desc');
+        self::assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
     }
 
     /**
@@ -160,5 +176,20 @@ class PropertyMetadataPublicMethod
     public function saveD($d)
     {
         $this->d = 'D:' . $d;
+    }
+}
+
+class CustomAlphabeticalStrategy implements PropertyOrderingInterface
+{
+    public function order(array $properties, array $options): array
+    {
+        uasort(
+            $properties,
+            static function (PropertyMetadata $a, PropertyMetadata $b): int {
+                return strcmp($b->name, $a->name);
+            }
+        );
+
+        return $properties;
     }
 }

@@ -11,7 +11,7 @@ final class AlphabeticalPropertyOrderingStrategy implements PropertyOrderingInte
     /**
      * {@inheritdoc}
      */
-    public function order(array $properties): array
+    public function order(array $properties, array $options): array
     {
         uasort(
             $properties,

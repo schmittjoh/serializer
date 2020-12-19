@@ -6,27 +6,19 @@ namespace JMS\Serializer\Ordering;
 
 final class CustomPropertyOrderingStrategy implements PropertyOrderingInterface
 {
-    /** @var int[] property => weight */
-    private $ordering;
-
-    /**
-     * @param int[] $ordering property => weight
-     */
-    public function __construct(array $ordering)
-    {
-        $this->ordering = $ordering;
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function order(array $properties): array
+    public function order(array $properties, array $options): array
     {
+        /** @var int[] $ordering property => weight */
+        $ordering = $options['ordering'] ?? [];
+
         $currentSorting = $properties ? array_combine(array_keys($properties), range(1, \count($properties))) : [];
 
-        uksort($properties, function ($a, $b) use ($currentSorting) {
-            $existsA = isset($this->ordering[$a]);
-            $existsB = isset($this->ordering[$b]);
+        uksort($properties, static function ($a, $b) use ($currentSorting, $ordering) {
+            $existsA = isset($ordering[$a]);
+            $existsB = isset($ordering[$b]);
 
             if (!$existsA && !$existsB) {
                 return $currentSorting[$a] - $currentSorting[$b];
@@ -40,7 +32,7 @@ final class CustomPropertyOrderingStrategy implements PropertyOrderingInterface
                 return -1;
             }
 
-            return $this->ordering[$a] < $this->ordering[$b] ? -1 : 1;
+            return $ordering[$a] < $ordering[$b] ? -1 : 1;
         });
 
         return $properties;

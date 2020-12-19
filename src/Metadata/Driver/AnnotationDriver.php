@@ -42,6 +42,7 @@ use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\Serializer\Ordering\PropertyOrderingRegistryInterface;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as BaseClassMetadata;
@@ -65,18 +66,28 @@ class AnnotationDriver implements DriverInterface
      * @var PropertyNamingStrategyInterface
      */
     private $namingStrategy;
+    /**
+     * @var PropertyOrderingRegistryInterface|null
+     */
+    private $propertyOrderingRegistry;
 
-    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
-    {
+    public function __construct(
+        Reader $reader,
+        PropertyNamingStrategyInterface $namingStrategy,
+        ?ParserInterface $typeParser = null,
+        ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null,
+        ?PropertyOrderingRegistryInterface $propertyOrderingRegistry = null
+    ) {
         $this->reader = $reader;
         $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
+        $this->propertyOrderingRegistry = $propertyOrderingRegistry;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
-        $classMetadata = new ClassMetadata($name = $class->name);
+        $classMetadata = new ClassMetadata($name = $class->name, $this->propertyOrderingRegistry);
         $fileResource =  $class->getFilename();
         if (false !== $fileResource) {
             $classMetadata->fileResources[] = $fileResource;

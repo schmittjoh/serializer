@@ -12,6 +12,7 @@ use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\Serializer\Ordering\PropertyOrderingRegistryInterface;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as BaseClassMetadata;
@@ -39,13 +40,23 @@ class YamlDriver extends AbstractFileDriver
      * @var FileLocatorInterface
      */
     private $locator;
+    /**
+     * @var PropertyOrderingRegistryInterface|null
+     */
+    private $propertyOrderingRegistry;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
-    {
+    public function __construct(
+        FileLocatorInterface $locator,
+        PropertyNamingStrategyInterface $namingStrategy,
+        ?ParserInterface $typeParser = null,
+        ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null,
+        ?PropertyOrderingRegistryInterface $propertyOrderingRegistry = null
+    ) {
         $this->locator = $locator;
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
+        $this->propertyOrderingRegistry = $propertyOrderingRegistry;
     }
 
     public function loadMetadataForClass(ReflectionClass $class): ?BaseClassMetadata
@@ -100,7 +111,7 @@ class YamlDriver extends AbstractFileDriver
         }
 
         $config = $config[$name];
-        $metadata = new ClassMetadata($name);
+        $metadata = new ClassMetadata($name, $this->propertyOrderingRegistry);
         $metadata->fileResources[] = $file;
         $fileResource = $class->getFilename();
         if (false !== $fileResource) {

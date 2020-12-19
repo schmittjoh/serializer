@@ -9,6 +9,8 @@ use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Ordering\AlphabeticalPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
 use JMS\Serializer\Ordering\IdenticalPropertyOrderingStrategy;
+use JMS\Serializer\Ordering\PropertyOrderingRegistry;
+use JMS\Serializer\Ordering\PropertyOrderingRegistryInterface;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
@@ -132,6 +134,17 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public $excludeIf;
 
+    /**
+     * @var PropertyOrderingRegistryInterface
+     */
+    private $propertyOrderingRegistry;
+
+    public function __construct(string $name, ?PropertyOrderingRegistryInterface $propertyOrderingRegistry = null)
+    {
+        parent::__construct($name);
+        $this->propertyOrderingRegistry = $propertyOrderingRegistry ?: new PropertyOrderingRegistry();
+    }
+
     public function setDiscriminator(string $fieldName, array $map, array $groups = []): void
     {
         if (empty($fieldName)) {
@@ -165,7 +178,8 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public function setAccessorOrder(string $order, array $customOrder = []): void
     {
-        if (!in_array($order, [self::ACCESSOR_ORDER_UNDEFINED, self::ACCESSOR_ORDER_ALPHABETICAL, self::ACCESSOR_ORDER_CUSTOM], true)) {
+        $this->addDefaultPropertyOrdering();
+        if (!$this->propertyOrderingRegistry->supports($order)) {
             throw new InvalidMetadataException(sprintf('The accessor order "%s" is invalid.', $order));
         }
 
@@ -300,6 +314,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $this->excludeIf,
+            $this->propertyOrderingRegistry,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
@@ -341,6 +356,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $this->excludeIf,
+            $this->propertyOrderingRegistry,
             $parentStr,
         ] = $unserialized;
 
@@ -424,18 +440,19 @@ class ClassMetadata extends MergeableClassMetadata
 
     private function sortProperties(): void
     {
-        switch ($this->accessorOrder) {
-            case self::ACCESSOR_ORDER_UNDEFINED:
-                $this->propertyMetadata = (new IdenticalPropertyOrderingStrategy())->order($this->propertyMetadata);
-                break;
-
-            case self::ACCESSOR_ORDER_ALPHABETICAL:
-                $this->propertyMetadata = (new AlphabeticalPropertyOrderingStrategy())->order($this->propertyMetadata);
-                break;
-
-            case self::ACCESSOR_ORDER_CUSTOM:
-                $this->propertyMetadata = (new CustomPropertyOrderingStrategy($this->customOrder))->order($this->propertyMetadata);
-                break;
+        $this->addDefaultPropertyOrdering();
+        if ($this->accessorOrder && $propertyOrdering = $this->propertyOrderingRegistry->get($this->accessorOrder)) {
+            $options = [
+                'ordering' => $this->customOrder ?? [],
+            ];
+            $this->propertyMetadata = $propertyOrdering->order($this->propertyMetadata, $options);
         }
+    }
+
+    private function addDefaultPropertyOrdering(): void
+    {
+        $this->propertyOrderingRegistry->add(self::ACCESSOR_ORDER_UNDEFINED, new IdenticalPropertyOrderingStrategy());
+        $this->propertyOrderingRegistry->add(self::ACCESSOR_ORDER_ALPHABETICAL, new AlphabeticalPropertyOrderingStrategy());
+        $this->propertyOrderingRegistry->add(self::ACCESSOR_ORDER_CUSTOM, new CustomPropertyOrderingStrategy());
     }
 }
