@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.11.0](https://github.com/schmittjoh/serializer/tree/3.11.0) (2020-12-29)
+
+**Implemented enhancements:**
+
+- Allow installing and build on PHP 8 [\#1267](https://github.com/schmittjoh/serializer/pull/1267) ([sanmai](https://github.com/sanmai))
+- Use phpstan/phpdoc-parser to retrieve additional type information from PhpDoc [\#1261](https://github.com/schmittjoh/serializer/pull/1261) ([Namoshek](https://github.com/Namoshek))
+- DoctrineObjectConstructor Using array\_key\_exists\(\) on objects is deprecated in php7.4 [\#1253](https://github.com/schmittjoh/serializer/pull/1253) ([gam6itko](https://github.com/gam6itko))
+- Add Composer cache for v2 on Travis CI [\#1266](https://github.com/schmittjoh/serializer/pull/1266) ([sanmai](https://github.com/sanmai))
+- Allow interfaces for DocBlock [\#1256](https://github.com/schmittjoh/serializer/pull/1256) ([marein](https://github.com/marein))
+- Allow interfaces for typed properties [\#1254](https://github.com/schmittjoh/serializer/pull/1254) ([marein](https://github.com/marein))
+
 ## [3.10.0](https://github.com/schmittjoh/serializer/tree/3.10.0) (2020-10-29)
 
 **Implemented enhancements:**
