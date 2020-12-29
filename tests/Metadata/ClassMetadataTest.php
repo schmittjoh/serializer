@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Ordering\PropertyOrderingInterface;
+use JMS\Serializer\Ordering\PropertiesOrderingInterface;
 use JMS\Serializer\Ordering\PropertyOrderingRegistry;
 use PHPUnit\Framework\TestCase;
 
@@ -179,7 +179,7 @@ class PropertyMetadataPublicMethod
     }
 }
 
-class CustomAlphabeticalStrategy implements PropertyOrderingInterface
+class CustomAlphabeticalStrategy implements PropertiesOrderingInterface
 {
     public function order(array $properties, array $options): array
     {

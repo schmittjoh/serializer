@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Ordering;
 
-final class IdenticalPropertyOrderingStrategy implements PropertyOrderingInterface
+final class IdenticalPropertyOrderingStrategy implements PropertiesOrderingInterface
 {
     /**
      * {@inheritdoc}

@@ -6,7 +6,7 @@ namespace JMS\Serializer\Ordering;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
 
-final class AlphabeticalPropertyOrderingStrategy implements PropertyOrderingInterface
+final class AlphabeticalPropertyOrderingStrategy implements PropertiesOrderingInterface
 {
     /**
      * {@inheritdoc}

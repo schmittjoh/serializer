@@ -7,24 +7,24 @@ namespace JMS\Serializer\Ordering;
 class PropertyOrderingRegistry implements PropertyOrderingRegistryInterface
 {
     /**
-     * @var PropertyOrderingInterface[]
+     * @var PropertiesOrderingInterface[]
      */
     private $orders = [];
 
-    public function add(string $strategyName, PropertyOrderingInterface $propertyOrdering): void
+    public function add(string $strategyName, PropertiesOrderingInterface $propertyOrdering): void
     {
         if (!\array_key_exists($strategyName, $this->orders)) {
             $this->orders[$strategyName] = $propertyOrdering;
         }
     }
 
-    public function get(string $strategyName): ?PropertyOrderingInterface
+    public function get(string $strategyName): ?PropertiesOrderingInterface
     {
         return $this->orders[$strategyName] ?? null;
     }
 
     /**
-     * @return PropertyOrderingInterface[]
+     * @return PropertiesOrderingInterface[]
      */
     public function all(): array
     {
