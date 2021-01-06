@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\RuntimeException;
+
 /**
  * Serializer Interface.
  *
@@ -15,6 +17,8 @@ interface SerializerInterface
      * Serializes the given data to the specified output format.
      *
      * @param mixed $data
+     *
+     * @throws RuntimeException
      */
     public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string;
 
@@ -22,6 +26,8 @@ interface SerializerInterface
      * Deserializes the given data to the specified type.
      *
      * @return mixed
+     *
+     * @throws RuntimeException
      *
      * @psalm-template T
      * @psalm-param class-string<T> $type
