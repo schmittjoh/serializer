@@ -1,0 +1,14 @@
+parameters:
+    level: 1
+
+    ignoreErrors:
+        - '~Class Doctrine\\Common\\Persistence\\Proxy not found~'
+        - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
+        - '~Class Symfony\\Component\\Translation\\TranslatorInterface not found~'
+
+    paths:
+        - %currentWorkingDirectory%/src
+        - %currentWorkingDirectory%/tests
+
+includes:
+    - phpstan-baseline.neon

@@ -399,10 +399,6 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
     public function getDocument(): \DOMDocument
     {
-        if (null === $this->document) {
-            $this->document = $this->createDocument();
-        }
-
         return $this->document;
     }
 
