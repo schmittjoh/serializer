@@ -25,39 +25,25 @@ use Metadata\MetadataFactoryInterface;
  */
 final class Serializer implements SerializerInterface, ArrayTransformerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $factory;
 
-    /**
-     * @var TypeParser
-     */
+    /** @var TypeParser */
     private $typeParser;
 
-    /**
-     * @var SerializationVisitorFactory[]
-     */
+    /** @var SerializationVisitorFactory[] */
     private $serializationVisitors;
 
-    /**
-     * @var DeserializationVisitorFactory[]
-     */
+    /** @var DeserializationVisitorFactory[] */
     private $deserializationVisitors;
 
-    /**
-     * @var SerializationContextFactoryInterface
-     */
+    /** @var SerializationContextFactoryInterface */
     private $serializationContextFactory;
 
-    /**
-     * @var DeserializationContextFactoryInterface
-     */
+    /** @var DeserializationContextFactoryInterface */
     private $deserializationContextFactory;
 
-    /**
-     * @var GraphNavigatorFactoryInterface[]
-     */
+    /** @var GraphNavigatorFactoryInterface[] */
     private $graphNavigators;
 
     /**

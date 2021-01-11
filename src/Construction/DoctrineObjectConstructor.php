@@ -21,24 +21,16 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
     public const ON_MISSING_NULL = 'null';
     public const ON_MISSING_EXCEPTION = 'exception';
     public const ON_MISSING_FALLBACK = 'fallback';
-    /**
-     * @var string
-     */
+    /** @var string */
     private $fallbackStrategy;
 
-    /**
-     * @var ManagerRegistry
-     */
+    /** @var ManagerRegistry */
     private $managerRegistry;
 
-    /**
-     * @var ObjectConstructorInterface
-     */
+    /** @var ObjectConstructorInterface */
     private $fallbackConstructor;
 
-    /**
-     * @var ExpressionLanguageExclusionStrategy|null
-     */
+    /** @var ExpressionLanguageExclusionStrategy|null */
     private $expressionLanguageExclusionStrategy;
 
     /**

@@ -6,9 +6,7 @@ namespace JMS\Serializer\Metadata;
 
 class StaticPropertyMetadata extends PropertyMetadata
 {
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $value;
 
     /**

@@ -18,9 +18,7 @@ class GetSetObject
     /** @Type("string") */
     private $name = 'Foo';
 
-    /**
-     * @ReadOnly
-     */
+    /** @ReadOnly */
     private $readOnlyProperty = 42;
 
     /**

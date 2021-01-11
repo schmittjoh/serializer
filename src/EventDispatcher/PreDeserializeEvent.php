@@ -8,9 +8,7 @@ use JMS\Serializer\DeserializationContext;
 
 class PreDeserializeEvent extends Event
 {
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $data;
 
     /**

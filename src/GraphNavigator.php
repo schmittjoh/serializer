@@ -19,21 +19,13 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
  */
 abstract class GraphNavigator implements GraphNavigatorInterface
 {
-    /**
-     * @var VisitorInterface
-     */
+    /** @var VisitorInterface */
     protected $visitor;
-    /**
-     * @var Context
-     */
+    /** @var Context */
     protected $context;
-    /***
-     * @var string
-     */
+    /*** @var string */
     protected $format;
-    /**
-     * @var ExclusionStrategyInterface
-     */
+    /** @var ExclusionStrategyInterface */
     protected $exclusionStrategy;
 
     public function initialize(VisitorInterface $visitor, Context $context): void

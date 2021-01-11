@@ -17,9 +17,7 @@ use Twig\TwigFunction;
  */
 class SerializerExtension extends AbstractExtension
 {
-    /**
-     * @var SerializerInterface
-     */
+    /** @var SerializerInterface */
     protected $serializer;
 
     /**

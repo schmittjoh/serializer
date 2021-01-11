@@ -18,37 +18,25 @@ use Metadata\MetadataFactoryInterface;
 
 abstract class Context
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $attributes = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $format;
 
-    /**
-     * @var VisitorInterface
-     */
+    /** @var VisitorInterface */
     private $visitor;
 
-    /**
-     * @var GraphNavigatorInterface
-     */
+    /** @var GraphNavigatorInterface */
     private $navigator;
 
-    /**
-     * @var MetadataFactory
-     */
+    /** @var MetadataFactory */
     private $metadataFactory;
 
     /** @var DisjunctExclusionStrategy */
     private $exclusionStrategy;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $initialized = false;
 
     /** @var \SplStack */

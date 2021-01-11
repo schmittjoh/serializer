@@ -11,9 +11,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ExpressionEvaluatorTest extends TestCase
 {
-    /**
-     * @var ExpressionEvaluator
-     */
+    /** @var ExpressionEvaluator */
     private $evaluator;
 
     protected function setUp(): void

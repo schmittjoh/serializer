@@ -18,8 +18,6 @@ class BlogPostWithEmbedded
      */
     protected $id;
 
-    /**
-     * @ORM\Embedded(class="BlogPostSeo", columnPrefix="seo_")
-     */
+    /** @ORM\Embedded(class="BlogPostSeo", columnPrefix="seo_") */
     private $seo;
 }

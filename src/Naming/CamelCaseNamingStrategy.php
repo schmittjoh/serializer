@@ -13,14 +13,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $separator;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $lowerCase;
 
     public function __construct(string $separator = '_', bool $lowerCase = true)

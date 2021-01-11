@@ -8,14 +8,10 @@ use JMS\Serializer\Annotation\Type;
 
 class ObjectWithObjectProperty
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $foo;
 
-    /**
-     * @Type("JMS\Serializer\Tests\Fixtures\Author")
-     */
+    /** @Type("JMS\Serializer\Tests\Fixtures\Author") */
     private $author;
 
     /**

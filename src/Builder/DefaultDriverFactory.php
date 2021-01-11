@@ -19,19 +19,13 @@ use Metadata\Driver\FileLocator;
 
 final class DefaultDriverFactory implements DriverFactoryInterface
 {
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     private $typeParser;
 
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
+    /** @var PropertyNamingStrategyInterface */
     private $propertyNamingStrategy;
 
-    /**
-     * @var CompilableExpressionEvaluatorInterface
-     */
+    /** @var CompilableExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)

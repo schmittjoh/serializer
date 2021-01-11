@@ -8,8 +8,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescrip
 
 class SingleClassFromDifferentNamespaceTypeHint
 {
-    /**
-     * @var ProductDescription
-     */
+    /** @var ProductDescription */
     public $data;
 }

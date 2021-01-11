@@ -17,59 +17,37 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
  */
 final class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
-    /**
-     * @var \DOMDocument
-     */
+    /** @var \DOMDocument */
     private $document;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $defaultRootName;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $defaultRootNamespace;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $defaultRootPrefix;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $stack;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $metadataStack;
 
-    /**
-     * @var \DOMNode|\DOMElement|null
-     */
+    /** @var \DOMNode|\DOMElement|null */
     private $currentNode;
 
-    /**
-     * @var ClassMetadata|PropertyMetadata|null
-     */
+    /** @var ClassMetadata|PropertyMetadata|null */
     private $currentMetadata;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $hasValue;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $nullWasVisited;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $objectMetadataStack;
 
     public function __construct(

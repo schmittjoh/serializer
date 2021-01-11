@@ -10,8 +10,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class XmlValue
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $cdata = true;
 }

@@ -29,8 +29,6 @@
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
 
-        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
-
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>

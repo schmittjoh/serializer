@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfScalars
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public array $productIds;
 }

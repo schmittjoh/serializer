@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 class Gh236Bar
 {
-    /**
-     * @Serializer\Expose()
-     */
+    /** @Serializer\Expose() */
     public $xxx = 'yyy';
 
     /**

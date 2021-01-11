@@ -14,9 +14,7 @@ use JMS\Serializer\Expression\Expression;
  */
 class ExpressionPropertyMetadata extends PropertyMetadata
 {
-    /**
-     * @var string|Expression
-     */
+    /** @var string|Expression */
     public $expression;
 
     /**

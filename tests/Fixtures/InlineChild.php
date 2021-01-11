@@ -8,13 +8,9 @@ use JMS\Serializer\Annotation\Type;
 
 class InlineChild
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     public $a = 'a';
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     public $b = 'b';
 }

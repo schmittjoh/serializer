@@ -24,13 +24,9 @@ class XmlDriver extends AbstractFileDriver
 {
     use ExpressionMetadataTrait;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     private $typeParser;
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
+    /** @var PropertyNamingStrategyInterface */
     private $namingStrategy;
 
     public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)

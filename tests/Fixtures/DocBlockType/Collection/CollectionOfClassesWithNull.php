@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfClassesWithNull
 {
-    /**
-     * @var Product[]|null
-     */
+    /** @var Product[]|null */
     public ?array $productIds;
 }

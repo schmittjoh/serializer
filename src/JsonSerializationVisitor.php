@@ -12,18 +12,12 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class JsonSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $dataStack;
-    /**
-     * @var \ArrayObject
-     */
+    /** @var \ArrayObject */
     private $data;
 
     public function __construct(

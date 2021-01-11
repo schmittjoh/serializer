@@ -9,8 +9,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 
 class CollectionOfUnionClasses
 {
-    /**
-     * @var ProductName[]|ProductDescription[]
-     */
+    /** @var ProductName[]|ProductDescription[] */
     public array $productIds;
 }

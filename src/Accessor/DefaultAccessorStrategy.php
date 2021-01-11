@@ -20,24 +20,16 @@ use JMS\Serializer\SerializationContext;
  */
 final class DefaultAccessorStrategy implements AccessorStrategyInterface
 {
-    /**
-     * @var callable[]
-     */
+    /** @var callable[] */
     private $readAccessors = [];
 
-    /**
-     * @var callable[]
-     */
+    /** @var callable[] */
     private $writeAccessors = [];
 
-    /**
-     * @var \ReflectionProperty[]
-     */
+    /** @var \ReflectionProperty[] */
     private $propertyReflectionCache = [];
 
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $evaluator;
 
     public function __construct(?ExpressionEvaluatorInterface $evaluator = null)

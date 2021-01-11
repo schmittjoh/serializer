@@ -13,24 +13,16 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 final class JsonDeserializationVisitor extends AbstractVisitor implements DeserializationVisitorInterface
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $depth;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $objectStack;
 
-    /**
-     * @var object|null
-     */
+    /** @var object|null */
     private $currentObject;
 
     public function __construct(

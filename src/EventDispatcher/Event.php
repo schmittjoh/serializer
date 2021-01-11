@@ -9,19 +9,13 @@ use JMS\Serializer\VisitorInterface;
 
 class Event
 {
-    /**
-     * @var bool Whether no further event listeners should be triggered
-     */
+    /** @var bool Whether no further event listeners should be triggered */
     private $propagationStopped = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $type;
 
-    /**
-     * @var Context
-     */
+    /** @var Context */
     private $context;
 
     public function __construct(Context $context, array $type)

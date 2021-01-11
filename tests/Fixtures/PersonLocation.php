@@ -12,13 +12,9 @@ use JMS\Serializer\Annotation\XmlRoot;
  */
 class PersonLocation
 {
-    /**
-     * @Type("JMS\Serializer\Tests\Fixtures\Person")
-     */
+    /** @Type("JMS\Serializer\Tests\Fixtures\Person") */
     public $person;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     public $location;
 }

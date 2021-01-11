@@ -10,8 +10,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class Expose
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $if;
 }

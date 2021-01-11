@@ -11,13 +11,9 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class PersonAccount
 {
-    /**
-     * @Serializer\Type("string")
-     */
+    /** @Serializer\Type("string") */
     public $name;
 
-    /**
-     * @Serializer\Type("boolean")
-     */
+    /** @Serializer\Type("boolean") */
     public $expired;
 }

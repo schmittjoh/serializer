@@ -11,9 +11,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ValidatorInterface
-     */
+    /** @var ValidatorInterface */
     private $validator;
 
     public function __construct(ValidatorInterface $validator)

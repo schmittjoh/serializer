@@ -12,14 +12,10 @@ use JMS\Serializer\Annotation as Serializer;
 class AuthorExpressionAccess
 {
     private $id;
-    /**
-     * @Serializer\Exclude()
-     */
+    /** @Serializer\Exclude() */
     private $firstName;
 
-    /**
-     * @Serializer\Exclude()
-     */
+    /** @Serializer\Exclude() */
     private $lastName;
 
     public function __construct($id, $firstName, $lastName)

@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 class Gh236Foo
 {
-    /**
-     * @Serializer\MaxDepth(1)
-     */
+    /** @Serializer\MaxDepth(1) */
     public $a;
 
     public function __construct()

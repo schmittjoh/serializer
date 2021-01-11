@@ -20,9 +20,7 @@ class PersonCollection
      */
     public $persons;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     public $location;
 
     public function __construct()

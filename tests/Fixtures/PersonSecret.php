@@ -12,9 +12,7 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class PersonSecret
 {
-    /**
-     * @Serializer\Type("string")
-     */
+    /** @Serializer\Type("string") */
     public $name;
 
     /**

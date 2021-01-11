@@ -12,29 +12,19 @@ use JMS\Serializer\XmlSerializationVisitor;
  */
 final class XmlSerializationVisitorFactory implements SerializationVisitorFactory
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $defaultRootName = 'result';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $defaultVersion = '1.0';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $defaultEncoding = 'UTF-8';
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $formatOutput = true;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $defaultRootNamespace;
 
     public function getVisitor(): SerializationVisitorInterface

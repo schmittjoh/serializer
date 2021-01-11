@@ -10,9 +10,7 @@ class ParentDoNotSkipWithEmptyChild
 
     private $d = 'd';
 
-    /**
-     * @var InlineChild
-     */
+    /** @var InlineChild */
     private $child;
 
     public function __construct($child = null)

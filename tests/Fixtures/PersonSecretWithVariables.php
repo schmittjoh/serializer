@@ -10,9 +10,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 
 class PersonSecretWithVariables
 {
-    /**
-     * @Serializer\Type("string")
-     */
+    /** @Serializer\Type("string") */
     public $name;
 
     /**

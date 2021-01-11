@@ -12,14 +12,10 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class PersonSecretVirtual
 {
-    /**
-     * @Serializer\Type("string")
-     */
+    /** @Serializer\Type("string") */
     public $name;
 
-    /**
-     * @Serializer\Exclude()
-     */
+    /** @Serializer\Exclude() */
     public $gender;
 
     /**

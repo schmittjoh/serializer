@@ -16,9 +16,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  */
 class EventDispatcher implements EventDispatcherInterface
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $listeners = [];
 
     /**

@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfNotExistingClasses
 {
-    /**
-     * @var NotExistingClass[]
-     */
+    /** @var NotExistingClass[] */
     public array $productIds;
 }

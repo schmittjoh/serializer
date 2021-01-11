@@ -17,9 +17,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
-    /**
-     * @var ExclusionStrategyInterface[]
-     */
+    /** @var ExclusionStrategyInterface[] */
     private $delegates;
 
     /**

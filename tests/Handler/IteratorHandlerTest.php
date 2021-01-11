@@ -17,9 +17,7 @@ final class IteratorHandlerTest extends TestCase
 {
     private const DATA = ['foo', 'bar'];
 
-    /**
-     * @var HandlerRegistry
-     */
+    /** @var HandlerRegistry */
     private $handlerRegistry;
 
     public function iteratorsProvider(): array

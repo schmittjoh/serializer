@@ -10,8 +10,6 @@ namespace JMS\Serializer\Annotation;
  */
 final class ReadOnly
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $readOnly = true;
 }

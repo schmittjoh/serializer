@@ -8,9 +8,7 @@ use JMS\Serializer\Context;
 
 class ObjectEvent extends Event
 {
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $object;
 
     /**

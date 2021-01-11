@@ -94,9 +94,7 @@ class BlogPost
      */
     private $author;
 
-    /**
-     * @Type("JMS\Serializer\Tests\Fixtures\Publisher")
-     */
+    /** @Type("JMS\Serializer\Tests\Fixtures\Publisher") */
     private $publisher;
 
     /**

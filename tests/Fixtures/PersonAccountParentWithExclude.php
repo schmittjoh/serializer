@@ -11,8 +11,6 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class PersonAccountParentWithExclude
 {
-    /**
-     * @Serializer\Type("boolean")
-     */
+    /** @Serializer\Type("boolean") */
     public $expired;
 }

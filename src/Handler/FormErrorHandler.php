@@ -14,14 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface as TranslatorContract;
 
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var TranslatorInterface|null
-     */
+    /** @var TranslatorInterface|null */
     private $translator;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $translationDomain;
 
     /**

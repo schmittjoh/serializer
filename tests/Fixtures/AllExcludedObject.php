@@ -16,8 +16,6 @@ class AllExcludedObject
 {
     private $foo = 'foo';
 
-    /**
-     * @Expose
-     */
+    /** @Expose */
     private $bar = 'bar';
 }

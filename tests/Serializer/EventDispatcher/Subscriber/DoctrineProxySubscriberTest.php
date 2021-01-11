@@ -24,9 +24,7 @@ class DoctrineProxySubscriberTest extends TestCase
     /** @var DoctrineProxySubscriber */
     private $subscriber;
 
-    /**
-     * @var EventDispatcher
-     */
+    /** @var EventDispatcher */
     private $dispatcher;
 
     public function testRewritesProxyClassName()

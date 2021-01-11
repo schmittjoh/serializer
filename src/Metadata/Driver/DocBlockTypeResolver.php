@@ -24,14 +24,10 @@ class DocBlockTypeResolver
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
 
-    /**
-     * @var PhpDocParser
-     */
+    /** @var PhpDocParser */
     protected $phpDocParser;
 
-    /**
-     * @var Lexer
-     */
+    /** @var Lexer */
     protected $lexer;
 
     public function __construct()

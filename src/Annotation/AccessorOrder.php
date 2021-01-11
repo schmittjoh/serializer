@@ -20,8 +20,6 @@ final class AccessorOrder
      */
     public $order;
 
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     public $custom = [];
 }

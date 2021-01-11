@@ -10,13 +10,9 @@ namespace JMS\Serializer\Annotation;
  */
 final class XmlElement
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $cdata = true;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $namespace;
 }

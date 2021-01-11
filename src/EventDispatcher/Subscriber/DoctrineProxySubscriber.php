@@ -16,14 +16,10 @@ use ProxyManager\Proxy\LazyLoadingInterface;
 
 final class DoctrineProxySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $skipVirtualTypeInit;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $initializeExcluded;
 
     public function __construct(bool $skipVirtualTypeInit = true, bool $initializeExcluded = false)

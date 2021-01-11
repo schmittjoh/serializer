@@ -12,19 +12,13 @@ use JMS\Serializer\Annotation\Type;
 
 class ObjectWithLifecycleCallbacks
 {
-    /**
-     * @Exclude
-     */
+    /** @Exclude */
     private $firstname;
 
-    /**
-     * @Exclude
-     */
+    /** @Exclude */
     private $lastname;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $name;
 
     public function __construct($firstname = 'Foo', $lastname = 'Bar')

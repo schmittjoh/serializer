@@ -11,14 +11,10 @@ use JMS\Serializer\Type\Exception\SyntaxError;
  */
 final class Parser implements ParserInterface
 {
-    /**
-     * @var Lexer
-     */
+    /** @var Lexer */
     private $lexer;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $root = true;
 
     public function parse(string $string): array

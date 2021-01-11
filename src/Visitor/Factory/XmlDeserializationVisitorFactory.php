@@ -12,19 +12,13 @@ use JMS\Serializer\XmlDeserializationVisitor;
  */
 final class XmlDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $disableExternalEntities = true;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $doctypeWhitelist = [];
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options = 0;
 
     public function getVisitor(): DeserializationVisitorInterface

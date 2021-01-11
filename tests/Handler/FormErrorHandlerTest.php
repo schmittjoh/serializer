@@ -30,24 +30,16 @@ use function assert;
 
 class FormErrorHandlerTest extends TestCase
 {
-    /**
-     * @var FormErrorHandler
-     */
+    /** @var FormErrorHandler */
     protected $handler;
 
-    /**
-     * @var JsonSerializationVisitor
-     */
+    /** @var JsonSerializationVisitor */
     protected $visitor;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     protected $dispatcher;
 
-    /**
-     * @var FormFactoryInterface
-     */
+    /** @var FormFactoryInterface */
     protected $factory;
 
     protected function setUp(): void

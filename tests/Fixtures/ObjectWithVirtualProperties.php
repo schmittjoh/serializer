@@ -15,9 +15,7 @@ use JMS\Serializer\Annotation\VirtualProperty;
  */
 class ObjectWithVirtualProperties
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     protected $existField = 'value';
 
     /**

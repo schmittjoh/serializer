@@ -20,9 +20,7 @@ class ExcludePublicAccessor
      */
     private $iShallNotBeAccessed;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $id = 1;
 
     public function getId()

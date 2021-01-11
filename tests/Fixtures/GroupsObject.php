@@ -28,9 +28,7 @@ class GroupsObject
      */
     private $bar;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $none;
 
     public function __construct()

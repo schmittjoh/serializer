@@ -132,17 +132,13 @@ abstract class BaseSerializationTest extends TestCase
 {
     protected $factory;
 
-    /**
-     * @var EventDispatcher
-     */
+    /** @var EventDispatcher */
     protected $dispatcher;
 
     /** @var Serializer */
     protected $serializer;
 
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     protected $handlerRegistry;
     protected $serializationVisitors;
     protected $deserializationVisitors;

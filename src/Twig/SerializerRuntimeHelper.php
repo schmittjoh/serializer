@@ -12,9 +12,7 @@ use JMS\Serializer\SerializerInterface;
  */
 final class SerializerRuntimeHelper
 {
-    /**
-     * @var SerializerInterface
-     */
+    /** @var SerializerInterface */
     protected $serializer;
 
     public function __construct(SerializerInterface $serializer)

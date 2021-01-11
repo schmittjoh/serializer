@@ -11,13 +11,9 @@ use Metadata\Driver\DriverInterface;
 
 class DocBlockDriverFactory implements DriverFactoryInterface
 {
-    /**
-     * @var DriverFactoryInterface
-     */
+    /** @var DriverFactoryInterface */
     private $driverFactoryToDecorate;
-    /**
-     * @var ParserInterface|null
-     */
+    /** @var ParserInterface|null */
     private $typeParser;
 
     public function __construct(DriverFactoryInterface $driverFactoryToDecorate, ?ParserInterface $typeParser = null)

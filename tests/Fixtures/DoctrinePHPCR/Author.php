@@ -10,9 +10,7 @@ use JMS\Serializer\Annotation\SerializedName;
 /** @PHPCRODM\Document */
 class Author
 {
-    /**
-     * @PHPCRODM\Id()
-     */
+    /** @PHPCRODM\Id() */
     protected $id;
 
     /**

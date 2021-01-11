@@ -12,14 +12,10 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
  */
 final class JsonDeserializationVisitorFactory implements DeserializationVisitorFactory
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options = 0;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $depth = 512;
 
     public function getVisitor(): DeserializationVisitorInterface

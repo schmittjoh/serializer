@@ -13,19 +13,13 @@ use JMS\Serializer\XmlSerializationVisitor;
 
 final class DateHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $defaultFormat;
 
-    /**
-     * @var \DateTimeZone
-     */
+    /** @var \DateTimeZone */
     private $defaultTimezone;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $xmlCData;
 
     /**

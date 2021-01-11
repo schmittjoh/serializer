@@ -13,12 +13,8 @@ class User
     public Vehicle $vehicle;
     public \DateTime $created;
 
-    /**
-     * @Serializer\ReadOnly()
-     */
+    /** @Serializer\ReadOnly() */
     public ?\DateTimeInterface $updated = null;
-    /**
-     * @Serializer\ReadOnly()
-     */
+    /** @Serializer\ReadOnly() */
     public iterable $tags = [];
 }

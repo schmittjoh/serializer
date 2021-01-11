@@ -10,9 +10,7 @@ use JMS\Serializer\Expression\Expression;
 
 trait ExpressionMetadataTrait
 {
-    /**
-     * @var CompilableExpressionEvaluatorInterface
-     */
+    /** @var CompilableExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     /**
