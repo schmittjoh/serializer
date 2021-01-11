@@ -77,6 +77,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();
 
+        $previousEntityLoaderState = null;
         if (\LIBXML_VERSION < 20900) {
             $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
         }

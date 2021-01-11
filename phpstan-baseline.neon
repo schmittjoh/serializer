@@ -4,9 +4,3 @@ parameters:
 			message: "#^Class JMS\\\\Serializer\\\\Handler\\\\iterable not found\\.$#"
 			count: 2
 			path: src/Handler/IteratorHandler.php
-
-		-
-			message: "#^Variable \\$previousEntityLoaderState might not be defined\\.$#"
-			count: 1
-			path: src/XmlDeserializationVisitor.php
-
