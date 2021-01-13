@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Class JMS\\\\Serializer\\\\Handler\\\\iterable not found\\.$#"
+			count: 2
+			path: src/Handler/IteratorHandler.php

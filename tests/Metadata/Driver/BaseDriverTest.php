@@ -620,10 +620,6 @@ abstract class BaseDriverTest extends TestCase
     {
         $first = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));
 
-        if ($this instanceof PhpDriverTest) {
-            return;
-        }
-
         self::assertArrayHasKey('id', $first->propertyMetadata);
         self::assertArrayNotHasKey('iShallNotBeAccessed', $first->propertyMetadata);
     }

@@ -12,6 +12,8 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface as TranslatorContract;
 
+use function get_class;
+
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
     /**
@@ -53,7 +55,8 @@ final class FormErrorHandler implements SubscribingHandlerInterface
                 'The first argument passed to %s must be instance of %s or %s, %s given',
                 self::class,
                 TranslatorInterface::class,
-                TranslatorContract::class
+                TranslatorContract::class,
+                get_class($translator)
             ));
         }
 
