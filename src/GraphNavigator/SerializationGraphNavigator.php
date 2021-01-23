@@ -29,6 +29,8 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
+use function assert;
+
 /**
  * Handles traversal along the object graph.
  *
@@ -37,7 +39,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class SerializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
+final class SerializationGraphNavigator extends GraphNavigator
 {
     /**
      * @var SerializationVisitorInterface
@@ -97,6 +99,8 @@ final class SerializationGraphNavigator extends GraphNavigator implements GraphN
 
     public function initialize(VisitorInterface $visitor, Context $context): void
     {
+        assert($context instanceof SerializationContext);
+
         parent::initialize($visitor, $context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
     }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Handler;
 
-use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -53,11 +51,9 @@ class FormErrorHandlerTest extends TestCase
     protected function setUp(): void
     {
         $this->handler = new FormErrorHandler(new Translator('en'));
-        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-        $context = SerializationContext::create();
-        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor($navigator, $context);
+        $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor();
         $this->dispatcher = new EventDispatcher();
-        $this->factory = $this->getMockBuilder('Symfony\Component\Form\FormFactoryInterface')->getMock();
+        $this->factory = $this->getMockBuilder(FormFactoryInterface::class)->getMock();
     }
 
     protected function tearDown(): void

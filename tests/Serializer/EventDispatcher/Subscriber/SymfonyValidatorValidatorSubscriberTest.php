@@ -7,43 +7,45 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorSubscriber;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\AuthorList;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SymfonyValidatorValidatorSubscriberTest extends TestCase
 {
     private $validator;
 
-    /** @var SymfonyValidatorSubscriber */
+    /** @var SymfonyValidatorValidatorSubscriber */
     private $subscriber;
 
-    public function testValidate()
+    public function testValidate(): void
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
 
-        $this->validator->expects($this->once())
+        $this->validator->expects(self::once())
             ->method('validate')
             ->with($obj, null, ['foo'])
-            ->will($this->returnValue(new ConstraintViolationList()));
+            ->willReturn(new ConstraintViolationList());
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', ['foo']);
 
         $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
 
-    public function testValidateThrowsExceptionWhenListIsNotEmpty()
+    public function testValidateThrowsExceptionWhenListIsNotEmpty(): void
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
 
-        $this->validator->expects($this->once())
+        $this->validator->expects(self::once())
             ->method('validate')
             ->with($obj, null, ['foo'])
-            ->will($this->returnValue(new ConstraintViolationList([new ConstraintViolation('foo', 'foo', [], 'a', 'b', 'c')])));
+            ->willReturn(new ConstraintViolationList([new ConstraintViolation('foo', 'foo', [], 'a', 'b', 'c')]));
 
         $context = DeserializationContext::create()->setAttribute('validation_groups', ['foo']);
 
@@ -53,20 +55,20 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
         $this->subscriber->onPostDeserialize(new ObjectEvent($context, $obj, []));
     }
 
-    public function testValidatorIsNotCalledWhenNoGroupsAreSet()
+    public function testValidatorIsNotCalledWhenNoGroupsAreSet(): void
     {
-        $this->validator->expects($this->never())
+        $this->validator->expects(self::never())
             ->method('validate');
 
-        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new \stdClass(), []));
+        $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new stdClass(), []));
     }
 
-    public function testValidationIsOnlyPerformedOnRootObject()
+    public function testValidationIsOnlyPerformedOnRootObject(): void
     {
-        $this->validator->expects($this->once())
+        $this->validator->expects(self::once())
             ->method('validate')
-            ->with($this->isInstanceOf('JMS\Serializer\Tests\Fixtures\AuthorList'), null, ['Foo'])
-            ->will($this->returnValue(new ConstraintViolationList()));
+            ->with(self::isInstanceOf(AuthorList::class), null, ['Foo'])
+            ->willReturn(new ConstraintViolationList());
 
         $subscriber = $this->subscriber;
         $list = SerializerBuilder::create()
@@ -76,7 +78,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
             ->build()
             ->deserialize(
                 '{"authors":[{"full_name":"foo"},{"full_name":"bar"}]}',
-                'JMS\Serializer\Tests\Fixtures\AuthorList',
+                AuthorList::class,
                 'json',
                 DeserializationContext::create()->setAttribute('validation_groups', ['Foo'])
             );
@@ -86,7 +88,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validator = $this->getMockBuilder('Symfony\Component\Validator\Validator\ValidatorInterface')->getMock();
+        $this->validator = $this->getMockBuilder(ValidatorInterface::class)->getMock();
         $this->subscriber = new SymfonyValidatorValidatorSubscriber($this->validator);
     }
 }

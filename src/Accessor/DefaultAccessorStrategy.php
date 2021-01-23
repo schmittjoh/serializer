@@ -51,7 +51,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if ($metadata instanceof StaticPropertyMetadata) {
-            return $metadata->getValue(null);
+            return $metadata->getValue();
         }
 
         if ($metadata instanceof ExpressionPropertyMetadata) {

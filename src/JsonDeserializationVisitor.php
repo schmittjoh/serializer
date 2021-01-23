@@ -45,8 +45,9 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     /**
      * {@inheritdoc}
      */
-    public function visitNull($data, array $type): void
+    public function visitNull($data, array $type)
     {
+        return null;
     }
 
     /**
