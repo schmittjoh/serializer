@@ -23,39 +23,31 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * @param mixed $data
      * @param array $type
      *
-     * @return mixed
+     * @return null
      */
-    public function visitNull($data, array $type): void;
+    public function visitNull($data, array $type);
 
     /**
      * @param mixed $data
      * @param array $type
-     *
-     * @return mixed
      */
     public function visitString($data, array $type): string;
 
     /**
      * @param mixed $data
      * @param array $type
-     *
-     * @return mixed
      */
     public function visitBoolean($data, array $type): bool;
 
     /**
      * @param mixed $data
      * @param array $type
-     *
-     * @return mixed
      */
     public function visitDouble($data, array $type): float;
 
     /**
      * @param mixed $data
      * @param array $type
-     *
-     * @return mixed
      */
     public function visitInteger($data, array $type): int;
 
@@ -70,7 +62,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * @param mixed $data
      * @param array $type
      *
-     * @return mixed
+     * @return array<mixed>
      */
     public function visitArray($data, array $type): array;
 

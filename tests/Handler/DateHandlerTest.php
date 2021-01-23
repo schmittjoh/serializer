@@ -64,17 +64,15 @@ class DateHandlerTest extends TestCase
      */
     public function testDeserializeDateInterval($dateInterval, $expected)
     {
-        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
-
         $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $visitor->method('visitString')->with('2017-06-18');
 
-        $deserialized = $this->handler->deserializeDateIntervalFromJson($visitor, $dateInterval, [], $context);
+        $deserialized = $this->handler->deserializeDateIntervalFromJson($visitor, $dateInterval, []);
         if (isset($deserialized->f)) {
-            $this->assertEquals($expected['f'], $deserialized->f);
+            self::assertEquals($expected['f'], $deserialized->f);
         }
 
-        $this->assertEquals($expected['s'], $deserialized->s);
+        self::assertEquals($expected['s'], $deserialized->s);
     }
 
     public function getDeserializeDateInterval()

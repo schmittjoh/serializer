@@ -118,8 +118,9 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * {@inheritdoc}
      */
-    public function visitNull($data, array $type): void
+    public function visitNull($data, array $type)
     {
+        return null;
     }
 
     /**
