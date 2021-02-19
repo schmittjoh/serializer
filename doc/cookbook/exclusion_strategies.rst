@@ -224,6 +224,52 @@ This would result in the following json::
         ]
     }
 
+Deserialization Exclusion Strategy with Groups
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can use ``@Groups`` to cut off unwanted properties while deserialization.
+
+.. code-block:: php
+
+    use JMS\Serializer\Annotation\Groups;
+
+    class GroupsObject
+    {
+        /**
+         * @Groups({"foo"})
+         */
+        public $foo;
+
+        /**
+         * @Groups({"foo","bar"})
+         */
+        public $foobar;
+
+        /**
+         * @Groups({"bar", "Default"})
+         */
+        public $bar;
+
+        /**
+         * @Type("string")
+         */
+        public $none;
+    }
+
+.. code-block:: php
+
+    $data = [
+        'foo'    => 'foo',
+        'foobar' => 'foobar',
+        'bar'    => 'bar',
+        'none'   => 'none',
+    ];
+    $context = DeserializationContext::create()->setGroups(['foo']);
+    $object = $serializer->fromArray($data, GroupsObject::class, $context);
+    // $object->foo is 'foo'
+    // $object->foobar is 'foobar'
+    // $object->bar is null
+    // $object->none is null
+
 Limiting serialization depth of some properties
 -----------------------------------------------
 You can limit the depth of what will be serialized in a property with the
