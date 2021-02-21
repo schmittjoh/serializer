@@ -21,9 +21,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  */
 class BlogPost
 {
-    /**
-     * @ORM\Id @ORM\Column(type="guid") @ORM\GeneratedValue(strategy="UUID")
-     */
+    /** @ORM\Id @ORM\Column(type="guid") @ORM\GeneratedValue(strategy="UUID") */
     protected $id;
 
     /**
@@ -33,9 +31,7 @@ class BlogPost
      */
     private $title;
 
-    /**
-     * @ORM\Column(type="some_custom_type")
-     */
+    /** @ORM\Column(type="some_custom_type") */
     protected $slug;
 
     /**

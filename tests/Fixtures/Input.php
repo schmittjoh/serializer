@@ -11,9 +11,7 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Input
 {
-    /**
-     * @Serializer\XmlAttributeMap
-     */
+    /** @Serializer\XmlAttributeMap */
     private $attributes;
 
     public function __construct($attributes = null)

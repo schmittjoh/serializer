@@ -19,18 +19,12 @@ use ReflectionProperty;
 
 class DocBlockDriver implements DriverInterface
 {
-    /**
-     * @var DriverInterface
-     */
+    /** @var DriverInterface */
     protected $delegate;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     protected $typeParser;
-    /**
-     * @var DocBlockTypeResolver
-     */
+    /** @var DocBlockTypeResolver */
     private $docBlockTypeResolver;
 
     public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null)

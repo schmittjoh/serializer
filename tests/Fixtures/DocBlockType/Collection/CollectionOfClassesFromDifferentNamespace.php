@@ -8,8 +8,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescrip
 
 class CollectionOfClassesFromDifferentNamespace
 {
-    /**
-     * @var ProductDescription[]
-     */
+    /** @var ProductDescription[] */
     public array $productDescriptions;
 }

@@ -15,14 +15,10 @@ class SerializationContext extends Context
     /** @var \SplStack */
     private $visitingStack;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $initialType;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $serializeNull = false;
 
     public static function create(): self

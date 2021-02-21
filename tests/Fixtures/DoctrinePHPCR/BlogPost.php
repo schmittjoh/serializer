@@ -19,9 +19,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  */
 class BlogPost
 {
-    /**
-     * @PHPCRODM\Id()
-     */
+    /** @PHPCRODM\Id() */
     protected $id;
 
     /**
@@ -30,9 +28,7 @@ class BlogPost
      */
     private $title;
 
-    /**
-     * @PHPCRODM\Field(type="string")
-     */
+    /** @PHPCRODM\Field(type="string") */
     protected $slug;
 
     /**

@@ -10,22 +10,16 @@ use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
 /** @PHPCRODM\Document */
 class Comment
 {
-    /**
-     * @PHPCRODM\Id()
-     */
+    /** @PHPCRODM\Id() */
     protected $id;
 
-    /**
-     * @PHPCRODM\ReferenceOne(targetDocument="Author")
-     */
+    /** @PHPCRODM\ReferenceOne(targetDocument="Author") */
     private $author;
 
     /** @PHPCRODM\ReferenceOne(targetDocument="BlogPost") */
     private $blogPost;
 
-    /**
-     * @PHPCRODM\Field(type="string")
-     */
+    /** @PHPCRODM\Field(type="string") */
     private $text;
 
     public function __construct(Author $author, $text)

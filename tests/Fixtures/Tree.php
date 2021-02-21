@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 class Tree
 {
-    /**
-     * @Serializer\MaxDepth(10)
-     */
+    /** @Serializer\MaxDepth(10) */
     public $tree;
 
     public function __construct($tree)

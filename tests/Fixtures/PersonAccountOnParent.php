@@ -8,8 +8,6 @@ use JMS\Serializer\Annotation as Serializer;
 
 class PersonAccountOnParent extends PersonAccountParentWithExclude
 {
-    /**
-     * @Serializer\Type("string")
-     */
+    /** @Serializer\Type("string") */
     public $name;
 }

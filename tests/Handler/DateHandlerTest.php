@@ -13,13 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 class DateHandlerTest extends TestCase
 {
-    /**
-     * @var DateHandler
-     */
+    /** @var DateHandler */
     private $handler;
-    /**
-     * @var \DateTimeZone
-     */
+    /** @var \DateTimeZone */
     private $timezone;
 
     protected function setUp(): void

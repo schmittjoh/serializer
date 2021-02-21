@@ -60,18 +60,12 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'json_array' => 'array',
         'simple_array' => 'array<string>',
     ];
-    /**
-     * @var DriverInterface
-     */
+    /** @var DriverInterface */
     protected $delegate;
-    /**
-     * @var ManagerRegistry
-     */
+    /** @var ManagerRegistry */
     protected $registry;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     protected $typeParser;
 
     public function __construct(DriverInterface $delegate, ManagerRegistry $registry, ?ParserInterface $typeParser = null)

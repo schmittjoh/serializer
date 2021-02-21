@@ -19,19 +19,13 @@ use ReflectionProperty;
 
 class TypedPropertiesDriver implements DriverInterface
 {
-    /**
-     * @var DriverInterface
-     */
+    /** @var DriverInterface */
     protected $delegate;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     protected $typeParser;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $whiteList;
 
     /**

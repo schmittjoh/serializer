@@ -49,9 +49,7 @@ class ArrayCollectionDepthTest extends TestCase
 
 class CollectionWrapper
 {
-    /**
-     * @Serializer\MaxDepth(2)
-     */
+    /** @Serializer\MaxDepth(2) */
     public $collection;
 
     public function __construct($collection)

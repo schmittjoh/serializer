@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfClassesFromGlobalNamespace
 {
-    /**
-     * @var \stdClass[]
-     */
+    /** @var \stdClass[] */
     public array $products;
 }

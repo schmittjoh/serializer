@@ -11,14 +11,10 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
  */
 class ExpressionEvaluator implements CompilableExpressionEvaluatorInterface, ExpressionEvaluatorInterface
 {
-    /**
-     * @var ExpressionLanguage
-     */
+    /** @var ExpressionLanguage */
     private $expressionLanguage;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $context;
 
     public function __construct(ExpressionLanguage $expressionLanguage, array $context = [])

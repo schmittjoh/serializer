@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 class VehicleInterfaceGarage
 {
-    /**
-     * @Type("array<JMS\Serializer\Tests\Fixtures\Discriminator\VehicleInterface>")
-     */
+    /** @Type("array<JMS\Serializer\Tests\Fixtures\Discriminator\VehicleInterface>") */
     public $vehicles;
 
     public function __construct($vehicles)

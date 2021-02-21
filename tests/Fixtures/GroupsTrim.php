@@ -6,14 +6,10 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 class GroupsTrim
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $amount;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $currency;
 
     public function __construct($amount, $currency)

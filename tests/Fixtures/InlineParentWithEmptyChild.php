@@ -10,14 +10,10 @@ use JMS\Serializer\Annotation\Type;
 /** @Serializer\AccessorOrder("alphabetical") */
 class InlineParentWithEmptyChild
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $c = 'c';
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $d = 'd';
 
     /**

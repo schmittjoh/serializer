@@ -6,9 +6,7 @@ namespace JMS\Serializer\Exception;
 
 class XmlErrorException extends RuntimeException
 {
-    /**
-     * @var \LibXMLError
-     */
+    /** @var \LibXMLError */
     private $xmlError;
 
     public function __construct(\LibXMLError $error)

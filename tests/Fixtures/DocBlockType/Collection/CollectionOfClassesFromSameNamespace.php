@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfClassesFromSameNamespace
 {
-    /**
-     * @var Product[]
-     */
+    /** @var Product[] */
     public array $productIds;
 }

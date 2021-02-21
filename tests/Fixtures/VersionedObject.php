@@ -10,9 +10,7 @@ use JMS\Serializer\Annotation\Until;
 
 class VersionedObject
 {
-    /**
-     * @Until("1.0.0")
-     */
+    /** @Until("1.0.0") */
     private $name;
 
     /**

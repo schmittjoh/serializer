@@ -34,33 +34,21 @@ class ClassMetadata extends MergeableClassMetadata
     /** @var \ReflectionMethod[] */
     public $postDeserializeMethods = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlRootName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlRootNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlRootPrefix;
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public $xmlNamespaces = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $accessorOrder;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public $customOrder;
 
     /**
@@ -84,52 +72,32 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public $isMap = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $discriminatorDisabled = false;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $discriminatorBaseClass;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $discriminatorFieldName;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $discriminatorValue;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public $discriminatorMap = [];
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public $discriminatorGroups = [];
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlDiscriminatorAttribute = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlDiscriminatorCData = true;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlDiscriminatorNamespace;
 
-    /**
-     * @var string|Expression
-     */
+    /** @var string|Expression */
     public $excludeIf;
 
     public function setDiscriminator(string $fieldName, array $map, array $groups = []): void

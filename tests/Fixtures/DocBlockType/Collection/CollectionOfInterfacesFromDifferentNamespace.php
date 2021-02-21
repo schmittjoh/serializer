@@ -8,8 +8,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 
 class CollectionOfInterfacesFromDifferentNamespace
 {
-    /**
-     * @var ProductColor[]
-     */
+    /** @var ProductColor[] */
     public array $productColors;
 }

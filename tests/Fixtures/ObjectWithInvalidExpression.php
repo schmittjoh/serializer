@@ -14,13 +14,9 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class ObjectWithInvalidExpression
 {
-    /**
-     * @var @Serializer\Exclude(if="inval")
-     */
+    /** @var @Serializer\Exclude(if="inval") */
     private $prop1;
 
-    /**
-     * @var @Serializer\Expose(if="invalid")
-     */
+    /** @var @Serializer\Expose(if="invalid") */
     private $prop2;
 }

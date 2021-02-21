@@ -6,8 +6,6 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType\Collection;
 
 class CollectionOfInterfacesFromSameNamespace
 {
-    /**
-     * @var Vehicle[]
-     */
+    /** @var Vehicle[] */
     public array $vehicles;
 }

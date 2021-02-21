@@ -15,9 +15,7 @@ final class ExclusionPolicy
     public const NONE = 'NONE';
     public const ALL = 'ALL';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $policy;
 
     public function __construct(array $values)

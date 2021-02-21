@@ -12,13 +12,9 @@ namespace JMS\Serializer\Annotation;
  */
 final class Accessor
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $getter;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $setter;
 }

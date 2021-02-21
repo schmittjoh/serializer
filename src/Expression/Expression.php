@@ -12,9 +12,7 @@ use Symfony\Component\ExpressionLanguage\SerializedParsedExpression;
  */
 class Expression implements \Serializable
 {
-    /**
-     * @var BaseExpression
-     */
+    /** @var BaseExpression */
     private $expression;
 
     public function __construct(BaseExpression $expression)

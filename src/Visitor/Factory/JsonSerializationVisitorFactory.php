@@ -12,9 +12,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
  */
 final class JsonSerializationVisitorFactory implements SerializationVisitorFactory
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options = JSON_PRESERVE_ZERO_FRACTION;
 
     public function getVisitor(): SerializationVisitorInterface

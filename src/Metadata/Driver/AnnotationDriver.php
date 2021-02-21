@@ -52,18 +52,12 @@ class AnnotationDriver implements DriverInterface
 {
     use ExpressionMetadataTrait;
 
-    /**
-     * @var Reader
-     */
+    /** @var Reader */
     private $reader;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     private $typeParser;
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
+    /** @var PropertyNamingStrategyInterface */
     private $namingStrategy;
 
     public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)

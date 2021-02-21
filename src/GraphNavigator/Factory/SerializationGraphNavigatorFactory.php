@@ -16,25 +16,15 @@ use Metadata\MetadataFactoryInterface;
 
 final class SerializationGraphNavigatorFactory implements GraphNavigatorFactoryInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $dispatcher;
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(

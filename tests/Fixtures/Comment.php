@@ -8,14 +8,10 @@ use JMS\Serializer\Annotation\Type;
 
 class Comment
 {
-    /**
-     * @Type("JMS\Serializer\Tests\Fixtures\Author")
-     */
+    /** @Type("JMS\Serializer\Tests\Fixtures\Author") */
     private $author;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $text;
 
     public function __construct(?Author $author = null, $text)

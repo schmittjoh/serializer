@@ -14,9 +14,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $initializeExcluded;
 
     public function __construct(bool $initializeExcluded = true)

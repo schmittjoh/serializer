@@ -14,9 +14,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  */
 class ObjectWithXmlRootNamespace
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $title;
 
     /**
@@ -31,9 +29,7 @@ class ObjectWithXmlRootNamespace
      */
     private $etag;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     private $author;
 
     /**

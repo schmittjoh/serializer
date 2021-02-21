@@ -10,9 +10,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
-    /**
-     * @var callable[]
-     */
+    /** @var callable[] */
     protected $handlers;
 
     public static function getDefaultMethod(int $direction, string $type, string $format): string

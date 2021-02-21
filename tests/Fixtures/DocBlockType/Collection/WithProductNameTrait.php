@@ -8,8 +8,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 
 trait WithProductNameTrait
 {
-    /**
-     * @var ProductName[]
-     */
+    /** @var ProductName[] */
     public array $productNames;
 }

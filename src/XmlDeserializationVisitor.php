@@ -15,43 +15,27 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisitorInterface, DeserializationVisitorInterface
 {
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $objectStack;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $metadataStack;
 
-    /**
-     * @var \SplStack
-     */
+    /** @var \SplStack */
     private $objectMetadataStack;
 
-    /**
-     * @var object|null
-     */
+    /** @var object|null */
     private $currentObject;
 
-    /**
-     * @var ClassMetadata|PropertyMetadata|null
-     */
+    /** @var ClassMetadata|PropertyMetadata|null */
     private $currentMetadata;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $disableExternalEntities;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $doctypeWhitelist;
-    /**
-     * @var int
-     */
+    /** @var int */
     private $options;
 
     public function __construct(

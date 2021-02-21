@@ -16,14 +16,10 @@ use function get_class;
 
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var TranslatorInterface|null
-     */
+    /** @var TranslatorInterface|null */
     private $translator;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $translationDomain;
 
     /**

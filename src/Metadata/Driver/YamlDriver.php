@@ -27,17 +27,11 @@ class YamlDriver extends AbstractFileDriver
 {
     use ExpressionMetadataTrait;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     private $typeParser;
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
+    /** @var PropertyNamingStrategyInterface */
     private $namingStrategy;
-    /**
-     * @var FileLocatorInterface
-     */
+    /** @var FileLocatorInterface */
     private $locator;
 
     public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)

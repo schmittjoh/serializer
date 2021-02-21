@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 class CustomDeserializationObject
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     public $someProperty;
 
     public function __construct($value)

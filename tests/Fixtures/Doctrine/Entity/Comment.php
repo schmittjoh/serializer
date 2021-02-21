@@ -10,22 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
 /** @ORM\Entity */
 class Comment
 {
-    /**
-     * @ORM\Id @ORM\Column(type="integer")
-     */
+    /** @ORM\Id @ORM\Column(type="integer") */
     protected $id;
 
-    /**
-     * @ORM\Column(type="Author")
-     */
+    /** @ORM\Column(type="Author") */
     private $author;
 
     /** @ORM\ManyToOne(targetEntity="BlogPost") */
     private $blogPost;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    /** @ORM\Column(type="string") */
     private $text;
 
     public function __construct(Author $author, $text)

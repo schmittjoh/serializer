@@ -22,9 +22,7 @@ use JMS\Serializer\SerializationContext;
  */
 final class ExpressionLanguageExclusionStrategy
 {
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
     public function __construct(ExpressionEvaluatorInterface $expressionEvaluator)

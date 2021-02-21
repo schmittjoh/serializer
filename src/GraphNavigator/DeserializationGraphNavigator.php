@@ -36,43 +36,27 @@ use Metadata\MetadataFactoryInterface;
  */
 final class DeserializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
 {
-    /**
-     * @var DeserializationVisitorInterface
-     */
+    /** @var DeserializationVisitorInterface */
     protected $visitor;
 
-    /**
-     * @var DeserializationContext
-     */
+    /** @var DeserializationContext */
     protected $context;
 
-    /**
-     * @var ExpressionLanguageExclusionStrategy
-     */
+    /** @var ExpressionLanguageExclusionStrategy */
     private $expressionExclusionStrategy;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $dispatcher;
 
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
 
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
 
-    /**
-     * @var ObjectConstructorInterface
-     */
+    /** @var ObjectConstructorInterface */
     private $objectConstructor;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
 
     public function __construct(

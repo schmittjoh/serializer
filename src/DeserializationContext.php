@@ -8,9 +8,7 @@ use JMS\Serializer\Exception\LogicException;
 
 class DeserializationContext extends Context
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $depth = 0;
 
     public static function create(): self

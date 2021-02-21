@@ -41,43 +41,27 @@ use function assert;
  */
 final class SerializationGraphNavigator extends GraphNavigator
 {
-    /**
-     * @var SerializationVisitorInterface
-     */
+    /** @var SerializationVisitorInterface */
     protected $visitor;
 
-    /**
-     * @var SerializationContext
-     */
+    /** @var SerializationContext */
     protected $context;
 
-    /**
-     * @var ExpressionLanguageExclusionStrategy
-     */
+    /** @var ExpressionLanguageExclusionStrategy */
     private $expressionExclusionStrategy;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $dispatcher;
 
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
 
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessor;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $shouldSerializeNull;
 
     public function __construct(

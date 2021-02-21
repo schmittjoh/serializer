@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 class Timestamp
 {
-    /**
-     * @Type("DateTime<'U'>")
-     */
+    /** @Type("DateTime<'U'>") */
     private $timestamp;
 
     public function __construct($timestamp)

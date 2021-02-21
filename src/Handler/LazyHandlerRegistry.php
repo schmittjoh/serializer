@@ -10,14 +10,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LazyHandlerRegistry extends HandlerRegistry
 {
-    /**
-     * @var PsrContainerInterface|ContainerInterface
-     */
+    /** @var PsrContainerInterface|ContainerInterface */
     private $container;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $initializedHandlers = [];
 
     /**

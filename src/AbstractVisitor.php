@@ -9,9 +9,7 @@ namespace JMS\Serializer;
  */
 abstract class AbstractVisitor implements VisitorInterface
 {
-    /**
-     * @var GraphNavigatorInterface
-     */
+    /** @var GraphNavigatorInterface */
     protected $navigator;
 
     public function setNavigator(GraphNavigatorInterface $navigator): void

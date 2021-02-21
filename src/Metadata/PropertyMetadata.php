@@ -13,120 +13,72 @@ class PropertyMetadata extends BasePropertyMetadata
     public const ACCESS_TYPE_PROPERTY = 'property';
     public const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $sinceVersion;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $untilVersion;
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     public $groups;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $serializedName;
-    /**
-     * @var array
-     */
+    /** @var array */
     public $type;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlCollection = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlCollectionInline = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlCollectionSkipWhenEmpty = true;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlEntryName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlEntryNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlKeyAttribute;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlAttribute = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlValue = false;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $xmlNamespace;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlKeyValuePairs = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlElementCData = true;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $getter;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $setter;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $inline = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $skipWhenEmpty = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $readOnly = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $xmlAttributeMap = false;
 
-    /**
-     * @var int|null
-     */
+    /** @var int|null */
     public $maxDepth = null;
 
-    /**
-     * @var string|Expression
-     */
+    /** @var string|Expression */
     public $excludeIf = null;
 
     /**

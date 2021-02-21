@@ -61,114 +61,70 @@ use Metadata\MetadataFactoryInterface;
  */
 final class SerializerBuilder
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $metadataDirs = [];
 
-    /**
-     * @var HandlerRegistryInterface
-     */
+    /** @var HandlerRegistryInterface */
     private $handlerRegistry;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $handlersConfigured = false;
 
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $listenersConfigured = false;
 
-    /**
-     * @var ObjectConstructorInterface
-     */
+    /** @var ObjectConstructorInterface */
     private $objectConstructor;
 
-    /**
-     * @var SerializationVisitorFactory[]
-     */
+    /** @var SerializationVisitorFactory[] */
     private $serializationVisitors;
 
-    /**
-     * @var DeserializationVisitorFactory[]
-     */
+    /** @var DeserializationVisitorFactory[] */
     private $deserializationVisitors;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $visitorsAdded = false;
 
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
+    /** @var PropertyNamingStrategyInterface */
     private $propertyNamingStrategy;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $debug = false;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $cacheDir;
 
-    /**
-     * @var AnnotationReader
-     */
+    /** @var AnnotationReader */
     private $annotationReader;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $includeInterfaceMetadata = false;
 
-    /**
-     * @var DriverFactoryInterface
-     */
+    /** @var DriverFactoryInterface */
     private $driverFactory;
 
-    /**
-     * @var SerializationContextFactoryInterface
-     */
+    /** @var SerializationContextFactoryInterface */
     private $serializationContextFactory;
 
-    /**
-     * @var DeserializationContextFactoryInterface
-     */
+    /** @var DeserializationContextFactoryInterface */
     private $deserializationContextFactory;
 
-    /**
-     * @var ParserInterface
-     */
+    /** @var ParserInterface */
     private $typeParser;
 
-    /**
-     * @var ExpressionEvaluatorInterface
-     */
+    /** @var ExpressionEvaluatorInterface */
     private $expressionEvaluator;
 
-    /**
-     * @var AccessorStrategyInterface
-     */
+    /** @var AccessorStrategyInterface */
     private $accessorStrategy;
 
-    /**
-     * @var CacheInterface
-     */
+    /** @var CacheInterface */
     private $metadataCache;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $docBlockTyperResolver;
 
     /**

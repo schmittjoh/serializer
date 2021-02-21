@@ -10,9 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LazyEventDispatcher extends EventDispatcher
 {
-    /**
-     * @var PsrContainerInterface|ContainerInterface
-     */
+    /** @var PsrContainerInterface|ContainerInterface */
     private $container;
 
     /**

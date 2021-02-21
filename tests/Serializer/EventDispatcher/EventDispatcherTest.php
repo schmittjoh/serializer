@@ -18,9 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class EventDispatcherTest extends TestCase
 {
-    /**
-     * @var EventDispatcher
-     */
+    /** @var EventDispatcher */
     protected $dispatcher;
     protected $event;
     protected $context;
