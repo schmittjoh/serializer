@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.12.0](https://github.com/schmittjoh/serializer/tree/3.12.0) (2021-03-04)
+
+**Fixed bugs:**
+
+- Remove from the serialization groups if no match [\#1291](https://github.com/schmittjoh/serializer/pull/1291) ([goetas](https://github.com/goetas))
+
+**Merged pull requests:**
+
+- \[DOCS\] Add 'Deserialization Exclusion Strategy with Groups' topic [\#1287](https://github.com/schmittjoh/serializer/pull/1287) ([gam6itko](https://github.com/gam6itko))
+- Add ascii\_string, dateinterval, and json to doctrine type mapping [\#1281](https://github.com/schmittjoh/serializer/pull/1281) ([dontub](https://github.com/dontub))
+- Cleanup [\#1278](https://github.com/schmittjoh/serializer/pull/1278) ([simPod](https://github.com/simPod))
+- Drop coverage badge [\#1277](https://github.com/schmittjoh/serializer/pull/1277) ([simPod](https://github.com/simPod))
+- Introduce PHPStan [\#1276](https://github.com/schmittjoh/serializer/pull/1276) ([simPod](https://github.com/simPod))
+- Replace Scrutinizer with GA [\#1275](https://github.com/schmittjoh/serializer/pull/1275) ([simPod](https://github.com/simPod))
+- Add throws tag [\#1273](https://github.com/schmittjoh/serializer/pull/1273) ([VincentLanglet](https://github.com/VincentLanglet))
+
 ## [3.11.0](https://github.com/schmittjoh/serializer/tree/3.11.0) (2020-12-29)
 
 **Implemented enhancements:**
