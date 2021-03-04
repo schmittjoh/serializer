@@ -78,7 +78,9 @@ class GroupsExclusionStrategyTest extends TestCase
             [[], ['prop'], ['Default']],
 
             [['foo', 'prop' => ['bar']], ['prop'], ['bar']],
-            [['foo', 'prop' => ['bar']], ['prop2'], ['foo', 'prop' => ['bar']]],
+            [['foo', 'prop' => ['bar']], ['prop2'], ['foo']],
+
+            [['prop' => ['bar']],['prop2'],['Default']],
 
             [['foo', 'prop' => ['bar']], ['prop', 'prop2'], ['Default']],
 

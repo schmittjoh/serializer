@@ -97,6 +97,8 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
             if (!array_key_exists($path, $groups)) {
                 if ($index > 0) {
                     $groups = [self::DEFAULT_GROUP];
+                } else {
+                    $groups = array_filter($groups, 'is_string') ?: [self::DEFAULT_GROUP];
                 }
 
                 break;
