@@ -107,7 +107,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 
-            if ('SimpleXMLElement' === get_class($data)) {
+            if (is_object($data) && 'SimpleXMLElement' === get_class($data)) {
                 $identifierList[$name] = (string)$data->{$propertyMetadata->serializedName};
             } else {
                 $identifierList[$name] = $data[$propertyMetadata->serializedName];
