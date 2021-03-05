@@ -40,7 +40,7 @@ Documentation
 -------------
 
 .. toctree ::
-    :hidden:
+    :maxdepth: 2
 
     configuration
     usage
@@ -48,19 +48,6 @@ Documentation
     handlers
     reference
     cookbook
-
-- :doc:`Configuration <configuration>`
-- :doc:`Usage <usage>`
-- :doc:`Events <event_system>`
-- :doc:`Handlers <handlers>`
-
-- Recipes
-    * :doc:`/cookbook/exclusion_strategies`
-
-- Reference
-    * :doc:`Annotations </reference/annotations>`
-    * :doc:`XML Reference </reference/xml_reference>`
-    * :doc:`YML Reference </reference/yml_reference>`
 
 License
 -------
