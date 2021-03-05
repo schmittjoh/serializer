@@ -690,21 +690,30 @@ keys of the array are not important.
         /**
          * @XmlList(inline = true, entry = "comment")
          */
-        private $comments = array(
-            new Comment('Foo'),
-            new Comment('Bar'),
-        );
+        private $comments = [];
+
+        public function __construct(array $comments)
+        {
+            $this->comments = $comments;
+        }
     }
 
     class Comment
     {
         private $text;
 
-        public function __construct($text)
+        public function __construct(string $text)
         {
             $this->text = $text;
         }
     }
+
+    // usage
+    $post = new Post(
+        new Comment('Foo'),
+        new Comment('Bar'),
+    );
+    $xml = $serializer->serialize($post, 'xml');
 
 Resulting XML:
 
