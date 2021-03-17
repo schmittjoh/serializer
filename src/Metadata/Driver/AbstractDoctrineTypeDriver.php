@@ -56,7 +56,6 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'boolean' => 'boolean',
 
         'array' => 'array',
-        'json' => 'array',
         'json_array' => 'array',
         'simple_array' => 'array<string>',
     ];
