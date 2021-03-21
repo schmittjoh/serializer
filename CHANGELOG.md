@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.12.1](https://github.com/schmittjoh/serializer/tree/3.12.1) (2021-03-21)
+
+**Fixed bugs:**
+
+- Fix for issue \#1286: loading fails when deserializing XML [\#1289](https://github.com/schmittjoh/serializer/pull/1289) ([jviersel-ipronto](https://github.com/jviersel-ipronto))
+- Fix DocBlockTypeResolver crash on PHP 7.3 and less [\#1288](https://github.com/schmittjoh/serializer/pull/1288) ([simPod](https://github.com/simPod))
+- Doctrine `json` field type can contain not only an array [\#1295](https://github.com/schmittjoh/serializer/pull/1295) ([gam6itko](https://github.com/gam6itko))
+
+**Merged pull requests:**
+
+- add missing CustomPropertyOrderingStrategyTest [\#1296](https://github.com/schmittjoh/serializer/pull/1296) ([gam6itko](https://github.com/gam6itko))
+- fix \#314 [\#1293](https://github.com/schmittjoh/serializer/pull/1293) ([gam6itko](https://github.com/gam6itko))
+- Show all toctree on index page [\#1292](https://github.com/schmittjoh/serializer/pull/1292) ([gam6itko](https://github.com/gam6itko))
+
+# Changelog
+
 ## [3.12.0](https://github.com/schmittjoh/serializer/tree/3.12.0) (2021-03-04)
 
 **Fixed bugs:**
