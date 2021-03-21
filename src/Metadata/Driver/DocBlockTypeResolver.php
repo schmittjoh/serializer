@@ -121,6 +121,10 @@ class DocBlockTypeResolver
      */
     private function flattenVarTagValueTypes(array $varTagValues): array
     {
+        if ([] === $varTagValues) {
+            return [];
+        }
+
         return array_merge(...array_map(static function (VarTagValueNode $node) {
             if ($node->type instanceof UnionTypeNode) {
                 return $node->type->types;
