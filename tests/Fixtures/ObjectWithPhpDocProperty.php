@@ -11,4 +11,14 @@ final class ObjectWithPhpDocProperty
      */
     private $emptyBlock;
 
+    /**
+     * @var string|null
+     */
+    private $firstname;
+
+    /**
+     * @var null|string
+     */
+    private $lastname;
+
 }

@@ -143,9 +143,9 @@ class DocBlockTypeResolver
      */
     private function filterNullFromTypes(array $types): array
     {
-        return array_filter(array_map(function (TypeNode $node) {
+        return array_values(array_filter(array_map(function (TypeNode $node) {
             return $this->isNullType($node) ? null : $node;
-        }, $types));
+        }, $types)));
     }
 
     /**
