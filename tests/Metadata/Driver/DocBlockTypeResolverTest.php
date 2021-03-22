@@ -22,4 +22,21 @@ final class DocBlockTypeResolverTest extends TestCase
             )
         );
     }
+
+    public function testGetPropertyDocblockTypeHintDoesNotCrashWhenUnionType(): void
+    {
+        $resolver = new DocBlockTypeResolver();
+        self::assertSame(
+            'string',
+            $resolver->getPropertyDocblockTypeHint(
+                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'firstname')
+            )
+        );
+        self::assertSame(
+            'string',
+            $resolver->getPropertyDocblockTypeHint(
+                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'lastname')
+            )
+        );
+    }
 }
