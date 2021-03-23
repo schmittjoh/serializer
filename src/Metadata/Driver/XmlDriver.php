@@ -116,6 +116,7 @@ class XmlDriver extends AbstractFileDriver
             }
 
             $metadata->setDiscriminator($discriminatorFieldName, $discriminatorMap, $discriminatorGroups);
+            $metadata->discriminatorNullOnUnknown = 'true' === (string) $elem->attributes()->{'discriminator-null-on-unknown'};
         }
 
         foreach ($elem->xpath('./xml-namespace') as $xmlNamespace) {

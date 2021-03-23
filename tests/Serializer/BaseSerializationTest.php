@@ -50,6 +50,9 @@ use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\OrderWithDiscriminator;
+use JMS\Serializer\Tests\Fixtures\Discriminator\OrderEvent;
+use JMS\Serializer\Tests\Fixtures\Discriminator\OrderRefundedEvent;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
@@ -1304,6 +1307,11 @@ abstract class BaseSerializationTest extends TestCase
         $this->serializer->serialize($groupsObject, $this->getFormat());
     }
 
+    public function testInvalidDiscriminatorFieldSerializingNull(): void
+    {
+        self::assertEquals($this->getContent('empty_object'), $this->serialize(new OrderRefundedEvent()));
+    }
+
     public function testVirtualProperty()
     {
         self::assertEquals($this->getContent('virtual_properties'), $this->serialize(new ObjectWithVirtualProperties()));
@@ -1903,5 +1911,34 @@ abstract class BaseSerializationTest extends TestCase
         $ref = new \ReflectionProperty($obj, $name);
         $ref->setAccessible(true);
         $ref->setValue($obj, $value);
+    }
+
+    public function testIfObjectIsBeenDeserializedNullWhenSpecifiedInTheMetadata(): void
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $orderDeserialized = $this->deserialize(
+            $this->getContent('order_with_unknown_discriminator'),
+            OrderWithDiscriminator::class
+        );
+
+        self::assertInstanceOf(OrderWithDiscriminator::class, $orderDeserialized);
+        self::assertEquals(null, $orderDeserialized->event);
+    }
+
+    public function testDeserializationToNullWhenObjectIsUnknownDiscriminator(): void
+    {
+        if (!$this->hasDeserializer()) {
+            return;
+        }
+
+        $unknownTypeDeserialized = $this->deserialize(
+            $this->getContent('unknown_discriminator'),
+            OrderEvent::class
+        );
+
+        self::assertEquals(null, $unknownTypeDeserialized);
     }
 }

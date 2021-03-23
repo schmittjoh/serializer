@@ -133,6 +133,10 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             return (string) $data[$metadata->discriminatorFieldName];
         }
 
+        if ($metadata->discriminatorNullOnUnknown) {
+            return '';
+        }
+
         throw new LogicException(sprintf(
             'The discriminator field name "%s" for base-class "%s" was not found in input data.',
             $metadata->discriminatorFieldName,

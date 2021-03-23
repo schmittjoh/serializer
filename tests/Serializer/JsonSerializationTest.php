@@ -130,6 +130,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['user_discriminator'] = '{"entityName":"User"}';
             $outputs['user_discriminator_extended'] = '{"entityName":"ExtendedUser"}';
             $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
+            $outputs['order_with_unknown_discriminator'] = '{"event":{"type":"refunded"}}';
+            $outputs['unknown_discriminator'] = '{"type":"refunded"}';
         }
 
         if (!isset($outputs[$key])) {

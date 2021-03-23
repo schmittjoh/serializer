@@ -408,6 +408,8 @@ class YamlDriver extends AbstractFileDriver
                     $groups
                 );
 
+                $metadata->discriminatorNullOnUnknown = ($config['discriminator']['null_on_unknown'] ?? false) === true;
+
                 if (isset($config['discriminator']['xml_attribute'])) {
                     $metadata->xmlDiscriminatorAttribute = (bool) $config['discriminator']['xml_attribute'];
                 }

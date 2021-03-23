@@ -115,6 +115,11 @@ class ClassMetadata extends MergeableClassMetadata
     /**
      * @var bool
      */
+    public $discriminatorNullOnUnknown = false;
+
+    /**
+     * @var bool
+     */
     public $xmlDiscriminatorAttribute = false;
 
     /**
@@ -249,6 +254,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap = $object->discriminatorMap;
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
             $this->discriminatorGroups = $object->discriminatorGroups;
+            $this->discriminatorNullOnUnknown = $object->discriminatorNullOnUnknown;
         }
 
         $this->handleDiscriminatorProperty();
@@ -302,6 +308,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->excludeIf,
             parent::serialize(),
             'discriminatorGroups' => $this->discriminatorGroups,
+            'discriminatorNullOnUnknown' => $this->discriminatorNullOnUnknown,
             'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
             'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
             'usingExpression' => $this->usingExpression,
@@ -348,6 +355,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorGroups = $unserialized['discriminatorGroups'];
         }
 
+        if (isset($unserialized['discriminatorNullOnUnknown'])) {
+            $this->discriminatorNullOnUnknown = $unserialized['discriminatorNullOnUnknown'];
+        }
+
         if (isset($unserialized['usingExpression'])) {
             $this->usingExpression = $unserialized['usingExpression'];
         }
@@ -387,6 +398,9 @@ class ClassMetadata extends MergeableClassMetadata
             && !$this->getReflection()->isInterface()
         ) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
+                if ($this->discriminatorNullOnUnknown) {
+                    return;
+                }
                 throw new InvalidMetadataException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
                     $this->name,
