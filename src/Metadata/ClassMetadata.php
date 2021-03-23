@@ -401,6 +401,7 @@ class ClassMetadata extends MergeableClassMetadata
                 if ($this->discriminatorNullOnUnknown) {
                     return;
                 }
+
                 throw new InvalidMetadataException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
                     $this->name,

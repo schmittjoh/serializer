@@ -9,8 +9,9 @@ use JMS\Serializer\Annotation as Serializer;
 class OrderWithDiscriminator
 {
     /**
-     * @var OrderEvent
      * @Serializer\Type(name="JMS\Serializer\Tests\Fixtures\Discriminator\OrderEvent")
+     *
+     * @var OrderEvent
      */
     public $event;
 }

@@ -179,7 +179,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $nullOnUnknown = $metadata->discriminatorNullOnUnknown;
                     $metadata = $this->resolveMetadata($data, $metadata);
 
-                    if ($nullOnUnknown && $metadata === null) {
+                    if ($nullOnUnknown && null === $metadata) {
                         return null;
                     }
                 }
