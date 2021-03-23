@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.12.2](https://github.com/schmittjoh/serializer/tree/3.12.2) (2021-03-23)
+
+**Fixed bugs:**
+
+- `Undefined offset: 0` when using `@var null|string` instead of `@var string|null` [\#1301](https://github.com/schmittjoh/serializer/pull/1301) ([ruudk](https://github.com/ruudk))
+
+**Merged pull requests:**
+
+- move around some doc block classes [\#1304](https://github.com/schmittjoh/serializer/pull/1304) ([goetas](https://github.com/goetas))
+
 ## [3.12.1](https://github.com/schmittjoh/serializer/tree/3.12.1) (2021-03-21)
 
 **Fixed bugs:**
