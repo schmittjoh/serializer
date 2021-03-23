@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata\Driver;
 
 use JMS\Serializer\Metadata\ClassMetadata as SerializerClassMetadata;
+use JMS\Serializer\Metadata\Driver\DocBlockDriver\DocBlockTypeResolver;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Metadata\Driver;
+namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
@@ -16,7 +16,10 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 
-class DocBlockTypeResolver
+/**
+ * @internal
+ */
+final class DocBlockTypeResolver
 {
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';

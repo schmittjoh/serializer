@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Metadata\Driver;
+namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
-use JMS\Serializer\Builder\DriverFactoryInterface;
+use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverInterface;
 

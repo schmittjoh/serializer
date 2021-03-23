@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use JMS\Serializer\Metadata\Driver\DocBlockTypeResolver;
+use JMS\Serializer\Metadata\Driver\DocBlockDriver\DocBlockTypeResolver;
 use JMS\Serializer\Tests\Fixtures\ObjectWithPhpDocProperty;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
