@@ -1,6 +1,7 @@
 # jms/serializer 
 
-[![Build status][Master image]][Master] 
+[![GitHub Actions][GA Image]][GA Link]
+[![Packagist][Packagist Image]][Packagist Link]
 
 ![alt text](doc/logo-small.png)
 
@@ -44,9 +45,14 @@ For eventual paid support please write an email to [goetas@gmail.com](mailto:goe
 
   [CHANGELOG]: https://github.com/schmittjoh/serializer/blob/master/CHANGELOG.md
   [UPGRADING]: https://github.com/schmittjoh/serializer/blob/master/UPGRADING.md
+
+  [GA Image]: https://github.com/schmittjoh/serializer/workflows/CI/badge.svg
   
-  [Master image]: https://img.shields.io/travis/schmittjoh/serializer/master.svg?style=flat-square
-  [Master]: https://travis-ci.org/schmittjoh/serializer
+  [GA Link]: https://github.com/schmittjoh/serializer/actions?query=workflow%3A%22CI%22+branch%3Amaster
+  
+  [Packagist Image]: https://img.shields.io/packagist/v/jms/serializer.svg
+  
+  [Packagist Link]: https://packagist.org/packages/jms/serializer
   
   [1.x]: https://github.com/schmittjoh/serializer/tree/1.x
   [2.x]: https://github.com/schmittjoh/serializer/tree/2.x
