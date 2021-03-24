@@ -49,7 +49,7 @@ cd doc && sphinx-build -W -b html -d _build/doctrees . _build/html
 
 ## CI
 
-We automatically run your pull request through [Travis CI](https://www.travis-ci.org).
+We automatically run your pull request through [Github Actions](https://github.com/schmittjoh/serializer/actions).
 If you break the tests, we cannot merge your code,
 so please make sure that your code is working before opening up a Pull-Request.
 
