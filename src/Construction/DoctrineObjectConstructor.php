@@ -114,9 +114,12 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
                 $identifierValue = $data[$propertyMetadata->serializedName];
             }
 
-            if (null !== $identifierValue) {
-                $identifierList[$name] = $identifierValue;
+            if (null === $identifierValue) {
+                // Doctrine doesn't support null values in identifier values.
+                return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
+
+            $identifierList[$name] = $identifierValue;
         }
 
         if (empty($identifierList)) {
