@@ -236,7 +236,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                 }
 
                 if (!is_object($data)) {
-                    throw new InvalidArgumentException('Value at '.$this->context->getPath().' is expected to be an object of class '.$type['name'].' but is of type '.gettype($data));
+                    throw new InvalidArgumentException('Value at ' . $this->context->getPath() . ' is expected to be an object of class ' . $type['name'] . ' but is of type ' . csgettype($data));
                 }
                 
                 $this->context->pushClassMetadata($metadata);
