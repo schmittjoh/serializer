@@ -25,7 +25,7 @@ final class StdClassHandler implements SubscribingHandlerInterface
         foreach ($formats as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => 'stdClass',
+                'type' => \stdClass::class,
                 'format' => $format,
                 'method' => 'serializeStdClass',
             ];

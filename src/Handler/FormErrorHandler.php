@@ -35,12 +35,12 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         foreach (['xml', 'json'] as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => 'Symfony\Component\Form\Form',
+                'type' => Form::class,
                 'format' => $format,
             ];
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => 'Symfony\Component\Form\FormError',
+                'type' => FormError::class,
                 'format' => $format,
             ];
         }

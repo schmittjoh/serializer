@@ -34,7 +34,7 @@ final class DateHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $types = ['DateTime', 'DateTimeImmutable', 'DateInterval'];
+        $types = [\DateTime::class, \DateTimeImmutable::class, \DateInterval::class];
 
         foreach (['json', 'xml'] as $format) {
             foreach ($types as $type) {
