@@ -77,14 +77,14 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @return array|\ArrayObject
+     * @return array|\ArrayObject|null
      */
     public function serializeIterable(
         SerializationVisitorInterface $visitor,
         iterable $iterable,
         array $type,
         SerializationContext $context
-    ): iterable {
+    ): ?iterable {
         $type['name'] = 'array';
 
         $context->stopVisiting($iterable);
