@@ -13,6 +13,7 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\CircularReferenceDetectedException;
 use JMS\Serializer\Exception\ExcludedClassException;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\SkipHandlerException;
@@ -232,6 +233,10 @@ final class SerializationGraphNavigator extends GraphNavigator
                     $this->context->stopVisiting($data);
 
                     throw new ExcludedClassException();
+                }
+
+                if (!is_object($data)) {
+                    throw new InvalidArgumentException('Value at ' . $this->context->getPath() . ' is expected to be an object of class ' . $type['name'] . ' but is of type ' . gettype($data));
                 }
 
                 $this->context->pushClassMetadata($metadata);
