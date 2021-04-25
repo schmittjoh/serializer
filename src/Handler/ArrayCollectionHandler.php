@@ -6,6 +6,9 @@ namespace JMS\Serializer\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\PersistentCollection as MongoPersistentCollection;
+use Doctrine\ODM\PHPCR\PersistentCollection as PhpcrPersistentCollection;
+use Doctrine\ORM\PersistentCollection as OrmPersistentCollection;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
@@ -33,10 +36,10 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         $formats = ['json', 'xml', 'yml'];
         $collectionTypes = [
             'ArrayCollection',
-            'Doctrine\Common\Collections\ArrayCollection',
-            'Doctrine\ORM\PersistentCollection',
-            'Doctrine\ODM\MongoDB\PersistentCollection',
-            'Doctrine\ODM\PHPCR\PersistentCollection',
+            ArrayCollection::class,
+            OrmPersistentCollection::class,
+            MongoPersistentCollection::class,
+            PhpcrPersistentCollection::class,
         ];
 
         foreach ($collectionTypes as $type) {

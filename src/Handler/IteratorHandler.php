@@ -28,22 +28,6 @@ final class IteratorHandler implements SubscribingHandlerInterface
         foreach (self::SUPPORTED_FORMATS as $format) {
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => iterable::class,
-                'format' => $format,
-                'method' => 'serializeIterable',
-            ];
-
-            $methods[] = [
-                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'type' => iterable::class,
-                'format' => $format,
-                'method' => 'deserializeIterable',
-            ];
-        }
-
-        foreach (self::SUPPORTED_FORMATS as $format) {
-            $methods[] = [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => Iterator::class,
                 'format' => $format,
                 'method' => 'serializeIterable',
@@ -93,14 +77,14 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @return mixed
+     * @return array|\ArrayObject|null
      */
     public function serializeIterable(
         SerializationVisitorInterface $visitor,
         iterable $iterable,
         array $type,
         SerializationContext $context
-    ) {
+    ): ?iterable {
         $type['name'] = 'array';
 
         $context->stopVisiting($iterable);
@@ -122,25 +106,6 @@ final class IteratorHandler implements SubscribingHandlerInterface
         $type['name'] = 'array';
 
         return new ArrayIterator($visitor->visitArray($data, $type));
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function deserializeIterable(
-        DeserializationVisitorInterface $visitor,
-        $data,
-        array $type,
-        DeserializationContext $context
-    ): array {
-        $type['name'] = 'array';
-
-        $return = [];
-        foreach ($visitor->visitArray($data, $type) as $key => $item) {
-            $return[$key] = $item;
-        }
-
-        return $return;
     }
 
     /**

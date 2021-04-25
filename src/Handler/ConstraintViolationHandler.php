@@ -20,7 +20,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
     {
         $methods = [];
         $formats = ['xml', 'json'];
-        $types = ['Symfony\Component\Validator\ConstraintViolationList' => 'serializeList', 'Symfony\Component\Validator\ConstraintViolation' => 'serializeViolation'];
+        $types = [ConstraintViolationList::class => 'serializeList', ConstraintViolation::class => 'serializeViolation'];
 
         foreach ($types as $type => $method) {
             foreach ($formats as $format) {
