@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.3](https://github.com/schmittjoh/serializer/tree/3.12.3) (2021-04-25)
+
+**Merged pull requests:**
+
+- \[docs\] Add documentation to deserialize on existing objects [\#1308](https://github.com/schmittjoh/serializer/pull/1308) ([gam6itko](https://github.com/gam6itko))
+- Allow phpstan/phpdoc-parser v0.5 [\#1307](https://github.com/schmittjoh/serializer/pull/1307) ([simPod](https://github.com/simPod))
+
 ## [3.12.2](https://github.com/schmittjoh/serializer/tree/3.12.2) (2021-03-23)
 
 **Fixed bugs:**
