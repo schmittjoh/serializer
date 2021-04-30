@@ -128,6 +128,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function visitString($data, array $type): string
     {
+        $this->assertValueCanBeCastToString($data);
+
         return (string) $data;
     }
 
@@ -136,6 +138,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function visitBoolean($data, array $type): bool
     {
+        $this->assertValueCanBeCastToString($data);
+
         $data = (string) $data;
 
         if ('true' === $data || '1' === $data) {
@@ -152,6 +156,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function visitInteger($data, array $type): int
     {
+        $this->assertValueCanBeCastToInt($data);
+
         return (int) $data;
     }
 
@@ -160,6 +166,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function visitDouble($data, array $type): float
     {
+        $this->assertValueCanCastToFloat($data);
+
         return (float) $data;
     }
 
