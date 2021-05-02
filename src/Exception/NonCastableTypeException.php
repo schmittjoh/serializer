@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Exception;
 
-class NonCastableTypeException extends RuntimeException
+abstract class NonCastableTypeException extends RuntimeException
 {
     /**
      * @var mixed

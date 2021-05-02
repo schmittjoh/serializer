@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Exception;
 
-class NonIntCastableTypeException extends NonCastableTypeException
+final class NonIntCastableTypeException extends NonCastableTypeException
 {
     /**
      * @param mixed $value
