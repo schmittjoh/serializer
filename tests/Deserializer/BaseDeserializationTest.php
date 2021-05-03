@@ -5,12 +5,46 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Deserializer;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\NonCastableTypeException;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
+use JMS\Serializer\Tests\Fixtures\Price;
+use JMS\Serializer\Tests\Fixtures\Publisher;
 use PHPUnit\Framework\TestCase;
 
 class BaseDeserializationTest extends TestCase
 {
+    /**
+     * @dataProvider dataTypeCannotBeCasted
+     */
+    public function testDeserializationInvalidDataCausesException($data, string $type): void
+    {
+        $serializer = SerializerBuilder::create()->build();
+
+        $this->expectException(NonCastableTypeException::class);
+
+        $serializer->fromArray($data, $type);
+    }
+
+    public function dataTypeCannotBeCasted(): iterable
+    {
+        yield 'array to string' => [
+            ['pub_name' => ['bla', 'bla']],
+            Publisher::class,
+        ];
+
+        yield 'object to float' => [
+            ['price' => (object) ['bla' => 'bla']],
+            Price::class,
+        ];
+
+        yield 'object to int' => [
+            ['km' => (object) ['bla' => 'bla']],
+            Car::class,
+        ];
+    }
+
     /**
      * @dataProvider dataDeserializerGroupExclusion
      */
@@ -25,17 +59,17 @@ class BaseDeserializationTest extends TestCase
     public function dataDeserializerGroupExclusion(): iterable
     {
         $data = [
-            'foo'    => 'foo',
+            'foo' => 'foo',
             'foobar' => 'foobar',
-            'bar'    => 'bar',
-            'none'   => 'none',
+            'bar' => 'bar',
+            'none' => 'none',
         ];
 
         yield [
             $data,
             ['Default'],
             [
-                'bar'  => 'bar',
+                'bar' => 'bar',
                 'none' => 'none',
             ],
         ];
@@ -44,7 +78,7 @@ class BaseDeserializationTest extends TestCase
             $data,
             ['foo'],
             [
-                'foo'    => 'foo',
+                'foo' => 'foo',
                 'foobar' => 'foobar',
             ],
         ];
@@ -54,7 +88,7 @@ class BaseDeserializationTest extends TestCase
             ['bar'],
             [
                 'foobar' => 'foobar',
-                'bar'    => 'bar',
+                'bar' => 'bar',
             ],
         ];
 
@@ -62,9 +96,9 @@ class BaseDeserializationTest extends TestCase
             $data,
             ['foo', 'bar'],
             [
-                'foo'    => 'foo',
+                'foo' => 'foo',
                 'foobar' => 'foobar',
-                'bar'    => 'bar',
+                'bar' => 'bar',
             ],
         ];
 
