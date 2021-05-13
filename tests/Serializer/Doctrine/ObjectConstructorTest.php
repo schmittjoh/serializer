@@ -27,6 +27,7 @@ use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Construction\DoctrineObjectConstructor;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Construction\ObjectManagerAwareConstructor;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -43,6 +44,7 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
+use JMS\Serializer\Tests\Fixtures\Doctrine\ObjectManagerAware\Thing;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\Driver\AdvancedDriverInterface;
@@ -264,6 +266,22 @@ class ObjectConstructorTest extends TestCase
         );
     }
 
+    public function testObjectManagerIsInjected(): void
+    {
+        $serializer = $this->createSerializerWithObjectManagerAwareFallback();
+        $jsonData = '{"name":"Hello Thing"}';
+        /** @var Thing $thing */
+        $thing = $serializer->deserialize($jsonData, Thing::class, 'json');
+
+        static::assertSame($this->registry->getManager(), $thing->getObjectManager());
+        static::assertSame(
+            $this->registry->getManager()->getClassMetadata(Thing::class),
+            $thing->getClassMetadata()
+        );
+        static::assertSame('Hello Thing', $thing->getName());
+        static::assertSame(Thing::class, $thing->getClassMetadata()->getName());
+    }
+
     public function testFallbackOnEmbeddableClassWithXmlDriver()
     {
         if (ORMVersion::compare('2.5') >= 0) {
@@ -480,6 +498,26 @@ class ObjectConstructorTest extends TestCase
                 new DoctrineObjectConstructor(
                     $this->registry,
                     new UnserializeObjectConstructor(),
+                    DoctrineObjectConstructor::ON_MISSING_FALLBACK
+                )
+            )
+            ->addDefaultHandlers()
+            ->build();
+    }
+
+    /**
+     * @return SerializerInterface
+     */
+    private function createSerializerWithObjectManagerAwareFallback()
+    {
+        return SerializerBuilder::create()
+            ->setObjectConstructor(
+                new DoctrineObjectConstructor(
+                    $this->registry,
+                    new ObjectManagerAwareConstructor(
+                        new UnserializeObjectConstructor(),
+                        $this->registry
+                    ),
                     DoctrineObjectConstructor::ON_MISSING_FALLBACK
                 )
             )
