@@ -23,10 +23,10 @@ class HandlerRegistry implements HandlerRegistryInterface
 
         switch ($direction) {
             case GraphNavigatorInterface::DIRECTION_DESERIALIZATION:
-                return 'deserialize' . $type . 'From' . $format;
+                return 'deserialize' . $type . 'From' . ucfirst($format);
 
             case GraphNavigatorInterface::DIRECTION_SERIALIZATION:
-                return 'serialize' . $type . 'To' . $format;
+                return 'serialize' . $type . 'To' . ucfirst($format);
 
             default:
                 throw new LogicException(sprintf('The direction %s does not exist; see GraphNavigatorInterface::DIRECTION_??? constants.', json_encode($direction)));

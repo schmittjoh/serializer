@@ -37,6 +37,24 @@ class HandlerRegistryTest extends TestCase
         self::assertSame($xmlDeserializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
     }
 
+    /**
+     * @dataProvider methodProvider
+     */
+    public function testCaseSensitiveDefaultMedhod(int $direction, string $type, string $format, string $result)
+    {
+        self::assertSame($result, HandlerRegistry::getDefaultMethod($direction, $type, $format));
+    }
+
+    public function methodProvider()
+    {
+        return [
+            [GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'DateTime', 'xml', 'serializeDateTimeToXml'],
+            [GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'DateTime', 'xml', 'deserializeDateTimeFromXml'],
+            [GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'Foo\Bar', 'json', 'serializeBarToJson'],
+            [GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'Foo\Bar', 'json', 'deserializeBarFromJson'],
+        ];
+    }
+
     protected function createHandlerRegistry()
     {
         return new HandlerRegistry();
