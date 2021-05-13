@@ -20,7 +20,7 @@ use JMS\Serializer\SerializationContext;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
-final class ExpressionLanguageExclusionStrategy
+final class ExpressionLanguageExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
      * @var ExpressionEvaluatorInterface

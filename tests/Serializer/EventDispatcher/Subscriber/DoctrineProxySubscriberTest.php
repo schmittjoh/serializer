@@ -8,6 +8,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
@@ -49,7 +50,7 @@ class DoctrineProxySubscriberTest extends TestCase
 
     public function testExcludedPropDoesNotGetInitialized()
     {
-        $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
+        $this->context->method('getExclusionStrategy')->willReturn(new DisjunctExclusionStrategy([new AlwaysExcludeExclusionStrategy()]));
         $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface
         {
             public function getMetadataForClass($className)
@@ -83,7 +84,7 @@ class DoctrineProxySubscriberTest extends TestCase
         $factoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)->getMock();
         $factoryMock->method('getMetadataForClass')->willReturn(new ClassMetadata(SimpleObject::class));
 
-        $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
+        $this->context->method('getExclusionStrategy')->willReturn(new DisjunctExclusionStrategy([new AlwaysExcludeExclusionStrategy()]));
         $this->context->method('getMetadataFactory')->willReturn($factoryMock);
 
         $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => SimpleObjectProxy::class, 'params' => []]);

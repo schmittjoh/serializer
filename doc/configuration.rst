@@ -104,3 +104,23 @@ a serialization context from your callable and use it.
     You can also set a default DeserializationContextFactory with
     ``->setDeserializationContextFactory(function () { /* ... */ })``
     to be used with methods ``deserialize()`` and ``fromArray()``.
+
+Setting a default behaviour for skipping properties with empty values - `SkipWhenEmpty`_ annotation
+---------------------------------------------------------------------------------------------------
+To avoid to specifying the annotation ``@skipWhenEmpty`` for each property
+it is possible to enable this behaviour in configuration by calling ``enableSkipWhenEmpty``
+
+Example using with the SerializerBuilder::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer = JMS\Serializer\SerializerBuilder::create()
+        ->setSerializationContextFactory(function () {
+
+            return SerializationContext::create()
+                    ->enableSkipWhenEmpty();
+
+        })
+        ->build();
+
+.. _SkipWhenEmpty: reference/annotations.html#skipwhenempty

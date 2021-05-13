@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 
 /**
  * Handles traversal along the object graph.
@@ -32,7 +32,7 @@ abstract class GraphNavigator implements GraphNavigatorInterface
      */
     protected $format;
     /**
-     * @var ExclusionStrategyInterface
+     * @var DisjunctExclusionStrategy
      */
     protected $exclusionStrategy;
 

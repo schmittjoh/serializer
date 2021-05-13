@@ -15,7 +15,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
+final class DisjunctExclusionStrategy implements ExclusionStrategyInterface, ValueExclusionStrategyInterface
 {
     /**
      * @var ExclusionStrategyInterface[]
@@ -30,8 +30,24 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
         $this->delegates = $delegates;
     }
 
-    public function addStrategy(ExclusionStrategyInterface $strategy): void
+    /**
+     * @param ExclusionStrategyInterface|ValueExclusionStrategyInterface $strategy
+     */
+    public function addStrategy($strategy): void
     {
+        if (
+            !($strategy instanceof ExclusionStrategyInterface)
+            || !($strategy instanceof ValueExclusionStrategyInterface)
+        ) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Strategy should be one of %s, %s instances',
+                    ExclusionStrategyInterface::class,
+                    ValueExclusionStrategyInterface::class
+                )
+            );
+        }
+
         $this->delegates[] = $strategy;
     }
 
@@ -41,8 +57,7 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
-            \assert($delegate instanceof ExclusionStrategyInterface);
-            if ($delegate->shouldSkipClass($metadata, $context)) {
+            if ($delegate instanceof ExclusionStrategyInterface && $delegate->shouldSkipClass($metadata, $context)) {
                 return true;
             }
         }
@@ -56,8 +71,21 @@ final class DisjunctExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         foreach ($this->delegates as $delegate) {
-            \assert($delegate instanceof ExclusionStrategyInterface);
-            if ($delegate->shouldSkipProperty($property, $context)) {
+            if ($delegate instanceof ExclusionStrategyInterface && $delegate->shouldSkipProperty($property, $context)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether the property should be skipped.
+     */
+    public function shouldSkipPropertyWithValue(PropertyMetadata $property, Context $context, $value): bool
+    {
+        foreach ($this->delegates as $delegate) {
+            if ($delegate instanceof ValueExclusionStrategyInterface && $delegate->shouldSkipPropertyWithValue($property, $context, $value)) {
                 return true;
             }
         }
