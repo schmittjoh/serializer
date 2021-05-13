@@ -13,6 +13,7 @@ use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\Serializer\Ordering\PropertyOrderingRegistryInterface;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as BaseClassMetadata;
@@ -32,13 +33,23 @@ class XmlDriver extends AbstractFileDriver
      * @var PropertyNamingStrategyInterface
      */
     private $namingStrategy;
+    /**
+     * @var PropertyOrderingRegistryInterface|null
+     */
+    private $propertyOrderingRegistry;
 
-    public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
-    {
+    public function __construct(
+        FileLocatorInterface $locator,
+        PropertyNamingStrategyInterface $namingStrategy,
+        ?ParserInterface $typeParser = null,
+        ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null,
+        ?PropertyOrderingRegistryInterface $propertyOrderingRegistry = null
+    ) {
         parent::__construct($locator);
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
+        $this->propertyOrderingRegistry = $propertyOrderingRegistry;
     }
 
     protected function loadMetadataFromFile(\ReflectionClass $class, string $path): ?BaseClassMetadata
@@ -53,7 +64,7 @@ class XmlDriver extends AbstractFileDriver
             throw new InvalidMetadataException('Invalid XML content for metadata', 0, new XmlErrorException(libxml_get_last_error()));
         }
 
-        $metadata = new ClassMetadata($name = $class->name);
+        $metadata = new ClassMetadata($name = $class->name, $this->propertyOrderingRegistry);
         if (!$elems = $elem->xpath("./class[@name = '" . $name . "']")) {
             throw new InvalidMetadataException(sprintf('Could not find class %s inside XML element.', $name));
         }
