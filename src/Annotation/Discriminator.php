@@ -21,4 +21,7 @@ class Discriminator
 
     /** @var string[] */
     public $groups = [];
+
+    /** @var bool */
+    public $nullOnUnknown = false;
 }

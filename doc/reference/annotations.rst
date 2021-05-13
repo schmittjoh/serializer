@@ -306,7 +306,7 @@ where a common base class exists. The ``@Discriminator`` annotation has to be ap
 to the least super type::
 
     /**
-     * @Discriminator(field = "type", disabled = false, map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
+     * @Discriminator(field = "type", nullOnUnknown = false, disabled = false, map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
      */
     abstract class Vehicle { }
     class Car extends Vehicle { }
@@ -316,6 +316,7 @@ to the least super type::
 .. note ::
 
     `groups` is optional and is used as exclusion policy.
+    `nullOnUnknown` is optional and is used to (de)serialize null when the discriminated field was not found
 
 @Type
 ~~~~~
