@@ -10,26 +10,31 @@ use JMS\Serializer\Exception\RuntimeException;
  * @Annotation
  * @Target("CLASS")
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class ExclusionPolicy
 {
     public const NONE = 'NONE';
     public const ALL = 'ALL';
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $policy;
+    public $policy = null;
 
-    public function __construct(array $values)
+    public function __construct(array $values = [], ?string $policy = null)
     {
-        $value = self::NONE;
+        if ([] !== $values) {
+            $value = self::NONE;
 
-        if (array_key_exists('value', $values)) {
-            $value = $values['value'];
-        }
+            if (array_key_exists('value', $values)) {
+                $value = $values['value'];
+            }
 
-        if (array_key_exists('policy', $values)) {
-            $value = $values['policy'];
+            if (array_key_exists('policy', $values)) {
+                $value = $values['policy'];
+            }
+        } else {
+            $value = $policy;
         }
 
         if (!\is_string($value)) {

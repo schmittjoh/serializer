@@ -13,5 +13,6 @@ class ParentNoMetadataChildObject extends ParentNoMetadata
      *
      * @var string
      */
+    #[Serializer\Type(name: 'string')]
     public $bar;
 }

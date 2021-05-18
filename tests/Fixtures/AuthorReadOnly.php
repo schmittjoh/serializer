@@ -11,12 +11,15 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /** @XmlRoot("author") */
+#[XmlRoot(name: 'author')]
 class AuthorReadOnly
 {
     /**
      * @ReadOnlyProperty
      * @SerializedName("id")
      */
+    #[ReadOnly]
+    #[SerializedName(name: 'id')]
     private $id;
 
     /**
@@ -24,6 +27,9 @@ class AuthorReadOnly
      * @SerializedName("full_name")
      * @Accessor("getName")
      */
+    #[Type(name: 'string')]
+    #[SerializedName(name: 'full_name')]
+    #[Accessor(getter: 'getName')]
     private $name;
 
     public function __construct($id, $name)

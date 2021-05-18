@@ -79,6 +79,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
         $previousEntityLoaderState = null;
         if (\LIBXML_VERSION < 20900) {
+            // @todo resolve the deprecation
+            // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
             $previousEntityLoaderState = libxml_disable_entity_loader($this->disableExternalEntities);
         }
 
@@ -97,6 +99,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         libxml_use_internal_errors($previous);
 
         if (\LIBXML_VERSION < 20900) {
+            // @todo resolve the deprecation
+            // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
             libxml_disable_entity_loader($previousEntityLoaderState);
         }
 

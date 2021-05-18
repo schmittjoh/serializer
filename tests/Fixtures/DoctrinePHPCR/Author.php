@@ -19,6 +19,7 @@ class Author
      * @PHPCRODM\Field(type="string")
      * @SerializedName("full_name")
      */
+    #[SerializedName(name: 'full_name')]
     private $name;
 
     public function __construct($name)

@@ -12,15 +12,18 @@ use JMS\Serializer\Annotation as Serializer;
  *     exp="oinvalid"
  * )
  */
+#[Serializer\VirtualProperty(name: 'invalid', exp: 'oinvalid')]
 class ObjectWithInvalidExpression
 {
     /**
      * @var @Serializer\Exclude(if="inval")
      */
+    #[Serializer\Exclude(if: 'inval')]
     private $prop1;
 
     /**
      * @var @Serializer\Expose(if="invalid")
      */
+    #[Serializer\Expose(if: 'invalid')]
     private $prop2;
 }

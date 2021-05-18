@@ -13,6 +13,8 @@ class Author
      * @Type("string")
      * @SerializedName("full_name")
      */
+    #[Type(name: 'string')]
+    #[SerializedName(name: 'full_name')]
     private $name;
 
     public function __construct($name)

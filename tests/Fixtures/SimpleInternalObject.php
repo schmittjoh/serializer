@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @Serializer\Exclude("NONE")
  */
+#[Serializer\Exclude('NONE')]
 class SimpleInternalObject extends \Exception
 {
     private $bar;

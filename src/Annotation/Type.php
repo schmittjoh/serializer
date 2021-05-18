@@ -8,11 +8,27 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target({"PROPERTY", "METHOD","ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class Type
 {
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $name;
+    public $name = null;
+
+    public function __construct(array $values = [], ?string $name = null)
+    {
+        if ([] !== $values) {
+            if (array_key_exists('value', $values)) {
+                $name = $values['value'];
+            }
+
+            if (array_key_exists('name', $values)) {
+                $name = $values['name'];
+            }
+        }
+
+        $this->name = $name;
+    }
 }

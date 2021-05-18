@@ -10,17 +10,22 @@ use JMS\Serializer\Annotation\ReadOnlyProperty;
 use JMS\Serializer\Annotation\Type;
 
 /** @AccessType("public_method") */
+#[AccessType(type: 'public_method')]
 class GetSetObject
 {
     /** @AccessType("property") @Type("integer") */
+    #[AccessType(type: 'property')]
+    #[Type(name: 'integer')]
     private $id = 1;
 
     /** @Type("string") */
+    #[Type(name: 'string')]
     private $name = 'Foo';
 
     /**
      * @ReadOnlyProperty
      */
+    #[ReadOnly]
     private $readOnlyProperty = 42;
 
     /**
@@ -28,6 +33,7 @@ class GetSetObject
      *
      * @Exclude()
      */
+    #[Exclude]
     private $excludedProperty;
 
     public function getId()

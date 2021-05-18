@@ -11,6 +11,7 @@ class Tree
     /**
      * @Serializer\MaxDepth(10)
      */
+    #[Serializer\MaxDepth(depth: 10)]
     public $tree;
 
     public function __construct($tree)

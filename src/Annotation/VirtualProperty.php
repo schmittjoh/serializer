@@ -12,24 +12,25 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  *
  * @author Alexander Klimenkov <alx.devel@gmail.com>
  */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class VirtualProperty
 {
     /**
-     * @var string
+     * @var string}null
      */
-    public $exp;
+    public $exp = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $name;
+    public $name = null;
 
     /**
      * @var array
      */
     public $options = [];
 
-    public function __construct(array $data)
+    public function __construct(array $data = [], ?string $name = null, ?string $exp = null, ?array $options = [])
     {
         if (isset($data['value'])) {
             $data['name'] = $data['value'];
@@ -42,6 +43,28 @@ final class VirtualProperty
             }
 
             $this->{$key} = $value;
+        }
+
+        if (null !== $name) {
+            $this->name = $name;
+        }
+
+        if (null !== $exp) {
+            $this->exp = $exp;
+        }
+
+        if (0 !== count($options)) {
+            $this->options = $options;
+        }
+
+        foreach ($options as $option) {
+            if (is_array($option) && class_exists($option[0])) {
+                $this->options[] = new $option[0]([], ...$option[1]);
+
+                continue;
+            }
+
+            $this->options[] = $option;
         }
     }
 }
