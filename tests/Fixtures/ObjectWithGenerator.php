@@ -14,6 +14,8 @@ class ObjectWithGenerator
      *
      * @var \Generator
      */
+    #[Serializer\Type(name: 'Generator<string,string>')]
+    #[Serializer\XmlKeyValuePairs]
     public $generator;
 
     public function __construct(\Generator $generator)

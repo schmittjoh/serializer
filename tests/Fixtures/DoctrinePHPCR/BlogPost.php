@@ -17,6 +17,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @PHPCRODM\Document
  * @XmlRoot("blog-post")
  */
+#[XmlRoot(name: 'blog-post')]
 class BlogPost
 {
     /**
@@ -28,6 +29,7 @@ class BlogPost
      * @PHPCRODM\Field(type="string")
      * @Groups({"comments","post"})
      */
+    #[Groups(groups: ['comments', 'post'])]
     private $title;
 
     /**
@@ -39,6 +41,7 @@ class BlogPost
      * @PHPCRODM\Field(type="date")
      * @XmlAttribute
      */
+    #[XmlAttribute]
     private $createdAt;
 
     /**
@@ -51,6 +54,10 @@ class BlogPost
      * @Groups({"post"})
      * @XmlAttribute
      */
+    #[Type(name: 'integer')]
+    #[SerializedName(name: 'is_published')]
+    #[Groups(groups: ['post'])]
+    #[XmlAttribute]
     private $published;
 
     /**
@@ -58,12 +65,15 @@ class BlogPost
      * @XmlList(inline=true, entry="comment")
      * @Groups({"comments"})
      */
+    #[XmlList(entry: 'comment', inline: true)]
+    #[Groups(groups: ['comments'])]
     private $comments;
 
     /**
      * @PHPCRODM\ReferenceOne(targetDocument="Author")
      * @Groups({"post"})
      */
+    #[Groups(groups: ['post'])]
     private $author;
 
     public function __construct($title, Author $author, \DateTime $createdAt)

@@ -13,6 +13,8 @@ class ExtendedUser extends User
      * @JMS\Groups({"base"})
      * @var string
      */
+    #[JMS\Type(name: 'string')]
+    #[JMS\Groups(groups: ['base'])]
     public $extendAttribute;
 
     public function __construct($id, $name, $description, $extendAttribute)

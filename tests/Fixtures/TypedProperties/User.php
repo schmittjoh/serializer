@@ -16,9 +16,12 @@ class User
     /**
      * @Serializer\ReadOnly()
      */
+    #[Serializer\ReadOnly]
     public ?\DateTimeInterface $updated = null;
+
     /**
      * @Serializer\ReadOnly()
      */
+    #[Serializer\ReadOnly]
     public iterable $tags = [];
 }

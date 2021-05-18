@@ -8,6 +8,7 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target({"PROPERTY", "METHOD","ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class XmlElement
 {
     /**
@@ -16,7 +17,23 @@ final class XmlElement
     public $cdata = true;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $namespace;
+    public $namespace = null;
+
+    public function __construct(array $values = [], bool $cdata = true, ?string $namespace = null)
+    {
+        if ([] !== $values) {
+            if (array_key_exists('cdata', $values)) {
+                $cdata = $values['cdata'];
+            }
+
+            if (array_key_exists('namespace', $values)) {
+                $namespace = $values['namespace'];
+            }
+        }
+
+        $this->cdata = $cdata;
+        $this->namespace = $namespace;
+    }
 }

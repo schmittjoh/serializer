@@ -12,6 +12,7 @@ use JMS\Serializer\Annotation\Expose;
  *
  * @ExclusionPolicy(policy="all")
  */
+#[ExclusionPolicy(policy: 'all')]
 class AllExcludedObject
 {
     private $foo = 'foo';

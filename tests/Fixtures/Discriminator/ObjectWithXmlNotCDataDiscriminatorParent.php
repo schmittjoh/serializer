@@ -12,6 +12,8 @@ use JMS\Serializer\Annotation as Serializer;
  * })
  * @Serializer\XmlDiscriminator(cdata=false)
  */
+#[Serializer\Discriminator(field: 'type', map: ['child' => 'JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorChild'])]
+#[Serializer\XmlDiscriminator(cdata: false)]
 abstract class ObjectWithXmlNotCDataDiscriminatorParent
 {
 }

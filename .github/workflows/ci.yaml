@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-version: [7.2, 7.3, 7.4]
+        php-version: [7.2, 7.3, 7.4, 8.0]
         dependencies: ['']
         include:
           - { operating-system: 'ubuntu-latest', php-version: '8.0', dependencies: '--ignore-platform-req=php' }

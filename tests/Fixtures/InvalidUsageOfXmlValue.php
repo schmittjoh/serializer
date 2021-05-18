@@ -10,6 +10,7 @@ use JMS\Serializer\Annotation\XmlValue;
 class InvalidUsageOfXmlValue
 {
     /** @XmlValue */
+    #[XmlValue]
     private $value = 'bar';
 
     private $element = 'foo';

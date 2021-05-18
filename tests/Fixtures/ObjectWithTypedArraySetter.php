@@ -12,6 +12,8 @@ class ObjectWithTypedArraySetter
      * @Serializer\Type("array<string>")
      * @Serializer\AccessType(type="public_method")
      */
+    #[Serializer\Type(name: 'array<string>')]
+    #[Serializer\AccessType(type: 'public_method')]
     private $empty = [];
 
     public function setEmpty(array $empty): void

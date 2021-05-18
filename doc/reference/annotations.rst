@@ -1,5 +1,52 @@
 Annotations
------------
+===========
+
+PHP 8 support
+-------------
+
+JMS serializer now supports PHP 8 attributes, with a few caveats:
+- To avoid BC breaks, all annotations must use named parameters.
+- Due to the missing support for nested annotations, the syntax for a few annotations has changed
+
+Converting your annotations to attributes
+-----------------------------------------
+
+Example:
+
+.. code-block :: php
+
+    /**
+     * @VirtualProperty(
+     *     "classlow",
+     *     exp="object.getVirtualValue(1)",
+     *     options={@Until("8")}
+     * )
+     * @VirtualProperty(
+     *     "classhigh",
+     *     exp="object.getVirtualValue(8)",
+     *     options={@Since("6")}
+     * )
+     */
+    #[VirtualProperty(name: 'classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+    #[VirtualProperty(name: 'classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
+    class ObjectWithVersionedVirtualProperties
+    {
+        /**
+         * @Groups({"versions"})
+         * @VirtualProperty
+         * @SerializedName("low")
+         * @Until("8")
+         */
+        #[Groups(groups: ['versions'])]
+        #[VirtualProperty]
+        #[SerializedName(name: 'low')]
+        #[Until(version: '8')]
+        public function getVirtualLowValue()
+        {
+            return 1;
+        }
+    ...
+
 
 @ExclusionPolicy
 ~~~~~~~~~~~~~~~~
@@ -265,6 +312,22 @@ In this example:
 .. note ::
 
     This only works for serialization and is completely ignored during deserialization.
+
+In PHP 8, due to the missing support for nested annotations, in the options array you need to pass an array with the class name and an array with the arguments for its constructor.
+
+.. code-block :: php
+
+    /**
+     * @Serializer\VirtualProperty(
+     *     "firstName",
+     *     exp="object.getFirstName()",
+     *     options={@Serializer\SerializedName("my_first_name")}
+     *  )
+     */
+    #[Serializer\VirtualProperty(name: "firstName", exp: "object.getFirstName()", options: [[Serializer\SerializedName::class, ["my_first_name"]]])]
+    class Author
+    {
+    ...
 
 @Inline
 ~~~~~~~

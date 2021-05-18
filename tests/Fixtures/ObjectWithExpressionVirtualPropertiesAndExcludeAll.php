@@ -14,6 +14,8 @@ use JMS\Serializer\Annotation\VirtualProperty;
  * )
  * @ExclusionPolicy("all")
  */
+#[VirtualProperty(name: 'virtualValue', exp: 'object.getVirtualValue()')]
+#[ExclusionPolicy(policy: 'all')]
 class ObjectWithExpressionVirtualPropertiesAndExcludeAll
 {
     public function getVirtualValue()

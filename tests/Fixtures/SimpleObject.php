@@ -10,15 +10,19 @@ use JMS\Serializer\Annotation\Type;
 class SimpleObject
 {
     /** @Type("string") */
+    #[Type(name: 'string')]
     private $foo;
 
     /**
      * @SerializedName("moo")
      * @Type("string")
      */
+    #[SerializedName(name: 'moo')]
+    #[Type(name: 'string')]
     private $bar;
 
     /** @Type("string") */
+    #[Type(name: 'string')]
     protected $camelCase = 'boo';
 
     public function __construct($foo, $bar)
