@@ -85,6 +85,13 @@ class ClassMetadata extends MergeableClassMetadata
     public $isMap = false;
 
     /**
+     * @internal
+     *
+     * @var int|null
+     */
+    public $positionInList = null;
+
+    /**
      * @var bool
      */
     public $discriminatorDisabled = false;

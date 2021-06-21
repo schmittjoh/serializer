@@ -253,6 +253,9 @@ abstract class Context
 
         $paths = [];
         foreach ($this->metadataStack as $metadata) {
+            if ($metadata instanceof ClassMetadata && $metadata->positionInList !== null) {
+                array_unshift($paths, $metadata->positionInList);
+            }
             if ($metadata instanceof PropertyMetadata) {
                 array_unshift($paths, $metadata->name);
             }

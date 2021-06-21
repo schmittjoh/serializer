@@ -89,6 +89,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
+            $elType['position_in_list'] = $k;
             try {
                 $v = $this->navigator->accept($v, $elType);
             } catch (NotAcceptableException $e) {
