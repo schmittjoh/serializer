@@ -24,8 +24,8 @@
         "phpstan/phpdoc-parser": "^0.4 || ^0.5"
     },
     "suggest": {
-        "doctrine/cache": "Required if you like to use cache functionality.",
         "doctrine/collections": "Required if you like to use doctrine collection types as ArrayCollection.",
+        "symfony/cache": "Required if you like to use cache functionality.",
         "symfony/yaml": "Required if you'd like to use the YAML metadata format."
     },
     "require-dev": {

@@ -6,6 +6,7 @@ namespace JMS\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -50,6 +51,7 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * Builder for serializer instances.
@@ -525,8 +527,13 @@ final class SerializerBuilder
 
             if (null !== $this->cacheDir) {
                 $this->createDir($this->cacheDir . '/annotations');
-                $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
-                $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
+                if (class_exists(FilesystemAdapter::class)) {
+                    $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
+                    $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
+                } else {
+                    $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
+                    $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
+                }
             }
         }
 

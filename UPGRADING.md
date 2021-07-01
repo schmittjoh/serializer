@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+- Use symfony/cache for FileSystem cache implementation instead of doctrine/cache
+
 From 2.x to 3.0.0
 =================
 
