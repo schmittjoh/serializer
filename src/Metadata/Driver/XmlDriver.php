@@ -363,15 +363,15 @@ class XmlDriver extends AbstractFileDriver
 
             switch ((string) $method->attributes()->type) {
                 case 'pre-serialize':
-                    $metadata->addPreSerializeMethod(new MethodMetadata($name, (string) $method->attributes()->name));
+                    $metadata->addPreSerializeMethod(new MethodMetadata($class->name, (string) $method->attributes()->name));
                     break;
 
                 case 'post-serialize':
-                    $metadata->addPostSerializeMethod(new MethodMetadata($name, (string) $method->attributes()->name));
+                    $metadata->addPostSerializeMethod(new MethodMetadata($class->name, (string) $method->attributes()->name));
                     break;
 
                 case 'post-deserialize':
-                    $metadata->addPostDeserializeMethod(new MethodMetadata($name, (string) $method->attributes()->name));
+                    $metadata->addPostDeserializeMethod(new MethodMetadata($class->name, (string) $method->attributes()->name));
                     break;
 
                 case 'handler':
