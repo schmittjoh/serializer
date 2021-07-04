@@ -77,6 +77,9 @@ class HandlerRegistry implements HandlerRegistryInterface
         return $this->handlers[$direction][$typeName][$format];
     }
 
+    /**
+     * @internal Used for profiling
+     */
     public function getHandlers(): array
     {
         return $this->handlers;

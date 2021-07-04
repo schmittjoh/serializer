@@ -44,6 +44,9 @@ class EventDispatcher implements EventDispatcherInterface
         $this->classListeners = [];
     }
 
+    /**
+     * @internal Used for profiling
+     */
     public function getListeners(): array
     {
         return $this->listeners;
