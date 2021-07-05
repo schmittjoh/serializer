@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.13.0](https://github.com/schmittjoh/serializer/tree/3.13.0) (2021-07-05)
+
+**Merged pull requests:**
+
+- Use FilesystemAdapter when possible to fix compatibility with doctrine/cache 2 [\#1328](https://github.com/schmittjoh/serializer/pull/1328) ([rasmustnilsson](https://github.com/rasmustnilsson))
+- Use PsrCachedReader and drop doctrine/cache [\#1327](https://github.com/schmittjoh/serializer/pull/1327) ([simPod](https://github.com/simPod))
+- Check data can be casted before actual casting [\#1317](https://github.com/schmittjoh/serializer/pull/1317) ([scaytrase](https://github.com/scaytrase))
+- Add methods for data\_collector [\#1316](https://github.com/schmittjoh/serializer/pull/1316) ([gam6itko](https://github.com/gam6itko))
+- fix iterable::class that does not exist [\#1315](https://github.com/schmittjoh/serializer/pull/1315) ([Tobion](https://github.com/Tobion))
+- useful error when data is not an object [\#1313](https://github.com/schmittjoh/serializer/pull/1313) ([dbu](https://github.com/dbu))
+- Fix callback-method setup using XmlDriver [\#1310](https://github.com/schmittjoh/serializer/pull/1310) ([curzio-della-santa](https://github.com/curzio-della-santa))
+
 ## [3.12.3](https://github.com/schmittjoh/serializer/tree/3.12.3) (2021-04-25)
 
 **Merged pull requests:**
