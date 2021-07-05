@@ -12,10 +12,17 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 {
     public const DEFAULT_GROUP = 'Default';
 
+    private $groups;
+
     /**
-     * @var array
+     * @var array<string,array<string,boolean>>
      */
-    private $groups = [];
+    private $parsedGroups = [];
+
+    /**
+     * @var array<string,boolean>>
+     */
+    private $rootGroups = [];
 
     /**
      * @var bool
@@ -24,24 +31,31 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
     public function __construct(array $groups)
     {
-        if (empty($groups)) {
-            $groups = [self::DEFAULT_GROUP];
-        }
+        $this->groups = $groups;
+        $this->prepare($groups, '');
+        $this->parsedGroups['.'] = $this->parsedGroups[''];
+        unset($this->parsedGroups['']);
+        $this->rootGroups = $this->parsedGroups['.'];
+    }
 
-        foreach ($groups as $group) {
-            if (is_array($group)) {
+    private function prepare(array $groups, $path)
+    {
+        $currentGroups = [];
+        foreach ($groups as $key => $value) {
+            if (is_string($key) && is_array($value)) {
                 $this->nestedGroups = true;
-                break;
+                $this->prepare($value, $path . '.' . $key);
+                continue;
             }
+
+            $currentGroups[$value] = true;
         }
 
-        if ($this->nestedGroups) {
-            $this->groups = $groups;
-        } else {
-            foreach ($groups as $group) {
-                $this->groups[$group] = true;
-            }
+        if (empty($currentGroups)) {
+            $currentGroups[self::DEFAULT_GROUP] = true;
         }
+
+        $this->parsedGroups[$path] = $currentGroups;
     }
 
     public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
@@ -51,33 +65,31 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
-        if ($this->nestedGroups) {
-            $groups = $this->getGroupsFor($navigatorContext);
-
-            if (!$property->groups) {
-                return !in_array(self::DEFAULT_GROUP, $groups);
-            }
-
-            return $this->shouldSkipUsingGroups($property, $groups);
-        } else {
-            if (!$property->groups) {
-                return !isset($this->groups[self::DEFAULT_GROUP]);
+        if (!$this->nestedGroups) {
+            if(!$property->groups) {
+                return !isset($this->rootGroups[self::DEFAULT_GROUP]);
             }
 
             foreach ($property->groups as $group) {
-                if (isset($this->groups[$group])) {
+                if (isset($this->rootGroups[$group])) {
                     return false;
                 }
             }
 
             return true;
+        } else {
+            $groups = $property->groups ?: [self::DEFAULT_GROUP];
+            $path = $this->buildPathFromContext($navigatorContext);
+            if(!isset($this->parsedGroups[$path])) {
+                // If we reach that path it's because we were allowed so we fallback on default group
+                $this->parsedGroups[$path] = [self::DEFAULT_GROUP => true];
+            }
         }
-    }
 
-    private function shouldSkipUsingGroups(PropertyMetadata $property, array $groups): bool
-    {
-        foreach ($property->groups as $group) {
-            if (in_array($group, $groups)) {
+        $againstGroups = $this->parsedGroups[$path];
+
+        foreach ($groups as $group) {
+            if (isset($againstGroups[$group])) {
                 return false;
             }
         }
@@ -85,10 +97,18 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         return true;
     }
 
+    private function buildPathFromContext(Context $navigatorContext): string
+    {
+        return '.' . implode('.', $navigatorContext->getCurrentPath());
+    }
+
+    /**
+     * @deprecated 
+     */
     public function getGroupsFor(Context $navigatorContext): array
     {
         if (!$this->nestedGroups) {
-            return array_keys($this->groups);
+            return array_keys($this->rootGroups);
         }
 
         $paths = $navigatorContext->getCurrentPath();
