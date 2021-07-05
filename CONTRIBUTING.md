@@ -5,6 +5,24 @@ Thank you for contributing!
 Before we can merge your Pull-Request here are some guidelines that you need to follow. 
 These guidelines exist not to annoy you, but to keep the code base clean, unified and future proof.
 
+## Docker
+
+For local development you can use [docker](https://docs.docker.com/get-docker/) / [docker-compose](https://docs.docker.com/compose/install/).
+
+Once you have docker and docker-compose setup there is some (make)[https://www.gnu.org/software/make/] commands are available to help you setup.
+
+```
+make install
+```
+
+This will build the container, run them, do a composer install and run the test.
+
+If you want to see all the command available just run:
+
+```
+make help
+```
+
 ## Coding Standard
 
 This project uses [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) to enforce coding standards.
@@ -14,6 +32,16 @@ The project follows a relaxed version of the Doctrine Coding standards v4.
 Your Pull-Request must be compliant with the said standard.
 To check your code you can run `vendor/bin/phpcs`. This command will give you a list of violations in your code (if any).
 The most common errors can be automatically fixed just by running `vendor/bin/phpcbf`.
+
+**With the docker setup**
+
+```
+make cs-check
+```
+
+```
+make cs-fix
+```
 
 ## Dependencies
 
@@ -27,6 +55,11 @@ You can run the unit-tests by calling `vendor/bin/phpunit`.
 
 New features without tests can't be merged.
 
+**With the docker setup**
+
+```
+make test
+```
 
 ## Documentation
 
@@ -45,6 +78,12 @@ When that is done, just run:
 
 ```bash
 cd doc && sphinx-build -W -b html -d _build/doctrees . _build/html
+```
+
+**With the docker setup**
+
+```
+make doc-generate
 ```
 
 ## CI
