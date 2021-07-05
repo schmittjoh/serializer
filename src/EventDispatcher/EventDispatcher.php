@@ -45,6 +45,14 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
+     * @internal Used for profiling
+     */
+    public function getListeners(): array
+    {
+        return $this->listeners;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null): void
