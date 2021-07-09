@@ -28,6 +28,7 @@ use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
+use JMS\Serializer\Tests\Fixtures\ObjectWithStringKeyMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithObjectType;
@@ -271,6 +272,20 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testArrayKeyValues()
     {
         self::assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+    }
+
+    public function testSerializationStringKeyMap()
+    {
+        self::assertEquals($this->getContent('array_key_map'), $this->serializer->serialize(ObjectWithStringKeyMap::create1(), 'xml'));
+    }
+
+    public function testDeserializationStringKeyMap()
+    {
+        $xml = $this->getContent('array_key_map');
+        $result = $this->serializer->deserialize($xml, ObjectWithStringKeyMap::class, 'xml');
+
+        self::assertInstanceOf(ObjectWithStringKeyMap::class, $result);
+        self::assertEquals(ObjectWithStringKeyMap::create1(), $result);
     }
 
     public function testDeserializeArrayKeyValues()

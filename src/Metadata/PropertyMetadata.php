@@ -65,6 +65,11 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlKeyAttribute;
 
     /**
+     * @var string
+     */
+    public $xmlValueAttribute;
+
+    /**
      * @var bool
      */
     public $xmlAttribute = false;
@@ -222,6 +227,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlCollectionInline,
             $this->xmlEntryName,
             $this->xmlKeyAttribute,
+            $this->xmlValueAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
             $this->xmlNamespace,
@@ -270,6 +276,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->xmlCollectionInline,
             $this->xmlEntryName,
             $this->xmlKeyAttribute,
+            $this->xmlValueAttribute,
             $this->xmlAttribute,
             $this->xmlValue,
             $this->xmlNamespace,

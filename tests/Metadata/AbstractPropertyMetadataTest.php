@@ -21,6 +21,7 @@ abstract class AbstractPropertyMetadataTest extends TestCase
         $metadata->xmlEntryName = 'test_xml_entry_name';
         $metadata->xmlEntryNamespace = 'test_xml_entry_namespace';
         $metadata->xmlKeyAttribute = 'test_xml_key_attribute';
+        $metadata->xmlValueAttribute = 'test_xml_value_attribute';
         $metadata->xmlAttribute = true;
         $metadata->xmlValue = true;
         $metadata->xmlNamespace = 'test_xml_namespace';
