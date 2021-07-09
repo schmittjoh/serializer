@@ -29,22 +29,20 @@ final class XmlRoot
 
     public function __construct(array $values = [], ?string $name = null, ?string $namespace = null, ?string $prefix = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $name = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $name = $values['value'];
+        }
 
-            if (array_key_exists('name', $values)) {
-                $name = $values['name'];
-            }
+        if (array_key_exists('name', $values)) {
+            $name = $values['name'];
+        }
 
-            if (array_key_exists('namespace', $values)) {
-                $namespace = $values['namespace'];
-            }
+        if (array_key_exists('namespace', $values)) {
+            $namespace = $values['namespace'];
+        }
 
-            if (array_key_exists('prefix', $values)) {
-                $prefix = $values['prefix'];
-            }
+        if (array_key_exists('prefix', $values)) {
+            $prefix = $values['prefix'];
         }
 
         $this->name = $name;

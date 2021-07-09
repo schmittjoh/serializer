@@ -25,18 +25,16 @@ final class Accessor
 
     public function __construct(array $values = [], ?string $getter = null, ?string $setter = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $getter = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $getter = $values['value'];
+        }
 
-            if (array_key_exists('getter', $values)) {
-                $getter = $values['getter'];
-            }
+        if (array_key_exists('getter', $values)) {
+            $getter = $values['getter'];
+        }
 
-            if (array_key_exists('setter', $values)) {
-                $setter = $values['setter'];
-            }
+        if (array_key_exists('setter', $values)) {
+            $setter = $values['setter'];
         }
 
         $this->getter = $getter;

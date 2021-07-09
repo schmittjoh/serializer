@@ -14,14 +14,12 @@ abstract class Version
 
     public function __construct(array $values = [], ?string $version = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $version = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $version = $values['value'];
+        }
 
-            if (array_key_exists('version', $values)) {
-                $version = $values['version'];
-            }
+        if (array_key_exists('version', $values)) {
+            $version = $values['version'];
         }
 
         $this->version = $version;

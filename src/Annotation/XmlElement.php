@@ -23,14 +23,12 @@ final class XmlElement
 
     public function __construct(array $values = [], bool $cdata = true, ?string $namespace = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('cdata', $values)) {
-                $cdata = $values['cdata'];
-            }
+        if (array_key_exists('cdata', $values)) {
+            $cdata = $values['cdata'];
+        }
 
-            if (array_key_exists('namespace', $values)) {
-                $namespace = $values['namespace'];
-            }
+        if (array_key_exists('namespace', $values)) {
+            $namespace = $values['namespace'];
         }
 
         $this->cdata = $cdata;

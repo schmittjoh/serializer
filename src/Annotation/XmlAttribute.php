@@ -18,14 +18,12 @@ final class XmlAttribute
 
     public function __construct(array $values = [], ?string $namespace = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $namespace = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $namespace = $values['value'];
+        }
 
-            if (array_key_exists('namespace', $values)) {
-                $namespace = $values['namespace'];
-            }
+        if (array_key_exists('namespace', $values)) {
+            $namespace = $values['namespace'];
         }
 
         $this->namespace = $namespace;

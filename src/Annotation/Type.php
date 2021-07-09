@@ -19,14 +19,12 @@ final class Type
 
     public function __construct(array $values = [], ?string $name = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $name = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $name = $values['value'];
+        }
 
-            if (array_key_exists('name', $values)) {
-                $name = $values['name'];
-            }
+        if (array_key_exists('name', $values)) {
+            $name = $values['name'];
         }
 
         $this->name = $name;

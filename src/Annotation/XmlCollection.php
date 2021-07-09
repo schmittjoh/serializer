@@ -28,22 +28,20 @@ abstract class XmlCollection
 
     public function __construct(array $values = [], string $entry = 'entry', bool $inline = false, ?string $namespace = null, bool $skipWhenEmpty = true)
     {
-        if ([] !== $values) {
-            if (array_key_exists('entry', $values)) {
-                $entry = $values['entry'];
-            }
+        if (array_key_exists('entry', $values)) {
+            $entry = $values['entry'];
+        }
 
-            if (array_key_exists('inline', $values)) {
-                $inline = $values['inline'];
-            }
+        if (array_key_exists('inline', $values)) {
+            $inline = $values['inline'];
+        }
 
-            if (array_key_exists('namespace', $values)) {
-                $namespace = $values['namespace'];
-            }
+        if (array_key_exists('namespace', $values)) {
+            $namespace = $values['namespace'];
+        }
 
-            if (array_key_exists('skipWhenEmpty', $values)) {
-                $skipWhenEmpty = $values['skipWhenEmpty'];
-            }
+        if (array_key_exists('skipWhenEmpty', $values)) {
+            $skipWhenEmpty = $values['skipWhenEmpty'];
         }
 
         $this->entry = $entry;

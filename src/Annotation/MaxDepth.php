@@ -19,14 +19,12 @@ final class MaxDepth
 
     public function __construct(array $values = [], int $depth = 0)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $depth = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $depth = $values['value'];
+        }
 
-            if (array_key_exists('depth', $values)) {
-                $depth = $values['depth'];
-            }
+        if (array_key_exists('depth', $values)) {
+            $depth = $values['depth'];
         }
 
         $this->depth = $depth;

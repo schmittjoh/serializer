@@ -18,10 +18,8 @@ final class XmlMap extends XmlCollection
 
     public function __construct(array $values = [], string $keyAttribute = '_key', string $entry = 'entry', bool $inline = false, ?string $namespace = null, bool $skipWhenEmpty = true)
     {
-        if ([] !== $values) {
-            if (array_key_exists('keyAttribute', $values)) {
-                $keyAttribute = $values['keyAttribute'];
-            }
+        if (array_key_exists('keyAttribute', $values)) {
+            $keyAttribute = $values['keyAttribute'];
         }
 
         parent::__construct($values, $entry, $inline, $namespace, $skipWhenEmpty);

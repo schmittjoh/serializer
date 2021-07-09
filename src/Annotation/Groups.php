@@ -16,14 +16,12 @@ final class Groups
 
     public function __construct(array $values = [], array $groups = [])
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $groups = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $groups = $values['value'];
+        }
 
-            if (array_key_exists('groups', $values)) {
-                $groups = $values['groups'];
-            }
+        if (array_key_exists('groups', $values)) {
+            $groups = $values['groups'];
         }
 
         $this->groups = $groups;
