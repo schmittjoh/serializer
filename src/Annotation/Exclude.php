@@ -18,14 +18,12 @@ final class Exclude
 
     public function __construct(array $values = [], ?string $if = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $if = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $if = $values['value'];
+        }
 
-            if (array_key_exists('if', $values)) {
-                $if = $values['if'];
-            }
+        if (array_key_exists('if', $values)) {
+            $if = $values['if'];
         }
 
         $this->if = $if;

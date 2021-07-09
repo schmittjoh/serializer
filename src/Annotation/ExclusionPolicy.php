@@ -23,17 +23,17 @@ final class ExclusionPolicy
 
     public function __construct(array $values = [], ?string $policy = null)
     {
-        if ([] !== $values) {
-            $value = self::NONE;
+        $value = self::NONE;
 
-            if (array_key_exists('value', $values)) {
-                $value = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $value = $values['value'];
+        }
 
-            if (array_key_exists('policy', $values)) {
-                $value = $values['policy'];
-            }
-        } else {
+        if (array_key_exists('policy', $values)) {
+            $value = $values['policy'];
+        }
+
+        if (null !== $policy) {
             $value = $policy;
         }
 

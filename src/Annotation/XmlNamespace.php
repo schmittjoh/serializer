@@ -24,14 +24,12 @@ final class XmlNamespace
 
     public function __construct(array $values = [], ?string $uri = null, string $prefix = '')
     {
-        if ([] !== $values) {
-            if (array_key_exists('uri', $values)) {
-                $uri = $values['uri'];
-            }
+        if (array_key_exists('uri', $values)) {
+            $uri = $values['uri'];
+        }
 
-            if (array_key_exists('prefix', $values)) {
-                $prefix = $values['prefix'];
-            }
+        if (array_key_exists('prefix', $values)) {
+            $prefix = $values['prefix'];
         }
 
         $this->uri = $uri;

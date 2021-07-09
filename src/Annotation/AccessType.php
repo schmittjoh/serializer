@@ -21,14 +21,12 @@ final class AccessType
 
     public function __construct(array $values = [], ?string $type = null)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $type = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $type = $values['value'];
+        }
 
-            if (array_key_exists('type', $values)) {
-                $type = $values['type'];
-            }
+        if (array_key_exists('type', $values)) {
+            $type = $values['type'];
         }
 
         $this->type = $type;

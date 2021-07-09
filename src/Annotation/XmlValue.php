@@ -18,14 +18,12 @@ final class XmlValue
 
     public function __construct(array $values = [], bool $cdata = true)
     {
-        if ([] !== $values) {
-            if (array_key_exists('value', $values)) {
-                $cdata = $values['value'];
-            }
+        if (array_key_exists('value', $values)) {
+            $cdata = $values['value'];
+        }
 
-            if (array_key_exists('cdata', $values)) {
-                $cdata = $values['cdata'];
-            }
+        if (array_key_exists('cdata', $values)) {
+            $cdata = $values['cdata'];
         }
 
         $this->cdata = $cdata;
