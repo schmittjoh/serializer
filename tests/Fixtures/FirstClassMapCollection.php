@@ -14,6 +14,8 @@ class FirstClassMapCollection
      *
      * @var int[]
      */
+    #[Serializer\Type(name: 'array<string,string>')]
+    #[Serializer\Inline]
     public $items = [];
 
     public function __construct(array $items)

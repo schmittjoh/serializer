@@ -8,9 +8,11 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /** @XmlRoot("order") */
+#[XmlRoot(name: 'order')]
 class CurrencyAwareOrder
 {
     /** @Type("JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice") */
+    #[Type(name: 'JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice')]
     private $cost;
 
     public function __construct(?CurrencyAwarePrice $price = null)

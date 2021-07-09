@@ -10,6 +10,7 @@ use JMS\Serializer\Annotation\VirtualProperty;
 /**
  * @Serializer\ExclusionPolicy("ALL")
  */
+#[Serializer\ExclusionPolicy(policy: 'ALL')]
 class ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll
 {
     protected $name;
@@ -19,6 +20,8 @@ class ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll
      *
      * @VirtualProperty()
      */
+    #[Serializer\SerializedName(name: 'mood')]
+    #[VirtualProperty]
     public function getName()
     {
         return 'value';

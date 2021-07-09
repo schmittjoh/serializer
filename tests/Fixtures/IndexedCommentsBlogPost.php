@@ -11,12 +11,15 @@ use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /** @XmlRoot("post") */
+#[XmlRoot(name: 'post')]
 class IndexedCommentsBlogPost
 {
     /**
      * @XmlMap(keyAttribute="author-name", inline=true, entry="comments")
      * @Accessor(getter="getCommentsIndexedByAuthor")
      */
+    #[XmlMap(keyAttribute: 'author-name', entry: 'comments', inline: true)]
+    #[Accessor(getter: 'getCommentsIndexedByAuthor')]
     private $comments = [];
 
     public function __construct()
@@ -46,9 +49,11 @@ class IndexedCommentsBlogPost
 class IndexedCommentsList
 {
     /** @XmlList(inline=true, entry="comment") */
+    #[XmlList(entry: 'comment', inline: true)]
     private $comments = [];
 
     /** @XmlAttribute */
+    #[XmlAttribute]
     private $count = 0;
 
     public function addComment(Comment $comment)

@@ -12,6 +12,7 @@ use JMS\Serializer\Expression\Expression;
  *
  * @author Asmir Mustafic <goetas@gmail.com>
  */
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class ExpressionPropertyMetadata extends PropertyMetadata
 {
     /**

@@ -14,6 +14,8 @@ class ObjectWithXmlKeyValuePairsWithObjectType
      * @Type("array<string,JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithType>")
      * @XmlKeyValuePairs
      */
+    #[Type(name: 'array<string,JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithType>')]
+    #[XmlKeyValuePairs]
     private $list;
 
     public function __construct(array $list)

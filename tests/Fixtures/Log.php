@@ -11,6 +11,7 @@ use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /** @XmlRoot("log") */
+#[XmlRoot(name: 'log')]
 class Log
 {
     /**
@@ -18,12 +19,17 @@ class Log
      * @XmlMap
      * @Type("AuthorList")
      */
+    #[SerializedName(name: 'author_list')]
+    #[XmlMap]
+    #[Type(name: 'AuthorList')]
     private $authors;
 
     /**
      * @XmlList(inline=true, entry = "comment")
      * @Type("array<JMS\Serializer\Tests\Fixtures\Comment>")
      */
+    #[XmlList(entry: 'comment', inline: true)]
+    #[Type(name: 'array<JMS\Serializer\Tests\Fixtures\Comment>')]
     private $comments;
 
     public function __construct()

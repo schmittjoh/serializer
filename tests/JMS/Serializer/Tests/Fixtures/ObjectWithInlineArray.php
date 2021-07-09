@@ -12,6 +12,8 @@ final class ObjectWithInlineArray
      * @Serializer\Inline()
      * @Serializer\Type("array<string,string>")
      */
+    #[Serializer\Inline]
+    #[Serializer\Type(name: 'array<string,string>')]
     public $array;
 
     /**

@@ -14,12 +14,15 @@ class ObjectWithXmlKeyValuePairsWithType
      * @Type("array<string,string>")
      * @XmlKeyValuePairs
      */
+    #[Type(name: 'array<string,string>')]
+    #[XmlKeyValuePairs]
     private $list;
 
     /**
      * @var array
      * @Type("array<string>")
      */
+    #[Type(name: 'array<string>')]
     private $list2;
 
     public function __construct(array $list, array $list2 = [])

@@ -48,7 +48,16 @@ function createObject()
     return $post;
 }
 
-$serializer = SerializerBuilder::create()->build();
+$builderArgs = [];
+
+if ('1' === getenv('ENABLE_ATTRIBUTES')) {
+    echo 'PHP8 Attributes are ENABLED.' . PHP_EOL;
+    $builderArgs = [null, null, true];
+} else {
+    echo 'PHP8 Attributes are DISABLED.' . PHP_EOL;
+}
+
+$serializer = SerializerBuilder::create(...$builderArgs)->build();
 $collection = createCollection();
 $metrics = [];
 $f = static function () use ($serializer, $collection, $format) {

@@ -6,11 +6,11 @@ namespace JMS\Serializer\Tests\Deserializer;
 
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\NonCastableTypeException;
-use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use PHPUnit\Framework\TestCase;
 
 class BaseDeserializationTest extends TestCase
@@ -20,7 +20,7 @@ class BaseDeserializationTest extends TestCase
      */
     public function testDeserializationInvalidDataCausesException($data, string $type): void
     {
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilderStrategy::create()->build();
 
         $this->expectException(NonCastableTypeException::class);
 
@@ -50,7 +50,7 @@ class BaseDeserializationTest extends TestCase
      */
     public function testDeserializerGroupExclusion(array $data, array $groups, array $expected): void
     {
-        $serializer = SerializerBuilder::create()->build();
+        $serializer = SerializerBuilderStrategy::create()->build();
         $context = DeserializationContext::create()->setGroups($groups);
         $object = $serializer->fromArray($data, GroupsObject::class, $context);
         self::assertSame($expected, $serializer->toArray($object));

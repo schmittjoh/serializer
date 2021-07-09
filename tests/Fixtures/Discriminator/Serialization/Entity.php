@@ -15,6 +15,8 @@ abstract class Entity
      * @JMS\Groups({"base"})
      * @var int
      */
+    #[JMS\Type(name: 'int')]
+    #[JMS\Groups(groups: ['base'])]
     public $id;
 
     public function __construct(int $id)
@@ -29,6 +31,9 @@ abstract class Entity
      * @JMS\SerializedName("entityName")
      * @JMS\Groups({"entity.identification"})
      */
+    #[JMS\VirtualProperty]
+    #[JMS\SerializedName(name: 'entityName')]
+    #[JMS\Groups(groups: ['entity.identification'])]
     public function getEntityName(): string
     {
         $reflect = new ReflectionClass($this);

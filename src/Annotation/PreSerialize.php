@@ -16,6 +16,7 @@ namespace JMS\Serializer\Annotation;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
+#[\Attribute(\Attribute::TARGET_METHOD)]
 final class PreSerialize
 {
 }

@@ -14,6 +14,8 @@ class FirstClassListCollection
      *
      * @var int[]
      */
+    #[Serializer\Type(name: 'array<int>')]
+    #[Serializer\Inline]
     public $items = [];
 
     public function __construct(array $items)

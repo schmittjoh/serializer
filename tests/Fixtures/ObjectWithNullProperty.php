@@ -12,6 +12,7 @@ class ObjectWithNullProperty extends SimpleObject
      * @var null
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $nullProperty = null;
 
     /**

@@ -12,12 +12,15 @@ use JMS\Serializer\Annotation\ReadOnly;
  * @AccessType("public_method")
  * @ReadOnly
  */
+#[AccessType(type: 'public_method')]
+#[ReadOnly]
 class ExcludePublicAccessor
 {
     /**
      * @Exclude
      * @var mixed
      */
+    #[Exclude]
     private $iShallNotBeAccessed;
 
     /**

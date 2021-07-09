@@ -12,6 +12,8 @@ class AuthorsInline
      * @Serializer\Type("array<JMS\Serializer\Tests\Fixtures\Author>")
      * @Serializer\Inline()
      */
+    #[Serializer\Type(name: 'array<JMS\Serializer\Tests\Fixtures\Author>')]
+    #[Serializer\Inline]
     private $collection;
 
     public function __construct(Author ...$authors)

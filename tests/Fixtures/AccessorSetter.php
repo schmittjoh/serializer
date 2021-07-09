@@ -14,6 +14,8 @@ class AccessorSetter
      *
      * @var \stdClass
      */
+    #[Serializer\Type(name: 'JMS\Serializer\Tests\Fixtures\AccessorSetterElement')]
+    #[Serializer\Accessor(setter: 'setElementDifferent')]
     protected $element;
 
     /**
@@ -23,6 +25,9 @@ class AccessorSetter
      *
      * @var array
      */
+    #[Serializer\Type(name: 'array<string>')]
+    #[Serializer\Accessor(setter: 'setCollectionDifferent')]
+    #[Serializer\XmlList(inline: false)]
     protected $collection;
 
     /**
@@ -65,6 +70,9 @@ class AccessorSetterElement
      *
      * @var string
      */
+    #[Serializer\Type(name: 'string')]
+    #[Serializer\Accessor(setter: 'setAttributeDifferent')]
+    #[Serializer\XmlAttribute]
     protected $attribute;
 
     /**
@@ -74,6 +82,9 @@ class AccessorSetterElement
      *
      * @var string
      */
+    #[Serializer\Type(name: 'string')]
+    #[Serializer\Accessor(setter: 'setElementDifferent')]
+    #[Serializer\XmlValue]
     protected $element;
 
     /**

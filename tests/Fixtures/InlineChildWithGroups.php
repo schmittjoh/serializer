@@ -14,6 +14,8 @@ class InlineChildWithGroups
      *
      * @Type("string")
      */
+    #[Serializer\Groups(groups: ['a'])]
+    #[Type(name: 'string')]
     public $a = 'a';
 
     /**
@@ -21,5 +23,7 @@ class InlineChildWithGroups
      *
      * @Type("string")
      */
+    #[Serializer\Groups(groups: ['b'])]
+    #[Type(name: 'string')]
     public $b = 'b';
 }

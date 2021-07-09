@@ -11,6 +11,7 @@ class VehicleInterfaceGarage
     /**
      * @Type("array<JMS\Serializer\Tests\Fixtures\Discriminator\VehicleInterface>")
      */
+    #[Type(name: 'array<JMS\Serializer\Tests\Fixtures\Discriminator\VehicleInterface>')]
     public $vehicles;
 
     public function __construct($vehicles)

@@ -17,6 +17,7 @@ class ParentSkipWithEmptyChild
      *
      * @var InlineChild
      */
+    #[Serializer\SkipWhenEmpty]
     private $child;
 
     public function __construct($child = null)

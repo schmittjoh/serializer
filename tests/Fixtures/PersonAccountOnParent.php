@@ -11,5 +11,6 @@ class PersonAccountOnParent extends PersonAccountParentWithExclude
     /**
      * @Serializer\Type("string")
      */
+    #[Serializer\Type(name: 'string')]
     public $name;
 }

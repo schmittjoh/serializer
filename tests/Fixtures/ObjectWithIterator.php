@@ -15,6 +15,8 @@ class ObjectWithIterator
      *
      * @var Iterator
      */
+    #[Serializer\Type(name: 'Iterator<string,string>')]
+    #[Serializer\XmlKeyValuePairs]
     public $iterator;
 
     public function __construct(Iterator $iterator)

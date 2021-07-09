@@ -17,6 +17,7 @@ class Server
      *
      * @var string
      */
+    #[Serializer\Type(name: 'string')]
     protected $ipAddress;
 
     /**
@@ -27,6 +28,8 @@ class Server
      *
      * @var string
      */
+    #[Serializer\SerializedName(name: 'server_id_extracted')]
+    #[Serializer\Type(name: 'string')]
     protected $serverId;
 
     /**
@@ -35,6 +38,7 @@ class Server
      *
      * @var string
      */
+    #[Serializer\Type(name: 'string')]
     private $name;
 
     /**

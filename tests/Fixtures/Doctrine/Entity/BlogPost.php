@@ -19,6 +19,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  *
  * @XmlRoot("blog-post")
  */
+#[XmlRoot(name: 'blog-post')]
 class BlogPost
 {
     /**
@@ -31,6 +32,7 @@ class BlogPost
      *
      * @Groups({"comments","post"})
      */
+    #[Groups(groups: ['comments', 'post'])]
     private $title;
 
     /**
@@ -43,6 +45,7 @@ class BlogPost
      *
      * @XmlAttribute
      */
+    #[XmlAttribute]
     private $createdAt;
 
     /**
@@ -56,6 +59,10 @@ class BlogPost
      * @Groups({"post"})
      * @XmlAttribute
      */
+    #[Type(name: 'integer')]
+    #[SerializedName(name: 'is_published')]
+    #[Groups(groups: ['post'])]
+    #[XmlAttribute]
     private $published;
 
     /**
@@ -64,6 +71,8 @@ class BlogPost
      * @XmlList(inline=true, entry="comment")
      * @Groups({"comments"})
      */
+    #[XmlList(entry: 'comment', inline: true)]
+    #[Groups(groups: ['comments'])]
     private $comments;
 
     /**
@@ -71,12 +80,14 @@ class BlogPost
      *
      * @Groups({"post"})
      */
+    #[Groups(groups: ['post'])]
     private $author;
 
     /**
      * @Serializer\Exclude()
      * @ORM\Column(type="integer")
      */
+    #[Serializer\Exclude]
     private $ref;
 
     public function __construct($title, Author $author, \DateTime $createdAt)
@@ -101,6 +112,7 @@ class BlogPost
     /**
      * @Serializer\VirtualProperty()
      */
+    #[Serializer\VirtualProperty]
     public function getRef()
     {
         return $this->ref;
