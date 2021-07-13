@@ -116,6 +116,14 @@ final class SerializationGraphNavigator extends GraphNavigator
      */
     public function accept($data, ?array $type = null)
     {
+        // Element could be one of the element list
+        $positionInList = null;
+        if (isset($type['position_in_list'])) {
+            $positionInList = $type['position_in_list'];
+            unset($type['position_in_list']);
+            $type = $type ?: null;
+        }
+
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {
@@ -218,6 +226,11 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
                 \assert($metadata instanceof ClassMetadata);
+
+                if ($positionInList !== null) {
+                    $metadata = clone $metadata;
+                    $metadata->positionInList = $positionInList;
+                }
 
                 if ($metadata->usingExpression && null === $this->expressionExclusionStrategy) {
                     throw new ExpressionLanguageRequiredException(sprintf('To use conditional exclude/expose in %s you must configure the expression language.', $metadata->name));
