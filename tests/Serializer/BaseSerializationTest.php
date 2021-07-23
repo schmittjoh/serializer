@@ -1758,6 +1758,8 @@ abstract class BaseSerializationTest extends TestCase
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
         }
 
         $this->expectException(RuntimeException::class);
@@ -1775,6 +1777,12 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
         $this->expectException(RuntimeException::class);
 
         $object = new UnionTypedDocBLockProperty(10000);
