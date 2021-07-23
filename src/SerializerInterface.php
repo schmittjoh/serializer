@@ -30,7 +30,7 @@ interface SerializerInterface
      * @throws RuntimeException
      *
      * @psalm-template T
-     * @psalm-param class-string<T> $type
+     * @psalm-param class-string<T>|array<class-string<T>> $type
      * @psalm-return T
      */
     public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null);
