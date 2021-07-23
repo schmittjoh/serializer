@@ -25,7 +25,6 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfaces
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfacesWithFullNamespacePath;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfUnionClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
@@ -35,6 +34,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
 use Metadata\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 
@@ -152,17 +152,6 @@ class DocBlockDriverTest extends TestCase
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
             $m->propertyMetadata['productIds']->type
         );
-    }
-
-    public function testThrowingExceptionWhenUnionTypeIsUsedForCollection()
-    {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->resolve(CollectionOfUnionClasses::class);
     }
 
     public function testThrowingExceptionWhenNotExistingClassWasGiven()
@@ -340,6 +329,16 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => ProductDescription::class, 'params' => []],
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForNonUnionDocblockType()
+    {
+        $m = $this->resolve(UnionTypedDocBLockProperty::class);
+
+        self::assertEquals(
+            null,
             $m->propertyMetadata['data']->type
         );
     }

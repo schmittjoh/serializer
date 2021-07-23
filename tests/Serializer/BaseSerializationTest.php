@@ -13,6 +13,7 @@ use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -26,6 +27,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -54,6 +56,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
@@ -1738,6 +1741,44 @@ abstract class BaseSerializationTest extends TestCase
         $list = new AuthorsInline(new Author('foo'), new Author('bar'));
         self::assertEquals($this->getContent('authors_inline'), $this->serialize($list));
         self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
+    }
+
+    public function testSerializingUnionTypedProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+        }
+
+        $object = new TypedProperties\UnionTypedProperties(10000);
+
+        self::assertEquals($this->getContent('data_integer'), $this->serialize($object));
+    }
+
+    public function testThrowingExceptionWhenDeserializingUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+        }
+
+        $this->expectException(RuntimeException::class);
+
+        $object = new TypedProperties\UnionTypedProperties(10000);
+        self::assertEquals($object, $this->deserialize($this->getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
+    }
+
+    public function testSerializingUnionDocBlockTypesProperties()
+    {
+        $object = new UnionTypedDocBLockProperty(10000);
+
+        self::assertEquals($this->getContent('data_integer'), $this->serialize($object));
+    }
+
+    public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $object = new UnionTypedDocBLockProperty(10000);
+        self::assertEquals($object, $this->deserialize($this->getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
     }
 
     public function testIterable(): void

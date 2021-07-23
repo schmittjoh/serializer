@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use Metadata\ClassMetadata;
 use PHPUnit\Framework\TestCase;
@@ -15,6 +16,13 @@ use ReflectionClass;
 
 class TypedPropertiesDriverTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+    }
+
     public function testInferPropertiesFromTypes()
     {
         $m = $this->resolve(User::class);
@@ -32,6 +40,20 @@ class TypedPropertiesDriverTest extends TestCase
         }
     }
 
+    public function testInferUnionTypesShouldResultInNoType()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(UnionTypedProperties::class);
+
+        self::assertEquals(
+            null,
+            $m->propertyMetadata['data']->type
+        );
+    }
+
     private function resolve(string $classToResolve): ClassMetadata
     {
         $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
@@ -41,12 +63,5 @@ class TypedPropertiesDriverTest extends TestCase
         self::assertNotNull($m);
 
         return $m;
-    }
-
-    protected function setUp(): void
-    {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
     }
 }

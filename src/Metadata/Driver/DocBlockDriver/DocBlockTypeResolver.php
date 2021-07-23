@@ -76,11 +76,7 @@ final class DocBlockTypeResolver
 
         // The PhpDoc contains multiple non-null types which produces ambiguity when deserializing.
         if (count($typesWithoutNull) > 1) {
-            $typeHint = implode('|', array_map(static function (TypeNode $type) {
-                return (string) $type;
-            }, $types));
-
-            throw new \InvalidArgumentException(sprintf("Can't use union type %s for collection in %s:%s", $typeHint, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
+            return null;
         }
 
         // Only one type is left, so we only need to differentiate between arrays, generics and other types.
