@@ -25,7 +25,7 @@ class PersonSecret
      * @Serializer\Exclude(if="show_data('gender')")
      */
     #[Serializer\Type(name: 'string')]
-    #[Serializer\Exclude(if: 'show_data("gender")')]
+    #[Serializer\Exclude(if: "show_data('gender')")]
     public $gender;
 
     /**
@@ -33,6 +33,6 @@ class PersonSecret
      * @Serializer\Expose(if="show_data('age')")
      */
     #[Serializer\Type(name: 'string')]
-    #[Serializer\Exclude(if: 'show_data("age")')]
+    #[Serializer\Expose(if: "show_data('age')")]
     public $age;
 }

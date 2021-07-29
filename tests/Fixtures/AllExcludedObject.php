@@ -20,5 +20,6 @@ class AllExcludedObject
     /**
      * @Expose
      */
+    #[Expose]
     private $bar = 'bar';
 }
