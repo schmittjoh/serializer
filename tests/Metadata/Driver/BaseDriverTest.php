@@ -558,13 +558,13 @@ abstract class BaseDriverTest extends TestCase
         $p = new PropertyMetadata($class, 'gender');
         $p->serializedName = 'gender';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->excludeIf = "show_data('gender')";
+        $p->excludeIf = $this->getExpressionEvaluator()->parse("show_data('gender')", ['context', 'class_metadata', 'object']);
         self::assertEquals($p, $m->propertyMetadata['gender']);
 
         $p = new PropertyMetadata($class, 'age');
         $p->serializedName = 'age';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->excludeIf = "!(show_data('age'))";
+        $p->excludeIf = $this->getExpressionEvaluator()->parse("!(show_data('age'))", ['context', 'class_metadata', 'object']);
         self::assertEquals($p, $m->propertyMetadata['age']);
     }
 
