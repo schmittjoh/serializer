@@ -16,7 +16,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 final class VirtualProperty
 {
     /**
-     * @var string}null
+     * @var string|null
      */
     public $exp = null;
 

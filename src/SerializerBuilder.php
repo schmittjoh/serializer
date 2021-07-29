@@ -86,11 +86,6 @@ final class SerializerBuilder
     /**
      * @var bool
      */
-    private $enableAttributes = false;
-
-    /**
-     * @var bool
-     */
     private $listenersConfigured = false;
 
     /**
@@ -188,14 +183,13 @@ final class SerializerBuilder
         return new static(...$args);
     }
 
-    public function __construct(?HandlerRegistryInterface $handlerRegistry = null, ?EventDispatcherInterface $eventDispatcher = null, bool $enableAttributes = false)
+    public function __construct(?HandlerRegistryInterface $handlerRegistry = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->typeParser = new Parser();
         $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         $this->serializationVisitors = [];
         $this->deserializationVisitors = [];
-        $this->enableAttributes = $enableAttributes;
 
         if ($handlerRegistry) {
             $this->handlersConfigured = true;
@@ -529,22 +523,8 @@ final class SerializerBuilder
     {
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {
-            if (PHP_VERSION_ID >= 80000 && true === $this->enableAttributes) {
-                $annotationReader = new AttributeReader();
-            } else {
-                $annotationReader = new AnnotationReader();
-
-                if (null !== $this->cacheDir) {
-                    $this->createDir($this->cacheDir . '/annotations');
-                    if (class_exists(FilesystemAdapter::class)) {
-                        $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
-                        $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
-                    } else {
-                        $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
-                        $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
-                    }
-                }
-            }
+            $annotationReader = new AnnotationReader();
+            $annotationReader = $this->decorateAnnotationReader($annotationReader);
         }
 
         if (null === $this->driverFactory) {
@@ -642,5 +622,21 @@ final class SerializerBuilder
         if (false === @mkdir($dir, 0777, true) && false === is_dir($dir)) {
             throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
         }
+    }
+
+    private function decorateAnnotationReader(Reader $annotationReader): Reader
+    {
+        if (null !== $this->cacheDir) {
+            $this->createDir($this->cacheDir . '/annotations');
+            if (class_exists(FilesystemAdapter::class)) {
+                $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
+                $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
+            } else {
+                $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
+                $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
+            }
+        }
+
+        return $annotationReader;
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Metadata\Driver\AttributeDriver;
 
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
@@ -16,7 +16,9 @@ class AttributeReader implements Reader
         $result = [];
         $attributes = $class->getAttributes();
         foreach ($attributes as $attribute) {
-            $result[] = $attribute->newInstance();
+            if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
+                $result[] = $attribute->newInstance();
+            }
         }
 
         return $result;
@@ -37,7 +39,9 @@ class AttributeReader implements Reader
         $result = [];
         $attributes = $method->getAttributes();
         foreach ($attributes as $attribute) {
-            $result[] = $attribute->newInstance();
+            if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
+                $result[] = $attribute->newInstance();
+            }
         }
 
         return $result;
@@ -46,7 +50,7 @@ class AttributeReader implements Reader
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
     {
         $attributes = $method->getAttributes($annotationName);
-        if (0 === count($attributes) || null === $attributes[0]) {
+        if ([] === $attributes || !isset($attributes[0])) {
             return null;
         }
 
@@ -58,7 +62,9 @@ class AttributeReader implements Reader
         $result = [];
         $attributes = $property->getAttributes();
         foreach ($attributes as $attribute) {
-            $result[] = $attribute->newInstance();
+            if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
+                $result[] = $attribute->newInstance();
+            }
         }
 
         return $result;
@@ -67,7 +73,7 @@ class AttributeReader implements Reader
     public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
     {
         $attributes = $property->getAttributes($annotationName);
-        if (0 === count($attributes) || null === $attributes[0]) {
+        if ([] === $attributes || !isset($attributes[0])) {
             return null;
         }
 

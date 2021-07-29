@@ -7,9 +7,9 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\Exclude("NONE")
+ * @Serializer\ExclusionPolicy("ALL")
  */
-#[Serializer\Exclude('NONE')]
+#[Serializer\ExclusionPolicy(policy: 'ALL')]
 class SimpleInternalObject extends \Exception
 {
     private $bar;
