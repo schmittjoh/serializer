@@ -147,7 +147,7 @@ be called to retrieve, or set the value of the given property:
 .. note ::
 
     If you need only to serialize your data, you can avoid providing a setter by
-    setting the property as read-only using the ``@ReadOnly`` annotation.
+    setting the property as read-only using the ``@ReadOnlyProperty`` annotation.
 
 @AccessorOrder
 ~~~~~~~~~~~~~~
@@ -273,12 +273,13 @@ should be inlined.
 
 **Note**: AccessorOrder will be using the name of the property to determine the order.
 
-@ReadOnly
-~~~~~~~~~
+@ReadOnlyProperty
+~~~~~~~~~~~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
 is read only and cannot be set during deserialization.
 
-A property can be marked as non read only with ``@ReadOnly(false)`` annotation (useful when a class is marked as read only).
+A property can be marked as non read only with ``@ReadOnlyProperty(false)`` annotation
+(useful when a class is marked as read only).
 
 @PreSerialize
 ~~~~~~~~~~~~~
@@ -444,7 +445,7 @@ Available Types:
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
-(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization, 
+(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization,
 for serializaiton is treated as ``string``.
 
 Examples:

@@ -14,11 +14,11 @@ class User
     public \DateTime $created;
 
     /**
-     * @Serializer\ReadOnly()
+     * @Serializer\ReadOnlyProperty()
      */
     public ?\DateTimeInterface $updated = null;
     /**
-     * @Serializer\ReadOnly()
+     * @Serializer\ReadOnlyProperty()
      */
     public iterable $tags = [];
 }

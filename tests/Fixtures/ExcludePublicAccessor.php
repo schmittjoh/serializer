@@ -6,11 +6,11 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\AccessType;
 use JMS\Serializer\Annotation\Exclude;
-use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\ReadOnlyProperty;
 
 /**
  * @AccessType("public_method")
- * @ReadOnly
+ * @ReadOnlyProperty
  */
 class ExcludePublicAccessor
 {
