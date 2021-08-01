@@ -26,7 +26,7 @@ jobs:
           - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php', enable-attributes: '1' }
 
     env:
-      ENABLE_ATTRIBUTES: "${{matrix.enable-attributes}}"
+      JMS_TESTS_ENABLE_ATTRIBUTES: "${{matrix.enable-attributes}}"
       JMS_TESTS_SHOW_DEPRECATIONS: 1
 
     steps:

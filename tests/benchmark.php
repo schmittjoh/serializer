@@ -50,7 +50,7 @@ function createObject()
 
 $builderArgs = [];
 
-if ('1' === getenv('ENABLE_ATTRIBUTES')) {
+if ('1' === getenv('JMS_TESTS_ENABLE_ATTRIBUTES')) {
     echo 'PHP8 Attributes are ENABLED.' . PHP_EOL;
     $builderArgs = [null, null, true];
 } else {

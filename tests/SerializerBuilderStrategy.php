@@ -11,7 +11,7 @@ class SerializerBuilderStrategy
     public static function create(...$args)
     {
         $args += [null, null, false];
-        if ('1' === getenv('ENABLE_ATTRIBUTES')) {
+        if ('1' === getenv('JMS_TESTS_ENABLE_ATTRIBUTES')) {
             $args[2] = true;
         }
 
