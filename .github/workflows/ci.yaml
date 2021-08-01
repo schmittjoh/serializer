@@ -21,6 +21,7 @@ jobs:
         dependencies: ['']
         include:
           - { operating-system: 'ubuntu-latest', php-version: '8.0', dependencies: '--ignore-platform-req=php' }
+          - { operating-system: 'ubuntu-latest', php-version: '8.1', dependencies: '--ignore-platform-req=php' }
 
     name: CI on ${{ matrix.operating-system }} with PHP ${{ matrix.php-version }} ${{ matrix.dependencies }}
 

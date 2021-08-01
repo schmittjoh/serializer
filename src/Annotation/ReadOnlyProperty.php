@@ -8,8 +8,12 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target({"CLASS","PROPERTY"})
  *
- * @deprecated use `@ReadOnlyProperty` instead
+ * @final
  */
-final class ReadOnly extends ReadOnlyProperty
+/* final */ class ReadOnlyProperty
 {
+    /**
+     * @var bool
+     */
+    public $readOnly = true;
 }
