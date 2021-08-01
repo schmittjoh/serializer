@@ -1,30 +1,32 @@
-# yamllint disable rule:line-length
-# yamllint disable rule:braces
-
-name: Continuous Integration
+name: CI
 
 on:
   pull_request:
   push:
     branches:
-      - main
       - master
 
 jobs:
-  tests:
-    runs-on: ${{ matrix.operating-system }}
+  phpunit:
+    name: "PHPUnit"
+    runs-on: "ubuntu-20.04"
 
     strategy:
       matrix:
-        operating-system: [ubuntu-latest]
-        php-version: [7.2, 7.3, 7.4]
-        dependencies: ['']
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+        dependencies:
+          - "lowest"
+          - "highest"
         include:
-          - { operating-system: 'ubuntu-latest', php-version: '8.0', dependencies: '--ignore-platform-req=php' }
-          - { operating-system: 'ubuntu-latest', php-version: '8.1', dependencies: '--ignore-platform-req=php' }
+          - { php-version: '8.0', dependencies: 'highest', enable-attributes: '1' }
+          - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
+          - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php', enable-attributes: '1' }
 
-    name: CI on ${{ matrix.operating-system }} with PHP ${{ matrix.php-version }} ${{ matrix.dependencies }}
     env:
+      ENABLE_ATTRIBUTES: "${{matrix.enable-attributes}}"
       JMS_TESTS_SHOW_DEPRECATIONS: 1
 
     steps:
@@ -35,28 +37,15 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: composer:v2
-          extensions: pdo_sqlite
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('composer.*') }}-${{ matrix.dependencies }}
-          restore-keys: |
-            composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('composer.*') }}-
-            composer-${{ runner.os }}-${{ matrix.php-version }}-
-            composer-${{ runner.os }}-
-            composer-
-
-      - name: Install dependencies
-        run: |
-          composer update --no-interaction --prefer-dist --no-progress ${{ matrix.dependencies }}
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "${{ matrix.composer-options }}"
 
       - name: Run tests
         run: |
+          export $ENV
+          echo $ENV
           vendor/bin/phpunit
