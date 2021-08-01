@@ -12,6 +12,7 @@ class ObjectWithXmlKeyValuePairs
      * @var array
      * @XmlKeyValuePairs
      */
+    #[XmlKeyValuePairs]
     private $array = [
         'key-one' => 'foo',
         'key-two' => 1,

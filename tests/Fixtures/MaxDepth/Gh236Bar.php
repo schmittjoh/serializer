@@ -11,11 +11,14 @@ class Gh236Bar
     /**
      * @Serializer\Expose()
      */
+    #[Serializer\Expose]
     public $xxx = 'yyy';
 
     /**
      * @Serializer\Expose()
      * @Serializer\SkipWhenEmpty()
      */
+    #[Serializer\Expose]
+    #[Serializer\SkipWhenEmpty]
     public $inner;
 }

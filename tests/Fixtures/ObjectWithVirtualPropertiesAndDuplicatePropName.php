@@ -15,6 +15,7 @@ class ObjectWithVirtualPropertiesAndDuplicatePropName
     /**
      * @VirtualProperty(name="foo")
      */
+    #[VirtualProperty(name: 'foo')]
     public function getId()
     {
         return 'value';
@@ -25,6 +26,8 @@ class ObjectWithVirtualPropertiesAndDuplicatePropName
      *
      * @VirtualProperty(name="bar")
      */
+    #[Serializer\SerializedName(name: 'mood')]
+    #[VirtualProperty(name: 'bar')]
     public function getName()
     {
         return 'value';

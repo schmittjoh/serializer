@@ -12,17 +12,22 @@ use JMS\Serializer\Annotation\XmlValue;
 /**
  * @XmlRoot("child")
  */
+#[XmlRoot(name: 'child')]
 class Person
 {
     /**
      * @Type("string")
      * @XmlValue(cdata=false)
      */
+    #[Type(name: 'string')]
+    #[XmlValue(cdata: false)]
     public $name;
 
     /**
      * @Type("int")
      * @XmlAttribute
      */
+    #[Type(name: 'int')]
+    #[XmlAttribute]
     public $age;
 }

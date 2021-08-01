@@ -11,6 +11,7 @@ class CustomDeserializationObject
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     public $someProperty;
 
     public function __construct($value)

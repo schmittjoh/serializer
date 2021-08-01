@@ -11,11 +11,13 @@ class ObjectWithObjectProperty
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $foo;
 
     /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      */
+    #[Type(name: 'JMS\Serializer\Tests\Fixtures\Author')]
     private $author;
 
     /**

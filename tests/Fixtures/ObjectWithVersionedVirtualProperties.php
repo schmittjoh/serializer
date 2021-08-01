@@ -24,6 +24,8 @@ use JMS\Serializer\Annotation\VirtualProperty;
  *     options={@Since("6")}
  * )
  */
+#[VirtualProperty(name: 'classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+#[VirtualProperty(name: 'classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
 class ObjectWithVersionedVirtualProperties
 {
     /**
@@ -32,6 +34,10 @@ class ObjectWithVersionedVirtualProperties
      * @SerializedName("low")
      * @Until("8")
      */
+    #[Groups(groups: ['versions'])]
+    #[VirtualProperty]
+    #[SerializedName(name: 'low')]
+    #[Until(version: '8')]
     public function getVirtualLowValue()
     {
         return 1;
@@ -43,6 +49,10 @@ class ObjectWithVersionedVirtualProperties
      * @SerializedName("high")
      * @Since("6")
      */
+    #[Groups(groups: ['versions'])]
+    #[VirtualProperty]
+    #[SerializedName(name: 'high')]
+    #[Since(version: '6')]
     public function getVirtualHighValue()
     {
         return 8;

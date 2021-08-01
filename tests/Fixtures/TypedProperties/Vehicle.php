@@ -11,6 +11,7 @@ use JMS\Serializer\Annotation as Serializer;
  *    "car": "JMS\Serializer\Tests\Fixtures\TypedProperties\Car",
  * })
  */
+#[Serializer\Discriminator(field: 'type', map: ['car' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Car'])]
 interface Vehicle
 {
 }

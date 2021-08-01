@@ -13,5 +13,6 @@ class ObjectUsingTypeCasting
      *
      * @var ObjectWithToString
      */
+    #[Serializer\Type(name: 'string')]
     public $asString;
 }

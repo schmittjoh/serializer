@@ -16,6 +16,7 @@ class AuthorExcludedId
      *
      * @Exclude
      */
+    #[Exclude]
     protected $id;
 
     /**
@@ -23,6 +24,7 @@ class AuthorExcludedId
      *
      * @SerializedName("full_name")
      */
+    #[SerializedName(name: 'full_name')]
     private $name;
 
     public function __construct($name, $id = null)

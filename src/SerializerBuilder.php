@@ -524,17 +524,7 @@ final class SerializerBuilder
         $annotationReader = $this->annotationReader;
         if (null === $annotationReader) {
             $annotationReader = new AnnotationReader();
-
-            if (null !== $this->cacheDir) {
-                $this->createDir($this->cacheDir . '/annotations');
-                if (class_exists(FilesystemAdapter::class)) {
-                    $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
-                    $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
-                } else {
-                    $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
-                    $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
-                }
-            }
+            $annotationReader = $this->decorateAnnotationReader($annotationReader);
         }
 
         if (null === $this->driverFactory) {
@@ -632,5 +622,21 @@ final class SerializerBuilder
         if (false === @mkdir($dir, 0777, true) && false === is_dir($dir)) {
             throw new RuntimeException(sprintf('Could not create directory "%s".', $dir));
         }
+    }
+
+    private function decorateAnnotationReader(Reader $annotationReader): Reader
+    {
+        if (null !== $this->cacheDir) {
+            $this->createDir($this->cacheDir . '/annotations');
+            if (class_exists(FilesystemAdapter::class)) {
+                $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
+                $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
+            } else {
+                $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
+                $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
+            }
+        }
+
+        return $annotationReader;
     }
 }

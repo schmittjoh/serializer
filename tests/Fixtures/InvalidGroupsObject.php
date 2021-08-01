@@ -13,5 +13,7 @@ class InvalidGroupsObject
      * @Groups({"foo, bar"})
      * @Type("string")
      */
+    #[Groups(groups: ['foo, bar'])]
+    #[Type(name: 'string')]
     private $foo;
 }

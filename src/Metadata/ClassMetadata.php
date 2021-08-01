@@ -216,10 +216,14 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
         $this->xmlRootName = $object->xmlRootName;
+        $this->xmlRootPrefix = $object->xmlRootPrefix;
         $this->xmlRootNamespace = $object->xmlRootNamespace;
         if (null !== $object->excludeIf) {
             $this->excludeIf = $object->excludeIf;
         }
+
+        $this->isMap = $object->isMap;
+        $this->isList = $object->isList;
 
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
@@ -228,7 +232,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->customOrder = $object->customOrder;
         }
 
-        if ($object->discriminatorFieldName && $this->discriminatorFieldName) {
+        if ($object->discriminatorFieldName && $this->discriminatorFieldName && $object->discriminatorFieldName !== $this->discriminatorFieldName) {
             throw new InvalidMetadataException(sprintf(
                 'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
                 $object->name,
@@ -249,6 +253,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap = $object->discriminatorMap;
             $this->discriminatorBaseClass = $object->discriminatorBaseClass;
             $this->discriminatorGroups = $object->discriminatorGroups;
+
+            $this->xmlDiscriminatorCData = $object->xmlDiscriminatorCData;
+            $this->xmlDiscriminatorAttribute = $object->xmlDiscriminatorAttribute;
+            $this->xmlDiscriminatorNamespace = $object->xmlDiscriminatorNamespace;
         }
 
         $this->handleDiscriminatorProperty();

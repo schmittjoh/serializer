@@ -12,16 +12,35 @@ namespace JMS\Serializer\Annotation;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class AccessorOrder
 {
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $order;
+    public $order = null;
 
     /**
      * @var array<string>
      */
     public $custom = [];
+
+    public function __construct(array $values = [], ?string $order = null, array $custom = [])
+    {
+        if (array_key_exists('value', $values)) {
+            $order = $values['value'];
+        }
+
+        if (array_key_exists('order', $values)) {
+            $order = $values['order'];
+        }
+
+        if (array_key_exists('custom', $values)) {
+            $custom = $values['custom'];
+        }
+
+        $this->order = $order;
+        $this->custom = $custom;
+    }
 }

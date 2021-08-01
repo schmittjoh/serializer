@@ -10,6 +10,7 @@ namespace JMS\Serializer\Annotation;
  *
  * @deprecated use `@ReadOnlyProperty` instead
  */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY)]
 final class ReadOnly extends ReadOnlyProperty
 {
 }

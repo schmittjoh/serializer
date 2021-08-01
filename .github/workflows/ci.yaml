@@ -24,6 +24,8 @@ jobs:
           - { operating-system: 'ubuntu-latest', php-version: '8.1', dependencies: '--ignore-platform-req=php' }
 
     name: CI on ${{ matrix.operating-system }} with PHP ${{ matrix.php-version }} ${{ matrix.dependencies }}
+    env:
+      JMS_TESTS_SHOW_DEPRECATIONS: 1
 
     steps:
       - name: Checkout code

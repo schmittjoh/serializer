@@ -11,6 +11,7 @@ class Timestamp
     /**
      * @Type("DateTime<'U'>")
      */
+    #[Type(name: 'DateTime<"U">')]
     private $timestamp;
 
     public function __construct($timestamp)

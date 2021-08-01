@@ -20,12 +20,14 @@ use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression;
+use JMS\Serializer\Tests\Fixtures\ObjectWithOnlyLifecycleCallbacks;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Person;
 use Metadata\Driver\DriverInterface;
+use Metadata\MethodMetadata;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -558,14 +560,29 @@ abstract class BaseDriverTest extends TestCase
         $p = new PropertyMetadata($class, 'gender');
         $p->serializedName = 'gender';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->excludeIf = "show_data('gender')";
+        $p->excludeIf = $this->getExpressionEvaluator()->parse("show_data('gender')", ['context', 'class_metadata', 'object']);
         self::assertEquals($p, $m->propertyMetadata['gender']);
 
         $p = new PropertyMetadata($class, 'age');
         $p->serializedName = 'age';
         $p->type = ['name' => 'string', 'params' => []];
-        $p->excludeIf = "!(show_data('age'))";
+        $p->excludeIf = $this->getExpressionEvaluator()->parse("!(show_data('age'))", ['context', 'class_metadata', 'object']);
         self::assertEquals($p, $m->propertyMetadata['age']);
+    }
+
+    public function testLifeCycleCallbacks()
+    {
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithOnlyLifecycleCallbacks::class));
+
+        $c = new ClassMetadata(ObjectWithOnlyLifecycleCallbacks::class);
+        $c->preSerializeMethods[] = new MethodMetadata(ObjectWithOnlyLifecycleCallbacks::class, 'prepareForSerialization');
+        self::assertEquals($c->preSerializeMethods, $m->preSerializeMethods);
+
+        $c->postSerializeMethods[] = new MethodMetadata(ObjectWithOnlyLifecycleCallbacks::class, 'cleanUpAfterSerialization');
+        self::assertEquals($c->postSerializeMethods, $m->postSerializeMethods);
+
+        $c->postDeserializeMethods[] = new MethodMetadata(ObjectWithOnlyLifecycleCallbacks::class, 'afterDeserialization');
+        self::assertEquals($c->postDeserializeMethods, $m->postDeserializeMethods);
     }
 
     public function testExclusionIfOnClass()
