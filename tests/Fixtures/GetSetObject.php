@@ -25,7 +25,7 @@ class GetSetObject
     /**
      * @ReadOnlyProperty
      */
-    #[ReadOnly]
+    #[ReadOnlyProperty]
     private $readOnlyProperty = 42;
 
     /**

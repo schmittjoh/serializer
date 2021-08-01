@@ -18,7 +18,7 @@ class AuthorReadOnly
      * @ReadOnlyProperty
      * @SerializedName("id")
      */
-    #[ReadOnly]
+    #[ReadOnlyProperty]
     #[SerializedName(name: 'id')]
     private $id;
 

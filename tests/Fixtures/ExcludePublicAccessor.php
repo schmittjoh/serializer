@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation\ReadOnlyProperty;
  * @ReadOnlyProperty
  */
 #[AccessType(type: 'public_method')]
-#[ReadOnly]
+#[ReadOnlyProperty]
 class ExcludePublicAccessor
 {
     /**

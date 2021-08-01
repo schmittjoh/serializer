@@ -15,14 +15,14 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @ReadOnlyProperty
  */
 #[XmlRoot(name: 'author')]
-#[ReadOnly]
+#[ReadOnlyProperty]
 class AuthorReadOnlyPerClass
 {
     /**
      * @ReadOnlyProperty
      * @SerializedName("id")
      */
-    #[ReadOnly]
+    #[ReadOnlyProperty]
     #[SerializedName(name: 'id')]
     private $id;
 
@@ -35,7 +35,7 @@ class AuthorReadOnlyPerClass
     #[Type(name: 'string')]
     #[SerializedName(name: 'full_name')]
     #[Accessor(getter: 'getName')]
-    #[ReadOnly(readOnly: false)]
+    #[ReadOnlyProperty(readOnly: false)]
     private $name;
 
     public function __construct($id, $name)
