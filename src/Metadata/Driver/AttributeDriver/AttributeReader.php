@@ -13,54 +13,58 @@ class AttributeReader implements Reader
 {
     public function getClassAnnotations(ReflectionClass $class)
     {
-        $result = [];
         $attributes = $class->getAttributes();
-        foreach ($attributes as $attribute) {
-            if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
-                $result[] = $attribute->newInstance();
-            }
-        }
 
-        return $result;
+        return $this->buildAnnotations($attributes);
     }
 
     public function getClassAnnotation(ReflectionClass $class, $annotationName)
     {
         $attributes = $class->getAttributes($annotationName);
-        if (0 === count($attributes) || null === $attributes[0]) {
-            return null;
-        }
 
-        return $attributes[0]->newInstance();
+        return $this->buildAnnotation($attributes);
     }
 
     public function getMethodAnnotations(ReflectionMethod $method)
     {
-        $result = [];
         $attributes = $method->getAttributes();
-        foreach ($attributes as $attribute) {
-            if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
-                $result[] = $attribute->newInstance();
-            }
-        }
 
-        return $result;
+        return $this->buildAnnotations($attributes);
     }
 
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName)
     {
         $attributes = $method->getAttributes($annotationName);
-        if ([] === $attributes || !isset($attributes[0])) {
+
+        return $this->buildAnnotation($attributes);
+    }
+
+    public function getPropertyAnnotations(ReflectionProperty $property)
+    {
+        $attributes = $property->getAttributes();
+
+        return $this->buildAnnotations($attributes);
+    }
+
+    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
+    {
+        $attributes = $property->getAttributes($annotationName);
+
+        return $this->buildAnnotation($attributes);
+    }
+
+    private function buildAnnotation(array $attributes): ?object
+    {
+        if (!isset($attributes[0])) {
             return null;
         }
 
         return $attributes[0]->newInstance();
     }
 
-    public function getPropertyAnnotations(ReflectionProperty $property)
+    private function buildAnnotations(array $attributes): array
     {
         $result = [];
-        $attributes = $property->getAttributes();
         foreach ($attributes as $attribute) {
             if (0 === strpos($attribute->getName(), 'JMS\Serializer\Annotation\\')) {
                 $result[] = $attribute->newInstance();
@@ -68,15 +72,5 @@ class AttributeReader implements Reader
         }
 
         return $result;
-    }
-
-    public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
-    {
-        $attributes = $property->getAttributes($annotationName);
-        if ([] === $attributes || !isset($attributes[0])) {
-            return null;
-        }
-
-        return $attributes[0]->newInstance();
     }
 }
