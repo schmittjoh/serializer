@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.0-rc1](https://github.com/schmittjoh/serializer/tree/3.14.0-rc1) (2021-08-01)
+
+**Merged pull requests:**
+
+- Add PHP attributes support [\#1332](https://github.com/schmittjoh/serializer/pull/1332) ([goetas](https://github.com/goetas))
+- Deprecate `@ReadOnly` annotation in favor of `@ReadOnlyProperty` [\#1333](https://github.com/schmittjoh/serializer/pull/1333) ([mbabker](https://github.com/mbabker))
+
 ## [3.13.0](https://github.com/schmittjoh/serializer/tree/3.13.0) (2021-07-05)
 
 **Merged pull requests:**
