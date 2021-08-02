@@ -17,11 +17,12 @@ jobs:
           - "7.2"
           - "7.3"
           - "7.4"
+          - "8.0"
         dependencies:
           - "lowest"
           - "highest"
         include:
-          - { php-version: '8.0', dependencies: 'highest', enable-attributes: '1' }
+          - { php-version: '8.0', enable-attributes: '1' }
           - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
           - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php', enable-attributes: '1' }
 
@@ -47,5 +48,4 @@ jobs:
       - name: Run tests
         run: |
           export $ENV
-          echo $ENV
           vendor/bin/phpunit
