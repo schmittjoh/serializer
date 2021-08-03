@@ -9,13 +9,13 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\VersionedObject;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -85,7 +85,7 @@ class ContextTest extends TestCase
             }))
             ->will($this->returnValue(false));
 
-        $serializer = SerializerBuilderStrategy::create()->build();
+        $serializer = SerializerBuilder::create()->build();
 
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
@@ -136,7 +136,7 @@ class ContextTest extends TestCase
                 return false;
             }));
 
-        $serializer = SerializerBuilderStrategy::create()->build();
+        $serializer = SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 
@@ -176,7 +176,7 @@ class ContextTest extends TestCase
 
     public function testMultipleCallsOnGroupsDoNotCreateMultipleExclusionStrategies()
     {
-        $serializer = SerializerBuilderStrategy::create()->build();
+        $serializer = SerializerBuilder::create()->build();
 
         $context = SerializationContext::create();
         $context->setGroups(['foo', 'Default']);
@@ -193,7 +193,7 @@ class ContextTest extends TestCase
 
     public function testMultipleCallsOnVersionDoNotCreateMultipleExclusionStrategies()
     {
-        $serializer = SerializerBuilderStrategy::create()->build();
+        $serializer = SerializerBuilder::create()->build();
 
         $context = SerializationContext::create();
         $context->setVersion('1.0.1');

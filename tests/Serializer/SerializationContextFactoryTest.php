@@ -12,7 +12,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use Metadata\MetadataFactory;
@@ -51,7 +51,7 @@ class SerializationContextFactoryTest extends TestCase
             ->method('createSerializationContext')
             ->will($this->returnValue($context));
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setSerializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 
@@ -70,7 +70,7 @@ class SerializationContextFactoryTest extends TestCase
             ->method('createDeserializationContext')
             ->will($this->returnValue($context));
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setDeserializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 
@@ -90,7 +90,7 @@ class SerializationContextFactoryTest extends TestCase
             ->method('createSerializationContext')
             ->will($this->returnValue($context));
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setSerializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 
@@ -109,7 +109,7 @@ class SerializationContextFactoryTest extends TestCase
             ->method('createDeserializationContext')
             ->will($this->returnValue($context));
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setDeserializationContextFactory($contextFactoryMock);
         $serializer = $builder->build();
 

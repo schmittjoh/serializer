@@ -20,13 +20,13 @@ use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
@@ -101,7 +101,7 @@ class IntegrationTest extends TestCase
             }
         );
 
-        $this->serializer = SerializerBuilderStrategy::create()
+        $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
                 static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());

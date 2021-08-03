@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer as JMSSerializer;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
+use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 
 class ArrayCollectionDepthTest extends TestCase
@@ -20,7 +20,7 @@ class ArrayCollectionDepthTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer = SerializerBuilderStrategy::create()->build();
+        $this->serializer = SerializerBuilder::create()->build();
     }
 
     /**

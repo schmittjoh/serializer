@@ -21,12 +21,11 @@ jobs:
           - "lowest"
           - "highest"
         include:
-          - { php-version: '8.0', dependencies: 'highest', enable-attributes: '1' }
+          - { php-version: '8.0', dependencies: 'highest' }
           - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
-          - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php', enable-attributes: '1' }
+          - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
 
     env:
-      ENABLE_ATTRIBUTES: "${{matrix.enable-attributes}}"
       JMS_TESTS_SHOW_DEPRECATIONS: 1
 
     steps:

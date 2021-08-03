@@ -28,6 +28,7 @@ use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
@@ -110,7 +111,6 @@ use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\TypedProperties;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\TestCase;
@@ -308,7 +308,7 @@ abstract class BaseSerializationTest extends TestCase
 
         $language = new ExpressionLanguage();
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
         $serializer = $builder->build();
 
@@ -333,7 +333,7 @@ abstract class BaseSerializationTest extends TestCase
 
         $language = new ExpressionLanguage();
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
         $serializer = $builder->build();
 
@@ -358,7 +358,7 @@ abstract class BaseSerializationTest extends TestCase
 
         $language = new ExpressionLanguage();
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
         $serializer = $builder->build();
 
@@ -394,7 +394,7 @@ abstract class BaseSerializationTest extends TestCase
             return true;
         }));
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
         $serializer = $builder->build();
 
@@ -487,7 +487,7 @@ abstract class BaseSerializationTest extends TestCase
         $language = new ExpressionLanguage();
         $language->addFunction($function);
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator(new ExpressionEvaluator($language));
         $serializer = $builder->build();
 
@@ -536,7 +536,7 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testSimpleInternalObject()
     {
-        $builder = SerializerBuilderStrategy::create($this->handlerRegistry, $this->dispatcher);
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
         $builder->setMetadataDirs([
             'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/metadata/SimpleInternalObject',
             '' => __DIR__ . '/metadata/SimpleInternalObject',
@@ -845,7 +845,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         $objectConstructor = new InitializedBlogPostConstructor();
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setObjectConstructor($objectConstructor);
         $this->serializer = $builder->build();
 
@@ -872,7 +872,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator($evaluator);
         $serializer = $builder->build();
 
@@ -884,7 +884,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator($evaluator);
         $serializer = $builder->build();
 
@@ -1313,7 +1313,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setExpressionEvaluator($evaluator);
         $serializer = $builder->build();
 
@@ -1356,7 +1356,7 @@ abstract class BaseSerializationTest extends TestCase
             $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
         }
 
-        $builder = SerializerBuilderStrategy::create($this->handlerRegistry, $this->dispatcher);
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
         $builder->includeInterfaceMetadata(true);
         $this->serializer = $builder->build();
 
@@ -1640,7 +1640,7 @@ abstract class BaseSerializationTest extends TestCase
 
         $objectConstructor = new InitializedObjectConstructor(new UnserializeObjectConstructor());
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setObjectConstructor($objectConstructor);
         $serializer = $builder->build();
 
@@ -1886,7 +1886,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
-        $builder = SerializerBuilderStrategy::create($this->handlerRegistry, $this->dispatcher);
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
         $this->serializer = $builder->build();
     }
 

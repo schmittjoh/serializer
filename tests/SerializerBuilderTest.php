@@ -45,7 +45,7 @@ class SerializerBuilderTest extends TestCase
 
     public function testWithCache()
     {
-        if (PHP_VERSION_ID >= 80000 && '1' === getenv('ENABLE_ATTRIBUTES')) {
+        if (PHP_VERSION_ID >= 80000) {
             $this->markTestSkipped('Not caching attributes');
         }
 
@@ -285,7 +285,7 @@ class SerializerBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->builder = SerializerBuilderStrategy::create();
+        $this->builder = SerializerBuilder::create();
         $this->fs = new Filesystem();
 
         $this->tmpDir = sys_get_temp_dir() . '/serializer';

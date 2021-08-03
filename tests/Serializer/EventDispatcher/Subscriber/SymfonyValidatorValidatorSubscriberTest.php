@@ -9,8 +9,8 @@ use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\SymfonyValidatorValidatorSubscriber;
 use JMS\Serializer\Exception\ValidationFailedException;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -71,7 +71,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
             ->willReturn(new ConstraintViolationList());
 
         $subscriber = $this->subscriber;
-        $list = SerializerBuilderStrategy::create()
+        $list = SerializerBuilder::create()
             ->configureListeners(static function (EventDispatcher $dispatcher) use ($subscriber) {
                 $dispatcher->addSubscriber($subscriber);
             })
