@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Annotation;
 
-use JMS\Serializer\Exception\InvalidArgumentException;
-
 /**
  * @Annotation
  * @Target({"METHOD", "CLASS"})
@@ -15,6 +13,8 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class VirtualProperty
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string|null
      */
@@ -30,28 +30,11 @@ final class VirtualProperty
      */
     public $options = [];
 
-    public function __construct(array $data = [], ?string $name = null, ?string $exp = null, ?array $options = [])
+    public function __construct($values = [], ?string $name = null, ?string $exp = null, array $options = [])
     {
-        if (isset($data['value'])) {
-            $data['name'] = $data['value'];
-            unset($data['value']);
-        }
-
-        foreach ($data as $key => $value) {
-            if (!property_exists(self::class, $key)) {
-                throw new InvalidArgumentException(sprintf('Unknown property "%s" on annotation "%s".', $key, self::class));
-            }
-
-            $this->{$key} = $value;
-        }
-
-        if (null !== $name) {
-            $this->name = $name;
-        }
-
-        if (null !== $exp) {
-            $this->exp = $exp;
-        }
+        $vars = get_defined_vars();
+        unset($vars['options']);
+        $this->loadAnnotationParameters($vars);
 
         if (0 !== count($options)) {
             $this->options = $options;

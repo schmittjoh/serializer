@@ -13,6 +13,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Accessor
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string|null
      */
@@ -25,19 +27,6 @@ final class Accessor
 
     public function __construct(array $values = [], ?string $getter = null, ?string $setter = null)
     {
-        if (array_key_exists('value', $values)) {
-            $getter = $values['value'];
-        }
-
-        if (array_key_exists('getter', $values)) {
-            $getter = $values['getter'];
-        }
-
-        if (array_key_exists('setter', $values)) {
-            $setter = $values['setter'];
-        }
-
-        $this->getter = $getter;
-        $this->setter = $setter;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

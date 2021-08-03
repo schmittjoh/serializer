@@ -6,6 +6,8 @@ namespace JMS\Serializer\Annotation;
 
 abstract class XmlCollection
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string
      */
@@ -28,25 +30,6 @@ abstract class XmlCollection
 
     public function __construct(array $values = [], string $entry = 'entry', bool $inline = false, ?string $namespace = null, bool $skipWhenEmpty = true)
     {
-        if (array_key_exists('entry', $values)) {
-            $entry = $values['entry'];
-        }
-
-        if (array_key_exists('inline', $values)) {
-            $inline = $values['inline'];
-        }
-
-        if (array_key_exists('namespace', $values)) {
-            $namespace = $values['namespace'];
-        }
-
-        if (array_key_exists('skipWhenEmpty', $values)) {
-            $skipWhenEmpty = $values['skipWhenEmpty'];
-        }
-
-        $this->entry = $entry;
-        $this->inline = $inline;
-        $this->namespace = $namespace;
-        $this->skipWhenEmpty = $skipWhenEmpty;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

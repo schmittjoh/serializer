@@ -11,22 +11,16 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class Type
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var string|null
      */
     public $name = null;
 
-    public function __construct(array $values = [], ?string $name = null)
+    public function __construct($values = [], ?string $name = null)
     {
-        if (array_key_exists('value', $values)) {
-            $name = $values['value'];
-        }
-
-        if (array_key_exists('name', $values)) {
-            $name = $values['name'];
-        }
-
-        $this->name = $name;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

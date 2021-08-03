@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class XmlElement
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var bool
      */
@@ -23,15 +25,6 @@ final class XmlElement
 
     public function __construct(array $values = [], bool $cdata = true, ?string $namespace = null)
     {
-        if (array_key_exists('cdata', $values)) {
-            $cdata = $values['cdata'];
-        }
-
-        if (array_key_exists('namespace', $values)) {
-            $namespace = $values['namespace'];
-        }
-
-        $this->cdata = $cdata;
-        $this->namespace = $namespace;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

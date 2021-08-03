@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD)]
 final class Exclude
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string|null
      */
@@ -18,14 +20,6 @@ final class Exclude
 
     public function __construct(array $values = [], ?string $if = null)
     {
-        if (array_key_exists('value', $values)) {
-            $if = $values['value'];
-        }
-
-        if (array_key_exists('if', $values)) {
-            $if = $values['if'];
-        }
-
-        $this->if = $if;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

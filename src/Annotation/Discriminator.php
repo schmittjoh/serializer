@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Discriminator
 {
+    use AnnotationUtilsTrait;
+
     /** @var array<string> */
     public $map = [];
 
@@ -25,25 +27,6 @@ class Discriminator
 
     public function __construct(array $values = [], string $field = 'type', array $groups = [], array $map = [], bool $disabled = false)
     {
-        if (array_key_exists('field', $values)) {
-            $field = $values['field'];
-        }
-
-        if (array_key_exists('groups', $values)) {
-            $groups = $values['groups'];
-        }
-
-        if (array_key_exists('map', $values)) {
-            $map = $values['map'];
-        }
-
-        if (array_key_exists('disabled', $values)) {
-            $disabled = $values['disabled'];
-        }
-
-        $this->field = $field;
-        $this->groups = $groups;
-        $this->map = $map;
-        $this->disabled = $disabled;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

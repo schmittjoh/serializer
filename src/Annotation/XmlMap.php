@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class XmlMap extends XmlCollection
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string
      */
@@ -18,11 +20,6 @@ final class XmlMap extends XmlCollection
 
     public function __construct(array $values = [], string $keyAttribute = '_key', string $entry = 'entry', bool $inline = false, ?string $namespace = null, bool $skipWhenEmpty = true)
     {
-        if (array_key_exists('keyAttribute', $values)) {
-            $keyAttribute = $values['keyAttribute'];
-        }
-
-        parent::__construct($values, $entry, $inline, $namespace, $skipWhenEmpty);
-        $this->keyAttribute = $keyAttribute;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

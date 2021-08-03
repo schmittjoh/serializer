@@ -13,6 +13,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY)]
 final class AccessType
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var string|null
@@ -21,14 +23,6 @@ final class AccessType
 
     public function __construct(array $values = [], ?string $type = null)
     {
-        if (array_key_exists('value', $values)) {
-            $type = $values['value'];
-        }
-
-        if (array_key_exists('type', $values)) {
-            $type = $values['type'];
-        }
-
-        $this->type = $type;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

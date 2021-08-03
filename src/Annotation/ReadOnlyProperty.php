@@ -13,6 +13,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY)]
 /* final */ class ReadOnlyProperty
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var bool
      */
@@ -20,14 +22,6 @@ namespace JMS\Serializer\Annotation;
 
     public function __construct(array $values = [], bool $readOnly = true)
     {
-        if (array_key_exists('value', $values)) {
-            $readOnly = $values['value'];
-        }
-
-        if (array_key_exists('readOnly', $values)) {
-            $readOnly = $values['readOnly'];
-        }
-
-        $this->readOnly =  $readOnly;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

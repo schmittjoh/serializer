@@ -11,21 +11,15 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class XmlAttribute
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string|null
      */
     public $namespace = null;
 
-    public function __construct(array $values = [], ?string $namespace = null)
+    public function __construct($values = [], ?string $namespace = null)
     {
-        if (array_key_exists('value', $values)) {
-            $namespace = $values['value'];
-        }
-
-        if (array_key_exists('namespace', $values)) {
-            $namespace = $values['namespace'];
-        }
-
-        $this->namespace = $namespace;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

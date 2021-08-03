@@ -34,9 +34,9 @@ class BlogPost
      * @XmlElement(cdata=false)
      * @Groups({"comments","post"})
      */
-    #[Type(name: 'string')]
+    #[Type('string')]
     #[XmlElement(cdata: false)]
-    #[Groups(groups: ['comments', 'post'])]
+    #[Groups(['comments', 'post'])]
     private $id = 'what_a_nice_id';
 
     /**
@@ -64,7 +64,7 @@ class BlogPost
      * @Groups({"post"})
      */
     #[Type(name: 'boolean')]
-    #[SerializedName(name: 'is_published')]
+    #[SerializedName('is_published')]
     #[XmlAttribute]
     #[Groups(groups: ['post'])]
     private $published;
