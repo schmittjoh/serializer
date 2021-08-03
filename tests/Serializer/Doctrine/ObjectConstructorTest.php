@@ -37,13 +37,13 @@ use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\Driver\AdvancedDriverInterface;
 use Metadata\MetadataFactoryInterface;
@@ -408,7 +408,7 @@ class ObjectConstructorTest extends TestCase
         );
         $driver = null;
         $this->driver = &$driver;
-        $this->serializer = SerializerBuilderStrategy::create()
+        $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(
                 static function (array $metadataDirs, Reader $annotationReader) use ($registry, &$driver) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
@@ -475,7 +475,7 @@ class ObjectConstructorTest extends TestCase
      */
     private function createSerializerWithDoctrineObjectConstructor()
     {
-        return SerializerBuilderStrategy::create()
+        return SerializerBuilder::create()
             ->setObjectConstructor(
                 new DoctrineObjectConstructor(
                     $this->registry,

@@ -14,6 +14,7 @@ use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\AccessorSetter;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorChild;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlAttributeDiscriminatorParent;
@@ -41,7 +42,6 @@ use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -151,7 +151,7 @@ class XmlSerializationTest extends BaseSerializationTest
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>',
         ]);
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setDeserializationVisitor('xml', $xmlVisitor);
         $serializer = $builder->build();
 
@@ -303,7 +303,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeNoCData($key, $value, $type)
     {
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->configureHandlers(static function (HandlerRegistryInterface $handlerRegistry) {
             $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         });
@@ -318,7 +318,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->configureHandlers(static function (HandlerRegistryInterface $handlerRegistry) {
             $handlerRegistry->registerSubscribingHandler(new DateHandler(\DateTime::ATOM, 'UTC', false));
         });
@@ -459,7 +459,7 @@ class XmlSerializationTest extends BaseSerializationTest
         $xmlVisitor = new XmlSerializationVisitorFactory();
         $xmlVisitor->setFormatOutput(false);
 
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $builder->setSerializationVisitor('xml', $xmlVisitor);
         $serializer = $builder->build();
 

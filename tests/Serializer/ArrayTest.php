@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
-use JMS\Serializer\Tests\SerializerBuilderStrategy;
 use PHPUnit\Framework\TestCase;
 
 class ArrayTest extends TestCase
@@ -17,7 +17,7 @@ class ArrayTest extends TestCase
 
     protected function setUp(): void
     {
-        $builder = SerializerBuilderStrategy::create();
+        $builder = SerializerBuilder::create();
         $this->serializer = $builder->build();
     }
 
