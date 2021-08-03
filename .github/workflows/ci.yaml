@@ -17,12 +17,11 @@ jobs:
           - "7.2"
           - "7.3"
           - "7.4"
+          - "8.0"
         dependencies:
           - "lowest"
           - "highest"
         include:
-          - { php-version: '8.0', dependencies: 'highest' }
-          - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
           - { php-version: '8.1', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
 
     env:

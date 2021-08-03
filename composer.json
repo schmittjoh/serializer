@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.2||^8.0",
-        "doctrine/annotations": "^1.0",
+        "doctrine/annotations": "^1.10.4",
         "doctrine/instantiator": "^1.0.3",
         "doctrine/lexer": "^1.1",
         "jms/metadata": "^2.0",
