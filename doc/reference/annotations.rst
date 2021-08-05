@@ -1,53 +1,6 @@
 Annotations
 ===========
 
-PHP 8 support
--------------
-
-JMS serializer now supports PHP 8 attributes, with a few caveats:
-- To avoid BC breaks, all annotations must use named parameters.
-- Due to the missing support for nested annotations, the syntax for a few annotations has changed
-
-Converting your annotations to attributes
------------------------------------------
-
-Example:
-
-.. code-block :: php
-
-    /**
-     * @VirtualProperty(
-     *     "classlow",
-     *     exp="object.getVirtualValue(1)",
-     *     options={@Until("8")}
-     * )
-     * @VirtualProperty(
-     *     "classhigh",
-     *     exp="object.getVirtualValue(8)",
-     *     options={@Since("6")}
-     * )
-     */
-    #[VirtualProperty(name: 'classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
-    #[VirtualProperty(name: 'classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
-    class ObjectWithVersionedVirtualProperties
-    {
-        /**
-         * @Groups({"versions"})
-         * @VirtualProperty
-         * @SerializedName("low")
-         * @Until("8")
-         */
-        #[Groups(groups: ['versions'])]
-        #[VirtualProperty]
-        #[SerializedName(name: 'low')]
-        #[Until(version: '8')]
-        public function getVirtualLowValue()
-        {
-            return 1;
-        }
-    ...
-
-
 @ExclusionPolicy
 ~~~~~~~~~~~~~~~~
 This annotation can be defined on a class to indicate the exclusion strategy
@@ -902,3 +855,53 @@ Resulting XML:
             <full_name><![CDATA[Foo Bar]]></full_name>
         </atom:author>
     </blog>
+
+
+PHP 8 support
+-------------
+
+JMS serializer now supports PHP 8 attributes, with a few caveats:
+- Due to the missing support for nested annotations, the syntax for a few annotations has changed
+(see the ``VirtualProperty`` ``options`` syntax here below)
+- There is an edge case when setting this exact serialization group ``#[Groups(['value' => 'any value here'])]``.
+(when there is only one item in th serialization groups array and has as key ``value`` the attribute will not work as expected,
+please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here'])]`` that works with no issues),
+
+Converting your annotations to attributes
+-----------------------------------------
+
+Example:
+
+.. code-block :: php
+
+    /**
+     * @VirtualProperty(
+     *     "classlow",
+     *     exp="object.getVirtualValue(1)",
+     *     options={@Until("8")}
+     * )
+     * @VirtualProperty(
+     *     "classhigh",
+     *     exp="object.getVirtualValue(8)",
+     *     options={@Since("6")}
+     * )
+     */
+    #[VirtualProperty('classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+    #[VirtualProperty('classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
+    class ObjectWithVersionedVirtualProperties
+    {
+        /**
+         * @Groups({"versions"})
+         * @VirtualProperty
+         * @SerializedName("low")
+         * @Until("8")
+         */
+        #[Groups(['versions'])]
+        #[VirtualProperty]
+        #[SerializedName('low')]
+        #[Until('8')]
+        public function getVirtualLowValue()
+        {
+            return 1;
+        }
+    ...

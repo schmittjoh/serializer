@@ -6,6 +6,7 @@ parameters:
         - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
         - '~Class Symfony\\Component\\Translation\\TranslatorInterface not found~'
         - '#Instantiated class Doctrine\\Common\\Cache\\FilesystemCache not found\.#'
+        - '#Constructor of class JMS\\Serializer\\Annotation\\.*? has an unused parameter#'
 
     paths:
         - %currentWorkingDirectory%/src

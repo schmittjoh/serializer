@@ -15,6 +15,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class AccessorOrder
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var string|null
@@ -28,19 +30,6 @@ final class AccessorOrder
 
     public function __construct(array $values = [], ?string $order = null, array $custom = [])
     {
-        if (array_key_exists('value', $values)) {
-            $order = $values['value'];
-        }
-
-        if (array_key_exists('order', $values)) {
-            $order = $values['order'];
-        }
-
-        if (array_key_exists('custom', $values)) {
-            $custom = $values['custom'];
-        }
-
-        $this->order = $order;
-        $this->custom = $custom;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

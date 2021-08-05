@@ -6,22 +6,16 @@ namespace JMS\Serializer\Annotation;
 
 abstract class Version
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var string|null
      */
     public $version = null;
 
-    public function __construct(array $values = [], ?string $version = null)
+    public function __construct($values = [], ?string $version = null)
     {
-        if (array_key_exists('value', $values)) {
-            $version = $values['value'];
-        }
-
-        if (array_key_exists('version', $values)) {
-            $version = $values['version'];
-        }
-
-        $this->version = $version;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

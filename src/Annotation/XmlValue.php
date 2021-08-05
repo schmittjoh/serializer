@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class XmlValue
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var bool
      */
@@ -18,14 +20,6 @@ final class XmlValue
 
     public function __construct(array $values = [], bool $cdata = true)
     {
-        if (array_key_exists('value', $values)) {
-            $cdata = $values['value'];
-        }
-
-        if (array_key_exists('cdata', $values)) {
-            $cdata = $values['cdata'];
-        }
-
-        $this->cdata = $cdata;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

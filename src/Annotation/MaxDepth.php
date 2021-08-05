@@ -11,22 +11,16 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class MaxDepth
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var int
      */
     public $depth;
 
-    public function __construct(array $values = [], int $depth = 0)
+    public function __construct($values = [], int $depth = 0)
     {
-        if (array_key_exists('value', $values)) {
-            $depth = $values['value'];
-        }
-
-        if (array_key_exists('depth', $values)) {
-            $depth = $values['depth'];
-        }
-
-        $this->depth = $depth;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

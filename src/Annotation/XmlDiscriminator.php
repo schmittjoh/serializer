@@ -11,6 +11,8 @@ namespace JMS\Serializer\Annotation;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class XmlDiscriminator
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var bool
      */
@@ -28,24 +30,6 @@ class XmlDiscriminator
 
     public function __construct(array $values = [], bool $attribute = false, bool $cdata = false, ?string $namespace = null)
     {
-        if (array_key_exists('value', $values)) {
-            $namespace = $values['value'];
-        }
-
-        if (array_key_exists('attribute', $values)) {
-            $attribute = $values['attribute'];
-        }
-
-        if (array_key_exists('cdata', $values)) {
-            $cdata = $values['cdata'];
-        }
-
-        if (array_key_exists('namespace', $values)) {
-            $namespace = $values['namespace'];
-        }
-
-        $this->attribute = $attribute;
-        $this->cdata = $cdata;
-        $this->namespace = $namespace;
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }
