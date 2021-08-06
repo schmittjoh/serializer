@@ -44,11 +44,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
 
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
-        $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
         if (PHP_VERSION_ID >= 80000) {
-            $attributeAnnotationDriver = new AnnotationDriver(new AttributeDriver\AttributeReader(), $this->propertyNamingStrategy, $this->typeParser);
-            $driver = new AttributeDriver($attributeAnnotationDriver, $driver);
+            $annotationReader = new AttributeDriver\AttributeReader($annotationReader);
         }
+
+        $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
 
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
