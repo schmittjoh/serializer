@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.14.0-rc2](https://github.com/schmittjoh/serializer/tree/3.14.0-rc2) (2021-08-06)
+
+**Merged pull requests:**
+
+- run php8 ci on high and low deps [\#1339](https://github.com/schmittjoh/serializer/pull/1339) ([goetas](https://github.com/goetas))
+- php8 attributes are enabled by default on php8 or higher [\#1338](https://github.com/schmittjoh/serializer/pull/1338) ([goetas](https://github.com/goetas))
+- Allow positional php8 attributes [\#1337](https://github.com/schmittjoh/serializer/pull/1337) ([goetas](https://github.com/goetas))
+- Drop Travis [\#1306](https://github.com/schmittjoh/serializer/pull/1306) ([simPod](https://github.com/simPod))
+
 ## [3.14.0-rc1](https://github.com/schmittjoh/serializer/tree/3.14.0-rc1) (2021-08-01)
 
 **Merged pull requests:**
