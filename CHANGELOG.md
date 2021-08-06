@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.14.0](https://github.com/schmittjoh/serializer/tree/3.14.0) (2021-08-06)
+
+**Merged pull requests:**
+
+- Avoid duplicate/invalid definitions when loading the php attributes using the annotation driver [\#1340](https://github.com/schmittjoh/serializer/pull/1340) ([goetas](https://github.com/goetas))
+
 ## [3.14.0-rc2](https://github.com/schmittjoh/serializer/tree/3.14.0-rc2) (2021-08-06)
 
 **Merged pull requests:**
