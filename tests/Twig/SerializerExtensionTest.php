@@ -28,10 +28,33 @@ class SerializerExtensionTest extends TestCase
 
         $filters = $serializerExtension->getFilters();
         self::assertInstanceOf(TwigFilter::class, $filters[0]);
-        self::assertSame([$serializerExtension, 'serialize'], $filters[0]->getCallable());
+        self::assertSame('serialize', $filters[0]->getName());
 
         self::assertEquals(
             [new TwigFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')],
+            $serializerExtension->getFunctions()
+        );
+    }
+
+    public function testSerializeWithPrefix()
+    {
+        $mockSerializer = $this->getMockBuilder('JMS\Serializer\SerializerInterface')->getMock();
+        $obj = new \stdClass();
+        $mockSerializer
+            ->expects($this->once())
+            ->method('serialize')
+            ->with($this->equalTo($obj), $this->equalTo('json'));
+        $serializerExtension = new SerializerExtension($mockSerializer, 'foo_');
+        $serializerExtension->serialize($obj);
+
+        self::assertEquals('jms_serializer', $serializerExtension->getName());
+
+        $filters = $serializerExtension->getFilters();
+        self::assertInstanceOf(TwigFilter::class, $filters[0]);
+        self::assertSame('foo_serialize', $filters[0]->getName());
+
+        self::assertEquals(
+            [new TwigFunction('foo_serialization_context', '\JMS\Serializer\SerializationContext::create')],
             $serializerExtension->getFunctions()
         );
     }
