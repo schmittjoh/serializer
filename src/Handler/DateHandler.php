@@ -52,10 +52,17 @@ final class DateHandler implements SubscribingHandlerInterface
             }
 
             $methods[] = [
-                'type' => 'DateTimeInterface',
+                'type' => \DateTimeInterface::class,
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
                 'format' => $format,
                 'method' => 'deserializeDateTimeFrom' . ucfirst($format),
+            ];
+
+            $methods[] = [
+                'type' => \DateTimeInterface::class,
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'format' => $format,
+                'method' => 'serializeDateTimeInterface',
             ];
         }
 
@@ -72,7 +79,7 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * @return \DOMCdataSection|\DOMText|mixed
      */
-    private function serializeDateTimeInterface(
+    public function serializeDateTimeInterface(
         SerializationVisitorInterface $visitor,
         \DateTimeInterface $date,
         array $type,

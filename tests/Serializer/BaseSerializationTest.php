@@ -47,6 +47,8 @@ use JMS\Serializer\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\DateTimeContainer;
+use JMS\Serializer\Tests\Fixtures\DateTimeCustomObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
@@ -642,6 +644,16 @@ abstract class BaseSerializationTest extends TestCase
 
         self::assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
     }
+
+    public function testCustomDateObject()
+    {
+        $customDate = new DateTimeCustomObject('2021-09-07');
+        $customDate->extraField = 'test';
+        $data = new DateTimeContainer($customDate);
+
+        self::assertEquals($this->getContent('custom_datetimeinterface'), $this->serialize($data));
+    }
+
 
     public function testDateTimeArrays()
     {
