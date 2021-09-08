@@ -647,9 +647,7 @@ abstract class BaseSerializationTest extends TestCase
 
     public function testCustomDateObject()
     {
-        $customDate = new DateTimeCustomObject('2021-09-07');
-        $customDate->extraField = 'test';
-        $data = new DateTimeContainer($customDate);
+        $data = new DateTimeContainer(new DateTimeCustomObject('2021-09-07'));
 
         self::assertEquals($this->getContent('custom_datetimeinterface'), $this->serialize($data));
     }
