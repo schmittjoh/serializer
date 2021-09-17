@@ -125,7 +125,7 @@ class DoctrineDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'string', 'params' => []],
-            $metadata->propertyMetadata['id']->type
+            $metadata->propertyMetadata['guid']->type
         );
     }
 
