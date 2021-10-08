@@ -17,6 +17,14 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
+    public const COLLECTION_TYPES = [
+        'ArrayCollection',
+        ArrayCollection::class,
+        OrmPersistentCollection::class,
+        MongoPersistentCollection::class,
+        PhpcrPersistentCollection::class,
+    ];
+
     /**
      * @var bool
      */
@@ -34,15 +42,8 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     {
         $methods = [];
         $formats = ['json', 'xml', 'yml'];
-        $collectionTypes = [
-            'ArrayCollection',
-            ArrayCollection::class,
-            OrmPersistentCollection::class,
-            MongoPersistentCollection::class,
-            PhpcrPersistentCollection::class,
-        ];
 
-        foreach ($collectionTypes as $type) {
+        foreach (self::COLLECTION_TYPES as $type) {
             foreach ($formats as $format) {
                 $methods[] = [
                     'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
@@ -92,11 +93,33 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     /**
      * @param mixed $data
      */
-    public function deserializeCollection(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context): ArrayCollection
-    {
+    public function deserializeCollection(
+        DeserializationVisitorInterface $visitor,
+        $data,
+        array $type,
+        DeserializationContext $context
+    ): Collection {
         // See above.
         $type['name'] = 'array';
 
-        return new ArrayCollection($visitor->visitArray($data, $type));
+        $elements = new ArrayCollection($visitor->visitArray($data, $type));
+
+        if ($collection = $context->removePersistentCollectionForCurrentPath()) {
+            foreach ($elements as $element) {
+                if (!$collection->contains($element)) {
+                    $collection->add($element);
+                }
+            }
+
+            foreach ($collection as $collectionElement) {
+                if (!$elements->contains($collectionElement)) {
+                    $collection->removeElement($collectionElement);
+                }
+            }
+
+            return $collection;
+        } else {
+            return $elements;
+        }
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
+use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Exception\LogicException;
 
 class DeserializationContext extends Context
@@ -12,6 +13,11 @@ class DeserializationContext extends Context
      * @var int
      */
     private $depth = 0;
+
+    /**
+     * @var array<string, PersistentCollection>
+     */
+    private $persistentCollections = [];
 
     public static function create(): self
     {
@@ -40,5 +46,23 @@ class DeserializationContext extends Context
         }
 
         $this->depth -= 1;
+    }
+
+    public function addPersistentCollection(PersistentCollection $collection, array $path): void
+    {
+        $this->persistentCollections[implode('.', $path)] = $collection;
+    }
+
+    public function removePersistentCollectionForCurrentPath(): ?PersistentCollection
+    {
+        $path = implode('.', $this->getCurrentPath());
+        if (isset($this->persistentCollections[$path])) {
+            $return = $this->persistentCollections[$path];
+            unset($this->persistentCollections[$path]);
+
+            return $return;
+        }
+
+        return null;
     }
 }

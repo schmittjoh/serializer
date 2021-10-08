@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Construction;
 
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
+use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+
+use function is_array;
 
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.
@@ -79,7 +83,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if (!\is_array($data) && !(is_object($data) && 'SimpleXMLElement' === get_class($data))) {
+        if (!is_array($data) && !(is_object($data) && 'SimpleXMLElement' === get_class($data))) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
@@ -136,6 +140,31 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
 
                 default:
                     throw new InvalidArgumentException('The provided fallback strategy for the object constructor is not valid');
+            }
+        }
+
+        foreach ($classMetadata->getAssociationNames() as $associationName) {
+            $path = $context->getCurrentPath();
+            $md = $metadata->propertyMetadata[$associationName] ?? null;
+            if (
+                $md instanceof PropertyMetadata
+                && is_array($md->type)
+                && in_array($md->type['name'], ArrayCollectionHandler::COLLECTION_TYPES)
+                && $classMetadata->isCollectionValuedAssociation($associationName)
+            ) {
+                $reflectionProperty = $classMetadata->getReflectionClass()->getProperty($associationName);
+                $reflectionProperty->setAccessible(true);
+                $collection = $reflectionProperty->getValue($object);
+                if (!$collection instanceof PersistentCollection) {
+                    continue;
+                }
+
+                $associationPath = $path;
+                array_unshift($associationPath, $metadata->propertyMetadata[$associationName]->name);
+                $context->addPersistentCollection(
+                    $collection,
+                    $associationPath
+                );
             }
         }
 

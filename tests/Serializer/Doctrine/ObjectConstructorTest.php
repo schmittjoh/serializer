@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Serializer\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
@@ -14,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\ORM\Version as ORMVersion;
@@ -43,11 +45,19 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
+use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App;
+use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\SmartPhone;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use LogicException;
 use Metadata\Driver\AdvancedDriverInterface;
 use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use RuntimeException;
+use SimpleXMLElement;
+
+use function assert;
 
 class ObjectConstructorTest extends TestCase
 {
@@ -78,7 +88,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -96,7 +106,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $context = DeserializationContext::create()->setGroups('foo');
         $context->initialize('json', $this->visitor, $graph, $metadata);
@@ -113,7 +123,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => AuthorExcludedId::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(AuthorExcludedId::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(AuthorExcludedId::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -132,7 +142,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -145,7 +155,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $author = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -160,7 +170,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -175,7 +185,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $this->context);
@@ -193,7 +203,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $authorFetched = $constructor->construct($this->visitor, $class, 5, $type, $this->context);
@@ -205,7 +215,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_EXCEPTION);
 
@@ -219,7 +229,7 @@ class ObjectConstructorTest extends TestCase
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
 
@@ -236,7 +246,7 @@ class ObjectConstructorTest extends TestCase
         $fallback->expects($this->once())->method('construct')->willReturn($author);
 
         $type = ['name' => Author::class, 'params' => []];
-        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+        $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, 'foo');
         $authorFetched = $constructor->construct($this->visitor, $class, ['foo' => 5], $type, $this->context);
@@ -248,7 +258,7 @@ class ObjectConstructorTest extends TestCase
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
         $em = $this->registry->getManager();
-        \assert($em instanceof EntityManager);
+        assert($em instanceof EntityManager);
         $server = new Server('Linux', '127.0.0.1', 'home');
         $em->persist($server);
         $em->flush();
@@ -256,10 +266,53 @@ class ObjectConstructorTest extends TestCase
 
         $jsonData = '{"ip_address":"127.0.0.1", "server_id_extracted":"home", "name":"Windows"}';
         $serverDeserialized = $serializer->deserialize($jsonData, Server::class, 'json');
-        \assert($serverDeserialized instanceof Server);
+        assert($serverDeserialized instanceof Server);
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
+            UnitOfWork::STATE_MANAGED
+        );
+    }
+
+    public function testPersistendCollectionIsNotReplaced(): void
+    {
+        $serializer = $this->createSerializerWithDoctrineObjectConstructor();
+
+        $em = $this->registry->getManager();
+        assert($em instanceof EntityManager);
+        $smartPhone = new SmartPhone('uPhone', 'Renes UPhone SX');
+        $angryFlyingThings = new App('001', 'Angry flying things 3', $smartPhone);
+        $flappyFlyingThing = new App('002', 'Flappy flying thing', $smartPhone);
+
+        $smartPhone->addApp($angryFlyingThings);
+        $smartPhone->addApp($flappyFlyingThing);
+
+        $em->persist($smartPhone);
+        $em->flush();
+        $em->clear();
+
+        $jsonData = '{"id":"Renes UPhone SX", "apps":[{"id":"002", "name":"FlappyBird"}]}';
+        $smartPhoneDeserialized = $serializer->deserialize($jsonData, SmartPhone::class, 'json');
+        self::assertInstanceOf(SmartPhone::class, $smartPhoneDeserialized);
+
+        self::assertSame(
+            $em->getUnitOfWork()->getEntityState($smartPhoneDeserialized),
+            UnitOfWork::STATE_MANAGED
+        );
+
+        self::assertInstanceOf(PersistentCollection::class, $smartPhoneDeserialized->getAppsRaw());
+        self::assertNotEmpty($smartPhoneDeserialized->getApps());
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('name', 'FlappyBird'));
+        self::assertCount(
+            1,
+            $smartPhoneDeserialized->getApps(
+                $criteria
+            )
+        );
+        $firstApp = $smartPhoneDeserialized->getApps()->first();
+
+        self::assertSame(
+            $em->getUnitOfWork()->getEntityState($firstApp),
             UnitOfWork::STATE_MANAGED
         );
     }
@@ -286,7 +339,7 @@ class ObjectConstructorTest extends TestCase
                         return $entityManager;
 
                     default:
-                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                        throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
             }
         );
@@ -320,7 +373,7 @@ class ObjectConstructorTest extends TestCase
                         return $entityManager;
 
                     default:
-                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                        throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
             }
         );
@@ -328,7 +381,7 @@ class ObjectConstructorTest extends TestCase
         $type = ['name' => BlogPostSeo::class, 'params' => []];
         $class = new ClassMetadata(BlogPostSeo::class);
 
-        $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
+        $data = new SimpleXMLElement('<metaTitle>test</metaTitle>');
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $constructor->construct($this->visitor, $class, $data, $type, $this->context);
     }
@@ -379,7 +432,7 @@ class ObjectConstructorTest extends TestCase
         $classMetadata = new ClassMetadata(BlogPostSeo::class);
         $classMetadata->propertyMetadata['id'] = $pm;
 
-        $data = new \SimpleXMLElement('<metaTitle>test</metaTitle>');
+        $data = new SimpleXMLElement('<metaTitle>test</metaTitle>');
         $constructor = new DoctrineObjectConstructor($registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $constructor->construct($this->visitor, $classMetadata, $data, $type, $this->context);
     }
@@ -402,7 +455,7 @@ class ObjectConstructorTest extends TestCase
                         return $entityManager;
 
                     default:
-                        throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
+                        throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
             }
         );
@@ -424,7 +477,7 @@ class ObjectConstructorTest extends TestCase
     private function prepareDatabase()
     {
         $em = $this->registry->getManager();
-        \assert($em instanceof EntityManager);
+        assert($em instanceof EntityManager);
 
         $tool = new SchemaTool($em);
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
@@ -445,6 +498,7 @@ class ObjectConstructorTest extends TestCase
             $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
                 __DIR__ . '/../../Fixtures/Doctrine/Entity',
                 __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
             ]));
         }
 
@@ -541,10 +595,10 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
                     // Probably mapped by another entity manager, or invalid, just ignore this here.
                 }
             } else {
-                throw new \LogicException(sprintf('Unsupported manager type "%s".', get_class($manager)));
+                throw new LogicException(sprintf('Unsupported manager type "%s".', get_class($manager)));
             }
         }
 
-        throw new \RuntimeException(sprintf('The namespace alias "%s" is not known to any manager.', $alias));
+        throw new RuntimeException(sprintf('The namespace alias "%s" is not known to any manager.', $alias));
     }
 }
