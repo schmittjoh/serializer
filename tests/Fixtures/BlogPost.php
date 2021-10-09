@@ -32,7 +32,7 @@ class BlogPost
     /**
      * @Type("string")
      * @XmlElement(cdata=false)
-     * @Groups({"comments","post"})
+     * @Groups(groups={"comments","post"})
      */
     #[Type('string')]
     #[XmlElement(cdata: false)]
