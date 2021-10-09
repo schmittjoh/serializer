@@ -25,7 +25,7 @@ final class Groups
             All the other cases should work as expected.
             The alternative here is to use the explicit syntax  Groups(groups=['value' => '...'])
         */
-        if (count($values) > 0 && (!isset($values['value']) || count($values) > 1) && 0 === count($groups)) {
+        if (count($values) > 0 && ((!isset($values['value']) && !isset($values['groups'])) || count($values) > 1) && 0 === count($groups)) {
             $vars['groups'] = $values;
             $vars['values'] = [];
         }
