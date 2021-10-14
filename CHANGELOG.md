@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.15.0](https://github.com/schmittjoh/serializer/tree/3.15.0) (2021-10-14)
+
+**Merged pull requests:**
+
+- allow the groups annotation to use "groups" as parameter name [\#1351](https://github.com/schmittjoh/serializer/pull/1351) ([goetas](https://github.com/goetas))
+- Allow stable PHPStan PHPDoc Parser [\#1346](https://github.com/schmittjoh/serializer/pull/1346) ([mbabker](https://github.com/mbabker))
+- Symfony 6 and DBAL 3 compat [\#1345](https://github.com/schmittjoh/serializer/pull/1345) ([mbabker](https://github.com/mbabker))
+- Proposed fix for serializing custom DateTimeInterface implementations [\#1344](https://github.com/schmittjoh/serializer/pull/1344) ([andrei-dascalu](https://github.com/andrei-dascalu))
+- Allow to add prefix to twig helpers [\#1341](https://github.com/schmittjoh/serializer/pull/1341) ([goetas](https://github.com/goetas))
+- Fix phpstan return type [\#1329](https://github.com/schmittjoh/serializer/pull/1329) ([dgafka](https://github.com/dgafka))
+
 ## [3.14.0](https://github.com/schmittjoh/serializer/tree/3.14.0) (2021-08-06)
 
 **Merged pull requests:**
