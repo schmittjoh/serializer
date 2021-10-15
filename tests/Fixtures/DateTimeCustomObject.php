@@ -8,5 +8,4 @@ use DateTimeImmutable;
 
 class DateTimeCustomObject extends DateTimeImmutable
 {
-
 }
