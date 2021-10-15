@@ -652,7 +652,6 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('custom_datetimeinterface'), $this->serialize($data));
     }
 
-
     public function testDateTimeArrays()
     {
         $data = [
