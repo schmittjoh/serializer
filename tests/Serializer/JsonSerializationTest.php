@@ -58,6 +58,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['order_with_currency_aware_price'] = '{"cost":{"currency":"EUR","amount":1.23}}';
             $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';
+            $outputs['list'] = '[1,3,4]';
+            $outputs['list_empty'] = '[]';
+            $outputs['list_integers'] = '[1,3,4]';
             $outputs['form_errors'] = '["This is the form error","Another error"]';
             $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
@@ -363,6 +366,7 @@ class JsonSerializationTest extends BaseSerializationTest
             [[1 => 1, 2 => 2], '{"1":1,"2":2}', SerializationContext::create()->setInitialType('array')],
             [[1 => 1, 2 => 2], '[1,2]', SerializationContext::create()->setInitialType('array<integer>')],
             [['a', 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
+            [['a', 'b'], '["a","b"]', SerializationContext::create()->setInitialType('list<string>')],
 
             [[1 => 'a', 2 => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
             [['a' => 'a', 'b' => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
