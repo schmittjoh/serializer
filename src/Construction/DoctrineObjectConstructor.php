@@ -143,31 +143,6 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
             }
         }
 
-        foreach ($classMetadata->getAssociationNames() as $associationName) {
-            $path = $context->getCurrentPath();
-            $md = $metadata->propertyMetadata[$associationName] ?? null;
-            if (
-                $md instanceof PropertyMetadata
-                && is_array($md->type)
-                && in_array($md->type['name'], ArrayCollectionHandler::COLLECTION_TYPES)
-                && $classMetadata->isCollectionValuedAssociation($associationName)
-            ) {
-                $reflectionProperty = $classMetadata->getReflectionClass()->getProperty($associationName);
-                $reflectionProperty->setAccessible(true);
-                $collection = $reflectionProperty->getValue($object);
-                if (!$collection instanceof PersistentCollection) {
-                    continue;
-                }
-
-                $associationPath = $path;
-                array_unshift($associationPath, $metadata->propertyMetadata[$associationName]->name);
-                $context->addPersistentCollection(
-                    $collection,
-                    $associationPath
-                );
-            }
-        }
-
         $objectManager->initializeObject($object);
 
         return $object;

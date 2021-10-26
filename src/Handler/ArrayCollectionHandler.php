@@ -9,8 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\PersistentCollection as MongoPersistentCollection;
 use Doctrine\ODM\PHPCR\PersistentCollection as PhpcrPersistentCollection;
 use Doctrine\ORM\PersistentCollection as OrmPersistentCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -30,9 +32,17 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
      */
     private $initializeExcluded;
 
-    public function __construct(bool $initializeExcluded = true)
-    {
+    /**
+     * @var ManagerRegistry|null
+     */
+    private $managerRegistry;
+
+    public function __construct(
+        bool $initializeExcluded = true,
+        ?ManagerRegistry $managerRegistry = null
+    ) {
         $this->initializeExcluded = $initializeExcluded;
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
@@ -104,7 +114,33 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
         $elements = new ArrayCollection($visitor->visitArray($data, $type));
 
-        if ($collection = $context->removePersistentCollectionForCurrentPath()) {
+        if (null === $this->managerRegistry) {
+            return $elements;
+        }
+
+        $currentMetadata = $context->getMetadataStack()->top();
+        if (!$currentMetadata instanceof PropertyMetadata) {
+            return $elements;
+        }
+
+
+        $objectManager = $this->managerRegistry->getManagerForClass($currentMetadata->class);
+        if (null === $objectManager) {
+            return $elements;
+        }
+
+        $classMetadata = $objectManager->getClassMetadata($currentMetadata->class);
+        $currentObject = $visitor->getCurrentObject();
+
+        if (
+            is_array($currentMetadata->type)
+            && in_array($currentMetadata->type['name'], ArrayCollectionHandler::COLLECTION_TYPES)
+            && $classMetadata->isCollectionValuedAssociation($currentMetadata->name)
+        ) {
+            $collection = $classMetadata->getFieldValue($currentObject, $currentMetadata->name);
+            if (!$collection instanceof OrmPersistentCollection) {
+                return $elements;
+            }
             foreach ($elements as $element) {
                 if (!$collection->contains($element)) {
                     $collection->add($element);
@@ -118,8 +154,8 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
             }
 
             return $collection;
-        } else {
-            return $elements;
         }
+
+        return $elements;
     }
 }

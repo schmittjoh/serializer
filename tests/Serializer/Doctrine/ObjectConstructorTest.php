@@ -34,6 +34,8 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\ObjectConstructionException;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Handler\ArrayCollectionHandler;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -538,6 +540,14 @@ class ObjectConstructorTest extends TestCase
                 )
             )
             ->addDefaultHandlers()
+            ->configureHandlers(function(HandlerRegistryInterface $handlerRegistry) {
+                $handlerRegistry->registerSubscribingHandler(
+                    new ArrayCollectionHandler(
+                       true,
+                       $this->registry
+                    )
+                );
+            })
             ->build();
     }
 }
