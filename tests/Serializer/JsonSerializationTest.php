@@ -372,6 +372,9 @@ class JsonSerializationTest extends BaseSerializationTest
 
             [['a', 'b'], '{"0":"a","1":"b"}', SerializationContext::create()->setInitialType('array<integer,string>')],
             [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', SerializationContext::create()->setInitialType('array<string,string>')],
+
+            [[15.6, 2], '[15.6,2.0]', SerializationContext::create()->setInitialType('array<float>')],
+            [[5.2*3, 2], '[15.6,2.0]', SerializationContext::create()->setInitialType('array<float>')],
         ];
     }
 
