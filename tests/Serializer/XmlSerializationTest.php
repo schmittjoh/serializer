@@ -26,6 +26,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
+use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
@@ -567,6 +568,31 @@ class XmlSerializationTest extends BaseSerializationTest
 
         // Switching locale back
         setlocale(LC_ALL, $locale);
+    }
+
+    public function testSerialisationWithPercisionForFloat(): void
+    {
+        $objectWithFloat = new ObjectWithFloatProperty(
+            1.555555555,
+            1.555,
+            1.15,
+            1.15,
+            1.555
+        );
+
+        $result = $this->serialize($objectWithFloat, SerializationContext::create());
+
+        static::assertXmlStringEqualsXmlString(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <result>
+              <floating_point_unchanged>1.555555555</floating_point_unchanged>
+              <floating_point_half_down>1.55</floating_point_half_down>
+              <floating_point_half_even>1.2</floating_point_half_even>
+              <floating_point_half_odd>1.1</floating_point_half_odd>
+              <floating_point_half_up>1.56</floating_point_half_up>
+            </result>',
+            $result
+        );
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
