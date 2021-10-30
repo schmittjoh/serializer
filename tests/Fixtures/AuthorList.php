@@ -27,7 +27,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see IteratorAggregate
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->authors);
     }
@@ -35,7 +35,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see Countable
      */
-    public function count()
+    public function count(): int
     {
         return count($this->authors);
     }
@@ -43,6 +43,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->authors[$offset]);
@@ -51,6 +52,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->authors[$offset] ?? null;
@@ -59,6 +61,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (null === $offset) {
@@ -71,6 +74,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->authors[$offset]);
