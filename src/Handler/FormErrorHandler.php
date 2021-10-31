@@ -9,6 +9,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface as TranslatorContract;
 
@@ -40,6 +41,11 @@ final class FormErrorHandler implements SubscribingHandlerInterface
             ];
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'type' => FormInterface::class,
+                'format' => $format,
+            ];
+            $methods[] = [
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => FormError::class,
                 'format' => $format,
             ];
@@ -67,7 +73,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type): \DOMElement
+    public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form, array $type): \DOMElement
     {
         $formNode = $visitor->getDocument()->createElement('form');
 
@@ -94,7 +100,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
     /**
      * @param array $type
      */
-    public function serializeFormToJson(SerializationVisitorInterface $visitor, Form $form, array $type): \ArrayObject
+    public function serializeFormToJson(SerializationVisitorInterface $visitor, FormInterface $form, array $type): \ArrayObject
     {
         return $this->convertFormToArray($visitor, $form);
     }
@@ -132,7 +138,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), $this->translationDomain);
     }
 
-    private function convertFormToArray(SerializationVisitorInterface $visitor, Form $data): \ArrayObject
+    private function convertFormToArray(SerializationVisitorInterface $visitor, FormInterface $data): \ArrayObject
     {
         $form = new \ArrayObject();
         $errors = [];
@@ -146,7 +152,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
         $children = [];
         foreach ($data->all() as $child) {
-            if ($child instanceof Form) {
+            if ($child instanceof FormInterface) {
                 $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
             }
         }
