@@ -76,6 +76,18 @@ property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
+@VersionConstraints
+~~~~~~
+This annotation can be defined on a property to specify the version constraints
+for which this property is available. This property is excluded automatically if
+a version is serialized which does not satisfy the constraints. The constraints
+must be in a format that is understood by `composer
+<https://getcomposer.org/doc/articles/versions.md#writing-version-constraints>`_.
+
+.. note ::
+
+    ``composer/semver`` must be installed in your project.
+
 @Groups
 ~~~~~~~
 This annotation can be defined on a property to specify if the property

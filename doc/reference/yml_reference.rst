@@ -51,6 +51,7 @@ YAML Reference
                 serialized_name: foo
                 since_version: 1.0
                 until_version: 1.1
+                version_constraints: ">=1.0 <1.2"
                 groups: [foo, bar]
                 xml_attribute: true
                 xml_value: true

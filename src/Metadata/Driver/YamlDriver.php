@@ -189,6 +189,10 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->untilVersion = (string) $pConfig['until_version'];
                     }
 
+                    if (isset($pConfig['version_constraints'])) {
+                        $pMetadata->versionConstraints = (string) $pConfig['version_constraints'];
+                    }
+
                     if (isset($pConfig['exclude_if'])) {
                         $pMetadata->excludeIf = $this->parseExpression((string) $pConfig['exclude_if']);
                     }

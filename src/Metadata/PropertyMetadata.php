@@ -22,6 +22,10 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $untilVersion;
     /**
+     * @var string
+     */
+    public $versionConstraints;
+    /**
      * @var string[]
      */
     public $groups;
@@ -239,6 +243,7 @@ class PropertyMetadata extends BasePropertyMetadata
             'excludeIf' => $this->excludeIf,
             'skipWhenEmpty' => $this->skipWhenEmpty,
             'forceReflectionAccess' => $this->forceReflectionAccess,
+            'versionConstraints' => $this->versionConstraints,
         ]);
     }
 
@@ -302,6 +307,10 @@ class PropertyMetadata extends BasePropertyMetadata
 
         if (isset($unserialized['forceReflectionAccess'])) {
             $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
+        }
+
+        if (isset($unserialized['versionConstraints'])) {
+            $this->versionConstraints = $unserialized['versionConstraints'];
         }
 
         return $parentStr;

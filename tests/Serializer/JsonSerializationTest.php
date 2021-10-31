@@ -82,7 +82,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties'] = '{"exist_field":"value","virtual_value":"value","test":"other-name","typed_virtual_property":1}';
             $outputs['virtual_properties_low'] = '{"classlow":1,"low":1}';
             $outputs['virtual_properties_high'] = '{"classhigh":8,"high":8}';
-            $outputs['virtual_properties_all'] = '{"classlow":1,"classhigh":8,"low":1,"high":8}';
+            $outputs['virtual_properties_all'] = '{"classlow":1,"classsemver":61,"classhigh":8,"low":1,"semver":61,"high":8}';
             $outputs['nullable'] = '{"foo":"bar","baz":null,"0":null}';
             $outputs['nullable_skip'] = '{"foo":"bar"}';
             $outputs['person_secret_show'] = '{"name":"mike","gender":"f"}';

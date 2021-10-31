@@ -79,6 +79,7 @@ XML Reference
                       serialized-name="foo"
                       since-version="1.0"
                       until-version="1.1"
+                      version-constraints=">=1.0 <1.2"
                       xml-attribute="true"
                       access-type="public_method"
                       accessor-getter="getSomeProperty"

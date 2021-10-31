@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Exclusion;
 
+use Composer\Semver\Semver;
 use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -27,6 +28,10 @@ final class VersionExclusionStrategy implements ExclusionStrategyInterface
 
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
+        if ((null !== $constraints = $property->versionConstraints) && !Semver::satisfies($this->version, $constraints)) {
+            return true;
+        }
+
         if ((null !== $version = $property->sinceVersion) && version_compare($this->version, $version, '<')) {
             return true;
         }
