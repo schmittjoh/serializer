@@ -6,6 +6,7 @@ parameters:
         - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
         - '~Class Symfony\\Component\\Translation\\TranslatorInterface not found~'
         - '#Constructor of class JMS\\Serializer\\Annotation\\.*? has an unused parameter#'
+        - '#Class JMS\\Serializer\\Annotation\\ReadOnly extends @final class JMS\\Serializer\\Annotation\\ReadOnlyProperty.#'
 
     paths:
         - %currentWorkingDirectory%/src

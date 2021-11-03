@@ -22,7 +22,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     private $dataStack;
     /**
-     * @var \ArrayObject
+     * @var \ArrayObject|array
      */
     private $data;
 
