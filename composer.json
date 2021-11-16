@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.2||^8.0",
-        "doctrine/annotations": "^1.10.4",
+        "doctrine/annotations": "^1.13",
         "doctrine/instantiator": "^1.0.3",
         "doctrine/lexer": "^1.1",
         "jms/metadata": "^2.0",
@@ -40,7 +40,7 @@
         "phpunit/phpunit": "^8.0||^9.0",
         "psr/container": "^1.0",
         "symfony/dependency-injection": "^3.0|^4.0|^5.0|^6.0",
-        "symfony/expression-language": "^3.0|^4.0|^5.0|^6.0",
+        "symfony/expression-language": "^3.2|^4.0|^5.0|^6.0",
         "symfony/filesystem": "^3.0|^4.0|^5.0|^6.0",
         "symfony/form": "^3.0|^4.0|^5.0|^6.0",
         "symfony/translation": "^3.0|^4.0|^5.0|^6.0",
