@@ -24,6 +24,7 @@ use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\Until;
+use JMS\Serializer\Annotation\VersionConstraints;
 use JMS\Serializer\Annotation\VirtualProperty;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlAttributeMap;
@@ -182,6 +183,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->sinceVersion = $annot->version;
                     } elseif ($annot instanceof Until) {
                         $propertyMetadata->untilVersion = $annot->version;
+                    } elseif ($annot instanceof VersionConstraints) {
+                        $propertyMetadata->versionConstraints = $annot->version;
                     } elseif ($annot instanceof SerializedName) {
                         $propertyMetadata->serializedName = $annot->name;
                     } elseif ($annot instanceof SkipWhenEmpty) {

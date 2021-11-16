@@ -57,12 +57,12 @@ expose them via an API that is consumed by a third-party:
     class VersionedObject
     {
         /**
-         * @Until("1.0.x")
+         * @VersionConstraints("<1.1")
          */
         private $name;
 
         /**
-         * @Since("1.1")
+         * @VersionConstraints(">=1.1")
          * @SerializedName("name")
          */
         private $name2;
@@ -70,7 +70,8 @@ expose them via an API that is consumed by a third-party:
 
 .. note ::
 
-    ``@Until``, and ``@Since`` both accept a standardized PHP version number.
+    ``@VersionConstraints`` accepts `composer version constraints <https://getcomposer.org/doc/articles/versions.md#writing-version-constraints>`_.
+    ``composer/semver`` must be installed in your project.
 
 If you have annotated your objects like above, you can serializing different
 versions like this::

@@ -1333,7 +1333,7 @@ abstract class BaseSerializationTest extends TestCase
 
         self::assertEquals(
             $this->getContent('virtual_properties_all'),
-            $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat(), SerializationContext::create()->setVersion('7'))
+            $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat(), SerializationContext::create()->setVersion('6.1'))
         );
 
         self::assertEquals(

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <classlow>1</classlow>
+  <classsemver>61</classsemver>
   <classhigh>8</classhigh>
   <low>1</low>
+  <semver>61</semver>
   <high>8</high>
 </result>

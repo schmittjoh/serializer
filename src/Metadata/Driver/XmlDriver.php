@@ -219,6 +219,10 @@ class XmlDriver extends AbstractFileDriver
                         $pMetadata->untilVersion = (string) $version;
                     }
 
+                    if (null !== $constraints = $pElem->attributes()->{'version-constraints'}) {
+                        $pMetadata->versionConstraints = (string) $constraints;
+                    }
+
                     if (null !== $serializedName = $pElem->attributes()->{'serialized-name'}) {
                         $pMetadata->serializedName = (string) $serializedName;
                     }

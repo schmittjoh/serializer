@@ -8,6 +8,7 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\Until;
+use JMS\Serializer\Annotation\VersionConstraints;
 use JMS\Serializer\Annotation\VirtualProperty;
 
 /**
@@ -19,12 +20,18 @@ use JMS\Serializer\Annotation\VirtualProperty;
  *     options={@Until("8")}
  * )
  * @VirtualProperty(
+ *     "classsemver",
+ *     exp="object.getVirtualValue(61)",
+ *     options={@VersionConstraints("^6.1")}
+ * )
+ * @VirtualProperty(
  *     "classhigh",
  *     exp="object.getVirtualValue(8)",
  *     options={@Since("6")}
  * )
  */
 #[VirtualProperty(name: 'classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+#[VirtualProperty(name: 'classsemver', exp: 'object.getVirtualValue(61)', options: [[VersionConstraints::class, ['^6.1']]])]
 #[VirtualProperty(name: 'classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
 class ObjectWithVersionedVirtualProperties
 {
@@ -41,6 +48,21 @@ class ObjectWithVersionedVirtualProperties
     public function getVirtualLowValue()
     {
         return 1;
+    }
+
+    /**
+     * @Groups({"versions"})
+     * @VirtualProperty
+     * @SerializedName("semver")
+     * @VersionConstraints("6.1")
+     */
+    #[Groups(groups: ['versions'])]
+    #[VirtualProperty]
+    #[SerializedName(name: 'semver')]
+    #[VersionConstraints('^6.1')]
+    public function getVirtualSemverValue()
+    {
+        return 61;
     }
 
     /**
