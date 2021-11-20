@@ -1,0 +1,34 @@
+name: Benchmarks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  phpbench:
+    name: "PHPBench"
+    runs-on: "ubuntu-20.04"
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "8.0"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+        
+      - name: Run tests
+        run: |
+          vendor/bin/phpbench run tests/Benchmark/ --report=aggregate

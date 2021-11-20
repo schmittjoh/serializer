@@ -1,0 +1,5 @@
+{
+  "runner.bootstrap": "tests/bootstrap.php",
+  "runner.iterations": 5,
+  "runner.revs": 10
+}
