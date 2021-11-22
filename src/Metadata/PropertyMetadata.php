@@ -203,16 +203,9 @@ class PropertyMetadata extends BasePropertyMetadata
             && isset($type['params'][1]);
     }
 
-    /**
-     * @return string
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     */
-    public function serialize()
+    protected function serializeToArray(): array
     {
-        return serialize([
+        return [
             $this->sinceVersion,
             $this->untilVersion,
             $this->groups,
@@ -233,33 +226,17 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
-            parent::serialize(),
-            'xmlEntryNamespace' => $this->xmlEntryNamespace,
-            'xmlCollectionSkipWhenEmpty' => $this->xmlCollectionSkipWhenEmpty,
-            'excludeIf' => $this->excludeIf,
-            'skipWhenEmpty' => $this->skipWhenEmpty,
-            'forceReflectionAccess' => $this->forceReflectionAccess,
-        ]);
+            $this->xmlEntryNamespace,
+            $this->xmlCollectionSkipWhenEmpty,
+            $this->excludeIf,
+            $this->skipWhenEmpty,
+            $this->forceReflectionAccess,
+            parent::serializeToArray(),
+        ];
     }
 
-    /**
-     * @param string $str
-     *
-     * @return void
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     */
-    public function unserialize($str)
+    protected function unserializeFromArray(array $data): void
     {
-        $parentStr = $this->unserializeProperties($str);
-        parent::unserialize($parentStr);
-    }
-
-    protected function unserializeProperties(string $str): string
-    {
-        $unserialized = unserialize($str);
         [
             $this->sinceVersion,
             $this->untilVersion,
@@ -281,29 +258,14 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly,
             $this->xmlAttributeMap,
             $this->maxDepth,
-            $parentStr,
-        ] = $unserialized;
+            $this->xmlEntryNamespace,
+            $this->xmlCollectionSkipWhenEmpty,
+            $this->excludeIf,
+            $this->skipWhenEmpty,
+            $this->forceReflectionAccess,
+            $parentData,
+        ] = $data;
 
-        if (isset($unserialized['xmlEntryNamespace'])) {
-            $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
-        }
-
-        if (isset($unserialized['xmlCollectionSkipWhenEmpty'])) {
-            $this->xmlCollectionSkipWhenEmpty = $unserialized['xmlCollectionSkipWhenEmpty'];
-        }
-
-        if (isset($unserialized['excludeIf'])) {
-            $this->excludeIf = $unserialized['excludeIf'];
-        }
-
-        if (isset($unserialized['skipWhenEmpty'])) {
-            $this->skipWhenEmpty = $unserialized['skipWhenEmpty'];
-        }
-
-        if (isset($unserialized['forceReflectionAccess'])) {
-            $this->forceReflectionAccess = $unserialized['forceReflectionAccess'];
-        }
-
-        return $parentStr;
+        parent::unserializeFromArray($parentData);
     }
 }
