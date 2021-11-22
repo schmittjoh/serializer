@@ -283,16 +283,12 @@ class ClassMetadata extends MergeableClassMetadata
 
     /**
      * @return string
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
      */
-    public function serialize()
+    protected function serializeToArray(): array
     {
         $this->sortProperties();
 
-        return serialize([
+        return [
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
@@ -308,31 +304,20 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $this->excludeIf,
-            parent::serialize(),
-            'discriminatorGroups' => $this->discriminatorGroups,
-            'xmlDiscriminatorAttribute' => $this->xmlDiscriminatorAttribute,
-            'xmlDiscriminatorCData' => $this->xmlDiscriminatorCData,
-            'usingExpression' => $this->usingExpression,
-            'xmlDiscriminatorNamespace' => $this->xmlDiscriminatorNamespace,
-            'xmlRootPrefix' => $this->xmlRootPrefix,
-            'isList' => $this->isList,
-            'isMap' => $this->isMap,
-        ]);
+            $this->discriminatorGroups,
+            $this->xmlDiscriminatorAttribute,
+            $this->xmlDiscriminatorCData,
+            $this->usingExpression,
+            $this->xmlDiscriminatorNamespace,
+            $this->xmlRootPrefix,
+            $this->isList,
+            $this->isMap,
+            parent::serializeToArray(),
+        ];
     }
 
-    /**
-     * @param string $str
-     *
-     * @return void
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessReturnAnnotation
-     */
-    public function unserialize($str)
+    protected function unserializeFromArray(array $data): void
     {
-        $unserialized = unserialize($str);
-
         [
             $this->preSerializeMethods,
             $this->postSerializeMethods,
@@ -349,42 +334,18 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorMap,
             $this->discriminatorGroups,
             $this->excludeIf,
-            $parentStr,
-        ] = $unserialized;
+            $this->discriminatorGroups,
+            $this->xmlDiscriminatorAttribute,
+            $this->xmlDiscriminatorCData,
+            $this->usingExpression,
+            $this->xmlDiscriminatorNamespace,
+            $this->xmlRootPrefix,
+            $this->isList,
+            $this->isMap,
+            $parentData,
+        ] = $data;
 
-        if (isset($unserialized['discriminatorGroups'])) {
-            $this->discriminatorGroups = $unserialized['discriminatorGroups'];
-        }
-
-        if (isset($unserialized['usingExpression'])) {
-            $this->usingExpression = $unserialized['usingExpression'];
-        }
-
-        if (isset($unserialized['xmlDiscriminatorAttribute'])) {
-            $this->xmlDiscriminatorAttribute = $unserialized['xmlDiscriminatorAttribute'];
-        }
-
-        if (isset($unserialized['xmlDiscriminatorNamespace'])) {
-            $this->xmlDiscriminatorNamespace = $unserialized['xmlDiscriminatorNamespace'];
-        }
-
-        if (isset($unserialized['xmlDiscriminatorCData'])) {
-            $this->xmlDiscriminatorCData = $unserialized['xmlDiscriminatorCData'];
-        }
-
-        if (isset($unserialized['xmlRootPrefix'])) {
-            $this->xmlRootPrefix = $unserialized['xmlRootPrefix'];
-        }
-
-        if (isset($unserialized['isList'])) {
-            $this->isList = $unserialized['isList'];
-        }
-
-        if (isset($unserialized['isMap'])) {
-            $this->isMap = $unserialized['isMap'];
-        }
-
-        parent::unserialize($parentStr);
+        parent::unserializeFromArray($parentData);
     }
 
     private function handleDiscriminatorProperty(): void

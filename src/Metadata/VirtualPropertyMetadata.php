@@ -23,13 +23,4 @@ class VirtualPropertyMetadata extends PropertyMetadata
     public function setAccessor(string $type, ?string $getter = null, ?string $setter = null): void
     {
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function unserialize($str)
-    {
-        $parentStr = $this->unserializeProperties($str);
-        [$this->class, $this->name] = unserialize($parentStr);
-    }
 }
