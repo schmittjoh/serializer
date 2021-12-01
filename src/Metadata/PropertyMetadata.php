@@ -14,23 +14,27 @@ class PropertyMetadata extends BasePropertyMetadata
     public const ACCESS_TYPE_PUBLIC_METHOD = 'public_method';
 
     /**
-     * @var string
+     * @var string|null
      */
     public $sinceVersion;
+    
     /**
-     * @var string
+     * @var string|null
      */
     public $untilVersion;
+    
     /**
-     * @var string[]
+     * @var string[]|null
      */
     public $groups;
+    
     /**
-     * @var string
+     * @var string|null
      */
     public $serializedName;
+    
     /**
-     * @var array
+     * @var array|null
      */
     public $type;
 
@@ -50,17 +54,17 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlCollectionSkipWhenEmpty = true;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $xmlEntryName;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $xmlEntryNamespace;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $xmlKeyAttribute;
 
@@ -75,7 +79,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlValue = false;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $xmlNamespace;
 
@@ -90,12 +94,12 @@ class PropertyMetadata extends BasePropertyMetadata
     public $xmlElementCData = true;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $getter;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $setter;
 
@@ -125,7 +129,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $maxDepth = null;
 
     /**
-     * @var string|Expression
+     * @var string|Expression|null
      */
     public $excludeIf = null;
 
