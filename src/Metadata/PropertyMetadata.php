@@ -17,22 +17,22 @@ class PropertyMetadata extends BasePropertyMetadata
      * @var string|null
      */
     public $sinceVersion;
-    
+
     /**
      * @var string|null
      */
     public $untilVersion;
-    
+
     /**
      * @var string[]|null
      */
     public $groups;
-    
+
     /**
      * @var string|null
      */
     public $serializedName;
-    
+
     /**
      * @var array|null
      */
