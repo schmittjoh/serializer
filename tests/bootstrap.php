@@ -10,8 +10,7 @@ use JMS\Serializer\Tests\Util\DeprecationLogger;
         throw new RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
     }
 
-    $loader = require $autoloadFile;
-    $loader->add('JMS\Serializer\Tests', __DIR__);
+    require $autoloadFile;
 
     AnnotationRegistry::registerLoader('class_exists');
 })();
