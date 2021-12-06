@@ -72,7 +72,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             return $object->{$metadata->getter}();
         }
 
-        if ($metadata->forceReflectionAccess) {
+        if ($metadata->forceReflectionAccess || ($context->getShouldSerializeUnitializedAsNull() && $metadata->hasType)) {
             $ref = $this->propertyReflectionCache[$metadata->class][$metadata->name] ?? null;
             if (null === $ref) {
                 $ref = new \ReflectionProperty($metadata->class, $metadata->name);
@@ -80,6 +80,9 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
                 $this->propertyReflectionCache[$metadata->class][$metadata->name] = $ref;
             }
 
+            if (PHP_VERSION_ID >= 70400 && !$ref->isInitialized($object)) {
+               return null;
+            }
             return $ref->getValue($object);
         }
 

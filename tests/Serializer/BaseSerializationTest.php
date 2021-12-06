@@ -1392,6 +1392,36 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testSerializeWithUninitializedProperty()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+        $user = new TypedProperties\User();
+        $user->id = 1;
+
+        $context = new SerializationContext();
+        $context->setShouldSerializeUnitializedAsNull(true);
+
+        self::assertEquals(
+            '{"id":1,"tags":[]}',
+            $this->serializer->serialize($user, 'json', $context)
+        );
+    }
+
+    public function testSerializeWithUninitializedPropertyError()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Typed property JMS\Serializer\Tests\Fixtures\TypedProperties\User::$role must not be accessed before initialization');
+        $user = new TypedProperties\User();
+        $user->id = 1;
+
+        $this->serializer->serialize($user, 'json');
+    }
+
     /**
      * @doesNotPerformAssertions
      */

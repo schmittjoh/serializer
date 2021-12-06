@@ -136,13 +136,25 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $forceReflectionAccess = false;
 
+    /**
+     * @internal
+     *
+     * @var bool
+     */
+    public $hasType = false;
+
     public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
 
         try {
             $class = $this->getReflection()->getDeclaringClass();
-            $this->forceReflectionAccess = $class->isInternal() || $class->getProperty($name)->isStatic();
+            $reflectionProperty = $class->getProperty($name);
+            $this->forceReflectionAccess = $class->isInternal()
+                || $reflectionProperty->isStatic();
+            $this->hasType = PHP_VERSION_ID >= 70400
+                && method_exists($reflectionProperty, 'hasType')
+                && $reflectionProperty->hasType();
         } catch (\ReflectionException $e) {
         }
     }
@@ -231,6 +243,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->excludeIf,
             $this->skipWhenEmpty,
             $this->forceReflectionAccess,
+            $this->hasType,
             parent::serializeToArray(),
         ];
     }
@@ -263,6 +276,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->excludeIf,
             $this->skipWhenEmpty,
             $this->forceReflectionAccess,
+            $this->hasType,
             $parentData,
         ] = $data;
 

@@ -25,6 +25,11 @@ class SerializationContext extends Context
      */
     private $serializeNull = false;
 
+    /**
+     * @return bool
+     */
+    private $serializeUnitializedNull = false;
+
     public static function create(): self
     {
         return new self();
@@ -46,6 +51,22 @@ class SerializationContext extends Context
         $this->assertMutable();
 
         $this->serializeNull = $bool;
+
+        return $this;
+    }
+
+
+    public function getShouldSerializeUnitializedAsNull(): bool
+    {
+        return $this->serializeUnitializedNull;
+
+    }
+
+    public function setShouldSerializeUnitializedAsNull(bool $bool): self
+    {
+        $this->assertMutable();
+
+        $this->serializeUnitializedNull = $bool;
 
         return $this;
     }
