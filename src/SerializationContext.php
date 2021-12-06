@@ -55,11 +55,9 @@ class SerializationContext extends Context
         return $this;
     }
 
-
     public function getShouldSerializeUnitializedAsNull(): bool
     {
         return $this->serializeUnitializedNull;
-
     }
 
     public function setShouldSerializeUnitializedAsNull(bool $bool): self

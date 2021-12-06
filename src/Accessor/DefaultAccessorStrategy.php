@@ -81,8 +81,9 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             }
 
             if (PHP_VERSION_ID >= 70400 && !$ref->isInitialized($object)) {
-               return null;
+                return null;
             }
+
             return $ref->getValue($object);
         }
 

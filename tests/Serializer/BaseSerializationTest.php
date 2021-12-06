@@ -1397,6 +1397,7 @@ abstract class BaseSerializationTest extends TestCase
         if (PHP_VERSION_ID < 70400) {
             $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
         }
+
         $user = new TypedProperties\User();
         $user->id = 1;
 
@@ -1414,6 +1415,7 @@ abstract class BaseSerializationTest extends TestCase
         if (PHP_VERSION_ID < 70400) {
             $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
         }
+
         $this->expectException(\Error::class);
         $this->expectExceptionMessage('Typed property JMS\Serializer\Tests\Fixtures\TypedProperties\User::$role must not be accessed before initialization');
         $user = new TypedProperties\User();
