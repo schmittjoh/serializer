@@ -44,6 +44,6 @@ class DeprecationLogger
 
         set_error_handler(static function ($errno, $errstr, $errfile, $errline) {
             self::$instance->errors[] = [$errno, $errstr, $errfile, $errline];
-        }, E_DEPRECATED);
+        }, E_DEPRECATED | E_USER_DEPRECATED);
     }
 }

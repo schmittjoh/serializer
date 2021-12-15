@@ -3,6 +3,7 @@ Unreleased
 
 - Use symfony/cache for FileSystem cache implementation instead of doctrine/cache
 - Deprecated the `@ReadOnly` annotation due to `readonly` becoming a keyword in PHP 8.1, use the `@ReadOnlyProperty` annotation instead
+- Deprecated caching annotations with `doctrine/cache` in favor of `symfony/cache` as `doctrine/cache:2.x` do not provide cache drivers anymore.  
 
 From 2.x to 3.0.0
 =================

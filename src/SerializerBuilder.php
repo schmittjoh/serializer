@@ -631,9 +631,15 @@ final class SerializerBuilder
             if (class_exists(FilesystemAdapter::class)) {
                 $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
                 $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
-            } else {
+            } elseif (class_exists(FilesystemCache::class)) {
+                \trigger_error(
+                    'Package doctrine/cache is deprecated. Please install symfony/cache instead.',
+                    E_USER_DEPRECATED
+                );
                 $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
                 $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
+            } else {
+                throw new RuntimeException('To use cached annotation readers please install symfony/cache.');
             }
         }
 

@@ -43,6 +43,12 @@ filesystem checks to see whether the data that it has cached is still valid. The
 so that you do not need to manually clear cache folders, however in production they are just unnecessary overhead. The
 debug setting allows you to make the behavior environment specific.
 
+To use file cache you need to install ``symfony/cache`` library. You can do it with the following command:
+.. code-block :: bash
+
+    composer require symfony/cache
+
+
 Adding Custom Handlers
 ----------------------
 If you have created custom handlers, you can add them to the serializer easily::
