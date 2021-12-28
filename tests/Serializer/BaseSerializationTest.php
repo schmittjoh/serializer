@@ -73,6 +73,8 @@ use JMS\Serializer\Tests\Fixtures\InlineParentWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\Log;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Baz;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Foo;
 use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh236Foo;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
@@ -1639,6 +1641,26 @@ abstract class BaseSerializationTest extends TestCase
         $serialized = $this->serialize($data, $context);
 
         self::assertEquals($this->getContent('maxdepth_skippabe_object'), $serialized);
+    }
+
+    public function testMaxDepthWithZeroDepthObject()
+    {
+        $data = new Gh1382Foo();
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('maxdepth_0'), $serialized);
+    }
+
+    public function testMaxDepthWithOneDepthObject()
+    {
+        $data = new Gh1382Baz();
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('maxdepth_1'), $serialized);
     }
 
     public function testDeserializingIntoExistingObject()
