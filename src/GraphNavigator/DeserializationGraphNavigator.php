@@ -146,6 +146,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
             default:
                 $this->context->increaseDepth();
 
+                if (function_exists('enum_exists') && enum_exists($type['name'], false)) {
+                    $type = ['name' => \BackedEnum::class, 'enum' => $type['name'], 'params' => $type['params'] ?? []];
+                }
+
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $this->format)) {
