@@ -34,6 +34,10 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
             $relativeDepth++;
 
+            if (0 === $metadata->maxDepth && $context->getMetadataStack()->top() === $metadata) {
+                continue;
+            }
+
             if (null !== $metadata->maxDepth && $relativeDepth > $metadata->maxDepth) {
                 return true;
             }
