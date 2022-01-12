@@ -26,8 +26,11 @@ interface ArrayTransformerInterface
      * Restores objects from an array structure.
      *
      * @param array $data
+     * @param class-string<T> $type
      *
-     * @return mixed this returns whatever the passed type is, typically an object or an array of objects
+     * @return T this returns whatever the passed type is, typically an object or an array of objects
+     *
+     * @template T
      */
     public function fromArray(array $data, string $type, ?DeserializationContext $context = null);
 }
