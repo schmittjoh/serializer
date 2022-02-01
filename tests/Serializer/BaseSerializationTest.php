@@ -913,7 +913,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->serialize($author);
     }
 
-    public function testReadOnly()
+    public function testReadOnlyProperty()
     {
         $author = new AuthorReadOnly(123, 'Ruud Kamphuis');
         self::assertEquals($this->getContent('readonly'), $this->serialize($author));
