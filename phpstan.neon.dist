@@ -10,6 +10,4 @@ parameters:
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
-    excludePaths:
-        - %currentWorkingDirectory%/src/Annotation/ReadOnly.php
-     
+
