@@ -27,6 +27,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -132,6 +133,8 @@ use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -920,6 +923,20 @@ abstract class BaseSerializationTest extends TestCase
             self::assertFalse($this->getField($deserialized, 'reviewed'));
             self::assertEquals(new ArrayCollection(), $this->getField($deserialized, 'comments'));
             self::assertEquals(null, $this->getField($deserialized, 'author'));
+        }
+    }
+
+    public function testSymfonyUid()
+    {
+        $uid = Uuid::fromString('66b3177c-e03b-4a22-9dee-ddd7d37a04d5');
+
+        self::assertEquals($this->getContent('uid'), $this->serialize($uid));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('uid'), UuidV4::class);
+
+            self::assertInstanceOf(UuidV4::class, $deserialized);
+            self::assertTrue($uid->equals($deserialized));
         }
     }
 
@@ -1997,6 +2014,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator()));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
