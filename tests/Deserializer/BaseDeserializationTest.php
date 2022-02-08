@@ -9,8 +9,10 @@ use JMS\Serializer\Exception\NonCastableTypeException;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithPureEnum;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\Fixtures\PureEnum;
 use PHPUnit\Framework\TestCase;
 
 class BaseDeserializationTest extends TestCase
@@ -107,5 +109,13 @@ class BaseDeserializationTest extends TestCase
             ['you_shall_not_pass'],
             [],
         ];
+    }
+
+    public function testPureEnumMemberDeserialization(): void
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $obj = new ObjectWithPureEnum(PureEnum::a);
+        $array = $serializer->toArray($obj);
+        $this->assertEquals($obj, $serializer->fromArray($array, ObjectWithPureEnum::class));
     }
 }
