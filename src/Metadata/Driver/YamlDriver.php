@@ -101,6 +101,7 @@ class YamlDriver extends AbstractFileDriver
 
         $config = $config[$name];
         $metadata = new ClassMetadata($name);
+        $metadata->isEnum = method_exists($class, 'isEnum') ? $class->isEnum() : false;
         $metadata->fileResources[] = $file;
         $fileResource = $class->getFilename();
         if (false !== $fileResource) {

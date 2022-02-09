@@ -13,6 +13,7 @@ class NullDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
         $classMetadata = new ClassMetadata($name = $class->name);
+        $classMetadata->isEnum = method_exists($class, 'isEnum') ? $class->isEnum() : false;
         $fileResource =  $class->getFilename();
         if (false !== $fileResource) {
             $classMetadata->fileResources[] = $fileResource;
