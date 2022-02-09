@@ -19,6 +19,10 @@ final class UnserializeObjectConstructor implements ObjectConstructorInterface
      */
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
+        if ($metadata->isEnum) {
+            return (new \ReflectionEnum($type['name']))->getCase($data['name'])->getValue();
+        }
+
         return $this->getInstantiator()->instantiate($metadata->name);
     }
 
