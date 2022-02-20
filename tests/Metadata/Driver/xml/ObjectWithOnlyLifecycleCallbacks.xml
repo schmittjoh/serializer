@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\ObjectWithOnlyLifecycleCallbacks">
+        <callback-method type="pre-serialize" name="prepareForSerialization"/>
+        <callback-method type="post-serialize" name="cleanUpAfterSerialization"/>
+        <callback-method type="post-deserialize" name="afterDeserialization"/>
+    </class>
+</serializer>

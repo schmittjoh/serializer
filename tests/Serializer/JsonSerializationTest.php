@@ -14,6 +14,7 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
+use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
@@ -111,6 +112,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
             $outputs['author_expression_context'] = '{"first_name":"Ruud","direction":1,"name":"name"}';
             $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
+            $outputs['maxdepth_0'] = '{"a":{}}';
+            $outputs['maxdepth_1'] = '{"a":{"b":12345}}';
             $outputs['array_objects_nullable'] = '[]';
             $outputs['type_casting'] = '{"as_string":"8"}';
             $outputs['authors_inline'] = '[{"full_name":"foo"},{"full_name":"bar"}]';
@@ -130,6 +133,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['user_discriminator'] = '{"entityName":"User"}';
             $outputs['user_discriminator_extended'] = '{"entityName":"ExtendedUser"}';
             $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
+            $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
         }
 
@@ -373,6 +377,9 @@ class JsonSerializationTest extends BaseSerializationTest
 
             [['a', 'b'], '{"0":"a","1":"b"}', SerializationContext::create()->setInitialType('array<integer,string>')],
             [['a' => 'a', 'b' => 'b'], '{"a":"a","b":"b"}', SerializationContext::create()->setInitialType('array<string,string>')],
+
+            [[15.6, 2], '[15.6,2.0]', SerializationContext::create()->setInitialType('array<float>')],
+            [[5.2 * 3, 2], '[15.6,2.0]', SerializationContext::create()->setInitialType('array<float>')],
         ];
     }
 
@@ -427,6 +434,30 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testTypeHintedArrayAndStdClassSerialization(array $array, $expected, $context = null)
     {
         self::assertEquals($expected, $this->serialize($array, $context));
+    }
+
+    public function testSerialisationWithPercisionForFloat(): void
+    {
+        $objectWithFloat = new ObjectWithFloatProperty(
+            1.555555555,
+            1.555,
+            1.15,
+            1.15,
+            1.555
+        );
+
+        $result = $this->serialize($objectWithFloat, SerializationContext::create());
+
+        static::assertEquals(
+            '{'
+            . '"floating_point_unchanged":1.555555555,'
+            . '"floating_point_half_down":1.55,'
+            . '"floating_point_half_even":1.2,'
+            . '"floating_point_half_odd":1.1,'
+            . '"floating_point_half_up":1.56'
+            . '}',
+            $result
+        );
     }
 
     protected function getFormat()

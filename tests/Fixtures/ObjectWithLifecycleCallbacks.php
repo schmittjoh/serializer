@@ -15,16 +15,19 @@ class ObjectWithLifecycleCallbacks
     /**
      * @Exclude
      */
+    #[Exclude]
     private $firstname;
 
     /**
      * @Exclude
      */
+    #[Exclude]
     private $lastname;
 
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $name;
 
     public function __construct($firstname = 'Foo', $lastname = 'Bar')

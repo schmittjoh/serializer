@@ -1,5 +1,5 @@
 Annotations
------------
+===========
 
 @ExclusionPolicy
 ~~~~~~~~~~~~~~~~
@@ -147,7 +147,7 @@ be called to retrieve, or set the value of the given property:
 .. note ::
 
     If you need only to serialize your data, you can avoid providing a setter by
-    setting the property as read-only using the ``@ReadOnly`` annotation.
+    setting the property as read-only using the ``@ReadOnlyProperty`` annotation.
 
 @AccessorOrder
 ~~~~~~~~~~~~~~
@@ -266,6 +266,22 @@ In this example:
 
     This only works for serialization and is completely ignored during deserialization.
 
+In PHP 8, due to the missing support for nested annotations, in the options array you need to pass an array with the class name and an array with the arguments for its constructor.
+
+.. code-block :: php
+
+    /**
+     * @Serializer\VirtualProperty(
+     *     "firstName",
+     *     exp="object.getFirstName()",
+     *     options={@Serializer\SerializedName("my_first_name")}
+     *  )
+     */
+    #[Serializer\VirtualProperty(name: "firstName", exp: "object.getFirstName()", options: [[Serializer\SerializedName::class, ["my_first_name"]]])]
+    class Author
+    {
+    ...
+
 @Inline
 ~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
@@ -273,12 +289,13 @@ should be inlined.
 
 **Note**: AccessorOrder will be using the name of the property to determine the order.
 
-@ReadOnly
-~~~~~~~~~
+@ReadOnlyProperty
+~~~~~~~~~~~~~~~~~
 This annotation can be defined on a property to indicate that the data of the property
 is read only and cannot be set during deserialization.
 
-A property can be marked as non read only with ``@ReadOnly(false)`` annotation (useful when a class is marked as read only).
+A property can be marked as non read only with ``@ReadOnlyProperty(false)`` annotation
+(useful when a class is marked as read only).
 
 @PreSerialize
 ~~~~~~~~~~~~~
@@ -336,6 +353,12 @@ Available Types:
 | integer or int                                             | Primitive integer                                |
 +------------------------------------------------------------+--------------------------------------------------+
 | double or float                                            | Primitive double                                 |
++------------------------------------------------------------+--------------------------------------------------+
+| double<2> or float<2>                                      | Primitive double with percision                  |
++------------------------------------------------------------+--------------------------------------------------+
+| double<2, 'HALF_DOWN'> or float<2, 'HALF_DOWN'>            | Primitive double with percision and              |
+|                                                            | Rounding Mode.                                   |
+|                                                            | (HALF_UP, HALF_DOWN, HALF_EVEN HALF_ODD)         |
 +------------------------------------------------------------+--------------------------------------------------+
 | string                                                     | Primitive string                                 |
 +------------------------------------------------------------+--------------------------------------------------+
@@ -444,7 +467,7 @@ Available Types:
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
-(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization, 
+(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization,
 for serializaiton is treated as ``string``.
 
 Examples:
@@ -838,3 +861,53 @@ Resulting XML:
             <full_name><![CDATA[Foo Bar]]></full_name>
         </atom:author>
     </blog>
+
+
+PHP 8 support
+-------------
+
+JMS serializer now supports PHP 8 attributes, with a few caveats:
+- Due to the missing support for nested annotations, the syntax for a few annotations has changed
+(see the ``VirtualProperty`` ``options`` syntax here below)
+- There is an edge case when setting this exact serialization group ``#[Groups(['value' => 'any value here'])]``.
+(when there is only one item in th serialization groups array and has as key ``value`` the attribute will not work as expected,
+please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here'])]`` that works with no issues),
+
+Converting your annotations to attributes
+-----------------------------------------
+
+Example:
+
+.. code-block :: php
+
+    /**
+     * @VirtualProperty(
+     *     "classlow",
+     *     exp="object.getVirtualValue(1)",
+     *     options={@Until("8")}
+     * )
+     * @VirtualProperty(
+     *     "classhigh",
+     *     exp="object.getVirtualValue(8)",
+     *     options={@Since("6")}
+     * )
+     */
+    #[VirtualProperty('classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+    #[VirtualProperty('classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
+    class ObjectWithVersionedVirtualProperties
+    {
+        /**
+         * @Groups({"versions"})
+         * @VirtualProperty
+         * @SerializedName("low")
+         * @Until("8")
+         */
+        #[Groups(['versions'])]
+        #[VirtualProperty]
+        #[SerializedName('low')]
+        #[Until('8')]
+        public function getVirtualLowValue()
+        {
+            return 1;
+        }
+    ...

@@ -10,38 +10,27 @@ use JMS\Serializer\Exception\RuntimeException;
  * @Annotation
  * @Target("CLASS")
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class ExclusionPolicy
 {
+    use AnnotationUtilsTrait;
+
     public const NONE = 'NONE';
     public const ALL = 'ALL';
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $policy;
+    public $policy = 'NONE';
 
-    public function __construct(array $values)
+    public function __construct($values = [], ?string $policy = null)
     {
-        $value = self::NONE;
+        $this->loadAnnotationParameters(get_defined_vars());
 
-        if (array_key_exists('value', $values)) {
-            $value = $values['value'];
-        }
+        $this->policy = strtoupper($this->policy);
 
-        if (array_key_exists('policy', $values)) {
-            $value = $values['policy'];
-        }
-
-        if (!\is_string($value)) {
-            throw new RuntimeException('Exclusion policy value must be of string type.');
-        }
-
-        $value = strtoupper($value);
-
-        if (self::NONE !== $value && self::ALL !== $value) {
+        if (self::NONE !== $this->policy && self::ALL !== $this->policy) {
             throw new RuntimeException('Exclusion policy must either be "ALL", or "NONE".');
         }
-
-        $this->policy = $value;
     }
 }

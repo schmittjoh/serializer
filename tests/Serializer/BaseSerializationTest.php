@@ -49,6 +49,8 @@ use JMS\Serializer\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\Serializer\Tests\Fixtures\CurrencyAwarePrice;
 use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
+use JMS\Serializer\Tests\Fixtures\DateTimeContainer;
+use JMS\Serializer\Tests\Fixtures\DateTimeCustomObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
@@ -74,6 +76,8 @@ use JMS\Serializer\Tests\Fixtures\InlineParentWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidGroupsObject;
 use JMS\Serializer\Tests\Fixtures\Log;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Baz;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Foo;
 use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh236Foo;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
@@ -644,6 +648,13 @@ abstract class BaseSerializationTest extends TestCase
         $data = new ObjectWithIntListAndIntMap($arrayData, $arrayData);
 
         self::assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
+    }
+
+    public function testCustomDateObject()
+    {
+        $data = new DateTimeContainer(new DateTimeCustomObject('2021-09-07'));
+
+        self::assertEquals($this->getContent('custom_datetimeinterface'), $this->serialize($data));
     }
 
     public function testDateTimeArrays()
@@ -1633,6 +1644,26 @@ abstract class BaseSerializationTest extends TestCase
         $serialized = $this->serialize($data, $context);
 
         self::assertEquals($this->getContent('maxdepth_skippabe_object'), $serialized);
+    }
+
+    public function testMaxDepthWithZeroDepthObject()
+    {
+        $data = new Gh1382Foo();
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('maxdepth_0'), $serialized);
+    }
+
+    public function testMaxDepthWithOneDepthObject()
+    {
+        $data = new Gh1382Baz();
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('maxdepth_1'), $serialized);
     }
 
     public function testDeserializingIntoExistingObject()

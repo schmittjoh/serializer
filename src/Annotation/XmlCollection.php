@@ -6,6 +6,8 @@ namespace JMS\Serializer\Annotation;
 
 abstract class XmlCollection
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var string
      */
@@ -17,12 +19,17 @@ abstract class XmlCollection
     public $inline = false;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $namespace;
+    public $namespace = null;
 
     /**
      * @var bool
      */
     public $skipWhenEmpty = true;
+
+    public function __construct(array $values = [], string $entry = 'entry', bool $inline = false, ?string $namespace = null, bool $skipWhenEmpty = true)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

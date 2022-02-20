@@ -11,14 +11,16 @@ class Comment
     /**
      * @Type("JMS\Serializer\Tests\Fixtures\Author")
      */
+    #[Type(name: 'JMS\Serializer\Tests\Fixtures\Author')]
     private $author;
 
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $text;
 
-    public function __construct(?Author $author = null, $text)
+    public function __construct(?Author $author, $text)
     {
         $this->author = $author;
         $this->text = $text;

@@ -5,29 +5,37 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\ReadOnlyProperty;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @XmlRoot("author")
- * @ReadOnly
+ * @ReadOnlyProperty
  */
+#[XmlRoot(name: 'author')]
+#[ReadOnlyProperty]
 class AuthorReadOnlyPerClass
 {
     /**
-     * @ReadOnly
+     * @ReadOnlyProperty
      * @SerializedName("id")
      */
+    #[ReadOnlyProperty]
+    #[SerializedName(name: 'id')]
     private $id;
 
     /**
      * @Type("string")
      * @SerializedName("full_name")
      * @Accessor("getName")
-     * @ReadOnly(false)
+     * @ReadOnlyProperty(false)
      */
+    #[Type(name: 'string')]
+    #[SerializedName(name: 'full_name')]
+    #[Accessor(getter: 'getName')]
+    #[ReadOnlyProperty(readOnly: false)]
     private $name;
 
     public function __construct($id, $name)

@@ -14,6 +14,8 @@ class ObjectWithIterable
      *
      * @var iterable<string, string>
      */
+    #[Serializer\Type(name: 'iterable<string,string>')]
+    #[Serializer\XmlKeyValuePairs]
     public $iterable;
 
     public function __construct(iterable $iterable)

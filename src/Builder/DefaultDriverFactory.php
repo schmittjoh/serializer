@@ -7,6 +7,7 @@ namespace JMS\Serializer\Builder;
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -43,16 +44,19 @@ final class DefaultDriverFactory implements DriverFactoryInterface
 
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
+        if (PHP_VERSION_ID >= 80000) {
+            $annotationReader = new AttributeDriver\AttributeReader($annotationReader);
+        }
+
+        $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
+
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
-
             $driver = new DriverChain([
                 new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
                 new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
-                new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
+                $driver,
             ]);
-        } else {
-            $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
         }
 
         if (PHP_VERSION_ID >= 70400) {

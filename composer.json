@@ -17,11 +17,11 @@
     ],
     "require": {
         "php": "^7.2||^8.0",
-        "doctrine/annotations": "^1.0",
+        "doctrine/annotations": "^1.13",
         "doctrine/instantiator": "^1.0.3",
         "doctrine/lexer": "^1.1",
-        "jms/metadata": "^2.0",
-        "phpstan/phpdoc-parser": "^0.4 || ^0.5"
+        "jms/metadata": "^2.6",
+        "phpstan/phpdoc-parser": "^0.4 || ^0.5 || ^1.0"
     },
     "suggest": {
         "doctrine/collections": "Required if you like to use doctrine collection types as ArrayCollection.",
@@ -36,16 +36,17 @@
         "doctrine/phpcr-odm": "^1.3|^2.0",
         "jackalope/jackalope-doctrine-dbal": "^1.1.5",
         "ocramius/proxy-manager": "^1.0|^2.0",
-        "phpstan/phpstan": "^0.12.65",
-        "phpunit/phpunit": "^8.0||^9.0",
+        "phpbench/phpbench": "^1.0",
+        "phpstan/phpstan": "^1.0.2",
+        "phpunit/phpunit": "^8.5.21||^9.0",
         "psr/container": "^1.0",
-        "symfony/dependency-injection": "^3.0|^4.0|^5.0",
-        "symfony/expression-language": "^3.0|^4.0|^5.0",
-        "symfony/filesystem": "^3.0|^4.0|^5.0",
-        "symfony/form": "^3.0|^4.0|^5.0",
-        "symfony/translation": "^3.0|^4.0|^5.0",
-        "symfony/validator": "^3.1.9|^4.0|^5.0",
-        "symfony/yaml": "^3.3|^4.0|^5.0",
+        "symfony/dependency-injection": "^3.0|^4.0|^5.0|^6.0",
+        "symfony/expression-language": "^3.2|^4.0|^5.0|^6.0",
+        "symfony/filesystem": "^3.0|^4.0|^5.0|^6.0",
+        "symfony/form": "^3.0|^4.0|^5.0|^6.0",
+        "symfony/translation": "^3.0|^4.0|^5.0|^6.0",
+        "symfony/validator": "^3.1.9|^4.0|^5.0|^6.0",
+        "symfony/yaml": "^3.3|^4.0|^5.0|^6.0",
         "twig/twig": "~1.34|~2.4|^3.0"
     },
     "autoload": {
@@ -59,11 +60,15 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.12-dev"
+            "dev-master": "3.x-dev"
         }
     }
 }

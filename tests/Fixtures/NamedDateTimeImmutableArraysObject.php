@@ -14,6 +14,8 @@ class NamedDateTimeImmutableArraysObject
      * @Type("array<string,DateTimeImmutable<'d.m.Y H:i:s'>>")
      * @XmlKeyValuePairs
      */
+    #[Type(name: 'array<string,DateTimeImmutable<"d.m.Y H:i:s">>')]
+    #[XmlKeyValuePairs]
     private $namedArrayWithFormattedDate;
 
     public function __construct($namedArrayWithFormattedDate)

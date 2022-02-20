@@ -8,21 +8,29 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class XmlRoot
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $name;
+    public $name = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $namespace;
+    public $namespace = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $prefix;
+    public $prefix = null;
+
+    public function __construct($values = [], ?string $name = null, ?string $namespace = null, ?string $prefix = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

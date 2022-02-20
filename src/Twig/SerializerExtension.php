@@ -6,7 +6,6 @@ namespace JMS\Serializer\Twig;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
-use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -15,26 +14,17 @@ use Twig\TwigFunction;
  *
  * Basically provides access to JMSSerializer from Twig
  */
-class SerializerExtension extends AbstractExtension
+class SerializerExtension extends SerializerBaseExtension
 {
     /**
      * @var SerializerInterface
      */
     protected $serializer;
 
-    /**
-     * @return string
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
-     */
-    public function getName()
-    {
-        return 'jms_serializer';
-    }
-
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, string $serializationFunctionsPrefix = '')
     {
         $this->serializer = $serializer;
+        parent::__construct($serializationFunctionsPrefix);
     }
 
     /**
@@ -45,7 +35,7 @@ class SerializerExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('serialize', [$this, 'serialize']),
+            new TwigFilter($this->serializationFunctionsPrefix . 'serialize', [$this, 'serialize']),
         ];
     }
 
@@ -57,7 +47,7 @@ class SerializerExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('serialization_context', '\JMS\Serializer\SerializationContext::create'),
+            new TwigFunction($this->serializationFunctionsPrefix . 'serialization_context', '\JMS\Serializer\SerializationContext::create'),
         ];
     }
 

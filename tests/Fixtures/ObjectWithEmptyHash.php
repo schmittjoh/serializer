@@ -12,5 +12,7 @@ class ObjectWithEmptyHash
      * @Serializer\Type("array<string,string>")
      * @Serializer\XmlList(skipWhenEmpty=false)
      */
+    #[Serializer\Type(name: 'array<string,string>')]
+    #[Serializer\XmlList(skipWhenEmpty: false)]
     private $hash = [];
 }

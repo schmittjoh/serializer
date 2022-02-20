@@ -52,6 +52,7 @@ class CollectionWrapper
     /**
      * @Serializer\MaxDepth(2)
      */
+    #[Serializer\MaxDepth(depth: 2)]
     public $collection;
 
     public function __construct($collection)

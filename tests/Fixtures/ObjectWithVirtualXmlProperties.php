@@ -22,6 +22,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"attributes"})
      * @XmlAttribute
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'foo')]
+    #[Groups(groups: ['attributes'])]
+    #[XmlAttribute]
     public function getVirtualXmlAttributeValue()
     {
         return 'bar';
@@ -33,6 +37,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"values"})
      * @XmlValue
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'xml-value')]
+    #[Groups(groups: ['values'])]
+    #[XmlValue]
     public function getVirtualXmlValue()
     {
         return 'xml-value';
@@ -44,6 +52,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"list"})
      * @XmlList(inline = true, entry = "val")
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'list')]
+    #[Groups(groups: ['list'])]
+    #[XmlList(entry: 'val', inline: true)]
     public function getVirtualXmlList()
     {
         return ['One', 'Two'];
@@ -55,6 +67,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"map"})
      * @XmlMap(keyAttribute = "key")
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'map')]
+    #[Groups(groups: ['map'])]
+    #[XmlMap(keyAttribute: 'key')]
     public function getVirtualXmlMap()
     {
         return [
@@ -69,6 +85,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"versions"})
      * @Until("8")
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'low')]
+    #[Groups(groups: ['versions'])]
+    #[Until(version: '8')]
     public function getVirtualLowValue()
     {
         return 1;
@@ -80,6 +100,10 @@ class ObjectWithVirtualXmlProperties
      * @Groups({"versions"})
      * @Since("8")
      */
+    #[VirtualProperty]
+    #[SerializedName(name: 'hight')]
+    #[Groups(groups: ['versions'])]
+    #[Since(version: '8')]
     public function getVirtualHighValue()
     {
         return 8;

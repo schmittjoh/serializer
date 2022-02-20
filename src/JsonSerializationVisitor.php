@@ -22,7 +22,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     private $dataStack;
     /**
-     * @var \ArrayObject
+     * @var \ArrayObject|array
      */
     private $data;
 
@@ -70,7 +70,15 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitDouble(float $data, array $type)
     {
-        return $data;
+        $percision = $type['params'][0] ?? null;
+        if (!is_int($percision)) {
+            return $data;
+        }
+
+        $roundMode = $type['params'][1] ?? null;
+        $roundMode = $this->mapRoundMode($roundMode);
+
+        return round($data, $percision, $roundMode);
     }
 
     /**

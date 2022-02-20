@@ -25,20 +25,21 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
     private function isTooDeep(Context $context): bool
     {
-        $depth = $context->getDepth();
-        $metadataStack = $context->getMetadataStack();
+        $relativeDepth = 0;
 
-        $nthProperty = 0;
-        // iterate from the first added items to the lasts
-        for ($i = $metadataStack->count() - 1; $i > 0; $i--) {
-            $metadata = $metadataStack[$i];
-            if ($metadata instanceof PropertyMetadata) {
-                $nthProperty++;
-                $relativeDepth = $depth - $nthProperty;
+        foreach ($context->getMetadataStack() as $metadata) {
+            if (!$metadata instanceof PropertyMetadata) {
+                continue;
+            }
 
-                if (null !== $metadata->maxDepth && $relativeDepth > $metadata->maxDepth) {
-                    return true;
-                }
+            $relativeDepth++;
+
+            if (0 === $metadata->maxDepth && $context->getMetadataStack()->top() === $metadata) {
+                continue;
+            }
+
+            if (null !== $metadata->maxDepth && $relativeDepth > $metadata->maxDepth) {
+                return true;
             }
         }
 

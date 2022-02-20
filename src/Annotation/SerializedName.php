@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Annotation;
 
-use JMS\Serializer\Exception\RuntimeException;
-
 /**
  * @Annotation
  * @Target({"PROPERTY","METHOD", "ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class SerializedName
 {
+    use AnnotationUtilsTrait;
+
     /**
-     * @var string
+     * @var string|null
      */
-    public $name;
+    public $name = null;
 
-    public function __construct(array $values)
+    public function __construct($values = [], ?string $name = null)
     {
-        if (!isset($values['value']) || !\is_string($values['value'])) {
-            throw new RuntimeException(sprintf('"value" must be a string.'));
-        }
-
-        $this->name = $values['value'];
+        $this->loadAnnotationParameters(get_defined_vars());
     }
 }

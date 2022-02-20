@@ -86,4 +86,24 @@ abstract class AbstractVisitor implements VisitorInterface
             throw new NonFloatCastableTypeException($value);
         }
     }
+
+    protected function mapRoundMode(?string $roundMode = null): int
+    {
+        switch ($roundMode) {
+            case 'HALF_DOWN':
+                $roundMode = PHP_ROUND_HALF_DOWN;
+                break;
+            case 'HALF_EVEN':
+                $roundMode = PHP_ROUND_HALF_EVEN;
+                break;
+            case 'HALF_ODD':
+                $roundMode = PHP_ROUND_HALF_ODD;
+                break;
+            case 'HALF_UP':
+            default:
+                $roundMode = PHP_ROUND_HALF_UP;
+        }
+
+        return $roundMode;
+    }
 }

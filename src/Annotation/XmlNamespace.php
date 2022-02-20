@@ -8,16 +8,24 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class XmlNamespace
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $uri;
+    public $uri = null;
 
     /**
      * @var string
      */
     public $prefix = '';
+
+    public function __construct(array $values = [], ?string $uri = null, string $prefix = '')
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

@@ -6,9 +6,16 @@ namespace JMS\Serializer\Annotation;
 
 abstract class Version
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $version;
+    public $version = null;
+
+    public function __construct($values = [], ?string $version = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

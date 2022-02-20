@@ -8,11 +8,19 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target({"PROPERTY", "METHOD","ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 final class Type
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
-     * @var string
+     * @var string|null
      */
-    public $name;
+    public $name = null;
+
+    public function __construct($values = [], ?string $name = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

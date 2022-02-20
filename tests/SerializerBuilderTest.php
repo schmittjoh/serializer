@@ -45,6 +45,10 @@ class SerializerBuilderTest extends TestCase
 
     public function testWithCache()
     {
+        if (PHP_VERSION_ID >= 80000) {
+            $this->markTestSkipped('Not caching attributes');
+        }
+
         // @todo change to static::assertFileNotExists when support for PHPUnit 8 and PHP 7.2 is dropped
         static::assertThat($this->tmpDir, new LogicalNot(new FileExists()));
 

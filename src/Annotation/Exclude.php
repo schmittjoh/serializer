@@ -8,10 +8,18 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target({"PROPERTY", "CLASS", "METHOD", "ANNOTATION"})
  */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD)]
 final class Exclude
 {
+    use AnnotationUtilsTrait;
+
     /**
-     * @var string
+     * @var string|null
      */
     public $if;
+
+    public function __construct(array $values = [], ?string $if = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }

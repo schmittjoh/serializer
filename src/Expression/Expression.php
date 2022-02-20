@@ -63,4 +63,15 @@ class Expression implements \Serializable
     {
         $this->expression = new SerializedParsedExpression(...unserialize($str));
     }
+
+    public function __serialize(): array
+    {
+        return [(string) $this->expression, $this->expression->getNodes()];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        [$expression, $nodes] = $data;
+        $this->expression = new BaseExpression($expression, $nodes);
+    }
 }

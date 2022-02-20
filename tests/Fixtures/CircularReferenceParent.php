@@ -12,9 +12,11 @@ use JMS\Serializer\Annotation\Type;
 class CircularReferenceParent
 {
     /** @Type("array<JMS\Serializer\Tests\Fixtures\CircularReferenceChild>") */
+    #[Type(name: 'array<JMS\Serializer\Tests\Fixtures\CircularReferenceChild>')]
     protected $collection = [];
 
     /** @Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\CircularReferenceChild>") */
+    #[Type(name: 'ArrayCollection<JMS\Serializer\Tests\Fixtures\CircularReferenceChild>')]
     private $anotherCollection;
 
     public function __construct()
@@ -28,6 +30,7 @@ class CircularReferenceParent
     }
 
     /** @PostDeserialize */
+    #[PostDeserialize]
     private function afterDeserialization()
     {
         if (!$this->collection) {

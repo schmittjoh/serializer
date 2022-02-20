@@ -8,10 +8,13 @@ namespace JMS\Serializer\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class Discriminator
 {
+    use AnnotationUtilsTrait;
+
     /** @var array<string> */
-    public $map;
+    public $map = [];
 
     /** @var string */
     public $field = 'type';
@@ -21,4 +24,9 @@ class Discriminator
 
     /** @var string[] */
     public $groups = [];
+
+    public function __construct(array $values = [], string $field = 'type', array $groups = [], array $map = [], bool $disabled = false)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }
