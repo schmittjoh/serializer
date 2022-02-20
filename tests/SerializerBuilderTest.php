@@ -13,6 +13,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
+use JMS\Serializer\Tests\Fixtures\CustomDeserializationObjectWithInnerClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
@@ -251,6 +252,23 @@ class SerializerBuilderTest extends TestCase
 
         $object = new CustomDeserializationObject('johny');
         $json = '{"someProperty":"johny"}';
+
+        self::assertEquals($json, $serializer->serialize($object, 'json'));
+        self::assertEquals($object, $serializer->deserialize($json, get_class($object), 'json'));
+    }
+
+    public function testSetCallbackSerializationContextWithIdenticalPropertyNamingForInnerClass()
+    {
+        $this->builder->setSerializationContextFactory(static function () {
+            return SerializationContext::create()
+                ->setPropertyNamingStrategy(new CamelCaseNamingStrategy());
+        });
+
+        $serializer = $this->builder
+            ->build();
+
+        $object = new CustomDeserializationObjectWithInnerClass(new CustomDeserializationObject('johny'));
+        $json = '{"some_property":{"some_property":"johny"}}';
 
         self::assertEquals($json, $serializer->serialize($object, 'json'));
         self::assertEquals($object, $serializer->deserialize($json, get_class($object), 'json'));
