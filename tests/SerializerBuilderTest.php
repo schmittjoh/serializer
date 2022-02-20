@@ -8,8 +8,11 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\CustomDeserializationObject;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\PersonSecret;
@@ -199,6 +202,58 @@ class SerializerBuilderTest extends TestCase
         $result = $serializer->serialize(['value' => null, 'not_null' => 'ok'], 'json');
 
         self::assertEquals('{"not_null":"ok"}', $result);
+    }
+
+    public function testSetCallbackSerializationContextWithIdenticalPropertyNamingStrategy()
+    {
+        $this->builder->setSerializationContextFactory(static function () {
+            return SerializationContext::create()
+                ->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
+        });
+
+        $serializer = $this->builder
+            ->build();
+
+        $object = new CustomDeserializationObject('johny');
+        $json = '{"someProperty":"johny"}';
+
+        self::assertEquals($json, $serializer->serialize($object, 'json'));
+        self::assertEquals($object, $serializer->deserialize($json, get_class($object), 'json'));
+    }
+
+    public function testSetCallbackSerializationContextWithCamelCaseStrategy()
+    {
+        $this->builder->setSerializationContextFactory(static function () {
+            return SerializationContext::create()
+                ->setPropertyNamingStrategy(new CamelCaseNamingStrategy());
+        });
+
+        $serializer = $this->builder
+            ->build();
+
+        $object = new CustomDeserializationObject('johny');
+        $json = '{"some_property":"johny"}';
+
+        self::assertEquals($json, $serializer->serialize($object, 'json'));
+        self::assertEquals($object, $serializer->deserialize($json, get_class($object), 'json'));
+    }
+
+    public function testSetCallbackSerializationContextOverridingDefaultStrategy()
+    {
+        $this->builder->setSerializationContextFactory(static function () {
+            return SerializationContext::create()
+                ->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
+        });
+
+        $serializer = $this->builder
+            ->setPropertyNamingStrategy(new CamelCaseNamingStrategy())
+            ->build();
+
+        $object = new CustomDeserializationObject('johny');
+        $json = '{"someProperty":"johny"}';
+
+        self::assertEquals($json, $serializer->serialize($object, 'json'));
+        self::assertEquals($object, $serializer->deserialize($json, get_class($object), 'json'));
     }
 
     public function expressionFunctionProvider()

@@ -24,6 +24,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -80,6 +81,10 @@ final class SerializationGraphNavigator extends GraphNavigator
      * @var bool
      */
     private $shouldSerializeNull;
+    /**
+     * @var PropertyNamingStrategyInterface|null
+     */
+    private $contextPropertyNamingStrategy = null;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
@@ -104,6 +109,7 @@ final class SerializationGraphNavigator extends GraphNavigator
 
         parent::initialize($visitor, $context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
+        $this->contextPropertyNamingStrategy = $context->getPropertyNamingStrategy();
     }
 
     /**
@@ -253,6 +259,10 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                     if (null !== $this->expressionExclusionStrategy && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
+                    }
+
+                    if ($this->contextPropertyNamingStrategy) {
+                        $propertyMetadata->serializedName = $this->contextPropertyNamingStrategy->translateName($propertyMetadata);
                     }
 
                     $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
