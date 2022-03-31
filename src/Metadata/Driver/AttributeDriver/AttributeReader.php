@@ -46,8 +46,8 @@ class AttributeReader implements Reader
     {
         $attributes = $method->getAttributes($annotationName);
 
-        $classReflection = new ReflectionClass($method->class);
-        return $this->reader->getClassAnnotation($classReflection, $annotationName) ?? $this->buildAnnotation($attributes);
+        return $this->reader->getClassAnnotation(new ReflectionClass($method->class), $annotationName)
+            ?? $this->buildAnnotation($attributes);
     }
 
     public function getPropertyAnnotations(ReflectionProperty $property): array
@@ -61,8 +61,8 @@ class AttributeReader implements Reader
     {
         $attributes = $property->getAttributes($annotationName);
 
-        $classReflection = new ReflectionClass($property->class);
-        return $this->reader->getClassAnnotation($classReflection, $annotationName) ?? $this->buildAnnotation($attributes);
+        return $this->reader->getClassAnnotation(new ReflectionClass($property->class), $annotationName)
+            ?? $this->buildAnnotation($attributes);
     }
 
     private function buildAnnotation(array $attributes): ?object
