@@ -33,6 +33,8 @@ use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
 use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\AuthorDeprecatedReadOnly;
+use JMS\Serializer\Tests\Fixtures\AuthorDeprecatedReadOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -925,9 +927,33 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testDeprecatedReadOnly()
+    {
+        $author = new AuthorDeprecatedReadOnly(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
     public function testReadOnlyClass()
     {
         $author = new AuthorReadOnlyPerClass(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testDeprecatedReadOnlyClass()
+    {
+        $author = new AuthorDeprecatedReadOnlyPerClass(123, 'Ruud Kamphuis');
         self::assertEquals($this->getContent('readonly'), $this->serialize($author));
 
         if ($this->hasDeserializer()) {
