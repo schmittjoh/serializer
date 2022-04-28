@@ -17,6 +17,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\SkipHandlerException;
+use JMS\Serializer\Exception\UninitializedPropertyException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\Functions;
@@ -256,7 +257,11 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
-                    $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
+                    try {
+                        $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
+                    } catch (UninitializedPropertyException $e) {
+                        continue;
+                    }
 
                     if (null === $v && true !== $this->shouldSerializeNull) {
                         continue;
