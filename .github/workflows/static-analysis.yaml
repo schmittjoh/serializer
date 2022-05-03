@@ -33,7 +33,7 @@ jobs:
 
       - name: "Run a static analysis with phpstan/phpstan"
         run: "vendor/bin/phpstan analyse -c phpstan-7-4.neon.dist --error-format=checkstyle | cs2pr"
-  static-analysis-phpstan:
+  static-analysis-phpstan-8-0:
     name: "Static Analysis with PHPStan"
     runs-on: "ubuntu-20.04"
 
@@ -41,6 +41,32 @@ jobs:
       matrix:
         php-version:
           - "8.0"
+
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+          tools: "cs2pr"
+          extensions: pdo_sqlite
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+
+      - name: "Run a static analysis with phpstan/phpstan"
+        run: "vendor/bin/phpstan analyse -c phpstan-8-0.neon.dist --error-format=checkstyle | cs2pr"
+
+  static-analysis-phpstan:
+    name: "Static Analysis with PHPStan"
+    runs-on: "ubuntu-20.04"
+
+    strategy:
+      matrix:
+        php-version:
           - "8.1"
 
     steps:
