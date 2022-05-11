@@ -284,6 +284,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         return [
             ['NULL'],
+            ['bool'],
             ['integer'],
             ['double'],
             ['float'],
