@@ -9,6 +9,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionAsList;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromDifferentNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromDifferentNamespaceUsingGroupAlias;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromDifferentNamespaceUsingSingleAlias;
@@ -66,6 +67,20 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
+            $m->propertyMetadata['productIds']->type
+        );
+    }
+
+    public function testInferDocBlockCollectionAsList(): void
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(CollectionAsList::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => 'string', 'params' => []]]],
             $m->propertyMetadata['productIds']->type
         );
     }

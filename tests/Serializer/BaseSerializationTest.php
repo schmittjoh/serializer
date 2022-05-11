@@ -650,6 +650,44 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
     }
 
+    public function testList(): void
+    {
+        if ('xml' === $this->getFormat()) {
+            $this->markTestSkipped('XML can\'t be tested for list without value type');
+        }
+
+        $data = [1, 3, 4];
+        self::assertEquals($this->getContent('list'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list'), 'list'));
+        }
+    }
+
+    public function testListEmpty(): void
+    {
+        if ('xml' === $this->getFormat()) {
+            $this->markTestSkipped('XML can\'t be tested for empty list');
+        }
+
+        $data = [];
+        self::assertEquals($this->getContent('list_empty'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list_empty'), 'list'));
+        }
+    }
+
+    public function testListIntegers(): void
+    {
+        $data = [1, 3, 4];
+        self::assertEquals($this->getContent('list_integers'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list_integers'), 'list<int>'));
+        }
+    }
+
     public function testCustomDateObject()
     {
         $data = new DateTimeContainer(new DateTimeCustomObject('2021-09-07'));

@@ -164,6 +164,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                 return $this->visitor->visitArray(Functions::iterableToArray($data), $type);
 
             case 'array':
+            case 'list':
                 return $this->visitor->visitArray((array) $data, $type);
 
             case 'resource':

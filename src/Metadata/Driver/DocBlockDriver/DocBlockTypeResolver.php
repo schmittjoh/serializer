@@ -83,7 +83,7 @@ final class DocBlockTypeResolver
         $type = $typesWithoutNull[0];
 
         // Simple array without concrete type: array
-        if ($this->isSimpleType($type, 'array')) {
+        if ($this->isSimpleType($type, 'array') || $this->isSimpleType($type, 'list')) {
             return null;
         }
 
@@ -96,15 +96,23 @@ final class DocBlockTypeResolver
 
         // Generic array syntax: array<Product> | array<\Foo\Bar\Product> | array<int,Product>
         if ($type instanceof GenericTypeNode) {
-            if (!$this->isSimpleType($type->type, 'array')) {
-                throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
+            if ($this->isSimpleType($type->type, 'array')) {
+                $resolvedTypes = array_map(function (TypeNode $node) use ($reflectionProperty) {
+                    return $this->resolveTypeFromTypeNode($node, $reflectionProperty);
+                }, $type->genericTypes);
+
+                return 'array<' . implode(',', $resolvedTypes) . '>';
             }
 
-            $resolvedTypes = array_map(function (TypeNode $node) use ($reflectionProperty) {
-                return $this->resolveTypeFromTypeNode($node, $reflectionProperty);
-            }, $type->genericTypes);
+            if ($this->isSimpleType($type->type, 'list')) {
+                $resolvedTypes = array_map(function (TypeNode $node) use ($reflectionProperty) {
+                    return $this->resolveTypeFromTypeNode($node, $reflectionProperty);
+                }, $type->genericTypes);
 
-            return 'array<' . implode(',', $resolvedTypes) . '>';
+                return 'array<int, ' . implode(',', $resolvedTypes) . '>';
+            }
+
+            throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName()));
         }
 
         // Primitives and class names: Collection | \Foo\Bar\Product | string
