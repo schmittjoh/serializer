@@ -33,7 +33,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'text' => 'string',
         'blob' => 'string',
         'guid' => 'string',
-        'decimal' => 'float',
+        'decimal' => 'string',
 
         'integer' => 'integer',
         'smallint' => 'integer',
