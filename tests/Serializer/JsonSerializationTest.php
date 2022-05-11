@@ -123,10 +123,10 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['inline_list_collection'] = '[1,2,3]';
             $outputs['inline_empty_list_collection'] = '[]';
             $outputs['inline_deserialization_list_collection'] = '[1,2]';
-            $outputs['inline_map'] = '{"0":"1","1":"2","2":"3"}';
+            $outputs['inline_map'] = '{"a":"1","b":"2","c":"3"}';
             $outputs['inline_empty_map'] = '{}';
             $outputs['empty_object'] = '{}';
-            $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","0":"5"}';
+            $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","e":"5"}';
             $outputs['iterable'] = '{"iterable":{"foo":"bar","bar":"foo"}}';
             $outputs['iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['array_iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
@@ -157,9 +157,9 @@ class JsonSerializationTest extends BaseSerializationTest
     public function getFirstClassMapCollectionsValues()
     {
         return [
-            [[1, 2, 3], $this->getContent('inline_map')],
+            [['a' => '1', 'b' => '2', 'c' => '3'], $this->getContent('inline_map')],
             [[], $this->getContent('inline_empty_map')],
-            [['a' => 'b', 'c' => 'd', 5], $this->getContent('inline_deserialization_map')],
+            [['a' => 'b', 'c' => 'd', 'e' => '5'], $this->getContent('inline_deserialization_map')],
         ];
     }
 
