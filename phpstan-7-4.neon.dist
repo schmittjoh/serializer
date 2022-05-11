@@ -12,4 +12,8 @@ parameters:
         - %currentWorkingDirectory%/tests
     excludePaths:
         - %currentWorkingDirectory%/src/Annotation/ReadOnly.php
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
+        - %currentWorkingDirectory%/tests/Metadata/Driver/UnionTypedPropertiesDriverTest.php
+        - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php
 
