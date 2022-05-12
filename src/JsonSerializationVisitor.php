@@ -89,30 +89,28 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitArray(array $data, array $type)
     {
-        \array_push($this->dataStack, $data);
+        return new LazyObject(function(array $data, array $type){
+            $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
-        $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
+            $isList = isset($type['params'][0]) && !isset($type['params'][1]);
 
-        $isList = isset($type['params'][0]) && !isset($type['params'][1]);
+            $elType = $this->getElementType($type);
+            foreach ($data as $k => $v) {
+                try {
+                    $v = $this->navigator->accept($v, $elType);
+                } catch (NotAcceptableException $e) {
+                    continue;
+                }
 
-        $elType = $this->getElementType($type);
-        foreach ($data as $k => $v) {
-            try {
-                $v = $this->navigator->accept($v, $elType);
-            } catch (NotAcceptableException $e) {
-                continue;
+                if ($isList) {
+                    $rs[] = $v;
+                } else {
+                    $rs[$k] = $v;
+                }
             }
 
-            if ($isList) {
-                $rs[] = $v;
-            } else {
-                $rs[$k] = $v;
-            }
-        }
-
-        \array_pop($this->dataStack);
-
-        return $rs;
+           return $rs;
+        }, $data, $type);
     }
 
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
@@ -152,6 +150,9 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         }
 
         if ($metadata->inline) {
+            if($v instanceof LazyObject) {
+                $v = $v->jsonSerialize();
+            }
             if (\is_array($v) || ($v instanceof \ArrayObject)) {
                 // concatenate the two array-like structures
                 // is there anything faster?
