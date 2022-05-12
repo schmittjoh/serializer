@@ -7,8 +7,10 @@ namespace JMS\Serializer\Tests\Deserializer;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\NonCastableTypeException;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\BackedEnum;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithBackedEnum;
 use JMS\Serializer\Tests\Fixtures\ObjectWithPureEnum;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
@@ -117,5 +119,13 @@ class BaseDeserializationTest extends TestCase
         $obj = new ObjectWithPureEnum(PureEnum::a);
         $array = $serializer->toArray($obj);
         $this->assertEquals($obj, $serializer->fromArray($array, ObjectWithPureEnum::class));
+    }
+
+    public function testBackedEnumMemberDeserialization(): void
+    {
+        $serializer = SerializerBuilder::create()->build();
+        $obj = new ObjectWithBackedEnum(BackedEnum::a);
+        $array = $serializer->toArray($obj);
+        $this->assertEquals($obj, $serializer->fromArray($array, ObjectWithBackedEnum::class));
     }
 }
