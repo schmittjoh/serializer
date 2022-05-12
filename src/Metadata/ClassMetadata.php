@@ -231,6 +231,7 @@ class ClassMetadata extends MergeableClassMetadata
 
         $this->isMap = $object->isMap;
         $this->isList = $object->isList;
+        $this->isEnum = $object->isEnum;
 
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
 
@@ -319,6 +320,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootPrefix,
             $this->isList,
             $this->isMap,
+            $this->isEnum,
             parent::serializeToArray(),
         ];
     }
@@ -349,6 +351,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootPrefix,
             $this->isList,
             $this->isMap,
+            $this->isEnum,
             $parentData,
         ] = $data;
 
