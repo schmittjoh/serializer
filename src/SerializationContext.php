@@ -58,7 +58,6 @@ class SerializationContext extends Context
     public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy): self
     {
         $this->assertMutable();
-
         $this->propertyNamingStrategy = $propertyNamingStrategy;
 
         return $this;
