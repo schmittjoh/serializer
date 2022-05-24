@@ -134,10 +134,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
             case 'float':
                 return $this->visitor->visitDouble($data, $type);
 
-            case 'iterable':
-                return $this->visitor->visitArray($data, $type);
-
             case 'array':
+            case 'iterable':
+            case 'list':
                 return $this->visitor->visitArray($data, $type);
 
             case 'resource':

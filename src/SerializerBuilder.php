@@ -106,7 +106,12 @@ final class SerializerBuilder
     /**
      * @var bool
      */
-    private $visitorsAdded = false;
+    private $deserializationVisitorsAdded = false;
+
+    /**
+     * @var bool
+     */
+    private $serializationVisitorsAdded = false;
 
     /**
      * @var PropertyNamingStrategyInterface
@@ -310,7 +315,7 @@ final class SerializerBuilder
 
     public function setSerializationVisitor(string $format, SerializationVisitorFactory $visitor): self
     {
-        $this->visitorsAdded = true;
+        $this->serializationVisitorsAdded = true;
         $this->serializationVisitors[$format] = $visitor;
 
         return $this;
@@ -318,7 +323,7 @@ final class SerializerBuilder
 
     public function setDeserializationVisitor(string $format, DeserializationVisitorFactory $visitor): self
     {
-        $this->visitorsAdded = true;
+        $this->deserializationVisitorsAdded = true;
         $this->deserializationVisitors[$format] = $visitor;
 
         return $this;
@@ -326,7 +331,7 @@ final class SerializerBuilder
 
     public function addDefaultSerializationVisitors(): self
     {
-        $this->visitorsAdded = true;
+        $this->serializationVisitorsAdded = true;
         $this->serializationVisitors = [
             'xml' => new XmlSerializationVisitorFactory(),
             'json' => new JsonSerializationVisitorFactory(),
@@ -337,7 +342,7 @@ final class SerializerBuilder
 
     public function addDefaultDeserializationVisitors(): self
     {
-        $this->visitorsAdded = true;
+        $this->deserializationVisitorsAdded = true;
         $this->deserializationVisitors = [
             'xml' => new XmlDeserializationVisitorFactory(),
             'json' => new JsonDeserializationVisitorFactory(),
@@ -560,8 +565,11 @@ final class SerializerBuilder
             $this->addDefaultListeners();
         }
 
-        if (!$this->visitorsAdded) {
+        if (!$this->serializationVisitorsAdded) {
             $this->addDefaultSerializationVisitors();
+        }
+
+        if (!$this->deserializationVisitorsAdded) {
             $this->addDefaultDeserializationVisitors();
         }
 

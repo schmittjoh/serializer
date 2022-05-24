@@ -8,35 +8,28 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use Metadata\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class TypedPropertiesDriverTest extends TestCase
+final class UnionTypedPropertiesDriverTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
         }
     }
 
-    public function testInferPropertiesFromTypes()
+    public function testInferUnionTypesShouldResultInNoType()
     {
-        $m = $this->resolve(User::class);
+        $m = $this->resolve(UnionTypedProperties::class);
 
-        $expectedPropertyTypes = [
-            'id' => 'int',
-            'role' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Role',
-            'vehicle' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Vehicle',
-            'created' => 'DateTime',
-            'tags' => 'iterable',
-        ];
-
-        foreach ($expectedPropertyTypes as $property => $type) {
-            self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type);
-        }
+        self::assertEquals(
+            null,
+            $m->propertyMetadata['data']->type
+        );
     }
 
     private function resolve(string $classToResolve): ClassMetadata

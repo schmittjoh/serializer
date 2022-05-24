@@ -2,15 +2,4 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Annotation;
-
-/**
- * @Annotation
- * @Target({"CLASS","PROPERTY"})
- *
- * @deprecated use `@ReadOnlyProperty` instead
- */
-#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY)]
-final class ReadOnly extends ReadOnlyProperty
-{
-}
+class_alias('JMS\Serializer\Annotation\DeprecatedReadOnly', 'JMS\Serializer\Annotation\ReadOnly');
