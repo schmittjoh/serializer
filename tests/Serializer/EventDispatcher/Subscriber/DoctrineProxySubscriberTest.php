@@ -76,6 +76,17 @@ class DoctrineProxySubscriberTest extends TestCase
         self::assertFalse($obj->__isInitialized());
     }
 
+    public function testProxyLoadingCanBeSkippedForClassNotInHierarchy()
+    {
+        $subscriber = new DoctrineProxySubscriber(true);
+
+        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), ['name' => 'stdClass', 'params' => []]);
+        $subscriber->onPreSerialize($event);
+
+        self::assertEquals(['name' => 'stdClass', 'params' => []], $event->getType());
+        self::assertFalse($obj->__isInitialized());
+    }
+
     public function testProxyLoadingCanBeSkippedByExclusionStrategy()
     {
         $subscriber = new DoctrineProxySubscriber(false, false);
