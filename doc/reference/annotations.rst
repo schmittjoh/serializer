@@ -406,20 +406,20 @@ Available Types:
 |                                                            | string (''). DeserializeFormats can either be a  |
 |                                                            | string or an array of string.                    |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeInterface                                          | PHP's DateTimeImmutable object (default format*/ |
-|                                                            | timezone).                                       |
+| DateTimeInterface                                          | PHP's DateTimeInterface interface (default       |
+|                                                            | format*/timezone).                               |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeInterface<'format'>                                | PHP's DateTimeImmutable object (custom format/   |
-|                                                            | default timezone)                                |
+| DateTimeInterface<'format'>                                | PHP's DateTimeInterface interface (custom        |
+|                                                            | format/default timezone)                         |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeInterface<'format', 'zone'>                        | PHP's DateTimeImmutable object (custom format/   |
-|                                                            | timezone)                                        |
+| DateTimeInterface<'format', 'zone'>                        | PHP's DateTimeInterface interface (custom        |
+|                                                            | format/timezone)                                 |
 +------------------------------------------------------------+--------------------------------------------------+
-| DateTimeInterface<'format', 'zone', 'deserializeFormats'>  | PHP's DateTimeImmutable object (custom format/   |
-|                                                            | timezone/deserialize format). If you do not want |
-|                                                            | to specify a specific timezone, use an empty     |
-|                                                            | string (''). DeserializeFormats can either be a  |
-|                                                            | string or an array of string.                    |
+| DateTimeInterface<'format', 'zone', 'deserializeFormats'>  | PHP's DateTimeInterface interface (custom        |
+|                                                            | format/timezone/deserialize format). If you do   |
+|                                                            | not want to specify a specific timezone, use an  |
+|                                                            | empty string (''). DeserializeFormats can either |
+|                                                            | be a string or an array of string.               |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateInterval                                               | PHP's DateInterval object using ISO 8601 format  |
 +------------------------------------------------------------+--------------------------------------------------+
