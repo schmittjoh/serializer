@@ -577,6 +577,9 @@ class XmlSerializationTest extends BaseSerializationTest
             1.555,
             1.15,
             1.15,
+            1.555,
+            1.5,
+            1.555,
             1.555
         );
 
@@ -590,6 +593,9 @@ class XmlSerializationTest extends BaseSerializationTest
               <floating_point_half_even>1.2</floating_point_half_even>
               <floating_point_half_odd>1.1</floating_point_half_odd>
               <floating_point_half_up>1.56</floating_point_half_up>
+              <floating_point_fixed_decimals>1.50</floating_point_fixed_decimals>
+              <floating_point_fixed_decimals_less>1.6</floating_point_fixed_decimals_less>
+              <floating_point_fixed_decimals_more>1.560</floating_point_fixed_decimals_more>
             </result>',
             $result
         );

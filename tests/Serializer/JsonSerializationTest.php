@@ -453,6 +453,9 @@ class JsonSerializationTest extends BaseSerializationTest
             1.555,
             1.15,
             1.15,
+            1.555,
+            1.5,
+            1.555,
             1.555
         );
 
@@ -464,7 +467,10 @@ class JsonSerializationTest extends BaseSerializationTest
             . '"floating_point_half_down":1.55,'
             . '"floating_point_half_even":1.2,'
             . '"floating_point_half_odd":1.1,'
-            . '"floating_point_half_up":1.56'
+            . '"floating_point_half_up":1.56,'
+            . '"floating_point_fixed_decimals":"1.50",'
+            . '"floating_point_fixed_decimals_less":"1.6",'
+            . '"floating_point_fixed_decimals_more":"1.560"'
             . '}',
             $result
         );
