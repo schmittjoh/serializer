@@ -360,6 +360,11 @@ Available Types:
 |                                                            | Rounding Mode.                                   |
 |                                                            | (HALF_UP, HALF_DOWN, HALF_EVEN HALF_ODD)         |
 +------------------------------------------------------------+--------------------------------------------------+
+| double<2, 'HALF_DOWN', 2> or float<2, 'HALF_DOWN', 2>      | Primitive double with percision,                 |
+| double<2, 'HALF_DOWN', 3> or float<2, 'HALF_DOWN', 3>      | Rounding Mode and fixed decimals (default 1).    |
+|                                                            | (HALF_UP, HALF_DOWN, HALF_EVEN HALF_ODD)         |
+|                                                            | NOTE: for json the value is cast to string       |
++------------------------------------------------------------+--------------------------------------------------+
 | string                                                     | Primitive string                                 |
 +------------------------------------------------------------+--------------------------------------------------+
 | array                                                      | An array with arbitrary keys, and values.        |
