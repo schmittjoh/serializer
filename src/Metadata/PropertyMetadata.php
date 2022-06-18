@@ -134,6 +134,16 @@ class PropertyMetadata extends BasePropertyMetadata
     public $excludeIf = null;
 
     /**
+     * @var bool|null
+     */
+    public $hasDefault;
+
+    /**
+     * @var mixed|null
+     */
+    public $defaultValue;
+
+    /**
      * @internal
      *
      * @var bool
@@ -235,6 +245,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->excludeIf,
             $this->skipWhenEmpty,
             $this->forceReflectionAccess,
+            $this->hasDefault,
+            $this->defaultValue,
             parent::serializeToArray(),
         ];
     }
@@ -267,6 +279,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->excludeIf,
             $this->skipWhenEmpty,
             $this->forceReflectionAccess,
+            $this->hasDefault,
+            $this->defaultValue,
             $parentData,
         ] = $data;
 
