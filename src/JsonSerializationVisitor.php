@@ -70,20 +70,15 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitDouble(float $data, array $type)
     {
-        $dataResult = $data;
-        $percision = $type['params'][0] ?? null;
-        if ($percision) {
-            $roundMode = $type['params'][1] ?? null;
-            $roundMode = $this->mapRoundMode($roundMode);
-            $dataResult = round($dataResult, $percision, $roundMode);
+        $precision = $type['params'][0] ?? null;
+        if (!is_int($precision)) {
+            return $data;
         }
 
-        $decimalsNumbers = $type['params'][2] ?? null;
-        if ($decimalsNumbers !== null) {
-            $dataResult = number_format($dataResult, $decimalsNumbers, '.', '');
-        }
+        $roundMode = $type['params'][1] ?? null;
+        $roundMode = $this->mapRoundMode($roundMode);
 
-        return $dataResult;
+        return round($data, $precision, $roundMode);
     }
 
     /**

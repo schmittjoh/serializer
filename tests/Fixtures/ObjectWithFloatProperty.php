@@ -16,6 +16,13 @@ class ObjectWithFloatProperty
     private $floatingPointUnchanged;
 
     /**
+     * @Type("float<0>")
+     * @var float
+     */
+    #[Type(name: 'float<0>')]
+    private $floatingPointPrecisionZero;
+
+    /**
      * @Type("float<2,'HALF_DOWN'>")
      * @var float
      */
@@ -66,6 +73,7 @@ class ObjectWithFloatProperty
 
     public function __construct(
         float $floatingPointUnchanged,
+        float $floatingPointPrecisionZero,
         float $floatingPointHalfDown,
         float $floatingPointHalfEven,
         float $floatingPointHalfOdd,
@@ -75,6 +83,7 @@ class ObjectWithFloatProperty
         float $floatingPointFixedDecimalsMore
     ) {
         $this->floatingPointUnchanged = $floatingPointUnchanged;
+        $this->floatingPointPrecisionZero = $floatingPointPrecisionZero;
         $this->floatingPointHalfDown = $floatingPointHalfDown;
         $this->floatingPointHalfEven = $floatingPointHalfEven;
         $this->floatingPointHalfOdd = $floatingPointHalfOdd;
