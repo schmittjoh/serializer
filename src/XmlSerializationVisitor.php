@@ -180,11 +180,11 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     public function visitDouble(float $data, array $type)
     {
         $dataResult = $data;
-        $percision = $type['params'][0] ?? null;
-        if ($percision) {
+        $precision = $type['params'][0] ?? null;
+        if (is_int($precision)) {
             $roundMode = $type['params'][1] ?? null;
             $roundMode = $this->mapRoundMode($roundMode);
-            $dataResult = round($dataResult, $percision, $roundMode);
+            $dataResult = round($dataResult, $precision, $roundMode);
         }
 
         $decimalsNumbers = $type['params'][2] ?? null;

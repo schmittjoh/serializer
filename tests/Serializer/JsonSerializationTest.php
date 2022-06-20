@@ -440,9 +440,10 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals($expected, $this->serialize($array, $context));
     }
 
-    public function testSerialisationWithPercisionForFloat(): void
+    public function testSerialisationWithPrecisionForFloat(): void
     {
         $objectWithFloat = new ObjectWithFloatProperty(
+            1.555555555,
             1.555555555,
             1.555,
             1.15,
@@ -458,6 +459,7 @@ class JsonSerializationTest extends BaseSerializationTest
         static::assertEquals(
             '{'
             . '"floating_point_unchanged":1.555555555,'
+            . '"floating_point_precision_zero":2.0,'
             . '"floating_point_half_down":1.55,'
             . '"floating_point_half_even":1.2,'
             . '"floating_point_half_odd":1.1,'
