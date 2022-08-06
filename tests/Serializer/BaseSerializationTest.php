@@ -1485,6 +1485,30 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testUninitializedTypedProperties()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->includeInterfaceMetadata(true);
+        $this->serializer = $builder->build();
+
+        $user = new TypedProperties\User();
+        $user->id = 1;
+        $role = new TypedProperties\Role();
+        $user->role = $role;
+
+        // Ensure uninitialized typed property exists
+        $reflectionProp = new \ReflectionProperty($user, 'vehicle');
+        $this->assertFalse($reflectionProp->isInitialized($user));
+
+        $result = $this->serialize($user);
+
+        self::assertEquals($this->getContent('uninitialized_typed_props'), $result);
+    }
+
     /**
      * @doesNotPerformAssertions
      */
