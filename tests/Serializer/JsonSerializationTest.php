@@ -138,6 +138,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
+            $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
         }
 
         if (!isset($outputs[$key])) {
