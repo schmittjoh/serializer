@@ -139,6 +139,12 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 use function assert;
+use function class_exists;
+use function get_class;
+use function iterator_to_array;
+use function sprintf;
+
+use const PHP_VERSION_ID;
 
 abstract class BaseSerializationTest extends TestCase
 {
@@ -2050,7 +2056,12 @@ abstract class BaseSerializationTest extends TestCase
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $this->extendBuilder($builder);
         $this->serializer = $builder->build();
+    }
+
+    protected function extendBuilder(SerializerBuilder $builder): void
+    {
     }
 
     protected function getField($obj, $name)
