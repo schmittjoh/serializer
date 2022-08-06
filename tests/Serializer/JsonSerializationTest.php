@@ -136,6 +136,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['user_discriminator'] = '{"entityName":"User"}';
             $outputs['user_discriminator_extended'] = '{"entityName":"ExtendedUser"}';
             $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
+            $outputs['typed_props_constructor_promotion_with_default_values'] = '{"color":"blue","type_of_soil":"potting mix","days_since_potting":-1}';
             $outputs['uninitialized_typed_props'] = '{"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';

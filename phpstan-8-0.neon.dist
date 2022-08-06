@@ -11,10 +11,4 @@ parameters:
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
-    excludePaths:
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
-        - %currentWorkingDirectory%/tests/Metadata/Driver/UnionTypedPropertiesDriverTest.php
-        - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php
-

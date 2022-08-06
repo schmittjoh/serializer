@@ -1485,6 +1485,28 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testConstructorPromotionWithDefaultValues()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->includeInterfaceMetadata(true);
+        $this->serializer = $builder->build();
+
+        $vase = new TypedProperties\ConstructorPromotion\Vase('blue');
+        $result = $this->serialize($vase);
+        self::assertEquals($this->getContent('typed_props_constructor_promotion_with_default_values'), $result);
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('typed_props_constructor_promotion_with_default_values'), get_class($vase));
+            self::assertEquals($vase->color, $deserialized->color);
+            self::assertEquals($vase->plant, $deserialized->plant);
+            self::assertEquals($vase->typeOfSoil, $deserialized->typeOfSoil);
+            self::assertEquals($vase->daysSincePotting, $deserialized->daysSincePotting);
+        }
+    }
+
     public function testUninitializedTypedProperties()
     {
         if (PHP_VERSION_ID < 70400) {

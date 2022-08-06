@@ -16,6 +16,7 @@ jobs:
         php-version:
           - "7.2"
           - "8.0"
+          - "8.1"
 
     steps:
       - name: Checkout code
