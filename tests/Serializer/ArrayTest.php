@@ -95,7 +95,6 @@ class ArrayTest extends TestCase
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
         }
 
-        /** @var DefaultValuesAndAccessors $deserialized */
         $deserialized = $this->serializer->fromArray([], DefaultValuesAndAccessors::class);
 
         $expected = [
