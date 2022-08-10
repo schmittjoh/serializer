@@ -9,6 +9,7 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ConstructorPromotion\DefaultValuesAndAccessors;
 use PHPUnit\Framework\TestCase;
 
 class ArrayTest extends TestCase
@@ -86,5 +87,23 @@ class ArrayTest extends TestCase
 
         $result = $this->serializer->toArray($list);
         self::assertSame(['authors' => [[]]], $result);
+    }
+
+    public function testConstructorPromotionWithDefaultValuesOnly()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        /** @var DefaultValuesAndAccessors $deserialized */
+        $deserialized = $this->serializer->fromArray([], DefaultValuesAndAccessors::class);
+
+        $expected = [
+            'traditional_with_setter' => 'default',
+            'traditional' => 'default',
+            'promoted' => 'default',
+            'promoted_with_setter' => 'default',
+        ];
+        $this->assertEquals($expected, $this->serializer->toArray($deserialized));
     }
 }

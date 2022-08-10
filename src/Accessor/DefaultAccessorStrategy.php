@@ -7,6 +7,7 @@ namespace JMS\Serializer\Accessor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\UninitializedPropertyException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
@@ -112,6 +113,10 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
         if (true === $metadata->readOnly) {
             throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
         }
+
+//        if (null === $value) {
+//            return;
+//        }
 
         if (null !== $metadata->setter) {
             $object->{$metadata->setter}($value);
