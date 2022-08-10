@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\TypedProperties\ConstructorPromotion;
 
-use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation as JMS;
 
 class DefaultValuesAndAccessors
 {
     public string $traditional = 'default';
-    #[Accessor(setter: 'setTraditionalWithSetter')]
+    #[JMS\Accessor(setter: 'setTraditionalWithSetter')]
     public string $traditionalWithSetter = 'default';
 
     public function __construct(
         public string $promoted = 'default',
-        #[Accessor(setter: 'setPromotedWithSetter')]
+        #[JMS\Accessor(setter: 'setPromotedWithSetter')]
         public string $promotedWithSetter = 'default',
     ) {
     }
