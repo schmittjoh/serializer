@@ -870,7 +870,7 @@ Resulting XML:
 
 
 PHP 8 support
--------------
+~~~~~~~~~~~~~
 
 JMS serializer now supports PHP 8 attributes, with a few caveats:
 - Due to the missing support for nested annotations, the syntax for a few annotations has changed
