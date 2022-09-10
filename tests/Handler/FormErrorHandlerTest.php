@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
@@ -270,6 +271,21 @@ class FormErrorHandlerTest extends TestCase
         $this->invokeMethod($handler, 'getErrorMessage', [$formError]);
     }
 
+    public function testFormInterfaceCouldBeSerializeTheSameWayAsForm ()
+    {
+        foreach ( FormErrorHandler::getSubscribingMethods() as $method ){
+            if($method['type'] === FormInterface::class){
+                switch ($method['format']){
+                    case 'json':
+                        self::assertSame('serializeFormToJson',$method['method']);
+                        break;
+                    case 'xml':
+                        self::assertSame('serializeFormToXml',$method['method']);
+                        break;
+                }
+            }
+        }
+    }
     /**
      * @param string $name
      * @param EventDispatcherInterface $dispatcher
