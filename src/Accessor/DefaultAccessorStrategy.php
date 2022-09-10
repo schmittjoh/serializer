@@ -113,10 +113,6 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
         }
 
-//        if (null === $value) {
-//            return;
-//        }
-
         if (null !== $metadata->setter) {
             $object->{$metadata->setter}($value);
 
