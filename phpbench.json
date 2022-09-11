@@ -1,5 +1,15 @@
 {
   "runner.bootstrap": "tests/bootstrap.php",
   "runner.iterations": 3,
-  "runner.revs": 1
+  "runner.revs": 1,
+  "report.generators": {
+    "memory": {
+      "extends": "aggregate",
+      "cols": [ 
+        "benchmark",
+        "mem_peak"
+      ]
+    }
+  }
+
 }
