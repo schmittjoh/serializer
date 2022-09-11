@@ -29,6 +29,21 @@ abstract class AbstractSerializationBench
      */
     private $format;
 
+    /**
+     * @var int
+     */
+    protected $iterations = 1;
+
+    /**
+     * @var int
+     */
+    protected $amountOfPosts = 200;
+
+    /**
+     * @var int
+     */
+    protected $amountOfComments = 100;
+
     public function __construct()
     {
         $this->serializer = SerializerBuilder::create()->build();
@@ -38,7 +53,9 @@ abstract class AbstractSerializationBench
 
     public function benchSerialization(): void
     {
-        $this->serializer->serialize($this->collection, $this->format, $this->createContext());
+        for ($i = 0; $i <= $this->iterations; $i++) {
+            $this->serializer->serialize($this->collection, $this->format, $this->createContext());
+        }
     }
 
     abstract protected function getFormat(): string;
@@ -51,7 +68,7 @@ abstract class AbstractSerializationBench
     private function createCollection()
     {
         $collection = [];
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < $this->amountOfPosts; $i++) {
             $collection[] = $this->createPost();
         }
 
@@ -66,7 +83,7 @@ abstract class AbstractSerializationBench
             new \DateTime(),
             new Publisher('bar')
         );
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < $this->amountOfComments; $i++) {
             $post->addComment(new Comment(new Author('foo'), 'foobar'));
         }
 
