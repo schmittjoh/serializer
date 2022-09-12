@@ -132,6 +132,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryBuilder;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -1192,7 +1193,10 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('form_errors'), $this->serialize($errors));
     }
 
-    public function testNestedFormErrors()
+    /**
+     * @dataProvider initialFormTypeProvider
+     */
+    public function testNestedFormErrors($type)
     {
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
 
@@ -1210,13 +1214,17 @@ abstract class BaseSerializationTest extends TestCase
         $child->addError(new FormError('Error of the child form'));
         $form->add($child);
 
-        self::assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
+        $context = SerializationContext::create();
+        $context->setInitialType($type);
+
+        self::assertEquals($this->getContent('nested_form_errors'), $this->serialize($form, $context));
     }
 
     /**
      * @doesNotPerformAssertions
+     * @dataProvider initialFormTypeProvider
      */
-    public function testFormErrorsWithNonFormComponents()
+    public function testFormErrorsWithNonFormComponents($type)
     {
         if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
             $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
@@ -1238,11 +1246,22 @@ abstract class BaseSerializationTest extends TestCase
         $form = new Form($fooConfig);
         $form->add('save', SubmitType::class);
 
+        $context = SerializationContext::create();
+        $context->setInitialType($type);
+
         try {
-            $this->serialize($form);
+            $this->serialize($form, $context);
         } catch (\Throwable $e) {
             self::assertTrue(false, 'Serialization should not throw an exception');
         }
+    }
+
+    public function initialFormTypeProvider()
+    {
+        return [
+            [Form::class],
+            [FormInterface::class],
+        ];
     }
 
     public function testConstraintViolation()
