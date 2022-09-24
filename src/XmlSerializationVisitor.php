@@ -192,7 +192,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     /**
      * {@inheritdoc}
      */
-    public function visitArray(array $data, array $type): void
+    public function visitArray(array $data, array $type, GraphNavigatorInterface $navigator): void
     {
         if (null === $this->currentNode) {
             $this->createRoot();
@@ -215,7 +215,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             }
 
             try {
-                if (null !== $node = $this->navigator->accept($v, $elType)) {
+                if (null !== $node = $navigator->accept($v, $elType)) {
                     $this->currentNode->appendChild($node);
                 }
             } catch (NotAcceptableException $e) {
@@ -245,11 +245,11 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     /**
      * {@inheritdoc}
      */
-    public function visitProperty(PropertyMetadata $metadata, $v): void
+    public function visitProperty(PropertyMetadata $metadata, $v, GraphNavigatorInterface $navigator): void
     {
         if ($metadata->xmlAttribute) {
             $this->setCurrentMetadata($metadata);
-            $node = $this->navigator->accept($v, $metadata->type);
+            $node = $navigator->accept($v, $metadata->type);
             $this->revertCurrentMetadata();
 
             if (!$node instanceof \DOMCharacterData) {
@@ -272,7 +272,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             $this->hasValue = true;
 
             $this->setCurrentMetadata($metadata);
-            $node = $this->navigator->accept($v, $metadata->type);
+            $node = $navigator->accept($v, $metadata->type);
             $this->revertCurrentMetadata();
 
             if (!$node instanceof \DOMCharacterData) {
@@ -291,7 +291,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
             foreach ($v as $key => $value) {
                 $this->setCurrentMetadata($metadata);
-                $node = $this->navigator->accept($value, null);
+                $node = $navigator->accept($value, null);
                 $this->revertCurrentMetadata();
 
                 if (!$node instanceof \DOMCharacterData) {
@@ -317,7 +317,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         $this->setCurrentMetadata($metadata);
 
         try {
-            if (null !== $node = $this->navigator->accept($v, $metadata->type)) {
+            if (null !== $node = $navigator->accept($v, $metadata->type)) {
                 $this->currentNode->appendChild($node);
             }
         } catch (NotAcceptableException $e) {

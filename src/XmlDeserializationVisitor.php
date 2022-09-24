@@ -176,7 +176,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * {@inheritdoc}
      */
-    public function visitArray($data, array $type): array
+    public function visitArray($data, array $type, GraphNavigatorInterface $navigator): array
     {
         // handle key-value-pairs
         if (null !== $this->currentMetadata && $this->currentMetadata->xmlKeyValuePairs) {
@@ -190,8 +190,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
             $result = [];
             foreach ($data as $key => $v) {
-                $k = $this->navigator->accept($key, $keyType);
-                $result[$k] = $this->navigator->accept($v, $entryType);
+                $k = $navigator->accept($key, $keyType);
+                $result[$k] = $navigator->accept($v, $entryType);
             }
 
             return $result;
@@ -231,7 +231,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 $result = [];
 
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0]);
+                    $result[] = $navigator->accept($v, $type['params'][0]);
                 }
 
                 return $result;
@@ -251,8 +251,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                         throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
                     }
 
-                    $k = $this->navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
-                    $result[$k] = $this->navigator->accept($v, $entryType);
+                    $k = $navigator->accept($attrs[$this->currentMetadata->xmlKeyAttribute], $keyType);
+                    $result[$k] = $navigator->accept($v, $entryType);
                 }
 
                 return $result;
@@ -302,7 +302,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * {@inheritdoc}
      */
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, GraphNavigatorInterface $navigator)
     {
         $name = $metadata->serializedName;
 
@@ -311,7 +311,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
 
-            return $this->navigator->accept($data, $metadata->type);
+            return $navigator->accept($data, $metadata->type);
         }
 
         if ($metadata->xmlAttribute) {
@@ -321,7 +321,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                     throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
                 }
 
-                return $this->navigator->accept($attributes[$name], $metadata->type);
+                return $navigator->accept($attributes[$name], $metadata->type);
             }
 
             throw new NotAcceptableException();
@@ -332,7 +332,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
 
-            return $this->navigator->accept($data, $metadata->type);
+            return $navigator->accept($data, $metadata->type);
         }
 
         if ($metadata->xmlCollection) {
@@ -346,7 +346,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
 
-            $v = $this->navigator->accept($enclosingElem, $metadata->type);
+            $v = $navigator->accept($enclosingElem, $metadata->type);
             $this->revertCurrentMetadata();
 
             return $v;
@@ -391,7 +391,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
         }
 
-        return $this->navigator->accept($node, $metadata->type);
+        return $navigator->accept($node, $metadata->type);
     }
 
     /**

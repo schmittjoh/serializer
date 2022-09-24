@@ -37,14 +37,14 @@ final class StdClassHandler implements SubscribingHandlerInterface
     /**
      * @return mixed
      */
-    public function serializeStdClass(SerializationVisitorInterface $visitor, \stdClass $stdClass, array $type, SerializationContext $context)
+    public static function serializeStdClass(SerializationVisitorInterface $visitor, \stdClass $stdClass, array $type, SerializationContext $context, GraphNavigatorInterface $navigator)
     {
         $classMetadata = $context->getMetadataFactory()->getMetadataForClass('stdClass');
         $visitor->startVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass']);
 
         foreach ((array) $stdClass as $name => $value) {
             $metadata = new StaticPropertyMetadata('stdClass', $name, $value);
-            $visitor->visitProperty($metadata, $value);
+            $visitor->visitProperty($metadata, $value, $navigator);
         }
 
         return $visitor->endVisitingObject($classMetadata, $stdClass, ['name' => 'stdClass']);

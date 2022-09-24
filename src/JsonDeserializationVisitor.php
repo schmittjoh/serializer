@@ -91,7 +91,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     /**
      * {@inheritdoc}
      */
-    public function visitArray($data, array $type): array
+    public function visitArray($data, array $type, GraphNavigatorInterface $navigator): array
     {
         if (!\is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', \gettype($data), json_encode($data)));
@@ -109,7 +109,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
                 $result = [];
 
                 foreach ($data as $v) {
-                    $result[] = $this->navigator->accept($v, $listType);
+                    $result[] = $navigator->accept($v, $listType);
                 }
 
                 return $result;
@@ -120,7 +120,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
                 $result = [];
 
                 foreach ($data as $k => $v) {
-                    $result[$this->navigator->accept($k, $keyType)] = $this->navigator->accept($v, $entryType);
+                    $result[$navigator->accept($k, $keyType)] = $navigator->accept($v, $entryType);
                 }
 
                 return $result;
@@ -157,7 +157,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     /**
      * {@inheritdoc}
      */
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, GraphNavigatorInterface $navigator)
     {
         $name = $metadata->serializedName;
 
@@ -174,7 +174,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
             }
 
-            return $this->navigator->accept($data, $metadata->type);
+            return $navigator->accept($data, $metadata->type);
         }
 
         if (!array_key_exists($name, $data)) {
@@ -185,7 +185,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
             throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
         }
 
-        return null !== $data[$name] ? $this->navigator->accept($data[$name], $metadata->type) : null;
+        return null !== $data[$name] ? $navigator->accept($data[$name], $metadata->type) : null;
     }
 
     /**

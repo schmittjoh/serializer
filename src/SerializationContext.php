@@ -30,9 +30,9 @@ class SerializationContext extends Context
         return new self();
     }
 
-    public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
+    public function initialize(string $format, VisitorInterface $visitor, MetadataFactoryInterface $factory): void
     {
-        parent::initialize($format, $visitor, $navigator, $factory);
+        parent::initialize($format, $visitor, $factory);
 
         $this->visitingSet = new \SplObjectStorage();
         $this->visitingStack = new \SplStack();
@@ -155,8 +155,6 @@ class SerializationContext extends Context
 
     public function getInitialType(): ?string
     {
-        return $this->initialType
-            ? $this->initialType
-            : ($this->hasAttribute('initial_type') ? $this->getAttribute('initial_type') : null);
+        return $this->initialType ?: ($this->hasAttribute('initial_type') ? $this->getAttribute('initial_type') : null);
     }
 }

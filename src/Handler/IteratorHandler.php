@@ -83,12 +83,13 @@ final class IteratorHandler implements SubscribingHandlerInterface
         SerializationVisitorInterface $visitor,
         iterable $iterable,
         array $type,
-        SerializationContext $context
+        SerializationContext $context,
+        GraphNavigatorInterface $navigator
     ): ?iterable {
         $type['name'] = 'array';
 
         $context->stopVisiting($iterable);
-        $result = $visitor->visitArray(Functions::iterableToArray($iterable), $type);
+        $result = $visitor->visitArray(Functions::iterableToArray($iterable), $type, $navigator);
         $context->startVisiting($iterable);
 
         return $result;
@@ -97,29 +98,29 @@ final class IteratorHandler implements SubscribingHandlerInterface
     /**
      * @param mixed $data
      */
-    public function deserializeIterator(
+    public static  function deserializeIterator(
         DeserializationVisitorInterface $visitor,
         $data,
         array $type,
-        DeserializationContext $context
+        DeserializationContext $context,
+        GraphNavigatorInterface $navigator
     ): \Iterator {
         $type['name'] = 'array';
 
-        return new ArrayIterator($visitor->visitArray($data, $type));
+        return new ArrayIterator($visitor->visitArray($data, $type, $navigator));
     }
 
     /**
      * @param mixed $data
      */
-    public function deserializeGenerator(
+    public static function deserializeGenerator(
         DeserializationVisitorInterface $visitor,
         $data,
-        array $type,
-        DeserializationContext $context
+        array $type
     ): Generator {
-        return (static function () use (&$visitor, &$data, &$type): Generator {
+        return (static function ($visitor, $data, $type): Generator {
             $type['name'] = 'array';
             yield from $visitor->visitArray($data, $type);
-        })();
+        })($visitor, $data, $type);
     }
 }

@@ -77,7 +77,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     /**
      * @return array|\ArrayObject
      */
-    public function serializeCollection(SerializationVisitorInterface $visitor, Collection $collection, array $type, SerializationContext $context)
+    public function serializeCollection(SerializationVisitorInterface $visitor, Collection $collection, array $type, SerializationContext $context, GraphNavigatorInterface $navigator)
     {
         // We change the base type, and pass through possible parameters.
         $type['name'] = 'array';
@@ -89,11 +89,11 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
             if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($context->getMetadataFactory()->getMetadataForClass(\get_class($collection)), $context)) {
                 $context->startVisiting($collection);
 
-                return $visitor->visitArray([], $type);
+                return $visitor->visitArray([], $type, $navigator);
             }
         }
 
-        $result = $visitor->visitArray($collection->toArray(), $type);
+        $result = $visitor->visitArray($collection->toArray(), $type, $navigator);
 
         $context->startVisiting($collection);
 
@@ -107,12 +107,13 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
         DeserializationVisitorInterface $visitor,
         $data,
         array $type,
-        DeserializationContext $context
+        DeserializationContext $context,
+        GraphNavigatorInterface $navigator
     ): Collection {
         // See above.
         $type['name'] = 'array';
 
-        $elements = new ArrayCollection($visitor->visitArray($data, $type));
+        $elements = new ArrayCollection($visitor->visitArray($data, $type, $navigator));
 
         if (null === $this->managerRegistry) {
             return $elements;

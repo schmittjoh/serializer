@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Visitor;
 
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\VisitorInterface;
@@ -64,7 +65,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return array<mixed>
      */
-    public function visitArray($data, array $type): array;
+    public function visitArray($data, array $type, GraphNavigatorInterface $navigator): array;
 
     /**
      * Called before the properties of the object are being visited.
@@ -78,7 +79,7 @@ interface DeserializationVisitorInterface extends VisitorInterface
      *
      * @return mixed
      */
-    public function visitProperty(PropertyMetadata $metadata, $data);
+    public function visitProperty(PropertyMetadata $metadata, $data, GraphNavigatorInterface $navigator);
 
     /**
      * Called after all properties of the object have been visited.

@@ -107,10 +107,10 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
     /**
      * {@inheritdoc}
      */
-    public function visitArray($data, array $type): array
+    public function visitArray($data, array $type, GraphNavigatorInterface $navigator): array
     {
         try {
-            return $this->wrappedDeserializationVisitor->visitArray($data, $type);
+            return $this->wrappedDeserializationVisitor->visitArray($data, $type, $navigator);
         } catch (RuntimeException $e) {
             throw NonVisitableTypeException::fromDataAndType($data, $type, $e);
         }
@@ -135,9 +135,9 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
     /**
      * {@inheritdoc}
      */
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, GraphNavigatorInterface $navigator)
     {
-        return $this->wrappedDeserializationVisitor->visitProperty($metadata, $data);
+        return $this->wrappedDeserializationVisitor->visitProperty($metadata, $data, $navigator);
     }
 
     /**

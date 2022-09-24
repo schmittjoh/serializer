@@ -230,7 +230,7 @@ class ContextTest extends TestCase
 
         $context = SerializationContext::create();
 
-        $context->initialize('json', $visitor, $navigator, $metadataFactory);
+        $context->initialize('json', $visitor, $metadataFactory);
 
         $context->setSerializeNull(false);
     }

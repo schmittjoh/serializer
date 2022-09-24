@@ -234,12 +234,10 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $context->initialize(
             $format,
             $visitor,
-            $navigator,
             $this->factory
         );
 
-        $visitor->setNavigator($navigator);
-        $navigator->initialize($visitor, $context);
+        $navigator->initialize($context);
 
         if ($prepare) {
             $data = $visitor->prepare($data);

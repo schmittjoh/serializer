@@ -414,7 +414,7 @@ class XmlSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual',
             $this->getFormat(),
-            static function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
+            static function (XmlSerializationVisitor $visitor, $data, $type, Context $context, GraphNavigatorInterface $navigator) use ($author) {
                 $factory = $context->getMetadataFactory(get_class($author));
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
 
@@ -422,7 +422,7 @@ class XmlSerializationTest extends BaseSerializationTest
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
 
-                $visitor->visitProperty($metadata, $author);
+                $visitor->visitProperty($metadata, $author, $navigator);
             }
         );
 

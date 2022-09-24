@@ -111,7 +111,7 @@ class ObjectConstructorTest extends TestCase
         $class = $this->driver->loadMetadataForClass(new ReflectionClass(Author::class));
 
         $context = DeserializationContext::create()->setGroups('foo');
-        $context->initialize('json', $this->visitor, $graph, $metadata);
+        $context->initialize('json', $this->visitor, $metadata);
         $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
         $authorFetched = $constructor->construct($this->visitor, $class, ['id' => 5], $type, $context);
 

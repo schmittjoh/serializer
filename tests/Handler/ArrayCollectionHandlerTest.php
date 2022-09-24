@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
@@ -25,12 +26,13 @@ class ArrayCollectionHandlerTest extends TestCase
         $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
         $visitor->method('visitArray')->with(['foo'])->willReturn(['foo']);
 
+        $navigator = $this->getMockBuilder(GraphNavigator::class)->getMock();
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
         $type = ['name' => 'ArrayCollection', 'params' => []];
 
         $collection = new ArrayCollection(['foo']);
 
-        $handler->serializeCollection($visitor, $collection, $type, $context);
+        $handler->serializeCollection($visitor, $collection, $type, $context, $navigator);
     }
 
     /**
@@ -43,6 +45,7 @@ class ArrayCollectionHandlerTest extends TestCase
         $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
         $visitor->method('visitArray')->with([])->willReturn([]);
 
+        $navigator = $this->getMockBuilder(GraphNavigator::class)->getMock();
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
 
         $factoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)->getMock();
@@ -55,6 +58,6 @@ class ArrayCollectionHandlerTest extends TestCase
 
         $collection = new ArrayCollection(['foo']);
 
-        $handler->serializeCollection($visitor, $collection, $type, $context);
+        $handler->serializeCollection($visitor, $collection, $type, $context, $navigator);
     }
 }

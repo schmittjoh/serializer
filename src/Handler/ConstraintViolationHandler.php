@@ -53,7 +53,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
      */
     public function serializeListToJson(SerializationVisitorInterface $visitor, ConstraintViolationList $list, array $type, SerializationContext $context)
     {
-        return $visitor->visitArray(iterator_to_array($list), $type);
+        return $visitor->visitArray(iterator_to_array($list), $type, $navigator);
     }
 
     public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, ?array $type = null): void

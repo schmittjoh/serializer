@@ -20,10 +20,6 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 abstract class GraphNavigator implements GraphNavigatorInterface
 {
     /**
-     * @var VisitorInterface
-     */
-    protected $visitor;
-    /**
      * @var Context
      */
     protected $context;
@@ -36,12 +32,9 @@ abstract class GraphNavigator implements GraphNavigatorInterface
      */
     protected $exclusionStrategy;
 
-    public function initialize(VisitorInterface $visitor, Context $context): void
+    public function initialize(Context $context): void
     {
-        $this->visitor = $visitor;
         $this->context = $context;
-
-        // cache value
         $this->format = $context->getFormat();
         $this->exclusionStrategy = $context->getExclusionStrategy();
     }

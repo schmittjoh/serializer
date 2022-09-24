@@ -87,7 +87,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      *
      * @return array|\ArrayObject
      */
-    public function visitArray(array $data, array $type)
+    public function visitArray(array $data, array $type, GraphNavigatorInterface $navigator)
     {
         \array_push($this->dataStack, $data);
 
@@ -98,7 +98,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         $elType = $this->getElementType($type);
         foreach ($data as $k => $v) {
             try {
-                $v = $this->navigator->accept($v, $elType);
+                $v = $navigator->accept($v, $elType);
             } catch (NotAcceptableException $e) {
                 continue;
             }
@@ -139,10 +139,10 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
     /**
      * {@inheritdoc}
      */
-    public function visitProperty(PropertyMetadata $metadata, $v): void
+    public function visitProperty(PropertyMetadata $metadata, $v, GraphNavigatorInterface $navigator): void
     {
         try {
-            $v = $this->navigator->accept($v, $metadata->type);
+            $v = $navigator->accept($v, $metadata->type);
         } catch (NotAcceptableException $e) {
             return;
         }

@@ -199,8 +199,8 @@ class JsonSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
             'json',
-            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
-                return $visitor->visitArray(iterator_to_array($data), $type);
+            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context, GraphNavigatorInterface $navigator) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $navigator);
             }
         );
 
@@ -218,8 +218,8 @@ class JsonSerializationTest extends BaseSerializationTest
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'JMS\Serializer\Tests\Fixtures\AuthorList',
             'json',
-            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
-                return $visitor->visitArray(iterator_to_array($data), $type);
+            static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context, GraphNavigatorInterface $navigator) {
+                return $visitor->visitArray(iterator_to_array($data), $type, $navigator);
             }
         );
 

@@ -13,14 +13,8 @@ use JMS\Serializer\Exception\NonStringCastableTypeException;
  */
 abstract class AbstractVisitor implements VisitorInterface
 {
-    /**
-     * @var GraphNavigatorInterface
-     */
-    protected $navigator;
-
     public function setNavigator(GraphNavigatorInterface $navigator): void
     {
-        $this->navigator = $navigator;
     }
 
     /**

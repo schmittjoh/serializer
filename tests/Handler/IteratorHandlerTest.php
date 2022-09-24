@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\IteratorHandler;
@@ -43,6 +44,8 @@ final class IteratorHandlerTest extends TestCase
     public function testSerialize(\Iterator $iterator): void
     {
         $type = get_class($iterator);
+        $navigator = $this->getMockBuilder(GraphNavigator::class)->getMock();
+
         $serializationHandler = $this->handlerRegistry->getHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             $type,
@@ -54,7 +57,8 @@ final class IteratorHandlerTest extends TestCase
             $this->createSerializationVisitor(),
             $iterator,
             ['name' => $type, 'params' => []],
-            $this->getMockBuilder(SerializationContext::class)->getMock()
+            $this->getMockBuilder(SerializationContext::class)->getMock(),
+            $navigator
         );
         self::assertSame(self::DATA, $serialized);
 
@@ -69,7 +73,8 @@ final class IteratorHandlerTest extends TestCase
             $this->createDeserializationVisitor(),
             $serialized,
             ['name' => $type, 'params' => []],
-            $this->getMockBuilder(DeserializationContext::class)->getMock()
+            $this->getMockBuilder(DeserializationContext::class)->getMock(),
+            $navigator
         );
         self::assertEquals($iterator, $deserialized);
     }

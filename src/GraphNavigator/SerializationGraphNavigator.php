@@ -44,16 +44,6 @@ use function assert;
 final class SerializationGraphNavigator extends GraphNavigator
 {
     /**
-     * @var SerializationVisitorInterface
-     */
-    protected $visitor;
-
-    /**
-     * @var SerializationContext
-     */
-    protected $context;
-
-    /**
      * @var ExpressionLanguageExclusionStrategy
      */
     private $expressionExclusionStrategy;
@@ -99,11 +89,11 @@ final class SerializationGraphNavigator extends GraphNavigator
         }
     }
 
-    public function initialize(VisitorInterface $visitor, Context $context): void
+    public function initialize(Context $context): void
     {
         assert($context instanceof SerializationContext);
 
-        parent::initialize($visitor, $context);
+        parent::initialize($context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
     }
 
@@ -134,7 +124,7 @@ final class SerializationGraphNavigator extends GraphNavigator
 
         // Sometimes data can convey null but is not of a null type.
         // Visitors can have the power to add this custom null evaluation
-        if ($this->visitor instanceof NullAwareVisitorInterface && true === $this->visitor->isNull($data)) {
+        if ($this->context->getVisitor() instanceof NullAwareVisitorInterface && true === $this->context->getVisitor()->isNull($data)) {
             $type = ['name' => 'NULL', 'params' => []];
         }
 
@@ -144,29 +134,29 @@ final class SerializationGraphNavigator extends GraphNavigator
                     throw new NotAcceptableException();
                 }
 
-                return $this->visitor->visitNull($data, $type);
+                return $this->context->getVisitor()->visitNull($data, $type);
 
             case 'string':
-                return $this->visitor->visitString((string) $data, $type);
+                return $this->context->getVisitor()->visitString((string) $data, $type);
 
             case 'int':
             case 'integer':
-                return $this->visitor->visitInteger((int) $data, $type);
+                return $this->context->getVisitor()->visitInteger((int) $data, $type);
 
             case 'bool':
             case 'boolean':
-                return $this->visitor->visitBoolean((bool) $data, $type);
+                return $this->context->getVisitor()->visitBoolean((bool) $data, $type);
 
             case 'double':
             case 'float':
-                return $this->visitor->visitDouble((float) $data, $type);
+                return $this->context->getVisitor()->visitDouble((float) $data, $type);
 
             case 'iterable':
-                return $this->visitor->visitArray(Functions::iterableToArray($data), $type);
+                return $this->context->getVisitor()->visitArray(Functions::iterableToArray($data), $type, $this);
 
             case 'array':
             case 'list':
-                return $this->visitor->visitArray((array) $data, $type);
+                return $this->context->getVisitor()->visitArray((array) $data, $type, $this);
 
             case 'resource':
                 $msg = 'Resources are not supported in serialized data.';
@@ -205,7 +195,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
                     try {
-                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        $rs = \call_user_func($handler, $this->context->getVisitor(), $data, $type, $this->context, $this);
                         $this->context->stopVisiting($data);
 
                         return $rs;
@@ -247,7 +237,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                     $method->invoke($data);
                 }
 
-                $this->visitor->startVisitingObject($metadata, $data, $type);
+                $this->context->getVisitor()->startVisitingObject($metadata, $data, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
                     if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
@@ -268,13 +258,13 @@ final class SerializationGraphNavigator extends GraphNavigator
                     }
 
                     $this->context->pushPropertyMetadata($propertyMetadata);
-                    $this->visitor->visitProperty($propertyMetadata, $v);
+                    $this->context->getVisitor()->visitProperty($propertyMetadata, $v, $this);
                     $this->context->popPropertyMetadata();
                 }
 
                 $this->afterVisitingObject($metadata, $data, $type);
 
-                return $this->visitor->endVisitingObject($metadata, $data, $type);
+                return $this->context->getVisitor()->endVisitingObject($metadata, $data, $type);
         }
     }
 

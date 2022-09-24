@@ -34,11 +34,6 @@ abstract class Context
     private $visitor;
 
     /**
-     * @var GraphNavigatorInterface
-     */
-    private $navigator;
-
-    /**
      * @var MetadataFactory
      */
     private $metadataFactory;
@@ -59,7 +54,7 @@ abstract class Context
         $this->metadataStack = new \SplStack();
     }
 
-    public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
+    public function initialize(string $format, VisitorInterface $visitor, MetadataFactoryInterface $factory): void
     {
         if ($this->initialized) {
             throw new LogicException('This context was already initialized, and cannot be re-used.');
@@ -67,7 +62,6 @@ abstract class Context
 
         $this->format = $format;
         $this->visitor = $visitor;
-        $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
 
@@ -94,11 +88,6 @@ abstract class Context
     public function getVisitor(): VisitorInterface
     {
         return $this->visitor;
-    }
-
-    public function getNavigator(): GraphNavigatorInterface
-    {
-        return $this->navigator;
     }
 
     public function getExclusionStrategy(): ?ExclusionStrategyInterface
