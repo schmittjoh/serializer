@@ -65,7 +65,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
             }
 
             foreach ($property->groups as $group) {
-                if (isset($this->groups[$group])) {
+                if (is_scalar($group) && isset($this->groups[$group])) {
                     return false;
                 }
             }

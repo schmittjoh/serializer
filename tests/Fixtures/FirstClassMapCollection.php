@@ -12,7 +12,7 @@ class FirstClassMapCollection
      * @Serializer\Type("array<string,string>")
      * @Serializer\Inline
      *
-     * @var int[]
+     * @var array<string, string>
      */
     #[Serializer\Type(name: 'array<string,string>')]
     #[Serializer\Inline]

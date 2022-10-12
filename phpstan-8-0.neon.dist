@@ -11,3 +11,4 @@ parameters:
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php

@@ -27,9 +27,21 @@
             <group>performance</group>
         </exclude>
     </groups>
+
+    <!-- PHPUnit <9 coverage filters -->
     <filter>
         <whitelist>
             <directory>src</directory>
         </whitelist>
     </filter>
+
+    <!-- PHPUnit >=9 coverage filters -->
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+        <exclude>
+            <file>./src/Annotation/ReadOnly.php</file>
+        </exclude>
+    </coverage>
 </phpunit>

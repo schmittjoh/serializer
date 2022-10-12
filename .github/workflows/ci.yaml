@@ -22,6 +22,8 @@ jobs:
         dependencies:
           - "lowest"
           - "highest"
+        include:
+          - { php-version: '8.2', dependencies: 'highest', composer-options: '--ignore-platform-req=php' }
 
     env:
       JMS_TESTS_SHOW_DEPRECATIONS: 1

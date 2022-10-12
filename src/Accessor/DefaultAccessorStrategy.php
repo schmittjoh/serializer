@@ -7,6 +7,7 @@ namespace JMS\Serializer\Accessor;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exception\UninitializedPropertyException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
@@ -91,7 +92,16 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             $this->readAccessors[$metadata->class] = $accessor;
         }
 
-        return $accessor($object, $metadata->name);
+        try {
+            return $accessor($object, $metadata->name);
+        } catch (\Error $e) {
+            // handle uninitialized properties in PHP >= 7.4
+            if (preg_match('/^Typed property ([\w\\\\@]+)::\$(\w+) must not be accessed before initialization$/', $e->getMessage(), $matches)) {
+                throw new UninitializedPropertyException(sprintf('Uninitialized property "%s::$%s".', $metadata->class, $metadata->name), 0, $e);
+            }
+
+            throw $e;
+        }
     }
 
     /**

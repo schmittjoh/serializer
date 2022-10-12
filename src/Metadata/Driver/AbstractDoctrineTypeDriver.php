@@ -33,6 +33,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'text' => 'string',
         'blob' => 'string',
         'guid' => 'string',
+        'decimal' => 'string',
 
         'integer' => 'integer',
         'smallint' => 'integer',
@@ -51,7 +52,6 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         'dateinterval' => 'DateInterval',
 
         'float' => 'float',
-        'decimal' => 'float',
 
         'boolean' => 'boolean',
 

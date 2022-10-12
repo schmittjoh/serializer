@@ -43,6 +43,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'type' => FormInterface::class,
                 'format' => $format,
+                'method' => 'serializeFormTo' . ucfirst($format),
             ];
             $methods[] = [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,

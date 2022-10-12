@@ -13,6 +13,7 @@ use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -26,6 +27,8 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Handler\SymfonyUidHandler;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -33,6 +36,8 @@ use JMS\Serializer\Tests\Fixtures\AccessorOrderChild;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderMethod;
 use JMS\Serializer\Tests\Fixtures\AccessorOrderParent;
 use JMS\Serializer\Tests\Fixtures\Author;
+use JMS\Serializer\Tests\Fixtures\AuthorDeprecatedReadOnly;
+use JMS\Serializer\Tests\Fixtures\AuthorDeprecatedReadOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccessContext;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -56,6 +61,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
@@ -126,11 +132,20 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryBuilder;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 use function assert;
+use function class_exists;
+use function get_class;
+use function iterator_to_array;
+use function sprintf;
+
+use const PHP_VERSION_ID;
 
 abstract class BaseSerializationTest extends TestCase
 {
@@ -281,6 +296,7 @@ abstract class BaseSerializationTest extends TestCase
     {
         return [
             ['NULL'],
+            ['bool'],
             ['integer'],
             ['double'],
             ['float'],
@@ -647,6 +663,44 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('array_list_and_map_difference'), $this->serialize($data));
     }
 
+    public function testList(): void
+    {
+        if ('xml' === $this->getFormat()) {
+            $this->markTestSkipped('XML can\'t be tested for list without value type');
+        }
+
+        $data = [1, 3, 4];
+        self::assertEquals($this->getContent('list'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list'), 'list'));
+        }
+    }
+
+    public function testListEmpty(): void
+    {
+        if ('xml' === $this->getFormat()) {
+            $this->markTestSkipped('XML can\'t be tested for empty list');
+        }
+
+        $data = [];
+        self::assertEquals($this->getContent('list_empty'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list_empty'), 'list'));
+        }
+    }
+
+    public function testListIntegers(): void
+    {
+        $data = [1, 3, 4];
+        self::assertEquals($this->getContent('list_integers'), $this->serialize($data));
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals($data, $this->deserialize($this->getContent('list_integers'), 'list<int>'));
+        }
+    }
+
     public function testCustomDateObject()
     {
         $data = new DateTimeContainer(new DateTimeCustomObject('2021-09-07'));
@@ -879,6 +933,20 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testSymfonyUid()
+    {
+        $uid = Uuid::fromString('66b3177c-e03b-4a22-9dee-ddd7d37a04d5');
+
+        self::assertEquals($this->getContent('uid'), $this->serialize($uid));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('uid'), UuidV4::class);
+
+            self::assertInstanceOf(UuidV4::class, $deserialized);
+            self::assertTrue($uid->equals($deserialized));
+        }
+    }
+
     public function testExpressionAuthor()
     {
         $evaluator = new ExpressionEvaluator(new ExpressionLanguage());
@@ -925,9 +993,33 @@ abstract class BaseSerializationTest extends TestCase
         }
     }
 
+    public function testDeprecatedReadOnly()
+    {
+        $author = new AuthorDeprecatedReadOnly(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
     public function testReadOnlyClass()
     {
         $author = new AuthorReadOnlyPerClass(123, 'Ruud Kamphuis');
+        self::assertEquals($this->getContent('readonly'), $this->serialize($author));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('readonly'), get_class($author));
+            self::assertNull($this->getField($deserialized, 'id'));
+            self::assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
+        }
+    }
+
+    public function testDeprecatedReadOnlyClass()
+    {
+        $author = new AuthorDeprecatedReadOnlyPerClass(123, 'Ruud Kamphuis');
         self::assertEquals($this->getContent('readonly'), $this->serialize($author));
 
         if ($this->hasDeserializer()) {
@@ -1101,7 +1193,10 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($this->getContent('form_errors'), $this->serialize($errors));
     }
 
-    public function testNestedFormErrors()
+    /**
+     * @dataProvider initialFormTypeProvider
+     */
+    public function testNestedFormErrors($type)
     {
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
 
@@ -1119,13 +1214,17 @@ abstract class BaseSerializationTest extends TestCase
         $child->addError(new FormError('Error of the child form'));
         $form->add($child);
 
-        self::assertEquals($this->getContent('nested_form_errors'), $this->serialize($form));
+        $context = SerializationContext::create();
+        $context->setInitialType($type);
+
+        self::assertEquals($this->getContent('nested_form_errors'), $this->serialize($form, $context));
     }
 
     /**
      * @doesNotPerformAssertions
+     * @dataProvider initialFormTypeProvider
      */
-    public function testFormErrorsWithNonFormComponents()
+    public function testFormErrorsWithNonFormComponents($type)
     {
         if (!class_exists('Symfony\Component\Form\Extension\Core\Type\SubmitType')) {
             $this->markTestSkipped('Not using Symfony Form >= 2.3 with submit type');
@@ -1147,11 +1246,22 @@ abstract class BaseSerializationTest extends TestCase
         $form = new Form($fooConfig);
         $form->add('save', SubmitType::class);
 
+        $context = SerializationContext::create();
+        $context->setInitialType($type);
+
         try {
-            $this->serialize($form);
+            $this->serialize($form, $context);
         } catch (\Throwable $e) {
             self::assertTrue(false, 'Serialization should not throw an exception');
         }
+    }
+
+    public function initialFormTypeProvider()
+    {
+        return [
+            [Form::class],
+            [FormInterface::class],
+        ];
     }
 
     public function testConstraintViolation()
@@ -1392,6 +1502,52 @@ abstract class BaseSerializationTest extends TestCase
 
             self::assertEquals($user, $this->deserialize($this->getContent('typed_props'), get_class($user)));
         }
+    }
+
+    public function testConstructorPromotionWithDefaultValues()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->includeInterfaceMetadata(true);
+        $this->serializer = $builder->build();
+
+        $vase = new TypedProperties\ConstructorPromotion\Vase('blue');
+        $result = $this->serialize($vase);
+        self::assertEquals($this->getContent('typed_props_constructor_promotion_with_default_values'), $result);
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('typed_props_constructor_promotion_with_default_values'), get_class($vase));
+            self::assertEquals($vase->color, $deserialized->color);
+            self::assertEquals($vase->plant, $deserialized->plant);
+            self::assertEquals($vase->typeOfSoil, $deserialized->typeOfSoil);
+            self::assertEquals($vase->daysSincePotting, $deserialized->daysSincePotting);
+        }
+    }
+
+    public function testUninitializedTypedProperties()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+
+        $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $builder->includeInterfaceMetadata(true);
+        $this->serializer = $builder->build();
+
+        $user = new TypedProperties\User();
+        $user->id = 1;
+        $role = new TypedProperties\Role();
+        $user->role = $role;
+
+        // Ensure uninitialized typed property exists
+        $reflectionProp = new \ReflectionProperty($user, 'vehicle');
+        $this->assertFalse($reflectionProp->isInitialized($user));
+
+        $result = $this->serialize($user);
+
+        self::assertEquals($this->getContent('uninitialized_typed_props'), $result);
     }
 
     /**
@@ -1771,6 +1927,52 @@ abstract class BaseSerializationTest extends TestCase
         self::assertEquals($list, $this->deserialize($this->getContent('authors_inline'), AuthorsInline::class));
     }
 
+    public function testSerializingUnionTypedProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+        }
+
+        $object = new TypedProperties\UnionTypedProperties(10000);
+
+        self::assertEquals($this->getContent('data_integer'), $this->serialize($object));
+    }
+
+    public function testThrowingExceptionWhenDeserializingUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $this->expectException(RuntimeException::class);
+
+        $object = new TypedProperties\UnionTypedProperties(10000);
+        self::assertEquals($object, $this->deserialize($this->getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
+    }
+
+    public function testSerializingUnionDocBlockTypesProperties()
+    {
+        $object = new UnionTypedDocBLockProperty(10000);
+
+        self::assertEquals($this->getContent('data_integer'), $this->serialize($object));
+    }
+
+    public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $this->expectException(RuntimeException::class);
+
+        $object = new UnionTypedDocBLockProperty(10000);
+        self::assertEquals($object, $this->deserialize($this->getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
+    }
+
     public function testIterable(): void
     {
         $generator = static function (): iterable {
@@ -1883,6 +2085,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator()));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
@@ -1918,7 +2121,12 @@ abstract class BaseSerializationTest extends TestCase
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
         $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+        $this->extendBuilder($builder);
         $this->serializer = $builder->build();
+    }
+
+    protected function extendBuilder(SerializerBuilder $builder): void
+    {
     }
 
     protected function getField($obj, $name)

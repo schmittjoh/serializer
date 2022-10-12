@@ -31,25 +31,25 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * @param mixed $data
      * @param array $type
      */
-    public function visitString($data, array $type): string;
+    public function visitString($data, array $type): ?string;
 
     /**
      * @param mixed $data
      * @param array $type
      */
-    public function visitBoolean($data, array $type): bool;
+    public function visitBoolean($data, array $type): ?bool;
 
     /**
      * @param mixed $data
      * @param array $type
      */
-    public function visitDouble($data, array $type): float;
+    public function visitDouble($data, array $type): ?float;
 
     /**
      * @param mixed $data
      * @param array $type
      */
-    public function visitInteger($data, array $type): int;
+    public function visitInteger($data, array $type): ?int;
 
     /**
      * Returns the class name based on the type of the discriminator map value

@@ -364,9 +364,15 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | array                                                      | An array with arbitrary keys, and values.        |
 +------------------------------------------------------------+--------------------------------------------------+
-| array<T>                                                   | A list of type T (T can be any available type).  |
+| list                                                       | A list with arbitrary values.                    |
++------------------------------------------------------------+--------------------------------------------------+
+| array<T>                                                   | An array of type T (T can be any available type).|
 |                                                            | Examples:                                        |
 |                                                            | array<string>, array<MyNamespace\MyObject>, etc. |
++------------------------------------------------------------+--------------------------------------------------+
+| list<T>                                                    | A list of type T (T can be any available type).  |
+|                                                            | Examples:                                        |
+|                                                            | list<string>, list<MyNamespace\MyObject>, etc.   |
 +------------------------------------------------------------+--------------------------------------------------+
 | array<K, V>                                                | A map of keys of type K to values of type V.     |
 |                                                            | Examples: array<string, string>,                 |
@@ -864,7 +870,7 @@ Resulting XML:
 
 
 PHP 8 support
--------------
+~~~~~~~~~~~~~
 
 JMS serializer now supports PHP 8 attributes, with a few caveats:
 - Due to the missing support for nested annotations, the syntax for a few annotations has changed

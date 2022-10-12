@@ -59,6 +59,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['order_with_currency_aware_price'] = '{"cost":{"currency":"EUR","amount":1.23}}';
             $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';
+            $outputs['list'] = '[1,3,4]';
+            $outputs['list_empty'] = '[]';
+            $outputs['list_integers'] = '[1,3,4]';
             $outputs['form_errors'] = '["This is the form error","Another error"]';
             $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
@@ -120,10 +123,10 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['inline_list_collection'] = '[1,2,3]';
             $outputs['inline_empty_list_collection'] = '[]';
             $outputs['inline_deserialization_list_collection'] = '[1,2]';
-            $outputs['inline_map'] = '{"0":"1","1":"2","2":"3"}';
+            $outputs['inline_map'] = '{"a":"1","b":"2","c":"3"}';
             $outputs['inline_empty_map'] = '{}';
             $outputs['empty_object'] = '{}';
-            $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","0":"5"}';
+            $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","e":"5"}';
             $outputs['iterable'] = '{"iterable":{"foo":"bar","bar":"foo"}}';
             $outputs['iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
             $outputs['array_iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
@@ -133,7 +136,11 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['user_discriminator'] = '{"entityName":"User"}';
             $outputs['user_discriminator_extended'] = '{"entityName":"ExtendedUser"}';
             $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
+            $outputs['typed_props_constructor_promotion_with_default_values'] = '{"color":"blue","type_of_soil":"potting mix","days_since_potting":-1}';
+            $outputs['uninitialized_typed_props'] = '{"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
+            $outputs['data_integer'] = '{"data":10000}';
+            $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
         }
 
         if (!isset($outputs[$key])) {
@@ -153,9 +160,9 @@ class JsonSerializationTest extends BaseSerializationTest
     public function getFirstClassMapCollectionsValues()
     {
         return [
-            [[1, 2, 3], $this->getContent('inline_map')],
+            [['a' => '1', 'b' => '2', 'c' => '3'], $this->getContent('inline_map')],
             [[], $this->getContent('inline_empty_map')],
-            [['a' => 'b', 'c' => 'd', 5], $this->getContent('inline_deserialization_map')],
+            [['a' => 'b', 'c' => 'd', 'e' => '5'], $this->getContent('inline_deserialization_map')],
         ];
     }
 
@@ -366,6 +373,7 @@ class JsonSerializationTest extends BaseSerializationTest
             [[1 => 1, 2 => 2], '{"1":1,"2":2}', SerializationContext::create()->setInitialType('array')],
             [[1 => 1, 2 => 2], '[1,2]', SerializationContext::create()->setInitialType('array<integer>')],
             [['a', 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
+            [['a', 'b'], '["a","b"]', SerializationContext::create()->setInitialType('list<string>')],
 
             [[1 => 'a', 2 => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],
             [['a' => 'a', 'b' => 'b'], '["a","b"]', SerializationContext::create()->setInitialType('array<string>')],

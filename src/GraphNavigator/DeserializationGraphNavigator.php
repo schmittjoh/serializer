@@ -134,10 +134,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
             case 'float':
                 return $this->visitor->visitDouble($data, $type);
 
-            case 'iterable':
-                return $this->visitor->visitArray($data, $type);
-
             case 'array':
+            case 'iterable':
+            case 'list':
                 return $this->visitor->visitArray($data, $type);
 
             case 'resource':
@@ -215,6 +214,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
+                        if (true === $propertyMetadata->hasDefault) {
+                            $this->accessor->setValue($object, $propertyMetadata->defaultValue, $propertyMetadata, $this->context);
+                        }
                     }
 
                     $this->context->popPropertyMetadata();
