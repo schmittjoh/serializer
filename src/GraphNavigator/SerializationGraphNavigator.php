@@ -25,7 +25,6 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\NullAwareVisitorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -82,10 +81,6 @@ final class SerializationGraphNavigator extends GraphNavigator
      * @var bool
      */
     private $shouldSerializeNull;
-    /**
-     * @var PropertyNamingStrategyInterface|null
-     */
-    private $contextPropertyNamingStrategy = null;
 
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
@@ -110,7 +105,6 @@ final class SerializationGraphNavigator extends GraphNavigator
 
         parent::initialize($visitor, $context);
         $this->shouldSerializeNull = $context->shouldSerializeNull();
-        $this->contextPropertyNamingStrategy = $context->getPropertyNamingStrategy();
     }
 
     /**
@@ -263,12 +257,15 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
-                    if ($this->contextPropertyNamingStrategy) {
-                        $propertyMetadata->serializedName = $this->contextPropertyNamingStrategy->translateName($propertyMetadata);
+                    /** Metadata changes based on context, should not be cached  */
+                    $contextSpecificMetadata = $propertyMetadata;
+                    if (null !== $this->context->getPropertyNamingStrategy()) {
+                        $contextSpecificMetadata = clone $propertyMetadata;
+                        $contextSpecificMetadata->serializedName = $this->context->getPropertyNamingStrategy()->translateName($propertyMetadata);
                     }
 
                     try {
-                        $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
+                        $v = $this->accessor->getValue($data, $contextSpecificMetadata, $this->context);
                     } catch (UninitializedPropertyException $e) {
                         continue;
                     }
@@ -277,8 +274,8 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
-                    $this->context->pushPropertyMetadata($propertyMetadata);
-                    $this->visitor->visitProperty($propertyMetadata, $v);
+                    $this->context->pushPropertyMetadata($contextSpecificMetadata);
+                    $this->visitor->visitProperty($contextSpecificMetadata, $v);
                     $this->context->popPropertyMetadata();
                 }
 

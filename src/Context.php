@@ -13,6 +13,7 @@ use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 
@@ -53,6 +54,11 @@ abstract class Context
 
     /** @var \SplStack */
     private $metadataStack;
+
+    /**
+     * @var PropertyNamingStrategyInterface|null
+     */
+    private $propertyNamingStrategy = null;
 
     public function __construct()
     {
@@ -226,6 +232,20 @@ abstract class Context
         if (!$metadata instanceof PropertyMetadata) {
             throw new RuntimeException('Context metadataStack not working well');
         }
+    }
+
+    public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy): self
+    {
+        $this->assertMutable();
+
+        $this->propertyNamingStrategy = $propertyNamingStrategy;
+
+        return $this;
+    }
+
+    public function getPropertyNamingStrategy(): ?PropertyNamingStrategyInterface
+    {
+        return $this->propertyNamingStrategy;
     }
 
     public function popClassMetadata(): void

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
@@ -25,10 +24,6 @@ class SerializationContext extends Context
      * @var bool
      */
     private $serializeNull = false;
-    /**
-     * @var PropertyNamingStrategyInterface|null
-     */
-    private $propertyNamingStrategy = null;
 
     public static function create(): self
     {
@@ -55,15 +50,6 @@ class SerializationContext extends Context
         return $this;
     }
 
-    public function setPropertyNamingStrategy(PropertyNamingStrategyInterface $propertyNamingStrategy): self
-    {
-        $this->assertMutable();
-
-        $this->propertyNamingStrategy = $propertyNamingStrategy;
-
-        return $this;
-    }
-
     /**
      * Returns TRUE when NULLs should be serialized
      * Returns FALSE when NULLs should not be serialized
@@ -71,11 +57,6 @@ class SerializationContext extends Context
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
-    }
-
-    public function getPropertyNamingStrategy(): ?PropertyNamingStrategyInterface
-    {
-        return $this->propertyNamingStrategy;
     }
 
     /**

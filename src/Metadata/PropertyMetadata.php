@@ -34,6 +34,11 @@ class PropertyMetadata extends BasePropertyMetadata
     public $serializedName;
 
     /**
+     * @var string|null
+     */
+    public $preContextSerializedName;
+
+    /**
      * @var array|null
      */
     public $type;
