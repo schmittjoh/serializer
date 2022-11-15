@@ -83,7 +83,7 @@ Context Strategy
 Context strategy allows you to change serialization configuration for specific serialization or deserialization.
 This allow you to deviate from default configuration.
 
-### Serializing null values
+### Serializing null values::
 
     use JMS\Serializer\SerializationContext;
 
@@ -93,7 +93,7 @@ This allow you to deviate from default configuration.
         SerializationContext::create()->setSerializeNull(true)
     )
 
-### Serializing with different property naming strategy
+### Serializing with different property naming strategy::
 
     use JMS\Serializer\SerializationContext;
 
@@ -103,7 +103,7 @@ This allow you to deviate from default configuration.
         SerializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
     )
 
-### Deserializing with different property naming strategy
+### Deserializing with different property naming strategy::
 
     use JMS\Serializer\SerializationContext;
 
