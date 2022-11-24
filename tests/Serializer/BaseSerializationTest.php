@@ -87,6 +87,7 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
 use JMS\Serializer\Tests\Fixtures\ObjectWithArrayIterator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHashNotAnnotated;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
 use JMS\Serializer\Tests\Fixtures\ObjectWithGenerator;
@@ -1817,6 +1818,26 @@ abstract class BaseSerializationTest extends TestCase
         $serialized = $this->serialize($data, $context);
 
         self::assertEquals($this->getContent('maxdepth_1'), $serialized);
+    }
+
+    public function testSkipWhenEmptyByDefaultEnabled()
+    {
+        $data = new ObjectWithEmptyArrayAndHashNotAnnotated();
+
+        $context = SerializationContext::create()->enableSkipWhenEmpty();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('default_skip_when_empty_enabled_object'), $serialized);
+    }
+
+    public function testSkipWhenEmptyByDefaultDisabled()
+    {
+        $data = new ObjectWithEmptyArrayAndHashNotAnnotated();
+
+        $context = SerializationContext::create();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals($this->getContent('default_skip_when_empty_disabled_object'), $serialized);
     }
 
     public function testDeserializingIntoExistingObject()

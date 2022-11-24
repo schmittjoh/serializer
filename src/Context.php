@@ -10,6 +10,8 @@ use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
+use JMS\Serializer\Exclusion\SkipWhenEmptyExclusionStrategy;
+use JMS\Serializer\Exclusion\ValueExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -18,6 +20,7 @@ use Metadata\MetadataFactoryInterface;
 
 abstract class Context
 {
+    public const ATTR_SKIP_WHEN_EMPTY = 'default_skip_when_empty';
     /**
      * @var array
      */
@@ -83,6 +86,10 @@ abstract class Context
             $this->addExclusionStrategy(new DepthExclusionStrategy());
         }
 
+        if (!empty($this->attributes[self::ATTR_SKIP_WHEN_EMPTY])) {
+            $this->addExclusionStrategy(new SkipWhenEmptyExclusionStrategy());
+        }
+
         $this->initialized = true;
     }
 
@@ -101,7 +108,7 @@ abstract class Context
         return $this->navigator;
     }
 
-    public function getExclusionStrategy(): ?ExclusionStrategyInterface
+    public function getExclusionStrategy(): ?DisjunctExclusionStrategy
     {
         return $this->exclusionStrategy;
     }
@@ -142,17 +149,13 @@ abstract class Context
     }
 
     /**
+     * @param ExclusionStrategyInterface|ValueExclusionStrategyInterface $strategy
+     *
      * @return $this
      */
-    public function addExclusionStrategy(ExclusionStrategyInterface $strategy): self
+    public function addExclusionStrategy($strategy): self
     {
         $this->assertMutable();
-
-        if (null === $this->exclusionStrategy) {
-            $this->exclusionStrategy = $strategy;
-
-            return $this;
-        }
 
         if ($this->exclusionStrategy instanceof DisjunctExclusionStrategy) {
             $this->exclusionStrategy->addStrategy($strategy);
@@ -160,10 +163,7 @@ abstract class Context
             return $this;
         }
 
-        $this->exclusionStrategy = new DisjunctExclusionStrategy([
-            $this->exclusionStrategy,
-            $strategy,
-        ]);
+        $this->exclusionStrategy = new DisjunctExclusionStrategy([$strategy]);
 
         return $this;
     }
@@ -200,6 +200,16 @@ abstract class Context
     public function enableMaxDepthChecks(): self
     {
         $this->attributes['max_depth_checks'] = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableSkipWhenEmpty(): self
+    {
+        $this->attributes[self::ATTR_SKIP_WHEN_EMPTY] = true;
 
         return $this;
     }

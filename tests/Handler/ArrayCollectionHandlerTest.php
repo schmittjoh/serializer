@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\SerializationContext;
@@ -48,7 +49,7 @@ class ArrayCollectionHandlerTest extends TestCase
         $factoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)->getMock();
         $factoryMock->method('getMetadataForClass')->willReturn(new ClassMetadata(ArrayCollection::class));
 
-        $context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
+        $context->method('getExclusionStrategy')->willReturn(new DisjunctExclusionStrategy([new AlwaysExcludeExclusionStrategy()]));
         $context->method('getMetadataFactory')->willReturn($factoryMock);
 
         $type = ['name' => 'ArrayCollection', 'params' => []];
