@@ -354,9 +354,9 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | double or float                                            | Primitive double                                 |
 +------------------------------------------------------------+--------------------------------------------------+
-| double<2> or float<2>                                      | Primitive double with percision                  |
+| double<2> or float<2>                                      | Primitive double with precision                  |
 +------------------------------------------------------------+--------------------------------------------------+
-| double<2, 'HALF_DOWN'> or float<2, 'HALF_DOWN'>            | Primitive double with percision and              |
+| double<2, 'HALF_DOWN'> or float<2, 'HALF_DOWN'>            | Primitive double with precision and              |
 |                                                            | Rounding Mode.                                   |
 |                                                            | (HALF_UP, HALF_DOWN, HALF_EVEN HALF_ODD)         |
 +------------------------------------------------------------+--------------------------------------------------+
