@@ -1,5 +1,5 @@
 parameters:
-    level: 1
+    level: 2
 
     ignoreErrors:
         - '~Class Doctrine\\Common\\Persistence\\Proxy not found~'

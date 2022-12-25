@@ -104,12 +104,12 @@ class TypedPropertiesDriver implements DriverInterface
 
     private function shouldTypeHint(ReflectionProperty $propertyReflection): bool
     {
-        $reflectionType = $propertyReflection->getType();
-        if (null === $reflectionType) {
-            return false;
+        if (PHP_VERSION_ID <= 70400){
+           return false; 
         }
-
-        if (PHP_VERSION_ID >= 80000 && $reflectionType instanceof \ReflectionUnionType) {
+        
+        $reflectionType = $propertyReflection->getType();
+        if (!$reflectionType instanceof \ReflectionNamedType) {
             return false;
         }
 
