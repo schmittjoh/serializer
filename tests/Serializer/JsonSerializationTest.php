@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
@@ -453,7 +454,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
 class LinkAddingSubscriber implements EventSubscriberInterface
 {
-    public function onPostSerialize(Event $event)
+    public function onPostSerialize(ObjectEvent $event)
     {
         $author = $event->getObject();
 

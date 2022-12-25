@@ -45,6 +45,7 @@ use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
+use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class XmlSerializationTest extends BaseSerializationTest
@@ -415,11 +416,10 @@ class XmlSerializationTest extends BaseSerializationTest
             'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual',
             $this->getFormat(),
             static function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
-                $factory = $context->getMetadataFactory(get_class($author));
+                $factory = $context->getMetadataFactory();
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
 
                 $metadata = new StaticPropertyMetadata(get_class($author), 'foo', $author);
-                $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
 
                 $visitor->visitProperty($metadata, $author);
@@ -536,10 +536,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testEvaluatesToNull()
     {
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-
-        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $context);
+        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor();
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 
@@ -550,10 +547,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testDoubleEncoding()
     {
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-
-        $visitor = (new XmlSerializationVisitorFactory())->getVisitor($navigator, $context);
+        $visitor = (new XmlSerializationVisitorFactory())->getVisitor();
 
         // Setting locale with comma fractional separator
         $locale = setlocale(LC_ALL, 0);

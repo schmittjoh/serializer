@@ -20,6 +20,9 @@ use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 
+/**
+ * @method ClassMetadata|null loadMetadataForClass(\ReflectionClass $class)
+ */
 class XmlDriver extends AbstractFileDriver
 {
     use ExpressionMetadataTrait;

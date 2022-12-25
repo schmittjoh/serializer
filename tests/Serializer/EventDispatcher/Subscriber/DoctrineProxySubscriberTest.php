@@ -14,11 +14,12 @@ use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectLazyLoading;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineProxySubscriberTest extends TestCase
 {
-    /** @var Context */
+    /** @var Context|MockObject */
     private $context;
 
     /** @var DoctrineProxySubscriber */
@@ -52,7 +53,7 @@ class DoctrineProxySubscriberTest extends TestCase
         $this->context->method('getExclusionStrategy')->willReturn(new AlwaysExcludeExclusionStrategy());
         $this->context->method('getMetadataFactory')->willReturn(new class implements MetadataFactoryInterface
         {
-            public function getMetadataForClass($className)
+            public function getMetadataForClass($className): ClassMetadata
             {
                 return new ClassMetadata(SimpleObjectProxy::class);
             }
