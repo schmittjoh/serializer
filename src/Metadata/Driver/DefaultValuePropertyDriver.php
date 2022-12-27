@@ -24,6 +24,9 @@ class DefaultValuePropertyDriver implements DriverInterface
         $this->delegate = $delegate;
     }
 
+    /**
+     * @return SerializerClassMetadata|null
+     */
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);

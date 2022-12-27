@@ -18,6 +18,7 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  * Class Metadata used to customize the serialization process.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
  * @property PropertyMetadata[] $propertyMetadata
  */
 class ClassMetadata extends MergeableClassMetadata

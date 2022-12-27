@@ -12,6 +12,7 @@ final class NonVisitableTypeException extends RuntimeException
      * @param mixed $data
      * @param array{name: string} $type
      * @param RuntimeException|null $previous
+     *
      * @return NonVisitableTypeException
      */
     public static function fromDataAndType($data, array $type, ?RuntimeException $previous = null): self

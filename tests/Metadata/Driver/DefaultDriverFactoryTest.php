@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Builder\DefaultDriverFactory;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,7 @@ class DefaultDriverFactoryTest extends TestCase
         $driver = $factory->createDriver([], new AnnotationReader());
 
         $m = $driver->loadMetadataForClass(new \ReflectionClass(User::class));
+        \assert($m instanceof ClassMetadata);
         self::assertNotNull($m);
 
         $expectedPropertyTypes = [

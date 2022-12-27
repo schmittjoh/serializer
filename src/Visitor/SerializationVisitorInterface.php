@@ -21,7 +21,7 @@ interface SerializationVisitorInterface extends VisitorInterface
 {
     /**
      * @param mixed $data
-     * 
+     *
      * @return mixed
      */
     public function visitNull($data, array $type);

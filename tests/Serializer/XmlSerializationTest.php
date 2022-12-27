@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -45,7 +45,6 @@ use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
-use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class XmlSerializationTest extends BaseSerializationTest
@@ -418,6 +417,7 @@ class XmlSerializationTest extends BaseSerializationTest
             static function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
                 $factory = $context->getMetadataFactory();
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
+                \assert($classMetadata instanceof ClassMetadata);
 
                 $metadata = new StaticPropertyMetadata(get_class($author), 'foo', $author);
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;

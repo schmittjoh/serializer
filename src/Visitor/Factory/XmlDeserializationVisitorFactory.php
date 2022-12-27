@@ -27,8 +27,8 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
      */
     private $options = 0;
 
-    /** 
-     * @return XmlDeserializationVisitor  
+    /**
+     * @return XmlDeserializationVisitor
      */
     public function getVisitor(): DeserializationVisitorInterface
     {

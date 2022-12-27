@@ -58,18 +58,21 @@ class TypedPropertiesDriver implements DriverInterface
         ];
     }
 
+    /**
+     * @return SerializerClassMetadata|null
+     */
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
         \assert($classMetadata instanceof SerializerClassMetadata);
 
-        if (null === $classMetadata) {
-            return null;
+        if (PHP_VERSION_ID <= 70400) {
+            return $classMetadata;
         }
 
         // We base our scan on the internal driver's property list so that we
         // respect any internal allow/blocklist like in the AnnotationDriver
-        foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
+        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
                 continue;
@@ -77,8 +80,9 @@ class TypedPropertiesDriver implements DriverInterface
 
             try {
                 $propertyReflection = $this->getReflection($propertyMetadata);
-                if ($this->shouldTypeHint($propertyReflection)) {
-                    $type = $propertyReflection->getType()->getName();
+                $reflectionType = $propertyReflection->getType();
+                if ($this->shouldTypeHint($reflectionType)) {
+                    $type = $reflectionType->getName();
 
                     $propertyMetadata->setType($this->typeParser->parse($type));
                 }
@@ -102,13 +106,11 @@ class TypedPropertiesDriver implements DriverInterface
         return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
     }
 
-    private function shouldTypeHint(ReflectionProperty $propertyReflection): bool
+    /**
+     * @phpstan-assert-if-true \ReflectionNamedType $reflectionType
+     */
+    private function shouldTypeHint(?\ReflectionType $reflectionType): bool
     {
-        if (PHP_VERSION_ID <= 70400){
-           return false; 
-        }
-        
-        $reflectionType = $propertyReflection->getType();
         if (!$reflectionType instanceof \ReflectionNamedType) {
             return false;
         }
