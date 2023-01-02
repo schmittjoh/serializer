@@ -26,6 +26,7 @@ final class DocBlockTypeResolver
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
+    private const PHPSTAN_ARRAY_SHAPE = '/\@phpstan-type (.*) array/m';
 
     /**
      * @var PhpDocParser
@@ -225,6 +226,15 @@ final class DocBlockTypeResolver
             if ($this->endsWith($statementClassName, $typeHint)) {
                 return $statementClassName;
             }
+        }
+
+        preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $declaringClass->getDocComment(), $foundPhpstanArrayShape);
+        $phpstanArrayShapes = array_map(function(string $phpstanArrayType) {
+            return $phpstanArrayType;
+        }, $foundPhpstanArrayShape[1]);
+
+        if (in_array($typeHint, $phpstanArrayShapes)) {
+            return "array";
         }
 
         throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflectionProperty->getName()));

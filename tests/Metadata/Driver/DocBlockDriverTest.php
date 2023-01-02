@@ -33,6 +33,8 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\PhpstanArrayShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\PhpstanMultipleArrayShapes;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
@@ -355,6 +357,30 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             null,
             $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForPhpstanArray()
+    {
+        $m = $this->resolve(PhpstanArrayShape::class);
+
+        self::assertEquals(
+            ['name' => "array", 'params' => []],
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForMultiplePhpstanArray()
+    {
+        $m = $this->resolve(PhpstanMultipleArrayShapes::class);
+
+        self::assertEquals(
+            ['name' => "array", 'params' => []],
+            $m->propertyMetadata['data']->type
+        );
+        self::assertEquals(
+            ['name' => "array", 'params' => []],
+            $m->propertyMetadata['details']->type
         );
     }
 }
