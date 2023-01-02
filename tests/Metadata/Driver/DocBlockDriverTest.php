@@ -368,7 +368,7 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(ConstructorPropertyPromotion::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => [['name' => 'string', 'params' => []]]],
+            ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
             $m->propertyMetadata['data']->type
         );
     }

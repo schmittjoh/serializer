@@ -144,7 +144,7 @@ final class DocBlockTypeResolver
             return [];
         }
 
-        $parameterName = sprintf("$%s", $parameterName);
+        $parameterName = sprintf('$%s', $parameterName);
         $types = [];
         foreach ($varTagValues as $node) {
             if ($parameterName !== $node->parameterName) {

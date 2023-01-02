@@ -11,5 +11,6 @@ final class ConstructorPropertyPromotion
      */
     public function __construct(
         private array $data,
-    ) {}
+    ) {
+    }
 }
