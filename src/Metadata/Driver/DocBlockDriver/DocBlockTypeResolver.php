@@ -229,12 +229,12 @@ final class DocBlockTypeResolver
         }
 
         preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $declaringClass->getDocComment(), $foundPhpstanArrayShape);
-        $phpstanArrayShapes = array_map(function(string $phpstanArrayType) {
+        $phpstanArrayShapes = array_map(static function (string $phpstanArrayType) {
             return $phpstanArrayType;
         }, $foundPhpstanArrayShape[1]);
 
         if (in_array($typeHint, $phpstanArrayShapes)) {
-            return "array";
+            return 'array';
         }
 
         throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflectionProperty->getName()));

@@ -365,7 +365,7 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(PhpstanArrayShape::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => []],
+            ['name' => 'array', 'params' => []],
             $m->propertyMetadata['data']->type
         );
     }
@@ -375,11 +375,11 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(PhpstanMultipleArrayShapes::class);
 
         self::assertEquals(
-            ['name' => "array", 'params' => []],
+            ['name' => 'array', 'params' => []],
             $m->propertyMetadata['data']->type
         );
         self::assertEquals(
-            ['name' => "array", 'params' => []],
+            ['name' => 'array', 'params' => []],
             $m->propertyMetadata['details']->type
         );
     }
