@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfInterfaces
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistingClasses;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionTypedAsGenericClass;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\ConstructorPropertyPromotion;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
@@ -354,6 +355,20 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             null,
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForConstructorPropertyPromotion()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
+        }
+
+        $m = $this->resolve(ConstructorPropertyPromotion::class);
+
+        self::assertEquals(
+            ['name' => "array", 'params' => [['name' => 'string', 'params' => []]]],
             $m->propertyMetadata['data']->type
         );
     }
