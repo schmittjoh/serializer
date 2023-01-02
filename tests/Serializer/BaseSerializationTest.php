@@ -10,6 +10,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\EventDispatcher\Subscriber\EnumSubscriber;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\NotAcceptableException;
@@ -22,6 +23,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;
 use JMS\Serializer\Handler\DateHandler;
+use JMS\Serializer\Handler\EnumHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -87,8 +89,10 @@ use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
 use JMS\Serializer\Tests\Fixtures\ObjectUsingTypeCasting;
 use JMS\Serializer\Tests\Fixtures\ObjectWithArrayIterator;
+use JMS\Serializer\Tests\Fixtures\ObjectWithAutoDetectEnums;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyNullableAndEmptyArrays;
+use JMS\Serializer\Tests\Fixtures\ObjectWithEnums;
 use JMS\Serializer\Tests\Fixtures\ObjectWithGenerator;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIntListAndIntMap;
 use JMS\Serializer\Tests\Fixtures\ObjectWithIterable;
@@ -337,6 +341,51 @@ abstract class BaseSerializationTest extends TestCase
 
         $this->assertEquals(1, count($deserialized));
         $this->assertEquals($accountNotExpired->name, $deserialized[0]->name);
+    }
+
+    public function testEnumDisabledByDefault()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            self::markTestSkipped('No ENUM support');
+        }
+
+        $builder = SerializerBuilder::create();
+        $serializer = $builder->build();
+        $o = new ObjectWithAutoDetectEnums();
+        $serialized  = $serializer->serialize($o, $this->getFormat());
+
+        self::assertEquals($this->getContent('object_with_enums_disabled'), $serialized);
+    }
+
+    public function testEnum()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            self::markTestSkipped('No ENUM support');
+        }
+
+        $o = new ObjectWithEnums();
+
+        $serialized  = $this->serialize($o);
+
+        self::assertEquals($this->getContent('object_with_enums'), $serialized);
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($serialized, ObjectWithEnums::class);
+            self::assertEquals($o, $deserialized);
+        }
+    }
+
+    public function testEnumAutoDetectArrayOfEnums()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            self::markTestSkipped('No ENUM support');
+        }
+
+        $o = new ObjectWithAutoDetectEnums();
+
+        $serialized  = $this->serialize($o);
+
+        self::assertEquals($this->getContent('object_with_autodetect_enums'), $serialized);
     }
 
     public function testExcludeIfOnClassWithParent()
@@ -2086,6 +2135,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
@@ -2119,8 +2169,14 @@ abstract class BaseSerializationTest extends TestCase
 
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
+        $this->dispatcher->addSubscriber(new EnumSubscriber());
 
         $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
+
+        if (PHP_VERSION_ID >= 80100) {
+            $builder->enableEnumSupport();
+        }
+
         $this->extendBuilder($builder);
         $this->serializer = $builder->build();
     }

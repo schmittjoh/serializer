@@ -5,3 +5,4 @@
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/phpstan export-ignore
