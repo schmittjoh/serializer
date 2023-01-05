@@ -25,9 +25,13 @@ interface SerializerInterface
     /**
      * Deserializes the given data to the specified type.
      *
-     * @return mixed
+     * @param class-string<T> $type
+     *
+     * @return T
      *
      * @throws RuntimeException
+     *
+     * @template T
      */
     public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null);
 }
