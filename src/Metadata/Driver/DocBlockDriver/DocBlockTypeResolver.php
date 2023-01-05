@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -26,7 +27,8 @@ final class DocBlockTypeResolver
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
-    private const PHPSTAN_ARRAY_SHAPE = '/\@phpstan-type (.*) array/m';
+    private const PHPSTAN_ARRAY_SHAPE = '/^([^\s]*) array{.*/m';
+    private const PHPSTAN_ARRAY_TYPE = '/^([^\s]*) array<(.*)>/m';
 
     /**
      * @var PhpDocParser
@@ -229,13 +231,10 @@ final class DocBlockTypeResolver
         }
 
         if ($declaringClass->getDocComment()) {
-            preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $declaringClass->getDocComment(), $foundPhpstanArrayShape);
-            $phpstanArrayShapes = array_map(static function (string $phpstanArrayType) {
-                return $phpstanArrayType;
-            }, $foundPhpstanArrayShape[1]);
+            $phpstanArrayType = $this->getPhpstanType($declaringClass, $typeHint, $reflectionProperty);
 
-            if (in_array($typeHint, $phpstanArrayShapes)) {
-                return 'array';
+            if ($phpstanArrayType) {
+                return $phpstanArrayType;
             }
         }
 
@@ -308,5 +307,36 @@ final class DocBlockTypeResolver
     private function isClassOrInterface(string $typeHint): bool
     {
         return class_exists($typeHint) || interface_exists($typeHint);
+    }
+
+    private function getPhpstanType(\ReflectionClass $declaringClass, string $typeHint, \ReflectionProperty $reflectionProperty): ?string
+    {
+        $tokens = $this->lexer->tokenize($declaringClass->getDocComment());
+        $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
+        $self = $this;
+
+        foreach ($phpDocNode->children as $node) {
+            if ($node instanceof PhpDocTagNode && '@phpstan-type' === $node->name) {
+                $phpstanType = $node->value->value;
+                preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[1][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+                    return 'array';
+                }
+
+                preg_match_all(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[2][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+                    $types = explode(',', $foundPhpstanArray[2][0]);
+
+                    return sprintf('array<%s>', implode(
+                        ',',
+                        array_map(static function (string $type) use ($reflectionProperty, $self) {
+                            return $self->resolveType(trim($type), $reflectionProperty);
+                        }, $types)
+                    ));
+                }
+            }
+        }
+
+        return null;
     }
 }

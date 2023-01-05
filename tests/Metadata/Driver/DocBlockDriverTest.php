@@ -31,6 +31,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\PhpstanArrayCollectionShape;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\PhpstanArrayShape;
@@ -381,6 +382,16 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             ['name' => 'array', 'params' => []],
             $m->propertyMetadata['details']->type
+        );
+    }
+
+    public function testInferTypeForPhpstanArrayCollection()
+    {
+        $m = $this->resolve(PhpstanArrayCollectionShape::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => Product::class, 'params' => []]]],
+            $m->propertyMetadata['data']->type
         );
     }
 }
