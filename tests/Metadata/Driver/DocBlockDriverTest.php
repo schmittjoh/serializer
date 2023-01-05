@@ -31,11 +31,12 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\PhpstanArrayCollectionShape;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\PhpstanArrayShape;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\PhpstanMultipleArrayShapes;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayCollectionShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanMultipleArrayShapes;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\ProductType;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
@@ -390,7 +391,7 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(PhpstanArrayCollectionShape::class);
 
         self::assertEquals(
-            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => Product::class, 'params' => []]]],
+            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => ProductType::class, 'params' => []]]],
             $m->propertyMetadata['data']->type
         );
     }
