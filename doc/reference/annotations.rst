@@ -361,6 +361,14 @@ Available Types:
 |                                                            | Rounding Mode.                                   |
 |                                                            | (HALF_UP, HALF_DOWN, HALF_EVEN HALF_ODD)         |
 +------------------------------------------------------------+--------------------------------------------------+
+| double<2, 'HALF_DOWN', 2> or float<2, 'HALF_DOWN', 2>      | Primitive double with precision,                 |
+| double<2, 'HALF_DOWN', 3> or float<2, 'HALF_DOWN', 3>      | Rounding Mode and decimals padding up to         |
+|                                                            | N digits. As example, the float ``1.23456`` when |
+|                                                            | specified as  ``double<2, 'HALF_DOWN', 5>`` will |
+|                                                            | be serialized as ``1.23000``.                    |
+|                                                            | NOTE: this is available only for the XML         |
+|                                                            | serializer.                                      |
++------------------------------------------------------------+--------------------------------------------------+
 | string                                                     | Primitive string                                 |
 +------------------------------------------------------------+--------------------------------------------------+
 | array                                                      | An array with arbitrary keys, and values.        |

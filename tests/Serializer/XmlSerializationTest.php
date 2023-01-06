@@ -570,13 +570,17 @@ class XmlSerializationTest extends BaseSerializationTest
         setlocale(LC_ALL, $locale);
     }
 
-    public function testSerialisationWithPercisionForFloat(): void
+    public function testSerialisationWithPrecisionForFloat(): void
     {
         $objectWithFloat = new ObjectWithFloatProperty(
+            1.555555555,
             1.555555555,
             1.555,
             1.15,
             1.15,
+            1.555,
+            1.5,
+            1.555,
             1.555
         );
 
@@ -586,10 +590,14 @@ class XmlSerializationTest extends BaseSerializationTest
             '<?xml version="1.0" encoding="UTF-8"?>
             <result>
               <floating_point_unchanged>1.555555555</floating_point_unchanged>
+              <floating_point_precision_zero>2.0</floating_point_precision_zero>
               <floating_point_half_down>1.55</floating_point_half_down>
               <floating_point_half_even>1.2</floating_point_half_even>
               <floating_point_half_odd>1.1</floating_point_half_odd>
               <floating_point_half_up>1.56</floating_point_half_up>
+              <floating_point_fixed_decimals>1.50</floating_point_fixed_decimals>
+              <floating_point_fixed_decimals_less>1.6</floating_point_fixed_decimals_less>
+              <floating_point_fixed_decimals_more>1.560</floating_point_fixed_decimals_more>
             </result>',
             $result
         );
