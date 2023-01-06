@@ -34,6 +34,10 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\MapTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayCollectionShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanMultipleArrayShapes;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\ProductType;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
@@ -369,6 +373,40 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForPhpstanArray()
+    {
+        $m = $this->resolve(PhpstanArrayShape::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => []],
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForMultiplePhpstanArray()
+    {
+        $m = $this->resolve(PhpstanMultipleArrayShapes::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => []],
+            $m->propertyMetadata['data']->type
+        );
+        self::assertEquals(
+            ['name' => 'array', 'params' => []],
+            $m->propertyMetadata['details']->type
+        );
+    }
+
+    public function testInferTypeForPhpstanArrayCollection()
+    {
+        $m = $this->resolve(PhpstanArrayCollectionShape::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => ProductType::class, 'params' => []]]],
             $m->propertyMetadata['data']->type
         );
     }

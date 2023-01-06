@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -27,6 +28,8 @@ final class DocBlockTypeResolver
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
+    private const PHPSTAN_ARRAY_SHAPE = '/^([^\s]*) array{.*/m';
+    private const PHPSTAN_ARRAY_TYPE = '/^([^\s]*) array<(.*)>/m';
 
     /**
      * @var PhpDocParser
@@ -243,6 +246,14 @@ final class DocBlockTypeResolver
             }
         }
 
+        if ($declaringClass->getDocComment()) {
+            $phpstanArrayType = $this->getPhpstanType($declaringClass, $typeHint, $reflectionProperty);
+
+            if ($phpstanArrayType) {
+                return $phpstanArrayType;
+            }
+        }
+
         throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflectionProperty->getName()));
     }
 
@@ -339,5 +350,36 @@ final class DocBlockTypeResolver
         $types = $this->flattenVarTagValueTypes($varTagValues);
 
         return $this->filterNullFromTypes($types);
+    }
+
+    private function getPhpstanType(\ReflectionClass $declaringClass, string $typeHint, \ReflectionProperty $reflectionProperty): ?string
+    {
+        $tokens = $this->lexer->tokenize($declaringClass->getDocComment());
+        $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
+        $self = $this;
+
+        foreach ($phpDocNode->children as $node) {
+            if ($node instanceof PhpDocTagNode && '@phpstan-type' === $node->name) {
+                $phpstanType = $node->value->value;
+                preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[1][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+                    return 'array';
+                }
+
+                preg_match_all(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[2][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+                    $types = explode(',', $foundPhpstanArray[2][0]);
+
+                    return sprintf('array<%s>', implode(
+                        ',',
+                        array_map(static function (string $type) use ($reflectionProperty, $self) {
+                            return $self->resolveType(trim($type), $reflectionProperty);
+                        }, $types)
+                    ));
+                }
+            }
+        }
+
+        return null;
     }
 }
