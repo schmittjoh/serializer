@@ -1,21 +1,4 @@
-parameters:
-    level: 1
-
-    ignoreErrors:
-        - '~Class Doctrine\\Common\\Persistence\\Proxy not found~'
-        - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
-        - '~Class Symfony\\(Contracts|Component)\\Translation\\TranslatorInterface not found~'
-        - '#Constructor of class JMS\\Serializer\\Annotation\\.*? has an unused parameter#'
-        - '#Class JMS\\Serializer\\Annotation\\DeprecatedReadOnly extends @final class JMS\\Serializer\\Annotation\\ReadOnlyProperty.#'
-
-    paths:
-        - %currentWorkingDirectory%/src
-        - %currentWorkingDirectory%/tests
-    excludePaths:
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
-        - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotion.php
-        - %currentWorkingDirectory%/tests/Metadata/Driver/UnionTypedPropertiesDriverTest.php
-        - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php
-
+includes:
+    - phpstan.neon.dist
+    - phpstan/no-enum.neon
+    - phpstan/no-typed-prop.neon

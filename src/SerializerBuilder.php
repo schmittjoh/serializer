@@ -23,6 +23,7 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\EventDispatcher\Subscriber\EnumSubscriber;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
@@ -32,6 +33,7 @@ use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\GraphNavigator\Factory\SerializationGraphNavigatorFactory;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\DateHandler;
+use JMS\Serializer\Handler\EnumHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
@@ -82,6 +84,11 @@ final class SerializerBuilder
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
+    /**
+     * @var bool
+     */
+    private $enableEnumSupport = false;
 
     /**
      * @var bool
@@ -272,6 +279,10 @@ final class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
 
+        if ($this->enableEnumSupport) {
+            $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
+        }
+
         return $this;
     }
 
@@ -287,6 +298,9 @@ final class SerializerBuilder
     {
         $this->listenersConfigured = true;
         $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
+        if ($this->enableEnumSupport) {
+            $this->eventDispatcher->addSubscriber(new EnumSubscriber());
+        }
 
         return $this;
     }
@@ -510,6 +524,15 @@ final class SerializerBuilder
         return $this;
     }
 
+    public function enableEnumSupport(bool $enableEnumSupport = true): void
+    {
+        if ($enableEnumSupport && PHP_VERSION_ID < 80100) {
+            throw new InvalidArgumentException('Enum support can be enabled only on PHP 8.1 or higher.');
+        }
+
+        $this->enableEnumSupport = $enableEnumSupport;
+    }
+
     public function setMetadataCache(CacheInterface $cache): self
     {
         $this->metadataCache = $cache;
@@ -539,6 +562,7 @@ final class SerializerBuilder
                 $this->typeParser,
                 $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
             );
+            $this->driverFactory->enableEnumSupport($this->enableEnumSupport);
         }
 
         if ($this->docBlockTyperResolver) {

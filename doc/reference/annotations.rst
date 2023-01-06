@@ -316,6 +316,7 @@ the object has been deserialized.
 ~~~~~~~~~~~~~~
 
 .. versionadded : 0.12
+
     @Discriminator was added
 
 This annotation allows serialization/deserialization of relations which are polymorphic, but
@@ -377,6 +378,22 @@ Available Types:
 | array<K, V>                                                | A map of keys of type K to values of type V.     |
 |                                                            | Examples: array<string, string>,                 |
 |                                                            | array<string, MyNamespace\MyObject>, etc.        |
++------------------------------------------------------------+--------------------------------------------------+
+| enum<'Color'>                                              | Enum of type Color, use its case values          |
+|                                                            | for serialization and deserialization            |
+|                                                            | if the enum is a backed enum,                    |
+|                                                            | use its case names if it is not a backed enum.   |
++------------------------------------------------------------+--------------------------------------------------+
+| enum<'Color', 'name'>                                      | Enum of type Color, use its case names           |
+|                                                            | (as string) for serialization                    |
+|                                                            | and deserialization.                             |
++------------------------------------------------------------+--------------------------------------------------+
+| enum<'Color', 'value'>                                     | Backed Enum of type Color, use its case value    |
+|                                                            | for serialization and deserialization.           |
++------------------------------------------------------------+--------------------------------------------------+
+| enum<'Color', 'value', 'integer'>                          | Backed Enum of type Color, use its case value    |
+|                                                            | (forced as integer) for serialization            |
+|                                                            | and deserialization.                             |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTime                                                   | PHP's DateTime object (default format*/timezone) |
 +------------------------------------------------------------+--------------------------------------------------+
@@ -917,3 +934,23 @@ Example:
             return 1;
         }
     ...
+
+Enum support
+~~~~~~~~~~~~
+
+Enum support is disabled by default, to enable it run:
+
+.. code-block :: php
+
+    $builder = SerializerBuilder::create();
+    $builder->enableEnumSupport();
+
+    $serializer = $builder->build();
+
+
+With the enum support enabled, enums are automatically detected using typed properties typehints.
+When typed properties are no available (virtual properties as example), it is necessary to explicitly typehint
+the underlying type using the ``@Type`` annotation.
+
+- If the enum is a ``BackedEnum``, the case value will be used for serialization and deserialization by default;
+- If the enum is not a ``BackedEnum``, the case name will be used for serialization and deserialization by default;

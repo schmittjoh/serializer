@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <ordinary><![CDATA[Clubs]]></ordinary>
+  <backed><![CDATA[C]]></backed>
+  <ordinary_array>
+    <entry><![CDATA[Clubs]]></entry>
+    <entry><![CDATA[Spades]]></entry>
+  </ordinary_array>
+  <backed_array>
+    <entry><![CDATA[C]]></entry>
+    <entry><![CDATA[H]]></entry>
+  </backed_array>
+  <ordinary_auto_detect><![CDATA[Clubs]]></ordinary_auto_detect>
+  <backed_auto_detect><![CDATA[C]]></backed_auto_detect>
+  <backed_int_auto_detect>3</backed_int_auto_detect>
+  <backed_int>3</backed_int>
+  <backed_name><![CDATA[C]]></backed_name>
+  <backed_int_forced_str>3</backed_int_forced_str>
+</result>

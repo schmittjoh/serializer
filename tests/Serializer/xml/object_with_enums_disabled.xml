@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <ordinary_array_auto_detect>
+    <entry>
+      <name><![CDATA[Clubs]]></name>
+    </entry>
+    <entry>
+      <name><![CDATA[Spades]]></name>
+    </entry>
+  </ordinary_array_auto_detect>
+  <backed_array_auto_detect>
+    <entry>
+      <name><![CDATA[Clubs]]></name>
+      <value><![CDATA[C]]></value>
+    </entry>
+    <entry>
+      <name><![CDATA[Hearts]]></name>
+      <value><![CDATA[H]]></value>
+    </entry>
+  </backed_array_auto_detect>
+  <mixed_array_auto_detect>
+    <entry>
+      <name><![CDATA[Clubs]]></name>
+    </entry>
+    <entry>
+      <name><![CDATA[Hearts]]></name>
+      <value><![CDATA[H]]></value>
+    </entry>
+  </mixed_array_auto_detect>
+</result>

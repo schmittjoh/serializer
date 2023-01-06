@@ -9,6 +9,7 @@ use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
+use JMS\Serializer\Metadata\Driver\EnumPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -27,6 +28,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
     private $typeParser;
 
     /**
+     * @var bool
+     */
+    private $enableEnumSupport = false;
+
+    /**
      * @var PropertyNamingStrategyInterface
      */
     private $propertyNamingStrategy;
@@ -41,6 +47,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         $this->typeParser = $typeParser ?: new Parser();
         $this->propertyNamingStrategy = $propertyNamingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
+    }
+
+    public function enableEnumSupport(bool $enableEnumSupport = true): void
+    {
+        $this->enableEnumSupport = $enableEnumSupport;
     }
 
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
@@ -58,6 +69,10 @@ final class DefaultDriverFactory implements DriverFactoryInterface
                 new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
                 $driver,
             ]);
+        }
+
+        if ($this->enableEnumSupport) {
+            $driver = new EnumPropertiesDriver($driver);
         }
 
         if (PHP_VERSION_ID >= 70400) {

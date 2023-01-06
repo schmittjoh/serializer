@@ -141,6 +141,9 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
+            $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
+            $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
+            $outputs['object_with_enums_disabled'] = '{"ordinary_array_auto_detect":[{"name":"Clubs"},{"name":"Spades"}],"backed_array_auto_detect":[{"name":"Clubs","value":"C"},{"name":"Hearts","value":"H"}],"mixed_array_auto_detect":[{"name":"Clubs"},{"name":"Hearts","value":"H"}]}';
         }
 
         if (!isset($outputs[$key])) {
