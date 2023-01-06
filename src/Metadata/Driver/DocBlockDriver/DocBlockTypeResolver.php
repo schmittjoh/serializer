@@ -360,7 +360,7 @@ final class DocBlockTypeResolver
 
         foreach ($phpDocNode->children as $node) {
             if ($node instanceof PhpDocTagNode && '@phpstan-type' === $node->name) {
-                $phpstanType = $node->value->value;
+                $phpstanType = (string) $node->value;
                 preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
                 if (isset($foundPhpstanArray[1][0]) && $foundPhpstanArray[1][0] === $typeHint) {
                     return 'array';
