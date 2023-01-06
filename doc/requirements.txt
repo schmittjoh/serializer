@@ -1,3 +1,5 @@
 Sphinx==1.8.5
 git+https://github.com/fabpot/sphinx-php.git
 sphinx_rtd_theme
+Jinja2<3.0
+MarkupSafe<2.1

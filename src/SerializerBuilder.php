@@ -639,7 +639,7 @@ final class SerializerBuilder
             if (class_exists(FilesystemAdapter::class)) {
                 $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
                 $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
-            } else {
+            } elseif (class_exists(FilesystemCache::class) && class_exists(CachedReader::class)) {
                 $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
                 $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
             }

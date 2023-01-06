@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
@@ -59,31 +60,20 @@ final class DocBlockTypeResolver
      */
     public function getPropertyDocblockTypeHint(\ReflectionProperty $reflectionProperty): ?string
     {
-        if (!$reflectionProperty->getDocComment()) {
-            return null;
-        }
-
-        // First we tokenize the PhpDoc comment and parse the tokens into a PhpDocNode.
-        $tokens = $this->lexer->tokenize($reflectionProperty->getDocComment());
-        $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
-
-        // Then we retrieve a flattened list of annotated types excluding null.
-        $varTagValues = $phpDocNode->getVarTagValues();
-        $types = $this->flattenVarTagValueTypes($varTagValues);
-        $typesWithoutNull = $this->filterNullFromTypes($types);
+        $types = $this->resolveTypeFromDocblock($reflectionProperty);
 
         // The PhpDoc does not contain additional type information.
-        if (0 === count($typesWithoutNull)) {
+        if (0 === count($types)) {
             return null;
         }
 
         // The PhpDoc contains multiple non-null types which produces ambiguity when deserializing.
-        if (count($typesWithoutNull) > 1) {
+        if (count($types) > 1) {
             return null;
         }
 
         // Only one type is left, so we only need to differentiate between arrays, generics and other types.
-        $type = $typesWithoutNull[0];
+        $type = $types[0];
 
         // Simple array without concrete type: array
         if ($this->isSimpleType($type, 'array') || $this->isSimpleType($type, 'list')) {
@@ -142,6 +132,32 @@ final class DocBlockTypeResolver
 
             return [$node->type];
         }, $varTagValues));
+    }
+
+    /**
+     * Returns a flat list of types of the given param tags. Union types are flattened as well.
+     *
+     * @param ParamTagValueNode[] $varTagValues
+     *
+     * @return TypeNode[]
+     */
+    private function flattenParamTagValueTypes(string $parameterName, array $varTagValues): array
+    {
+        if ([] === $varTagValues) {
+            return [];
+        }
+
+        $parameterName = sprintf('$%s', $parameterName);
+        $types = [];
+        foreach ($varTagValues as $node) {
+            if ($parameterName !== $node->parameterName) {
+                continue;
+            }
+
+            $types[] = $node->type;
+        }
+
+        return $types;
     }
 
     /**
@@ -307,6 +323,33 @@ final class DocBlockTypeResolver
     private function isClassOrInterface(string $typeHint): bool
     {
         return class_exists($typeHint) || interface_exists($typeHint);
+    }
+
+    private function resolveTypeFromDocblock(\ReflectionProperty $reflectionProperty): ?array
+    {
+        $docComment = $reflectionProperty->getDocComment();
+        if (!$docComment && PHP_VERSION_ID >= 80000 && $reflectionProperty->isPromoted()) {
+            $docComment = $reflectionProperty->getDeclaringClass()->getConstructor()->getDocComment();
+
+            $tokens = $this->lexer->tokenize($docComment);
+            $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
+
+            return $this->flattenParamTagValueTypes($reflectionProperty->getName(), $phpDocNode->getParamTagValues());
+        }
+
+        if (!$docComment) {
+            return null;
+        }
+
+        // First we tokenize the PhpDoc comment and parse the tokens into a PhpDocNode.
+        $tokens = $this->lexer->tokenize($docComment);
+        $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
+
+        // Then we retrieve a flattened list of annotated types excluding null.
+        $varTagValues = $phpDocNode->getVarTagValues();
+        $types = $this->flattenVarTagValueTypes($varTagValues);
+
+        return $this->filterNullFromTypes($types);
     }
 
     private function getPhpstanType(\ReflectionClass $declaringClass, string $typeHint, \ReflectionProperty $reflectionProperty): ?string

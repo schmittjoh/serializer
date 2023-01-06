@@ -15,6 +15,7 @@ parameters:
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
+        - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotion.php
         - %currentWorkingDirectory%/tests/Metadata/Driver/UnionTypedPropertiesDriverTest.php
         - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php
 
