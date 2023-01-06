@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use JMS\Serializer\Tests\Util\DeprecationLogger;
 
 (static function () {
@@ -11,8 +10,6 @@ use JMS\Serializer\Tests\Util\DeprecationLogger;
     }
 
     require $autoloadFile;
-
-    AnnotationRegistry::registerLoader('class_exists');
 })();
 
 
