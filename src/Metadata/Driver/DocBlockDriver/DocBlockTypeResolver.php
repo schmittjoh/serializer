@@ -325,7 +325,7 @@ final class DocBlockTypeResolver
         return class_exists($typeHint) || interface_exists($typeHint);
     }
 
-    private function resolveTypeFromDocblock(\ReflectionProperty $reflectionProperty): ?array
+    private function resolveTypeFromDocblock(\ReflectionProperty $reflectionProperty): array
     {
         $docComment = $reflectionProperty->getDocComment();
         if (!$docComment && PHP_VERSION_ID >= 80000 && $reflectionProperty->isPromoted()) {
@@ -338,7 +338,7 @@ final class DocBlockTypeResolver
         }
 
         if (!$docComment) {
-            return null;
+            return [];
         }
 
         // First we tokenize the PhpDoc comment and parse the tokens into a PhpDocNode.
