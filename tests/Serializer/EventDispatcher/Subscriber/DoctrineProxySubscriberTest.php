@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class DoctrineProxySubscriberTest extends TestCase
 {
-    /** @var Context|MockObject */
+    /** @var Context&MockObject */
     private $context;
 
     /** @var DoctrineProxySubscriber */
