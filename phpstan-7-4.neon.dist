@@ -1,6 +1,0 @@
-includes:
-    - phpstan.neon.dist
-    - phpstan/no-enum.neon
-    - phpstan/no-typed-prop.neon
-    - phpstan/no-attributes.neon
-    - phpstan/no-promoted-properties.neon
