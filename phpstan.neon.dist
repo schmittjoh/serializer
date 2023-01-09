@@ -3,7 +3,6 @@ parameters:
 
     ignoreErrors:
         - '~Class Doctrine\\Common\\Persistence\\Proxy not found~'
-        - '~class Doctrine\\Common\\Cache\\FilesystemCache not found~'
         - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
         - '~Class Symfony\\(Contracts|Component)\\Translation\\TranslatorInterface not found~'
         - '#Constructor of class JMS\\Serializer\\Annotation\\.*? has an unused parameter#'
