@@ -117,6 +117,10 @@ class TypedPropertiesDriver implements DriverInterface
             return true;
         }
 
+        if (PHP_VERSION_ID >= 80100 && enum_exists($reflectionType->getName())) {
+            return false; // handled by EnumPropertiesDriver
+        }
+
         return class_exists($reflectionType->getName())
             || interface_exists($reflectionType->getName());
     }
