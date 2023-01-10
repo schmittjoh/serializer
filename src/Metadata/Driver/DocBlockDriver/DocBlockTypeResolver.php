@@ -329,7 +329,15 @@ final class DocBlockTypeResolver
     {
         $docComment = $reflectionProperty->getDocComment();
         if (!$docComment && PHP_VERSION_ID >= 80000 && $reflectionProperty->isPromoted()) {
-            $docComment = $reflectionProperty->getDeclaringClass()->getConstructor()->getDocComment();
+            $constructor = $reflectionProperty->getDeclaringClass()->getConstructor();
+            if (null === $constructor) {
+                return [];
+            }
+
+            $docComment = $constructor->getDocComment();
+            if (!$docComment) {
+                return [];
+            }
 
             $tokens = $this->lexer->tokenize($docComment);
             $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
