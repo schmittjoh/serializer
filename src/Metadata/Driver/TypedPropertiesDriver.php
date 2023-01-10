@@ -32,16 +32,16 @@ class TypedPropertiesDriver implements DriverInterface
     /**
      * @var string[]
      */
-    private $whiteList;
+    private $allowList;
 
     /**
-     * @param string[] $whiteList
+     * @param string[] $allowList
      */
-    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $whiteList = [])
+    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $allowList = [])
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
-        $this->whiteList = array_merge($whiteList, $this->getDefaultWhiteList());
+        $this->allowList = array_merge($allowList, $this->getDefaultWhiteList());
     }
 
     private function getDefaultWhiteList(): array
@@ -68,7 +68,7 @@ class TypedPropertiesDriver implements DriverInterface
         }
 
         // We base our scan on the internal driver's property list so that we
-        // respect any internal white/blacklisting like in the AnnotationDriver
+        // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
@@ -113,7 +113,7 @@ class TypedPropertiesDriver implements DriverInterface
             return false;
         }
 
-        if (in_array($reflectionType->getName(), $this->whiteList, true)) {
+        if (in_array($reflectionType->getName(), $this->allowList, true)) {
             return true;
         }
 

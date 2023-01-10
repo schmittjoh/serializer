@@ -121,7 +121,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testExternalEntitiesAreDisabledByDefault()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the whitelist configuration.');
+        $this->expectExceptionMessage('The document type "<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=XmlSerializationTest.php">]>" is not allowed. If it is safe, you may add it to the allowlist configuration.');
 
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
@@ -135,7 +135,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testDocumentTypesAreNotAllowed()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the whitelist configuration.');
+        $this->expectExceptionMessage('The document type "<!DOCTYPE foo>" is not allowed. If it is safe, you may add it to the allowlist configuration.');
 
         $this->deserialize('<?xml version="1.0"?><!DOCTYPE foo><foo></foo>', 'stdClass');
     }

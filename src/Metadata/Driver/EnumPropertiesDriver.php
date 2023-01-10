@@ -37,7 +37,7 @@ class EnumPropertiesDriver implements DriverInterface
         }
 
         // We base our scan on the internal driver's property list so that we
-        // respect any internal white/blacklisting like in the AnnotationDriver
+        // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
