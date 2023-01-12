@@ -28,6 +28,8 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfNotExistin
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfScalars;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionTypedAsGenericClass;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\ConstructorPropertyPromotion;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\ConstructorPropertyPromotionWithoutDocblock;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\ConstructorPropertyPromotionWithScalar;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductColor;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductDescription;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Details\ProductName;
@@ -374,6 +376,34 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForConstructorPropertyPromotionWithoutDocblock()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
+        }
+
+        $m = $this->resolve(ConstructorPropertyPromotionWithoutDocblock::class);
+
+        self::assertEquals(
+            null,
+            $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForConstructorPropertyPromotionWithScalar()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
+        }
+
+        $m = $this->resolve(ConstructorPropertyPromotionWithScalar::class);
+
+        self::assertEquals(
+            ['name' => 'string', 'params' => []],
             $m->propertyMetadata['data']->type
         );
     }
