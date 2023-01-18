@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -27,6 +28,12 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
         }
     }
 
+    /**
+     * @param ClassMetadataInfo $doctrineMetadata
+     * @param PropertyMetadata $propertyMetadata
+     *
+     * @return void
+     */
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
         $propertyName = $propertyMetadata->name;
@@ -35,8 +42,18 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             && ($typeOfFiled = $doctrineMetadata->getTypeOfField($propertyName))
             && ($fieldType = $this->normalizeFieldType($typeOfFiled))
         ) {
-            $propertyMetadata->setType($this->typeParser->parse($fieldType));
-        } elseif ($doctrineMetadata->hasAssociation($propertyName)) {
+            if (PHP_VERSION_ID >= 80100 && ($fieldMapping = $doctrineMetadata->getFieldMapping($propertyName)) && isset($fieldMapping['enumType'])) {
+                $type = ['name' => 'enum', 'params' => [$fieldMapping['enumType'], 'value', $fieldType]];
+            } else {
+                $type = $this->typeParser->parse($fieldType);
+            }
+
+            $propertyMetadata->setType($type);
+
+            return;
+        }
+
+        if ($doctrineMetadata->hasAssociation($propertyName)) {
             $targetEntity = $doctrineMetadata->getAssociationTargetClass($propertyName);
 
             if (null === $targetMetadata = $this->tryLoadingDoctrineMetadata($targetEntity)) {

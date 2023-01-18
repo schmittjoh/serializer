@@ -10,19 +10,42 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
 use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\ManagerRegistry;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostWithEmbedded;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\BlogPost;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Enums\SuitEntity;
+use JMS\Serializer\Tests\Fixtures\Enum\BackedSuit;
+use JMS\Serializer\Tests\Fixtures\Enum\BackedSuitInt;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineDriverTest extends TestCase
 {
-    public function getMetadata()
+    public function getMetadata(string $class = BlogPost::class): ClassMetadata
     {
-        $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Doctrine\Entity\BlogPost');
+        $refClass = new \ReflectionClass($class);
 
         return $this->getDoctrineDriver()->loadMetadataForClass($refClass);
+    }
+
+    public function testMetadataForEnums()
+    {
+        if (PHP_VERSION_ID < 80100 || ORMVersion::compare('2.11') >= 0) {
+            $this->markTestSkipped('Not using Doctrine PHP >= 8.1 ORM >= 2.11 with Enums entities');
+        }
+
+        $metadata = $this->getMetadata(SuitEntity::class);
+
+        self::assertEquals(
+            ['name' => 'enum', 'params' => [BackedSuitInt::class, 'value', 'integer']],
+            $metadata->propertyMetadata['id']->type
+        );
+        self::assertEquals(
+            ['name' => 'enum', 'params' => [BackedSuit::class, 'value', 'string']],
+            $metadata->propertyMetadata['name']->type
+        );
     }
 
     public function testMetadataForEmbedded()
@@ -31,9 +54,8 @@ class DoctrineDriverTest extends TestCase
             $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
         }
 
-        $refClass = new \ReflectionClass(BlogPostWithEmbedded::class);
-        $meta = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
-        self::assertNotNull($meta);
+        $metadata = $this->getMetadata(BlogPostWithEmbedded::class);
+        self::assertNotNull($metadata);
     }
 
     public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
