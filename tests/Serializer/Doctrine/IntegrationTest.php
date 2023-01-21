@@ -13,20 +13,25 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\AbstractManagerRegistry;
 use Doctrine\Persistence\Proxy;
 use JMS\Serializer\Builder\CallbackDriverFactory;
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Metadata\Driver\EnumPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Enums\SuitEntity;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Clazz;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Organization;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Person;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\School;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Student;
 use JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher;
+use JMS\Serializer\Tests\Fixtures\Enum\BackedSuit;
+use JMS\Serializer\Tests\Fixtures\Enum\BackedSuitInt;
 use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
@@ -55,6 +60,25 @@ class IntegrationTest extends TestCase
 
         $deserialized = $this->serializer->deserialize($json, Person::class, 'json');
         self::assertEquals($student, $deserialized);
+    }
+
+    public function testDoctrineEnums()
+    {
+        if (PHP_VERSION_ID < 80100 || ORMVersion::compare('2.11') < 0) {
+            $this->markTestSkipped('Not using Doctrine PHP >= 8.1 ORM >= 2.11 with Enums entities');
+        }
+
+        $o = new SuitEntity();
+        $o->id = BackedSuitInt::Hearts;
+        $o->name = BackedSuit::Hearts;
+
+        $serialized  = $this->serializer->serialize($o, 'json');
+
+        self::assertEquals('{"id":1,"name":"H"}', $serialized);
+
+        $deserialized = $this->serializer->deserialize($serialized, SuitEntity::class, 'json');
+
+        self::assertEquals($o, $deserialized);
     }
 
     public function testDiscriminatorIsInferredFromDoctrine()
@@ -106,9 +130,15 @@ class IntegrationTest extends TestCase
                 static function (array $metadataDirs, Reader $annotationReader) use ($registry) {
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
-                    return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
+                    $driver = new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
+                    if (PHP_VERSION_ID >= 80100) {
+                        return new EnumPropertiesDriver($driver);
+                    }
+
+                    return $driver;
                 }
             ))
+            ->enableEnumSupport(PHP_VERSION_ID > 80100)
             ->build();
 
         $this->prepareDatabase();

@@ -13,7 +13,6 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionProperty;
 
 class EnumPropertiesDriver implements DriverInterface
 {
@@ -32,24 +31,22 @@ class EnumPropertiesDriver implements DriverInterface
         $classMetadata = $this->delegate->loadMetadataForClass($class);
         \assert($classMetadata instanceof SerializerClassMetadata);
 
-        if (null === $classMetadata) {
-            return null;
-        }
-
         // We base our scan on the internal driver's property list so that we
         // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
-            if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
+            if ($this->isVirtualProperty($propertyMetadata)) {
+                continue;
+            }
+
+            if (!isset($propertyMetadata->type['name']) || !enum_exists($propertyMetadata->type['name'])) {
                 continue;
             }
 
             try {
-                $propertyReflection = $this->getReflection($propertyMetadata);
-                if ($enum = $this->getEnumReflection($propertyReflection)) {
-                    $serializerType = ['name' => 'enum', 'params' => [$enum->getName(), $enum->isBacked() ? 'value' : 'name']];
-                    $propertyMetadata->setType($serializerType);
-                }
+                $enumReflection = new \ReflectionEnum($propertyMetadata->type['name']);
+                $serializerType = ['name' => 'enum', 'params' => [$enumReflection->getName(), $enumReflection->isBacked() ? 'value' : 'name']];
+                $propertyMetadata->setType($serializerType);
             } catch (ReflectionException $e) {
                 continue;
             }
@@ -63,21 +60,5 @@ class EnumPropertiesDriver implements DriverInterface
         return $propertyMetadata instanceof VirtualPropertyMetadata
             || $propertyMetadata instanceof StaticPropertyMetadata
             || $propertyMetadata instanceof ExpressionPropertyMetadata;
-    }
-
-    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
-    {
-        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
-    }
-
-    private function getEnumReflection(ReflectionProperty $propertyReflection): ?\ReflectionEnum
-    {
-        $reflectionType = $propertyReflection->getType();
-
-        if (!($reflectionType instanceof \ReflectionNamedType)) {
-            return null;
-        }
-
-        return enum_exists($reflectionType->getName()) ? new \ReflectionEnum($reflectionType->getName()) : null;
     }
 }

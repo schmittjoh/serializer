@@ -43,12 +43,10 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             && ($fieldType = $this->normalizeFieldType($typeOfFiled))
         ) {
             if (PHP_VERSION_ID >= 80100 && ($fieldMapping = $doctrineMetadata->getFieldMapping($propertyName)) && isset($fieldMapping['enumType'])) {
-                $type = ['name' => 'enum', 'params' => [$fieldMapping['enumType'], 'value', $fieldType]];
-            } else {
-                $type = $this->typeParser->parse($fieldType);
+                $fieldType = $fieldMapping['enumType'];
             }
 
-            $propertyMetadata->setType($type);
+            $propertyMetadata->setType($this->typeParser->parse($fieldType));
 
             return;
         }

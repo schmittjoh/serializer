@@ -524,13 +524,15 @@ final class SerializerBuilder
         return $this;
     }
 
-    public function enableEnumSupport(bool $enableEnumSupport = true): void
+    public function enableEnumSupport(bool $enableEnumSupport = true): self
     {
         if ($enableEnumSupport && PHP_VERSION_ID < 80100) {
             throw new InvalidArgumentException('Enum support can be enabled only on PHP 8.1 or higher.');
         }
 
         $this->enableEnumSupport = $enableEnumSupport;
+
+        return $this;
     }
 
     public function setMetadataCache(CacheInterface $cache): self

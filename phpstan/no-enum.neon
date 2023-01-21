@@ -8,3 +8,4 @@ parameters:
         - %currentWorkingDirectory%/tests/Fixtures/ObjectWithAutoDetectEnums.php
         - %currentWorkingDirectory%/tests/Fixtures/Doctrine/Enums/SuitEntity.php
         - %currentWorkingDirectory%/tests/Metadata/Driver/DoctrineDriverTest.php
+        - %currentWorkingDirectory%/tests/Serializer/Doctrine/IntegrationTest.php

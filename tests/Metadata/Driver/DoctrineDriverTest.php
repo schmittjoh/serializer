@@ -32,18 +32,18 @@ class DoctrineDriverTest extends TestCase
 
     public function testMetadataForEnums()
     {
-        if (PHP_VERSION_ID < 80100 || ORMVersion::compare('2.11') >= 0) {
+        if (PHP_VERSION_ID < 80100 || ORMVersion::compare('2.11') < 0) {
             $this->markTestSkipped('Not using Doctrine PHP >= 8.1 ORM >= 2.11 with Enums entities');
         }
 
         $metadata = $this->getMetadata(SuitEntity::class);
 
         self::assertEquals(
-            ['name' => 'enum', 'params' => [BackedSuitInt::class, 'value', 'integer']],
+            ['name' => BackedSuitInt::class, 'params' => []],
             $metadata->propertyMetadata['id']->type
         );
         self::assertEquals(
-            ['name' => 'enum', 'params' => [BackedSuit::class, 'value', 'string']],
+            ['name' => BackedSuit::class, 'params' => []],
             $metadata->propertyMetadata['name']->type
         );
     }
