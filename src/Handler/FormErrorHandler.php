@@ -18,7 +18,7 @@ use function get_class;
 final class FormErrorHandler implements SubscribingHandlerInterface
 {
     /**
-     * @var TranslatorInterface|null
+     * @var TranslatorInterface|TranslatorContract|null
      */
     private $translator;
 

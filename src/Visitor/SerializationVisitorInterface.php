@@ -21,57 +21,38 @@ interface SerializationVisitorInterface extends VisitorInterface
 {
     /**
      * @param mixed $data
-     * @param array $type
      *
      * @return mixed
      */
     public function visitNull($data, array $type);
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
      * @return mixed
      */
     public function visitString(string $data, array $type);
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
      * @return mixed
      */
     public function visitBoolean(bool $data, array $type);
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
      * @return mixed
      */
     public function visitDouble(float $data, array $type);
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
      * @return mixed
      */
     public function visitInteger(int $data, array $type);
 
     /**
-     * @param mixed $data
-     * @param array $type
-     *
      * @return array|\ArrayObject
      */
     public function visitArray(array $data, array $type);
 
     /**
      * Called before the properties of the object are being visited.
-     *
-     * @param mixed $data
-     * @param array $type
      */
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void;
 
@@ -82,9 +63,6 @@ interface SerializationVisitorInterface extends VisitorInterface
 
     /**
      * Called after all properties of the object have been visited.
-     *
-     * @param mixed $data
-     * @param array $type
      *
      * @return array|\ArrayObject
      */

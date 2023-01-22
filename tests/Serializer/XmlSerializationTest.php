@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -415,11 +415,11 @@ class XmlSerializationTest extends BaseSerializationTest
             'ObjectWithXmlNamespacesAndObjectPropertyAuthorVirtual',
             $this->getFormat(),
             static function (XmlSerializationVisitor $visitor, $data, $type, Context $context) use ($author) {
-                $factory = $context->getMetadataFactory(get_class($author));
+                $factory = $context->getMetadataFactory();
                 $classMetadata = $factory->getMetadataForClass(get_class($author));
+                \assert($classMetadata instanceof ClassMetadata);
 
                 $metadata = new StaticPropertyMetadata(get_class($author), 'foo', $author);
-                $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
 
                 $visitor->visitProperty($metadata, $author);
@@ -536,10 +536,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testEvaluatesToNull()
     {
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-
-        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor($navigator, $context);
+        $visitor = (new XmlDeserializationVisitorFactory())->getVisitor();
         $xsdNilAsTrueElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>');
         $xsdNilAsOneElement = simplexml_load_string('<empty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="1"/>');
 
@@ -550,10 +547,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
     public function testDoubleEncoding()
     {
-        $context = $this->getMockBuilder(DeserializationContext::class)->getMock();
-        $navigator = $this->getMockBuilder(GraphNavigatorInterface::class)->getMock();
-
-        $visitor = (new XmlSerializationVisitorFactory())->getVisitor($navigator, $context);
+        $visitor = (new XmlSerializationVisitorFactory())->getVisitor();
 
         // Setting locale with comma fractional separator
         $locale = setlocale(LC_ALL, 0);

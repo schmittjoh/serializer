@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use Doctrine\ODM\PHPCR\Mapping\ClassMetadata as PHPCRClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
@@ -13,6 +14,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
 {
+    /**
+     * @param PHPCRClassMetadata $doctrineMetadata
+     * @param PropertyMetadata $propertyMetadata
+     */
     protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): bool
     {
         return 'lazyPropertiesDefaults' === $propertyMetadata->name
@@ -20,6 +25,10 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
             || $doctrineMetadata->node === $propertyMetadata->name;
     }
 
+    /**
+     * @param PHPCRClassMetadata $doctrineMetadata
+     * @param PropertyMetadata $propertyMetadata
+     */
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata): void
     {
         $propertyName = $propertyMetadata->name;

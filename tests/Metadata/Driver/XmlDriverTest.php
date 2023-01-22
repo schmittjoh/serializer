@@ -91,6 +91,9 @@ class XmlDriverTest extends BaseDriverTest
         self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
+    /**
+     * @return XmlDriver
+     */
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
         $dirs = [

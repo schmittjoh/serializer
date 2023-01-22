@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Construction;
 
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -64,7 +66,6 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
      */
     public function construct(DeserializationVisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context): ?object
     {
-        // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);
 
         if (!$objectManager) {
@@ -82,6 +83,8 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
 
         // Managed entity, check for proxy load
         if (!is_array($data) && !(is_object($data) && 'SimpleXMLElement' === get_class($data))) {
+            \assert($objectManager instanceof EntityManagerInterface || $objectManager instanceof DocumentManagerInterface);
+
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }

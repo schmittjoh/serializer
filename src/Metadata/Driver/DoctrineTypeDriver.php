@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -14,6 +15,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
 {
+    /**
+     * @param ClassMetadataInfo $doctrineMetadata
+     * @param ClassMetadata $classMetadata
+     */
     protected function setDiscriminator(DoctrineClassMetadata $doctrineMetadata, ClassMetadata $classMetadata): void
     {
         if (
@@ -46,7 +51,7 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             // For inheritance schemes, we cannot add any type as we would only add the super-type of the hierarchy.
             // On serialization, this would lead to only the supertype being serialized, and properties of subtypes
             // being ignored.
-            if ($targetMetadata instanceof DoctrineClassMetadata && !$targetMetadata->isInheritanceTypeNone()) {
+            if ($targetMetadata instanceof ClassMetadataInfo && !$targetMetadata->isInheritanceTypeNone()) {
                 return;
             }
 

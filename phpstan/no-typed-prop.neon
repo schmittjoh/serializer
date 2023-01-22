@@ -1,6 +1,5 @@
 parameters:
     excludePaths:
-
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php
         - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php

@@ -103,6 +103,9 @@ class YamlDriverTest extends BaseDriverTest
         );
     }
 
+    /**
+     * @return YamlDriver
+     */
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
         $dirs = [

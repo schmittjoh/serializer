@@ -220,6 +220,12 @@ class MockSubscriber implements EventSubscriberInterface
     }
 }
 
+/**
+ * @method bar(...$args)
+ * @method all(...$args)
+ * @method foo(...$args)
+ * @method onlyProxy(...$args)
+ */
 class MockListener
 {
     private $expected = [];

@@ -1,0 +1,5 @@
+parameters:
+    ignoreErrors:
+        - '~Call to an undefined method ReflectionProperty::isPromoted\(\)~'
+        - '~Call to an undefined method ReflectionProperty::getDefaultValue\(\)~'
+        - '~Call to an undefined method ReflectionProperty::hasDefaultValue\(\)~'

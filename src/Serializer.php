@@ -31,7 +31,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $factory;
 
     /**
-     * @var TypeParser
+     * @var ParserInterface
      */
     private $typeParser;
 

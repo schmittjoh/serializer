@@ -37,6 +37,7 @@ abstract class BaseDriverTest extends TestCase
     public function testLoadBlogPostMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertEquals('blog-post', $m->xmlRootName);
@@ -118,6 +119,7 @@ abstract class BaseDriverTest extends TestCase
     public function testXMLListAbsentNode()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertArrayHasKey('absent', $m->propertyMetadata);
         self::assertArrayHasKey('present', $m->propertyMetadata);
@@ -131,6 +133,7 @@ abstract class BaseDriverTest extends TestCase
     public function testVirtualProperty()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertArrayHasKey('existField', $m->propertyMetadata);
         self::assertArrayHasKey('virtualValue', $m->propertyMetadata);
@@ -149,6 +152,7 @@ abstract class BaseDriverTest extends TestCase
     public function testFirstClassListCollection()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassListCollection::class));
+        \assert($m instanceof ClassMetadata);
         self::assertTrue($m->isList);
         self::assertFalse($m->isMap);
     }
@@ -156,6 +160,7 @@ abstract class BaseDriverTest extends TestCase
     public function testFirstClassMapCollection()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(FirstClassMapCollection::class));
+        \assert($m instanceof ClassMetadata);
         self::assertFalse($m->isList);
         self::assertTrue($m->isMap);
     }
@@ -163,6 +168,7 @@ abstract class BaseDriverTest extends TestCase
     public function testXmlKeyValuePairs()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertArrayHasKey('array', $m->propertyMetadata);
         self::assertTrue($m->propertyMetadata['array']->xmlKeyValuePairs);
@@ -374,6 +380,7 @@ abstract class BaseDriverTest extends TestCase
     public function testLoadXmlObjectWithNamespacesMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));
+        \assert($m instanceof ClassMetadata);
         self::assertNotNull($m);
         self::assertEquals('test-object', $m->xmlRootName);
         self::assertEquals('ex', $m->xmlRootPrefix);
@@ -423,6 +430,7 @@ abstract class BaseDriverTest extends TestCase
     public function testMaxDepth()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Node'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertEquals(2, $m->propertyMetadata['children']->maxDepth);
     }
@@ -430,6 +438,7 @@ abstract class BaseDriverTest extends TestCase
     public function testPersonCData()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\Person'));
+        \assert($m instanceof ClassMetadata);
 
         self::assertNotNull($m);
         self::assertFalse($m->propertyMetadata['name']->xmlElementCData);
@@ -438,6 +447,7 @@ abstract class BaseDriverTest extends TestCase
     public function testXmlNamespaceInheritanceMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleClassObject'));
+        \assert($m instanceof ClassMetadata);
         self::assertNotNull($m);
         self::assertCount(3, $m->xmlNamespaces);
         self::assertArrayHasKey('old_foo', $m->xmlNamespaces);
@@ -468,6 +478,7 @@ abstract class BaseDriverTest extends TestCase
         self::assertEquals($p, $m->propertyMetadata['moo']);
 
         $subm = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\SimpleSubClassObject'));
+        \assert($subm instanceof ClassMetadata);
         self::assertNotNull($subm);
         self::assertCount(2, $subm->xmlNamespaces);
         self::assertArrayHasKey('old_foo', $subm->xmlNamespaces);
@@ -573,6 +584,7 @@ abstract class BaseDriverTest extends TestCase
     public function testLifeCycleCallbacks()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithOnlyLifecycleCallbacks::class));
+        \assert($m instanceof ClassMetadata);
 
         $c = new ClassMetadata(ObjectWithOnlyLifecycleCallbacks::class);
         $c->preSerializeMethods[] = new MethodMetadata(ObjectWithOnlyLifecycleCallbacks::class, 'prepareForSerialization');
@@ -589,6 +601,7 @@ abstract class BaseDriverTest extends TestCase
     {
         $class = 'JMS\Serializer\Tests\Fixtures\PersonAccount';
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass($class));
+        \assert($m instanceof ClassMetadata);
 
         $c = new ClassMetadata($class);
         $c->excludeIf = $this->getExpressionEvaluator()->parse('object.expired', ['context', 'class_metadata', 'object']);
