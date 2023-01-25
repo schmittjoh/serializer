@@ -13,6 +13,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Symfony\Component\Uid\AbstractUid;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV1;
 use Symfony\Component\Uid\UuidV3;
 use Symfony\Component\Uid\UuidV4;
@@ -28,6 +29,7 @@ final class SymfonyUidHandler implements SubscribingHandlerInterface
 
     private const UID_CLASSES = [
         Ulid::class,
+        Uuid::class,
         UuidV1::class,
         UuidV3::class,
         UuidV4::class,
