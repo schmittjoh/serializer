@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -48,27 +47,22 @@ use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
-class AnnotationDriver implements DriverInterface
+abstract class AnnotationOrAttributeDriver implements DriverInterface
 {
     use ExpressionMetadataTrait;
-
-    /**
-     * @var Reader
-     */
-    private $reader;
 
     /**
      * @var ParserInterface
      */
     private $typeParser;
+
     /**
      * @var PropertyNamingStrategyInterface
      */
     private $namingStrategy;
 
-    public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
-        $this->reader = $reader;
         $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
@@ -78,6 +72,7 @@ class AnnotationDriver implements DriverInterface
     {
         $classMetadata = new ClassMetadata($name = $class->name);
         $fileResource =  $class->getFilename();
+
         if (false !== $fileResource) {
             $classMetadata->fileResources[] = $fileResource;
         }
@@ -89,7 +84,8 @@ class AnnotationDriver implements DriverInterface
         $excludeAll = false;
         $classAccessType = PropertyMetadata::ACCESS_TYPE_PROPERTY;
         $readOnlyClass = false;
-        foreach ($this->reader->getClassAnnotations($class) as $annot) {
+
+        foreach ($this->getClassAnnotations($class) as $annot) {
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
             } elseif ($annot instanceof XmlRoot) {
@@ -136,7 +132,7 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $methodAnnotations = $this->reader->getMethodAnnotations($method);
+            $methodAnnotations = $this->getMethodAnnotations($method);
 
             foreach ($methodAnnotations as $annot) {
                 if ($annot instanceof PreSerialize) {
@@ -164,7 +160,7 @@ class AnnotationDriver implements DriverInterface
                 }
 
                 $propertiesMetadata[] = new PropertyMetadata($name, $property->getName());
-                $propertiesAnnotations[] = $this->reader->getPropertyAnnotations($property);
+                $propertiesAnnotations[] = $this->getPropertyAnnotations($property);
             }
 
             foreach ($propertiesMetadata as $propertyKey => $propertyMetadata) {
@@ -280,4 +276,19 @@ class AnnotationDriver implements DriverInterface
 
         return $classMetadata;
     }
+
+    /**
+     * @return list<object>
+     */
+    abstract protected function getClassAnnotations(\ReflectionClass $class): array;
+
+    /**
+     * @return list<object>
+     */
+    abstract protected function getMethodAnnotations(\ReflectionMethod $method): array;
+
+    /**
+     * @return list<object>
+     */
+    abstract protected function getPropertyAnnotations(\ReflectionProperty $property): array;
 }
