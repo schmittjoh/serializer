@@ -1,3 +1,0 @@
-parameters:
-    ignoreErrors:
-        - '~Access to an undefined property ReflectionProperty::\$info~'

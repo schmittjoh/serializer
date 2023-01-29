@@ -12,9 +12,8 @@ if (PHP_VERSION_ID < 80100) {
 if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80200) {
     $includes[] = __DIR__ . '/php-81.neon';
 }
-
-if (PHP_VERSION_ID >= 80200) {
-    $includes[] = __DIR__ . '/php-82.neon';
+if(!class_exists(Symfony\Component\Uid\UuidV7::class)) {
+    $includes[] = __DIR__ . '/no-uuid-7.neon';
 }
 
 $config = [];

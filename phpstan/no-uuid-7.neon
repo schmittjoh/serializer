@@ -1,0 +1,4 @@
+parameters:
+    ignoreErrors:
+        - '~Class Symfony\\Component\\Uid\\UuidV(7|8) not found~'
+        - '~Call to an undefined static method Symfony\\Component\\Uid\\Uuid::v(8|7)\(\).~'
