@@ -9,6 +9,9 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 
+/**
+ * @deprecated use {@see \JMS\Serializer\Metadata\Driver\AttributeDriver} instead
+ */
 class AttributeReader implements Reader
 {
     /**
