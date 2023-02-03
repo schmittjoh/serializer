@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <color><![CDATA[blue]]></color>
+  <size><![CDATA[big]]></size>
   <type_of_soil><![CDATA[potting mix]]></type_of_soil>
   <days_since_potting>-1</days_since_potting>
+  <weight>10</weight>
 </result>

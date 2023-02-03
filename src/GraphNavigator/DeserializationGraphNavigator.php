@@ -215,7 +215,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                         if (true === $propertyMetadata->hasDefault) {
-                            $this->accessor->setValue($object, $propertyMetadata->defaultValue, $propertyMetadata, $this->context);
+                            $cloned = clone $propertyMetadata;
+                            $cloned->setter = null;
+                            $this->accessor->setValue($object, $cloned->defaultValue, $cloned, $this->context);
                         }
                     }
 
