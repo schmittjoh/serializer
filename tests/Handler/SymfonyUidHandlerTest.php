@@ -25,6 +25,7 @@ final class SymfonyUidHandlerTest extends TestCase
     public function dataUid(): \Generator
     {
         yield sprintf('%s instance', Ulid::class) => [new Ulid()];
+        yield sprintf('%s instance', Uuid::class) => [Uuid::v1()];
         yield sprintf('%s instance', UuidV1::class) => [Uuid::v1()];
         yield sprintf('%s instance', UuidV3::class) => [Uuid::v3(Uuid::v4(), 'serializer-test')];
         yield sprintf('%s instance', UuidV4::class) => [Uuid::v4()];
