@@ -19,6 +19,8 @@ use Symfony\Component\Uid\UuidV3;
 use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Uid\UuidV5;
 use Symfony\Component\Uid\UuidV6;
+use Symfony\Component\Uid\UuidV7;
+use Symfony\Component\Uid\UuidV8;
 
 final class SymfonyUidHandler implements SubscribingHandlerInterface
 {
@@ -35,6 +37,8 @@ final class SymfonyUidHandler implements SubscribingHandlerInterface
         UuidV4::class,
         UuidV5::class,
         UuidV6::class,
+        UuidV7::class,
+        UuidV8::class,
     ];
 
     /**

@@ -19,6 +19,8 @@ use Symfony\Component\Uid\UuidV3;
 use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Uid\UuidV5;
 use Symfony\Component\Uid\UuidV6;
+use Symfony\Component\Uid\UuidV7;
+use Symfony\Component\Uid\UuidV8;
 
 final class SymfonyUidHandlerTest extends TestCase
 {
@@ -31,6 +33,14 @@ final class SymfonyUidHandlerTest extends TestCase
         yield sprintf('%s instance', UuidV4::class) => [Uuid::v4()];
         yield sprintf('%s instance', UuidV5::class) => [Uuid::v5(Uuid::v4(), 'serializer-test')];
         yield sprintf('%s instance', UuidV6::class) => [Uuid::v6()];
+
+        if (class_exists(UuidV7::class)) {
+            yield sprintf('%s instance', UuidV7::class) => [Uuid::v7()];
+        }
+
+        if (class_exists(UuidV8::class)) {
+            yield sprintf('%s instance', UuidV8::class) => [Uuid::v8('216fff40-98d9-81e3-a5e2-0800200c9a66')];
+        }
     }
 
     /**
