@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
@@ -55,8 +56,12 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         $this->enableEnumSupport = $enableEnumSupport;
     }
 
-    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
+    public function createDriver(array $metadataDirs, ?Reader $annotationReader = null): DriverInterface
     {
+        if (PHP_VERSION_ID < 80000 && empty($metadataDirs) && !interface_exists(Reader::class)) {
+            throw new RuntimeException(sprintf('To use "%s", either a list of metadata directories must be provided, the "doctrine/annotations" package installed, or use PHP 8.0 or later.', self::class));
+        }
+
         /*
          * Build the sorted list of metadata drivers based on the environment. The final order should be:
          *
@@ -65,7 +70,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
          * - Annotations/Attributes Driver
          * - Null (Fallback) Driver
          */
-        $metadataDrivers = [new AnnotationOrAttributeDriver($this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator, $annotationReader)];
+        $metadataDrivers = [];
+
+        if (PHP_VERSION_ID >= 80000 || $annotationReader instanceof Reader) {
+            $metadataDrivers[] = new AnnotationOrAttributeDriver($this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator, $annotationReader);
+        }
 
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);

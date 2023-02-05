@@ -26,7 +26,7 @@ class DocBlockDriverFactory implements DriverFactoryInterface
         $this->typeParser = $typeParser;
     }
 
-    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
+    public function createDriver(array $metadataDirs, ?Reader $annotationReader = null): DriverInterface
     {
         $driver = $this->driverFactoryToDecorate->createDriver($metadataDirs, $annotationReader);
 
