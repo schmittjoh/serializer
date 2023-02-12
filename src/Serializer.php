@@ -162,6 +162,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
 
+        $context->close();
+
         return $visitor->getResult($result);
     }
 
@@ -178,6 +180,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
+
+        $context->close();
 
         return $visitor->getResult($result);
     }

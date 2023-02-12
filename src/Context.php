@@ -264,4 +264,9 @@ abstract class Context
     abstract public function getDepth(): int;
 
     abstract public function getDirection(): int;
+
+    public function close(): void
+    {
+        unset($this->visitor, $this->navigator);
+    }
 }
