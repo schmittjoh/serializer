@@ -72,7 +72,13 @@ abstract class Context
         $this->metadataStack = new \SplStack();
 
         if (isset($this->attributes['groups'])) {
-            $this->addExclusionStrategy(new GroupsExclusionStrategy($this->attributes['groups']));
+            $strategy = new GroupsExclusionStrategy($this->attributes['groups']);
+
+            if (isset($this->attributes['inherited_groups']) && is_bool($this->attributes['inherited_groups'])) {
+                $strategy->setInheritedGroups($this->attributes['inherited_groups']);
+            }
+
+            $this->addExclusionStrategy($strategy);
         }
 
         if (isset($this->attributes['version'])) {
@@ -200,6 +206,16 @@ abstract class Context
     public function enableMaxDepthChecks(): self
     {
         $this->attributes['max_depth_checks'] = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableInheritGroups(): self
+    {
+        $this->attributes['inherit_groups'] = true;
 
         return $this;
     }
