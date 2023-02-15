@@ -74,7 +74,7 @@ abstract class Context
         if (isset($this->attributes['groups'])) {
             $strategy = new GroupsExclusionStrategy($this->attributes['groups']);
 
-            if (isset($this->attributes['inherited_groups']) && is_bool($this->attributes['inherited_groups'])) {
+            if (isset($this->attributes['inherited_groups'])) {
                 $strategy->setInheritedGroups($this->attributes['inherited_groups']);
             }
 
@@ -215,7 +215,7 @@ abstract class Context
      */
     public function enableInheritGroups(): self
     {
-        $this->attributes['inherit_groups'] = true;
+        $this->attributes['inherited_groups'] = true;
 
         return $this;
     }
