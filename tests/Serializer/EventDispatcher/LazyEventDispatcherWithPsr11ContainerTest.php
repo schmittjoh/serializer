@@ -28,7 +28,7 @@ class Psr11Container implements ContainerInterface
         return $this->services[$id];
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return isset($this->services[$id]);
     }
