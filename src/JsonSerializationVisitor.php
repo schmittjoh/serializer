@@ -190,6 +190,8 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function getResult($data)
     {
+        unset($this->navigator);
+
         $result = @json_encode($data, $this->options);
 
         switch (json_last_error()) {

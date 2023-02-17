@@ -385,6 +385,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      */
     public function getResult($node)
     {
+        unset($this->navigator);
         if (null === $this->document->documentElement) {
             if ($node instanceof \DOMElement) {
                 $this->document->appendChild($node);

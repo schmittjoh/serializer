@@ -30,6 +30,14 @@ jobs:
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
         
-      - name: Run tests
+      - name: Run performance benchmarks
         run: |
-          vendor/bin/phpbench run tests/Benchmark/ --report=aggregate
+          vendor/bin/phpbench run tests/Benchmark/Performance --report=aggregate
+
+      - name: Check JSON serialiser memory leaks
+        run: |
+          vendor/bin/phpbench run tests/Benchmark/Memory/Json* --report=memory --iterations=1
+
+      - name: Check XML serialiser memory leaks
+        run: |
+          vendor/bin/phpbench run tests/Benchmark/Memory/Xml* --report=memory --iterations=1
