@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use Psr\Container\ContainerInterface;
 
-class LazyEventDispatcherWithPsr11ContainerTest extends LazyEventDispatcherTest
+class LazyEventDispatcherWithPsr11ContainerTest extends LazyEventDispatcherTestCase
 {
     protected function createContainer()
     {

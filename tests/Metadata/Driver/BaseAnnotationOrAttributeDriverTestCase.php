@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use JMS\Serializer\Tests\Fixtures\AllExcludedObject;
 use Metadata\Driver\DriverInterface;
 
-abstract class BaseAnnotationOrAttributeDriverTest extends BaseDriverTest
+abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCase
 {
     abstract protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface;
 

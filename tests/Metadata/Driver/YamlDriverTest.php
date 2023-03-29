@@ -13,7 +13,7 @@ use JMS\Serializer\Tests\Fixtures\Person;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
-class YamlDriverTest extends BaseDriverTest
+class YamlDriverTest extends BaseDriverTestCase
 {
     public function testAccessorOrderIsInferred(): void
     {

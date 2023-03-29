@@ -24,7 +24,7 @@ use Symfony\Component\Uid\UuidV8;
 
 final class SymfonyUidHandlerTest extends TestCase
 {
-    public function dataUid(): \Generator
+    public static function dataUid(): \Generator
     {
         yield sprintf('%s instance', Ulid::class) => [new Ulid()];
         yield sprintf('%s instance', Uuid::class) => [Uuid::v1()];

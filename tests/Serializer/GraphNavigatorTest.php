@@ -232,12 +232,10 @@ class GraphNavigatorTest extends TestCase
 
         $this->context = $this->getMockBuilder(SerializationContext::class)
             ->enableOriginalConstructor()
-            ->setMethodsExcept(['getExclusionStrategy', 'initialize', 'startVisiting', 'stopVisiting'])
             ->getMock();
 
         $this->deserializationContext = $this->getMockBuilder(DeserializationContext::class)
             ->enableOriginalConstructor()
-            ->setMethodsExcept(['getExclusionStrategy'])
             ->getMock();
 
         $this->dispatcher = new EventDispatcher();

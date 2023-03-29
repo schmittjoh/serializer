@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class IdenticalPropertyNamingStrategyTest extends TestCase
 {
-    public function providePropertyNames()
+    public static function providePropertyNames()
     {
         return [
             ['createdAt'],

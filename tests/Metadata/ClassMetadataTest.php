@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ClassMetadataTest extends TestCase
 {
-    public function getAccessOrderCases()
+    public static function getAccessOrderCases()
     {
         return [
             [['b', 'a'], ['b', 'a']],
@@ -93,7 +93,7 @@ class ClassMetadataTest extends TestCase
         $metadata->setAccessor(PropertyMetadata::ACCESS_TYPE_PUBLIC_METHOD, $getter, $setter);
     }
 
-    public function providerPublicMethodData()
+    public static function providerPublicMethodData()
     {
         return [
             ['a', null, null, 'geta', 'seta'],
@@ -103,7 +103,7 @@ class ClassMetadataTest extends TestCase
         ];
     }
 
-    public function providerPublicMethodException()
+    public static function providerPublicMethodException()
     {
         return [
             [null, null, 'a public getE method, nor a public isE method, nor a public hasE method in class'],

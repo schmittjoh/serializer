@@ -20,9 +20,9 @@ use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-class JsonSerializationTest extends BaseSerializationTest
+class JsonSerializationTest extends BaseSerializationTestCase
 {
-    protected function getContent($key)
+    protected static function getContent($key)
     {
         static $outputs = [];
 
@@ -160,12 +160,12 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{}', $this->serialize($object));
     }
 
-    public function getFirstClassMapCollectionsValues()
+    public static function getFirstClassMapCollectionsValues()
     {
         return [
-            [['a' => '1', 'b' => '2', 'c' => '3'], $this->getContent('inline_map')],
-            [[], $this->getContent('inline_empty_map')],
-            [['a' => 'b', 'c' => 'd', 'e' => '5'], $this->getContent('inline_deserialization_map')],
+            [['a' => '1', 'b' => '2', 'c' => '3'], self::getContent('inline_map')],
+            [[], self::getContent('inline_empty_map')],
+            [['a' => 'b', 'c' => 'd', 'e' => '5'], self::getContent('inline_deserialization_map')],
         ];
     }
 
@@ -235,7 +235,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
     {
-        $content = $this->getContent('object_with_object_property_no_array_to_author');
+        $content = self::getContent('object_with_object_property_no_array_to_author');
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Invalid data "baz" (string), expected "JMS\Serializer\Tests\Fixtures\Author".');
@@ -245,14 +245,14 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testDeserializingObjectWithObjectProperty()
     {
-        $content = $this->getContent('object_with_object_property');
+        $content = self::getContent('object_with_object_property');
         $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
         self::assertEquals('bar', $object->getFoo());
         self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
         self::assertEquals('baz', $object->getAuthor()->getName());
     }
 
-    public function getPrimitiveTypes()
+    public static function getPrimitiveTypes()
     {
         return [
             [
@@ -359,7 +359,7 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
     }
 
-    public function getTypeHintedArrays()
+    public static function getTypeHintedArrays()
     {
         return [
 
@@ -405,7 +405,7 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals($expected, $this->serialize($array, $context));
     }
 
-    public function getTypeHintedArraysAndStdClass()
+    public static function getTypeHintedArraysAndStdClass()
     {
         $c1 = new \stdClass();
         $c2 = new \stdClass();

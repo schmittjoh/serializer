@@ -51,7 +51,7 @@ class ArrayTest extends TestCase
         self::assertEquals([$input], $result);
     }
 
-    public function scalarValues()
+    public static function scalarValues()
     {
         return [
             [42],

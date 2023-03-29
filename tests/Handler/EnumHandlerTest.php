@@ -59,7 +59,7 @@ final class EnumHandlerTest extends TestCase
 
     public function testBackedDeserializationFailsWhenNoValueMatches()
     {
-        self::expectError();
+        $this->expectException(\Error::class);
 
         $visitor = $this->createMock(DeserializationVisitorInterface::class);
         $type = [
@@ -71,8 +71,8 @@ final class EnumHandlerTest extends TestCase
 
     public function testBackedDeserializationFailsWhenValueTypeMismatch()
     {
-        self::expectException(RuntimeException::class);
-        self::expectErrorMessage(sprintf('"any" is not a valid backing value for enum "%s"', BackedSuitInt::class));
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('"any" is not a valid backing value for enum "%s"', BackedSuitInt::class));
 
         $visitor = $this->createMock(DeserializationVisitorInterface::class);
         $type = [

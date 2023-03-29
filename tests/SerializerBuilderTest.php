@@ -201,7 +201,7 @@ class SerializerBuilderTest extends TestCase
         self::assertEquals('{"not_null":"ok"}', $result);
     }
 
-    public function expressionFunctionProvider()
+    public static function expressionFunctionProvider()
     {
         return [
             [

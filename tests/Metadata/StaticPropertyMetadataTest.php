@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 
-class StaticPropertyMetadataTest extends AbstractPropertyMetadataTest
+class StaticPropertyMetadataTest extends AbstractPropertyMetadataTestCase
 {
     public function testSerialization()
     {

@@ -11,7 +11,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
-class XmlDriverTest extends BaseDriverTest
+class XmlDriverTest extends BaseDriverTestCase
 {
     public function testInvalidXml()
     {
