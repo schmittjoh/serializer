@@ -9,7 +9,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\DriverInterface;
 
-class AnnotationDriverTest extends BaseAnnotationOrAttributeDriverTest
+class AnnotationDriverTest extends BaseAnnotationOrAttributeDriverTestCase
 {
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {

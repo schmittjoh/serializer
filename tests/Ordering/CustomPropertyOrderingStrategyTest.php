@@ -25,7 +25,7 @@ class CustomPropertyOrderingStrategyTest extends TestCase
         self::assertEquals($expectedResult, array_keys($sortedProperties));
     }
 
-    public function dataOrder(): iterable
+    public static function dataOrder(): iterable
     {
         $order = ['one', 'two', 'three'];
 

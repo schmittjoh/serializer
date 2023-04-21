@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Handler;
 
 use Psr\Container\ContainerInterface;
 
-class LazyHandlerRegistryWithPsr11ContainerTest extends LazyHandlerRegistryTest
+class LazyHandlerRegistryWithPsr11ContainerTest extends LazyHandlerRegistryTestCase
 {
     protected function createContainer()
     {

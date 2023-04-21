@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use Symfony\Component\DependencyInjection\Container;
 
-class LazyEventDispatcherWithSymfonyContainerTest extends LazyEventDispatcherTest
+class LazyEventDispatcherWithSymfonyContainerTest extends LazyEventDispatcherTestCase
 {
     protected function createContainer()
     {

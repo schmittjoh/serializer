@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Metadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualProperties;
 
-class VirtualPropertyMetadataTest extends AbstractPropertyMetadataTest
+class VirtualPropertyMetadataTest extends AbstractPropertyMetadataTestCase
 {
     public function testSerialization()
     {

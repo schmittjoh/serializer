@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class CamelCaseNamingStrategyTest extends TestCase
 {
-    public function providePropertyNames()
+    public static function providePropertyNames()
     {
         return [
             ['getUrl', 'get_url'],

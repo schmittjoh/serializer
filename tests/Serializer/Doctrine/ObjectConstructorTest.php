@@ -276,7 +276,7 @@ class ObjectConstructorTest extends TestCase
         );
     }
 
-    public function dataProviderPersistendCollectionIsNotReplaced(): array
+    public static function dataProviderPersistendCollectionIsNotReplaced(): array
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <result>

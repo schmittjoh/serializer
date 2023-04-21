@@ -28,7 +28,7 @@ class DateHandlerTest extends TestCase
         $this->timezone = new \DateTimeZone('UTC');
     }
 
-    public function getParams()
+    public static function getParams()
     {
         return [
             [['Y-m-d']],
@@ -75,7 +75,7 @@ class DateHandlerTest extends TestCase
         self::assertEquals($expected['s'], $deserialized->s);
     }
 
-    public function getDeserializeDateInterval()
+    public static function getDeserializeDateInterval()
     {
         return [
             ['P0Y0M0DT3H5M7.520S', ['s' => 7, 'f' => 0.52]],

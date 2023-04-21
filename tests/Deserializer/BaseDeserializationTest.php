@@ -27,7 +27,7 @@ class BaseDeserializationTest extends TestCase
         $serializer->fromArray($data, $type);
     }
 
-    public function dataTypeCannotBeCasted(): iterable
+    public static function dataTypeCannotBeCasted(): iterable
     {
         yield 'array to string' => [
             ['pub_name' => ['bla', 'bla']],
@@ -56,7 +56,7 @@ class BaseDeserializationTest extends TestCase
         self::assertSame($expected, $serializer->toArray($object));
     }
 
-    public function dataDeserializerGroupExclusion(): iterable
+    public static function dataDeserializerGroupExclusion(): iterable
     {
         $data = [
             'foo' => 'foo',

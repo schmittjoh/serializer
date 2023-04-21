@@ -8,7 +8,7 @@ use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\DriverInterface;
 
-class AttributeDriverTest extends BaseAnnotationOrAttributeDriverTest
+class AttributeDriverTest extends BaseAnnotationOrAttributeDriverTestCase
 {
     protected function setUp(): void
     {

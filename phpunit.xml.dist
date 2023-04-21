@@ -1,47 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-    colors="true"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutTodoAnnotatedTests="true"
-    failOnRisky="true"
-    failOnWarning="false"
-    bootstrap="tests/bootstrap.php"
->
-    <php>
-        <ini name="error_reporting" value="-1" />
-        <ini name="serialize_precision" value="14"/>
-        <ini name="date.timezone" value="UTC"/>
-    </php>
-
-    <testsuites>
-        <testsuite name="JMS Serializer Test Suite">
-            <directory>./tests</directory>
-        </testsuite>
-    </testsuites>
-
-    <groups>
-        <exclude>
-            <group>performance</group>
-        </exclude>
-    </groups>
-
-    <!-- PHPUnit <9 coverage filters -->
-    <filter>
-        <whitelist>
-            <directory>src</directory>
-        </whitelist>
-    </filter>
-
-    <!-- PHPUnit >=9 coverage filters -->
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-        <exclude>
-            <file>./src/Annotation/ReadOnly.php</file>
-        </exclude>
-    </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" colors="true" beStrictAboutOutputDuringTests="true" failOnRisky="true" failOnWarning="false" bootstrap="tests/bootstrap.php" cacheDirectory=".phpunit.cache">
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <ini name="serialize_precision" value="14"/>
+    <ini name="date.timezone" value="UTC"/>
+  </php>
+  <testsuites>
+    <testsuite name="JMS Serializer Test Suite">
+      <directory>./tests</directory>
+    </testsuite>
+  </testsuites>
+  <groups>
+    <exclude>
+      <group>performance</group>
+    </exclude>
+  </groups>
+  <!-- PHPUnit >=9 coverage filters -->
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <file>./src/Annotation/ReadOnly.php</file>
+    </exclude>
+  </coverage>
 </phpunit>

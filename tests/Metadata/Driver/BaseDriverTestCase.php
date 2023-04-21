@@ -32,7 +32,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-abstract class BaseDriverTest extends TestCase
+abstract class BaseDriverTestCase extends TestCase
 {
     public function testLoadBlogPostMetadata()
     {

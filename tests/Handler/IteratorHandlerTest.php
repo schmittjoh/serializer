@@ -22,7 +22,7 @@ final class IteratorHandlerTest extends TestCase
      */
     private $handlerRegistry;
 
-    public function iteratorsProvider(): array
+    public static function iteratorsProvider(): array
     {
         return [
             [

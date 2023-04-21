@@ -140,7 +140,7 @@ class ContextTest extends TestCase
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
     }
 
-    public function getScalars()
+    public static function getScalars()
     {
         return [
             ['string'],

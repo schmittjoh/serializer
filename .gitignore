@@ -7,4 +7,5 @@ phpstan.xml
 .phpcs-cache
 /doc/_build/*
 /.phpunit.result.cache
+/.phpunit.cache
 **/.DS_STORE
