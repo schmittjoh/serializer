@@ -413,21 +413,21 @@ Available Types:
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTimeInterface<'format'>                                | PHP's DateTimeInterface interface (custom        |
 |                                                            | format/default timezone)                         |
-|                                                            | Data will be always deserialised into            |
-|                                                            | `\DateTime` object                               |
+|                                                            | Data will be deserialised into                   |
+|                                                            | `\\DateTime` object                              |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTimeInterface<'format', 'zone'>                        | PHP's DateTimeInterface interface (custom        |
 |                                                            | format/timezone)                                 |
-|                                                            | Data will be always deserialised into            |
-|                                                            | `\DateTime` object                               |
+|                                                            | Data will be deserialised into                   |
+|                                                            | `\\DateTime` object                              |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateTimeInterface<'format', 'zone', 'deserializeFormats'>  | PHP's DateTimeInterface interface (custom        |
 |                                                            | format/timezone/deserialize format). If you do   |
 |                                                            | not want to specify a specific timezone, use an  |
 |                                                            | empty string (''). DeserializeFormats can either |
 |                                                            | be a string or an array of string.               |
-|                                                            | Data will be always deserialised into            |
-|                                                            | `\DateTime` object                               |
+|                                                            | Data will be deserialised into                   |
+|                                                            | `\\DateTime` object                              |
 +------------------------------------------------------------+--------------------------------------------------+
 | DateInterval                                               | PHP's DateInterval object using ISO 8601 format  |
 +------------------------------------------------------------+--------------------------------------------------+
