@@ -16,6 +16,7 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
+use JMS\Serializer\Tests\Fixtures\ObjectWithJsonSerialisable;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -334,6 +335,13 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $serialized = $this->serialize($object);
         self::assertEquals('{"a":"b","c":"d"}', $serialized);
         self::assertEquals($object, $this->deserialize($serialized, ObjectWithInlineArray::class));
+    }
+
+    public function testJsonSerialisable()
+    {
+        $object = new ObjectWithJsonSerialisable(new Author('Mickiewicz'));
+        $serialized = $this->serialize($object);
+        self::assertEquals('{"author":{"json_full_name":"Mickiewicz"}}', $serialized);
     }
 
     public function testSerializeRootArrayWithDefinedKeys()

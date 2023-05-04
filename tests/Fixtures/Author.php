@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Fixtures;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
 
-class Author
+class Author implements \JsonSerializable
 {
     /**
      * @Type("string")
@@ -25,5 +25,13 @@ class Author
     public function getName()
     {
         return $this->name;
+    }
+
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return [
+            'json_full_name' => $this->name,
+        ];
     }
 }

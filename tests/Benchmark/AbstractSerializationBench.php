@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Benchmark;
 
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -46,7 +47,10 @@ abstract class AbstractSerializationBench
 
     public function __construct()
     {
-        $this->serializer = SerializerBuilder::create()->build();
+        $this->serializer = SerializerBuilder::create()
+            ->configureHandlers(\Closure::fromCallable([$this, 'configureHandlers']))
+            ->addDefaultHandlers()
+            ->build();
         $this->collection = $this->createCollection();
         $this->format = $this->getFormat();
     }
@@ -88,5 +92,9 @@ abstract class AbstractSerializationBench
         }
 
         return $post;
+    }
+
+    protected function configureHandlers(HandlerRegistryInterface $handlerRegistry)
+    {
     }
 }

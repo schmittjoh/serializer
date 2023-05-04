@@ -503,6 +503,9 @@ Available Types:
 | Iterator<K, V>                                             | Similar to array<K, V>, but will be deserialized |
 |                                                            | into ArrayIterator class.                        |
 +------------------------------------------------------------+--------------------------------------------------+
+| JsonSerializable                                           | Can be used only for serialisation to JSON.      |
+|                                                            | See: JsonSerializable Support section            |
++------------------------------------------------------------+--------------------------------------------------+
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
@@ -970,3 +973,16 @@ the underlying type using the ``@Type`` annotation.
 
 - If the enum is a ``BackedEnum``, the case value will be used for serialization and deserialization by default;
 - If the enum is not a ``BackedEnum``, the case name will be used for serialization and deserialization by default;
+
+JsonSerializable Support
+~~~~~~~~~~~~~~~~~~~~~~~~
+You can use native `jsonSerialize()` method to serialise your data into JSON. You can use it by Type hinting property as `JsonSerializable`. 
+You can also register existing Handler for any of your classes. It might simplify your setup of your serialisation and improve performance of serialisation. 
+
+.. code-block :: php
+
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, Author::class, 'json', new JsonSerializableHandler());
+
+
+Keep in mind that returned value from `JsonSerializable::jsonSerialize()` will be serialised directly by `json_encode()` function.
+If it will return another object it will be *not* passed to JMS Serializer.  

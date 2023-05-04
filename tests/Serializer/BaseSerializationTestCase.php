@@ -28,6 +28,7 @@ use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
+use JMS\Serializer\Handler\JsonSerializableHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
@@ -2138,6 +2139,12 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
+        $this->handlerRegistry->registerHandler(
+            GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+            \JsonSerializable::class,
+            'json',
+            new JsonSerializableHandler()
+        );
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
