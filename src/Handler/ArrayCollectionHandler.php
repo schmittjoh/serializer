@@ -51,7 +51,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $formats = ['json', 'xml', 'yml'];
+        $formats = ['json', 'xml'];
 
         foreach (self::COLLECTION_TYPES as $type) {
             foreach ($formats as $format) {

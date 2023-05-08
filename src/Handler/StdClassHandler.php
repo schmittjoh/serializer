@@ -20,7 +20,7 @@ final class StdClassHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = [];
-        $formats = ['json', 'xml', 'yml'];
+        $formats = ['json', 'xml'];
 
         foreach ($formats as $format) {
             $methods[] = [
