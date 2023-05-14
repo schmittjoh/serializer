@@ -45,6 +45,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\ProductType;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\VirtualPropertyGetter;
 use PHPUnit\Framework\TestCase;
 
 class DocBlockDriverTest extends TestCase
@@ -449,6 +450,16 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => ProductType::class, 'params' => []]]],
             $m->propertyMetadata['data']->type
+        );
+    }
+
+    public function testInferTypeForVirtualPropertyGetter()
+    {
+        $m = $this->resolve(VirtualPropertyGetter::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
+            $m->propertyMetadata['arrayOfStrings']->type
         );
     }
 }
