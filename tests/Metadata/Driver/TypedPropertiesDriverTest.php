@@ -32,6 +32,7 @@ class TypedPropertiesDriverTest extends TestCase
             'vehicle' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Vehicle',
             'created' => 'DateTime',
             'tags' => 'iterable',
+            'virtualRole' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Role',
         ];
 
         foreach ($expectedPropertyTypes as $property => $type) {

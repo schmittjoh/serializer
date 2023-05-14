@@ -24,4 +24,13 @@ class User
      */
     #[Serializer\ReadOnlyProperty]
     public iterable $tags = [];
+
+    /**
+     * @Serializer\VirtualProperty()
+     */
+    #[Serializer\VirtualProperty]
+    public function getVirtualRole(): Role
+    {
+        return $this->role;
+    }
 }

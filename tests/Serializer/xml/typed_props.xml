@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
+  <virtual_role>
+    <id>5</id>
+  </virtual_role>
   <id>1</id>
   <role>
     <id>5</id>
