@@ -15,7 +15,10 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
 
 class TypedPropertiesDriver implements DriverInterface
 {
@@ -74,13 +77,13 @@ class TypedPropertiesDriver implements DriverInterface
         // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
-            if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
+            if ($propertyMetadata->type) {
                 continue;
             }
 
             try {
-                $propertyReflection = $this->getReflection($propertyMetadata);
-                $reflectionType = $propertyReflection->getType();
+                $reflectionType = $this->getReflectionType($propertyMetadata);
+
                 if ($this->shouldTypeHint($reflectionType)) {
                     $type = $reflectionType->getName();
 
@@ -94,24 +97,33 @@ class TypedPropertiesDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
+    private function getReflectionType(PropertyMetadata $propertyMetadata): ?ReflectionType
     {
-        return $propertyMetadata instanceof VirtualPropertyMetadata
-            || $propertyMetadata instanceof StaticPropertyMetadata
-            || $propertyMetadata instanceof ExpressionPropertyMetadata;
+        if ($this->isNotSupportedVirtualProperty($propertyMetadata)) {
+            return null;
+        }
+
+        if ($propertyMetadata instanceof VirtualPropertyMetadata) {
+            return (new ReflectionMethod($propertyMetadata->class, $propertyMetadata->getter))
+                ->getReturnType();
+        }
+
+        return (new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name))
+            ->getType();
     }
 
-    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
+    private function isNotSupportedVirtualProperty(PropertyMetadata $propertyMetadata): bool
     {
-        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
+        return $propertyMetadata instanceof StaticPropertyMetadata
+            || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 
     /**
      * @phpstan-assert-if-true \ReflectionNamedType $reflectionType
      */
-    private function shouldTypeHint(?\ReflectionType $reflectionType): bool
+    private function shouldTypeHint(?ReflectionType $reflectionType): bool
     {
-        if (!$reflectionType instanceof \ReflectionNamedType) {
+        if (!$reflectionType instanceof ReflectionNamedType) {
             return false;
         }
 

@@ -16,6 +16,7 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionProperty;
 
 class DocBlockDriver implements DriverInterface
@@ -54,14 +55,25 @@ class DocBlockDriver implements DriverInterface
         // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
-            if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
+            if ($propertyMetadata->type) {
+                continue;
+            }
+
+            if ($this->isNotSupportedVirtualProperty($propertyMetadata)) {
                 continue;
             }
 
             try {
-                $propertyReflection = $this->getReflection($propertyMetadata);
+                if ($propertyMetadata instanceof VirtualPropertyMetadata) {
+                    $type = $this->docBlockTypeResolver->getMethodDocblockTypeHint(
+                        new ReflectionMethod($propertyMetadata->class, $propertyMetadata->getter)
+                    );
+                } else {
+                    $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint(
+                        new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name)
+                    );
+                }
 
-                $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint($propertyReflection);
                 if ($type) {
                     $propertyMetadata->setType($this->typeParser->parse($type));
                 }
@@ -73,15 +85,9 @@ class DocBlockDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
+    private function isNotSupportedVirtualProperty(PropertyMetadata $propertyMetadata): bool
     {
-        return $propertyMetadata instanceof VirtualPropertyMetadata
-            || $propertyMetadata instanceof StaticPropertyMetadata
+        return $propertyMetadata instanceof StaticPropertyMetadata
             || $propertyMetadata instanceof ExpressionPropertyMetadata;
-    }
-
-    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
-    {
-        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
     }
 }
