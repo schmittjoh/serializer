@@ -293,7 +293,7 @@ final class DocBlockTypeResolver
 
     private function isPrimitiveType(string $type): bool
     {
-        return in_array($type, ['int', 'float', 'bool', 'string']);
+        return in_array($type, ['int', 'integer', 'float', 'bool', 'boolean', 'double', 'string']);
     }
 
     private function hasGlobalNamespacePrefix(string $typeHint): bool
