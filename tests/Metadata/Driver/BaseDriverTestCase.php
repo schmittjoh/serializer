@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
@@ -21,6 +22,8 @@ use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithExpressionVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInvalidExpression;
 use JMS\Serializer\Tests\Fixtures\ObjectWithOnlyLifecycleCallbacks;
+use JMS\Serializer\Tests\Fixtures\ObjectWithTypeAsNonStringableObject;
+use JMS\Serializer\Tests\Fixtures\ObjectWithTypeAsStringableObject;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropName;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNameExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
@@ -660,6 +663,37 @@ abstract class BaseDriverTestCase extends TestCase
 
         self::assertArrayHasKey('name', $m->propertyMetadata);
         self::assertArrayNotHasKey('age', $m->propertyMetadata);
+    }
+
+    public function testTypeAsStringableObject(): void
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.1.', __METHOD__));
+        }
+
+        if (!$this->getDriver() instanceof AttributeDriver) {
+            $this->markTestSkipped('Attribute driver is required.');
+        }
+
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithTypeAsStringableObject::class));
+        \assert($m instanceof ClassMetadata);
+
+        self::assertSame(['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]], $m->propertyMetadata['array']->type);
+    }
+
+    public function testTypeAsNonStringableObject(): void
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.1.', __METHOD__));
+        }
+
+        if (!$this->getDriver() instanceof AttributeDriver) {
+            $this->markTestSkipped('Attribute driver is required.');
+        }
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ObjectWithTypeAsNonStringableObject::class));
     }
 
     abstract protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface;
