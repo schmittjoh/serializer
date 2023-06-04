@@ -577,6 +577,34 @@ Examples:
         private $keyValueStore;
     }
 
+.. note ::
+
+    if you are using ``PHP attributes`` with PHP 8.1 you can pass an object which implements ``__toString()`` method as a value for ``#[Type]`` attribute.
+    
+    .. code-block :: php
+
+		  <?php
+
+		  namespace MyNamespace;
+
+		  use JMS\Serializer\Annotation\Type;
+
+		  class BlogPost
+		  {
+		      #[Type(new ArrayOf(Comment::class))]
+		      private $comments;
+		  }
+		  
+		  class ArrayOf
+		  {
+		  		public function __construct(private string $className) {}
+		  		
+		  		public function __toString(): string
+		  		{
+		  				return "array<$className>";
+		  		}
+		  }
+
 .. _configuration: https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0
 
 @XmlRoot

@@ -15,12 +15,22 @@ final class Type
 
     /**
      * @Required
-     * @var string|null
+     * @var string|\Stringable|null
      */
     public $name = null;
 
-    public function __construct($values = [], ?string $name = null)
+    public function __construct($values = [], $name = null)
     {
+        if ((null !== $name) && !is_string($name) && !(is_object($name) && method_exists($name, '__toString'))) {
+            throw new \RuntimeException(
+                'Type must be either string, null or object implements __toString() method.'
+            );
+        }
+
+        if (is_object($name)) {
+            $name = (string) $name;
+        }
+
         $this->loadAnnotationParameters(get_defined_vars());
     }
 }
