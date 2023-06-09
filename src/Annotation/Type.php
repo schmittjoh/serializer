@@ -31,6 +31,16 @@ final class Type
             $name = (string) $name;
         }
 
+        if (is_object($values)) {
+            if (false === method_exists($values, '__toString')) {
+                throw new \RuntimeException(
+                    'Type must be either string or object implements __toString() method.'
+                );
+            }
+
+            $values = (string) $values;
+        }
+
         $this->loadAnnotationParameters(get_defined_vars());
     }
 }
