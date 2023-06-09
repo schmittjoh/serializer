@@ -43,15 +43,15 @@ final class Parser implements ParserInterface
             );
         }
 
-        if (Lexer::T_FLOAT === $this->lexer->token['type']) {
-            return floatval($this->lexer->token['value']);
-        } elseif (Lexer::T_INTEGER === $this->lexer->token['type']) {
-            return intval($this->lexer->token['value']);
-        } elseif (Lexer::T_NULL === $this->lexer->token['type']) {
+        if (Lexer::T_FLOAT === $this->lexer->token->type) {
+            return floatval($this->lexer->token->value);
+        } elseif (Lexer::T_INTEGER === $this->lexer->token->type) {
+            return intval($this->lexer->token->value);
+        } elseif (Lexer::T_NULL === $this->lexer->token->type) {
             return null;
-        } elseif (Lexer::T_STRING === $this->lexer->token['type']) {
-            return $this->lexer->token['value'];
-        } elseif (Lexer::T_IDENTIFIER === $this->lexer->token['type']) {
+        } elseif (Lexer::T_STRING === $this->lexer->token->type) {
+            return $this->lexer->token->value;
+        } elseif (Lexer::T_IDENTIFIER === $this->lexer->token->type) {
             if ($this->lexer->isNextToken(Lexer::T_TYPE_START)) {
                 return $this->visitCompoundType();
             } elseif ($this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
@@ -59,14 +59,14 @@ final class Parser implements ParserInterface
             }
 
             return $this->visitSimpleType();
-        } elseif (!$this->root && Lexer::T_ARRAY_START === $this->lexer->token['type']) {
+        } elseif (!$this->root && Lexer::T_ARRAY_START === $this->lexer->token->type) {
             return $this->visitArrayType();
         }
 
         throw new SyntaxError(sprintf(
             'Syntax error, unexpected "%s" (%s)',
-            $this->lexer->token['value'],
-            $this->getConstant($this->lexer->token['type'])
+            $this->lexer->token->value,
+            $this->getConstant($this->lexer->token->type)
         ));
     }
 
@@ -75,7 +75,7 @@ final class Parser implements ParserInterface
      */
     private function visitSimpleType()
     {
-        $value = $this->lexer->token['value'];
+        $value = $this->lexer->token->value;
 
         return ['name' => $value, 'params' => []];
     }
@@ -83,7 +83,7 @@ final class Parser implements ParserInterface
     private function visitCompoundType(): array
     {
         $this->root = false;
-        $name = $this->lexer->token['value'];
+        $name = $this->lexer->token->value;
         $this->match(Lexer::T_TYPE_START);
 
         $params = [];
@@ -139,7 +139,7 @@ final class Parser implements ParserInterface
             );
         }
 
-        if ($this->lexer->lookahead['type'] === $token) {
+        if ($this->lexer->lookahead->type === $token) {
             $this->lexer->moveNext();
 
             return;
@@ -147,8 +147,8 @@ final class Parser implements ParserInterface
 
         throw new SyntaxError(sprintf(
             'Syntax error, unexpected "%s" (%s), expected was %s',
-            $this->lexer->lookahead['value'],
-            $this->getConstant($this->lexer->lookahead['type']),
+            $this->lexer->lookahead->value,
+            $this->getConstant($this->lexer->lookahead->type),
             $this->getConstant($token)
         ));
     }
