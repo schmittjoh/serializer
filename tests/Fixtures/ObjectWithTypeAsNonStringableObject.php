@@ -8,15 +8,20 @@ use JMS\Serializer\Annotation as Serializer;
 
 class ObjectWithTypeAsNonStringableObject
 {
-    #[Serializer\Type(name: new NonStringableObjectType())]
+    #[Serializer\Type(new NonStringableObjectType())]
     private $array;
+
+    #[Serializer\Type(name: new NonStringableObjectType())]
+    private $array2;
 
     /**
      * @param array<string> $array
+     * @param array<string> $array2
      */
-    public function __construct(array $array)
+    public function __construct(array $array, array $array2)
     {
         $this->array = $array;
+        $this->array2 = $array2;
     }
 }
 

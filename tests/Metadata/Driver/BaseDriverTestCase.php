@@ -679,6 +679,7 @@ abstract class BaseDriverTestCase extends TestCase
         \assert($m instanceof ClassMetadata);
 
         self::assertSame(['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]], $m->propertyMetadata['array']->type);
+        self::assertSame(['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]], $m->propertyMetadata['array2']->type);
     }
 
     public function testTypeAsNonStringableObject(): void
