@@ -21,6 +21,7 @@ class SmartPhone
      *
      * @var string
      */
+    #[Serializer\SerializedName(name: 'id')]
     #[Serializer\Type(name: 'string')]
     protected $id;
 
@@ -40,6 +41,7 @@ class SmartPhone
      *
      * @var ArrayCollection<int, App>
      */
+    #[Serializer\SerializedName(name: 'applications')]
     #[Serializer\Type(name: 'ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App>')]
     private $apps;
 

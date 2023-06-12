@@ -18,7 +18,7 @@ class AnnotationDriver extends AnnotationOrAttributeDriver
 
     public function __construct(Reader $reader, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
-        parent::__construct($namingStrategy, $typeParser, $expressionEvaluator);
+        parent::__construct($namingStrategy, $typeParser, $expressionEvaluator, $reader);
 
         $this->reader = $reader;
     }

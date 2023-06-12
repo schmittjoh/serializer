@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Tests\Fixtures\AllExcludedObject;
-use Metadata\Driver\DriverInterface;
 
 abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCase
 {
-    abstract protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface;
-
     public function testAllExcluded(): void
     {
         $a = new AllExcludedObject();

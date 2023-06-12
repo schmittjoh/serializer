@@ -17,12 +17,14 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @ReadOnly
  */
 #[XmlRoot(name: 'author')]
+#[\JMS\Serializer\Annotation\DeprecatedReadOnly]
 class AuthorDeprecatedReadOnlyPerClass
 {
     /**
      * @ReadOnly
      * @SerializedName("id")
      */
+    #[\JMS\Serializer\Annotation\DeprecatedReadOnly]
     #[SerializedName(name: 'id')]
     private $id;
 
@@ -41,6 +43,7 @@ class AuthorDeprecatedReadOnlyPerClass
     #[Type(name: 'string')]
     #[SerializedName(name: 'full_name')]
     #[Accessor(getter: 'getName')]
+    #[\JMS\Serializer\Annotation\DeprecatedReadOnly(readOnly: false)]
     private $name;
 
     public function getId()

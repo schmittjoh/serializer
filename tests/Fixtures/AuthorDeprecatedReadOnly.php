@@ -19,9 +19,10 @@ use JMS\Serializer\Annotation\XmlRoot;
 class AuthorDeprecatedReadOnly
 {
     /**
-     * @JMS\Serializer\Annotation\ReadOnly
+     * @ReadOnly
      * @SerializedName("id")
      */
+    #[\JMS\Serializer\Annotation\DeprecatedReadOnly]
     #[SerializedName(name: 'id')]
     private $id;
 
