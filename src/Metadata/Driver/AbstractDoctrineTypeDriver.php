@@ -83,6 +83,11 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
+
+        if (null === $classMetadata) {
+            return null;
+        }
+
         \assert($classMetadata instanceof ClassMetadata);
 
         // Abort if the given class is not a mapped entity

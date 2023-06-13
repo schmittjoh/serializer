@@ -67,6 +67,11 @@ class TypedPropertiesDriver implements DriverInterface
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
+
+        if (null === $classMetadata) {
+            return null;
+        }
+
         \assert($classMetadata instanceof SerializerClassMetadata);
 
         if (PHP_VERSION_ID <= 70400) {

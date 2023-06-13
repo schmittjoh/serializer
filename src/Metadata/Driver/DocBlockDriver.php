@@ -45,11 +45,12 @@ class DocBlockDriver implements DriverInterface
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
-        \assert($classMetadata instanceof SerializerClassMetadata);
 
         if (null === $classMetadata) {
             return null;
         }
+
+        \assert($classMetadata instanceof SerializerClassMetadata);
 
         // We base our scan on the internal driver's property list so that we
         // respect any internal allow/blocklist like in the AnnotationDriver
