@@ -91,7 +91,7 @@ class YamlDriver extends AbstractFileDriver
 
     protected function loadMetadataFromFile(ReflectionClass $class, string $file): ?BaseClassMetadata
     {
-        $config = Yaml::parse(file_get_contents($file));
+        $config = Yaml::parseFile($file, Yaml::PARSE_CONSTANT);
 
         if (!isset($config[$name = $class->name])) {
             throw new InvalidMetadataException(
