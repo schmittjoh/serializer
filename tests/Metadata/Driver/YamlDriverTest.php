@@ -26,7 +26,7 @@ class YamlDriverTest extends BaseDriverTestCase
         $m = $this->getDriver('const')->loadMetadataForClass(new \ReflectionClass(Person::class));
 
         self::assertArrayHasKey('name', $m->propertyMetadata);
-        self::assertNotNull($m->propertyMetadata['name']->serializedName);
+        self::assertNotNull($m->propertyMetadata['name']->serializedName ?? null);
         self::assertEquals(Person::ALTERNATE_SERIALIZED_NAME, $m->propertyMetadata['name']->serializedName);
     }
 
