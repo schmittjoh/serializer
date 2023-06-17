@@ -21,6 +21,15 @@ class YamlDriverTest extends BaseDriverTestCase
         self::assertEquals(['age', 'name'], array_keys($m->propertyMetadata));
     }
 
+    public function testConstantIsParsed(): void
+    {
+        $m = $this->getDriver('const')->loadMetadataForClass(new \ReflectionClass(Person::class));
+
+        self::assertArrayHasKey('name', $m->propertyMetadata);
+        self::assertNotNull($m->propertyMetadata['name']->serializedName ?? null);
+        self::assertEquals(Person::ALTERNATE_SERIALIZED_NAME, $m->propertyMetadata['name']->serializedName);
+    }
+
     public function testShortExposeSyntax(): void
     {
         $m = $this->getDriver('short_expose')->loadMetadataForClass(new \ReflectionClass(Person::class));

@@ -1,6 +1,7 @@
 YAML Reference
 --------------
-::
+
+.. code-block :: yaml
 
     # Vendor\MyBundle\Resources\config\serializer\Model.ClassName.yml
     Vendor\MyBundle\Model\ClassName:
@@ -76,3 +77,16 @@ YAML Reference
             pre_serialize: [foo, bar]
             post_serialize: [foo, bar]
             post_deserialize: [foo, bar]
+
+Constants
+---------
+
+In some cases, it may be helpful to reference constants in your YAML files.
+You can do this by prefixing the constant with the special `!php/const` syntax.
+
+.. code-block :: yaml
+
+    Vendor\MyBundle\Model\ClassName:
+        properties:
+            some-property:
+                serialized_name: !php/const Vendor\MyBundle\Model\ClassName::SOME_CONSTANT

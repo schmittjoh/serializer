@@ -1,0 +1,5 @@
+JMS\Serializer\Tests\Fixtures\Person:
+    exclusion_policy: ALL
+    properties:
+        name:
+            serialized_name: !php/const JMS\Serializer\Tests\Fixtures\Person::ALTERNATE_SERIALIZED_NAME
