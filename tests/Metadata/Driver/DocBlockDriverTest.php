@@ -10,6 +10,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\AlternativePHPDocsNames;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionAsList;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromDifferentNamespace;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\CollectionOfClassesFromDifferentNamespaceUsingGroupAlias;
@@ -460,6 +461,26 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
             $m->propertyMetadata['arrayOfStrings']->type
+        );
+    }
+
+    public function testAlternativeNames()
+    {
+        $m = $this->resolve(AlternativePHPDocsNames::class);
+
+        self::assertEquals(
+            ['name' => 'integer', 'params' => []],
+            $m->propertyMetadata['integer']->type
+        );
+
+        self::assertEquals(
+            ['name' => 'double', 'params' => []],
+            $m->propertyMetadata['double']->type
+        );
+
+        self::assertEquals(
+            ['name' => 'boolean', 'params' => []],
+            $m->propertyMetadata['boolean']->type
         );
     }
 }

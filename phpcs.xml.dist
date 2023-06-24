@@ -14,7 +14,7 @@
 
     <file>src/</file>
     <file>tests/</file>
-
+    <exclude-pattern>tests/Fixtures/DocBlockType/AlternativePHPDocsNames.php</exclude-pattern>
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
@@ -40,7 +40,7 @@
 
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireYodaComparison"/>
 
-     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+    <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
         <properties>
             <property
                 name="forbiddenAnnotations"
