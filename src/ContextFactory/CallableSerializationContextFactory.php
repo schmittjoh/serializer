@@ -9,11 +9,25 @@ use JMS\Serializer\SerializationContext;
 /**
  * Serialization Context Factory using a callable.
  */
-final class CallableSerializationContextFactory extends CallableContextFactory implements
-    SerializationContextFactoryInterface
+final class CallableSerializationContextFactory implements SerializationContextFactoryInterface
 {
+    /**
+     * @var callable():SerializationContext
+     */
+    private $callable;
+
+    /**
+     * @param callable():SerializationContext $callable
+     */
+    public function __construct(callable $callable)
+    {
+        $this->callable = $callable;
+    }
+
     public function createSerializationContext(): SerializationContext
     {
-        return $this->createContext();
+        $callable = $this->callable;
+
+        return $callable();
     }
 }

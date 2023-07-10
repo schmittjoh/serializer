@@ -6,14 +6,26 @@ namespace JMS\Serializer\ContextFactory;
 
 use JMS\Serializer\DeserializationContext;
 
-/**
- * Deserialization Context Factory using a callable.
- */
-final class CallableDeserializationContextFactory extends CallableContextFactory implements
+final class CallableDeserializationContextFactory implements
     DeserializationContextFactoryInterface
 {
+    /**
+     * @var callable():DeserializationContext
+     */
+    private $callable;
+
+    /**
+     * @param callable():DeserializationContext $callable
+     */
+    public function __construct(callable $callable)
+    {
+        $this->callable = $callable;
+    }
+
     public function createDeserializationContext(): DeserializationContext
     {
-        return $this->createContext();
+        $callable = $this->callable;
+
+        return $callable();
     }
 }

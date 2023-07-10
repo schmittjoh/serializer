@@ -47,7 +47,7 @@ interface SerializationVisitorInterface extends VisitorInterface
     public function visitInteger(int $data, array $type);
 
     /**
-     * @return array|\ArrayObject
+     * @return array|\ArrayObject|void
      */
     public function visitArray(array $data, array $type);
 
@@ -64,7 +64,7 @@ interface SerializationVisitorInterface extends VisitorInterface
     /**
      * Called after all properties of the object have been visited.
      *
-     * @return array|\ArrayObject
+     * @return array|\ArrayObject|void
      */
     public function endVisitingObject(ClassMetadata $metadata, object $data, array $type);
 }

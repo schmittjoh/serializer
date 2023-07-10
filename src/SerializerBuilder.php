@@ -136,7 +136,7 @@ final class SerializerBuilder
     private $cacheDir;
 
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $annotationReader;
 

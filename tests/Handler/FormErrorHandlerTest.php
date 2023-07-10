@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\Handler\FormErrorHandler;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -34,7 +34,7 @@ class FormErrorHandlerTest extends TestCase
     protected $handler;
 
     /**
-     * @var JsonSerializationVisitor
+     * @var SerializationVisitorInterface
      */
     protected $visitor;
 
@@ -54,14 +54,6 @@ class FormErrorHandlerTest extends TestCase
         $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor();
         $this->dispatcher = new EventDispatcher();
         $this->factory = $this->getMockBuilder(FormFactoryInterface::class)->getMock();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->handler = null;
-        $this->visitor = null;
-        $this->dispatcher = null;
-        $this->factory = null;
     }
 
     public function testSerializeEmptyFormError()
