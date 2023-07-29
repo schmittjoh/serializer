@@ -38,15 +38,10 @@ class App
     #[Serializer\Type(name: SmartPhone::class)]
     private $smartPhone;
 
-    /**
-     * @param string $id
-     * @param string $name
-     * @param string $smartPhone
-     */
     public function __construct(
-        $id,
-        $name,
-        $smartPhone
+        string $id,
+        string $name,
+        SmartPhone $smartPhone
     ) {
         $this->id = $id;
         $this->name = $name;

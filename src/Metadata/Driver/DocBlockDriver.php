@@ -42,6 +42,9 @@ class DocBlockDriver implements DriverInterface
         $this->docBlockTypeResolver = new DocBlockTypeResolver();
     }
 
+    /**
+     * @return SerializerClassMetadata|null
+     */
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);

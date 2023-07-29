@@ -441,7 +441,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
      *
      * @dataProvider getTypeHintedArraysAndStdClass
      */
-    public function testTypeHintedArrayAndStdClassSerialization(array $array, $expected, $context = null)
+    public function testTypeHintedArrayAncdtdClassSerialization(array $array, $expected, $context = null)
     {
         self::assertEquals($expected, $this->serialize($array, $context));
     }

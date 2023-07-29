@@ -10,7 +10,7 @@ use JMS\Serializer\Type\Exception\SyntaxError;
 /**
  * @internal
  */
-final class Lexer extends AbstractLexer implements ParserInterface
+final class Lexer extends AbstractLexer
 {
     public const T_UNKNOWN = 0;
     public const T_INTEGER = 1;
@@ -24,7 +24,7 @@ final class Lexer extends AbstractLexer implements ParserInterface
     public const T_IDENTIFIER = 9;
     public const T_NULL = 10;
 
-    public function parse(string $type): array
+    public function parse(string $type)
     {
         try {
             return $this->getType($type);

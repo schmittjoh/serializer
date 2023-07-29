@@ -24,7 +24,7 @@ interface HandlerRegistryInterface
     /**
      * @param int $direction one of the GraphNavigatorInterface::DIRECTION_??? constants
      *
-     * @return callable|object
+     * @return callable|object|null
      */
     public function getHandler(int $direction, string $typeName, string $format);
 }

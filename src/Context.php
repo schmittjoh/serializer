@@ -13,7 +13,6 @@ use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 
 abstract class Context
@@ -39,11 +38,11 @@ abstract class Context
     private $navigator;
 
     /**
-     * @var MetadataFactory
+     * @var MetadataFactoryInterface
      */
     private $metadataFactory;
 
-    /** @var DisjunctExclusionStrategy */
+    /** @var ExclusionStrategyInterface */
     private $exclusionStrategy;
 
     /**

@@ -498,7 +498,7 @@ class ObjectConstructorTest extends TestCase
                 }
             }
         );
-        $driver = null;
+
         $this->driver = &$driver;
         $this->serializer = SerializerBuilder::create()
             ->setMetadataDriverFactory(new CallbackDriverFactory(

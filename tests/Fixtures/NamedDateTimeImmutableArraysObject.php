@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation\XmlKeyValuePairs;
 class NamedDateTimeImmutableArraysObject
 {
     /**
-     * @var \DateTime[]
+     * @var array<string, \DateTimeImmutable>
      * @Type("array<string,DateTimeImmutable<'d.m.Y H:i:s'>>")
      * @XmlKeyValuePairs
      */
@@ -18,15 +18,18 @@ class NamedDateTimeImmutableArraysObject
     #[XmlKeyValuePairs]
     private $namedArrayWithFormattedDate;
 
-    public function __construct($namedArrayWithFormattedDate)
+    /**
+     * @param array<string, \DateTimeImmutable> $namedArrayWithFormattedDate
+     */
+    public function __construct(array $namedArrayWithFormattedDate)
     {
         $this->namedArrayWithFormattedDate = $namedArrayWithFormattedDate;
     }
 
     /**
-     * @return \DateTimeImmutable[]
+     * @return array<string, \DateTimeImmutable>
      */
-    public function getNamedArrayWithFormattedDate()
+    public function getNamedArrayWithFormattedDate(): array
     {
         return $this->namedArrayWithFormattedDate;
     }
