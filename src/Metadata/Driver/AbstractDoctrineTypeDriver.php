@@ -112,6 +112,12 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
             $this->setPropertyType($doctrineMetadata, $propertyMetadata);
         }
 
+        // Add fields from mapped superclasses
+        if ($parentClass = $doctrineMetadata->getReflectionClass()->getParentClass()) {
+            $parentClassMetadata = $this->loadMetadataForClass($parentClass);
+            $classMetadata->propertyMetadata = array_merge($parentClassMetadata->propertyMetadata, $classMetadata->propertyMetadata);
+        }
+
         return $classMetadata;
     }
 
