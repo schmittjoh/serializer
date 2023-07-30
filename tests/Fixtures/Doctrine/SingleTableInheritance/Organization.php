@@ -16,6 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class Organization
 {
-    /** @ORM\Id @ORM\GeneratedValue(strategy = "AUTO") @ORM\Column(type = "integer") */
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
     private $id;
 }

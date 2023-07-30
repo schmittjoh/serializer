@@ -20,6 +20,7 @@ class ExtendedUser extends User
     public function __construct($id, $name, $description, $extendAttribute)
     {
         parent::__construct($id, $name, $description);
+
         $this->extendAttribute = $extendAttribute;
     }
 }

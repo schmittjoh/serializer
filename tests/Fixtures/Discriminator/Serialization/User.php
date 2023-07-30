@@ -38,6 +38,7 @@ class User extends Entity
     public function __construct(int $id, string $name, string $description)
     {
         parent::__construct($id);
+
         $this->name = $name;
         $this->description = $description;
     }

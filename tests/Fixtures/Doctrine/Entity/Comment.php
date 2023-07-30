@@ -11,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Comment
 {
     /**
-     * @ORM\Id @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      */
     protected $id;
 

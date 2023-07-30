@@ -12,7 +12,8 @@ use JMS\Serializer\Annotation\SerializedName;
 class Author
 {
     /**
-     * @ORM\Id @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      *
      * @Groups({"id_group"})
      */

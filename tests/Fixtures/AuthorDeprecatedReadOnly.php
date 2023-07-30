@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlRoot;

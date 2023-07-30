@@ -37,7 +37,6 @@
         <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
     </rule>
-
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireYodaComparison"/>
 
     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
@@ -60,6 +59,18 @@
         </properties>
     </rule>
 
+    <rule ref="SlevomatCodingStandard.Commenting.RequireOneLineDocComment.MultiLineDocComment">
+        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLineDocComment.MultiLineDocComment"/>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectOrderOfAnnotationsInGroup">
+        <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectOrderOfAnnotationsInGroup"/>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.InvalidFormat">
+        <exclude name="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.InvalidFormat"/>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.AnnotationName.AnnotationNameIncorrect">
+        <exclude name="SlevomatCodingStandard.Commenting.AnnotationName.AnnotationNameIncorrect"/>
+    </rule>
 
     <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
         <properties>
