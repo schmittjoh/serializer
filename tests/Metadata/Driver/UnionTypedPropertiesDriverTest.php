@@ -27,7 +27,19 @@ final class UnionTypedPropertiesDriverTest extends TestCase
         $m = $this->resolve(UnionTypedProperties::class);
 
         self::assertEquals(
-            null,
+            [
+                'name' => 'union',
+                'params' => [
+                    [
+                        'name' => 'string',
+                        'params' => [],
+                    ],
+                    [
+                        'name' => 'int',
+                        'params' => [],
+                    ],
+                ],
+            ],
             $m->propertyMetadata['data']->type
         );
     }

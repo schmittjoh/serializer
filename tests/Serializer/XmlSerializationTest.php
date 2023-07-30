@@ -12,6 +12,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -43,6 +44,7 @@ use JMS\Serializer\Tests\Fixtures\PersonCollection;
 use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -595,6 +597,20 @@ class XmlSerializationTest extends BaseSerializationTestCase
             </result>',
             $result
         );
+    }
+
+    public function testThrowingExceptionWhenDeserializingUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $this->expectException(RuntimeException::class);
+
+        $object = new UnionTypedProperties(10000);
+        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)

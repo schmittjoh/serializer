@@ -30,6 +30,7 @@ use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Handler\SymfonyUidHandler;
+use JMS\Serializer\Handler\UnionHandler;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -1989,20 +1990,6 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertEquals(static::getContent('data_integer'), $this->serialize($object));
     }
 
-    public function testThrowingExceptionWhenDeserializingUnionProperties()
-    {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
-        $this->expectException(RuntimeException::class);
-
-        $object = new TypedProperties\UnionTypedProperties(10000);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
-    }
-
     public function testSerializingUnionDocBlockTypesProperties()
     {
         $object = new UnionTypedDocBLockProperty(10000);
@@ -2021,7 +2008,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->expectException(RuntimeException::class);
 
         $object = new UnionTypedDocBLockProperty(10000);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), TypedProperties\UnionTypedProperties::class));
+        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedDocBLockProperty::class));
     }
 
     public function testIterable(): void
@@ -2138,6 +2125,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
