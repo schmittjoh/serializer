@@ -39,6 +39,7 @@ class ObjectWithLifecycleCallbacks
     /**
      * @PreSerialize
      */
+    #[PreSerialize]
     private function prepareForSerialization()
     {
         $this->name = $this->firstname . ' ' . $this->lastname;
@@ -47,6 +48,7 @@ class ObjectWithLifecycleCallbacks
     /**
      * @PostSerialize
      */
+    #[PostSerialize]
     private function cleanUpAfterSerialization()
     {
         $this->name = null;
@@ -55,6 +57,7 @@ class ObjectWithLifecycleCallbacks
     /**
      * @PostDeserialize
      */
+    #[PostDeserialize]
     private function afterDeserialization()
     {
         [$this->firstname, $this->lastname] = explode(' ', $this->name);

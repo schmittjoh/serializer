@@ -6,10 +6,10 @@ namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Metadata\Driver\AttributeDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
 use JMS\Serializer\Metadata\Driver\EnumPropertiesDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -56,11 +56,9 @@ final class DefaultDriverFactory implements DriverFactoryInterface
 
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationReader = new AttributeDriver\AttributeReader($annotationReader);
-        }
-
-        $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
+        $driver = new DriverChain([
+            new AnnotationOrAttributeDriver($this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator, $annotationReader),
+        ]);
 
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
@@ -70,6 +68,8 @@ final class DefaultDriverFactory implements DriverFactoryInterface
                 $driver,
             ]);
         }
+
+        $driver->addDriver(new NullDriver($this->propertyNamingStrategy));
 
         if ($this->enableEnumSupport) {
             $driver = new EnumPropertiesDriver($driver);

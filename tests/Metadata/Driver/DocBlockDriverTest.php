@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\AlternativePHPDocsNames;
@@ -47,19 +48,25 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespace
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\VirtualPropertyGetter;
+use Metadata\Driver\DriverChain;
 use PHPUnit\Framework\TestCase;
 
 class DocBlockDriverTest extends TestCase
 {
     private function resolve(string $classToResolve): ClassMetadata
     {
+        $namingStrategy = new IdenticalPropertyNamingStrategy();
+
+        $driver = new DriverChain([
+            new AnnotationDriver(new AnnotationReader(), $namingStrategy),
+            new NullDriver($namingStrategy),
+        ]);
+
         if (PHP_VERSION_ID > 70400) {
-            $baseDriver = new TypedPropertiesDriver(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
-        } else {
-            $baseDriver = new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+            $driver = new TypedPropertiesDriver($driver);
         }
 
-        $driver = new DocBlockDriver($baseDriver);
+        $driver = new DocBlockDriver($driver);
 
         $m = $driver->loadMetadataForClass(new \ReflectionClass($classToResolve));
         self::assertNotNull($m);

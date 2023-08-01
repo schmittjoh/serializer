@@ -21,11 +21,13 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
+use Metadata\Driver\DriverChain;
 use Metadata\MetadataFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -243,7 +245,14 @@ class GraphNavigatorTest extends TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();
 
-        $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy()));
+        $namingStrategy = new IdenticalPropertyNamingStrategy();
+
+        $driver = new DriverChain([
+            new AnnotationDriver(new AnnotationReader(), $namingStrategy),
+            new NullDriver($namingStrategy),
+        ]);
+
+        $this->metadataFactory = new MetadataFactory($driver);
 
         $this->serializationNavigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
         $this->serializationNavigator->initialize($this->serializationVisitor, $this->context);

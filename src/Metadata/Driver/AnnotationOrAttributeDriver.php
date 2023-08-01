@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\AccessType;
@@ -47,7 +48,7 @@ use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
-abstract class AnnotationOrAttributeDriver implements DriverInterface
+class AnnotationOrAttributeDriver implements DriverInterface
 {
     use ExpressionMetadataTrait;
 
@@ -61,15 +62,23 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
      */
     private $namingStrategy;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
+    /**
+     * @var Reader
+     */
+    private $reader;
+
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null, ?Reader $reader = null)
     {
         $this->typeParser = $typeParser ?: new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
+        $this->reader = $reader;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
+        $configured = false;
+
         $classMetadata = new ClassMetadata($name = $class->name);
         $fileResource =  $class->getFilename();
 
@@ -86,6 +95,8 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
         $readOnlyClass = false;
 
         foreach ($this->getClassAnnotations($class) as $annot) {
+            $configured = true;
+
             if ($annot instanceof ExclusionPolicy) {
                 $exclusionPolicy = $annot->policy;
             } elseif ($annot instanceof XmlRoot) {
@@ -135,6 +146,8 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
             $methodAnnotations = $this->getMethodAnnotations($method);
 
             foreach ($methodAnnotations as $annot) {
+                $configured = true;
+
                 if ($annot instanceof PreSerialize) {
                     $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->name));
                     continue 2;
@@ -174,6 +187,8 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
                 $propertyAnnotations = $propertiesAnnotations[$propertyKey];
 
                 foreach ($propertyAnnotations as $annot) {
+                    $configured = true;
+
                     if ($annot instanceof Since) {
                         $propertyMetadata->sinceVersion = $annot->version;
                     } elseif ($annot instanceof Until) {
@@ -274,21 +289,79 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
             }
         }
 
+        if (!$configured) {
+            return null;
+        }
+
         return $classMetadata;
     }
 
     /**
      * @return list<object>
      */
-    abstract protected function getClassAnnotations(\ReflectionClass $class): array;
+    protected function getClassAnnotations(\ReflectionClass $class): array
+    {
+        $annotations = [];
+
+        if (PHP_VERSION_ID >= 80000) {
+            $annotations = array_map(
+                static function (\ReflectionAttribute $attribute): object {
+                    return $attribute->newInstance();
+                },
+                $class->getAttributes()
+            );
+        }
+
+        if (null !== $this->reader) {
+            $annotations = array_merge($annotations, $this->reader->getClassAnnotations($class));
+        }
+
+        return $annotations;
+    }
 
     /**
      * @return list<object>
      */
-    abstract protected function getMethodAnnotations(\ReflectionMethod $method): array;
+    protected function getMethodAnnotations(\ReflectionMethod $method): array
+    {
+        $annotations = [];
+
+        if (PHP_VERSION_ID >= 80000) {
+            $annotations = array_map(
+                static function (\ReflectionAttribute $attribute): object {
+                    return $attribute->newInstance();
+                },
+                $method->getAttributes()
+            );
+        }
+
+        if (null !== $this->reader) {
+            $annotations = array_merge($annotations, $this->reader->getMethodAnnotations($method));
+        }
+
+        return $annotations;
+    }
 
     /**
      * @return list<object>
      */
-    abstract protected function getPropertyAnnotations(\ReflectionProperty $property): array;
+    protected function getPropertyAnnotations(\ReflectionProperty $property): array
+    {
+        $annotations = [];
+
+        if (PHP_VERSION_ID >= 80000) {
+            $annotations = array_map(
+                static function (\ReflectionAttribute $attribute): object {
+                    return $attribute->newInstance();
+                },
+                $property->getAttributes()
+            );
+        }
+
+        if (null !== $this->reader) {
+            $annotations = array_merge($annotations, $this->reader->getPropertyAnnotations($property));
+        }
+
+        return $annotations;
+    }
 }
