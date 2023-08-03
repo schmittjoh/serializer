@@ -12,6 +12,7 @@ class XmlSingleRunBench extends AbstractSerializationBench
     {
         $this->amountOfComments = 1;
         $this->amountOfPosts = 1;
+
         parent::__construct();
     }
 

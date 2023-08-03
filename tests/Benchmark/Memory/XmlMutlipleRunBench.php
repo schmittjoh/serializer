@@ -9,6 +9,7 @@ class XmlMutlipleRunBench extends XmlSingleRunBench
     public function __construct()
     {
         $this->iterations = 10000;
+
         parent::__construct();
     }
 

@@ -12,7 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Clazz extends AbstractModel
 {
-    /** @ORM\Id @ORM\GeneratedValue(strategy = "AUTO") @ORM\Column(type = "integer") */
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
     private $id;
 
     /** @ORM\ManyToOne(targetEntity = "JMS\Serializer\Tests\Fixtures\Doctrine\SingleTableInheritance\Teacher") */

@@ -185,6 +185,7 @@ class ClassMetadata extends MergeableClassMetadata
     public function addPropertyMetadata(BasePropertyMetadata $metadata): void
     {
         parent::addPropertyMetadata($metadata);
+
         $this->sortProperties();
         if ($metadata instanceof PropertyMetadata && $metadata->excludeIf) {
             $this->usingExpression = true;

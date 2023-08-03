@@ -26,6 +26,7 @@ final class DocBlockTypeResolver
 {
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';
+
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
