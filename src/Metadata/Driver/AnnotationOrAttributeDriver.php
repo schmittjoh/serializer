@@ -290,7 +290,8 @@ class AnnotationOrAttributeDriver implements DriverInterface
         }
 
         if (!$configured) {
-            return null;
+            // return null;
+            // uncomment the above line afetr a couple of months
         }
 
         return $classMetadata;
