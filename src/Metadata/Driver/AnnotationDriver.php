@@ -9,6 +9,9 @@ use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Type\ParserInterface;
 
+/**
+ * @deprecated
+ */
 class AnnotationDriver extends AnnotationOrAttributeDriver
 {
     /**
