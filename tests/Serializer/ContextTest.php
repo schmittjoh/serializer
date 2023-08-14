@@ -62,24 +62,29 @@ class ContextTest extends TestCase
         $exclusionStrategy->expects($this->any())
             ->method('shouldSkipProperty')
             ->with($this->anything(), $this->callback(static function (SerializationContext $context) use ($self, $objects) {
-                $expectedDepth = $expectedPath = null;
+                $expectedCurrentPath = $expectedDepth = $expectedPath = null;
 
                 if ($context->getObject() === $objects[0]) {
                     $expectedDepth = 1;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedCurrentPath = [];
                 } elseif ($context->getObject() === $objects[1]) {
                     $expectedDepth = 2;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedCurrentPath = ['children', 0];
                 } elseif ($context->getObject() === $objects[2]) {
                     $expectedDepth = 2;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedCurrentPath = ['children', 1];
                 } elseif ($context->getObject() === $objects[3]) {
                     $expectedDepth = 3;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedCurrentPath = ['children', 1, 'children', 0];
                 }
 
                 $self->assertEquals($expectedDepth, $context->getDepth(), 'shouldSkipProperty depth');
                 $self->assertEquals($expectedPath, $context->getPath(), 'shouldSkipProperty path');
+                $self->assertEquals($expectedCurrentPath, $context->getCurrentPath(), 'Unexpected context current path');
 
                 return true;
             }))
