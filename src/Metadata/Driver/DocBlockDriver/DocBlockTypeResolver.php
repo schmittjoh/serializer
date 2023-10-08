@@ -249,10 +249,6 @@ final class DocBlockTypeResolver
      */
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, $reflector): string
     {
-        if ($this->isClassOrInterface($typeHint)) {
-            return $typeHint;
-        }
-
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if ($this->isClassOrInterface($expandedClassName)) {
             return $expandedClassName;
@@ -280,6 +276,10 @@ final class DocBlockTypeResolver
             if ($phpstanArrayType) {
                 return $phpstanArrayType;
             }
+        }
+
+        if ($this->isClassOrInterface($typeHint)) {
+            return $typeHint;
         }
 
         throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflector->getName()));
