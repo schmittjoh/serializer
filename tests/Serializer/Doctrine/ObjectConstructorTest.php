@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\PersistentCollection;
@@ -534,11 +535,20 @@ class ObjectConstructorTest extends TestCase
     {
         if (!$cfg) {
             $cfg = new Configuration();
-            $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
-                __DIR__ . '/../../Fixtures/Doctrine/Entity',
-                __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
-                __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
-            ]));
+
+            if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+                $cfg->setMetadataDriverImpl(new AttributeDriver([
+                    __DIR__ . '/../../Fixtures/Doctrine/Entity',
+                    __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                ]));
+            } else {
+                $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
+                    __DIR__ . '/../../Fixtures/Doctrine/Entity',
+                    __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                ]));
+            }
         }
 
         $cfg->setAutoGenerateProxyClasses(true);

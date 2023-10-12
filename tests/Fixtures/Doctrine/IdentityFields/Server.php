@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /** @ORM\Entity */
+#[ORM\Entity]
 class Server
 {
     /**
@@ -18,6 +20,8 @@ class Server
      * @var string
      */
     #[Serializer\Type(name: 'string')]
+    #[ORM\Id]
+    #[ORM\Column(type: Types::STRING, name: 'ip_address')]
     protected $ipAddress;
 
     /**
@@ -30,6 +34,8 @@ class Server
      */
     #[Serializer\SerializedName(name: 'server_id_extracted')]
     #[Serializer\Type(name: 'string')]
+    #[ORM\Id]
+    #[ORM\Column(type: Types::STRING, name: 'server_id')]
     protected $serverId;
 
     /**
@@ -39,6 +45,7 @@ class Server
      * @var string
      */
     #[Serializer\Type(name: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private $name;
 
     /**
