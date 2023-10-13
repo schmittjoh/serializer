@@ -45,6 +45,9 @@ jobs:
         if: ${{ matrix.composer-stability }}
         run: composer config minimum-stability ${{ matrix.composer-stability }}
 
+      - name: Uninstall Doctrine ODM
+        run: composer remove doctrine/phpcr-odm jackalope/jackalope-doctrine-dbal --no-update --dev
+
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
         with:
