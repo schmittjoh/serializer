@@ -7,7 +7,8 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineAnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver as DoctrineAttributeDriver;
 use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -134,9 +135,16 @@ class DoctrineDriverTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
-        $config->setMetadataDriverImpl(
-            new DoctrineDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
-        );
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(DoctrineAttributeDriver::class)) {
+            $config->setMetadataDriverImpl(
+                new DoctrineAttributeDriver([__DIR__ . '/../../Fixtures/Doctrine'], true)
+            );
+        } else {
+            $config->setMetadataDriverImpl(
+                new DoctrineAnnotationDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
+            );
+        }
 
         $conn = [
             'driver' => 'pdo_sqlite',

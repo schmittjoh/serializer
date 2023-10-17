@@ -11,6 +11,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\AbstractManagerRegistry;
@@ -135,9 +136,17 @@ class IntegrationTest extends TestCase
     private function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
-        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
-            __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
-        ]));
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $cfg->setMetadataDriverImpl(new AttributeDriver([
+                __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
+            ]));
+        } else {
+            $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
+                __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
+            ]));
+        }
+
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');

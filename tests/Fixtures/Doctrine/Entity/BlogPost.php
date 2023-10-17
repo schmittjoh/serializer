@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Fixtures\Doctrine\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
@@ -19,6 +20,7 @@ use JMS\Serializer\Annotation\XmlRoot;
  *
  * @XmlRoot("blog-post")
  */
+#[ORM\Entity]
 #[XmlRoot(name: 'blog-post')]
 class BlogPost
 {
@@ -27,11 +29,15 @@ class BlogPost
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
      * @ORM\Column(type="guid")
      */
+    #[ORM\Column(type: Types::GUID)]
     private $guid;
 
     /**
@@ -39,12 +45,14 @@ class BlogPost
      *
      * @Groups({"comments","post"})
      */
+    #[ORM\Column(type: Types::STRING)]
     #[Groups(groups: ['comments', 'post'])]
     private $title;
 
     /**
      * @ORM\Column(type="some_custom_type")
      */
+    #[ORM\Column(type: 'some_custom_type')]
     protected $slug;
 
     /**
@@ -52,6 +60,7 @@ class BlogPost
      *
      * @XmlAttribute
      */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[XmlAttribute]
     private $createdAt;
 
@@ -66,6 +75,7 @@ class BlogPost
      * @Groups({"post"})
      * @XmlAttribute
      */
+    #[ORM\Column(type: Types::BOOLEAN)]
     #[Type(name: 'integer')]
     #[SerializedName(name: 'is_published')]
     #[Groups(groups: ['post'])]
@@ -78,6 +88,7 @@ class BlogPost
      * @XmlList(inline=true, entry="comment")
      * @Groups({"comments"})
      */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'blogPost')]
     #[XmlList(entry: 'comment', inline: true)]
     #[Groups(groups: ['comments'])]
     private $comments;
@@ -87,13 +98,15 @@ class BlogPost
      *
      * @Groups({"post"})
      */
+    #[ORM\OneToOne(targetEntity: Author::class)]
     #[Groups(groups: ['post'])]
     private $author;
 
     /**
-     * @Serializer\Exclude()
      * @ORM\Column(type="integer")
+     * @Serializer\Exclude()
      */
+    #[ORM\Column(type: Types::INTEGER)]
     #[Serializer\Exclude]
     private $ref;
 
