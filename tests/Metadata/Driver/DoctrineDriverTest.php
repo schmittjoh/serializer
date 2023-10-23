@@ -12,9 +12,12 @@ use Doctrine\ORM\Mapping\Driver\AttributeDriver as DoctrineAttributeDriver;
 use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostWithEmbedded;
+use Metadata\Driver\DriverChain;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineDriverTest extends TestCase
@@ -94,7 +97,7 @@ class DoctrineDriverTest extends TestCase
         // because it has no Doctrine metadata.
         $refClass = new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost');
 
-        $plainMetadata = $this->getAnnotationDriver()->loadMetadataForClass($refClass);
+        $plainMetadata = $this->getMetadataDriver()->loadMetadataForClass($refClass);
         $doctrineMetadata = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
 
         // Do not compare timestamps
@@ -107,7 +110,7 @@ class DoctrineDriverTest extends TestCase
 
     public function testExcludePropertyNoPublicAccessorException()
     {
-        $first = $this->getAnnotationDriver()
+        $first = $this->getMetadataDriver()
             ->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ExcludePublicAccessor'));
 
         self::assertArrayHasKey('id', $first->propertyMetadata);
@@ -154,9 +157,20 @@ class DoctrineDriverTest extends TestCase
         return EntityManager::create($conn, $config);
     }
 
-    public function getAnnotationDriver()
+    public function getMetadataDriver()
     {
-        return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+        $driver = new DriverChain();
+        $namingStrategy = new IdenticalPropertyNamingStrategy();
+
+        if (PHP_VERSION_ID >= 80000) {
+            $driver->addDriver(new AnnotationOrAttributeDriver($namingStrategy));
+        } else {
+            $driver->addDriver(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
+        }
+
+        $driver->addDriver(new NullDriver($namingStrategy));
+
+        return $driver;
     }
 
     protected function getDoctrineDriver()
@@ -167,7 +181,7 @@ class DoctrineDriverTest extends TestCase
             ->will($this->returnValue($this->getEntityManager()));
 
         return new DoctrineTypeDriver(
-            $this->getAnnotationDriver(),
+            $this->getMetadataDriver(),
             $registry
         );
     }
