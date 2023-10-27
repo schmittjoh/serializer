@@ -19,7 +19,6 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
-use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\AbstractManagerRegistry;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
@@ -359,10 +358,6 @@ class ObjectConstructorTest extends TestCase
 
     public function testFallbackOnEmbeddableClassWithXmlDriver()
     {
-        if (ORMVersion::compare('2.5') >= 0) {
-            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
-        }
-
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
         $fallback->expects($this->once())->method('construct');
 
@@ -393,10 +388,6 @@ class ObjectConstructorTest extends TestCase
 
     public function testFallbackOnEmbeddableClassWithXmlDriverAndXmlData()
     {
-        if (ORMVersion::compare('2.5') >= 0) {
-            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
-        }
-
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
         $fallback->expects($this->once())->method('construct');
 
