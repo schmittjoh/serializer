@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineAnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as DoctrineAttributeDriver;
-use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
@@ -31,10 +31,6 @@ class DoctrineDriverTest extends TestCase
 
     public function testMetadataForEmbedded()
     {
-        if (ORMVersion::compare('2.5') >= 0) {
-            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
-        }
-
         $refClass = new \ReflectionClass(BlogPostWithEmbedded::class);
         $meta = $this->getDoctrineDriver()->loadMetadataForClass($refClass);
         self::assertNotNull($meta);
@@ -149,12 +145,12 @@ class DoctrineDriverTest extends TestCase
             );
         }
 
-        $conn = [
+        $conn = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        ];
+        ]);
 
-        return EntityManager::create($conn, $config);
+        return new EntityManager($conn, $config);
     }
 
     public function getMetadataDriver()
