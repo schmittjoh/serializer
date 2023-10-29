@@ -141,6 +141,7 @@ class IntegrationTest extends TestCase
             $cfg->setMetadataDriverImpl(new AttributeDriver([
                 __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
             ]));
+            AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
         } else {
             $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
                 __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',

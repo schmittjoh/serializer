@@ -58,7 +58,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use SimpleXMLElement;
-
 use function assert;
 
 class ObjectConstructorTest extends TestCase
@@ -471,8 +470,7 @@ class ObjectConstructorTest extends TestCase
     protected function setUp(): void
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
-        $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
-
+        $this->context = $this->getMockBuilder(DeserializationContext::class)->getMock();
         $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);
 
@@ -528,6 +526,7 @@ class ObjectConstructorTest extends TestCase
             $cfg = new Configuration();
 
             if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+                AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
                 $cfg->setMetadataDriverImpl(new AttributeDriver([
                     __DIR__ . '/../../Fixtures/Doctrine/Entity',
                     __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
