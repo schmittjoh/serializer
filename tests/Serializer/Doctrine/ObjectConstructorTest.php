@@ -546,7 +546,7 @@ class ObjectConstructorTest extends TestCase
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
-        return EntityManager::create($con, $cfg);
+        return new EntityManager($con, $cfg);
     }
 
     /**
