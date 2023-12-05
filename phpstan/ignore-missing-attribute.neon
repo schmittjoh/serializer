@@ -1,0 +1,3 @@
+parameters:
+  ignoreErrors:
+    - '#^Attribute class JMS\\Serializer\\Tests\\Fixtures\\MissingAttribute does not exist\.$#'
