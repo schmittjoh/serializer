@@ -12,6 +12,9 @@ final class MissingAttributeObject
     #[MissingAttribute]
     public $property;
 
+    /**
+     * @VirtualProperty(name="propertyFromMethod")
+     */
     #[MissingAttribute]
     #[VirtualProperty(name: 'propertyFromMethod')]
     public function propertyMethod()
