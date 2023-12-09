@@ -44,9 +44,11 @@ final class Parser implements ParserInterface
         }
 
         if (Lexer::T_FLOAT === $this->lexer->token->type) {
-            return floatval($this->lexer->token->value);
-        } elseif (Lexer::T_INTEGER === $this->lexer->token->type) {
-            return intval($this->lexer->token->value);
+            return (float) $this->lexer->token->value;
+        }
+
+        if (Lexer::T_INTEGER === $this->lexer->token->type) {
+            return (int) $this->lexer->token->value;
         } elseif (Lexer::T_NULL === $this->lexer->token->type) {
             return null;
         } elseif (Lexer::T_STRING === $this->lexer->token->type) {
@@ -54,7 +56,9 @@ final class Parser implements ParserInterface
         } elseif (Lexer::T_IDENTIFIER === $this->lexer->token->type) {
             if ($this->lexer->isNextToken(Lexer::T_TYPE_START)) {
                 return $this->visitCompoundType();
-            } elseif ($this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
+            }
+
+            if ($this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
                 return $this->visitArrayType();
             }
 

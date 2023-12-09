@@ -72,7 +72,7 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
 
     public function setFormatOutput(bool $formatOutput): self
     {
-        $this->formatOutput = (bool) $formatOutput;
+        $this->formatOutput = $formatOutput;
 
         return $this;
     }

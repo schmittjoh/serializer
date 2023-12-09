@@ -146,11 +146,13 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
         if ('true' === $data || '1' === $data) {
             return true;
-        } elseif ('false' === $data || '0' === $data) {
-            return false;
-        } else {
-            throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
         }
+
+        if ('false' === $data || '0' === $data) {
+            return false;
+        }
+
+        throw new RuntimeException(sprintf('Could not convert data to boolean. Expected "true", "false", "1" or "0", but got %s.', json_encode($data)));
     }
 
     /**

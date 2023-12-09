@@ -108,7 +108,9 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
 
             if (is_array($data) && !array_key_exists($propertyMetadata->serializedName, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
-            } elseif (is_object($data) && !property_exists($data, $propertyMetadata->serializedName)) {
+            }
+
+            if (is_object($data) && !property_exists($data, $propertyMetadata->serializedName)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 

@@ -87,7 +87,7 @@ class EventDispatcher implements EventDispatcherInterface
             $this->classListeners[$eventName][$class][$format] = $this->initializeListeners($eventName, $class, $format);
         }
 
-        return !!$this->classListeners[$eventName][$class][$format];
+        return (bool) $this->classListeners[$eventName][$class][$format];
     }
 
     public function dispatch(string $eventName, string $class, string $format, Event $event): void

@@ -52,9 +52,9 @@ final class EnumHandler implements SubscribingHandlerInterface
             $valueType = isset($type['params'][2]) ? ['name' => $type['params'][2]] : null;
 
             return $context->getNavigator()->accept($enum->value, $valueType);
-        } else {
-            return $context->getNavigator()->accept($enum->name);
         }
+
+        return $context->getNavigator()->accept($enum->name);
     }
 
     /**
@@ -81,12 +81,12 @@ final class EnumHandler implements SubscribingHandlerInterface
             }
 
             return $enumType::from($caseValue);
-        } else {
-            if (!$ref->hasCase($caseValue)) {
-                throw new InvalidMetadataException(sprintf('The type "%s" does not have the case "%s"', $ref->getName(), $caseValue));
-            }
-
-            return $ref->getCase($caseValue)->getValue();
         }
+
+        if (!$ref->hasCase($caseValue)) {
+            throw new InvalidMetadataException(sprintf('The type "%s" does not have the case "%s"', $ref->getName(), $caseValue));
+        }
+
+        return $ref->getCase($caseValue)->getValue();
     }
 }

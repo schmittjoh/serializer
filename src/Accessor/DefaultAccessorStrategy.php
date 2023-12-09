@@ -96,7 +96,7 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             return $accessor($object, $metadata->name);
         } catch (\Error $e) {
             // handle uninitialized properties in PHP >= 7.4
-            if (preg_match('/^Typed property ([\w\\\\@]+)::\$(\w+) must not be accessed before initialization$/', $e->getMessage(), $matches)) {
+            if (preg_match('/^Typed property ([\w\\\\@]+)::\$(\w+) must not be accessed before initialization$/', $e->getMessage())) {
                 throw new UninitializedPropertyException(sprintf('Uninitialized property "%s::$%s".', $metadata->class, $metadata->name), 0, $e);
             }
 

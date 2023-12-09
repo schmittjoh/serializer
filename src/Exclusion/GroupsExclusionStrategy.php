@@ -59,19 +59,19 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
             }
 
             return $this->shouldSkipUsingGroups($property, $groups);
-        } else {
-            if (!$property->groups) {
-                return !isset($this->groups[self::DEFAULT_GROUP]);
-            }
-
-            foreach ($property->groups as $group) {
-                if (is_scalar($group) && isset($this->groups[$group])) {
-                    return false;
-                }
-            }
-
-            return true;
         }
+
+        if (!$property->groups) {
+            return !isset($this->groups[self::DEFAULT_GROUP]);
+        }
+
+        foreach ($property->groups as $group) {
+            if (is_scalar($group) && isset($this->groups[$group])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function shouldSkipUsingGroups(PropertyMetadata $property, array $groups): bool

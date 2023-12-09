@@ -211,7 +211,7 @@ class XmlDriver extends AbstractFileDriver
                     }
 
                     if (null !== $excludeIf = $pElem->attributes()->{'expose-if'}) {
-                        $pMetadata->excludeIf = $this->parseExpression('!(' . (string) $excludeIf . ')');
+                        $pMetadata->excludeIf = $this->parseExpression('!(' . $excludeIf . ')');
                         $isExpose = true;
                     }
 
@@ -348,8 +348,8 @@ class XmlDriver extends AbstractFileDriver
                 }
 
                 if (
-                    (ExclusionPolicy::NONE === (string) $exclusionPolicy && !$isExclude)
-                    || (ExclusionPolicy::ALL === (string) $exclusionPolicy && $isExpose)
+                    (ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
+                    || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)
                 ) {
                     $metadata->addPropertyMetadata($pMetadata);
                 }

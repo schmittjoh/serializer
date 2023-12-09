@@ -150,10 +150,6 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
 
     protected function normalizeFieldType(string $type): ?string
     {
-        if (!isset($this->fieldMapping[$type])) {
-            return null;
-        }
-
-        return $this->fieldMapping[$type];
+        return $this->fieldMapping[$type] ?? null;
     }
 }

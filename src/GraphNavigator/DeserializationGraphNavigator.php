@@ -158,7 +158,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 // could also simply be an artifical type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
                     try {
-                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        $rs = $handler($this->visitor, $data, $type, $this->context);
                         $this->context->decreaseDepth();
 
                         return $rs;

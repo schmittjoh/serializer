@@ -153,13 +153,19 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 if ($annot instanceof PreSerialize) {
                     $classMetadata->addPreSerializeMethod(new MethodMetadata($name, $method->name));
                     continue 2;
-                } elseif ($annot instanceof PostDeserialize) {
+                }
+
+                if ($annot instanceof PostDeserialize) {
                     $classMetadata->addPostDeserializeMethod(new MethodMetadata($name, $method->name));
                     continue 2;
-                } elseif ($annot instanceof PostSerialize) {
+                }
+
+                if ($annot instanceof PostSerialize) {
                     $classMetadata->addPostSerializeMethod(new MethodMetadata($name, $method->name));
                     continue 2;
-                } elseif ($annot instanceof VirtualProperty) {
+                }
+
+                if ($annot instanceof VirtualProperty) {
                     $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $method->name);
                     $propertiesMetadata[] = $virtualPropertyMetadata;
                     $propertiesAnnotations[] = $methodAnnotations;

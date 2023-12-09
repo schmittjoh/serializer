@@ -262,7 +262,6 @@ final class DateHandler implements SubscribingHandlerInterface
 
     private function parseDateInterval(string $data): \DateInterval
     {
-        $dateInterval = null;
         try {
             $f = 0.0;
             if (preg_match('~\.\d+~', $data, $match)) {

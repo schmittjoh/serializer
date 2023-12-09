@@ -106,7 +106,9 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     {
         if (null !== $type) {
             return $type;
-        } elseif ($context->hasAttribute('initial_type')) {
+        }
+
+        if ($context->hasAttribute('initial_type')) {
             return $context->getAttribute('initial_type');
         }
 

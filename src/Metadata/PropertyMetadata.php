@@ -211,10 +211,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public static function isCollectionMap(?array $type = null): bool
     {
-        return is_array($type)
-            && 'array' === $type['name']
-            && isset($type['params'][0])
-            && isset($type['params'][1]);
+        return isset($type['params'][0], $type['params'][1]) && is_array($type) && 'array' === $type['name'];
     }
 
     protected function serializeToArray(): array

@@ -146,7 +146,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     {
         $doCData = null !== $this->currentMetadata ? $this->currentMetadata->xmlElementCData : true;
 
-        return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string) $data);
+        return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode($data);
     }
 
     /**
@@ -318,9 +318,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-            $namespace = null !== $metadata->xmlNamespace
-                ? $metadata->xmlNamespace
-                : $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+            $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
 
             $element = $this->createElement($metadata->serializedName, $namespace);
             $this->currentNode->appendChild($element);

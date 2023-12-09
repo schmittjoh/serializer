@@ -30,7 +30,7 @@ class DeserializationContext extends Context
 
     public function increaseDepth(): void
     {
-        $this->depth += 1;
+        ++$this->depth;
     }
 
     public function decreaseDepth(): void
@@ -39,6 +39,6 @@ class DeserializationContext extends Context
             throw new LogicException('Depth cannot be smaller than zero.');
         }
 
-        $this->depth -= 1;
+        --$this->depth;
     }
 }

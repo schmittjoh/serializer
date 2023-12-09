@@ -305,8 +305,8 @@ final class DocBlockTypeResolver
     private function gatherGroupUseStatements(string $classContents): array
     {
         $foundUseStatements = [];
-        preg_match_all(self::GROUP_USE_STATEMENTS_REGEX, $classContents, $foundGroupUseStatements);
-        for ($useStatementIndex = 0; $useStatementIndex < count($foundGroupUseStatements[0]); $useStatementIndex++) {
+        $found = preg_match_all(self::GROUP_USE_STATEMENTS_REGEX, $classContents, $foundGroupUseStatements);
+        for ($useStatementIndex = 0; $useStatementIndex < $found; $useStatementIndex++) {
             foreach (explode(',', $foundGroupUseStatements[2][$useStatementIndex]) as $singleUseStatement) {
                 $foundUseStatements[] = trim($foundGroupUseStatements[1][$useStatementIndex]) . trim($singleUseStatement);
             }
@@ -318,8 +318,8 @@ final class DocBlockTypeResolver
     private function gatherSingleUseStatements(string $classContents): array
     {
         $foundUseStatements = [];
-        preg_match_all(self::SINGLE_USE_STATEMENTS_REGEX, $classContents, $foundSingleUseStatements);
-        for ($useStatementIndex = 0; $useStatementIndex < count($foundSingleUseStatements[0]); $useStatementIndex++) {
+        $found = preg_match_all(self::SINGLE_USE_STATEMENTS_REGEX, $classContents, $foundSingleUseStatements);
+        for ($useStatementIndex = 0; $useStatementIndex < $found; $useStatementIndex++) {
             $foundUseStatements[] = trim($foundSingleUseStatements[1][$useStatementIndex]);
         }
 

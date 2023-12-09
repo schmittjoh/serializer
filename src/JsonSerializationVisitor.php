@@ -89,7 +89,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
      */
     public function visitArray(array $data, array $type)
     {
-        \array_push($this->dataStack, $data);
+        $this->dataStack[] = $data;
 
         $rs = isset($type['params'][1]) ? new \ArrayObject() : [];
 
@@ -117,7 +117,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
 
     public function startVisitingObject(ClassMetadata $metadata, object $data, array $type): void
     {
-        \array_push($this->dataStack, $this->data);
+        $this->dataStack[] = $this->data;
         $this->data = true === $metadata->isMap ? new \ArrayObject() : [];
     }
 

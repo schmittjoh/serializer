@@ -37,7 +37,7 @@ class DefaultValuePropertyDriver implements DriverInterface
 
         \assert($classMetadata instanceof SerializerClassMetadata);
 
-        foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
+        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             \assert($propertyMetadata instanceof PropertyMetadata);
             if (null !== $propertyMetadata->hasDefault) {
                 continue;
