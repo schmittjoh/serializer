@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Tests\Fixtures\AllExcludedObject;
+use JMS\Serializer\Tests\Fixtures\MissingAttributeObject;
+use ReflectionClass;
+
+use const PHP_VERSION_ID;
 
 abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCase
 {
@@ -25,5 +29,15 @@ abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCas
     public function testShortExposeSyntax(): void
     {
         $this->markTestSkipped('Short expose syntax not supported on annotations or attribute');
+    }
+
+    public function testCanHandleMissingAttributes(): void
+    {
+        $metadata = $this->getDriver()->loadMetadataForClass(new ReflectionClass(MissingAttributeObject::class));
+        self::assertArrayHasKey('property', $metadata->propertyMetadata);
+
+        if (PHP_VERSION_ID >= 80000) {
+            self::assertArrayHasKey('propertyFromMethod', $metadata->propertyMetadata);
+        }
     }
 }

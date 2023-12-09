@@ -48,6 +48,8 @@ use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 
+use function array_filter;
+
 class AnnotationOrAttributeDriver implements DriverInterface
 {
     use ExpressionMetadataTrait;
@@ -309,7 +311,12 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                $class->getAttributes()
+                array_filter(
+                    $class->getAttributes(),
+                    static function (\ReflectionAttribute $attribute): bool {
+                        return class_exists($attribute->getName());
+                    }
+                )
             );
         }
 
@@ -332,7 +339,12 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                $method->getAttributes()
+                array_filter(
+                    $method->getAttributes(),
+                    static function (\ReflectionAttribute $attribute): bool {
+                        return class_exists($attribute->getName());
+                    }
+                )
             );
         }
 
@@ -355,7 +367,12 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                $property->getAttributes()
+                array_filter(
+                    $property->getAttributes(),
+                    static function (\ReflectionAttribute $attribute): bool {
+                        return class_exists($attribute->getName());
+                    }
+                )
             );
         }
 

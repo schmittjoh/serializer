@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
+use function array_filter;
+
 class AttributeDriver extends AnnotationOrAttributeDriver
 {
     /**
@@ -15,7 +17,12 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $class->getAttributes()
+            array_filter(
+                $class->getAttributes(),
+                static function (\ReflectionAttribute $attribute): bool {
+                    return class_exists($attribute->getName());
+                }
+            )
         );
     }
 
@@ -28,7 +35,12 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $method->getAttributes()
+            array_filter(
+                $method->getAttributes(),
+                static function (\ReflectionAttribute $attribute): bool {
+                    return class_exists($attribute->getName());
+                }
+            )
         );
     }
 
@@ -41,7 +53,12 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $property->getAttributes()
+            array_filter(
+                $property->getAttributes(),
+                static function (\ReflectionAttribute $attribute): bool {
+                    return class_exists($attribute->getName());
+                }
+            )
         );
     }
 }
