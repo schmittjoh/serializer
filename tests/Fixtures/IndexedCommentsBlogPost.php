@@ -45,20 +45,3 @@ class IndexedCommentsBlogPost
         return $indexedComments;
     }
 }
-
-class IndexedCommentsList
-{
-    /** @XmlList(inline=true, entry="comment") */
-    #[XmlList(entry: 'comment', inline: true)]
-    private $comments = [];
-
-    /** @XmlAttribute */
-    #[XmlAttribute]
-    private $count = 0;
-
-    public function addComment(Comment $comment)
-    {
-        $this->comments[] = $comment;
-        $this->count += 1;
-    }
-}
