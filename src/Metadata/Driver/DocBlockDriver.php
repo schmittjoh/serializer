@@ -70,11 +70,11 @@ class DocBlockDriver implements DriverInterface
             try {
                 if ($propertyMetadata instanceof VirtualPropertyMetadata) {
                     $type = $this->docBlockTypeResolver->getMethodDocblockTypeHint(
-                        new ReflectionMethod($propertyMetadata->class, $propertyMetadata->getter)
+                        new ReflectionMethod($propertyMetadata->class, $propertyMetadata->getter),
                     );
                 } else {
                     $type = $this->docBlockTypeResolver->getPropertyDocblockTypeHint(
-                        new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name)
+                        new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name),
                     );
                 }
 

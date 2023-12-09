@@ -90,7 +90,7 @@ class DateHandlerTest extends TestCase
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
         self::assertEquals(
             \DateTime::createFromFormat('Y-m-d|', '2017-06-18', $this->timezone),
-            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type),
         );
     }
 
@@ -101,7 +101,7 @@ class DateHandlerTest extends TestCase
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', ['Y-m-d|', 'Y/m/d']]];
         self::assertEquals(
             \DateTime::createFromFormat('Y/m/d', '2017/06/18', $this->timezone),
-            $this->handler->deserializeDateTimeFromJson($visitor, '2017/06/18', $type)
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017/06/18', $type),
         );
     }
 
@@ -121,14 +121,14 @@ class DateHandlerTest extends TestCase
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
         self::assertEquals(
             $expectedDateTime,
-            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type),
         );
 
         // custom deserialization format specified
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d']];
         self::assertEquals(
             $expectedDateTime,
-            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type)
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18', $type),
         );
     }
 
@@ -147,7 +147,7 @@ class DateHandlerTest extends TestCase
 
         self::assertEquals(
             $expectedDateTime->format(\DateTime::RFC3339),
-            $actualDateTime->format(\DateTime::RFC3339)
+            $actualDateTime->format(\DateTime::RFC3339),
         );
     }
 
@@ -166,7 +166,7 @@ class DateHandlerTest extends TestCase
 
         self::assertEquals(
             $expectedDateTime->format(\DateTime::RFC3339),
-            $actualDateTime->format(\DateTime::RFC3339)
+            $actualDateTime->format(\DateTime::RFC3339),
         );
     }
 }

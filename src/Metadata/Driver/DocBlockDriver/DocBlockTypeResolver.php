@@ -429,7 +429,7 @@ final class DocBlockTypeResolver
                         ',',
                         array_map(static function (string $type) use ($reflector, $self) {
                             return $self->resolveType(trim($type), $reflector);
-                        }, $types)
+                        }, $types),
                     ));
                 }
             }

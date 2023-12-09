@@ -30,7 +30,7 @@ final class UnionTypedPropertiesDriverTest extends TestCase
 
         self::assertEquals(
             null,
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 

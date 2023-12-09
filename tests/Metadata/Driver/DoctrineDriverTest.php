@@ -42,7 +42,7 @@ class DoctrineDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'DateTime', 'params' => []],
-            $metadata->propertyMetadata['createdAt']->type
+            $metadata->propertyMetadata['createdAt']->type,
         );
     }
 
@@ -51,7 +51,7 @@ class DoctrineDriverTest extends TestCase
         $metadata = $this->getMetadata();
         self::assertEquals(
             ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author', 'params' => []],
-            $metadata->propertyMetadata['author']->type
+            $metadata->propertyMetadata['author']->type,
         );
     }
 
@@ -66,7 +66,7 @@ class DoctrineDriverTest extends TestCase
                     ['name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Comment', 'params' => []],
                 ],
             ],
-            $metadata->propertyMetadata['comments']->type
+            $metadata->propertyMetadata['comments']->type,
         );
     }
 
@@ -77,7 +77,7 @@ class DoctrineDriverTest extends TestCase
         // This would be guessed as boolean but we've overriden it to integer
         self::assertEquals(
             ['name' => 'integer', 'params' => []],
-            $metadata->propertyMetadata['published']->type
+            $metadata->propertyMetadata['published']->type,
         );
     }
 
@@ -125,7 +125,7 @@ class DoctrineDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'string', 'params' => []],
-            $metadata->propertyMetadata['guid']->type
+            $metadata->propertyMetadata['guid']->type,
         );
     }
 
@@ -137,11 +137,11 @@ class DoctrineDriverTest extends TestCase
 
         if (PHP_VERSION_ID >= 80000 && class_exists(DoctrineAttributeDriver::class)) {
             $config->setMetadataDriverImpl(
-                new DoctrineAttributeDriver([__DIR__ . '/../../Fixtures/Doctrine'], true)
+                new DoctrineAttributeDriver([__DIR__ . '/../../Fixtures/Doctrine'], true),
             );
         } else {
             $config->setMetadataDriverImpl(
-                new DoctrineAnnotationDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
+                new DoctrineAnnotationDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine'),
             );
         }
 
@@ -178,7 +178,7 @@ class DoctrineDriverTest extends TestCase
 
         return new DoctrineTypeDriver(
             $this->getMetadataDriver(),
-            $registry
+            $registry,
         );
     }
 }

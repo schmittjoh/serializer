@@ -63,7 +63,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
                 self::class,
                 TranslatorInterface::class,
                 TranslatorContract::class,
-                get_class($translator)
+                get_class($translator),
             ));
         }
 

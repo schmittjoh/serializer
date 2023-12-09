@@ -256,7 +256,7 @@ final class DateHandler implements SubscribingHandlerInterface
         throw new RuntimeException(sprintf(
             'Invalid datetime "%s", expected one of the format %s.',
             $data,
-            '"' . implode('", "', $formatTried) . '"'
+            '"' . implode('", "', $formatTried) . '"',
         ));
     }
 

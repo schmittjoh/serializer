@@ -243,7 +243,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
                 $metadata->name,
-                implode(', ', array_keys($metadata->discriminatorMap))
+                implode(', ', array_keys($metadata->discriminatorMap)),
             ));
         }
 

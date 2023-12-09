@@ -81,7 +81,7 @@ abstract class AbstractSerializationBench
             'FooooooooooooooooooooooBAR',
             new Author('Foo'),
             new \DateTime(),
-            new Publisher('bar')
+            new Publisher('bar'),
         );
         for ($i = 0; $i < $this->amountOfComments; $i++) {
             $post->addComment(new Comment(new Author('foo'), 'foobar'));

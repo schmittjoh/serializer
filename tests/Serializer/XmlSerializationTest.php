@@ -83,7 +83,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
                     <entry>collectionEntry</entry>
                 </collection>
             </AccessorSetter>',
-            'JMS\Serializer\Tests\Fixtures\AccessorSetter'
+            'JMS\Serializer\Tests\Fixtures\AccessorSetter',
         );
         \assert($object instanceof AccessorSetter);
 
@@ -171,7 +171,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     {
         self::assertEquals(
             self::getContent('virtual_attributes'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['attributes']))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['attributes'])),
         );
     }
 
@@ -179,7 +179,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     {
         self::assertEquals(
             self::getContent('virtual_values'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['values']))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['values'])),
         );
     }
 
@@ -187,7 +187,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     {
         self::assertEquals(
             self::getContent('virtual_properties_list'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['list']))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['list'])),
         );
     }
 
@@ -195,7 +195,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     {
         self::assertEquals(
             self::getContent('virtual_properties_map'),
-            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['map']))
+            $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(['map'])),
         );
     }
 
@@ -234,11 +234,11 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         self::assertEquals(
             self::getContent('object_with_namespaces_and_list'),
-            $this->serialize($object, SerializationContext::create())
+            $this->serialize($object, SerializationContext::create()),
         );
         self::assertEquals(
             $object,
-            $this->deserialize(self::getContent('object_with_namespaces_and_list'), get_class($object))
+            $this->deserialize(self::getContent('object_with_namespaces_and_list'), get_class($object)),
         );
     }
 
@@ -261,11 +261,11 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         self::assertEquals(
             self::getContent('object_with_namespaces_and_nested_list'),
-            $this->serialize($object, SerializationContext::create())
+            $this->serialize($object, SerializationContext::create()),
         );
         self::assertEquals(
             $object,
-            $this->deserialize(self::getContent('object_with_namespaces_and_nested_list'), get_class($object))
+            $this->deserialize(self::getContent('object_with_namespaces_and_nested_list'), get_class($object)),
         );
     }
 
@@ -356,7 +356,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         self::assertEquals(
             self::getContent('object_with_only_namespaces_and_list'),
-            $this->serialize($object, SerializationContext::create())
+            $this->serialize($object, SerializationContext::create()),
         );
 
         $deserialized = $this->deserialize(self::getContent('object_with_only_namespaces_and_list'), get_class($object));
@@ -423,7 +423,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
                 $metadata->xmlNamespace = $classMetadata->xmlRootNamespace;
 
                 $visitor->visitProperty($metadata, $author);
-            }
+            },
         );
 
         $serialized = $this->serialize($object);
@@ -481,8 +481,8 @@ class XmlSerializationTest extends BaseSerializationTestCase
             ObjectWithXmlAttributeDiscriminatorChild::class,
             $this->deserialize(
                 $xml,
-                ObjectWithXmlAttributeDiscriminatorParent::class
-            )
+                ObjectWithXmlAttributeDiscriminatorParent::class,
+            ),
         );
     }
 
@@ -494,8 +494,8 @@ class XmlSerializationTest extends BaseSerializationTestCase
             ObjectWithXmlNotCDataDiscriminatorChild::class,
             $this->deserialize(
                 $xml,
-                ObjectWithXmlNotCDataDiscriminatorParent::class
-            )
+                ObjectWithXmlNotCDataDiscriminatorParent::class,
+            ),
         );
     }
 
@@ -508,8 +508,8 @@ class XmlSerializationTest extends BaseSerializationTestCase
             ObjectWithXmlNamespaceDiscriminatorChild::class,
             $this->deserialize(
                 $xml,
-                ObjectWithXmlNamespaceDiscriminatorParent::class
-            )
+                ObjectWithXmlNamespaceDiscriminatorParent::class,
+            ),
         );
     }
 
@@ -522,8 +522,8 @@ class XmlSerializationTest extends BaseSerializationTestCase
             ObjectWithXmlNamespaceAttributeDiscriminatorChild::class,
             $this->deserialize(
                 $xml,
-                ObjectWithXmlNamespaceAttributeDiscriminatorParent::class
-            )
+                ObjectWithXmlNamespaceAttributeDiscriminatorParent::class,
+            ),
         );
     }
 
@@ -575,7 +575,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
             1.555,
             1.5,
             1.555,
-            1.555
+            1.555,
         );
 
         $result = $this->serialize($objectWithFloat, SerializationContext::create());
@@ -593,7 +593,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
               <floating_point_fixed_decimals_less>1.6</floating_point_fixed_decimals_less>
               <floating_point_fixed_decimals_more>1.560</floating_point_fixed_decimals_more>
             </result>',
-            $result
+            $result,
         );
     }
 

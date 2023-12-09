@@ -50,7 +50,7 @@ final class SymfonyUidHandlerTest extends TestCase
     {
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', (string) $uid),
-            $this->createSerializer()->serialize($uid, 'json', null, AbstractUid::class)
+            $this->createSerializer()->serialize($uid, 'json', null, AbstractUid::class),
         );
     }
 
@@ -61,7 +61,7 @@ final class SymfonyUidHandlerTest extends TestCase
     {
         self::assertXmlStringEqualsXmlString(
             sprintf('<?xml version="1.0" encoding="UTF-8"?><result>%s</result>', (string) $uid),
-            $this->createSerializer()->serialize($uid, 'xml', null, AbstractUid::class)
+            $this->createSerializer()->serialize($uid, 'xml', null, AbstractUid::class),
         );
     }
 
@@ -72,7 +72,7 @@ final class SymfonyUidHandlerTest extends TestCase
     {
         self::assertXmlStringEqualsXmlString(
             sprintf('<?xml version="1.0" encoding="UTF-8"?><result>%s</result>', (string) $uid),
-            $this->createSerializer(false)->serialize($uid, 'xml', null, AbstractUid::class)
+            $this->createSerializer(false)->serialize($uid, 'xml', null, AbstractUid::class),
         );
     }
 
@@ -82,7 +82,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toBase32()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE32))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE32)),
         );
     }
 
@@ -92,7 +92,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toBase58()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE58))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE58)),
         );
     }
 
@@ -102,7 +102,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toRfc4122()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_RFC4122))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_RFC4122)),
         );
     }
 

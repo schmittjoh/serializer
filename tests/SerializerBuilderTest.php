@@ -102,7 +102,7 @@ class SerializerBuilderTest extends TestCase
     {
         self::assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
+            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory()),
         );
 
         $this->expectException(UnsupportedFormatException::class);
@@ -115,22 +115,22 @@ class SerializerBuilderTest extends TestCase
     {
         self::assertFalse(
             $this->getIncludeInterfaces($this->builder),
-            'Interface metadata are not included by default'
+            'Interface metadata are not included by default',
         );
 
         self::assertTrue(
             $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(true)),
-            'Force including interface metadata'
+            'Force including interface metadata',
         );
 
         self::assertFalse(
             $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(false)),
-            'Force not including interface metadata'
+            'Force not including interface metadata',
         );
 
         self::assertSame(
             $this->builder,
-            $this->builder->includeInterfaceMetadata(true)
+            $this->builder->includeInterfaceMetadata(true),
         );
     }
 

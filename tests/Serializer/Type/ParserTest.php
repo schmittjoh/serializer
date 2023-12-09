@@ -26,7 +26,7 @@ class ParserTest extends TestCase
     {
         self::assertSame(
             $expectedType,
-            $this->parser->parse($sourceType)
+            $this->parser->parse($sourceType),
         );
     }
 

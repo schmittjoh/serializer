@@ -62,9 +62,7 @@ class DocBlockDriverTest extends TestCase
             new NullDriver($namingStrategy),
         ]);
 
-        if (PHP_VERSION_ID > 70400) {
-            $driver = new TypedPropertiesDriver($driver);
-        }
+        $driver = new TypedPropertiesDriver($driver);
 
         $driver = new DocBlockDriver($driver);
 
@@ -76,122 +74,86 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfScalars()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfScalars::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionAsList(): void
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionAsList::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => 'string', 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromSameNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromSameNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromUsingFullNamespacePath()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesWithFullNamespacePath::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionFromGenericLikeClass()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionTypedAsGenericClass::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockMapFromGenericLikeClass()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(MapTypedAsGenericClass::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesIgnoringNullTypeHint()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesWithNull::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesIgnoringNullTypeHintWithSingleLinePhpDoc()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesWithNullSingleLinePhpDoc::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Product::class, 'params' => []]]],
-            $m->propertyMetadata['productIds']->type
+            $m->propertyMetadata['productIds']->type,
         );
     }
 
     public function testThrowingExceptionWhenNotExistingClassWasGiven()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $this->expectException(\InvalidArgumentException::class);
 
         $this->resolve(CollectionOfNotExistingClasses::class);
@@ -199,149 +161,109 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata['productDescriptions']->type
+            $m->propertyMetadata['productDescriptions']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromGlobalNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromGlobalNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => \stdClass::class, 'params' => []]]],
-            $m->propertyMetadata['products']->type
+            $m->propertyMetadata['products']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespaceUsingSingleAlias()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingSingleAlias::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata['productDescriptions']->type
+            $m->propertyMetadata['productDescriptions']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromDifferentNamespaceUsingGroupAlias()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromDifferentNamespaceUsingGroupAlias::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata['productDescriptions']->type
+            $m->propertyMetadata['productDescriptions']->type,
         );
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductName::class, 'params' => []]]],
-            $m->propertyMetadata['productNames']->type
+            $m->propertyMetadata['productNames']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromTraits()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromTrait::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata['productDescriptions']->type
+            $m->propertyMetadata['productDescriptions']->type,
         );
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductName::class, 'params' => []]]],
-            $m->propertyMetadata['productNames']->type
+            $m->propertyMetadata['productNames']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfClassesFromTraitInsideTrait()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfClassesFromTraitInsideTrait::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductDescription::class, 'params' => []]]],
-            $m->propertyMetadata['productDescriptions']->type
+            $m->propertyMetadata['productDescriptions']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfInterfacesFromDifferentNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfInterfacesFromDifferentNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
-            $m->propertyMetadata['productColors']->type
+            $m->propertyMetadata['productColors']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfInterfacesFromGlobalNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfInterfacesFromGlobalNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
-            $m->propertyMetadata['productColors']->type
+            $m->propertyMetadata['productColors']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfInterfacesFromSameNamespace()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfInterfacesFromSameNamespace::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => Vehicle::class, 'params' => []]]],
-            $m->propertyMetadata['vehicles']->type
+            $m->propertyMetadata['vehicles']->type,
         );
     }
 
     public function testInferDocBlockCollectionOfInterfacesWithFullNamespacePath()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-
         $m = $this->resolve(CollectionOfInterfacesWithFullNamespacePath::class);
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => ProductColor::class, 'params' => []]]],
-            $m->propertyMetadata['productColors']->type
+            $m->propertyMetadata['productColors']->type,
         );
     }
 
@@ -351,7 +273,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => \stdClass::class, 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -361,7 +283,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => ProductDescription::class, 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -371,7 +293,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             null,
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -385,7 +307,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -399,7 +321,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             null,
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -413,7 +335,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'string', 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -423,7 +345,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -433,7 +355,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -443,11 +365,11 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => []],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
         self::assertEquals(
             ['name' => 'array', 'params' => []],
-            $m->propertyMetadata['details']->type
+            $m->propertyMetadata['details']->type,
         );
     }
 
@@ -457,7 +379,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => ProductType::class, 'params' => []]]],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 
@@ -467,7 +389,7 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'array', 'params' => [['name' => 'string', 'params' => []]]],
-            $m->propertyMetadata['arrayOfStrings']->type
+            $m->propertyMetadata['arrayOfStrings']->type,
         );
     }
 
@@ -477,17 +399,17 @@ class DocBlockDriverTest extends TestCase
 
         self::assertEquals(
             ['name' => 'integer', 'params' => []],
-            $m->propertyMetadata['integer']->type
+            $m->propertyMetadata['integer']->type,
         );
 
         self::assertEquals(
             ['name' => 'double', 'params' => []],
-            $m->propertyMetadata['double']->type
+            $m->propertyMetadata['double']->type,
         );
 
         self::assertEquals(
             ['name' => 'boolean', 'params' => []],
-            $m->propertyMetadata['boolean']->type
+            $m->propertyMetadata['boolean']->type,
         );
     }
 }

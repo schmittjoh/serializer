@@ -37,7 +37,7 @@ class ObjectWithXmlKeyValuePairsWithType
             [
                 'key-one' => 'foo',
                 'key-two' => 'bar',
-            ]
+            ],
         );
     }
 
@@ -49,7 +49,7 @@ class ObjectWithXmlKeyValuePairsWithType
                 'key_02' => 'Two',
                 'key_03' => 'Three',
             ],
-            ['Four']
+            ['Four'],
         );
     }
 }
