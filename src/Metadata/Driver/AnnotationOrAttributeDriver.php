@@ -20,6 +20,7 @@ use JMS\Serializer\Annotation\PostSerialize;
 use JMS\Serializer\Annotation\PreSerialize;
 use JMS\Serializer\Annotation\ReadOnlyProperty;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\SerializerAttribute;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;
 use JMS\Serializer\Annotation\Type;
@@ -47,8 +48,6 @@ use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as BaseClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
-
-use function array_filter;
 
 class AnnotationOrAttributeDriver implements DriverInterface
 {
@@ -300,7 +299,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
     }
 
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getClassAnnotations(\ReflectionClass $class): array
     {
@@ -311,12 +310,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                array_filter(
-                    $class->getAttributes(),
-                    static function (\ReflectionAttribute $attribute): bool {
-                        return class_exists($attribute->getName());
-                    }
-                )
+                $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
             );
         }
 
@@ -328,7 +322,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
     }
 
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getMethodAnnotations(\ReflectionMethod $method): array
     {
@@ -339,12 +333,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                array_filter(
-                    $method->getAttributes(),
-                    static function (\ReflectionAttribute $attribute): bool {
-                        return class_exists($attribute->getName());
-                    }
-                )
+                $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
             );
         }
 
@@ -356,7 +345,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
     }
 
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getPropertyAnnotations(\ReflectionProperty $property): array
     {
@@ -367,12 +356,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 static function (\ReflectionAttribute $attribute): object {
                     return $attribute->newInstance();
                 },
-                array_filter(
-                    $property->getAttributes(),
-                    static function (\ReflectionAttribute $attribute): bool {
-                        return class_exists($attribute->getName());
-                    }
-                )
+                $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
             );
         }
 
