@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use function array_filter;
+use JMS\Serializer\Annotation\SerializerAttribute;
 
 class AttributeDriver extends AnnotationOrAttributeDriver
 {
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getClassAnnotations(\ReflectionClass $class): array
     {
@@ -17,17 +17,12 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            array_filter(
-                $class->getAttributes(),
-                static function (\ReflectionAttribute $attribute): bool {
-                    return class_exists($attribute->getName());
-                }
-            )
+            $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
         );
     }
 
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getMethodAnnotations(\ReflectionMethod $method): array
     {
@@ -35,17 +30,12 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            array_filter(
-                $method->getAttributes(),
-                static function (\ReflectionAttribute $attribute): bool {
-                    return class_exists($attribute->getName());
-                }
-            )
+            $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
         );
     }
 
     /**
-     * @return list<object>
+     * @return list<SerializerAttribute>
      */
     protected function getPropertyAnnotations(\ReflectionProperty $property): array
     {
@@ -53,12 +43,7 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            array_filter(
-                $property->getAttributes(),
-                static function (\ReflectionAttribute $attribute): bool {
-                    return class_exists($attribute->getName());
-                }
-            )
+            $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
         );
     }
 }

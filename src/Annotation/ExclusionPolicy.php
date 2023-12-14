@@ -11,7 +11,7 @@ use JMS\Serializer\Exception\RuntimeException;
  * @Target("CLASS")
  */
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class ExclusionPolicy
+final class ExclusionPolicy implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 

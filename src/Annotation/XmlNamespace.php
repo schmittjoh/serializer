@@ -9,7 +9,7 @@ namespace JMS\Serializer\Annotation;
  * @Target("CLASS")
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
-final class XmlNamespace
+final class XmlNamespace implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 

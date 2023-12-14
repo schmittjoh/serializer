@@ -9,7 +9,7 @@ namespace JMS\Serializer\Annotation;
  * @Target({"PROPERTY","METHOD","ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
-final class XmlValue
+final class XmlValue implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 
