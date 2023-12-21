@@ -93,6 +93,11 @@ class TypedPropertiesDriver implements DriverInterface
                     $type = $reflectionType->getName();
 
                     $propertyMetadata->setType($this->typeParser->parse($type));
+                } elseif ($this->shouldTypeHintUnion($reflectionType)) {
+                    $propertyMetadata->setType([
+                        'name' => 'union',
+                        'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
+                    ]);
                 }
             } catch (ReflectionException $e) {
                 continue;
@@ -138,5 +143,23 @@ class TypedPropertiesDriver implements DriverInterface
 
         return class_exists($reflectionType->getName())
             || interface_exists($reflectionType->getName());
+    }
+
+    /**
+     * @phpstan-assert-if-true \ReflectionUnionType $reflectionType
+     */
+    private function shouldTypeHintUnion(?ReflectionType $reflectionType)
+    {
+        if (!$reflectionType instanceof \ReflectionUnionType) {
+            return false;
+        }
+
+        foreach ($reflectionType->getTypes() as $type) {
+            if ($this->shouldTypeHint($type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
