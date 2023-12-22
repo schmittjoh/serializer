@@ -17,7 +17,7 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
+            $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
         );
     }
 
@@ -30,7 +30,7 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
+            $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
         );
     }
 
@@ -43,7 +43,7 @@ class AttributeDriver extends AnnotationOrAttributeDriver
             static function (\ReflectionAttribute $attribute): object {
                 return $attribute->newInstance();
             },
-            $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF)
+            $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
         );
     }
 }

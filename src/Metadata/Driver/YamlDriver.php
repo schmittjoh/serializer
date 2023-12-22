@@ -74,8 +74,8 @@ class YamlDriver extends AbstractFileDriver
             throw new RuntimeException(
                 sprintf(
                     'Locator "%s" must be an instance of "AdvancedFileLocatorInterface".',
-                    get_class($this->locator)
-                )
+                    get_class($this->locator),
+                ),
             );
         }
 
@@ -95,7 +95,7 @@ class YamlDriver extends AbstractFileDriver
 
         if (!isset($config[$name = $class->name])) {
             throw new InvalidMetadataException(
-                sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file)
+                sprintf('Expected metadata for class %s to be defined in %s.', $class->name, $file),
             );
         }
 
@@ -126,13 +126,13 @@ class YamlDriver extends AbstractFileDriver
                     $virtualPropertyMetadata = new ExpressionPropertyMetadata(
                         $name,
                         $methodName,
-                        $this->parseExpression($propertySettings['exp'])
+                        $this->parseExpression($propertySettings['exp']),
                     );
                     unset($propertySettings['exp']);
                 } else {
                     if (!$class->hasMethod($methodName)) {
                         throw new InvalidMetadataException(
-                            'The method ' . $methodName . ' not found in class ' . $class->name
+                            'The method ' . $methodName . ' not found in class ' . $class->name,
                         );
                     }
 
@@ -290,7 +290,7 @@ class YamlDriver extends AbstractFileDriver
                     $pMetadata->setAccessor(
                         $pConfig['access_type'] ?? $classAccessType,
                         $pConfig['accessor']['getter'] ?? null,
-                        $pConfig['accessor']['setter'] ?? null
+                        $pConfig['accessor']['setter'] ?? null,
                     );
 
                     if (isset($pConfig['inline'])) {
@@ -397,7 +397,7 @@ class YamlDriver extends AbstractFileDriver
 
                 if (!isset($config['discriminator']['map']) || !is_array($config['discriminator']['map'])) {
                     throw new InvalidMetadataException(
-                        'The "map" attribute must be set, and be an array for discriminators.'
+                        'The "map" attribute must be set, and be an array for discriminators.',
                     );
                 }
 
@@ -405,7 +405,7 @@ class YamlDriver extends AbstractFileDriver
                 $metadata->setDiscriminator(
                     $config['discriminator']['field_name'],
                     $config['discriminator']['map'],
-                    $groups
+                    $groups,
                 );
 
                 if (isset($config['discriminator']['xml_attribute'])) {
@@ -436,8 +436,8 @@ class YamlDriver extends AbstractFileDriver
             throw new InvalidMetadataException(
                 sprintf(
                     'callback methods expects a string, or an array of strings that represent method names, but got %s.',
-                    json_encode($config['pre_serialize'])
-                )
+                    json_encode($config['pre_serialize']),
+                ),
             );
         }
 
@@ -445,7 +445,7 @@ class YamlDriver extends AbstractFileDriver
         foreach ($config as $name) {
             if (!$class->hasMethod($name)) {
                 throw new InvalidMetadataException(
-                    sprintf('The method %s does not exist in class %s.', $name, $class->name)
+                    sprintf('The method %s does not exist in class %s.', $name, $class->name),
                 );
             }
 

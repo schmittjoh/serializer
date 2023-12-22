@@ -497,7 +497,7 @@ final class SerializerBuilder
             $this->serializationContextFactory = $serializationContextFactory;
         } elseif (is_callable($serializationContextFactory)) {
             $this->serializationContextFactory = new CallableSerializationContextFactory(
-                $serializationContextFactory
+                $serializationContextFactory,
             );
         } else {
             throw new InvalidArgumentException('expected SerializationContextFactoryInterface or callable.');
@@ -515,7 +515,7 @@ final class SerializerBuilder
             $this->deserializationContextFactory = $deserializationContextFactory;
         } elseif (is_callable($deserializationContextFactory)) {
             $this->deserializationContextFactory = new CallableDeserializationContextFactory(
-                $deserializationContextFactory
+                $deserializationContextFactory,
             );
         } else {
             throw new InvalidArgumentException('expected DeserializationContextFactoryInterface or callable.');
@@ -562,7 +562,7 @@ final class SerializerBuilder
             $this->driverFactory = new DefaultDriverFactory(
                 $this->propertyNamingStrategy,
                 $this->typeParser,
-                $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
+                $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null,
             );
             $this->driverFactory->enableEnumSupport($this->enableEnumSupport);
         }
@@ -611,7 +611,7 @@ final class SerializerBuilder
             $this->deserializationVisitors,
             $this->serializationContextFactory,
             $this->deserializationContextFactory,
-            $this->typeParser
+            $this->typeParser,
         );
     }
 
@@ -622,7 +622,7 @@ final class SerializerBuilder
             $this->handlerRegistry,
             $this->getAccessorStrategy(),
             $this->eventDispatcher,
-            $this->expressionEvaluator
+            $this->expressionEvaluator,
         );
     }
 
@@ -634,7 +634,7 @@ final class SerializerBuilder
             $this->objectConstructor ?: new UnserializeObjectConstructor(),
             $this->getAccessorStrategy(),
             $this->eventDispatcher,
-            $this->expressionEvaluator
+            $this->expressionEvaluator,
         );
     }
 

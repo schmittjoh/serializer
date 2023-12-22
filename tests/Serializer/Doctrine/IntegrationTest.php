@@ -100,7 +100,7 @@ class IntegrationTest extends TestCase
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $this->serializer = SerializerBuilder::create()
@@ -109,7 +109,7 @@ class IntegrationTest extends TestCase
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
-                }
+                },
             ))
             ->build();
 

@@ -401,7 +401,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             $this->document->documentElement->setAttributeNS(
                 'http://www.w3.org/2000/xmlns/',
                 'xmlns:xsi',
-                'http://www.w3.org/2001/XMLSchema-instance'
+                'http://www.w3.org/2001/XMLSchema-instance',
             );
         }
 

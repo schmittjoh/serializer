@@ -182,7 +182,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertSame($expected, $this->serialize($collection));
         self::assertEquals(
             $collection,
-            $this->deserialize($expected, get_class($collection))
+            $this->deserialize($expected, get_class($collection)),
         );
     }
 
@@ -204,7 +204,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             'json',
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
-            }
+            },
         );
 
         $list = new AuthorList();
@@ -223,7 +223,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             'json',
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
-            }
+            },
         );
 
         $list = new AuthorList();

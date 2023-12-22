@@ -58,6 +58,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use SimpleXMLElement;
+
 use function assert;
 
 class ObjectConstructorTest extends TestCase
@@ -271,7 +272,7 @@ class ObjectConstructorTest extends TestCase
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
     }
 
@@ -326,7 +327,7 @@ class ObjectConstructorTest extends TestCase
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($smartPhoneDeserialized),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
 
         self::assertInstanceOf(PersistentCollection::class, $smartPhoneDeserialized->getAppsRaw());
@@ -336,14 +337,14 @@ class ObjectConstructorTest extends TestCase
         self::assertCount(
             1,
             $smartPhoneDeserialized->getApps(
-                $criteria
-            )
+                $criteria,
+            ),
         );
         $firstApp = $smartPhoneDeserialized->getApps()->first();
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($firstApp),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
 
         $em->flush();
@@ -375,7 +376,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $type = ['name' => BlogPostSeo::class, 'params' => []];
@@ -405,7 +406,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $type = ['name' => BlogPostSeo::class, 'params' => []];
@@ -486,7 +487,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $this->driver = &$driver;
@@ -496,7 +497,7 @@ class ObjectConstructorTest extends TestCase
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return $driver = new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
-                }
+                },
             ))
             ->build();
 
@@ -573,16 +574,16 @@ class ObjectConstructorTest extends TestCase
                 new DoctrineObjectConstructor(
                     $this->registry,
                     new UnserializeObjectConstructor(),
-                    DoctrineObjectConstructor::ON_MISSING_FALLBACK
-                )
+                    DoctrineObjectConstructor::ON_MISSING_FALLBACK,
+                ),
             )
             ->addDefaultHandlers()
             ->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
                 $handlerRegistry->registerSubscribingHandler(
                     new ArrayCollectionHandler(
                         true,
-                        $this->registry
-                    )
+                        $this->registry,
+                    ),
                 );
             })
             ->build();

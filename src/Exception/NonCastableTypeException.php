@@ -22,8 +22,8 @@ abstract class NonCastableTypeException extends RuntimeException
             sprintf(
                 'Cannot convert value of type "%s" to %s',
                 gettype($value),
-                $expectedType
-            )
+                $expectedType,
+            ),
         );
     }
 

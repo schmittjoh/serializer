@@ -15,13 +15,6 @@ use ReflectionClass;
 
 class TypedPropertiesDriverTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-    }
-
     public function testInferPropertiesFromTypes()
     {
         $m = $this->resolve(User::class);

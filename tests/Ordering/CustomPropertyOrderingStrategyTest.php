@@ -19,7 +19,7 @@ class CustomPropertyOrderingStrategyTest extends TestCase
 
         $properties = array_combine(
             $keysToSort,
-            array_pad([], count($keysToSort), $this->createMock(PropertyMetadata::class))
+            array_pad([], count($keysToSort), $this->createMock(PropertyMetadata::class)),
         );
         $sortedProperties = $strategy->order($properties);
         self::assertEquals($expectedResult, array_keys($sortedProperties));

@@ -20,7 +20,7 @@ final class NonVisitableTypeException extends RuntimeException
         return new self(
             sprintf('Type %s cannot be visited as %s', get_debug_type($data), $type['name']),
             0,
-            $previous
+            $previous,
         );
     }
 }

@@ -84,9 +84,7 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $driver = new EnumPropertiesDriver($driver);
         }
 
-        if (PHP_VERSION_ID >= 70400) {
-            $driver = new TypedPropertiesDriver($driver, $this->typeParser);
-        }
+        $driver = new TypedPropertiesDriver($driver, $this->typeParser);
 
         if (PHP_VERSION_ID >= 80000) {
             $driver = new DefaultValuePropertyDriver($driver);
