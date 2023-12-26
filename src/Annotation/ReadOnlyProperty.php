@@ -11,7 +11,7 @@ namespace JMS\Serializer\Annotation;
  * @final
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY)]
-/* final */ class ReadOnlyProperty
+/* final */ class ReadOnlyProperty implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 

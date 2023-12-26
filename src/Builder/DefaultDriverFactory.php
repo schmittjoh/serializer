@@ -6,9 +6,10 @@ namespace JMS\Serializer\Builder;
 
 use Doctrine\Common\Annotations\Reader;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Metadata\Driver\AttributeDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
+use JMS\Serializer\Metadata\Driver\EnumPropertiesDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -18,6 +19,7 @@ use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
+use Symfony\Component\Yaml\Yaml;
 
 final class DefaultDriverFactory implements DriverFactoryInterface
 {
@@ -25,6 +27,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
      * @var ParserInterface
      */
     private $typeParser;
+
+    /**
+     * @var bool
+     */
+    private $enableEnumSupport = false;
 
     /**
      * @var PropertyNamingStrategyInterface
@@ -43,26 +50,41 @@ final class DefaultDriverFactory implements DriverFactoryInterface
         $this->expressionEvaluator = $expressionEvaluator;
     }
 
+    public function enableEnumSupport(bool $enableEnumSupport = true): void
+    {
+        $this->enableEnumSupport = $enableEnumSupport;
+    }
+
     public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface
     {
-        if (PHP_VERSION_ID >= 80000) {
-            $annotationReader = new AttributeDriver\AttributeReader($annotationReader);
-        }
-
-        $driver = new AnnotationDriver($annotationReader, $this->propertyNamingStrategy, $this->typeParser);
+        /*
+         * Build the sorted list of metadata drivers based on the environment. The final order should be:
+         *
+         * - YAML Driver
+         * - XML Driver
+         * - Annotations/Attributes Driver
+         * - Null (Fallback) Driver
+         */
+        $metadataDrivers = [new AnnotationOrAttributeDriver($this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator, $annotationReader)];
 
         if (!empty($metadataDirs)) {
             $fileLocator = new FileLocator($metadataDirs);
-            $driver = new DriverChain([
-                new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
-                new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator),
-                $driver,
-            ]);
+
+            array_unshift($metadataDrivers, new XmlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator));
+
+            if (class_exists(Yaml::class)) {
+                array_unshift($metadataDrivers, new YamlDriver($fileLocator, $this->propertyNamingStrategy, $this->typeParser, $this->expressionEvaluator));
+            }
         }
 
-        if (PHP_VERSION_ID >= 70400) {
-            $driver = new TypedPropertiesDriver($driver, $this->typeParser);
+        $driver = new DriverChain($metadataDrivers);
+        $driver->addDriver(new NullDriver($this->propertyNamingStrategy));
+
+        if ($this->enableEnumSupport) {
+            $driver = new EnumPropertiesDriver($driver);
         }
+
+        $driver = new TypedPropertiesDriver($driver, $this->typeParser);
 
         if (PHP_VERSION_ID >= 80000) {
             $driver = new DefaultValuePropertyDriver($driver);

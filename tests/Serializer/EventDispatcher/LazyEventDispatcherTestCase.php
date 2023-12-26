@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use JMS\Serializer\EventDispatcher\LazyEventDispatcher;
 
-abstract class LazyEventDispatcherTest extends EventDispatcherTest
+abstract class LazyEventDispatcherTestCase extends EventDispatcherTestCase
 {
     protected $container;
 

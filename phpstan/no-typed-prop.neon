@@ -1,0 +1,11 @@
+parameters:
+    excludePaths:
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/Vase.php
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ConstructorPromotion/DefaultValuesAndAccessors.php
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/UnionTypedProperties.php
+        - %currentWorkingDirectory%/tests/Metadata/Driver/UnionTypedPropertiesDriverTest.php
+        - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotion.php
+        - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotionWithoutDocblock.php
+        - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotionWithScalar.php
+        - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php

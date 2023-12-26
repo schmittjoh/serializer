@@ -24,14 +24,18 @@ class DefaultValuePropertyDriver implements DriverInterface
         $this->delegate = $delegate;
     }
 
+    /**
+     * @return SerializerClassMetadata|null
+     */
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
-        \assert($classMetadata instanceof SerializerClassMetadata);
 
         if (null === $classMetadata) {
             return null;
         }
+
+        \assert($classMetadata instanceof SerializerClassMetadata);
 
         foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
             \assert($propertyMetadata instanceof PropertyMetadata);

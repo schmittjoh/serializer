@@ -16,7 +16,7 @@ class RuntimeException extends \RuntimeException implements Exception
         return new RuntimeException(sprintf(
             'You must define a type for %s::$%s.',
             $class,
-            $prop
+            $prop,
         ));
     }
 }

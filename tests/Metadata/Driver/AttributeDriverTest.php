@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
+use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
 
-class AttributeDriverTest extends AnnotationDriverTest
+class AttributeDriverTest extends BaseAnnotationOrAttributeDriverTestCase
 {
     protected function setUp(): void
     {
@@ -23,8 +23,11 @@ class AttributeDriverTest extends AnnotationDriverTest
 
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
-        $annotationsReader = new AttributeDriver\AttributeReader(new AnnotationReader());
+        $namingStrategy = new IdenticalPropertyNamingStrategy();
 
-        return new AnnotationDriver($annotationsReader, new IdenticalPropertyNamingStrategy(), null, $this->getExpressionEvaluator());
+        return new DriverChain([
+            new AttributeDriver($namingStrategy, null, $this->getExpressionEvaluator()),
+            new NullDriver($namingStrategy),
+        ]);
     }
 }

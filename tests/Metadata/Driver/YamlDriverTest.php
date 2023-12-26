@@ -13,12 +13,21 @@ use JMS\Serializer\Tests\Fixtures\Person;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
-class YamlDriverTest extends BaseDriverTest
+class YamlDriverTest extends BaseDriverTestCase
 {
     public function testAccessorOrderIsInferred(): void
     {
         $m = $this->getDriver('accessor_inferred')->loadMetadataForClass(new \ReflectionClass(Person::class));
         self::assertEquals(['age', 'name'], array_keys($m->propertyMetadata));
+    }
+
+    public function testConstantIsParsed(): void
+    {
+        $m = $this->getDriver('const')->loadMetadataForClass(new \ReflectionClass(Person::class));
+
+        self::assertArrayHasKey('name', $m->propertyMetadata);
+        self::assertNotNull($m->propertyMetadata['name']->serializedName ?? null);
+        self::assertEquals(Person::ALTERNATE_SERIALIZED_NAME, $m->propertyMetadata['name']->serializedName);
     }
 
     public function testShortExposeSyntax(): void
@@ -99,10 +108,13 @@ class YamlDriverTest extends BaseDriverTest
                 BlogPost::class,
                 Person::class,
             ],
-            $classNames
+            $classNames,
         );
     }
 
+    /**
+     * @return YamlDriver
+     */
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
         $dirs = [

@@ -44,7 +44,7 @@ final class XmlSerializationVisitorFactory implements SerializationVisitorFactor
             $this->defaultEncoding,
             $this->defaultVersion,
             $this->defaultRootName,
-            $this->defaultRootNamespace
+            $this->defaultRootNamespace,
         );
     }
 

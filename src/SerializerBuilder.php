@@ -23,6 +23,7 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
+use JMS\Serializer\EventDispatcher\Subscriber\EnumSubscriber;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
@@ -32,6 +33,7 @@ use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\GraphNavigator\Factory\SerializationGraphNavigatorFactory;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\DateHandler;
+use JMS\Serializer\Handler\EnumHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
@@ -86,6 +88,11 @@ final class SerializerBuilder
     /**
      * @var bool
      */
+    private $enableEnumSupport = false;
+
+    /**
+     * @var bool
+     */
     private $listenersConfigured = false;
 
     /**
@@ -129,7 +136,7 @@ final class SerializerBuilder
     private $cacheDir;
 
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $annotationReader;
 
@@ -272,6 +279,10 @@ final class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
 
+        if ($this->enableEnumSupport) {
+            $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
+        }
+
         return $this;
     }
 
@@ -287,6 +298,9 @@ final class SerializerBuilder
     {
         $this->listenersConfigured = true;
         $this->eventDispatcher->addSubscriber(new DoctrineProxySubscriber());
+        if ($this->enableEnumSupport) {
+            $this->eventDispatcher->addSubscriber(new EnumSubscriber());
+        }
 
         return $this;
     }
@@ -483,7 +497,7 @@ final class SerializerBuilder
             $this->serializationContextFactory = $serializationContextFactory;
         } elseif (is_callable($serializationContextFactory)) {
             $this->serializationContextFactory = new CallableSerializationContextFactory(
-                $serializationContextFactory
+                $serializationContextFactory,
             );
         } else {
             throw new InvalidArgumentException('expected SerializationContextFactoryInterface or callable.');
@@ -501,11 +515,22 @@ final class SerializerBuilder
             $this->deserializationContextFactory = $deserializationContextFactory;
         } elseif (is_callable($deserializationContextFactory)) {
             $this->deserializationContextFactory = new CallableDeserializationContextFactory(
-                $deserializationContextFactory
+                $deserializationContextFactory,
             );
         } else {
             throw new InvalidArgumentException('expected DeserializationContextFactoryInterface or callable.');
         }
+
+        return $this;
+    }
+
+    public function enableEnumSupport(bool $enableEnumSupport = true): self
+    {
+        if ($enableEnumSupport && PHP_VERSION_ID < 80100) {
+            throw new InvalidArgumentException('Enum support can be enabled only on PHP 8.1 or higher.');
+        }
+
+        $this->enableEnumSupport = $enableEnumSupport;
 
         return $this;
     }
@@ -537,8 +562,9 @@ final class SerializerBuilder
             $this->driverFactory = new DefaultDriverFactory(
                 $this->propertyNamingStrategy,
                 $this->typeParser,
-                $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null
+                $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null,
             );
+            $this->driverFactory->enableEnumSupport($this->enableEnumSupport);
         }
 
         if ($this->docBlockTyperResolver) {
@@ -585,7 +611,7 @@ final class SerializerBuilder
             $this->deserializationVisitors,
             $this->serializationContextFactory,
             $this->deserializationContextFactory,
-            $this->typeParser
+            $this->typeParser,
         );
     }
 
@@ -596,7 +622,7 @@ final class SerializerBuilder
             $this->handlerRegistry,
             $this->getAccessorStrategy(),
             $this->eventDispatcher,
-            $this->expressionEvaluator
+            $this->expressionEvaluator,
         );
     }
 
@@ -608,7 +634,7 @@ final class SerializerBuilder
             $this->objectConstructor ?: new UnserializeObjectConstructor(),
             $this->getAccessorStrategy(),
             $this->eventDispatcher,
-            $this->expressionEvaluator
+            $this->expressionEvaluator,
         );
     }
 
@@ -639,7 +665,7 @@ final class SerializerBuilder
             if (class_exists(FilesystemAdapter::class)) {
                 $annotationsCache = new FilesystemAdapter('', 0, $this->cacheDir . '/annotations');
                 $annotationReader = new PsrCachedReader($annotationReader, $annotationsCache, $this->debug);
-            } else {
+            } elseif (class_exists(FilesystemCache::class) && class_exists(CachedReader::class)) {
                 $annotationsCache = new FilesystemCache($this->cacheDir . '/annotations');
                 $annotationReader = new CachedReader($annotationReader, $annotationsCache, $this->debug);
             }

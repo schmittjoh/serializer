@@ -19,6 +19,7 @@ class SimpleInternalObject extends \Exception
     public function __construct($foo, $bar)
     {
         parent::__construct($foo);
+
         $this->bar = $bar;
     }
 }

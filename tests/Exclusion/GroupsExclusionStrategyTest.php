@@ -27,7 +27,7 @@ class GroupsExclusionStrategyTest extends TestCase
         self::assertEquals($strat->shouldSkipProperty($metadata, SerializationContext::create()), $exclude);
     }
 
-    public function getExclusionRules()
+    public static function getExclusionRules()
     {
         return [
             [['foo'], ['foo'], false],
@@ -71,7 +71,7 @@ class GroupsExclusionStrategyTest extends TestCase
         self::assertEquals($groupsFor, $resultingGroups);
     }
 
-    public function getGroupsFor()
+    public static function getGroupsFor()
     {
         return [
             [['foo'], ['prop'], ['foo']],

@@ -11,7 +11,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 
-class XmlDriverTest extends BaseDriverTest
+class XmlDriverTest extends BaseDriverTestCase
 {
     public function testInvalidXml()
     {
@@ -91,6 +91,9 @@ class XmlDriverTest extends BaseDriverTest
         self::assertContains('second.test.group', $first->propertyMetadata['currency']->groups);
     }
 
+    /**
+     * @return XmlDriver
+     */
     protected function getDriver(?string $subDir = null, bool $addUnderscoreDir = true): DriverInterface
     {
         $dirs = [

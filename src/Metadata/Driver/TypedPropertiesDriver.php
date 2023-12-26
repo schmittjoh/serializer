@@ -15,7 +15,10 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
 
 class TypedPropertiesDriver implements DriverInterface
 {
@@ -32,16 +35,16 @@ class TypedPropertiesDriver implements DriverInterface
     /**
      * @var string[]
      */
-    private $whiteList;
+    private $allowList;
 
     /**
-     * @param string[] $whiteList
+     * @param string[] $allowList
      */
-    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $whiteList = [])
+    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $allowList = [])
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
-        $this->whiteList = array_merge($whiteList, $this->getDefaultWhiteList());
+        $this->allowList = array_merge($allowList, $this->getDefaultWhiteList());
     }
 
     private function getDefaultWhiteList(): array
@@ -58,27 +61,32 @@ class TypedPropertiesDriver implements DriverInterface
         ];
     }
 
+    /**
+     * @return SerializerClassMetadata|null
+     */
     public function loadMetadataForClass(ReflectionClass $class): ?ClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
-        \assert($classMetadata instanceof SerializerClassMetadata);
 
         if (null === $classMetadata) {
             return null;
         }
 
+        \assert($classMetadata instanceof SerializerClassMetadata);
+
         // We base our scan on the internal driver's property list so that we
-        // respect any internal white/blacklisting like in the AnnotationDriver
-        foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
+        // respect any internal allow/blocklist like in the AnnotationDriver
+        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
-            if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {
+            if ($propertyMetadata->type) {
                 continue;
             }
 
             try {
-                $propertyReflection = $this->getReflection($propertyMetadata);
-                if ($this->shouldTypeHint($propertyReflection)) {
-                    $type = $propertyReflection->getType()->getName();
+                $reflectionType = $this->getReflectionType($propertyMetadata);
+
+                if ($this->shouldTypeHint($reflectionType)) {
+                    $type = $reflectionType->getName();
 
                     $propertyMetadata->setType($this->typeParser->parse($type));
                 }
@@ -90,30 +98,37 @@ class TypedPropertiesDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function isVirtualProperty(PropertyMetadata $propertyMetadata): bool
+    private function getReflectionType(PropertyMetadata $propertyMetadata): ?ReflectionType
     {
-        return $propertyMetadata instanceof VirtualPropertyMetadata
-            || $propertyMetadata instanceof StaticPropertyMetadata
+        if ($this->isNotSupportedVirtualProperty($propertyMetadata)) {
+            return null;
+        }
+
+        if ($propertyMetadata instanceof VirtualPropertyMetadata) {
+            return (new ReflectionMethod($propertyMetadata->class, $propertyMetadata->getter))
+                ->getReturnType();
+        }
+
+        return (new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name))
+            ->getType();
+    }
+
+    private function isNotSupportedVirtualProperty(PropertyMetadata $propertyMetadata): bool
+    {
+        return $propertyMetadata instanceof StaticPropertyMetadata
             || $propertyMetadata instanceof ExpressionPropertyMetadata;
     }
 
-    private function getReflection(PropertyMetadata $propertyMetadata): ReflectionProperty
+    /**
+     * @phpstan-assert-if-true \ReflectionNamedType $reflectionType
+     */
+    private function shouldTypeHint(?ReflectionType $reflectionType): bool
     {
-        return new ReflectionProperty($propertyMetadata->class, $propertyMetadata->name);
-    }
-
-    private function shouldTypeHint(ReflectionProperty $propertyReflection): bool
-    {
-        $reflectionType = $propertyReflection->getType();
-        if (null === $reflectionType) {
+        if (!$reflectionType instanceof ReflectionNamedType) {
             return false;
         }
 
-        if (PHP_VERSION_ID >= 80000 && $reflectionType instanceof \ReflectionUnionType) {
-            return false;
-        }
-
-        if (in_array($reflectionType->getName(), $this->whiteList, true)) {
+        if (in_array($reflectionType->getName(), $this->allowList, true)) {
             return true;
         }
 

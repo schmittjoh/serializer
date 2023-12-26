@@ -9,6 +9,7 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ConstructorPromotion\DefaultValuesAndAccessors;
 use PHPUnit\Framework\TestCase;
 
 class ArrayTest extends TestCase
@@ -43,14 +44,14 @@ class ArrayTest extends TestCase
         $this->expectExceptionMessage(sprintf(
             'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
             gettype($input),
-            gettype($input)
+            gettype($input),
         ));
         $result = $this->serializer->toArray($input);
 
         self::assertEquals([$input], $result);
     }
 
-    public function scalarValues()
+    public static function scalarValues()
     {
         return [
             [42],
@@ -86,5 +87,22 @@ class ArrayTest extends TestCase
 
         $result = $this->serializer->toArray($list);
         self::assertSame(['authors' => [[]]], $result);
+    }
+
+    public function testConstructorPromotionWithDefaultValuesOnly()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        $deserialized = $this->serializer->fromArray([], DefaultValuesAndAccessors::class);
+
+        $expected = [
+            'traditional_with_setter' => 'default',
+            'traditional' => 'default',
+            'promoted' => 'default',
+            'promoted_with_setter' => 'default',
+        ];
+        $this->assertEquals($expected, $this->serializer->toArray($deserialized));
     }
 }

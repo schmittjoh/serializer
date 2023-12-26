@@ -16,7 +16,7 @@ use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-class EventDispatcherTest extends TestCase
+class EventDispatcherTestCase extends TestCase
 {
     /**
      * @var EventDispatcher
@@ -220,6 +220,12 @@ class MockSubscriber implements EventSubscriberInterface
     }
 }
 
+/**
+ * @method bar(...$args)
+ * @method all(...$args)
+ * @method foo(...$args)
+ * @method onlyProxy(...$args)
+ */
 class MockListener
 {
     private $expected = [];

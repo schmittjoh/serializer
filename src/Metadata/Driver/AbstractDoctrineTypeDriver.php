@@ -83,6 +83,11 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class): ?BaseClassMetadata
     {
         $classMetadata = $this->delegate->loadMetadataForClass($class);
+
+        if (null === $classMetadata) {
+            return null;
+        }
+
         \assert($classMetadata instanceof ClassMetadata);
 
         // Abort if the given class is not a mapped entity
@@ -93,7 +98,7 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         $this->setDiscriminator($doctrineMetadata, $classMetadata);
 
         // We base our scan on the internal driver's property list so that we
-        // respect any internal white/blacklisting like in the AnnotationDriver
+        // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $key => $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type || $this->isVirtualProperty($propertyMetadata)) {

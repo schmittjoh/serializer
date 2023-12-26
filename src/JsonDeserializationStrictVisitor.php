@@ -29,6 +29,7 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
     public function setNavigator(GraphNavigatorInterface $navigator): void
     {
         parent::setNavigator($navigator);
+
         $this->wrappedDeserializationVisitor->setNavigator($navigator);
     }
 

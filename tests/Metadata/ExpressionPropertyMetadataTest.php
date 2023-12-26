@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Metadata;
 
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 
-class ExpressionPropertyMetadataTest extends AbstractPropertyMetadataTest
+class ExpressionPropertyMetadataTest extends AbstractPropertyMetadataTestCase
 {
     public function testSerialization()
     {

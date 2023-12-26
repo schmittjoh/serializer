@@ -104,6 +104,7 @@ final class SerializationGraphNavigator extends GraphNavigator
         assert($context instanceof SerializationContext);
 
         parent::initialize($visitor, $context);
+
         $this->shouldSerializeNull = $context->shouldSerializeNull();
     }
 

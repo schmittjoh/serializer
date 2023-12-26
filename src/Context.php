@@ -40,11 +40,11 @@ abstract class Context
     private $navigator;
 
     /**
-     * @var MetadataFactory
+     * @var MetadataFactoryInterface
      */
     private $metadataFactory;
 
-    /** @var DisjunctExclusionStrategy */
+    /** @var ExclusionStrategyInterface */
     private $exclusionStrategy;
 
     /**
@@ -284,4 +284,9 @@ abstract class Context
     abstract public function getDepth(): int;
 
     abstract public function getDirection(): int;
+
+    public function close(): void
+    {
+        unset($this->visitor, $this->navigator);
+    }
 }

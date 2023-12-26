@@ -31,7 +31,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
     private $factory;
 
     /**
-     * @var TypeParser
+     * @var ParserInterface
      */
     private $typeParser;
 
@@ -119,8 +119,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new RuntimeException(
                 sprintf(
                     'Can not find a graph navigator for the direction "%s".',
-                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization'
-                )
+                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization',
+                ),
             );
         }
 
@@ -138,8 +138,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
                 sprintf(
                     'The format "%s" is not supported for %s.',
                     $format,
-                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization'
-                )
+                    GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization',
+                ),
             );
         }
 
@@ -162,6 +162,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
 
+        $context->close();
+
         return $visitor->getResult($result);
     }
 
@@ -178,6 +180,8 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
 
         $result = $this->visit($navigator, $visitor, $context, $data, $format, $type);
+
+        $context->close();
 
         return $visitor->getResult($result);
     }
@@ -202,7 +206,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             throw new RuntimeException(sprintf(
                 'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
                 \is_object($data) ? \get_class($data) : \gettype($data),
-                \is_object($result) ? \get_class($result) : \gettype($result)
+                \is_object($result) ? \get_class($result) : \gettype($result),
             ));
         }
 
@@ -235,7 +239,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
             $format,
             $visitor,
             $navigator,
-            $this->factory
+            $this->factory,
         );
 
         $visitor->setNavigator($navigator);

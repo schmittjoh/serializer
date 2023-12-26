@@ -26,14 +26,14 @@ class ParserTest extends TestCase
     {
         self::assertSame(
             $expectedType,
-            $this->parser->parse($sourceType)
+            $this->parser->parse($sourceType),
         );
     }
 
     /**
      * @return mixed[][]
      */
-    public function validTypesProvider(): iterable
+    public static function validTypesProvider(): iterable
     {
         $type = static function (string $name, array $params = []): array {
             return ['name' => $name, 'params' => $params];
@@ -155,7 +155,7 @@ class ParserTest extends TestCase
         $this->parser->parse($value);
     }
 
-    public function wrongSyntax()
+    public static function wrongSyntax()
     {
         return [
             ['Foo<\Bar>]'],

@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher;
 
 use Psr\Container\ContainerInterface;
 
-class LazyEventDispatcherWithPsr11ContainerTest extends LazyEventDispatcherTest
+class LazyEventDispatcherWithPsr11ContainerTest extends LazyEventDispatcherTestCase
 {
     protected function createContainer()
     {
@@ -28,7 +28,7 @@ class Psr11Container implements ContainerInterface
         return $this->services[$id];
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return isset($this->services[$id]);
     }

@@ -9,7 +9,7 @@ namespace JMS\Serializer\Annotation;
  * @Target({"PROPERTY", "CLASS", "METHOD", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD)]
-final class Exclude
+final class Exclude implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 

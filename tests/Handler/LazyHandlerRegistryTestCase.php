@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Handler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\LazyHandlerRegistry;
 
-abstract class LazyHandlerRegistryTest extends HandlerRegistryTest
+abstract class LazyHandlerRegistryTestCase extends HandlerRegistryTest
 {
     protected $container;
 

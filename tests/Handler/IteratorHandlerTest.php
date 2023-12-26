@@ -22,7 +22,7 @@ final class IteratorHandlerTest extends TestCase
      */
     private $handlerRegistry;
 
-    public function iteratorsProvider(): array
+    public static function iteratorsProvider(): array
     {
         return [
             [
@@ -46,7 +46,7 @@ final class IteratorHandlerTest extends TestCase
         $serializationHandler = $this->handlerRegistry->getHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             $type,
-            'json'
+            'json',
         );
         self::assertIsCallable($serializationHandler);
 
@@ -54,14 +54,14 @@ final class IteratorHandlerTest extends TestCase
             $this->createSerializationVisitor(),
             $iterator,
             ['name' => $type, 'params' => []],
-            $this->getMockBuilder(SerializationContext::class)->getMock()
+            $this->getMockBuilder(SerializationContext::class)->getMock(),
         );
         self::assertSame(self::DATA, $serialized);
 
         $deserializationHandler = $this->handlerRegistry->getHandler(
             GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
             $type,
-            'json'
+            'json',
         );
         self::assertIsCallable($deserializationHandler);
 
@@ -69,7 +69,7 @@ final class IteratorHandlerTest extends TestCase
             $this->createDeserializationVisitor(),
             $serialized,
             ['name' => $type, 'params' => []],
-            $this->getMockBuilder(DeserializationContext::class)->getMock()
+            $this->getMockBuilder(DeserializationContext::class)->getMock(),
         );
         self::assertEquals($iterator, $deserialized);
     }

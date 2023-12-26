@@ -27,6 +27,9 @@ final class XmlDeserializationVisitorFactory implements DeserializationVisitorFa
      */
     private $options = 0;
 
+    /**
+     * @return XmlDeserializationVisitor
+     */
     public function getVisitor(): DeserializationVisitorInterface
     {
         return new XmlDeserializationVisitor($this->disableExternalEntities, $this->doctypeWhitelist, $this->options);

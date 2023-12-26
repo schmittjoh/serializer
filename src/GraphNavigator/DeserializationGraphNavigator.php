@@ -222,6 +222,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         $this->accessor->setValue($object, $v, $contextSpecificMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                         if (true === $contextSpecificMetadata->hasDefault) {
+                            $contextSpecificMetadata->setter = null;
                             $this->accessor->setValue($object, $contextSpecificMetadata->defaultValue, $contextSpecificMetadata, $this->context);
                         }
                     }
@@ -248,7 +249,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
                 $metadata->name,
-                implode(', ', array_keys($metadata->discriminatorMap))
+                implode(', ', array_keys($metadata->discriminatorMap)),
             ));
         }
 

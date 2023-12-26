@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\Handler\FormErrorHandler;
-use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -34,7 +34,7 @@ class FormErrorHandlerTest extends TestCase
     protected $handler;
 
     /**
-     * @var JsonSerializationVisitor
+     * @var SerializationVisitorInterface
      */
     protected $visitor;
 
@@ -54,14 +54,6 @@ class FormErrorHandlerTest extends TestCase
         $this->visitor = (new JsonSerializationVisitorFactory())->getVisitor();
         $this->dispatcher = new EventDispatcher();
         $this->factory = $this->getMockBuilder(FormFactoryInterface::class)->getMock();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->handler = null;
-        $this->visitor = null;
-        $this->dispatcher = null;
-        $this->factory = null;
     }
 
     public function testSerializeEmptyFormError()
@@ -158,7 +150,7 @@ class FormErrorHandlerTest extends TestCase
             ->with(
                 $this->equalTo('error!'),
                 $this->equalTo([]),
-                $this->equalTo('validators')
+                $this->equalTo('validators'),
             );
 
         $formError = $this->getMockBuilder('Symfony\Component\Form\FormError')->disableOriginalConstructor()->getMock();
@@ -185,7 +177,7 @@ class FormErrorHandlerTest extends TestCase
                 ->with(
                     $this->equalTo('error!'),
                     $this->equalTo(['%count%' => 0]),
-                    $this->equalTo('validators')
+                    $this->equalTo('validators'),
                 );
         } else {
             $translator->expects($this->once())
@@ -194,7 +186,7 @@ class FormErrorHandlerTest extends TestCase
                     $this->equalTo('error!'),
                     $this->equalTo(0),
                     $this->equalTo([]),
-                    $this->equalTo('validators')
+                    $this->equalTo('validators'),
                 );
         }
 
@@ -221,7 +213,7 @@ class FormErrorHandlerTest extends TestCase
             ->with(
                 $this->equalTo('error!'),
                 $this->equalTo([]),
-                $this->equalTo('custom_domain')
+                $this->equalTo('custom_domain'),
             );
 
         $formError = $this->getMockBuilder('Symfony\Component\Form\FormError')->disableOriginalConstructor()->getMock();
@@ -249,7 +241,7 @@ class FormErrorHandlerTest extends TestCase
                 ->with(
                     $this->equalTo('error!'),
                     $this->equalTo(['%count%' => 0]),
-                    $this->equalTo('custom_domain')
+                    $this->equalTo('custom_domain'),
                 );
         } else {
             $translator->expects($this->once())
@@ -258,7 +250,7 @@ class FormErrorHandlerTest extends TestCase
                     $this->equalTo('error!'),
                     $this->equalTo(0),
                     $this->equalTo([]),
-                    $this->equalTo('custom_domain')
+                    $this->equalTo('custom_domain'),
                 );
         }
 

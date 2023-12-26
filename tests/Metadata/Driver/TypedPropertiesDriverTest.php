@@ -5,23 +5,16 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
-use Metadata\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class TypedPropertiesDriverTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', TypedPropertiesDriver::class));
-        }
-    }
-
     public function testInferPropertiesFromTypes()
     {
         $m = $this->resolve(User::class);
@@ -32,6 +25,7 @@ class TypedPropertiesDriverTest extends TestCase
             'vehicle' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Vehicle',
             'created' => 'DateTime',
             'tags' => 'iterable',
+            'virtualRole' => 'JMS\Serializer\Tests\Fixtures\TypedProperties\Role',
         ];
 
         foreach ($expectedPropertyTypes as $property => $type) {

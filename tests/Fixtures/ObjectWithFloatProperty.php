@@ -16,6 +16,13 @@ class ObjectWithFloatProperty
     private $floatingPointUnchanged;
 
     /**
+     * @Type("float<0>")
+     * @var float
+     */
+    #[Type(name: 'float<0>')]
+    private $floatingPointPrecisionZero;
+
+    /**
      * @Type("float<2,'HALF_DOWN'>")
      * @var float
      */
@@ -43,18 +50,47 @@ class ObjectWithFloatProperty
     #[Type(name: 'double<2, "HALF_UP">')]
     private $floatingPointHalfUp;
 
+    /**
+     * @Type("double<2,null,2>")
+     * @var float
+     */
+    #[Type(name: 'double<2, null, 2>')]
+    private $floatingPointFixedDecimals;
+
+    /**
+     * @Type("double<2,null,1>")
+     * @var float
+     */
+    #[Type(name: 'double<2, null, 1>')]
+    private $floatingPointFixedDecimalsLess;
+
+    /**
+     * @Type("double<2,null,3>")
+     * @var float
+     */
+    #[Type(name: 'double<2, null, 3>')]
+    private $floatingPointFixedDecimalsMore;
+
     public function __construct(
         float $floatingPointUnchanged,
+        float $floatingPointPrecisionZero,
         float $floatingPointHalfDown,
         float $floatingPointHalfEven,
         float $floatingPointHalfOdd,
-        float $floatingPointHalfUp
+        float $floatingPointHalfUp,
+        float $floatingPointFixedDecimals,
+        float $floatingPointFixedDecimalsLess,
+        float $floatingPointFixedDecimalsMore
     ) {
         $this->floatingPointUnchanged = $floatingPointUnchanged;
+        $this->floatingPointPrecisionZero = $floatingPointPrecisionZero;
         $this->floatingPointHalfDown = $floatingPointHalfDown;
         $this->floatingPointHalfEven = $floatingPointHalfEven;
         $this->floatingPointHalfOdd = $floatingPointHalfOdd;
         $this->floatingPointHalfUp = $floatingPointHalfUp;
+        $this->floatingPointFixedDecimals = $floatingPointFixedDecimals;
+        $this->floatingPointFixedDecimalsLess = $floatingPointFixedDecimalsLess;
+        $this->floatingPointFixedDecimalsMore = $floatingPointFixedDecimalsMore;
     }
 
     public function getFloatingPointUnchanged(): float
@@ -80,5 +116,20 @@ class ObjectWithFloatProperty
     public function getFloatingPointHalfUp(): float
     {
         return $this->floatingPointHalfUp;
+    }
+
+    public function getFloatingPointFixedDecimals(): float
+    {
+        return $this->floatingPointFixedDecimals;
+    }
+
+    public function getFloatingPointFixedDecimalsLess(): float
+    {
+        return $this->floatingPointFixedDecimalsLess;
+    }
+
+    public function getFloatingPointFixedDecimalsMore(): float
+    {
+        return $this->floatingPointFixedDecimalsMore;
     }
 }

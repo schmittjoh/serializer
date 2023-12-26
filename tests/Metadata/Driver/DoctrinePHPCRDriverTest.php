@@ -35,7 +35,7 @@ class DoctrinePHPCRDriverTest extends TestCase
         $metadata = $this->getMetadata();
         self::assertEquals(
             ['name' => 'DateTime', 'params' => []],
-            $metadata->propertyMetadata['createdAt']->type
+            $metadata->propertyMetadata['createdAt']->type,
         );
     }
 
@@ -44,7 +44,7 @@ class DoctrinePHPCRDriverTest extends TestCase
         $metadata = $this->getMetadata();
         self::assertEquals(
             ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => []],
-            $metadata->propertyMetadata['author']->type
+            $metadata->propertyMetadata['author']->type,
         );
     }
 
@@ -59,7 +59,7 @@ class DoctrinePHPCRDriverTest extends TestCase
                     ['name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => []],
                 ],
             ],
-            $metadata->propertyMetadata['comments']->type
+            $metadata->propertyMetadata['comments']->type,
         );
     }
 
@@ -70,7 +70,7 @@ class DoctrinePHPCRDriverTest extends TestCase
         // This would be guessed as boolean but we've overridden it to integer
         self::assertEquals(
             ['name' => 'integer', 'params' => []],
-            $metadata->propertyMetadata['published']->type
+            $metadata->propertyMetadata['published']->type,
         );
     }
 
@@ -97,7 +97,7 @@ class DoctrinePHPCRDriverTest extends TestCase
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
         $config->setMetadataDriverImpl(
-            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR')
+            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR'),
         );
 
         $session = $this->getMockBuilder('PHPCR\SessionInterface')->getMock();
@@ -119,7 +119,7 @@ class DoctrinePHPCRDriverTest extends TestCase
 
         return new DoctrinePHPCRTypeDriver(
             $this->getAnnotationDriver(),
-            $registry
+            $registry,
         );
     }
 }

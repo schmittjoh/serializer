@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\EventDispatcher\Subscriber;
 
-use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -31,7 +31,7 @@ final class SymfonyValidatorValidatorSubscriber implements EventSubscriberInterf
         ];
     }
 
-    public function onPostDeserialize(Event $event): void
+    public function onPostDeserialize(ObjectEvent $event): void
     {
         $context = $event->getContext();
 

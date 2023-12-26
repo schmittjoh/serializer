@@ -20,6 +20,9 @@ use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MethodMetadata;
 
+/**
+ * @method ClassMetadata|null loadMetadataForClass(\ReflectionClass $class)
+ */
 class XmlDriver extends AbstractFileDriver
 {
     use ExpressionMetadataTrait;
@@ -36,6 +39,7 @@ class XmlDriver extends AbstractFileDriver
     public function __construct(FileLocatorInterface $locator, PropertyNamingStrategyInterface $namingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         parent::__construct($locator);
+
         $this->typeParser = $typeParser ?? new Parser();
         $this->namingStrategy = $namingStrategy;
         $this->expressionEvaluator = $expressionEvaluator;
@@ -151,7 +155,7 @@ class XmlDriver extends AbstractFileDriver
                 $virtualPropertyMetadata = new ExpressionPropertyMetadata(
                     $name,
                     (string) $method->attributes()->name,
-                    $this->parseExpression((string) $method->attributes()->expression)
+                    $this->parseExpression((string) $method->attributes()->expression),
                 );
             } else {
                 if (!isset($method->attributes()->method)) {
@@ -322,7 +326,7 @@ class XmlDriver extends AbstractFileDriver
                     $pMetadata->setAccessor(
                         (string) ($pElem->attributes()->{'access-type'} ?: $classAccessType),
                         $getter ? (string) $getter : null,
-                        $setter ? (string) $setter : null
+                        $setter ? (string) $setter : null,
                     );
 
                     if (null !== $inline = $pElem->attributes()->inline) {

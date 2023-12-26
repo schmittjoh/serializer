@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Handler;
 
 use Symfony\Component\DependencyInjection\Container;
 
-class LazyHandlerRegistryWithSymfonyContainerTest extends LazyHandlerRegistryTest
+class LazyHandlerRegistryWithSymfonyContainerTest extends LazyHandlerRegistryTestCase
 {
     protected function createContainer()
     {

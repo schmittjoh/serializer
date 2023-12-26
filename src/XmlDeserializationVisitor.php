@@ -48,7 +48,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     /**
      * @var string[]
      */
-    private $doctypeWhitelist;
+    private $doctypeAllowList;
     /**
      * @var int
      */
@@ -56,14 +56,14 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
     public function __construct(
         bool $disableExternalEntities = true,
-        array $doctypeWhitelist = [],
+        array $doctypeAllowList = [],
         int $options = 0
     ) {
         $this->objectStack = new \SplStack();
         $this->metadataStack = new \SplStack();
         $this->objectMetadataStack = new \SplStack();
         $this->disableExternalEntities = $disableExternalEntities;
-        $this->doctypeWhitelist = $doctypeWhitelist;
+        $this->doctypeAllowList = $doctypeAllowList;
         $this->options = $options;
     }
 
@@ -85,10 +85,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
 
         if (false !== stripos($data, '<!doctype')) {
             $internalSubset = $this->getDomDocumentTypeEntitySubset($data);
-            if (!in_array($internalSubset, $this->doctypeWhitelist, true)) {
+            if (!in_array($internalSubset, $this->doctypeAllowList, true)) {
                 throw new InvalidArgumentException(sprintf(
-                    'The document type "%s" is not allowed. If it is safe, you may add it to the whitelist configuration.',
-                    $internalSubset
+                    'The document type "%s" is not allowed. If it is safe, you may add it to the allowlist configuration.',
+                    $internalSubset,
                 ));
             }
         }
@@ -288,7 +288,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw new LogicException(sprintf(
                     'The discriminator field name "%s" for base-class "%s" was not found in input data.',
                     $metadata->discriminatorFieldName,
-                    $metadata->name
+                    $metadata->name,
                 ));
         }
     }
@@ -449,6 +449,8 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function getResult($data)
     {
+        unset($this->navigator);
+
         return $data;
     }
 

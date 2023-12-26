@@ -7,10 +7,12 @@ namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /** @ORM\Entity */
+#[ORM\Entity]
 class SmartPhone
 {
     /**
@@ -21,7 +23,10 @@ class SmartPhone
      *
      * @var string
      */
+    #[Serializer\SerializedName(name: 'id')]
     #[Serializer\Type(name: 'string')]
+    #[ORM\Id]
+    #[ORM\Column(type: Types::STRING, name: 'id')]
     protected $id;
 
     /**
@@ -31,6 +36,7 @@ class SmartPhone
      * @var string
      */
     #[Serializer\Type(name: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private $name;
 
     /**
@@ -40,7 +46,9 @@ class SmartPhone
      *
      * @var ArrayCollection<int, App>
      */
+    #[Serializer\SerializedName(name: 'applications')]
     #[Serializer\Type(name: 'ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App>')]
+    #[ORM\OneToMany(targetEntity: App::class, mappedBy: 'smartPhone', cascade: ['persist'], orphanRemoval: true)]
     private $apps;
 
     /**

@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
@@ -14,15 +15,14 @@ use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
-use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-class JsonSerializationTest extends BaseSerializationTest
+class JsonSerializationTest extends BaseSerializationTestCase
 {
-    protected function getContent($key)
+    protected static function getContent($key)
     {
         static $outputs = [];
 
@@ -135,12 +135,15 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['user_discriminator_array'] = '[{"entityName":"User"},{"entityName":"ExtendedUser"}]';
             $outputs['user_discriminator'] = '{"entityName":"User"}';
             $outputs['user_discriminator_extended'] = '{"entityName":"ExtendedUser"}';
-            $outputs['typed_props'] = '{"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
-            $outputs['typed_props_constructor_promotion_with_default_values'] = '{"color":"blue","type_of_soil":"potting mix","days_since_potting":-1}';
-            $outputs['uninitialized_typed_props'] = '{"id":1,"role":{},"tags":[]}';
+            $outputs['typed_props'] = '{"virtual_role":{"id":5},"id":1,"role":{"id":5},"vehicle":{"type":"car"},"created":"2010-10-01T00:00:00+00:00","updated":"2011-10-01T00:00:00+00:00","tags":["a","b"]}';
+            $outputs['typed_props_constructor_promotion_with_default_values'] = '{"color":"blue","size":"big","type_of_soil":"potting mix","days_since_potting":-1,"weight":10}';
+            $outputs['uninitialized_typed_props'] = '{"virtual_role":{},"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
+            $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
+            $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
+            $outputs['object_with_enums_disabled'] = '{"ordinary_array_auto_detect":[{"name":"Clubs"},{"name":"Spades"}],"backed_array_auto_detect":[{"name":"Clubs","value":"C"},{"name":"Hearts","value":"H"}],"mixed_array_auto_detect":[{"name":"Clubs"},{"name":"Hearts","value":"H"}]}';
         }
 
         if (!isset($outputs[$key])) {
@@ -157,12 +160,12 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{}', $this->serialize($object));
     }
 
-    public function getFirstClassMapCollectionsValues()
+    public static function getFirstClassMapCollectionsValues()
     {
         return [
-            [['a' => '1', 'b' => '2', 'c' => '3'], $this->getContent('inline_map')],
-            [[], $this->getContent('inline_empty_map')],
-            [['a' => 'b', 'c' => 'd', 'e' => '5'], $this->getContent('inline_deserialization_map')],
+            [['a' => '1', 'b' => '2', 'c' => '3'], self::getContent('inline_map')],
+            [[], self::getContent('inline_empty_map')],
+            [['a' => 'b', 'c' => 'd', 'e' => '5'], self::getContent('inline_deserialization_map')],
         ];
     }
 
@@ -179,7 +182,7 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertSame($expected, $this->serialize($collection));
         self::assertEquals(
             $collection,
-            $this->deserialize($expected, get_class($collection))
+            $this->deserialize($expected, get_class($collection)),
         );
     }
 
@@ -201,7 +204,7 @@ class JsonSerializationTest extends BaseSerializationTest
             'json',
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
-            }
+            },
         );
 
         $list = new AuthorList();
@@ -220,7 +223,7 @@ class JsonSerializationTest extends BaseSerializationTest
             'json',
             static function (SerializationVisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type);
-            }
+            },
         );
 
         $list = new AuthorList();
@@ -232,7 +235,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testDeserializingObjectWithObjectPropertyWithNoArrayToObject()
     {
-        $content = $this->getContent('object_with_object_property_no_array_to_author');
+        $content = self::getContent('object_with_object_property_no_array_to_author');
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Invalid data "baz" (string), expected "JMS\Serializer\Tests\Fixtures\Author".');
@@ -242,14 +245,14 @@ class JsonSerializationTest extends BaseSerializationTest
 
     public function testDeserializingObjectWithObjectProperty()
     {
-        $content = $this->getContent('object_with_object_property');
+        $content = self::getContent('object_with_object_property');
         $object = $this->deserialize($content, 'JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty');
         self::assertEquals('bar', $object->getFoo());
         self::assertInstanceOf('JMS\Serializer\Tests\Fixtures\Author', $object->getAuthor());
         self::assertEquals('baz', $object->getAuthor()->getName());
     }
 
-    public function getPrimitiveTypes()
+    public static function getPrimitiveTypes()
     {
         return [
             [
@@ -356,7 +359,7 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals('{"0":{"full_name":"Jim"},"1":{"full_name":"Mark"}}', $this->serializer->serialize($data, $this->getFormat(), SerializationContext::create()->setInitialType('array<string,JMS\Serializer\Tests\Fixtures\Author>')));
     }
 
-    public function getTypeHintedArrays()
+    public static function getTypeHintedArrays()
     {
         return [
 
@@ -402,7 +405,7 @@ class JsonSerializationTest extends BaseSerializationTest
         self::assertEquals($expected, $this->serialize($array, $context));
     }
 
-    public function getTypeHintedArraysAndStdClass()
+    public static function getTypeHintedArraysAndStdClass()
     {
         $c1 = new \stdClass();
         $c2 = new \stdClass();
@@ -438,33 +441,9 @@ class JsonSerializationTest extends BaseSerializationTest
      *
      * @dataProvider getTypeHintedArraysAndStdClass
      */
-    public function testTypeHintedArrayAndStdClassSerialization(array $array, $expected, $context = null)
+    public function testTypeHintedArrayAncdtdClassSerialization(array $array, $expected, $context = null)
     {
         self::assertEquals($expected, $this->serialize($array, $context));
-    }
-
-    public function testSerialisationWithPercisionForFloat(): void
-    {
-        $objectWithFloat = new ObjectWithFloatProperty(
-            1.555555555,
-            1.555,
-            1.15,
-            1.15,
-            1.555
-        );
-
-        $result = $this->serialize($objectWithFloat, SerializationContext::create());
-
-        static::assertEquals(
-            '{'
-            . '"floating_point_unchanged":1.555555555,'
-            . '"floating_point_half_down":1.55,'
-            . '"floating_point_half_even":1.2,'
-            . '"floating_point_half_odd":1.1,'
-            . '"floating_point_half_up":1.56'
-            . '}',
-            $result
-        );
     }
 
     protected function getFormat()
@@ -475,7 +454,7 @@ class JsonSerializationTest extends BaseSerializationTest
 
 class LinkAddingSubscriber implements EventSubscriberInterface
 {
-    public function onPostSerialize(Event $event)
+    public function onPostSerialize(ObjectEvent $event)
     {
         $author = $event->getObject();
 

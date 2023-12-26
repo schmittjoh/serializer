@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Handler;
 
 use Psr\Container\ContainerInterface;
 
-class LazyHandlerRegistryWithPsr11ContainerTest extends LazyHandlerRegistryTest
+class LazyHandlerRegistryWithPsr11ContainerTest extends LazyHandlerRegistryTestCase
 {
     protected function createContainer()
     {
@@ -28,7 +28,7 @@ class Psr11Container implements ContainerInterface
         return $this->services[$id];
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return isset($this->services[$id]);
     }

@@ -1,0 +1,10 @@
+parameters:
+    excludePaths:
+        - %currentWorkingDirectory%/tests/Fixtures/Enum/*
+        - %currentWorkingDirectory%/tests/Handler/EnumHandlerTest.php
+        - %currentWorkingDirectory%/src/Handler/EnumHandler.php
+        - %currentWorkingDirectory%/src/EventDispatcher/Subscriber/EnumSubscriber.php
+        - %currentWorkingDirectory%/tests/Fixtures/ObjectWithEnums.php
+        - %currentWorkingDirectory%/tests/Fixtures/ObjectWithAutoDetectEnums.php
+    ignoreErrors:
+        - '~Call to an undefined method ReflectionEnum~'

@@ -15,6 +15,8 @@ use JMS\Serializer\Annotation\XmlValue;
 #[XmlRoot(name: 'child')]
 class Person
 {
+    public const ALTERNATE_SERIALIZED_NAME = 'personName';
+
     /**
      * @Type("string")
      * @XmlValue(cdata=false)
