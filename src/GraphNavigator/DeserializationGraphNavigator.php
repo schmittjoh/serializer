@@ -209,15 +209,21 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         continue;
                     }
 
-                    $this->context->pushPropertyMetadata($propertyMetadata);
+                    /** Metadata changes based on context, should not be cached  */
+                    $contextSpecificMetadata = $propertyMetadata;
+                    if (null !== $this->context->getPropertyNamingStrategy()) {
+                        $contextSpecificMetadata = clone $propertyMetadata;
+                        $contextSpecificMetadata->serializedName = $this->context->getPropertyNamingStrategy()->translateName($propertyMetadata);
+                    }
+
+                    $this->context->pushPropertyMetadata($contextSpecificMetadata);
                     try {
-                        $v = $this->visitor->visitProperty($propertyMetadata, $data);
-                        $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
+                        $v = $this->visitor->visitProperty($contextSpecificMetadata, $data);
+                        $this->accessor->setValue($object, $v, $contextSpecificMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
-                        if (true === $propertyMetadata->hasDefault) {
-                            $cloned = clone $propertyMetadata;
-                            $cloned->setter = null;
-                            $this->accessor->setValue($object, $cloned->defaultValue, $cloned, $this->context);
+                        if (true === $contextSpecificMetadata->hasDefault) {
+                            $contextSpecificMetadata->setter = null;
+                            $this->accessor->setValue($object, $contextSpecificMetadata->defaultValue, $contextSpecificMetadata, $this->context);
                         }
                     }
 

@@ -77,6 +77,43 @@ The serializer would expect the metadata files to be named like the fully qualif
 replaced with ``.``. So, if you class would be named ``Vendor\Package\Foo``, the metadata file would need to be located
 at ``$someDir/Vendor.Package.Foo.(xml|yml)``. If not found, ``$someDir/Vendor.Package.(xml|yml)`` will be tried, then ``$someDir/Vendor.Package.(xml|yml)`` and so on. For more information, see the :doc:`reference <reference>`.
 
+Context Strategy
+----------------------------------------------
+
+Context strategy allows you to change serialization configuration for specific serialization or deserialization.
+This allow you to deviate from default configuration.
+
+### Serializing null values::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer->serialize(
+        $object,
+        'json',
+        SerializationContext::create()->setSerializeNull(true)
+    )
+
+### Serializing with different property naming strategy::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer->serialize(
+        $object,
+        'json',
+        SerializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+    )
+
+### Deserializing with different property naming strategy::
+
+    use JMS\Serializer\SerializationContext;
+
+    $serializer->deserialize(
+        $jsonString,
+        Product:class,
+        'json',
+        DeserializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+    )
+
 Setting a default SerializationContext factory
 ----------------------------------------------
 To avoid to pass an instance of SerializationContext

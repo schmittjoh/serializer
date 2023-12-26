@@ -258,8 +258,15 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
+                    /** Metadata changes based on context, should not be cached  */
+                    $contextSpecificMetadata = $propertyMetadata;
+                    if (null !== $this->context->getPropertyNamingStrategy()) {
+                        $contextSpecificMetadata = clone $propertyMetadata;
+                        $contextSpecificMetadata->serializedName = $this->context->getPropertyNamingStrategy()->translateName($propertyMetadata);
+                    }
+
                     try {
-                        $v = $this->accessor->getValue($data, $propertyMetadata, $this->context);
+                        $v = $this->accessor->getValue($data, $contextSpecificMetadata, $this->context);
                     } catch (UninitializedPropertyException $e) {
                         continue;
                     }
@@ -268,8 +275,8 @@ final class SerializationGraphNavigator extends GraphNavigator
                         continue;
                     }
 
-                    $this->context->pushPropertyMetadata($propertyMetadata);
-                    $this->visitor->visitProperty($propertyMetadata, $v);
+                    $this->context->pushPropertyMetadata($contextSpecificMetadata);
+                    $this->visitor->visitProperty($contextSpecificMetadata, $v);
                     $this->context->popPropertyMetadata();
                 }
 
