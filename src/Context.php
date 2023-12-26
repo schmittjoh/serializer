@@ -14,7 +14,6 @@ use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
-use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 
 abstract class Context

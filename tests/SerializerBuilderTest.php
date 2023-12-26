@@ -251,13 +251,13 @@ class SerializerBuilderTest extends TestCase
         self::assertEquals($jsonWithUnderscores, $serializer->serialize(
             $object,
             'json',
-            SerializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+            SerializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy())),
         ));
         self::assertEquals($object, $serializer->deserialize(
             $jsonWithUnderscores,
             get_class($object),
             'json',
-            DeserializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+            DeserializationContext::create()->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy())),
         ));
     }
 
