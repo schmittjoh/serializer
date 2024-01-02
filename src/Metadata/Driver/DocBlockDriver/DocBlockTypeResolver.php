@@ -115,17 +115,13 @@ final class DocBlockTypeResolver
         // Generic array syntax: array<Product> | array<\Foo\Bar\Product> | array<int,Product>
         if ($type instanceof GenericTypeNode) {
             if ($this->isSimpleType($type->type, 'array')) {
-                $resolvedTypes = array_map(function (TypeNode $node) use ($reflector) {
-                    return $this->resolveTypeFromTypeNode($node, $reflector);
-                }, $type->genericTypes);
+                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
 
                 return 'array<' . implode(',', $resolvedTypes) . '>';
             }
 
             if ($this->isSimpleType($type->type, 'list')) {
-                $resolvedTypes = array_map(function (TypeNode $node) use ($reflector) {
-                    return $this->resolveTypeFromTypeNode($node, $reflector);
-                }, $type->genericTypes);
+                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
 
                 return 'array<int, ' . implode(',', $resolvedTypes) . '>';
             }
@@ -194,9 +190,7 @@ final class DocBlockTypeResolver
      */
     private function filterNullFromTypes(array $types): array
     {
-        return array_values(array_filter(array_map(function (TypeNode $node) {
-            return $this->isNullType($node) ? null : $node;
-        }, $types)));
+        return array_values(array_filter(array_map(fn (TypeNode $node) => $this->isNullType($node) ? null : $node, $types)));
     }
 
     /**
@@ -427,9 +421,7 @@ final class DocBlockTypeResolver
 
                     return sprintf('array<%s>', implode(
                         ',',
-                        array_map(static function (string $type) use ($reflector, $self) {
-                            return $self->resolveType(trim($type), $reflector);
-                        }, $types),
+                        array_map(static fn (string $type) => $self->resolveType(trim($type), $reflector), $types),
                     ));
                 }
             }

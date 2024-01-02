@@ -318,9 +318,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
-            $namespace = null !== $metadata->xmlNamespace
-                ? $metadata->xmlNamespace
-                : $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+            $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
 
             $element = $this->createElement($metadata->serializedName, $namespace);
             $this->currentNode->appendChild($element);
