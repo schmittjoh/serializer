@@ -85,9 +85,7 @@ class AttributeReader implements Reader
     private function buildAnnotations(array $attributes): array
     {
         return array_map(
-            static function (\ReflectionAttribute $attribute): object {
-                return $attribute->newInstance();
-            },
+            static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
             $attributes,
         );
     }
