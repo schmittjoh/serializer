@@ -22,6 +22,8 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
      */
     private $nestedGroups = false;
 
+    private $inheritedGroups = false;
+
     public function __construct(array $groups)
     {
         if (empty($groups)) {
@@ -42,6 +44,13 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
                 $this->groups[$group] = true;
             }
         }
+    }
+
+    public function setInheritedGroups(bool $inheritedGroups): self
+    {
+        $this->inheritedGroups = $inheritedGroups;
+
+        return $this;
     }
 
     public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
@@ -96,7 +105,7 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         foreach ($paths as $index => $path) {
             if (!array_key_exists($path, $groups)) {
                 if ($index > 0) {
-                    $groups = [self::DEFAULT_GROUP];
+                    $groups = $this->inheritedGroups ? $groups : [self::DEFAULT_GROUP];
                 } else {
                     $groups = array_filter($groups, 'is_string') ?: [self::DEFAULT_GROUP];
                 }

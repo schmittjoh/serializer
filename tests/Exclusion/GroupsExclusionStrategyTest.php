@@ -57,7 +57,7 @@ class GroupsExclusionStrategyTest extends TestCase
     /**
      * @dataProvider getGroupsFor
      */
-    public function testGroupsFor(array $groups, array $propsVisited, array $resultingGroups)
+    public function testGroupsFor(array $groups, array $propsVisited, bool $inheritGroups, array $resultingGroups)
     {
         $exclusion = new GroupsExclusionStrategy($groups);
         $context = SerializationContext::create();
@@ -67,6 +67,7 @@ class GroupsExclusionStrategyTest extends TestCase
             $context->pushPropertyMetadata($metadata);
         }
 
+        $exclusion->setInheritedGroups($inheritGroups);
         $groupsFor = $exclusion->getGroupsFor($context);
         self::assertEquals($groupsFor, $resultingGroups);
     }
@@ -74,20 +75,26 @@ class GroupsExclusionStrategyTest extends TestCase
     public static function getGroupsFor()
     {
         return [
-            [['foo'], ['prop'], ['foo']],
-            [[], ['prop'], ['Default']],
+            [['foo'], ['prop'], false, ['foo']],
+            [[], ['prop'], false, ['Default']],
 
-            [['foo', 'prop' => ['bar']], ['prop'], ['bar']],
-            [['foo', 'prop' => ['bar']], ['prop2'], ['foo']],
+            [['foo', 'prop' => ['bar']], ['prop'], false, ['bar']],
+            [['foo', 'prop' => ['bar']], ['prop2'], false, ['foo']],
 
-            [['prop' => ['bar']],['prop2'],['Default']],
+            [['prop' => ['bar']],['prop2'], false, ['Default']],
 
-            [['foo', 'prop' => ['bar']], ['prop', 'prop2'], ['Default']],
+            [['foo', 'prop' => ['bar']], ['prop', 'prop2'], false, ['Default']],
 
-            [['foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], ['Default']],
-            [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], ['def', 'prop3' => ['def']]],
+            [['foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], false, ['Default']],
+            [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], false, ['def', 'prop3' => ['def']]],
 
-            [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], ['Default', 'prop3' => ['def']]],
+            [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], false, ['Default', 'prop3' => ['def']]],
+
+            [['foo'], ['prop'], true, ['foo']],
+            [[], ['prop'], true, ['Default']],
+            [['foo', 'prop' => ['xx', 'prop2' => ['def'], 'prop3' => ['def']]], ['prop', 'prop2', 'propB'], true, ['def']],
+            [['foo', 'prop' => ['xx', 'prop2' => ['def', 'prop3' => ['def']]]], ['prop', 'prop2'], true, ['def', 'prop3' => ['def']]],
+            [['foo', 'prop' => ['prop2' => ['prop3' => ['def']]]], ['prop', 'prop2'], true, ['Default', 'prop3' => ['def']]],
         ];
     }
 }

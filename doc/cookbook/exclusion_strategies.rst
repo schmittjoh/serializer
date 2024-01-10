@@ -224,6 +224,51 @@ This would result in the following json::
         ]
     }
 
+You can, also take inherited groups::
+
+    use JMS\Serializer\SerializationContext;
+
+    $context = SerializationContext::create()->setGroups(array(
+        'Default', // Serialize John's name
+        'manager_group', // Serialize John's manager
+        'friends_group', // Serialize John's friends
+
+        'manager' => array( // Override the groups for the manager of John
+            'Default', // Serialize John manager's name
+            'friends_group', // Serialize John manager's friends. If you do not override the groups for the friends, it will default to Default.
+        ),
+    ));
+    $context->enableInheritGroups();
+    $serializer->serialize($john, 'json', $context);
+
+This would result in the following json::
+
+    {
+        "name": "John",
+        "manager": {
+            "name": "John Manager",
+            "friends": [
+                {
+                    "name": "John Manager friend 1"
+                }
+            ]
+        },
+        "friends": [
+            {
+                "name": "John friend 1",
+                "manager": {
+                    "name": "John friend 1 manager"
+                },
+            },
+            {
+                "name": "John friend 2",
+                "manager": {
+                    "name": "John friend 2 manager"
+                },
+            },
+        ]
+    }
+
 Deserialization Exclusion Strategy with Groups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can use ``@Groups`` to cut off unwanted properties while deserialization.
@@ -345,7 +390,7 @@ This also works on class level, but is only evaluated during ``serialze`` and do
 
     ``true`` is just a generic expression, you can use any expression allowed by the Symfony Expression Language
 
-To enable this feature you have to set the Expression Evaluator when initializing the serializer. 
+To enable this feature you have to set the Expression Evaluator when initializing the serializer.
 
 .. code-block :: php
 
@@ -353,7 +398,7 @@ To enable this feature you have to set the Expression Evaluator when initializin
     use JMS\Serializer\Expression\ExpressionEvaluator;
     use JMS\Serializer\Expression\SerializerBuilder;
     use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-    
+
     $serializer = SerializerBuilder::create()
         ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()))
         ->build();
