@@ -2,7 +2,13 @@
     "name": "jms/serializer",
     "type": "library",
     "description": "Library for (de-)serializing data of any complexity; supports XML, and JSON.",
-    "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
+    "keywords": [
+        "serialization",
+        "deserialization",
+        "json",
+        "jaxb",
+        "xml"
+    ],
     "homepage": "http://jmsyst.com/libs/serializer",
     "license": "MIT",
     "authors": [
@@ -41,7 +47,7 @@
         "phpstan/phpstan": "^1.0.2",
         "phpunit/phpunit": "^9.0 || ^10.0",
         "psr/container": "^1.0 || ^2.0",
-        "rector/rector": "^0.18.13",
+        "rector/rector": "^0.19.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/expression-language": "^5.4 || ^6.0 || ^7.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",
@@ -73,6 +79,5 @@
         "branch-alias": {
             "dev-master": "3.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
