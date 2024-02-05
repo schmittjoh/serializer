@@ -47,7 +47,7 @@
         "phpstan/phpstan": "^1.0.2",
         "phpunit/phpunit": "^9.0 || ^10.0",
         "psr/container": "^1.0 || ^2.0",
-        "rector/rector": "^0.18.13",
+        "rector/rector": "^0.19.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/expression-language": "^5.4 || ^6.0 || ^7.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",
