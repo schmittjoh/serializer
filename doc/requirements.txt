@@ -3,3 +3,4 @@ git+https://github.com/fabpot/sphinx-php.git
 sphinx_rtd_theme
 Jinja2<3.0
 MarkupSafe<2.1
+alabaster<0.7.14
