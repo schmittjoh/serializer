@@ -387,8 +387,10 @@ Available Types:
 |                                                            | Examples: array<string, string>,                 |
 |                                                            | array<string, MyNamespace\MyObject>, etc.        |
 +------------------------------------------------------------+--------------------------------------------------+
-| enum<'Color'>                                              | Enum of type Color, use its case names           |
-|                                                            | for serialization and deserialization.           |
+| enum<'Color'>                                              | Enum of type Color, use its case values          |
+|                                                            | for serialization and deserialization            |
+|                                                            | if the enum is a backed enum,                    |
+|                                                            | use its case names if it is not a backed enum.   |
 +------------------------------------------------------------+--------------------------------------------------+
 | enum<'Color', 'name'>                                      | Enum of type Color, use its case names           |
 |                                                            | (as string) for serialization                    |
