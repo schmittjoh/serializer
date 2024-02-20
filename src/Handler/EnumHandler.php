@@ -44,7 +44,7 @@ final class EnumHandler implements SubscribingHandlerInterface
         array $type,
         SerializationContext $context
     ) {
-        if ((isset($type['params'][1]) && 'value' === $type['params'][1]) || (!isset($type['params'][1]) && is_a($enum, \BackedEnum::class, true))) {
+        if ((isset($type['params'][1]) && 'value' === $type['params'][1]) || (!isset($type['params'][1]) && $enum instanceof \BackedEnum)) {
             if (!$enum instanceof \BackedEnum) {
                 throw new InvalidMetadataException(sprintf('The type "%s" is not a backed enum, thus you can not use "value" as serialization mode for its value.', get_class($enum)));
             }
