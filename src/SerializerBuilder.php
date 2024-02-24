@@ -552,9 +552,8 @@ final class SerializerBuilder
     public function build(): Serializer
     {
         $annotationReader = $this->annotationReader;
-        if (null === $annotationReader) {
-            $annotationReader = new AnnotationReader();
-            $annotationReader = $this->decorateAnnotationReader($annotationReader);
+        if (null === $annotationReader && class_exists(AnnotationReader::class)) {
+            $annotationReader = $this->decorateAnnotationReader(new AnnotationReader());
         }
 
         if (null === $this->driverFactory) {

@@ -9,5 +9,5 @@ use Metadata\Driver\DriverInterface;
 
 interface DriverFactoryInterface
 {
-    public function createDriver(array $metadataDirs, Reader $annotationReader): DriverInterface;
+    public function createDriver(array $metadataDirs, ?Reader $annotationReader = null): DriverInterface;
 }
