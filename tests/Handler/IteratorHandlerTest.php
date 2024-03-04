@@ -11,6 +11,7 @@ use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class IteratorHandlerTest extends TestCase
@@ -40,6 +41,7 @@ final class IteratorHandlerTest extends TestCase
     /**
      * @dataProvider iteratorsProvider
      */
+    #[DataProvider('iteratorsProvider')]
     public function testSerialize(\Iterator $iterator): void
     {
         $type = get_class($iterator);

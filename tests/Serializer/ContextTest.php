@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -18,6 +19,7 @@ use JMS\Serializer\Tests\Fixtures\Publisher;
 use JMS\Serializer\Tests\Fixtures\VersionedObject;
 use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ContextTest extends TestCase
@@ -32,7 +34,7 @@ class ContextTest extends TestCase
 
         $self = $this;
 
-        $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
+        $exclusionStrategy = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
         $exclusionStrategy->expects($this->any())
             ->method('shouldSkipClass')
             ->with($this->anything(), $this->callback(static function (SerializationContext $context) use ($self, $objects) {
@@ -40,7 +42,7 @@ class ContextTest extends TestCase
 
                 if ($context->getObject() === $objects[0]) {
                     $expectedDepth = 1;
-                    $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedPath = Node::class;
                 } elseif ($context->getObject() === $objects[1]) {
                     $expectedDepth = 2;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node';
@@ -57,7 +59,7 @@ class ContextTest extends TestCase
 
                 return true;
             }))
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $exclusionStrategy->expects($this->any())
             ->method('shouldSkipProperty')
@@ -66,7 +68,7 @@ class ContextTest extends TestCase
 
                 if ($context->getObject() === $objects[0]) {
                     $expectedDepth = 1;
-                    $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node';
+                    $expectedPath = Node::class;
                 } elseif ($context->getObject() === $objects[1]) {
                     $expectedDepth = 2;
                     $expectedPath = 'JMS\Serializer\Tests\Fixtures\Node -> JMS\Serializer\Tests\Fixtures\Node';
@@ -83,7 +85,7 @@ class ContextTest extends TestCase
 
                 return true;
             }))
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $serializer = SerializerBuilder::create()->build();
 
@@ -97,10 +99,10 @@ class ContextTest extends TestCase
         ]);
         $self = $this;
 
-        $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
-        $exclusionStrategy->expects($this->any())
+        $exclusionStrategy = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
+        $exclusionStrategy
             ->method('shouldSkipClass')
-            ->will($this->returnCallback(static function (ClassMetadata $classMetadata, SerializationContext $context) use ($self, $object, $child) {
+            ->willReturnCallback(static function (ClassMetadata $classMetadata, SerializationContext $context) use ($self, $object, $child) {
                 $stack = $context->getMetadataStack();
 
                 if ($object === $context->getObject()) {
@@ -109,32 +111,32 @@ class ContextTest extends TestCase
 
                 if ($child === $context->getObject()) {
                     $self->assertEquals(2, $stack->count());
-                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[1]->name);
+                    $self->assertEquals(Node::class, $stack[1]->name);
                     $self->assertEquals('children', $stack[0]->name);
                 }
 
                 return false;
-            }));
+            });
 
-        $exclusionStrategy->expects($this->any())
+        $exclusionStrategy
             ->method('shouldSkipProperty')
-            ->will($this->returnCallback(static function (PropertyMetadata $propertyMetadata, SerializationContext $context) use ($self) {
+            ->willReturnCallback(static function (PropertyMetadata $propertyMetadata, SerializationContext $context) use ($self) {
                 $stack = $context->getMetadataStack();
 
                 if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && 'children' === $propertyMetadata->name) {
                     $self->assertEquals(1, $stack->count());
-                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[0]->name);
+                    $self->assertEquals(Node::class, $stack[0]->name);
                 }
 
                 if ('JMS\Serializer\Tests\Fixtures\InlineChild' === $propertyMetadata->class) {
                     $self->assertEquals(3, $stack->count());
-                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\Node', $stack[2]->name);
+                    $self->assertEquals(Node::class, $stack[2]->name);
                     $self->assertEquals('children', $stack[1]->name);
-                    $self->assertEquals('JMS\Serializer\Tests\Fixtures\InlineChild', $stack[0]->name);
+                    $self->assertEquals(InlineChild::class, $stack[0]->name);
                 }
 
                 return false;
-            }));
+            });
 
         $serializer = SerializerBuilder::create()->build();
         $serializer->serialize($object, 'json', SerializationContext::create()->addExclusionStrategy($exclusionStrategy));
@@ -153,6 +155,7 @@ class ContextTest extends TestCase
     /**
      * @dataProvider getScalars
      */
+    #[DataProvider('getScalars')]
     public function testCanVisitScalars($scalar)
     {
         $context = SerializationContext::create();

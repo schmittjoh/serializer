@@ -46,6 +46,9 @@ use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlSerializationVisitor;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Group;
 
 class XmlSerializationTest extends BaseSerializationTestCase
 {
@@ -61,6 +64,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     /**
      * @dataProvider getXMLBooleans
      */
+    #[DataProvider('getXMLBooleans')]
     public function testXMLBooleans($xmlBoolean, $boolean)
     {
         if ($this->hasDeserializer()) {
@@ -143,6 +147,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testWhitelistedDocumentTypesAreAllowed()
     {
         $xmlVisitor = new XmlDeserializationVisitorFactory();
@@ -302,6 +307,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
      * @dataProvider getDateTime
      * @group datetime
      */
+    #[DataProvider('getDateTime')]
     public function testDateTimeNoCData($key, $value, $type)
     {
         $builder = SerializerBuilder::create();
@@ -317,6 +323,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
      * @dataProvider getDateTimeImmutable
      * @group datetime
      */
+    #[DataProvider('getDateTimeImmutable')]
     public function testDateTimeImmutableNoCData($key, $value, $type)
     {
         $builder = SerializerBuilder::create();

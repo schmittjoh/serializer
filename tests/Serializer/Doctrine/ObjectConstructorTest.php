@@ -54,6 +54,7 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use LogicException;
 use Metadata\Driver\AdvancedDriverInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -305,7 +306,8 @@ class ObjectConstructorTest extends TestCase
     /**
      * @dataProvider dataProviderPersistendCollectionIsNotReplaced
      */
-    public function testPersistendCollectionIsNotReplaced(string $data, string $type): void
+    #[DataProvider('dataProviderPersistendCollectionIsNotReplaced')]
+    public function testPersistendCollectionIsNotReplaced(string $serializedData, string $type): void
     {
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
@@ -322,7 +324,7 @@ class ObjectConstructorTest extends TestCase
         $em->flush();
         $em->clear();
 
-        $smartPhoneDeserialized = $serializer->deserialize($data, SmartPhone::class, $type);
+        $smartPhoneDeserialized = $serializer->deserialize($serializedData, SmartPhone::class, $type);
         self::assertInstanceOf(SmartPhone::class, $smartPhoneDeserialized);
 
         self::assertSame(

@@ -11,6 +11,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\GroupsObject;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class BaseDeserializationTest extends TestCase
@@ -18,6 +19,7 @@ class BaseDeserializationTest extends TestCase
     /**
      * @dataProvider dataTypeCannotBeCasted
      */
+    #[DataProvider('dataTypeCannotBeCasted')]
     public function testDeserializationInvalidDataCausesException($data, string $type): void
     {
         $serializer = SerializerBuilder::create()->build();
@@ -48,6 +50,7 @@ class BaseDeserializationTest extends TestCase
     /**
      * @dataProvider dataDeserializerGroupExclusion
      */
+    #[DataProvider('dataDeserializerGroupExclusion')]
     public function testDeserializerGroupExclusion(array $data, array $groups, array $expected): void
     {
         $serializer = SerializerBuilder::create()->build();

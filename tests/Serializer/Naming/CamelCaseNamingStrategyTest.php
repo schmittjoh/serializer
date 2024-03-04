@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer\Naming;
 
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CamelCaseNamingStrategyTest extends TestCase
@@ -20,6 +21,7 @@ class CamelCaseNamingStrategyTest extends TestCase
     /**
      * @dataProvider providePropertyNames
      */
+    #[DataProvider('providePropertyNames')]
     public function testCamelCaseNamingHandlesMultipleUppercaseLetters($propertyName, $expected)
     {
         $mockProperty = $this->getMockBuilder('JMS\Serializer\Metadata\PropertyMetadata')->disableOriginalConstructor()->getMock();

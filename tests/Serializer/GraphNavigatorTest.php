@@ -29,6 +29,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\VisitorInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\MetadataFactory;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 class GraphNavigatorTest extends TestCase
@@ -60,29 +61,29 @@ class GraphNavigatorTest extends TestCase
         $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
         $self = $this;
-        $this->context = $this->getMockBuilder(SerializationContext::class)->getMock();
+        $this->context = $this->createMock(SerializationContext::class);
         $context = $this->context;
-        $exclusionStrategy = $this->getMockBuilder('JMS\Serializer\Exclusion\ExclusionStrategyInterface')->getMock();
+        $exclusionStrategy = $this->createMock(ExclusionStrategyInterface::class);
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->will($this->returnCallback(static function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
+            ->willReturnCallback(static function ($passedMetadata, $passedContext) use ($metadata, $context, $self) {
                 $self->assertSame($metadata, $passedMetadata);
                 $self->assertSame($context, $passedContext);
 
                 return false;
-            }));
+            });
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->will($this->returnCallback(static function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
+            ->willReturnCallback(static function ($propertyMetadata, $passedContext) use ($context, $metadata, $self) {
                 $self->assertSame($metadata->propertyMetadata['foo'], $propertyMetadata);
                 $self->assertSame($context, $passedContext);
 
                 return false;
-            }));
+            });
 
         $this->context->expects($this->once())
             ->method('getExclusionStrategy')
-            ->will($this->returnValue($exclusionStrategy));
+            ->willReturn($exclusionStrategy);
 
         $navigator = new SerializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->accessor, $this->dispatcher);
         $navigator->initialize($this->serializationVisitor, $this->context);
@@ -112,7 +113,7 @@ class GraphNavigatorTest extends TestCase
 
         $this->context->expects($this->once())
             ->method('getExclusionStrategy')
-            ->will($this->returnValue($exclusionStrategy));
+            ->willReturn($exclusionStrategy);
 
         $navigator = new DeserializationGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->accessor, $this->dispatcher);
         $navigator->initialize($this->deserializationVisitor, $this->context);
@@ -122,6 +123,7 @@ class GraphNavigatorTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testNavigatorChangeTypeOnSerialization()
     {
         $object = new SerializableClass();
@@ -184,6 +186,7 @@ class GraphNavigatorTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testFilterableHandlerIsSkippedOnSerialization()
     {
         $object = new SerializableClass();
@@ -217,6 +220,7 @@ class GraphNavigatorTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testNavigatorDoesNotCrashWhenObjectConstructorReturnsNull()
     {
         $objectConstructor = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata;
 
+use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ClassMetadataTest extends TestCase
@@ -23,14 +25,14 @@ class ClassMetadataTest extends TestCase
 
     public function testSerialization()
     {
-        $meta = new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b');
+        $meta = new PropertyMetadata(PropertyMetadataOrder::class, 'b');
         $restoredMeta = unserialize(serialize($meta));
         self::assertEquals($meta, $restoredMeta);
     }
 
     public function testSerializationClass()
     {
-        $meta = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
+        $meta = new ClassMetadata(PropertyMetadataOrder::class);
         $meta->xmlRootPrefix = 'foo';
         $meta->xmlDiscriminatorCData = true;
         $meta->xmlDiscriminatorAttribute = false;
@@ -43,11 +45,12 @@ class ClassMetadataTest extends TestCase
     /**
      * @dataProvider getAccessOrderCases
      */
+    #[DataProvider('getAccessOrderCases')]
     public function testSetAccessorOrderCustom(array $order, array $expected)
     {
-        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
+        $metadata = new ClassMetadata(PropertyMetadataOrder::class);
+        $metadata->addPropertyMetadata(new PropertyMetadata(PropertyMetadataOrder::class, 'b'));
+        $metadata->addPropertyMetadata(new PropertyMetadata(PropertyMetadataOrder::class, 'a'));
         self::assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_CUSTOM, $order);
@@ -56,9 +59,9 @@ class ClassMetadataTest extends TestCase
 
     public function testSetAccessorOrderAlphabetical()
     {
-        $metadata = new ClassMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder');
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'b'));
-        $metadata->addPropertyMetadata(new PropertyMetadata('JMS\Serializer\Tests\Metadata\PropertyMetadataOrder', 'a'));
+        $metadata = new ClassMetadata(PropertyMetadataOrder::class);
+        $metadata->addPropertyMetadata(new PropertyMetadata(PropertyMetadataOrder::class, 'b'));
+        $metadata->addPropertyMetadata(new PropertyMetadata(PropertyMetadataOrder::class, 'a'));
         self::assertEquals(['b', 'a'], array_keys($metadata->propertyMetadata));
 
         $metadata->setAccessorOrder(ClassMetadata::ACCESSOR_ORDER_ALPHABETICAL);
@@ -68,6 +71,7 @@ class ClassMetadataTest extends TestCase
     /**
      * @dataProvider providerPublicMethodData
      */
+    #[DataProvider('providerPublicMethodData')]
     public function testAccessorTypePublicMethod($property, $getterInit, $setterInit, $getterName, $setterName)
     {
         $object = new PropertyMetadataPublicMethod();
@@ -82,9 +86,10 @@ class ClassMetadataTest extends TestCase
     /**
      * @dataProvider providerPublicMethodException
      */
+    #[DataProvider('providerPublicMethodException')]
     public function testAccessorTypePublicMethodException($getter, $setter, $message)
     {
-        $this->expectException('\JMS\Serializer\Exception\InvalidMetadataException');
+        $this->expectException(InvalidMetadataException::class);
         $this->expectExceptionMessage($message);
 
         $object = new PropertyMetadataPublicMethod();

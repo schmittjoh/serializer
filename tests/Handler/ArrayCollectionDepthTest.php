@@ -11,6 +11,7 @@ use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer as JMSSerializer;
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ArrayCollectionDepthTest extends TestCase
@@ -28,6 +29,7 @@ class ArrayCollectionDepthTest extends TestCase
      *
      * @dataProvider getCollections
      */
+    #[DataProvider('getCollections')]
     public function testDepth($collection)
     {
         $context = SerializationContext::create()
