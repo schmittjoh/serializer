@@ -12,7 +12,7 @@ Starting from this release [doctrine/annotations](https://github.com/doctrine/an
 If you still want to use them, please make sure that you require in `composer.json` file.
 
 We strongly recommend to start using [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) with PHP 8. 
-You can easily migrate annotations to attributes with [rector](https://github.com/rectorphp/rector) and `Rector\Symfony\Set::ANNOTATIONS_TO_ATTRIBUTES` rules.  
+You can easily migrate annotations to attributes with [rector](https://github.com/rectorphp/rector) and `Rector\Symfony\Set\SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES` rules.  
 
 From 2.x to 3.0.0
 =================
