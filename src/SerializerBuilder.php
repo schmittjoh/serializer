@@ -37,6 +37,7 @@ use JMS\Serializer\Handler\EnumHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
+use JMS\Serializer\Handler\JsonSerializableHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -278,6 +279,7 @@ final class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, \JsonSerializable::class, 'json', new JsonSerializableHandler());
 
         if ($this->enableEnumSupport) {
             $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
