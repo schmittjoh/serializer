@@ -271,7 +271,7 @@ class TestSubscribingHandler implements SubscribingHandlerInterface
 {
     public const FORMAT = 'foo';
 
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): iterable
     {
         return [
             [
