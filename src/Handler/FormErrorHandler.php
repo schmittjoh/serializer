@@ -71,9 +71,6 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         $this->translationDomain = $translationDomain;
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form, array $type): \DOMElement
     {
         $formNode = $visitor->getDocument()->createElement('form');
@@ -98,25 +95,16 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormToJson(SerializationVisitorInterface $visitor, FormInterface $form, array $type): \ArrayObject
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type): \DOMCdataSection
     {
         return $visitor->getDocument()->createCDATASection($this->getErrorMessage($formError));
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormErrorToJson(SerializationVisitorInterface $visitor, FormError $formError, array $type): string
     {
         return $this->getErrorMessage($formError);
