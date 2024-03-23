@@ -174,7 +174,7 @@ class DoctrineDriverTest extends TestCase
         $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->atLeastOnce())
             ->method('getManagerForClass')
-            ->will($this->returnValue($this->getEntityManager()));
+            ->willReturn($this->getEntityManager());
 
         return new DoctrineTypeDriver(
             $this->getMetadataDriver(),

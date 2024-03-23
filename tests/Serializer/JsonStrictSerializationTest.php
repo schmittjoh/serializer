@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class JsonStrictSerializationTest extends JsonSerializationTest
 {
@@ -17,12 +18,10 @@ class JsonStrictSerializationTest extends JsonSerializationTest
     }
 
     /**
-     * @param array $items
-     * @param array $expected
-     *
      * @dataProvider getFirstClassMapCollectionsValues
      */
-    public function testFirstClassMapCollections($items, $expected): void
+    #[DataProvider('getFirstClassMapCollectionsValues')]
+    public function testFirstClassMapCollections(array $items, string $expected): void
     {
         self::markTestIncomplete('Fixtures are broken');
     }

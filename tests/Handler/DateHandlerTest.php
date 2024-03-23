@@ -9,6 +9,8 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 class DateHandlerTest extends TestCase
@@ -39,11 +41,11 @@ class DateHandlerTest extends TestCase
     }
 
     /**
-     * @param array $params
-     *
      * @doesNotPerformAssertions
      * @dataProvider getParams
      */
+    #[DataProvider('getParams')]
+    #[DoesNotPerformAssertions]
     public function testSerializeDate(array $params)
     {
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
@@ -57,12 +59,10 @@ class DateHandlerTest extends TestCase
     }
 
     /**
-     * @param string    $dateInterval
-     * @param \DateTime $expected
-     *
      * @dataProvider getDeserializeDateInterval
      */
-    public function testDeserializeDateInterval($dateInterval, $expected)
+    #[DataProvider('getDeserializeDateInterval')]
+    public function testDeserializeDateInterval(string $dateInterval, array $expected)
     {
         $visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
         $visitor->method('visitString')->with('2017-06-18');

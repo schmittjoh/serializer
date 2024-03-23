@@ -25,7 +25,7 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $context)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $last->expects($this->never())
             ->method('shouldSkipClass');
@@ -46,12 +46,12 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $last->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $context)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         self::assertTrue($strat->shouldSkipClass($metadata, $context));
     }
@@ -69,12 +69,12 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $last->expects($this->once())
             ->method('shouldSkipClass')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         self::assertFalse($strat->shouldSkipClass($metadata, $context));
     }
@@ -92,7 +92,7 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipProperty')
             ->with($metadata, $context)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $last->expects($this->never())
             ->method('shouldSkipProperty');
@@ -113,12 +113,12 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipProperty')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $last->expects($this->once())
             ->method('shouldSkipProperty')
             ->with($metadata, $context)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         self::assertTrue($strat->shouldSkipProperty($metadata, $context));
     }
@@ -136,12 +136,12 @@ class DisjunctExclusionStrategyTest extends TestCase
         $first->expects($this->once())
             ->method('shouldSkipProperty')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $last->expects($this->once())
             ->method('shouldSkipProperty')
             ->with($metadata, $context)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         self::assertFalse($strat->shouldSkipProperty($metadata, $context));
     }
