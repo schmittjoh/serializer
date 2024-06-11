@@ -7,6 +7,7 @@ namespace JMS\Serializer\Tests\Serializer\Type;
 use JMS\Serializer\Type\Exception\SyntaxError;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
@@ -22,11 +23,12 @@ class ParserTest extends TestCase
     /**
      * @dataProvider validTypesProvider
      */
+    #[DataProvider('validTypesProvider')]
     public function testParse(string $sourceType, array $expectedType): void
     {
         self::assertSame(
             $expectedType,
-            $this->parser->parse($sourceType)
+            $this->parser->parse($sourceType),
         );
     }
 
@@ -149,6 +151,7 @@ class ParserTest extends TestCase
     /**
      * @dataProvider wrongSyntax
      */
+    #[DataProvider('wrongSyntax')]
     public function testSyntaxError($value): void
     {
         $this->expectException(SyntaxError::class);

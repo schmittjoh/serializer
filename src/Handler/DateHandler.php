@@ -256,7 +256,7 @@ final class DateHandler implements SubscribingHandlerInterface
         throw new RuntimeException(sprintf(
             'Invalid datetime "%s", expected one of the format %s.',
             $data,
-            '"' . implode('", "', $formatTried) . '"'
+            '"' . implode('", "', $formatTried) . '"',
         ));
     }
 
@@ -279,9 +279,6 @@ final class DateHandler implements SubscribingHandlerInterface
         return $dateInterval;
     }
 
-    /**
-     * @param array $type
-     */
     private function getDeserializationFormats(array $type): array
     {
         if (isset($type['params'][2])) {
@@ -291,9 +288,6 @@ final class DateHandler implements SubscribingHandlerInterface
         return [$this->getFormat($type)];
     }
 
-    /**
-     * @param array $type
-     */
     private function getFormat(array $type): string
     {
         return $type['params'][0] ?? $this->defaultFormat;

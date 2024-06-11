@@ -15,9 +15,7 @@ final class AlphabeticalPropertyOrderingStrategy implements PropertyOrderingInte
     {
         uasort(
             $properties,
-            static function (PropertyMetadata $a, PropertyMetadata $b): int {
-                return strcmp($a->name, $b->name);
-            }
+            static fn (PropertyMetadata $a, PropertyMetadata $b): int => strcmp($a->name, $b->name),
         );
 
         return $properties;

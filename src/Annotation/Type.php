@@ -9,7 +9,7 @@ namespace JMS\Serializer\Annotation;
  * @Target({"PROPERTY", "METHOD","ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
-final class Type
+final class Type implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 
@@ -23,7 +23,7 @@ final class Type
     {
         if ((null !== $name) && !is_string($name) && !(is_object($name) && method_exists($name, '__toString'))) {
             throw new \RuntimeException(
-                'Type must be either string, null or object implements __toString() method.'
+                'Type must be either string, null or object implements __toString() method.',
             );
         }
 
@@ -34,7 +34,7 @@ final class Type
         if (is_object($values)) {
             if (false === method_exists($values, '__toString')) {
                 throw new \RuntimeException(
-                    'Type must be either string or object implements __toString() method.'
+                    'Type must be either string or object implements __toString() method.',
                 );
             }
 

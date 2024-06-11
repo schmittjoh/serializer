@@ -8,12 +8,18 @@ use JMS\Serializer\Annotation as Serializer;
 
 class ObjectWithIntListAndIntMap
 {
-    /** @Serializer\Type("array<integer>") @Serializer\XmlList */
+    /**
+     * @Serializer\Type("array<integer>")
+     * @Serializer\Type("array<integer>")
+ @Serializer\XmlList */
     #[Serializer\Type(name: 'array<integer>')]
     #[Serializer\XmlList]
     private $list;
 
-    /** @Serializer\Type("array<integer,integer>") @Serializer\XmlMap */
+    /**
+     * @Serializer\Type("array<integer,integer>")
+     * @Serializer\Type("array<integer,integer>")
+ @Serializer\XmlMap */
     #[Serializer\Type(name: 'array<integer,integer>')]
     #[Serializer\XmlMap]
     private $map;

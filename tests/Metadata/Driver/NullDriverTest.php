@@ -6,13 +6,14 @@ namespace JMS\Serializer\Tests\Metadata\Driver;
 
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\NullDriver;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use PHPUnit\Framework\TestCase;
 
 class NullDriverTest extends TestCase
 {
     public function testReturnsValidMetadata()
     {
-        $driver = new NullDriver();
+        $driver = new NullDriver(new IdenticalPropertyNamingStrategy());
 
         $metadata = $driver->loadMetadataForClass(new \ReflectionClass('stdClass'));
 

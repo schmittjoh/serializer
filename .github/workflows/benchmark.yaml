@@ -14,9 +14,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "7.2"
-          - "8.0"
-          - "8.1"
+          - "7.4"
+          - "8.2"
 
     steps:
       - name: Checkout code
@@ -29,7 +28,7 @@ jobs:
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
-        
+
       - name: Run performance benchmarks
         run: |
           vendor/bin/phpbench run tests/Benchmark/Performance --report=aggregate

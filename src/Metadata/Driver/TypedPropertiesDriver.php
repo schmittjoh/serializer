@@ -74,10 +74,6 @@ class TypedPropertiesDriver implements DriverInterface
 
         \assert($classMetadata instanceof SerializerClassMetadata);
 
-        if (PHP_VERSION_ID <= 70400) {
-            return $classMetadata;
-        }
-
         // We base our scan on the internal driver's property list so that we
         // respect any internal allow/blocklist like in the AnnotationDriver
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {

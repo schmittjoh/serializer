@@ -15,10 +15,16 @@ class ObjectWithEnums
      * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\Suit', 'name'>")
      */
     public Suit $ordinary;
+
     /**
      * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit', 'value'>")
      */
-    public BackedSuit $backed;
+    public BackedSuit $backedValue;
+
+    /**
+     * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit'>")
+     */
+    public BackedSuit $backedWithoutParam;
 
     /**
      * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\Suit'>>")
@@ -29,6 +35,11 @@ class ObjectWithEnums
      * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit', 'value'>>")
      */
     public array $backedArray;
+
+    /**
+     * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit'>>")
+     */
+    public array $backedArrayWithoutParam;
 
     public Suit $ordinaryAutoDetect;
 
@@ -46,9 +57,11 @@ class ObjectWithEnums
     {
         $this->ordinary = Suit::Clubs;
 
-        $this->backed = BackedSuit::Clubs;
+        $this->backedValue = BackedSuit::Clubs;
+        $this->backedWithoutParam = BackedSuit::Clubs;
 
         $this->backedArray = [BackedSuit::Clubs, BackedSuit::Hearts];
+        $this->backedArrayWithoutParam = [BackedSuit::Clubs, BackedSuit::Hearts];
         $this->ordinaryArray = [Suit::Clubs, Suit::Spades];
 
         $this->ordinaryAutoDetect = Suit::Clubs;

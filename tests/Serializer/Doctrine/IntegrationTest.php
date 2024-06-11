@@ -11,6 +11,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\AbstractManagerRegistry;
@@ -67,9 +68,10 @@ class IntegrationTest extends TestCase
         $teacher = new Teacher();
         $class = new Clazz($teacher, [$student1, $student2]);
 
+        $em->persist($teacher);
+        $em->flush();
         $em->persist($student1);
         $em->persist($student2);
-        $em->persist($teacher);
         $em->persist($class);
         $em->flush();
         $em->clear();
@@ -98,7 +100,7 @@ class IntegrationTest extends TestCase
                     default:
                         throw new \RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $this->serializer = SerializerBuilder::create()
@@ -107,7 +109,7 @@ class IntegrationTest extends TestCase
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
-                }
+                },
             ))
             ->build();
 
@@ -134,14 +136,23 @@ class IntegrationTest extends TestCase
     private function createEntityManager(Connection $con)
     {
         $cfg = new Configuration();
-        $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
-            __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
-        ]));
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $cfg->setMetadataDriverImpl(new AttributeDriver([
+                __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
+            ]));
+            AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+        } else {
+            $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
+                __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
+            ]));
+        }
+
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
-        return EntityManager::create($con, $cfg);
+        return new EntityManager($con, $cfg);
     }
 }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests;
 
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
@@ -16,6 +18,7 @@ use JMS\Serializer\Tests\Fixtures\PersonSecret;
 use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\FileExists;
 use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\TestCase;
@@ -102,7 +105,7 @@ class SerializerBuilderTest extends TestCase
     {
         self::assertSame(
             $this->builder,
-            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory())
+            $this->builder->setSerializationVisitor('json', new JsonSerializationVisitorFactory()),
         );
 
         $this->expectException(UnsupportedFormatException::class);
@@ -115,35 +118,35 @@ class SerializerBuilderTest extends TestCase
     {
         self::assertFalse(
             $this->getIncludeInterfaces($this->builder),
-            'Interface metadata are not included by default'
+            'Interface metadata are not included by default',
         );
 
         self::assertTrue(
             $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(true)),
-            'Force including interface metadata'
+            'Force including interface metadata',
         );
 
         self::assertFalse(
             $this->getIncludeInterfaces($this->builder->includeInterfaceMetadata(false)),
-            'Force not including interface metadata'
+            'Force not including interface metadata',
         );
 
         self::assertSame(
             $this->builder,
-            $this->builder->includeInterfaceMetadata(true)
+            $this->builder->includeInterfaceMetadata(true),
         );
     }
 
     public function testSetSerializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(SerializationContextFactoryInterface::class);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $this->builder->setSerializationContextFactory($contextFactoryMock);
 
@@ -156,13 +159,13 @@ class SerializerBuilderTest extends TestCase
 
     public function testSetDeserializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(DeserializationContextFactoryInterface::class);
         $context = new DeserializationContext();
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $this->builder->setDeserializationContextFactory($contextFactoryMock);
 
@@ -229,6 +232,7 @@ class SerializerBuilderTest extends TestCase
      *
      * @dataProvider expressionFunctionProvider
      */
+    #[DataProvider('expressionFunctionProvider')]
     public function testExpressionEngine(ExpressionFunction $function, $json)
     {
         $language = new ExpressionLanguage();

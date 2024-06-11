@@ -80,7 +80,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
                 '{"authors":[{"full_name":"foo"},{"full_name":"bar"}]}',
                 AuthorList::class,
                 'json',
-                DeserializationContext::create()->setAttribute('validation_groups', ['Foo'])
+                DeserializationContext::create()->setAttribute('validation_groups', ['Foo']),
             );
 
         self::assertCount(2, $list);

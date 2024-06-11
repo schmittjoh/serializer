@@ -241,9 +241,6 @@ abstract class Context
         return $this->metadataStack;
     }
 
-    /**
-     * @return array
-     */
     public function getCurrentPath(): array
     {
         if (!$this->metadataStack) {

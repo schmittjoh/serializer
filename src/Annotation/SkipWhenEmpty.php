@@ -9,6 +9,6 @@ namespace JMS\Serializer\Annotation;
  * @Target({"PROPERTY","METHOD","ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
-final class SkipWhenEmpty
+final class SkipWhenEmpty implements SerializerAttribute
 {
 }
