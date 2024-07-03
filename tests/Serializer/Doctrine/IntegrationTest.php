@@ -67,9 +67,9 @@ class IntegrationTest extends TestCase
         $teacher = new Teacher();
         $class = new Clazz($teacher, [$student1, $student2]);
 
+        $em->persist($teacher);
         $em->persist($student1);
         $em->persist($student2);
-        $em->persist($teacher);
         $em->persist($class);
         $em->flush();
         $em->clear();

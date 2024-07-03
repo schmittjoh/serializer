@@ -22,7 +22,7 @@ final class UnionTypedPropertiesDriverTest extends TestCase
         }
     }
 
-    public function testInferUnionTypesShouldResultInNoType()
+    public function testInferUnionTypesShouldResultInManyTypes()
     {
         $m = $this->resolve(UnionTypedProperties::class);
 

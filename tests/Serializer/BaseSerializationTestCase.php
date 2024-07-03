@@ -64,7 +64,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
 use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car as DiscriminatorGroupCar;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBlockProperty;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Tests\Fixtures\FirstClassListCollection;
 use JMS\Serializer\Tests\Fixtures\Garage;
@@ -1992,9 +1992,14 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testSerializingUnionDocBlockTypesProperties()
     {
-        $object = new UnionTypedDocBLockProperty(10000);
+        $object = new UnionTypedDocBlockProperty(10000);
 
         self::assertEquals(static::getContent('data_integer'), $this->serialize($object));
+
+        $object = new UnionTypedDocBlockProperty(1.236);
+
+        self::assertEquals(static::getContent('data_float'), $this->serialize($object));
+
     }
 
     public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
@@ -2007,8 +2012,8 @@ abstract class BaseSerializationTestCase extends TestCase
 
         $this->expectException(RuntimeException::class);
 
-        $object = new UnionTypedDocBLockProperty(10000);
-        $deserialized = $this->deserialize(static::getContent('data_integer'), UnionTypedDocBLockProperty::class);
+        $object = new UnionTypedDocBlockProperty(10000);
+        $deserialized = $this->deserialize(static::getContent('data_integer'), UnionTypedDocBlockProperty::class);
     }
 
     public function testIterable(): void

@@ -45,7 +45,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanNestedArrayShape;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\ProductType;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromDifferentNamespaceTypeHint;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\SingleClassFromGlobalNamespaceTypeHint;
-use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBLockProperty;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\UnionTypedDocBlockProperty;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\VirtualPropertyGetter;
 use PHPUnit\Framework\TestCase;
 
@@ -360,7 +360,7 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferTypeForNonUnionDocblockType()
     {
-        $m = $this->resolve(UnionTypedDocBLockProperty::class);
+        $m = $this->resolve(UnionTypedDocBlockProperty::class);
 
         self::assertEquals(
             null,
