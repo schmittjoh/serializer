@@ -15,6 +15,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 final class UnionHandler implements SubscribingHandlerInterface
 {
     static $aliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
+
     /**
      * {@inheritdoc}
      */
@@ -37,6 +38,7 @@ final class UnionHandler implements SubscribingHandlerInterface
                 'method' => 'serializeUnion',
             ];
         }
+
         return $methods;
     }
 
@@ -84,41 +86,49 @@ final class UnionHandler implements SubscribingHandlerInterface
      *     these types will be returned first, in the order in which they were declared.
      * - static and all built-in types (iterable replaced by array) will come next. They will always be returned in this order:
      *     static, callable, array, string, int, float, bool (or false or true), null.
-     * 
+     *
      * For determining types of primitives, it is necessary to reorder primitives so that they are tested from lowest specificity to highest:
      * i.e. null, true, false, int, float, bool, string
      */
     private function reorderTypes(array $type): array
     {
         if ($type['params']) {
-            uasort($type['params'], function($a, $b) {
+            uasort($type['params'], static function ($a, $b) {
                 $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
+
                 return (array_key_exists($a['name'], $order) ? $order[$a['name']] : 7) <=> (array_key_exists($b['name'], $order) ? $order[$b['name']] : 7);
             });
         }
+
         return $type;
     }
 
-    private function determineType(mixed $data, array $type, string $format): string {
+    private function determineType(mixed $data, array $type, string $format): string
+    {
         foreach ($this->reorderTypes($type)['params'] as $possibleType) {
             if ($this->testPrimitive($data, $possibleType['name'], $format)) {
                 return $possibleType['name'];
             }
         }
     }
-    private function testPrimitive(mixed $data, string $type, string $format): bool {
-        switch($type) {
+
+    private function testPrimitive(mixed $data, string $type, string $format): bool
+    {
+        switch ($type) {
             case 'integer':
             case 'int':
-                return (string)(int)$data === (string)$data;
+                return (string) (int) $data === (string) $data;
+
             case 'double':
             case 'float':
-                return (string)(float)$data === (string)$data;
+                return (string) (float) $data === (string) $data;
+
             case 'bool':
             case 'boolean':
-                return (string)(bool)$data === (string)$data;
+                return (string) (bool) $data === (string) $data;
+
             case 'string':
-                return (string)$data === (string)$data;
+                return (string) $data === (string) $data;
         }
     }
 }
