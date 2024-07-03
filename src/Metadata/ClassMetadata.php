@@ -185,6 +185,7 @@ class ClassMetadata extends MergeableClassMetadata
     public function addPropertyMetadata(BasePropertyMetadata $metadata): void
     {
         parent::addPropertyMetadata($metadata);
+
         $this->sortProperties();
         if ($metadata instanceof PropertyMetadata && $metadata->excludeIf) {
             $this->usingExpression = true;
@@ -239,7 +240,7 @@ class ClassMetadata extends MergeableClassMetadata
                 'The discriminator of class "%s" would overwrite the discriminator of the parent class "%s". Please define all possible sub-classes in the discriminator of %s.',
                 $object->name,
                 $this->discriminatorBaseClass,
-                $this->discriminatorBaseClass
+                $this->discriminatorBaseClass,
             ));
         } elseif (!$this->discriminatorFieldName && $object->discriminatorFieldName) {
             $this->discriminatorFieldName = $object->discriminatorFieldName;
@@ -358,7 +359,7 @@ class ClassMetadata extends MergeableClassMetadata
                 throw new InvalidMetadataException(sprintf(
                     'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
                     $this->name,
-                    $this->discriminatorBaseClass
+                    $this->discriminatorBaseClass,
                 ));
             }
 
@@ -372,7 +373,7 @@ class ClassMetadata extends MergeableClassMetadata
                     'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
                     $this->discriminatorFieldName,
                     $this->discriminatorBaseClass,
-                    $this->name
+                    $this->name,
                 ));
             }
 
@@ -380,7 +381,7 @@ class ClassMetadata extends MergeableClassMetadata
                 $this->name,
                 $this->discriminatorFieldName,
                 $typeValue,
-                $this->discriminatorGroups
+                $this->discriminatorGroups,
             );
             $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $discriminatorProperty->xmlAttribute = $this->xmlDiscriminatorAttribute;

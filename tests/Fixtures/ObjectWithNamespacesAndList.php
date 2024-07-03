@@ -114,7 +114,6 @@ class ObjectWithNamespacesAndList
     #[Type(name: 'array<string>')]
     #[SerializedName(name: 'phones')]
     #[XmlList(entry: 'phone', inline: false)]
-
     public $phonesAlternativeD;
     /**
      * @Type("array<string,string>")

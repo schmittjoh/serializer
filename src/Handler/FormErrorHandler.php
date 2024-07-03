@@ -63,7 +63,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
                 self::class,
                 TranslatorInterface::class,
                 TranslatorContract::class,
-                get_class($translator)
+                get_class($translator),
             ));
         }
 
@@ -71,9 +71,6 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         $this->translationDomain = $translationDomain;
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form, array $type): \DOMElement
     {
         $formNode = $visitor->getDocument()->createElement('form');
@@ -98,25 +95,16 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormToJson(SerializationVisitorInterface $visitor, FormInterface $form, array $type): \ArrayObject
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type): \DOMCdataSection
     {
         return $visitor->getDocument()->createCDATASection($this->getErrorMessage($formError));
     }
 
-    /**
-     * @param array $type
-     */
     public function serializeFormErrorToJson(SerializationVisitorInterface $visitor, FormError $formError, array $type): string
     {
         return $this->getErrorMessage($formError);
@@ -141,7 +129,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     private function convertFormToArray(SerializationVisitorInterface $visitor, FormInterface $data): \ArrayObject
     {
-        /** @var \ArrayObject{errors?: string[], children?: array<string, \ArrayObject>} $form */
+        /** @var \ArrayObject{errors?:array<string>,children?:array<string,\ArrayObject>} $form */
         $form = new \ArrayObject();
         $errors = [];
         foreach ($data->getErrors() as $error) {

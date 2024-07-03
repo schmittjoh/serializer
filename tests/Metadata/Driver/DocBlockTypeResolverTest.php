@@ -18,8 +18,8 @@ final class DocBlockTypeResolverTest extends TestCase
         $resolver = new DocBlockTypeResolver();
         self::assertNull(
             $resolver->getPropertyDocblockTypeHint(
-                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'emptyBlock')
-            )
+                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'emptyBlock'),
+            ),
         );
     }
 
@@ -29,14 +29,14 @@ final class DocBlockTypeResolverTest extends TestCase
         self::assertSame(
             'string',
             $resolver->getPropertyDocblockTypeHint(
-                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'firstname')
-            )
+                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'firstname'),
+            ),
         );
         self::assertSame(
             'string',
             $resolver->getPropertyDocblockTypeHint(
-                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'lastname')
-            )
+                new ReflectionProperty(ObjectWithPhpDocProperty::class, 'lastname'),
+            ),
         );
     }
 }

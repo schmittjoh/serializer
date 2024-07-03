@@ -9,6 +9,7 @@ class JsonMultipleRunBench extends JsonSingleRunBench
     public function __construct()
     {
         $this->iterations = 10000;
+
         parent::__construct();
     }
 }

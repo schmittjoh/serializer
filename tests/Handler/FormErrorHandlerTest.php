@@ -150,7 +150,7 @@ class FormErrorHandlerTest extends TestCase
             ->with(
                 $this->equalTo('error!'),
                 $this->equalTo([]),
-                $this->equalTo('validators')
+                $this->equalTo('validators'),
             );
 
         $formError = $this->getMockBuilder('Symfony\Component\Form\FormError')->disableOriginalConstructor()->getMock();
@@ -177,7 +177,7 @@ class FormErrorHandlerTest extends TestCase
                 ->with(
                     $this->equalTo('error!'),
                     $this->equalTo(['%count%' => 0]),
-                    $this->equalTo('validators')
+                    $this->equalTo('validators'),
                 );
         } else {
             $translator->expects($this->once())
@@ -186,7 +186,7 @@ class FormErrorHandlerTest extends TestCase
                     $this->equalTo('error!'),
                     $this->equalTo(0),
                     $this->equalTo([]),
-                    $this->equalTo('validators')
+                    $this->equalTo('validators'),
                 );
         }
 
@@ -213,7 +213,7 @@ class FormErrorHandlerTest extends TestCase
             ->with(
                 $this->equalTo('error!'),
                 $this->equalTo([]),
-                $this->equalTo('custom_domain')
+                $this->equalTo('custom_domain'),
             );
 
         $formError = $this->getMockBuilder('Symfony\Component\Form\FormError')->disableOriginalConstructor()->getMock();
@@ -241,7 +241,7 @@ class FormErrorHandlerTest extends TestCase
                 ->with(
                     $this->equalTo('error!'),
                     $this->equalTo(['%count%' => 0]),
-                    $this->equalTo('custom_domain')
+                    $this->equalTo('custom_domain'),
                 );
         } else {
             $translator->expects($this->once())
@@ -250,7 +250,7 @@ class FormErrorHandlerTest extends TestCase
                     $this->equalTo('error!'),
                     $this->equalTo(0),
                     $this->equalTo([]),
-                    $this->equalTo('custom_domain')
+                    $this->equalTo('custom_domain'),
                 );
         }
 

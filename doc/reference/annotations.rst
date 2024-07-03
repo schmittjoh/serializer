@@ -1,96 +1,168 @@
-Annotations
-===========
+Attributes and annotations
+==========================
 
-@ExclusionPolicy
-~~~~~~~~~~~~~~~~
-This annotation can be defined on a class to indicate the exclusion strategy
+PHP 8 support
+~~~~~~~~~~~~~~~
+JMS serializer now supports PHP 8 attributes, with a few caveats:
+- Due to the missing support for nested attributes, the syntax for a few attributes has changed
+(see the ``VirtualProperty`` ``options`` syntax here below)
+- There is an edge case when setting this exact serialization group ``#[Groups(['value' => 'any value here'])]``.
+(when there is only one item in th serialization groups array and has as key ``value`` the attribute will not work as expected,
+please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here'])]`` that works with no issues),
+
+Converting your annotations to attributes
+-----------------------------------------
+
+Example:
+
+.. code-block :: php
+
+    /**
+     * @VirtualProperty(
+     *     "classlow",
+     *     exp="object.getVirtualValue(1)",
+     *     options={@Until("8")}
+     * )
+     * @VirtualProperty(
+     *     "classhigh",
+     *     exp="object.getVirtualValue(8)",
+     *     options={@Since("6")}
+     * )
+     */
+    #[VirtualProperty('classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
+    #[VirtualProperty('classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
+    class ObjectWithVersionedVirtualProperties
+    {
+        /**
+         * @Groups({"versions"})
+         * @VirtualProperty
+         * @SerializedName("low")
+         * @Until("8")
+         */
+        #[Groups(['versions'])]
+        #[VirtualProperty]
+        #[SerializedName('low')]
+        #[Until('8')]
+        public function getVirtualLowValue()
+        {
+            return 1;
+        }
+    ...
+
+To automate migration of Annotations to Attributes you can use `rector/rector` with following config:
+
+.. code-block :: php
+
+    <?php
+
+    declare(strict_types=1);
+
+    use Rector\Config\RectorConfig;
+    use Rector\Set\ValueObject\LevelSetList;
+    use Rector\Symfony\Set\JMSSetList;
+
+    return static function (RectorConfig $rectorConfig) {
+        $rectorConfig->paths([
+            __DIR__ . '/src',
+        ]);
+        $rectorConfig->sets([
+            JMSSetList::ANNOTATIONS_TO_ATTRIBUTES,
+            LevelSetList::UP_TO_PHP_80,
+        ]);
+    };
+
+
+
+#[ExclusionPolicy]
+~~~~~~~~~~~~~~~~~~
+This attribute can be defined on a class to indicate the exclusion strategy
 that should be used for the class.
 
 +----------+----------------------------------------------------------------+
 | Policy   | Description                                                    |
 +==========+================================================================+
 | all      | all properties are excluded by default; only properties marked |
-|          | with @Expose will be serialized/unserialized                   |
+|          | with #Expose will be serialized/unserialized                   |
 +----------+----------------------------------------------------------------+
 | none     | no properties are excluded by default; all properties except   |
-|          | those marked with @Exclude will be serialized/unserialized     |
+|          | those marked with #Exclude will be serialized/unserialized     |
 +----------+----------------------------------------------------------------+
 
-@Exclude
-~~~~~~~~
-This annotation can be defined on a property or a class to indicate that the property or class
+#[Exclude]
+~~~~~~~~~~
+This attribute can be defined on a property or a class to indicate that the property or class
 should not be serialized/unserialized. Works only in combination with NoneExclusionPolicy.
 
 If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, it will
-be possible to use ``@Exclude(if="expression")`` to exclude dynamically a property
+be possible to use ``#[Exclude(if:"expression")]`` to exclude dynamically a property
 or an object if used on class level.
 
-@Expose
-~~~~~~~
-This annotation can be defined on a property to indicate that the property should
+#[Expose]
+~~~~~~~~~
+This attribute can be defined on a property to indicate that the property should
 be serialized/unserialized. Works only in combination with AllExclusionPolicy.
 
 If the ``ExpressionLanguageExclusionStrategy`` exclusion strategy is enabled, will
-be possible to use ``@Expose(if="expression")`` to expose dynamically a property.
+be possible to use ``#Expose[if:"expression"]`` to expose dynamically a property.
 
-@SkipWhenEmpty
-~~~~~~~~~~~~~~
-This annotation can be defined on a property to indicate that the property should
+#[SkipWhenEmpty]
+~~~~~~~~~~~~~~~~
+This attribute can be defined on a property to indicate that the property should
 not be serialized if the result will be "empty".
 
 Works option works only when serializing.
 
-@SerializedName
-~~~~~~~~~~~~~~~
-This annotation can be defined on a property to define the serialized name for a
+#[SerializedName]
+~~~~~~~~~~~~~~~~~
+This attribute can be defined on a property to define the serialized name for a
 property. If this is not defined, the property will be translated from camel-case
 to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
-Note that this annotation is not used when you're using any other naming
+Note that this attribute is not used when you're using any other naming
 strategy than the default configuration (which includes the
-``SerializedNameAnnotationStrategy``). In order to re-enable the annotation, you
-will need to wrap your custom strategy with the ``SerializedNameAnnotationStrategy``.
+``SerializedNameattributeStrategy``). In order to re-enable the attribute, you
+will need to wrap your custom strategy with the ``SerializedNameattributeStrategy``.
 
 .. code-block :: php
 
     <?php
     $serializer = \JMS\Serializer\SerializerBuilder::create()
         ->setPropertyNamingStrategy(
-            new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
+            new \JMS\Serializer\Naming\SerializedNameattributeStrategy(
                 new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy()
             )
         )
         ->build();
 
-@Since
-~~~~~~
-This annotation can be defined on a property to specify starting from which
+#[Since]
+~~~~~~~~
+This attribute can be defined on a property to specify starting from which
 version this property is available. If an earlier version is serialized, then
 this property is excluded automatically. The version must be in a format that is
 understood by PHP's ``version_compare`` function.
 
-@Until
-~~~~~~
-This annotation can be defined on a property to specify until which version this
+#[Until]
+~~~~~~~~
+This attribute can be defined on a property to specify until which version this
 property was available. If a later version is serialized, then this property is
 excluded automatically. The version must be in a format that is understood by
 PHP's ``version_compare`` function.
 
-@Groups
-~~~~~~~
-This annotation can be defined on a property to specify if the property
+#[Groups]
+~~~~~~~~~
+This attribute can be defined on a property to specify if the property
 should be serialized when only serializing specific groups (see
 :doc:`../cookbook/exclusion_strategies`).
 
-@MaxDepth
-~~~~~~~~~
-This annotation can be defined on a property to limit the depth to which the
+#[MaxDepth]
+~~~~~~~~~~~
+This attribute can be defined on a property to limit the depth to which the
 content will be serialized. It is very useful when a property will contain a
 large object graph.
 
-@AccessType
-~~~~~~~~~~~
-This annotation can be defined on a property, or a class to specify in which way
+#[AccessType]
+~~~~~~~~~~~~~
+This attribute can be defined on a property, or a class to specify in which way
 the properties should be accessed. By default, the serializer will retrieve, or
 set the value via reflection, but you may change this to use a public method instead:
 
@@ -99,7 +171,7 @@ set the value via reflection, but you may change this to use a public method ins
     <?php
     use JMS\Serializer\Annotation\AccessType;
 
-    /** @AccessType("public_method") */
+    #[AccessType(type: 'public_method')]
     class User
     {
         private $name;
@@ -115,9 +187,9 @@ set the value via reflection, but you may change this to use a public method ins
         }
     }
 
-@Accessor
-~~~~~~~~~
-This annotation can be defined on a property to specify which public method should
+#[Accessor]
+~~~~~~~~~~~
+This attribute can be defined on a property to specify which public method should
 be called to retrieve, or set the value of the given property:
 
 .. code-block :: php
@@ -129,7 +201,7 @@ be called to retrieve, or set the value of the given property:
     {
         private $id;
 
-        /** @Accessor(getter="getTrimmedName",setter="setName") */
+        #[Accessor(getter: 'getTrimmedName', setter: 'setName')]
         private $name;
 
         // ...
@@ -147,24 +219,23 @@ be called to retrieve, or set the value of the given property:
 .. note ::
 
     If you need only to serialize your data, you can avoid providing a setter by
-    setting the property as read-only using the ``@ReadOnlyProperty`` annotation.
+    setting the property as read-only using the ``#[ReadOnlyProperty]`` attribute.
 
-@AccessorOrder
-~~~~~~~~~~~~~~
-This annotation can be defined on a class to control the order of properties. By
+#[AccessorOrder]
+~~~~~~~~~~~~~~~~
+This attribute can be defined on a class to control the order of properties. By
 default the order is undefined, but you may change it to either "alphabetical", or
 "custom".
 
 .. code-block :: php
 
     <?php
-    use JMS\Serializer\Annotation\AccessorOrder;
 
-    /**
-     * @AccessorOrder("alphabetical")
-     *
-     * Resulting Property Order: id, name
-     */
+    use JMS\Serializer\Annotation\AccessorOrder;
+    use JMS\Serializer\Annotation\VirtualProperty;
+    use JMS\Serializer\Annotation\SerializedName;
+
+    #[AccessorOrder('alphabetical')]
     class User
     {
         private $id;
@@ -172,10 +243,9 @@ default the order is undefined, but you may change it to either "alphabetical", 
     }
 
     /**
-     * @AccessorOrder("custom", custom = {"name", "id"})
-     *
      * Resulting Property Order: name, id
      */
+    #[AccessorOrder(order: 'custom', custom: ['name', 'id'])]
     class User
     {
         private $id;
@@ -183,30 +253,27 @@ default the order is undefined, but you may change it to either "alphabetical", 
     }
 
     /**
-     * @AccessorOrder("custom", custom = {"name", "someMethod" ,"id"})
-     *
      * Resulting Property Order: name, mood, id
      */
+    #[AccessorOrder(order: 'custom', custom: ['name', 'someMethod', 'id'])]
     class User
     {
         private $id;
         private $name;
 
-        /**
-         * @Serializer\VirtualProperty
-         * @Serializer\SerializedName("mood")
-         *
-         * @return string
-         */
-        public function getSomeMethod()
+        #[VirtualProperty]
+        #[SerializedName(name: 'mood')]
+
+        public function getSomeMethod(): string
         {
             return 'happy';
         }
     }
 
-@VirtualProperty
-~~~~~~~~~~~~~~~~
-This annotation can be defined on a method to indicate that the data returned by
+
+#[VirtualProperty]
+~~~~~~~~~~~~~~~~~~
+This attribute can be defined on a method to indicate that the data returned by
 the method should appear like a property of the object.
 
 A virtual property can be defined for a method of an object to serialize and can be
@@ -214,39 +281,25 @@ also defined at class level exposing data using the Symfony Expression Language.
 
 .. code-block :: php
 
-    /**
-     * @Serializer\VirtualProperty(
-     *     "firstName",
-     *     exp="object.getFirstName()",
-     *     options={@Serializer\SerializedName("my_first_name")}
-     *  )
-     */
+    #[Serializer\VirtualProperty(name: 'firstName', exp: 'object.getFirstName()', options: [[Serializer\SerializedName::class, ['my_first_name']]])]
     class Author
     {
-        /**
-         * @Serializer\Expose()
-         */
+        #[Serializer\Expose]
         private $id;
 
-        /**
-         * @Serializer\Exclude()
-         */
+        #[Serializer\Exclude]
         private $firstName;
 
-        /**
-         * @Serializer\Exclude()
-         */
+        #[Serializer\Exclude]
         private $lastName;
 
-        /**
-         * @Serializer\VirtualProperty()
-         */
-        public function getLastName()
+        #[Serializer\VirtualProperty]
+        public function getLastName(): string
         {
             return $this->lastName;
         }
 
-        public function getFirstName()
+        public function getFirstName(): string
         {
             return $this->firstName;
         }
@@ -259,14 +312,14 @@ In this example:
 - ``firstName`` is exposed using the ``object.getFirstName()`` expression (``exp`` can contain any valid symfony expression).
 
 
-``@VirtualProperty()`` can also have an optional property ``name``, used to define the internal property name
+``#[VirtualProperty]`` can also have an optional property ``name``, used to define the internal property name
 (for sorting proposes as example). When not specified, it defaults to the method name with the "get" prefix removed.
 
 .. note ::
 
     This only works for serialization and is completely ignored during deserialization.
 
-In PHP 8, due to the missing support for nested annotations, in the options array you need to pass an array with the class name and an array with the arguments for its constructor.
+In PHP 8, due to the missing support for nested attributes, in the options array you need to pass an array with the class name and an array with the arguments for its constructor.
 
 .. code-block :: php
 
@@ -282,64 +335,60 @@ In PHP 8, due to the missing support for nested annotations, in the options arra
     {
     ...
 
-@Inline
-~~~~~~~
-This annotation can be defined on a property to indicate that the data of the property
+#[Inline]
+~~~~~~~~~
+This attribute can be defined on a property to indicate that the data of the property
 should be inlined.
 
 **Note**: AccessorOrder will be using the name of the property to determine the order.
 
-@ReadOnlyProperty
-~~~~~~~~~~~~~~~~~
-This annotation can be defined on a property to indicate that the data of the property
+#[ReadOnlyProperty]
+~~~~~~~~~~~~~~~~~~~
+This attribute can be defined on a property to indicate that the data of the property
 is read only and cannot be set during deserialization.
 
-A property can be marked as non read only with ``@ReadOnlyProperty(false)`` annotation
+A property can be marked as non read only with ``#[ReadOnlyProperty(readOnly: false)]`` attribute
 (useful when a class is marked as read only).
 
-@PreSerialize
-~~~~~~~~~~~~~
-This annotation can be defined on a method which is supposed to be called before
+#[PreSerialize]
+~~~~~~~~~~~~~~~
+This attribute can be defined on a method which is supposed to be called before
 the serialization of the object starts.
 
-@PostSerialize
-~~~~~~~~~~~~~~
-This annotation can be defined on a method which is then called directly after the
+#[PostSerialize]
+~~~~~~~~~~~~~~~~
+This attribute can be defined on a method which is then called directly after the
 object has been serialized.
 
-@PostDeserialize
-~~~~~~~~~~~~~~~~
-This annotation can be defined on a method which is supposed to be called after
+#[PostDeserialize]
+~~~~~~~~~~~~~~~~~~
+This attribute can be defined on a method which is supposed to be called after
 the object has been deserialized.
 
-@Discriminator
-~~~~~~~~~~~~~~
+#[Discriminator]
+~~~~~~~~~~~~~~~~
 
-.. versionadded : 0.12
+This attribute allows serialization/deserialization of relations which are polymorphic, but
+where a common base class exists. The ``#[Discriminator]`` attribute has to be applied
+to the least super type:
 
-    @Discriminator was added
+.. code-block :: php
 
-This annotation allows serialization/deserialization of relations which are polymorphic, but
-where a common base class exists. The ``@Discriminator`` annotation has to be applied
-to the least super type::
-
-    /**
-     * @Discriminator(field = "type", disabled = false, map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
-     */
+    #[Serializer\Discriminator(field: 'type', disabled: false, map: ['car' => 'Car', 'moped' => 'Moped'], groups=["foo", "bar"])]
     abstract class Vehicle { }
     class Car extends Vehicle { }
     class Moped extends Vehicle { }
-
+    ...
 
 .. note ::
 
     `groups` is optional and is used as exclusion policy.
 
-@Type
-~~~~~
-This annotation can be defined on a property to specify the type of that property.
-For deserialization, this annotation must be defined.
-The ``@Type`` annotation can have parameters and parameters can be used by serialization/deserialization
+#[Type]
+~~~~~~~
+This attribute can be defined on a property to specify the type of that property.
+For deserialization, this attribute must be defined.
+The ``#[Type]`` attribute can have parameters and parameters can be used by serialization/deserialization
 handlers to enhance the serialization or deserialization result; for example, you may want to
 force a certain format to be used for serializing DateTime types and specifying at the same time a different format
 used when deserializing them.
@@ -521,94 +570,74 @@ Examples:
 
     class BlogPost
     {
-        /**
-         * @Type("ArrayCollection<MyNamespace\Comment>")
-         */
+        #[Type(name: "ArrayCollection<MyNamespace\Comment>")]
         private $comments;
 
-        /**
-         * @Type("string")
-         */
+        #[Type(name: "string")]
         private $title;
 
-        /**
-         * @Type("MyNamespace\Author")
-         */
+        #[Type(name: Author:class)]
         private $author;
 
-        /**
-         * @Type("DateTime")
-         */
+        #[Type(name: DateTime:class)]
         private $startAt;
 
-        /**
-         * @Type("DateTime<'Y-m-d'>")
-         */
+        #[Type(name: 'DateTime<'Y-m-d'>')]
         private $endAt;
 
-        /**
-         * @Type("DateTime<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
-         */
+        #[Type(name: 'DateTime<'Y-m-d'>')]
+
+        #[Type(name:"DateTime<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")]
         private $publishedAt;
 
-        /**
-         * @Type("DateTimeImmutable")
-         */
+        #[Type(name:'DateTimeImmutable')]
         private $createdAt;
 
-        /**
-         * @Type("DateTimeImmutable<'Y-m-d'>")
-         */
+        #[Type(name:"DateTimeImmutable<'Y-m-d'>")]
         private $updatedAt;
 
-        /**
-         * @Type("DateTimeImmutable<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")
-         */
+        #[Type(name:"DateTimeImmutable<'Y-m-d', '', ['Y-m-d', 'Y/m/d']>")]
         private $deletedAt;
 
-        /**
-         * @Type("boolean")
-         */
+        #[Type(name:'boolean')]
         private $published;
 
-        /**
-         * @Type("array<string, string>")
-         */
+        #[Type(name:'array<string, string>')]
         private $keyValueStore;
     }
 
 .. note ::
 
     if you are using ``PHP attributes`` with PHP 8.1 you can pass an object which implements ``__toString()`` method as a value for ``#[Type]`` attribute.
-    
+
     .. code-block :: php
 
-		  <?php
+        <?php
 
-		  namespace MyNamespace;
+        namespace MyNamespace;
 
-		  use JMS\Serializer\Annotation\Type;
+        use JMS\Serializer\Annotation\Type;
 
-		  class BlogPost
-		  {
-		      #[Type(new ArrayOf(Comment::class))]
-		      private $comments;
-		  }
-		  
-		  class ArrayOf
-		  {
-		  		public function __construct(private string $className) {}
-		  		
-		  		public function __toString(): string
-		  		{
-		  				return "array<$className>";
-		  		}
-		  }
+        class BlogPost
+        {
+            #[Type(new ArrayOf(Comment::class))]
+            private $comments;
+        }
+
+        class ArrayOf implements \Stringable
+        {
+            public function __construct(private string $className) {}
+
+            public function __toString(): string
+            {
+                return "array<$className>";
+            }
+        }
 
 .. _configuration: https://jmsyst.com/bundles/JMSSerializerBundle/master/configuration#configuration-block-2-0
 
-@XmlRoot
-~~~~~~~~
+#[XmlRoot]
+~~~~~~~~~~
 This allows you to specify the name of the top-level element.
 
 .. code-block :: php
@@ -617,7 +646,7 @@ This allows you to specify the name of the top-level element.
 
     use JMS\Serializer\Annotation\XmlRoot;
 
-    /** @XmlRoot("user") */
+    #[XmlRoot('user')]
     class User
     {
         private $name = 'Johannes';
@@ -633,12 +662,12 @@ Resulting XML:
 
 .. note ::
 
-    @XmlRoot only applies to the root element, but is for example not taken into
+    #[XmlRoot] only applies to the root element, but is for example not taken into
     account for collections. You can define the entry name for collections using
-    @XmlList, or @XmlMap.
+    #[XmlList], or #[XmlMap].
 
-@XmlAttribute
-~~~~~~~~~~~~~
+#[XmlAttribute]
+~~~~~~~~~~~~~~~
 This allows you to mark properties which should be set as attributes,
 and not as child elements.
 
@@ -650,7 +679,7 @@ and not as child elements.
 
     class User
     {
-        /** @XmlAttribute */
+        #[XmlAttribute]
         private $id = 1;
         private $name = 'Johannes';
     }
@@ -664,9 +693,9 @@ Resulting XML:
     </result>
 
 
-@XmlDiscriminator
-~~~~~~~~~~~~~~~~~
-This annotation allows to modify the behaviour of @Discriminator regarding handling of XML.
+#[XmlDiscriminator]
+~~~~~~~~~~~~~~~~~~~
+This attribute allows to modify the behaviour of ``#[Discriminator]`` regarding handling of XML.
 
 
 Available Options:
@@ -690,10 +719,8 @@ Example for "attribute":
     use JMS\Serializer\Annotation\Discriminator;
     use JMS\Serializer\Annotation\XmlDiscriminator;
 
-    /**
-     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
-     * @XmlDiscriminator(attribute=true)
-     */
+    #[Discriminator(field: 'type', map: ['car' => 'Car', 'moped' => 'Moped'], groups: ['foo', 'bar'])]
+    #[XmlDiscriminator(attribute: true)]
     abstract class Vehicle { }
     class Car extends Vehicle { }
 
@@ -713,12 +740,8 @@ Example for "cdata":
     use JMS\Serializer\Annotation\Discriminator;
     use JMS\Serializer\Annotation\XmlDiscriminator;
 
-
-
-    /**
-     * @Discriminator(field = "type", map = {"car": "Car", "moped": "Moped"}, groups={"foo", "bar"})
-     * @XmlDiscriminator(attribute=true)
-     */
+    #[Discriminator(field: 'type', map: ['car' => 'Car', 'moped' => 'Moped'], groups: ['foo', 'bar'])]
+    #[XmlDiscriminator]
     abstract class Vehicle { }
     class Car extends Vehicle { }
 
@@ -729,11 +752,11 @@ Resulting XML:
     <vehicle><type>car</type></vehicle>
 
 
-@XmlValue
-~~~~~~~~~
+#[XmlValue]
+~~~~~~~~~~~
 This allows you to mark properties which should be set as the value of the
 current element. Note that this has the limitation that any additional
-properties of that object must have the @XmlAttribute annotation.
+properties of that object must have the #[XmlAttribute] attribute.
 XMlValue also has property cdata. Which has the same meaning as the one in
 XMLElement.
 
@@ -745,15 +768,16 @@ XMLElement.
     use JMS\Serializer\Annotation\XmlValue;
     use JMS\Serializer\Annotation\XmlRoot;
 
-    /** @XmlRoot("price") */
+    #[XmlRoot('price')]
     class Price
     {
-        /** @XmlAttribute */
+        #[XmlAttribute]
         private $currency = 'EUR';
 
-        /** @XmlValue */
+        #[XmlValue]
         private $amount = 1.23;
     }
+
 
 Resulting XML:
 
@@ -761,10 +785,10 @@ Resulting XML:
 
     <price currency="EUR">1.23</price>
 
-@XmlList
-~~~~~~~~
+#[XmlList]
+~~~~~~~~~~
 This allows you to define several properties of how arrays should be
-serialized. This is very similar to @XmlMap, and should be used if the
+serialized. This is very similar to #[XmlMap], and should be used if the
 keys of the array are not important.
 
 .. code-block :: php
@@ -774,36 +798,23 @@ keys of the array are not important.
     use JMS\Serializer\Annotation\XmlList;
     use JMS\Serializer\Annotation\XmlRoot;
 
-    /** @XmlRoot("post") */
+    #[XmlRoot('post')]
     class Post
     {
-        /**
-         * @XmlList(inline = true, entry = "comment")
-         */
-        private $comments = [];
-
-        public function __construct(array $comments)
+        public function __construct(
+            #[XmlList(inline: true, entry: 'comment')]
+            private array $comments
+        )
         {
-            $this->comments = $comments;
         }
     }
 
     class Comment
     {
-        private $text;
-
-        public function __construct(string $text)
+        public function __construct(private string $text)
         {
-            $this->text = $text;
         }
     }
-
-    // usage
-    $post = new Post(
-        new Comment('Foo'),
-        new Comment('Bar'),
-    );
-    $xml = $serializer->serialize($post, 'xml');
 
 Resulting XML:
 
@@ -818,39 +829,37 @@ Resulting XML:
         </comment>
     </post>
 
-You can also specify the entry tag namespace using the ``namespace`` attribute (``@XmlList(inline = true, entry = "comment", namespace="http://www.example.com/ns")``).
+You can also specify the entry tag namespace using the ``namespace`` attribute (``#[XmlList(inline: true, entry: 'comment', namespace: 'http://www.example.com/ns')]``).
 
-@XmlMap
-~~~~~~~
-Similar to @XmlList, but the keys of the array are meaningful.
+#[XmlMap]
+~~~~~~~~~
+Similar to #[XmlList], but the keys of the array are meaningful.
 
-@XmlKeyValuePairs
-~~~~~~~~~~~~~~~~~
+#[XmlKeyValuePairs]
+~~~~~~~~~~~~~~~~~~~
 This allows you to use the keys of an array as xml tags.
 
 .. note ::
 
     When a key is an invalid xml tag name (e.g. 1_foo) the tag name *entry* will be used instead of the key.
 
-@XmlAttributeMap
-~~~~~~~~~~~~~~~~
+#[XmlAttributeMap]
+~~~~~~~~~~~~~~~~~~
 
-This is similar to the @XmlKeyValuePairs, but instead of creating child elements, it creates attributes.
+This is similar to the #[XmlKeyValuePairs], but instead of creating child elements, it creates attributes.
 
 .. code-block :: php
 
     <?php
 
-    use JMS\Serializer\Annotation\XmlAttribute;
+    use JMS\Serializer\Annotation\XmlAttributeMap;
 
     class Input
     {
-        /** @XmlAttributeMap */
-        private $id = array(
-            'name' => 'firstname',
-            'value' => 'Adrien',
-        );
+        #[XmlAttributeMap]
+        private $id = ['name' => 'firstname', 'value' => 'Adrien'];
     }
+
 
 Resulting XML:
 
@@ -858,24 +867,21 @@ Resulting XML:
 
     <result name="firstname" value="Adrien"/>
 
-@XmlElement
-~~~~~~~~~~~
-This annotation can be defined on a property to add additional xml serialization/deserialization properties.
+#[XmlElement]
+~~~~~~~~~~~~~
+This attribute can be defined on a property to add additional xml serialization/deserialization properties.
 
 .. code-block :: php
 
     <?php
 
     use JMS\Serializer\Annotation\XmlElement;
+    use JMS\Serializer\Annotation\XmlNamespace;
 
-    /**
-     * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
-     */
+    #[XmlNamespace(uri: 'http://www.w3.org/2005/Atom', prefix: 'atom')]
     class User
     {
-        /**
-        * @XmlElement(cdata=false, namespace="http://www.w3.org/2005/Atom")
-        */
+        #[XmlElement(cdata: false, namespace: 'http://www.w3.org/2005/Atom')]
         private $id = 'my_id';
     }
 
@@ -885,38 +891,37 @@ Resulting XML:
 
     <atom:id>my_id</atom:id>
 
-@XmlNamespace
-~~~~~~~~~~~~~
-This annotation allows you to specify Xml namespace/s and prefix used.
+#[XmlNamespace]
+~~~~~~~~~~~~~~~
+This attribute allows you to specify Xml namespace/s and prefix used.
 
 .. code-block :: php
 
     <?php
 
+    use JMS\Serializer\Annotation\Groups;
+    use JMS\Serializer\Annotation\SerializedName;
+    use JMS\Serializer\Annotation\Type;
+    use JMS\Serializer\Annotation\XmlElement;
     use JMS\Serializer\Annotation\XmlNamespace;
 
-    /**
-     * @XmlNamespace(uri="http://example.com/namespace")
-     * @XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="atom")
-     */
+    #[XmlNamespace(uri: 'http://example.com/namespace')]
+    #[XmlNamespace(uri: 'http://www.w3.org/2005/Atom', prefix: 'atom')]
     class BlogPost
     {
-        /**
-         * @Type("JMS\Serializer\Tests\Fixtures\Author")
-         * @Groups({"post"})
-         * @XmlElement(namespace="http://www.w3.org/2005/Atom")
-         */
-         private $author;
+        #[Type(\JMS\Serializer\Tests\Fixtures\Author::class)]
+        #[Groups(['post'])]
+        #[XmlElement(namespace: 'http://www.w3.org/2005/Atom')]
+        private $author;
     }
 
     class Author
     {
-        /**
-         * @Type("string")
-         * @SerializedName("full_name")
-         */
-         private $name;
+        #[Type('string')]
+        #[SerializedName('full_name')]
+        private $name;
     }
+
 
 Resulting XML:
 
@@ -930,57 +935,8 @@ Resulting XML:
     </blog>
 
 
-PHP 8 support
-~~~~~~~~~~~~~
-
-JMS serializer now supports PHP 8 attributes, with a few caveats:
-- Due to the missing support for nested annotations, the syntax for a few annotations has changed
-(see the ``VirtualProperty`` ``options`` syntax here below)
-- There is an edge case when setting this exact serialization group ``#[Groups(['value' => 'any value here'])]``.
-(when there is only one item in th serialization groups array and has as key ``value`` the attribute will not work as expected,
-please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here'])]`` that works with no issues),
-
-Converting your annotations to attributes
------------------------------------------
-
-Example:
-
-.. code-block :: php
-
-    /**
-     * @VirtualProperty(
-     *     "classlow",
-     *     exp="object.getVirtualValue(1)",
-     *     options={@Until("8")}
-     * )
-     * @VirtualProperty(
-     *     "classhigh",
-     *     exp="object.getVirtualValue(8)",
-     *     options={@Since("6")}
-     * )
-     */
-    #[VirtualProperty('classlow', exp: 'object.getVirtualValue(1)', options: [[Until::class, ['8']]])]
-    #[VirtualProperty('classhigh', exp: 'object.getVirtualValue(8)', options: [[Since::class, ['6']]])]
-    class ObjectWithVersionedVirtualProperties
-    {
-        /**
-         * @Groups({"versions"})
-         * @VirtualProperty
-         * @SerializedName("low")
-         * @Until("8")
-         */
-        #[Groups(['versions'])]
-        #[VirtualProperty]
-        #[SerializedName('low')]
-        #[Until('8')]
-        public function getVirtualLowValue()
-        {
-            return 1;
-        }
-    ...
-
 Enum support
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 Enum support is disabled by default, to enable it run:
 
@@ -994,7 +950,7 @@ Enum support is disabled by default, to enable it run:
 
 With the enum support enabled, enums are automatically detected using typed properties typehints.
 When typed properties are no available (virtual properties as example), it is necessary to explicitly typehint
-the underlying type using the ``@Type`` annotation.
+the underlying type using the ``#[Type]`` attribute.
 
 - If the enum is a ``BackedEnum``, the case value will be used for serialization and deserialization by default;
 - If the enum is not a ``BackedEnum``, the case name will be used for serialization and deserialization by default;

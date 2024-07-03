@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /** @ORM\Entity */
+#[ORM\Entity]
 class App
 {
     /**
@@ -18,7 +20,10 @@ class App
      *
      * @var string
      */
+    #[Serializer\SerializedName(name: 'id')]
     #[Serializer\Type(name: 'string')]
+    #[ORM\Id]
+    #[ORM\Column(type: Types::STRING, name: 'id')]
     protected $id;
 
     /**
@@ -28,13 +33,16 @@ class App
      * @var string
      */
     #[Serializer\Type(name: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="SmartPhone")
+     * @Serializer\Type("JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\SmartPhone")
      *
      * @var SmartPhone
      */
+    #[ORM\ManyToOne(targetEntity: SmartPhone::class)]
     #[Serializer\Type(name: SmartPhone::class)]
     private $smartPhone;
 

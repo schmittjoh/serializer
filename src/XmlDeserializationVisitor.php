@@ -88,7 +88,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             if (!in_array($internalSubset, $this->doctypeAllowList, true)) {
                 throw new InvalidArgumentException(sprintf(
                     'The document type "%s" is not allowed. If it is safe, you may add it to the allowlist configuration.',
-                    $internalSubset
+                    $internalSubset,
                 ));
             }
         }
@@ -288,7 +288,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
                 throw new LogicException(sprintf(
                     'The discriminator field name "%s" for base-class "%s" was not found in input data.',
                     $metadata->discriminatorFieldName,
-                    $metadata->name
+                    $metadata->name,
                 ));
         }
     }

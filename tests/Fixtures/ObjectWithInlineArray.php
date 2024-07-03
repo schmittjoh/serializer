@@ -16,9 +16,6 @@ final class ObjectWithInlineArray
     #[Serializer\Type(name: 'array<string,string>')]
     public $array;
 
-    /**
-     * @param array $array
-     */
     public function __construct(array $array)
     {
         $this->array = $array;

@@ -11,7 +11,7 @@ namespace JMS\Serializer\Annotation;
  * @author Alexander Klimenkov <alx.devel@gmail.com>
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
-final class VirtualProperty
+final class VirtualProperty implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 

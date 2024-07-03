@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\DeprecatedReadOnly;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
@@ -17,12 +18,14 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @ReadOnly
  */
 #[XmlRoot(name: 'author')]
+#[DeprecatedReadOnly]
 class AuthorDeprecatedReadOnlyPerClass
 {
     /**
      * @ReadOnly
      * @SerializedName("id")
      */
+    #[DeprecatedReadOnly]
     #[SerializedName(name: 'id')]
     private $id;
 
@@ -41,6 +44,7 @@ class AuthorDeprecatedReadOnlyPerClass
     #[Type(name: 'string')]
     #[SerializedName(name: 'full_name')]
     #[Accessor(getter: 'getName')]
+    #[DeprecatedReadOnly(readOnly: false)]
     private $name;
 
     public function getId()

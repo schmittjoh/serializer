@@ -6,6 +6,8 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
@@ -42,14 +44,14 @@ class SerializationContextFactoryTest extends TestCase
 
     public function testSerializeUseProvidedSerializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(SerializationContextFactoryInterface::class);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $builder = SerializerBuilder::create();
         $builder->setSerializationContextFactory($contextFactoryMock);
@@ -62,13 +64,13 @@ class SerializationContextFactoryTest extends TestCase
 
     public function testDeserializeUseProvidedDeserializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(DeserializationContextFactoryInterface::class);
         $context = new DeserializationContext();
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $builder = SerializerBuilder::create();
         $builder->setDeserializationContextFactory($contextFactoryMock);
@@ -81,14 +83,14 @@ class SerializationContextFactoryTest extends TestCase
 
     public function testToArrayUseProvidedSerializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\SerializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(SerializationContextFactoryInterface::class);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createSerializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $builder = SerializerBuilder::create();
         $builder->setSerializationContextFactory($contextFactoryMock);
@@ -101,13 +103,13 @@ class SerializationContextFactoryTest extends TestCase
 
     public function testFromArrayUseProvidedDeserializationContext()
     {
-        $contextFactoryMock = $this->getMockForAbstractClass('JMS\\Serializer\\ContextFactory\\DeserializationContextFactoryInterface');
+        $contextFactoryMock = $this->createMock(DeserializationContextFactoryInterface::class);
         $context = new DeserializationContext();
 
         $contextFactoryMock
             ->expects($this->once())
             ->method('createDeserializationContext')
-            ->will($this->returnValue($context));
+            ->willReturn($context);
 
         $builder = SerializerBuilder::create();
         $builder->setDeserializationContextFactory($contextFactoryMock);

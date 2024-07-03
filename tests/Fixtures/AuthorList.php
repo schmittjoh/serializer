@@ -43,8 +43,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->authors[$offset]);
     }
@@ -52,8 +51,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?Author
     {
         return $this->authors[$offset] ?? null;
     }
@@ -61,8 +59,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (null === $offset) {
             $this->authors[] = $value;
@@ -74,8 +71,7 @@ class AuthorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @see ArrayAccess
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->authors[$offset]);
     }

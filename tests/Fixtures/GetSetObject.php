@@ -13,7 +13,10 @@ use JMS\Serializer\Annotation\Type;
 #[AccessType(type: 'public_method')]
 class GetSetObject
 {
-    /** @AccessType("property") @Type("integer") */
+    /**
+     * @AccessType("property")
+     * @AccessType("property")
+ @Type("integer") */
     #[AccessType(type: 'property')]
     #[Type(name: 'integer')]
     private $id = 1;

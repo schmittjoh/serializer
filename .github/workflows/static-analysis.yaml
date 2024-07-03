@@ -38,3 +38,7 @@ jobs:
 
       - name: "Run a static analysis with phpstan/phpstan"
         run: "vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr"
+
+      - name: "Run a static analysis with rector/rector"
+        run: "vendor/bin/rector --dry-run"
+        if: ${{ matrix.php-version == 8.2 }}

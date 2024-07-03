@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Order;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ConstructorPromotion\DefaultValuesAndAccessors;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ArrayTest extends TestCase
@@ -38,13 +40,14 @@ class ArrayTest extends TestCase
     /**
      * @dataProvider scalarValues
      */
+    #[DataProvider('scalarValues')]
     public function testToArrayWithScalar($input)
     {
-        $this->expectException('JMS\Serializer\Exception\RuntimeException');
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
             gettype($input),
-            gettype($input)
+            gettype($input),
         ));
         $result = $this->serializer->toArray($input);
 
@@ -68,7 +71,7 @@ class ArrayTest extends TestCase
         ];
 
         $expected = new Order(new Price(2.5));
-        $result = $this->serializer->fromArray($data, 'JMS\Serializer\Tests\Fixtures\Order');
+        $result = $this->serializer->fromArray($data, Order::class);
 
         self::assertEquals($expected, $result);
     }

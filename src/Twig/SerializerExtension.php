@@ -24,6 +24,7 @@ class SerializerExtension extends SerializerBaseExtension
     public function __construct(SerializerInterface $serializer, string $serializationFunctionsPrefix = '')
     {
         $this->serializer = $serializer;
+
         parent::__construct($serializationFunctionsPrefix);
     }
 

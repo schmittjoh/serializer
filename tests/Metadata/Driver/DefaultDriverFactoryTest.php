@@ -15,10 +15,6 @@ class DefaultDriverFactoryTest extends TestCase
 {
     public function testDefaultDriverFactoryLoadsTypedPropertiesDriver()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
-        }
-
         $factory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
         $driver = $factory->createDriver([], new AnnotationReader());

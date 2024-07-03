@@ -32,7 +32,7 @@ class SerializerExtensionTest extends TestCase
 
         self::assertEquals(
             [new TwigFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')],
-            $serializerExtension->getFunctions()
+            $serializerExtension->getFunctions(),
         );
     }
 
@@ -55,7 +55,7 @@ class SerializerExtensionTest extends TestCase
 
         self::assertEquals(
             [new TwigFunction('foo_serialization_context', '\JMS\Serializer\SerializationContext::create')],
-            $serializerExtension->getFunctions()
+            $serializerExtension->getFunctions(),
         );
     }
 
@@ -80,11 +80,11 @@ class SerializerExtensionTest extends TestCase
         self::assertEquals('jms_serializer', $serializerExtension->getName());
         self::assertEquals(
             [new TwigFilter('serialize', [SerializerRuntimeHelper::class, 'serialize'])],
-            $serializerExtension->getFilters()
+            $serializerExtension->getFilters(),
         );
         self::assertEquals(
             [new TwigFunction('serialization_context', '\JMS\Serializer\SerializationContext::create')],
-            $serializerExtension->getFunctions()
+            $serializerExtension->getFunctions(),
         );
     }
 }

@@ -108,7 +108,7 @@ class YamlDriverTest extends BaseDriverTestCase
                 BlogPost::class,
                 Person::class,
             ],
-            $classNames
+            $classNames,
         );
     }
 

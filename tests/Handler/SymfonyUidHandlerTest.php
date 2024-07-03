@@ -10,6 +10,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\AbstractUid;
 use Symfony\Component\Uid\Ulid;
@@ -46,33 +47,36 @@ final class SymfonyUidHandlerTest extends TestCase
     /**
      * @dataProvider dataUid
      */
+    #[DataProvider('dataUid')]
     public function testSerializeUidToJson(AbstractUid $uid): void
     {
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', (string) $uid),
-            $this->createSerializer()->serialize($uid, 'json', null, AbstractUid::class)
+            $this->createSerializer()->serialize($uid, 'json', null, AbstractUid::class),
         );
     }
 
     /**
      * @dataProvider dataUid
      */
+    #[DataProvider('dataUid')]
     public function testSerializeUidToXmlWithCData(AbstractUid $uid): void
     {
         self::assertXmlStringEqualsXmlString(
             sprintf('<?xml version="1.0" encoding="UTF-8"?><result>%s</result>', (string) $uid),
-            $this->createSerializer()->serialize($uid, 'xml', null, AbstractUid::class)
+            $this->createSerializer()->serialize($uid, 'xml', null, AbstractUid::class),
         );
     }
 
     /**
      * @dataProvider dataUid
      */
+    #[DataProvider('dataUid')]
     public function testSerializeUidToXmlWithoutCData(AbstractUid $uid): void
     {
         self::assertXmlStringEqualsXmlString(
             sprintf('<?xml version="1.0" encoding="UTF-8"?><result>%s</result>', (string) $uid),
-            $this->createSerializer(false)->serialize($uid, 'xml', null, AbstractUid::class)
+            $this->createSerializer(false)->serialize($uid, 'xml', null, AbstractUid::class),
         );
     }
 
@@ -82,7 +86,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toBase32()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE32))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE32)),
         );
     }
 
@@ -92,7 +96,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toBase58()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE58))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_BASE58)),
         );
     }
 
@@ -102,7 +106,7 @@ final class SymfonyUidHandlerTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             sprintf('"%s"', $uid->toRfc4122()),
-            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_RFC4122))
+            $this->createSerializer()->serialize($uid, 'json', null, sprintf('%s<%s>', AbstractUid::class, SymfonyUidHandler::FORMAT_RFC4122)),
         );
     }
 
@@ -117,6 +121,7 @@ final class SymfonyUidHandlerTest extends TestCase
     /**
      * @dataProvider dataUid
      */
+    #[DataProvider('dataUid')]
     public function testDeserializeUidFromJson(AbstractUid $uid): void
     {
         self::assertTrue($uid->equals($this->createSerializer()->deserialize(sprintf('"%s"', (string) $uid), \get_class($uid), 'json')));
@@ -125,6 +130,7 @@ final class SymfonyUidHandlerTest extends TestCase
     /**
      * @dataProvider dataUid
      */
+    #[DataProvider('dataUid')]
     public function testDeserializeUidFromXml(AbstractUid $uid): void
     {
         self::assertTrue($uid->equals($this->createSerializer()->deserialize(sprintf('<?xml version="1.0" encoding="UTF-8"?><result>%s</result>', (string) $uid), \get_class($uid), 'xml')));

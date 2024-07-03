@@ -11,6 +11,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\ExclusionStrategy\AlwaysExcludeExclusionStrategy;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 class ArrayCollectionHandlerTest extends TestCase
@@ -18,6 +19,7 @@ class ArrayCollectionHandlerTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testSerializeArray()
     {
         $handler = new ArrayCollectionHandler();
@@ -36,6 +38,7 @@ class ArrayCollectionHandlerTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testSerializeArraySkipByExclusionStrategy()
     {
         $handler = new ArrayCollectionHandler(false);

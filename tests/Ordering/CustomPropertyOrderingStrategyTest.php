@@ -6,6 +6,7 @@ namespace JMS\Serializer\Tests\Ordering;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Ordering\CustomPropertyOrderingStrategy;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CustomPropertyOrderingStrategyTest extends TestCase
@@ -13,13 +14,14 @@ class CustomPropertyOrderingStrategyTest extends TestCase
     /**
      * @dataProvider dataOrder
      */
+    #[DataProvider('dataOrder')]
     public function testOrder(array $ordering, array $keysToSort, array $expectedResult): void
     {
         $strategy = new CustomPropertyOrderingStrategy(array_flip($ordering));
 
         $properties = array_combine(
             $keysToSort,
-            array_pad([], count($keysToSort), $this->createMock(PropertyMetadata::class))
+            array_pad([], count($keysToSort), $this->createMock(PropertyMetadata::class)),
         );
         $sortedProperties = $strategy->order($properties);
         self::assertEquals($expectedResult, array_keys($sortedProperties));

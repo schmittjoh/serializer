@@ -240,7 +240,7 @@ abstract class BaseDriverTestCase extends TestCase
                 'car' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Car',
                 'moped' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Moped',
             ],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
     }
 
@@ -257,7 +257,7 @@ abstract class BaseDriverTestCase extends TestCase
                 'post' => 'JMS\Serializer\Tests\Fixtures\Discriminator\Post',
                 'image_post' => 'JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost',
             ],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
     }
 
@@ -273,7 +273,7 @@ abstract class BaseDriverTestCase extends TestCase
             [
                 'child' => ObjectWithXmlAttributeDiscriminatorChild::class,
             ],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
         self::assertTrue($m->xmlDiscriminatorAttribute);
         self::assertFalse($m->xmlDiscriminatorCData);
@@ -291,7 +291,7 @@ abstract class BaseDriverTestCase extends TestCase
             [
                 'child' => ObjectWithXmlNamespaceDiscriminatorChild::class,
             ],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
         self::assertEquals('http://example.com/', $m->xmlDiscriminatorNamespace);
         self::assertFalse($m->xmlDiscriminatorAttribute);
@@ -320,7 +320,7 @@ abstract class BaseDriverTestCase extends TestCase
             [
                 'child' => ObjectWithXmlNamespaceAttributeDiscriminatorChild::class,
             ],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
         self::assertEquals('http://example.com/', $m->xmlDiscriminatorNamespace);
         self::assertTrue($m->xmlDiscriminatorAttribute);
@@ -337,7 +337,7 @@ abstract class BaseDriverTestCase extends TestCase
         self::assertEquals($m->name, $m->discriminatorBaseClass);
         self::assertEquals(
             ['car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'],
-            $m->discriminatorMap
+            $m->discriminatorMap,
         );
     }
 

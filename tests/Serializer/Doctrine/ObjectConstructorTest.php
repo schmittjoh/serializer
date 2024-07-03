@@ -13,12 +13,12 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
-use Doctrine\ORM\Version as ORMVersion;
 use Doctrine\Persistence\AbstractManagerRegistry;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
@@ -54,6 +54,7 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use LogicException;
 use Metadata\Driver\AdvancedDriverInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -272,7 +273,7 @@ class ObjectConstructorTest extends TestCase
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($serverDeserialized),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
     }
 
@@ -305,7 +306,8 @@ class ObjectConstructorTest extends TestCase
     /**
      * @dataProvider dataProviderPersistendCollectionIsNotReplaced
      */
-    public function testPersistendCollectionIsNotReplaced(string $data, string $type): void
+    #[DataProvider('dataProviderPersistendCollectionIsNotReplaced')]
+    public function testPersistendCollectionIsNotReplaced(string $serializedData, string $type): void
     {
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
@@ -322,12 +324,12 @@ class ObjectConstructorTest extends TestCase
         $em->flush();
         $em->clear();
 
-        $smartPhoneDeserialized = $serializer->deserialize($data, SmartPhone::class, $type);
+        $smartPhoneDeserialized = $serializer->deserialize($serializedData, SmartPhone::class, $type);
         self::assertInstanceOf(SmartPhone::class, $smartPhoneDeserialized);
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($smartPhoneDeserialized),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
 
         self::assertInstanceOf(PersistentCollection::class, $smartPhoneDeserialized->getAppsRaw());
@@ -337,14 +339,14 @@ class ObjectConstructorTest extends TestCase
         self::assertCount(
             1,
             $smartPhoneDeserialized->getApps(
-                $criteria
-            )
+                $criteria,
+            ),
         );
         $firstApp = $smartPhoneDeserialized->getApps()->first();
 
         self::assertSame(
             $em->getUnitOfWork()->getEntityState($firstApp),
-            UnitOfWork::STATE_MANAGED
+            UnitOfWork::STATE_MANAGED,
         );
 
         $em->flush();
@@ -358,10 +360,6 @@ class ObjectConstructorTest extends TestCase
 
     public function testFallbackOnEmbeddableClassWithXmlDriver()
     {
-        if (ORMVersion::compare('2.5') >= 0) {
-            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
-        }
-
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
         $fallback->expects($this->once())->method('construct');
 
@@ -380,7 +378,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $type = ['name' => BlogPostSeo::class, 'params' => []];
@@ -392,10 +390,6 @@ class ObjectConstructorTest extends TestCase
 
     public function testFallbackOnEmbeddableClassWithXmlDriverAndXmlData()
     {
-        if (ORMVersion::compare('2.5') >= 0) {
-            $this->markTestSkipped('Not using Doctrine ORM >= 2.5 with Embedded entities');
-        }
-
         $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
         $fallback->expects($this->once())->method('construct');
 
@@ -414,7 +408,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $type = ['name' => BlogPostSeo::class, 'params' => []];
@@ -479,8 +473,7 @@ class ObjectConstructorTest extends TestCase
     protected function setUp(): void
     {
         $this->visitor = $this->getMockBuilder(DeserializationVisitorInterface::class)->getMock();
-        $this->context = $this->getMockBuilder('JMS\Serializer\DeserializationContext')->getMock();
-
+        $this->context = $this->getMockBuilder(DeserializationContext::class)->getMock();
         $connection = $this->createConnection();
         $entityManager = $this->createEntityManager($connection);
 
@@ -496,7 +489,7 @@ class ObjectConstructorTest extends TestCase
                     default:
                         throw new RuntimeException(sprintf('Unknown service id "%s".', $id));
                 }
-            }
+            },
         );
 
         $this->driver = &$driver;
@@ -506,7 +499,7 @@ class ObjectConstructorTest extends TestCase
                     $defaultFactory = new DefaultDriverFactory(new IdenticalPropertyNamingStrategy());
 
                     return $driver = new DoctrineTypeDriver($defaultFactory->createDriver($metadataDirs, $annotationReader), $registry);
-                }
+                },
             ))
             ->build();
 
@@ -534,18 +527,28 @@ class ObjectConstructorTest extends TestCase
     {
         if (!$cfg) {
             $cfg = new Configuration();
-            $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
-                __DIR__ . '/../../Fixtures/Doctrine/Entity',
-                __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
-                __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
-            ]));
+
+            if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+                AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
+                $cfg->setMetadataDriverImpl(new AttributeDriver([
+                    __DIR__ . '/../../Fixtures/Doctrine/Entity',
+                    __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                ]));
+            } else {
+                $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
+                    __DIR__ . '/../../Fixtures/Doctrine/Entity',
+                    __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                ]));
+            }
         }
 
         $cfg->setAutoGenerateProxyClasses(true);
         $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
         $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
 
-        return EntityManager::create($con, $cfg);
+        return new EntityManager($con, $cfg);
     }
 
     /**
@@ -573,16 +576,16 @@ class ObjectConstructorTest extends TestCase
                 new DoctrineObjectConstructor(
                     $this->registry,
                     new UnserializeObjectConstructor(),
-                    DoctrineObjectConstructor::ON_MISSING_FALLBACK
-                )
+                    DoctrineObjectConstructor::ON_MISSING_FALLBACK,
+                ),
             )
             ->addDefaultHandlers()
             ->configureHandlers(function (HandlerRegistryInterface $handlerRegistry) {
                 $handlerRegistry->registerSubscribingHandler(
                     new ArrayCollectionHandler(
                         true,
-                        $this->registry
-                    )
+                        $this->registry,
+                    ),
                 );
             })
             ->build();

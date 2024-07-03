@@ -26,6 +26,7 @@ final class DocBlockTypeResolver
 {
     /** resolve single use statements */
     private const SINGLE_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[\s]*([^;\n]*)[\s]*;$/m';
+
     /** resolve group use statements */
     private const GROUP_USE_STATEMENTS_REGEX = '/^[^\S\r\n]*use[[\s]*([^;\n]*)[\s]*{([a-zA-Z0-9\s\n\r,]*)};$/m';
     private const GLOBAL_NAMESPACE_PREFIX = '\\';
@@ -114,17 +115,13 @@ final class DocBlockTypeResolver
         // Generic array syntax: array<Product> | array<\Foo\Bar\Product> | array<int,Product>
         if ($type instanceof GenericTypeNode) {
             if ($this->isSimpleType($type->type, 'array')) {
-                $resolvedTypes = array_map(function (TypeNode $node) use ($reflector) {
-                    return $this->resolveTypeFromTypeNode($node, $reflector);
-                }, $type->genericTypes);
+                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
 
                 return 'array<' . implode(',', $resolvedTypes) . '>';
             }
 
             if ($this->isSimpleType($type->type, 'list')) {
-                $resolvedTypes = array_map(function (TypeNode $node) use ($reflector) {
-                    return $this->resolveTypeFromTypeNode($node, $reflector);
-                }, $type->genericTypes);
+                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
 
                 return 'array<int, ' . implode(',', $resolvedTypes) . '>';
             }
@@ -193,9 +190,7 @@ final class DocBlockTypeResolver
      */
     private function filterNullFromTypes(array $types): array
     {
-        return array_values(array_filter(array_map(function (TypeNode $node) {
-            return $this->isNullType($node) ? null : $node;
-        }, $types)));
+        return array_values(array_filter(array_map(fn (TypeNode $node) => $this->isNullType($node) ? null : $node, $types)));
     }
 
     /**
@@ -248,10 +243,6 @@ final class DocBlockTypeResolver
      */
     private function expandClassNameUsingUseStatements(string $typeHint, \ReflectionClass $declaringClass, $reflector): string
     {
-        if ($this->isClassOrInterface($typeHint)) {
-            return $typeHint;
-        }
-
         $expandedClassName = $declaringClass->getNamespaceName() . '\\' . $typeHint;
         if ($this->isClassOrInterface($expandedClassName)) {
             return $expandedClassName;
@@ -279,6 +270,10 @@ final class DocBlockTypeResolver
             if ($phpstanArrayType) {
                 return $phpstanArrayType;
             }
+        }
+
+        if ($this->isClassOrInterface($typeHint)) {
+            return $typeHint;
         }
 
         throw new \InvalidArgumentException(sprintf("Can't use incorrect type %s for collection in %s:%s", $typeHint, $declaringClass->getName(), $reflector->getName()));
@@ -426,9 +421,7 @@ final class DocBlockTypeResolver
 
                     return sprintf('array<%s>', implode(
                         ',',
-                        array_map(static function (string $type) use ($reflector, $self) {
-                            return $self->resolveType(trim($type), $reflector);
-                        }, $types)
+                        array_map(static fn (string $type) => $self->resolveType(trim($type), $reflector), $types),
                     ));
                 }
             }
