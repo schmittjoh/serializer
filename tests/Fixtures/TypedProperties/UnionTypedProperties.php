@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Fixtures\TypedProperties;
 
 class UnionTypedProperties
 {
-    private string|int $data;
+    private int|bool|float|string $data;
 
     public function __construct($data)
     {

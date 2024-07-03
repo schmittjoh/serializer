@@ -2008,7 +2008,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->expectException(RuntimeException::class);
 
         $object = new UnionTypedDocBLockProperty(10000);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedDocBLockProperty::class));
+        $deserialized = $this->deserialize(static::getContent('data_integer'), UnionTypedDocBLockProperty::class);
     }
 
     public function testIterable(): void

@@ -14,42 +14,35 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class UnionHandler implements SubscribingHandlerInterface
 {
+    static $aliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
     /**
      * {@inheritdoc}
      */
     public static function getSubscribingMethods()
     {
-        return [
-            [
+        $methods = [];
+        $formats = ['json', 'xml'];
+
+        foreach ($formats as $format) {
+            $methods[] = [
                 'type' => 'union',
+                'format' => $format,
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'format' => 'json',
                 'method' => 'deserializeUnion',
-            ],
-            [
+            ];
+            $methods[] = [
                 'type' => 'union',
-                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'format' => 'xml',
-                'method' => 'deserializeUnion',
-            ],
-            [
-                'type' => 'union',
-                'format' => 'json',
+                'format' => $format,
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'method' => 'serializeUnion',
-            ],
-            [
-                'type' => 'union',
-                'format' => 'xml',
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'method' => 'serializeUnion',
-            ],
-        ];
+            ];
+        }
+        return $methods;
     }
 
     public function serializeUnion(
         SerializationVisitorInterface $visitor,
-        $data,
+        mixed $data,
         array $type,
         SerializationContext $context
     ) {
@@ -57,10 +50,10 @@ final class UnionHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param int|string|\SimpleXMLElement $data
+     * @param mixed $data
      * @param array $type
      */
-    public function deserializeUnion(DeserializationVisitorInterface $visitor, $data, array $type, DeserializationContext $context)
+    public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
     {
         if ($data instanceof \SimpleXMLElement) {
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
@@ -69,31 +62,63 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $this->matchSimpleType($data, $type, $context);
     }
 
-    private function matchSimpleType($data, array $type, Context $context)
+    private function matchSimpleType(mixed $data, array $type, Context $context)
     {
-        $dataType = gettype($data);
+        $dataType = $this->determineType($data, $type, $context->getFormat());
         $alternativeName = null;
-        switch ($dataType) {
-            case 'boolean':
-                $alternativeName = 'bool';
-                break;
-            case 'integer':
-                $alternativeName = 'int';
-                break;
-            case 'double':
-                $alternativeName = 'float';
-                break;
-            case 'array':
-            case 'string':
-                break;
-            default:
-                throw new RuntimeException();
+
+        if (isset($aliases[$dataType])) {
+            $alternativeName = $aliases[$dataType];
         }
 
         foreach ($type['params'] as $possibleType) {
             if ($possibleType['name'] === $dataType || $possibleType['name'] === $alternativeName) {
                 return $context->getNavigator()->accept($data, $possibleType);
             }
+        }
+    }
+
+    /**
+     *  ReflectionUnionType::getTypes() returns the types sorted according to these rules:
+     * - Classes, interfaces, traits, iterable (replaced by Traversable), ReflectionIntersectionType objects, parent and self:
+     *     these types will be returned first, in the order in which they were declared.
+     * - static and all built-in types (iterable replaced by array) will come next. They will always be returned in this order:
+     *     static, callable, array, string, int, float, bool (or false or true), null.
+     * 
+     * For determining types of primitives, it is necessary to reorder primitives so that they are tested from lowest specificity to highest:
+     * i.e. null, true, false, int, float, bool, string
+     */
+    private function reorderTypes(array $type): array
+    {
+        if ($type['params']) {
+            uasort($type['params'], function($a, $b) {
+                $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
+                return $order[$a['name']] || 7 <=> $order[$b['name']] || 7;
+            });
+        }
+        return $type;
+    }
+
+    private function determineType(mixed $data, array $type, string $format): string {
+        foreach ($this->reorderTypes($type)['params'] as $possibleType) {
+            if ($this->testPrimitive($data, $possibleType['name'], $format)) {
+                return $possibleType['name'];
+            }
+        }
+    }
+    private function testPrimitive(mixed $data, string $type, string $format): bool {
+        switch($type) {
+            case 'integer':
+            case 'int':
+                return (string)(int)$data === (string)$data;
+            case 'double':
+            case 'float':
+                return (string)(float)$data === (string)$data;
+            case 'bool':
+            case 'boolean':
+                return (string)(bool)$data === (string)$data;
+            case 'string':
+                return (string)$data === (string)$data;
         }
     }
 }

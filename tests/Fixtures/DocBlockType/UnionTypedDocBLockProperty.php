@@ -7,7 +7,7 @@ namespace JMS\Serializer\Tests\Fixtures\DocBlockType;
 class UnionTypedDocBLockProperty
 {
     /**
-     * @var int|string
+     * @var int|bool|float|string
      */
     private $data;
 

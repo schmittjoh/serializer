@@ -142,6 +142,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['uninitialized_typed_props'] = '{"virtual_role":{},"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
+            $outputs['data_float'] = '{"data":1.236}';
+            $outputs['data_bool'] = '{"data":false}';
+            $outputs['data_string'] = '{"data":"foo"}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
             $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
             $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
@@ -446,6 +449,27 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $object = new UnionTypedProperties(10000);
         self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
+
+        $object = new UnionTypedProperties(1.236);
+        self::assertEquals($object, $this->deserialize(static::getContent('data_float'), UnionTypedProperties::class));
+
+        $object = new UnionTypedProperties(false);
+        self::assertEquals($object, $this->deserialize(static::getContent('data_bool'), UnionTypedProperties::class));
+
+        $object = new UnionTypedProperties('foo');
+        self::assertEquals($object, $this->deserialize(static::getContent('data_string'), UnionTypedProperties::class));
+    }
+
+    public function testSerializeUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $serialized = $this->serialize(new UnionTypedProperties(10000));
+        self::assertEquals(static::getContent('data_integer'), $serialized);
     }
 
     /**

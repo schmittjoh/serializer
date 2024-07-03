@@ -38,6 +38,14 @@ final class UnionTypedPropertiesDriverTest extends TestCase
                         'name' => 'int',
                         'params' => [],
                     ],
+                    [
+                        'name' => 'float',
+                        'params' => [],
+                    ],
+                    [
+                        'name' => 'bool',
+                        'params' => [],
+                    ],
                 ],
             ],
             $m->propertyMetadata['data']->type
