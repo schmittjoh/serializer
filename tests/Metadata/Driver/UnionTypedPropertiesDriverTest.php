@@ -50,7 +50,7 @@ final class UnionTypedPropertiesDriverTest extends TestCase
                     ],
                 ],
             ],
-            $m->propertyMetadata['data']->type
+            $m->propertyMetadata['data']->type,
         );
     }
 

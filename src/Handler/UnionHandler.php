@@ -14,7 +14,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 final class UnionHandler implements SubscribingHandlerInterface
 {
-    static $aliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
+    private static $aliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
 
     /**
      * {@inheritdoc}
@@ -51,10 +51,6 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $this->matchSimpleType($data, $type, $context);
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     */
     public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
     {
         if ($data instanceof \SimpleXMLElement) {
@@ -69,8 +65,8 @@ final class UnionHandler implements SubscribingHandlerInterface
         $dataType = $this->determineType($data, $type, $context->getFormat());
         $alternativeName = null;
 
-        if (isset($aliases[$dataType])) {
-            $alternativeName = $aliases[$dataType];
+        if (isset(static::$aliases[$dataType])) {
+            $alternativeName = static::$aliases[$dataType];
         }
 
         foreach ($type['params'] as $possibleType) {
@@ -103,13 +99,15 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $type;
     }
 
-    private function determineType(mixed $data, array $type, string $format): string
+    private function determineType(mixed $data, array $type, string $format): string|null
     {
         foreach ($this->reorderTypes($type)['params'] as $possibleType) {
             if ($this->testPrimitive($data, $possibleType['name'], $format)) {
                 return $possibleType['name'];
             }
         }
+
+        return null;
     }
 
     private function testPrimitive(mixed $data, string $type, string $format): bool
@@ -130,5 +128,7 @@ final class UnionHandler implements SubscribingHandlerInterface
             case 'string':
                 return (string) $data === (string) $data;
         }
+
+        return false;
     }
 }

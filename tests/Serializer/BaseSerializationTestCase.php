@@ -1987,7 +1987,6 @@ abstract class BaseSerializationTestCase extends TestCase
         $object = new UnionTypedDocBlockProperty(1.236);
 
         self::assertEquals(static::getContent('data_float'), $this->serialize($object));
-
     }
 
     public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
