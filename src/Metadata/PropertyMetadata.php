@@ -33,6 +33,12 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $serializedName;
 
+
+    /**
+     * @var array
+     */
+    public $unionDiscriminator;
+
     /**
      * @var array|null
      */
@@ -224,6 +230,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->untilVersion,
             $this->groups,
             $this->serializedName,
+            $this->unionDiscriminator,
             $this->type,
             $this->xmlCollection,
             $this->xmlCollectionInline,
@@ -258,6 +265,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->untilVersion,
             $this->groups,
             $this->serializedName,
+            $this->unionDiscriminator,
             $this->type,
             $this->xmlCollection,
             $this->xmlCollectionInline,

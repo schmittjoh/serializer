@@ -94,4 +94,8 @@ interface DeserializationVisitorInterface extends VisitorInterface
      * @return mixed
      */
     public function getResult($data);
+
+    public function setRequireAllRequiredProperties(bool $requireAllRequiredProperties): void;
+
+    public function getRequireAllRequiredProperties(): bool;
 }

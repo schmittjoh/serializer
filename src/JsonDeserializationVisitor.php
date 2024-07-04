@@ -33,13 +33,30 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     private $currentObject;
 
+    /**
+     * @var bool
+     */
+    private $requireAllRequiredProperties;
+
     public function __construct(
         int $options = 0,
-        int $depth = 512
+        int $depth = 512,
+        bool $requireAllRequiredProperties = false
     ) {
         $this->objectStack = new \SplStack();
         $this->options = $options;
         $this->depth = $depth;
+        $this->requireAllRequiredProperties = $requireAllRequiredProperties;
+    }
+
+    public function setRequireAllRequiredProperties(bool $requireAllRequiredProperties): void
+    {
+        $this->requireAllRequiredProperties = $requireAllRequiredProperties;
+    }
+
+    public function getRequireAllRequiredProperties(): bool
+    {
+        return $this->requireAllRequiredProperties;
     }
 
     /**
@@ -151,6 +168,9 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
+        $cur = $this->getCurrentObject() ? get_class($this->getCurrentObject()): 'null';
+        $objtype = $object ? get_class($object) : 'null';
+        $stacksize = $this->objectStack->count();
         $this->setCurrentObject($object);
     }
 
@@ -194,8 +214,11 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
     {
         $obj = $this->currentObject;
-        $this->revertCurrentObject();
+        $prevObj = $this->objectStack->top();
+        $prevObjType = $prevObj ? get_class($prevObj) : 'null';
 
+        $this->revertCurrentObject();
+        $stacksize = $this->objectStack->count();
         return $obj;
     }
 

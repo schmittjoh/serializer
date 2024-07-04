@@ -16,6 +16,7 @@ use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\SkipHandlerException;
+use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
@@ -197,6 +198,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                    $allowsNull = $this->allowsNull($propertyMetadata->type);
                     if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
@@ -212,23 +214,41 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                     $this->context->pushPropertyMetadata($propertyMetadata);
                     try {
                         $v = $this->visitor->visitProperty($propertyMetadata, $data);
+
                         $this->accessor->setValue($object, $v, $propertyMetadata, $this->context);
                     } catch (NotAcceptableException $e) {
                         if (true === $propertyMetadata->hasDefault) {
                             $cloned = clone $propertyMetadata;
                             $cloned->setter = null;
                             $this->accessor->setValue($object, $cloned->defaultValue, $cloned, $this->context);
+                        } elseif (!$allowsNull && $this->visitor->getRequireAllRequiredProperties()) {
+                            $this->visitor->endVisitingObject($metadata, $data, $type);
+                            throw new PropertyMissingException("Property $propertyMetadata->name is missing from data ");
                         }
                     }
-
+                    
                     $this->context->popPropertyMetadata();
                 }
 
+
                 $rs = $this->visitor->endVisitingObject($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $rs, $type);
-
                 return $rs;
         }
+    }
+
+    private function allowsNull(array $type) {
+        $allowsNull = false;
+        if ($type['name'] === 'union') {
+            foreach($type['params'] as $param) {
+                if ($param['name'] === 'NULL') {
+                    $allowsNull = true;
+                }
+            }
+        } elseif($type['name'] === 'NULL') {
+            $allowsNull = true;
+        }
+        return $allowsNull;
     }
 
     /**
