@@ -99,7 +99,7 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $type;
     }
 
-    private function determineType(mixed $data, array $type, string $format): string|null
+    private function determineType(mixed $data, array $type, string $format): ?string
     {
         foreach ($this->reorderTypes($type)['params'] as $possibleType) {
             if ($this->testPrimitive($data, $possibleType['name'], $format)) {

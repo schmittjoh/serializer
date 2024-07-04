@@ -2117,7 +2117,9 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
+        if (PHP_VERSION_ID >= 80000) {
+            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
+        }
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
