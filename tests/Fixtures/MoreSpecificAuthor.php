@@ -6,9 +6,8 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\Discriminator;
 
-class DiscriminatedAuthor
+class MoreSpecificAuthor
 {
     /**
      * @Type("string")
@@ -19,14 +18,15 @@ class DiscriminatedAuthor
     private $name;
 
     /**
-     * @Type("string")
+     * @Type("bool")
      */
-    #[Type(name: 'string')]
-    private $type = 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor';
+    #[Type(name: 'bool')]
+    private $isMoreSpecific;
 
-    public function __construct($name)
+    public function __construct($name, $isMoreSpecific)
     {
         $this->name = $name;
+        $this->isMoreSpecific = $isMoreSpecific;
     }
 
     public function getName()
@@ -34,8 +34,8 @@ class DiscriminatedAuthor
         return $this->name;
     }
 
-    public function getType()
+    public function getIsMoreSpecific()
     {
-        return $this->type;
+        return $this->isMoreSpecific;
     }
 }

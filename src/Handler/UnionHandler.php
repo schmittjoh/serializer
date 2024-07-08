@@ -71,32 +71,37 @@ final class UnionHandler implements SubscribingHandlerInterface
     {
         $alternativeName = null;
     
-        foreach ($this->reorderTypes($type)['params'] as $possibleType) {
+        foreach ($type['params'] as $possibleType) {
             if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                 continue;
             }
 
             $propertyMetadata = $context->getMetadataStack()->top();
-            var_dump($propertyMetadata);
-        
+            $discriminatorAttribute = $propertyMetadata->unionDiscriminatorAttribute;
+            if ($discriminatorAttribute !== null) {
+                $finalType = [
+                    'name' => $data[$discriminatorAttribute],
+                    'params' => []
+                ];
+                return $context->getNavigator()->accept($data, $finalType);
+            } else {
+                try {
+                    $previousVisitorRequireSetting = $visitor->getRequireAllRequiredProperties();
+                    if ($this->requireAllProperties) {
+                        $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
+                    }
 
-            try {
-                $exists = class_exists($possibleType['name']);
-                $previousVisitorRequireSetting = $visitor->getRequireAllRequiredProperties();
-                if ($this->requireAllProperties) {
-                    $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
+                    $accept = $context->getNavigator()->accept($data, $possibleType);
+                    if ($this->requireAllProperties) {
+                        $visitor->setRequireAllRequiredProperties($previousVisitorRequireSetting);
+                    }
+
+                    return $accept;
+                } catch (NonVisitableTypeException $e) {
+                    continue;
+                } catch (PropertyMissingException $e) {
+                    continue;
                 }
-
-                $accept = $context->getNavigator()->accept($data, $possibleType);
-                if ($this->requireAllProperties) {
-                    $visitor->setRequireAllRequiredProperties($previousVisitorRequireSetting);
-                }
-
-                return $accept;
-            } catch (NonVisitableTypeException $e) {
-                continue;
-            } catch (PropertyMissingException $e) {
-                continue;
             }
 
         }
@@ -111,11 +116,8 @@ final class UnionHandler implements SubscribingHandlerInterface
                 continue;
             }
             try {
-                $exists = class_exists($possibleType['name']);
-                if ($this->requireAllProperties) {
-                }
-
                 $accept = $context->getNavigator()->accept($data, $possibleType);
+
                 return $accept;
             } catch (NonVisitableTypeException $e) {
                 continue;

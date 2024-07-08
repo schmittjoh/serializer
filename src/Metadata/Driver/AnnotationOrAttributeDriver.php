@@ -36,6 +36,7 @@ use JMS\Serializer\Annotation\XmlMap;
 use JMS\Serializer\Annotation\XmlNamespace;
 use JMS\Serializer\Annotation\XmlRoot;
 use JMS\Serializer\Annotation\XmlValue;
+use JMS\Serializer\Annotation\UnionDiscriminator;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -258,6 +259,8 @@ class AnnotationOrAttributeDriver implements DriverInterface
                         $propertyMetadata->xmlAttributeMap = true;
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof UnionDiscriminator) {
+                        $propertyMetadata->setUnionDiscriminator($annot->field);
                     }
                 }
 

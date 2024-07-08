@@ -198,7 +198,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    $allowsNull = $this->allowsNull($propertyMetadata->type);
+                    $allowsNull = $propertyMetadata->type == null ? true : $this->allowsNull($propertyMetadata->type);
                     if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }

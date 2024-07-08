@@ -10,10 +10,7 @@ use JMS\Serializer\Annotation\UnionDiscriminator;
 
 class ComplexDiscriminatedUnion
 {
-    #[UnionDiscriminator(field: 'type', map: [
-        'author' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor',
-        'comment' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment',
-    ])]
+    #[UnionDiscriminator(field: 'type')]
     private DiscriminatedAuthor|DiscriminatedComment $data;
 
     public function __construct($data)

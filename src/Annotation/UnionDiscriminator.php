@@ -6,23 +6,18 @@ namespace JMS\Serializer\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY" })
+ * @Target({"PROPERTY"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class UnionDiscriminator implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 
-    /** @var array<string> */
-    public $map = [];
-
     /** @var string */
     public $field = 'type';
 
-    public function __construct(array $values = [], string $field = 'type', array $map = [])
+    public function __construct(array $values = [], string $field = 'type')
     {
-        echo '\n\n\nITS HAPPENING!\n\n\n';
         $this->loadAnnotationParameters(get_defined_vars());
-
     }
 }

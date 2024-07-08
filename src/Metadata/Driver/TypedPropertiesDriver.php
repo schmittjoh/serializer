@@ -48,19 +48,43 @@ class TypedPropertiesDriver implements DriverInterface
     }
 
     /**
-     *  ReflectionUnionType::getTypes() returns the types sorted according to these rules:
-     * - Classes, interfaces, traits, iterable (replaced by Traversable), ReflectionIntersectionType objects, parent and self:
-     *     these types will be returned first, in the order in which they were declared.
-     * - static and all built-in types (iterable replaced by array) will come next. They will always be returned in this order:
-     *     static, callable, array, string, int, float, bool (or false or true), null.
+     * In order to deserialize non-discriminated unions, each possible type is attempted in turn.
+     * Therefore, the types must be ordered from most specific to least specific, so that the most specific type is attempted first.
+     * 
+     * ReflectionUnionType::getTypes() does not return types in that order, so we need to reorder them.
      *
-     * For determining types of primitives, it is necessary to reorder primitives so that they are tested from lowest specificity to highest:
-     * i.e. null, true, false, int, float, bool, string
+     * This method reorders the types in the following order:
+     *  - primitives in speficity order: null, true, false, int, float, bool, string
+     *  - classes and interaces in order of most number of required properties
      */
     private function reorderTypes(array $type): array
     {
+        $self = $this;
         if ($type['params']) {
-            uasort($type['params'], static function ($a, $b) {
+            uasort($type['params'], function ($a, $b) use ($self) {
+                if (\class_exists($a['name']) && \class_exists($b['name'])) {
+                    $aMetadata = $self->loadMetadataForClass(new \ReflectionClass($a['name']));
+                    $bMetadata = $self->loadMetadataForClass(new \ReflectionClass($b['name']));
+                    $aRequiredPropertyCount = 0;
+                    $bRequiredPropertyCount = 0;
+                    foreach ($aMetadata->propertyMetadata as $propertyMetadata) {
+                        if (!$self->allowsNull($propertyMetadata->type)) {
+                            $aRequiredPropertyCount++;
+                        }
+                    }
+                    foreach ($bMetadata->propertyMetadata as $propertyMetadata) {
+                        if (!$self->allowsNull($propertyMetadata->type)) {
+                            $bRequiredPropertyCount++;
+                        }
+                    }
+                    return $bRequiredPropertyCount <=> $aRequiredPropertyCount;
+                }
+                if(\class_exists($a['name'])) {
+                    return 1;
+                }
+                if(\class_exists($b['name'])) {
+                    return -1;
+                }
                 $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
 
                 return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
@@ -68,6 +92,20 @@ class TypedPropertiesDriver implements DriverInterface
         }
 
         return $type;
+    }
+    
+    private function allowsNull(array $type) {
+        $allowsNull = false;
+        if ($type['name'] === 'union') {
+            foreach($type['params'] as $param) {
+                if ($param['name'] === 'NULL') {
+                    $allowsNull = true;
+                }
+            }
+        } elseif($type['name'] === 'NULL') {
+            $allowsNull = true;
+        }
+        return $allowsNull;
     }
 
     private function getDefaultWhiteList(): array

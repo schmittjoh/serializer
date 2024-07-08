@@ -19,11 +19,26 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
     /** @var JsonDeserializationVisitor */
     private $wrappedDeserializationVisitor;
 
+    /**
+     * THIS IS ONLY USED FOR UNION DESERIALIZATION WHICH IS NOT SUPPORTED IN XML
+     * @var bool
+     */
+    private $requireAllRequiredProperties = false;
+
     public function __construct(
         int $options = 0,
         int $depth = 512
     ) {
         $this->wrappedDeserializationVisitor = new JsonDeserializationVisitor($options, $depth);
+    }
+    public function setRequireAllRequiredProperties(bool $requireAllRequiredProperties): void
+    {
+        $this->requireAllRequiredProperties = $requireAllRequiredProperties;
+    }
+
+    public function getRequireAllRequiredProperties(): bool
+    {
+        return $this->requireAllRequiredProperties;
     }
 
     public function setNavigator(GraphNavigatorInterface $navigator): void

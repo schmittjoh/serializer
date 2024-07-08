@@ -35,9 +35,9 @@ class PropertyMetadata extends BasePropertyMetadata
 
 
     /**
-     * @var array
+     * @var string|null
      */
-    public $unionDiscriminator;
+    public $unionDiscriminatorAttribute;
 
     /**
      * @var array|null
@@ -201,6 +201,10 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->getter = $getter;
         $this->setter = $setter;
     }
+    public function setUnionDiscriminator(string $field): void
+    {
+        $this->unionDiscriminatorAttribute = $field;
+    }
 
     public function setType(array $type): void
     {
@@ -230,7 +234,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->untilVersion,
             $this->groups,
             $this->serializedName,
-            $this->unionDiscriminator,
+            $this->unionDiscriminatorAttribute,
             $this->type,
             $this->xmlCollection,
             $this->xmlCollectionInline,
@@ -265,7 +269,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->untilVersion,
             $this->groups,
             $this->serializedName,
-            $this->unionDiscriminator,
+            $this->unionDiscriminatorAttribute,
             $this->type,
             $this->xmlCollection,
             $this->xmlCollectionInline,

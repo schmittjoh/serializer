@@ -24,7 +24,7 @@ class DiscriminatedComment
      * @Type("string")
      */
     #[Type(name: 'string')]
-    private $type = 'comment';
+    private $type = 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment';
 
 
     public function __construct(?Author $author, $text)

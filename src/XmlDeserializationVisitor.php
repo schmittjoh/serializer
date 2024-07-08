@@ -54,6 +54,12 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     private $options;
 
+    /**
+     * THIS IS ONLY USED FOR UNION DESERIALIZATION WHICH IS NOT SUPPORTED IN XML
+     * @var bool
+     */
+    private $requireAllRequiredProperties = false;
+
     public function __construct(
         bool $disableExternalEntities = true,
         array $doctypeAllowList = [],
@@ -65,6 +71,16 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         $this->disableExternalEntities = $disableExternalEntities;
         $this->doctypeAllowList = $doctypeAllowList;
         $this->options = $options;
+    
+    }
+    public function setRequireAllRequiredProperties(bool $requireAllRequiredProperties): void
+    {
+        $this->requireAllRequiredProperties = $requireAllRequiredProperties;
+    }
+
+    public function getRequireAllRequiredProperties(): bool
+    {
+        return $this->requireAllRequiredProperties;
     }
 
     /**
