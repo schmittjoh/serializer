@@ -50,7 +50,7 @@ class TypedPropertiesDriver implements DriverInterface
     /**
      * In order to deserialize non-discriminated unions, each possible type is attempted in turn.
      * Therefore, the types must be ordered from most specific to least specific, so that the most specific type is attempted first.
-     * 
+     *
      * ReflectionUnionType::getTypes() does not return types in that order, so we need to reorder them.
      *
      * This method reorders the types in the following order:
@@ -61,30 +61,35 @@ class TypedPropertiesDriver implements DriverInterface
     {
         $self = $this;
         if ($type['params']) {
-            uasort($type['params'], function ($a, $b) use ($self) {
+            uasort($type['params'], static function ($a, $b) use ($self) {
                 if (\class_exists($a['name']) && \class_exists($b['name'])) {
                     $aMetadata = $self->loadMetadataForClass(new \ReflectionClass($a['name']));
                     $bMetadata = $self->loadMetadataForClass(new \ReflectionClass($b['name']));
                     $aRequiredPropertyCount = 0;
                     $bRequiredPropertyCount = 0;
                     foreach ($aMetadata->propertyMetadata as $propertyMetadata) {
-                        if (!$self->allowsNull($propertyMetadata->type)) {
+                        if ($propertyMetadata->type && !$self->allowsNull($propertyMetadata->type)) {
                             $aRequiredPropertyCount++;
                         }
                     }
+
                     foreach ($bMetadata->propertyMetadata as $propertyMetadata) {
-                        if (!$self->allowsNull($propertyMetadata->type)) {
+                        if ($propertyMetadata->type && !$self->allowsNull($propertyMetadata->type)) {
                             $bRequiredPropertyCount++;
                         }
                     }
+
                     return $bRequiredPropertyCount <=> $aRequiredPropertyCount;
                 }
-                if(\class_exists($a['name'])) {
+
+                if (\class_exists($a['name'])) {
                     return 1;
                 }
-                if(\class_exists($b['name'])) {
+
+                if (\class_exists($b['name'])) {
                     return -1;
                 }
+
                 $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
 
                 return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
@@ -93,18 +98,20 @@ class TypedPropertiesDriver implements DriverInterface
 
         return $type;
     }
-    
-    private function allowsNull(array $type) {
+
+    private function allowsNull(array $type)
+    {
         $allowsNull = false;
-        if ($type['name'] === 'union') {
-            foreach($type['params'] as $param) {
-                if ($param['name'] === 'NULL') {
+        if ('union' === $type['name']) {
+            foreach ($type['params'] as $param) {
+                if ('NULL' === $param['name']) {
                     $allowsNull = true;
                 }
             }
-        } elseif($type['name'] === 'NULL') {
+        } elseif ('NULL' === $type['name']) {
             $allowsNull = true;
         }
+
         return $allowsNull;
     }
 

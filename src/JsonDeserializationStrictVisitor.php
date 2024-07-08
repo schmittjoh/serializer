@@ -21,6 +21,7 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
 
     /**
      * THIS IS ONLY USED FOR UNION DESERIALIZATION WHICH IS NOT SUPPORTED IN XML
+     *
      * @var bool
      */
     private $requireAllRequiredProperties = false;
@@ -31,6 +32,7 @@ final class JsonDeserializationStrictVisitor extends AbstractVisitor implements 
     ) {
         $this->wrappedDeserializationVisitor = new JsonDeserializationVisitor($options, $depth);
     }
+
     public function setRequireAllRequiredProperties(bool $requireAllRequiredProperties): void
     {
         $this->requireAllRequiredProperties = $requireAllRequiredProperties;

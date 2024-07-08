@@ -6,13 +6,13 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\NonVisitableTypeException;
+use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use JMS\Serializer\Exception\NonVisitableTypeException;
-use JMS\Serializer\Exception\PropertyMissingException;
 
 final class UnionHandler implements SubscribingHandlerInterface
 {
@@ -64,13 +64,14 @@ final class UnionHandler implements SubscribingHandlerInterface
         if ($data instanceof \SimpleXMLElement) {
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
+
         return $this->deserializeType($visitor, $data, $type, $context);
     }
 
     private function deserializeType(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
     {
         $alternativeName = null;
-    
+
         foreach ($type['params'] as $possibleType) {
             if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                 continue;
@@ -78,11 +79,12 @@ final class UnionHandler implements SubscribingHandlerInterface
 
             $propertyMetadata = $context->getMetadataStack()->top();
             $discriminatorAttribute = $propertyMetadata->unionDiscriminatorAttribute;
-            if ($discriminatorAttribute !== null) {
+            if (null !== $discriminatorAttribute) {
                 $finalType = [
                     'name' => $data[$discriminatorAttribute],
-                    'params' => []
+                    'params' => [],
                 ];
+
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
                 try {
@@ -103,37 +105,36 @@ final class UnionHandler implements SubscribingHandlerInterface
                     continue;
                 }
             }
-
         }
     }
 
     private function matchSimpleType(mixed $data, array $type, Context $context)
     {
         $alternativeName = null;
-    
+
         foreach ($type['params'] as $possibleType) {
             if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                 continue;
             }
-            try {
-                $accept = $context->getNavigator()->accept($data, $possibleType);
 
-                return $accept;
+            try {
+                return $context->getNavigator()->accept($data, $possibleType);
             } catch (NonVisitableTypeException $e) {
                 continue;
             } catch (PropertyMissingException $e) {
                 continue;
             }
-
         }
     }
 
-    private function isPrimitiveType(string $type): bool {
+    private function isPrimitiveType(string $type): bool
+    {
         return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string']);
     }
 
-    private function testPrimitive(mixed $data, string $type, string $format): bool {
-        switch($type) {
+    private function testPrimitive(mixed $data, string $type, string $format): bool
+    {
+        switch ($type) {
             case 'integer':
             case 'int':
                 return (string) (int) $data === (string) $data;

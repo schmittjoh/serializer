@@ -14,9 +14,9 @@ use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\SkipHandlerException;
-use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\GraphNavigator;
@@ -198,7 +198,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    $allowsNull = $propertyMetadata->type == null ? true : $this->allowsNull($propertyMetadata->type);
+                    $allowsNull = null === $propertyMetadata->type ? true : $this->allowsNull($propertyMetadata->type);
                     if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
@@ -223,31 +223,34 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                             $this->accessor->setValue($object, $cloned->defaultValue, $cloned, $this->context);
                         } elseif (!$allowsNull && $this->visitor->getRequireAllRequiredProperties()) {
                             $this->visitor->endVisitingObject($metadata, $data, $type);
+
                             throw new PropertyMissingException("Property $propertyMetadata->name is missing from data ");
                         }
                     }
-                    
+
                     $this->context->popPropertyMetadata();
                 }
 
-
                 $rs = $this->visitor->endVisitingObject($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $rs, $type);
+
                 return $rs;
         }
     }
 
-    private function allowsNull(array $type) {
+    private function allowsNull(array $type)
+    {
         $allowsNull = false;
-        if ($type['name'] === 'union') {
-            foreach($type['params'] as $param) {
-                if ($param['name'] === 'NULL') {
+        if ('union' === $type['name']) {
+            foreach ($type['params'] as $param) {
+                if ('NULL' === $param['name']) {
                     $allowsNull = true;
                 }
             }
-        } elseif($type['name'] === 'NULL') {
+        } elseif ('NULL' === $type['name']) {
             $allowsNull = true;
         }
+
         return $allowsNull;
     }
 
