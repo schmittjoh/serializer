@@ -76,32 +76,9 @@ final class UnionHandler implements SubscribingHandlerInterface
         }
     }
 
-    /**
-     *  ReflectionUnionType::getTypes() returns the types sorted according to these rules:
-     * - Classes, interfaces, traits, iterable (replaced by Traversable), ReflectionIntersectionType objects, parent and self:
-     *     these types will be returned first, in the order in which they were declared.
-     * - static and all built-in types (iterable replaced by array) will come next. They will always be returned in this order:
-     *     static, callable, array, string, int, float, bool (or false or true), null.
-     *
-     * For determining types of primitives, it is necessary to reorder primitives so that they are tested from lowest specificity to highest:
-     * i.e. null, true, false, int, float, bool, string
-     */
-    private function reorderTypes(array $type): array
-    {
-        if ($type['params']) {
-            uasort($type['params'], static function ($a, $b) {
-                $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
-
-                return (array_key_exists($a['name'], $order) ? $order[$a['name']] : 7) <=> (array_key_exists($b['name'], $order) ? $order[$b['name']] : 7);
-            });
-        }
-
-        return $type;
-    }
-
     private function determineType(mixed $data, array $type, string $format): ?string
     {
-        foreach ($this->reorderTypes($type)['params'] as $possibleType) {
+        foreach ($type['params'] as $possibleType) {
             if ($this->testPrimitive($data, $possibleType['name'], $format)) {
                 return $possibleType['name'];
             }

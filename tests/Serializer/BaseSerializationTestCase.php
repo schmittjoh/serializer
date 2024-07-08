@@ -2120,6 +2120,7 @@ abstract class BaseSerializationTestCase extends TestCase
         if (PHP_VERSION_ID >= 80000) {
             $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
         }
+
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,
             'AuthorList',
