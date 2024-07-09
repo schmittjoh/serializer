@@ -24,12 +24,32 @@ final class UnionTypedPropertiesDriverTest extends TestCase
         }
     }
 
-    public function testInferUnionTypesShouldResultInNoType()
+    public function testInferUnionTypesShouldResultInManyTypes()
     {
         $m = $this->resolve(UnionTypedProperties::class);
 
         self::assertEquals(
-            null,
+            [
+                'name' => 'union',
+                'params' => [
+                    [
+                        'name' => 'string',
+                        'params' => [],
+                    ],
+                    [
+                        'name' => 'int',
+                        'params' => [],
+                    ],
+                    [
+                        'name' => 'float',
+                        'params' => [],
+                    ],
+                    [
+                        'name' => 'bool',
+                        'params' => [],
+                    ],
+                ],
+            ],
             $m->propertyMetadata['data']->type,
         );
     }

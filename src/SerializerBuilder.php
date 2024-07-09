@@ -38,6 +38,7 @@ use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
+use JMS\Serializer\Handler\UnionHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -281,6 +282,10 @@ final class SerializerBuilder
 
         if ($this->enableEnumSupport) {
             $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
+        }
+
+        if (PHP_VERSION_ID >= 80000) {
+            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
         }
 
         return $this;
