@@ -55,36 +55,30 @@ final class UnionHandler implements SubscribingHandlerInterface
         mixed $data,
         array $type,
         SerializationContext $context
-    ) {
+    ): mixed {
         if ($this->isPrimitiveType(gettype($data))) {
-
             return $this->matchSimpleType($data, $type, $context);
         } else {
             $resolvedType = [
                 'name' => get_class($data),
-                'params' => []
+                'params' => [],
             ];
 
             return $context->getNavigator()->accept($data, $resolvedType);
         }
     }
 
-    public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
+    public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context): mixed
     {
         if ($data instanceof \SimpleXMLElement) {
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
 
-        return $this->deserializeType($visitor, $data, $type, $context);
-    }
-
-    private function deserializeType(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
-    {
         $alternativeName = null;
 
         foreach ($type['params'] as $possibleType) {
-            if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
-                continue;
+            if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                return $context->getNavigator()->accept($data, $possibleType);
             }
 
             $propertyMetadata = $context->getMetadataStack()->top();
@@ -135,6 +129,8 @@ final class UnionHandler implements SubscribingHandlerInterface
                 continue;
             }
         }
+
+        return null;
     }
 
     private function isPrimitiveType(string $type): bool
