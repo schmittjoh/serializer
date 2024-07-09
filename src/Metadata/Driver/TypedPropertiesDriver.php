@@ -63,7 +63,7 @@ class TypedPropertiesDriver implements DriverInterface
             uasort($type['params'], static function ($a, $b) {
                 $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
 
-                return (array_key_exists($a['name'], $order) ? $order[$a['name']] : 7) <=> (array_key_exists($b['name'], $order) ? $order[$b['name']] : 7);
+                return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
             });
         }
 
