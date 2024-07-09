@@ -177,6 +177,19 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                 throw new RuntimeException($msg);
 
+            case 'union':
+                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
+                    try {
+                        $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
+                        return $rs;
+                    } catch (SkipHandlerException $e) {
+                        // Skip handler, fallback to default behavior
+                    } catch (NotAcceptableException $e) {
+                        $this->context->stopVisiting($data);
+
+                        throw $e;
+                    }
+                }
             default:
                 if (null !== $data) {
                     if ($this->context->isVisiting($data)) {
