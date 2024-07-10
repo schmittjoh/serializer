@@ -82,13 +82,24 @@ final class UnionHandler implements SubscribingHandlerInterface
             }
 
             $propertyMetadata = $context->getMetadataStack()->top();
-            $discriminatorAttribute = $propertyMetadata->unionDiscriminatorAttribute;
-            if (null !== $discriminatorAttribute) {
+            if (null !== $propertyMetadata->unionDiscriminatorMap) {
+                if (array_key_exists($propertyMetadata->unionDiscriminatorField, $data) && array_key_exists($data[$propertyMetadata->unionDiscriminatorField], $propertyMetadata->unionDiscriminatorMap)) {
+                    $lkup = $data[$propertyMetadata->unionDiscriminatorField];
+                    $finalType = [
+                        'name' => $propertyMetadata->unionDiscriminatorMap[$lkup],
+                        'params' => []
+                    ];
+                } else {
+                    throw new NonVisitableTypeException("Union Discriminator Map does not contain field '$propertyMetadata->unionDiscriminatorField'");
+                }
+            } else {
                 $finalType = [
-                    'name' => $data[$discriminatorAttribute],
+                    'name' => $data[$propertyMetadata->unionDiscriminatorField],
                     'params' => [],
                 ];
+            }
 
+            if (null !== $finalType) {
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
                 try {
