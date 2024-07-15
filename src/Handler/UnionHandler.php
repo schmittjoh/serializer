@@ -9,6 +9,9 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Exception\NonStringCastableTypeException;
+use JMS\Serializer\Exception\NonIntCastableTypeException;
+use JMS\Serializer\Exception\NonFloatCastableTypeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -77,10 +80,6 @@ final class UnionHandler implements SubscribingHandlerInterface
         $alternativeName = null;
 
         foreach ($type['params'] as $possibleType) {
-            if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
-                return $context->getNavigator()->accept($data, $possibleType);
-            }
-
             $propertyMetadata = $context->getMetadataStack()->top();
             if (null !== $propertyMetadata->unionDiscriminatorMap) {
                 if (array_key_exists($propertyMetadata->unionDiscriminatorField, $data) && array_key_exists($data[$propertyMetadata->unionDiscriminatorField], $propertyMetadata->unionDiscriminatorMap)) {
@@ -99,7 +98,7 @@ final class UnionHandler implements SubscribingHandlerInterface
                 ];
             }
 
-            if (null !== $finalType) {
+            if (null !== $finalType && null !== $finalType['name']) {
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
                 try {
@@ -107,7 +106,6 @@ final class UnionHandler implements SubscribingHandlerInterface
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
                     }
-
                     $accept = $context->getNavigator()->accept($data, $possibleType);
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($previousVisitorRequireSetting);
@@ -117,6 +115,12 @@ final class UnionHandler implements SubscribingHandlerInterface
                 } catch (NonVisitableTypeException $e) {
                     continue;
                 } catch (PropertyMissingException $e) {
+                    continue;
+                } catch (NonStringCastableTypeException $e) {
+                    continue;
+                } catch (NonIntCastableTypeException $e) {
+                    continue;
+                } catch (NonFloatCastableTypeException $e) {
                     continue;
                 }
             }
