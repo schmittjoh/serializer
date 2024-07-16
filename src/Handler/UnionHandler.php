@@ -91,13 +91,12 @@ final class UnionHandler implements SubscribingHandlerInterface
                 } else {
                     throw new NonVisitableTypeException("Union Discriminator Map does not contain field '$propertyMetadata->unionDiscriminatorField'");
                 }
-            } else {
+            } else if(null != $propertyMetadata->unionDiscriminatorField) {
                 $finalType = [
                     'name' => $data[$propertyMetadata->unionDiscriminatorField],
                     'params' => [],
                 ];
             }
-
             if (null !== $finalType && null !== $finalType['name']) {
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
@@ -105,6 +104,9 @@ final class UnionHandler implements SubscribingHandlerInterface
                     $previousVisitorRequireSetting = $visitor->getRequireAllRequiredProperties();
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
+                    }
+                    if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                        continue;
                     }
                     $accept = $context->getNavigator()->accept($data, $possibleType);
                     if ($this->requireAllProperties) {
