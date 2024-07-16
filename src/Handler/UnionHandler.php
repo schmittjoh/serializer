@@ -81,6 +81,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
         foreach ($type['params'] as $possibleType) {
             $propertyMetadata = $context->getMetadataStack()->top();
+            $finalType = null;
             if (null !== $propertyMetadata->unionDiscriminatorMap) {
                 if (array_key_exists($propertyMetadata->unionDiscriminatorField, $data) && array_key_exists($data[$propertyMetadata->unionDiscriminatorField], $propertyMetadata->unionDiscriminatorMap)) {
                     $lkup = $data[$propertyMetadata->unionDiscriminatorField];
@@ -105,14 +106,13 @@ final class UnionHandler implements SubscribingHandlerInterface
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
                     }
-                    if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                    if ($this->isPrimitiveType($possibleType['name']) && (is_array($data) || !$this->testPrimitive($data, $possibleType['name'], $context->getFormat()))) {
                         continue;
                     }
                     $accept = $context->getNavigator()->accept($data, $possibleType);
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($previousVisitorRequireSetting);
                     }
-
                     return $accept;
                 } catch (NonVisitableTypeException $e) {
                     continue;
