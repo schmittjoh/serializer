@@ -7,6 +7,7 @@ namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -408,16 +409,20 @@ final class DocBlockTypeResolver
         $self = $this;
 
         foreach ($phpDocNode->children as $node) {
-            if ($node instanceof PhpDocTagNode && '@phpstan-type' === $node->name) {
-                $phpstanType = (string) $node->value;
-                preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
-                if (isset($foundPhpstanArray[1][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+            if (
+                $node instanceof PhpDocTagNode
+                && $node->value instanceof TypeAliasTagValueNode
+                && $node->value->alias === $typeHint
+            ) {
+                $phpstanType = $node->value->__toString();
+                preg_match(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[0])) {
                     return 'array';
                 }
 
-                preg_match_all(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
-                if (isset($foundPhpstanArray[2][0]) && $foundPhpstanArray[1][0] === $typeHint) {
-                    $types = explode(',', $foundPhpstanArray[2][0]);
+                preg_match(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[0])) {
+                    $types = explode(',', $foundPhpstanArray[2]);
 
                     return sprintf('array<%s>', implode(
                         ',',
