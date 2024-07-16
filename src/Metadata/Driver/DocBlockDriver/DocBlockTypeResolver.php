@@ -7,6 +7,7 @@ namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasImportTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
@@ -266,7 +267,7 @@ final class DocBlockTypeResolver
         }
 
         if ($declaringClass->getDocComment()) {
-            $phpstanArrayType = $this->getPhpstanType($declaringClass, $typeHint, $reflector);
+            $phpstanArrayType = $this->getPhpstanArrayType($declaringClass, $typeHint, $reflector);
 
             if ($phpstanArrayType) {
                 return $phpstanArrayType;
@@ -402,7 +403,7 @@ final class DocBlockTypeResolver
     /**
      * @param \ReflectionMethod|\ReflectionProperty $reflector
      */
-    private function getPhpstanType(\ReflectionClass $declaringClass, string $typeHint, $reflector): ?string
+    private function getPhpstanArrayType(\ReflectionClass $declaringClass, string $typeHint, $reflector): ?string
     {
         $tokens = $this->lexer->tokenize($declaringClass->getDocComment());
         $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
@@ -429,6 +430,14 @@ final class DocBlockTypeResolver
                         array_map(static fn (string $type) => $self->resolveType(trim($type), $reflector), $types),
                     ));
                 }
+            } elseif ($node instanceof PhpDocTagNode && $node->value instanceof TypeAliasImportTagValueNode) {
+                $importedFromFqn = $this->resolveType($node->value->importedFrom->name, $reflector);
+
+                return $this->getPhpstanArrayType(
+                    new \ReflectionClass($importedFromFqn),
+                    $node->value->importedAlias,
+                    $reflector,
+                );
             }
         }
 
