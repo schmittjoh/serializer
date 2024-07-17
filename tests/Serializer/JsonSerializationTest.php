@@ -23,9 +23,12 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexUnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\MappedComplexDiscriminatedUnion;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -158,6 +161,8 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedAuthor"}}';
             $outputs['data_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedComment"}}';
+            $outputs['data_mapped_discriminated_author'] = '{"data":{"full_name":"foo","type":"author"}}';
+            $outputs['data_mapped_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","type":"comment"}}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
             $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed_value":"C","backed_without_param":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"backed_array_without_param":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
             $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
@@ -527,6 +532,22 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $commentUnion = new ComplexDiscriminatedUnion(new DiscriminatedComment(new Author('foo'), 'bar'));
 
         self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_discriminated_comment'), ComplexDiscriminatedUnion::class));
+    }
+
+    public function testDeserializingMappedComplexDiscriminatedUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $authorUnion = new MappedComplexDiscriminatedUnion(new MappedDiscriminatedAuthor('foo'));
+        self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_mapped_discriminated_author'), MappedComplexDiscriminatedUnion::class));
+
+        $commentUnion = new MappedComplexDiscriminatedUnion(new MappedDiscriminatedComment(new Author('foo'), 'bar'));
+
+        self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_mapped_discriminated_comment'), MappedComplexDiscriminatedUnion::class));
     }
 
     public function testSerializeingComplexDiscriminatedUnionProperties()
