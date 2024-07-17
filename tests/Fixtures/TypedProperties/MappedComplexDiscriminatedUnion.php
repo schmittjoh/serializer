@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\TypedProperties;
 
-use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
-use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment;
 use JMS\Serializer\Annotation\UnionDiscriminator;
 
-class ComplexDiscriminatedUnion
+class MappedComplexDiscriminatedUnion
 {
-    #[UnionDiscriminator(field: 'objectType', map: ['author' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor', 'comment' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment'])]
-    private DiscriminatedAuthor|DiscriminatedComment $data;
+    #[UnionDiscriminator(field: 'objectType', map: ['author' => 'JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor', 'comment' => 'JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment'])]
+    private MappedDiscriminatedAuthor|MappedDiscriminatedComment $data;
 
     public function __construct($data)
     {

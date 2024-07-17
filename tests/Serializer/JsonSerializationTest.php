@@ -161,8 +161,8 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedAuthor"}}';
             $outputs['data_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedComment"}}';
-            $outputs['data_mapped_discriminated_author'] = '{"data":{"full_name":"foo","type":"author"}}';
-            $outputs['data_mapped_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","type":"comment"}}';
+            $outputs['data_mapped_discriminated_author'] = '{"data":{"full_name":"foo","objectType":"author"}}';
+            $outputs['data_mapped_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","objectType":"comment"}}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
             $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed_value":"C","backed_without_param":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"backed_array_without_param":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
             $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';

@@ -84,7 +84,7 @@ final class UnionHandler implements SubscribingHandlerInterface
             $finalType = null;
             if (null !== $propertyMetadata->unionDiscriminatorField) {
                 if (!array_key_exists($propertyMetadata->unionDiscriminatorField, $data)) {
-                    throw new NonVisitableTypeException("Union Discriminator Field '$propertyMetadata->unionDiscriminatorField' not found in data1");
+                    throw new NonVisitableTypeException("Union Discriminator Field '$propertyMetadata->unionDiscriminatorField' not found in data");
                 }
 
                 $lkup = $data[$propertyMetadata->unionDiscriminatorField];

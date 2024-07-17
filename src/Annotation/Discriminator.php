@@ -13,7 +13,7 @@ class Discriminator implements SerializerAttribute
 {
     use AnnotationUtilsTrait;
 
-    /** @var array<string, string> */
+    /** @var array<string> */
     public $map = [];
 
     /** @var string */
