@@ -285,7 +285,7 @@ final class SerializerBuilder
         }
 
         if (PHP_VERSION_ID >= 80000) {
-            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler(requireAllProperties: true));
+            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler(true));
         }
 
         return $this;

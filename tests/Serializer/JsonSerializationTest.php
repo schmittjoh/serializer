@@ -13,18 +13,18 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
-use JMS\Serializer\Tests\Fixtures\MoreSpecificAuthor;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\Comment;
+use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
+use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor;
+use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment;
+use JMS\Serializer\Tests\Fixtures\MoreSpecificAuthor;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
-use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
-use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
-use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor;
-use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexUnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
@@ -192,7 +192,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
         ];
     }
 
-
+    /**
+     * @dataProvider getFirstClassMapCollectionsValues
+     */
     #[DataProvider('getFirstClassMapCollectionsValues')]
     public function testFirstClassMapCollections(array $items, string $expected): void
     {
@@ -404,7 +406,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
         ];
     }
 
-
+    /**
+     * @dataProvider getTypeHintedArrays
+     */
     #[DataProvider('getTypeHintedArrays')]
     public function testTypeHintedArraySerialization(array $array, string $expected, ?SerializationContext $context = null)
     {
