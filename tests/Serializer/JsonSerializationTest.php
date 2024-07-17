@@ -25,10 +25,10 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
-use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
-use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexUnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexUnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\MappedComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -496,7 +496,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $authorUnion = new ComplexUnionTypedProperties(new Author('foo'));
         self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_author'), ComplexUnionTypedProperties::class));
-        
+
         $commentUnion = new ComplexUnionTypedProperties(new Comment(new Author('foo'), 'bar'));
         self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_comment'), ComplexUnionTypedProperties::class));
 
@@ -532,7 +532,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $authorUnion = new ComplexDiscriminatedUnion(new DiscriminatedAuthor('foo'));
         self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_discriminated_author'), ComplexDiscriminatedUnion::class));
-        
+
         $commentUnion = new ComplexDiscriminatedUnion(new DiscriminatedComment(new Author('foo'), 'bar'));
 
         self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_discriminated_comment'), ComplexDiscriminatedUnion::class));

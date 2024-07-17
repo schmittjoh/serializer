@@ -412,6 +412,4 @@ class DocBlockDriverTest extends TestCase
             $m->propertyMetadata['boolean']->type,
         );
     }
-
-
 }
