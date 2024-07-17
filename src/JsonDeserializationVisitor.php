@@ -168,9 +168,6 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function startVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
-        $cur = $this->getCurrentObject() ? get_class($this->getCurrentObject()) : 'null';
-        $objtype = $object ? get_class($object) : 'null';
-        $stacksize = $this->objectStack->count();
         $this->setCurrentObject($object);
     }
 
@@ -214,11 +211,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type): object
     {
         $obj = $this->currentObject;
-        $prevObj = $this->objectStack->top();
-        $prevObjType = $prevObj ? get_class($prevObj) : 'null';
-
         $this->revertCurrentObject();
-        $stacksize = $this->objectStack->count();
 
         return $obj;
     }
