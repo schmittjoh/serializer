@@ -224,7 +224,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                         } elseif (!$allowsNull && $this->visitor->getRequireAllRequiredProperties()) {
                             $this->visitor->endVisitingObject($metadata, $data, $type);
 
-                            throw new PropertyMissingException("Property $propertyMetadata->name is missing from data ");
+                            throw new PropertyMissingException('Property ' .$propertyMetadata->name . ' is missing from data ');
                         } elseif ($this->visitor->getRequireAllRequiredProperties()) {
                             $this->visitor->endVisitingObject($metadata, $data, $type);
 

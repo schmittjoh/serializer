@@ -17,9 +17,8 @@ class ComplexUnionTypedProperties
         $this->data = $data;
     }
 
-    public function getData(): Author|Comment
+    public function getData(): Author|Comment|MoreSpecificAuthor
     {
         return $this->data;
     }
 }
-

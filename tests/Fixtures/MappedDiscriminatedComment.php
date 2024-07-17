@@ -26,7 +26,6 @@ class MappedDiscriminatedComment
     #[Type(name: 'string')]
     private $objectType = 'comment';
 
-
     public function __construct(?Author $author, $text)
     {
         $this->author = $author;

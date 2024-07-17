@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Fixtures\TypedProperties;
 
+use JMS\Serializer\Annotation\UnionDiscriminator;
 use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedAuthor;
 use JMS\Serializer\Tests\Fixtures\MappedDiscriminatedComment;
-use JMS\Serializer\Annotation\UnionDiscriminator;
 
 class MappedComplexDiscriminatedUnion
 {
@@ -18,9 +18,8 @@ class MappedComplexDiscriminatedUnion
         $this->data = $data;
     }
 
-    public function getData(): Author|Comment
+    public function getData(): MappedDiscriminatedAuthor|MappedDiscriminatedComment
     {
         return $this->data;
     }
 }
-

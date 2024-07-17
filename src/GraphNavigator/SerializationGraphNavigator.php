@@ -189,6 +189,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                         throw $e;
                     }
                 }
+                break;
             default:
                 if (null !== $data) {
                     if ($this->context->isVisiting($data)) {

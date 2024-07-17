@@ -26,7 +26,6 @@ class DiscriminatedComment
     #[Type(name: 'string')]
     private $type = 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment';
 
-
     public function __construct(?Author $author, $text)
     {
         $this->author = $author;

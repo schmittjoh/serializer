@@ -496,7 +496,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $commentUnion = new ComplexUnionTypedProperties(new Comment(new Author('foo'), 'bar'));
         self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_comment'), ComplexUnionTypedProperties::class));
 
-        $moreSpecificAuthor = new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true), 'bar');
+        $moreSpecificAuthor = new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true));
         self::assertEquals($moreSpecificAuthor, $this->deserialize(static::getContent('data_more_specific_author'), ComplexUnionTypedProperties::class));
     }
 
@@ -514,7 +514,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $serialized = $this->serialize(new ComplexUnionTypedProperties(new Comment(new Author('foo'), 'bar')));
         self::assertEquals(static::getContent('data_comment'), $serialized);
 
-        $serialized = $this->serialize(new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true), 'bar'));
+        $serialized = $this->serialize(new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true)));
         self::assertEquals(static::getContent('data_more_specific_author'), $serialized);
     }
 
