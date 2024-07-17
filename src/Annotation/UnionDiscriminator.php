@@ -15,7 +15,7 @@ final class UnionDiscriminator implements SerializerAttribute
 
     /** @var array<string> */
     public $map = [];
-    
+
     /** @var string */
     public $field = 'type';
 

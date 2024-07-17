@@ -6,12 +6,12 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\NonFloatCastableTypeException;
+use JMS\Serializer\Exception\NonIntCastableTypeException;
+use JMS\Serializer\Exception\NonStringCastableTypeException;
 use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exception\NonStringCastableTypeException;
-use JMS\Serializer\Exception\NonIntCastableTypeException;
-use JMS\Serializer\Exception\NonFloatCastableTypeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -87,17 +87,18 @@ final class UnionHandler implements SubscribingHandlerInterface
                     $lkup = $data[$propertyMetadata->unionDiscriminatorField];
                     $finalType = [
                         'name' => $propertyMetadata->unionDiscriminatorMap[$lkup],
-                        'params' => []
+                        'params' => [],
                     ];
                 } else {
                     throw new NonVisitableTypeException("Union Discriminator Map does not contain field '$propertyMetadata->unionDiscriminatorField'");
                 }
-            } else if(null != $propertyMetadata->unionDiscriminatorField) {
+            } elseif (null !== $propertyMetadata->unionDiscriminatorField) {
                 $finalType = [
                     'name' => $data[$propertyMetadata->unionDiscriminatorField],
                     'params' => [],
                 ];
             }
+
             if (null !== $finalType && null !== $finalType['name']) {
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
@@ -106,13 +107,16 @@ final class UnionHandler implements SubscribingHandlerInterface
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($this->requireAllProperties);
                     }
+
                     if ($this->isPrimitiveType($possibleType['name']) && (is_array($data) || !$this->testPrimitive($data, $possibleType['name'], $context->getFormat()))) {
                         continue;
                     }
+
                     $accept = $context->getNavigator()->accept($data, $possibleType);
                     if ($this->requireAllProperties) {
                         $visitor->setRequireAllRequiredProperties($previousVisitorRequireSetting);
                     }
+
                     return $accept;
                 } catch (NonVisitableTypeException $e) {
                     continue;
