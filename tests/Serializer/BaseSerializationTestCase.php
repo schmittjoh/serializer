@@ -274,9 +274,9 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertNull($dObj->getNullProperty());
     }
 
-    // /**
-    //  * @dataProvider getTypes
-    //  */
+    /**
+     * @dataProvider getTypes
+     */
     #[DataProvider('getTypes')]
     public function testNull($type)
     {
@@ -292,9 +292,9 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->serialize(null, $context);
     }
 
-    // /**
-    //  * @dataProvider getTypes
-    //  */
+    /**
+     * @dataProvider getTypes
+     */
     #[DataProvider('getTypes')]
     public function testNullAllowed($type)
     {
@@ -1254,9 +1254,9 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertEquals(static::getContent('form_errors'), $this->serialize($errors));
     }
 
-    // /**
-    //  * @dataProvider initialFormTypeProvider
-    //  */
+    /**
+     * @dataProvider initialFormTypeProvider
+     */
     #[DataProvider('initialFormTypeProvider')]
     public function testNestedFormErrors($type)
     {
@@ -1282,10 +1282,10 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertEquals(static::getContent('nested_form_errors'), $this->serialize($form, $context));
     }
 
-    // /**
-    //  * @doesNotPerformAssertions
-    //  * @dataProvider initialFormTypeProvider
-    //  */
+    /**
+     * @doesNotPerformAssertions
+     * @dataProvider initialFormTypeProvider
+     */
     #[DataProvider('initialFormTypeProvider')]
     #[DoesNotPerformAssertions]
     public function testFormErrorsWithNonFormComponents($type)
