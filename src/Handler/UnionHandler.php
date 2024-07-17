@@ -131,6 +131,7 @@ final class UnionHandler implements SubscribingHandlerInterface
                 }
             }
         }
+        return null;
     }
 
     private function matchSimpleType(mixed $data, array $type, Context $context): mixed
