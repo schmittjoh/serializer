@@ -82,21 +82,27 @@ final class UnionHandler implements SubscribingHandlerInterface
         foreach ($type['params'] as $possibleType) {
             $propertyMetadata = $context->getMetadataStack()->top();
             $finalType = null;
-            if (null !== $propertyMetadata->unionDiscriminatorMap) {
-                if (array_key_exists($propertyMetadata->unionDiscriminatorField, $data) && array_key_exists($data[$propertyMetadata->unionDiscriminatorField], $propertyMetadata->unionDiscriminatorMap)) {
-                    $lkup = $data[$propertyMetadata->unionDiscriminatorField];
+            if (null !== $propertyMetadata->unionDiscriminatorField) {
+                if (!array_key_exists($propertyMetadata->unionDiscriminatorField, $data)) {
+                    throw new NonVisitableTypeException("Union Discriminator Field '$propertyMetadata->unionDiscriminatorField' not found in data1");
+                }
+
+                $lkup = $data[$propertyMetadata->unionDiscriminatorField];
+                if (!empty($propertyMetadata->unionDiscriminatorMap)) {
+                    if (array_key_exists($lkup, $propertyMetadata->unionDiscriminatorMap)) {
+                        $finalType = [
+                            'name' => $propertyMetadata->unionDiscriminatorMap[$lkup],
+                            'params' => [],
+                        ];
+                    } else {
+                        throw new NonVisitableTypeException("Union Discriminator Map does not contain key '$lkup'");
+                    }
+                } else {
                     $finalType = [
-                        'name' => $propertyMetadata->unionDiscriminatorMap[$lkup],
+                        'name' => $lkup,
                         'params' => [],
                     ];
-                } else {
-                    throw new NonVisitableTypeException("Union Discriminator Map does not contain field '$propertyMetadata->unionDiscriminatorField'");
                 }
-            } elseif (null !== $propertyMetadata->unionDiscriminatorField) {
-                $finalType = [
-                    'name' => $data[$propertyMetadata->unionDiscriminatorField],
-                    'params' => [],
-                ];
             }
 
             if (null !== $finalType && null !== $finalType['name']) {
@@ -131,6 +137,7 @@ final class UnionHandler implements SubscribingHandlerInterface
                 }
             }
         }
+
         return null;
     }
 
