@@ -147,7 +147,7 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
             return;
         }
 
-        if (true === $metadata->skipWhenEmpty && ($v instanceof \ArrayObject || \is_array($v)) && 0 === count($v)) {
+        if (true === $metadata->skipWhenEmpty && empty($v)) {
             return;
         }
 
