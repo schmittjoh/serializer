@@ -22,6 +22,8 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 
+use function sprintf;
+
 /**
  * @internal
  */
@@ -131,19 +133,42 @@ final class DocBlockTypeResolver
 
         // Generic array syntax: array<Product> | array<\Foo\Bar\Product> | array<int,Product>
         if ($type instanceof GenericTypeNode) {
-            if ($this->isSimpleType($type->type, 'array')) {
-                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
-
-                return 'array<' . implode(',', $resolvedTypes) . '>';
+            $isSimpleTypeArray = $this->isSimpleType($type->type, 'array');
+            $isSimpleTypeList = $this->isSimpleType($type->type, 'list');
+            if (!$isSimpleTypeArray && !$isSimpleTypeList) {
+                throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflector->getDeclaringClass()->getName(), $reflector->getName()));
             }
 
-            if ($this->isSimpleType($type->type, 'list')) {
-                $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
-
-                return 'array<int, ' . implode(',', $resolvedTypes) . '>';
+            if ($isSimpleTypeList) {
+                $keyType = 'int';
+                $valuesIndex = 0;
+            } else {
+                if (1 === count($type->genericTypes)) {
+                    $keyType = null;
+                    $valuesIndex = 0;
+                } else {
+                    $keyType = $this->resolveTypeFromTypeNode($type->genericTypes[0], $reflector);
+                    $valuesIndex = 1;
+                }
             }
 
-            throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflector->getDeclaringClass()->getName(), $reflector->getName()));
+            if ($type->genericTypes[$valuesIndex] instanceof UnionTypeNode) {
+                $valueTypes = array_map(
+                    fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector),
+                    $type->genericTypes[$valuesIndex]->types,
+                );
+            } else {
+                $valueType = $this->resolveTypeFromTypeNode($type->genericTypes[$valuesIndex], $reflector);
+                $valueTypes = [$valueType];
+            }
+
+            $valueType = implode('|', $valueTypes);
+
+            if (null === $keyType) {
+                return sprintf('array<%s>', $valueType);
+            }
+
+            return sprintf('array<%s, %s>', $keyType, $valueType);
         }
 
         // Primitives and class names: Collection | \Foo\Bar\Product | string
