@@ -7,6 +7,8 @@ namespace JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasImportTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -265,7 +267,7 @@ final class DocBlockTypeResolver
         }
 
         if ($declaringClass->getDocComment()) {
-            $phpstanArrayType = $this->getPhpstanType($declaringClass, $typeHint, $reflector);
+            $phpstanArrayType = $this->getPhpstanArrayType($declaringClass, $typeHint, $reflector);
 
             if ($phpstanArrayType) {
                 return $phpstanArrayType;
@@ -401,29 +403,41 @@ final class DocBlockTypeResolver
     /**
      * @param \ReflectionMethod|\ReflectionProperty $reflector
      */
-    private function getPhpstanType(\ReflectionClass $declaringClass, string $typeHint, $reflector): ?string
+    private function getPhpstanArrayType(\ReflectionClass $declaringClass, string $typeHint, $reflector): ?string
     {
         $tokens = $this->lexer->tokenize($declaringClass->getDocComment());
         $phpDocNode = $this->phpDocParser->parse(new TokenIterator($tokens));
         $self = $this;
 
         foreach ($phpDocNode->children as $node) {
-            if ($node instanceof PhpDocTagNode && '@phpstan-type' === $node->name) {
-                $phpstanType = (string) $node->value;
-                preg_match_all(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
-                if (isset($foundPhpstanArray[1][0]) && $foundPhpstanArray[1][0] === $typeHint) {
+            if (
+                $node instanceof PhpDocTagNode
+                && $node->value instanceof TypeAliasTagValueNode
+                && $node->value->alias === $typeHint
+            ) {
+                $phpstanType = $node->value->__toString();
+                preg_match(self::PHPSTAN_ARRAY_SHAPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[0])) {
                     return 'array';
                 }
 
-                preg_match_all(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
-                if (isset($foundPhpstanArray[2][0]) && $foundPhpstanArray[1][0] === $typeHint) {
-                    $types = explode(',', $foundPhpstanArray[2][0]);
+                preg_match(self::PHPSTAN_ARRAY_TYPE, $phpstanType, $foundPhpstanArray);
+                if (isset($foundPhpstanArray[0])) {
+                    $types = explode(',', $foundPhpstanArray[2]);
 
                     return sprintf('array<%s>', implode(
                         ',',
                         array_map(static fn (string $type) => $self->resolveType(trim($type), $reflector), $types),
                     ));
                 }
+            } elseif ($node instanceof PhpDocTagNode && $node->value instanceof TypeAliasImportTagValueNode) {
+                $importedFromFqn = $this->resolveType($node->value->importedFrom->name, $reflector);
+
+                return $this->getPhpstanArrayType(
+                    new \ReflectionClass($importedFromFqn),
+                    $node->value->importedAlias,
+                    $reflector,
+                );
             }
         }
 

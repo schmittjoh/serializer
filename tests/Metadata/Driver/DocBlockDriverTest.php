@@ -41,6 +41,7 @@ use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Product;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Collection\Vehicle;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayCollectionShape;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayShape;
+use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanArrayShapeImported;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanMultipleArrayShapes;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\PhpstanNestedArrayShape;
 use JMS\Serializer\Tests\Fixtures\DocBlockType\Phpstan\ProductType;
@@ -346,6 +347,21 @@ class DocBlockDriverTest extends TestCase
         self::assertEquals(
             ['name' => 'array', 'params' => []],
             $m->propertyMetadata['data']->type,
+        );
+    }
+
+    public function testInferImportedTypeForPhpstanArray()
+    {
+        $m = $this->resolve(PhpstanArrayShapeImported::class);
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => []],
+            $m->propertyMetadata['data']->type,
+        );
+
+        self::assertEquals(
+            ['name' => 'array', 'params' => []],
+            $m->propertyMetadata['dataAliased']->type,
         );
     }
 
