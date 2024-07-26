@@ -11,6 +11,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use JMS\Serializer\Exception\NonVisitableTypeException;
 
 final class UnionHandler implements SubscribingHandlerInterface
 {
@@ -66,12 +67,6 @@ final class UnionHandler implements SubscribingHandlerInterface
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
 
-        $alternativeName = null;
-
-        if (isset(static::$aliases[$dataType])) {
-            $alternativeName = static::$aliases[$dataType];
-        }
-
         foreach ($type['params'] as $possibleType) {
             $finalType = null;
 
@@ -117,8 +112,6 @@ final class UnionHandler implements SubscribingHandlerInterface
 
     private function matchSimpleType(mixed $data, array $type, Context $context): mixed
     {
-        $alternativeName = null;
-
         foreach ($type['params'] as $possibleType) {
             if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                 continue;
