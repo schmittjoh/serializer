@@ -105,6 +105,7 @@ class TypedPropertiesDriver implements DriverInterface
                 if ('union' === $propertyMetadata->type['name']) {
                     $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
                 }
+
                 continue;
             }
 

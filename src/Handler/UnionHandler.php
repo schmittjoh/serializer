@@ -6,12 +6,12 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use JMS\Serializer\Exception\NonVisitableTypeException;
 
 final class UnionHandler implements SubscribingHandlerInterface
 {
@@ -126,6 +126,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
         return null;
     }
+
     private function isPrimitiveType(string $type): bool
     {
         return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string']);
