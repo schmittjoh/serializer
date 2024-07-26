@@ -10,10 +10,11 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
+use \JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
@@ -441,7 +442,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public function testDeserializationFailureOnPropertyMissing()
     {
-        self::expectException(\JMS\Serializer\Exception\PropertyMissingException::class);
+        self::expectException(PropertyMissingException::class);
         $this->deserialize(static::getContent('empty_object'), Author::class, DeserializationContext::create()->setRequireAllRequiredProperties(true));
     }
 
