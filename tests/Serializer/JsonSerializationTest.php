@@ -486,42 +486,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertEquals(static::getContent('data_string'), $serialized);
     }
 
-    public function testDeserializingNonDiscriminatedComplexUnionProperties()
-    {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
-        $authorUnion = new ComplexUnionTypedProperties(new Author('foo'));
-        self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_author'), ComplexUnionTypedProperties::class));
-
-        $commentUnion = new ComplexUnionTypedProperties(new Comment(new Author('foo'), 'bar'));
-        self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_comment'), ComplexUnionTypedProperties::class));
-
-        $moreSpecificAuthor = new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true));
-        self::assertEquals($moreSpecificAuthor, $this->deserialize(static::getContent('data_more_specific_author'), ComplexUnionTypedProperties::class));
-    }
-
-    public function testSerializingNonDiscriminatedComplexUnionProperties()
-    {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
-        $serialized = $this->serialize(new ComplexUnionTypedProperties(new Author('foo')));
-        self::assertEquals(static::getContent('data_author'), $serialized);
-
-        $serialized = $this->serialize(new ComplexUnionTypedProperties(new Comment(new Author('foo'), 'bar')));
-        self::assertEquals(static::getContent('data_comment'), $serialized);
-
-        $serialized = $this->serialize(new ComplexUnionTypedProperties(new MoreSpecificAuthor('foo', true)));
-        self::assertEquals(static::getContent('data_more_specific_author'), $serialized);
-    }
-
     public function testDeserializingComplexDiscriminatedUnionProperties()
     {
         if (PHP_VERSION_ID < 80000) {

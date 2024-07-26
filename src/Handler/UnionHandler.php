@@ -105,7 +105,7 @@ final class UnionHandler implements SubscribingHandlerInterface
                 return $context->getNavigator()->accept($data, $finalType);
             } else {
                 foreach ($type['params'] as $possibleType) {
-                    if ($possibleType['name'] === $dataType || $possibleType['name'] === $alternativeName) {
+                    if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                         return $context->getNavigator()->accept($data, $possibleType);
                     }
                 }
@@ -128,14 +128,11 @@ final class UnionHandler implements SubscribingHandlerInterface
                 return $context->getNavigator()->accept($data, $possibleType);
             } catch (NonVisitableTypeException $e) {
                 continue;
-            } catch (PropertyMissingException $e) {
-                continue;
             }
         }
 
         return null;
     }
-
     private function isPrimitiveType(string $type): bool
     {
         return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string']);
