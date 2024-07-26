@@ -14,6 +14,7 @@ use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\SkipHandlerException;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
@@ -197,6 +198,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 $this->visitor->startVisitingObject($metadata, $object, $type);
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                    $allowsNull = null === $propertyMetadata->type ? true : $this->allowsNull($propertyMetadata->type);
                     if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->context)) {
                         continue;
                     }
@@ -218,6 +220,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
                             $cloned = clone $propertyMetadata;
                             $cloned->setter = null;
                             $this->accessor->setValue($object, $cloned->defaultValue, $cloned, $this->context);
+                        } elseif (!$allowsNull && $this->context->getRequireAllRequiredProperties()) {
+                            throw new PropertyMissingException('Property ' . $propertyMetadata->name . ' is missing from data');
                         }
                     }
 
@@ -262,5 +266,21 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         if ($this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
             $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new ObjectEvent($this->context, $object, $type));
         }
+    }
+
+    private function allowsNull(array $type)
+    {
+        $allowsNull = false;
+        if ('union' === $type['name']) {
+            foreach ($type['params'] as $param) {
+                if ('NULL' === $param['name']) {
+                    $allowsNull = true;
+                }
+            }
+        } elseif ('NULL' === $type['name']) {
+            $allowsNull = true;
+        }
+
+        return $allowsNull;
     }
 }

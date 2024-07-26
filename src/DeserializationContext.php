@@ -13,6 +13,11 @@ class DeserializationContext extends Context
      */
     private $depth = 0;
 
+    /**
+     * @var bool
+     */
+    private $requireAllRequiredProperties = false;
+
     public static function create(): self
     {
         return new self();
@@ -40,5 +45,16 @@ class DeserializationContext extends Context
         }
 
         $this->depth -= 1;
+    }
+    public function setRequireAllRequiredProperties(bool $require): self
+    {
+        $this->requireAllRequiredProperties = $require;
+
+        return $this;
+    }
+
+    public function getRequireAllRequiredProperties(): bool
+    {
+        return $this->requireAllRequiredProperties;
     }
 }

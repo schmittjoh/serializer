@@ -13,6 +13,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
@@ -436,6 +437,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
             [[$tag], '{"0":{"name":"tag"}}', SerializationContext::create()->setInitialType('array<integer,JMS\Serializer\Tests\Fixtures\Tag>')],
         ];
+    }
+
+    public function testDeserializationFailureOnPropertyMissing()
+    {
+        self::expectException(\JMS\Serializer\Exception\PropertyMissingException::class);
+        $this->deserialize(static::getContent('empty_object'), Author::class, DeserializationContext::create()->setRequireAllRequiredProperties(true));
     }
 
     public function testDeserializingUnionProperties()
