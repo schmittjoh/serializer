@@ -46,6 +46,7 @@ class DeserializationContext extends Context
 
         $this->depth -= 1;
     }
+
     public function setRequireAllRequiredProperties(bool $require): self
     {
         $this->requireAllRequiredProperties = $require;
