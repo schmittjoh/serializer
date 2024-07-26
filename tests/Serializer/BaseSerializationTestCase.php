@@ -2118,7 +2118,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
         if (PHP_VERSION_ID >= 80000) {
-            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler(true));
+            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
         }
 
         $this->handlerRegistry->registerHandler(

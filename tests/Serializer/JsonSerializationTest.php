@@ -157,7 +157,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
             $outputs['data_author'] = '{"data":{"full_name":"foo"}}';
-            $outputs['data_more_specific_author'] = '{"data":{"full_name":"foo","is_more_specific":true}}';
             $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedAuthor"}}';
             $outputs['data_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\DiscriminatedComment"}}';
