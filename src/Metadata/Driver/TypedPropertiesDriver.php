@@ -102,6 +102,9 @@ class TypedPropertiesDriver implements DriverInterface
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
+                if ('union' === $propertyMetadata->type['name']) {
+                    $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
+                }
                 continue;
             }
 
