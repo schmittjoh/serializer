@@ -103,27 +103,40 @@ class TypedPropertiesDriver implements DriverInterface
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
                 if ('union' === $propertyMetadata->type['name']) {
+                    // If the property has a unionDiscriminator annotation, overwrite the types array with the discriminator.
                     $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
                 }
+            } else {
+                try {
+                    $reflectionType = $this->getReflectionType($propertyMetadata);
 
-                continue;
+                    if ($this->shouldTypeHint($reflectionType)) {
+                        $type = $reflectionType->getName();
+
+                        $propertyMetadata->setType($this->typeParser->parse($type));
+                    } elseif ($this->shouldTypeHintUnion($reflectionType)) {
+                        $propertyMetadata->setType($this->reorderTypes([
+                            'name' => 'union',
+                            'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
+                        ]));
+                    }
+                } catch (ReflectionException $e) {
+                    continue;
+                }
             }
 
-            try {
-                $reflectionType = $this->getReflectionType($propertyMetadata);
-
-                if ($this->shouldTypeHint($reflectionType)) {
-                    $type = $reflectionType->getName();
-
-                    $propertyMetadata->setType($this->typeParser->parse($type));
-                } elseif ($this->shouldTypeHintUnion($reflectionType)) {
-                    $propertyMetadata->setType($this->reorderTypes([
-                        'name' => 'union',
-                        'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
-                    ]));
+            // Update the type if a unionDiscriminator annotation is present.
+            $params = [];
+            if ($propertyMetadata->unionDiscriminatorField) {
+                $params[] = $propertyMetadata->unionDiscriminatorField;
+                if ($propertyMetadata->unionDiscriminatorMap) {
+                    $params[] = $propertyMetadata->unionDiscriminatorMap;
                 }
-            } catch (ReflectionException $e) {
-                continue;
+
+                $propertyMetadata->setType([
+                    'name' => 'union',
+                    'params' => $params,
+                ]);
             }
         }
 

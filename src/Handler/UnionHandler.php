@@ -67,42 +67,57 @@ final class UnionHandler implements SubscribingHandlerInterface
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
 
-        foreach ($type['params'] as $possibleType) {
-            $finalType = null;
+        $finalType = null;
+        if (1 === count($type['params'])) {
+            if ($data[$type['params'][0]]) {
+                $lookupField = $type['params'][0];
 
-            if (!$context->getMetadataStack()->isEmpty()) {
-                $propertyMetadata = $context->getMetadataStack()->top();
-                if (null !== $propertyMetadata->unionDiscriminatorField) {
-                    if (!array_key_exists($propertyMetadata->unionDiscriminatorField, $data)) {
-                        throw new NonVisitableTypeException('Union Discriminator Field \'' . $propertyMetadata->unionDiscriminatorField . '\' not found in data');
-                    }
+                if (!array_key_exists($lookupField, $data)) {
+                    throw new NonVisitableTypeException('Union Discriminator Field \'' . $lookupField . '\' not found in data');
+                }
 
-                    $lkup = $data[$propertyMetadata->unionDiscriminatorField];
-                    if (!empty($propertyMetadata->unionDiscriminatorMap)) {
-                        if (array_key_exists($lkup, $propertyMetadata->unionDiscriminatorMap)) {
-                            $finalType = [
-                                'name' => $propertyMetadata->unionDiscriminatorMap[$lkup],
-                                'params' => [],
-                            ];
-                        } else {
-                            throw new NonVisitableTypeException('Union Discriminator Map does not contain key \'' . $lkup . '\'');
-                        }
-                    } else {
+                $lkup = $data[$lookupField];
+                $finalType = [
+                    'name' => $lkup,
+                    'params' => [],
+                ];
+            }
+        } elseif (2 === count($type['params'])) {
+            if (is_array($type['params'][1]) && !array_key_exists('name', $type['params'][1])) {
+                $lookupField = $type['params'][0];
+                $unionMap = $type['params'][1];
+
+                if (!array_key_exists($lookupField, $data)) {
+                    throw new NonVisitableTypeException('Union Discriminator Field \'' . $lookupField . '\' not found in data');
+                }
+
+                $lkup = $data[$lookupField];
+                if (!empty($unionMap)) {
+                    if (array_key_exists($lkup, $unionMap)) {
                         $finalType = [
-                            'name' => $lkup,
+                            'name' => $unionMap[$lkup],
                             'params' => [],
                         ];
+                    } else {
+                        throw new NonVisitableTypeException('Union Discriminator Map does not contain key \'' . $lkup . '\'');
                     }
+                } else {
+                    $finalType = [
+                        'name' => $lkup,
+                        'params' => [],
+                    ];
                 }
             }
+        }
 
-            if (null !== $finalType && null !== $finalType['name']) {
-                return $context->getNavigator()->accept($data, $finalType);
-            } else {
-                foreach ($type['params'] as $possibleType) {
-                    if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
-                        return $context->getNavigator()->accept($data, $possibleType);
-                    }
+        if (null !== $finalType && null !== $finalType['name']) {
+            return $context->getNavigator()->accept($data, $finalType);
+        } else {
+            foreach ($type['params'] as $possibleType) {
+                $finalType = null;
+
+                if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                    return $context->getNavigator()->accept($data, $possibleType);
                 }
             }
         }
