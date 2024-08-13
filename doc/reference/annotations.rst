@@ -387,6 +387,7 @@ to the least super type:
     `groups` is optional and is used as exclusion policy.
 
 #[UnionDiscriminator]
+~~~~~~~~~~~~~~~~~~~~~
 
 This attribute allows deserialization of unions.  The ``#[UnionDiscriminator]`` attribute has to be applied
 to an attribute that can be one of many types.
@@ -394,22 +395,12 @@ to an attribute that can be one of many types.
 .. code-block :: php
 
     class Vehicle {
-        #[UnionDiscriminator(field: 'typeDiscriminator')]
+        #[UnionDiscriminator(field: 'typeField', map: ['manual' => 'FullyQualified/Path/Manual', 'automatic' => 'FullyQualified/Path/Automatic'])]
         private Manual|Automatic $transmission;
     }
 
-In the case of this example, both Manual and Automatic should contain a string attribute named `typeDiscriminator`.  If the `typeDiscriminator` field
-will always contain the fully qualified clasname, then the appropriate type will be selected for deserialization.
-
-If, however, the field contains a string that is not the fully qualified classname, then the `map` option can be used to map the
-string to the appropriate class.
-
-.. code-block :: php
-
-    class Vehicle {
-        #[UnionDiscriminator(field: 'type', map: ['manual' => 'FullyQualified/Path/Manual', 'automatic' => 'FullyQualified/Path/Automatic'])]
-        private Manual|Automatic $transmission;
-    }
+In the case of this example, both Manual and Automatic should contain a string attribute named `typeField`.  The value of that field will be passed
+to the `map` option to determine which class to instantiate.
 
 #[Type]
 ~~~~~~~

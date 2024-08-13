@@ -19,9 +19,11 @@ class DiscriminatedAuthor
 
     /**
      * @Type("string")
+     * @SerializedName("objectType")
      */
     #[Type(name: 'string')]
-    private $type = 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor';
+    #[SerializedName(name: 'objectType')]
+    private $objectType = 'author';
 
     public function __construct($name)
     {
@@ -33,8 +35,8 @@ class DiscriminatedAuthor
         return $this->name;
     }
 
-    public function getType()
+    public function getObjectType()
     {
-        return $this->type;
+        return $this->objectType;
     }
 }

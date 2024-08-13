@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Fixtures;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\SerializedName;
 
 class DiscriminatedComment
 {
@@ -22,9 +23,11 @@ class DiscriminatedComment
 
     /**
      * @Type("string")
+     * @SerializedName("objectType")
      */
     #[Type(name: 'string')]
-    private $type = 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment';
+    #[SerializedName(name: 'objectType')]
+    private $objectType = 'comment';
 
     public function __construct(?Author $author, $text)
     {
@@ -37,8 +40,8 @@ class DiscriminatedComment
         return $this->author;
     }
 
-    public function getType()
+    public function getObjectType()
     {
-        return $this->type;
+        return $this->objectType;
     }
 }

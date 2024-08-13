@@ -206,7 +206,7 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
-    public function setUnionDiscriminator(string $field, ?array $map): void
+    public function setUnionDiscriminator(string $field, array $map): void
     {
         $this->unionDiscriminatorField = $field;
         $this->unionDiscriminatorMap = $map;

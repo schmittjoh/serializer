@@ -103,8 +103,11 @@ class TypedPropertiesDriver implements DriverInterface
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
                 if ('union' === $propertyMetadata->type['name']) {
-                    // If the property has a unionDiscriminator annotation, overwrite the types array with the discriminator.
-                    $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
+                    // If this union is discriminated, the params will not contain types.
+                    // If the union isn't discriminated, the params will contain types, and we should reorder them
+                    if (is_array($propertyMetadata->type['params'][0]) && $propertyMetadata->type['params'][0]['name']) {
+                        $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
+                    }
                 }
             } else {
                 try {
@@ -123,20 +126,6 @@ class TypedPropertiesDriver implements DriverInterface
                 } catch (ReflectionException $e) {
                     continue;
                 }
-            }
-
-            // Update the type if a unionDiscriminator annotation is present.
-            $params = [];
-            if ($propertyMetadata->unionDiscriminatorField) {
-                $params[] = $propertyMetadata->unionDiscriminatorField;
-                if ($propertyMetadata->unionDiscriminatorMap) {
-                    $params[] = $propertyMetadata->unionDiscriminatorMap;
-                }
-
-                $propertyMetadata->setType([
-                    'name' => 'union',
-                    'params' => $params,
-                ]);
             }
         }
 

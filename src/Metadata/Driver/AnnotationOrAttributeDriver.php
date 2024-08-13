@@ -261,6 +261,10 @@ class AnnotationOrAttributeDriver implements DriverInterface
                         $propertyMetadata->maxDepth = $annot->depth;
                     } elseif ($annot instanceof UnionDiscriminator) {
                         $propertyMetadata->setUnionDiscriminator($annot->field, $annot->map);
+                        $propertyMetadata->setType([
+                            'name' => 'union',
+                            'params' => [$annot->field, $annot->map],
+                        ]);
                     }
                 }
 

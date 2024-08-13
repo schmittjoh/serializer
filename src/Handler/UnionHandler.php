@@ -68,22 +68,8 @@ final class UnionHandler implements SubscribingHandlerInterface
         }
 
         $finalType = null;
-        if (1 === count($type['params'])) {
-            if ($data[$type['params'][0]]) {
-                $lookupField = $type['params'][0];
-
-                if (!array_key_exists($lookupField, $data)) {
-                    throw new NonVisitableTypeException('Union Discriminator Field \'' . $lookupField . '\' not found in data');
-                }
-
-                $lkup = $data[$lookupField];
-                $finalType = [
-                    'name' => $lkup,
-                    'params' => [],
-                ];
-            }
-        } elseif (2 === count($type['params'])) {
-            if (is_array($type['params'][1]) && !array_key_exists('name', $type['params'][1])) {
+        if (2 === count($type['params'])) {
+            if (!is_array($type['params'][0]) || !array_key_exists('name', $type['params'][0])) {
                 $lookupField = $type['params'][0];
                 $unionMap = $type['params'][1];
 
