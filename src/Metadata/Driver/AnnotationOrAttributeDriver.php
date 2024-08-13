@@ -263,7 +263,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                         $propertyMetadata->setUnionDiscriminator($annot->field, $annot->map);
                         $propertyMetadata->setType([
                             'name' => 'union',
-                            'params' => [$annot->field, $annot->map],
+                            'params' => [null, $annot->field, $annot->map],
                         ]);
                     }
                 }

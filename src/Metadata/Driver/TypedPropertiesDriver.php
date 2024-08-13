@@ -57,17 +57,15 @@ class TypedPropertiesDriver implements DriverInterface
      * For determining types of primitives, it is necessary to reorder primitives so that they are tested from lowest specificity to highest:
      * i.e. null, true, false, int, float, bool, string
      */
-    private function reorderTypes(array $type): array
+    private function reorderTypes(array $types): array
     {
-        if ($type['params']) {
-            uasort($type['params'], static function ($a, $b) {
-                $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
+        uasort($types, static function ($a, $b) {
+            $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
 
-                return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
-            });
-        }
+            return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
+        });
 
-        return $type;
+        return $types;
     }
 
     private function getDefaultWhiteList(): array
@@ -102,30 +100,24 @@ class TypedPropertiesDriver implements DriverInterface
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
-                if ('union' === $propertyMetadata->type['name']) {
-                    // If this union is discriminated, the params will not contain types.
-                    // If the union isn't discriminated, the params will contain types, and we should reorder them
-                    if (is_array($propertyMetadata->type['params'][0]) && $propertyMetadata->type['params'][0]['name']) {
-                        $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
-                    }
-                }
-            } else {
-                try {
-                    $reflectionType = $this->getReflectionType($propertyMetadata);
+                continue;
+            }
 
-                    if ($this->shouldTypeHint($reflectionType)) {
-                        $type = $reflectionType->getName();
+            try {
+                $reflectionType = $this->getReflectionType($propertyMetadata);
 
-                        $propertyMetadata->setType($this->typeParser->parse($type));
-                    } elseif ($this->shouldTypeHintUnion($reflectionType)) {
-                        $propertyMetadata->setType($this->reorderTypes([
-                            'name' => 'union',
-                            'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
-                        ]));
-                    }
-                } catch (ReflectionException $e) {
-                    continue;
+                if ($this->shouldTypeHint($reflectionType)) {
+                    $type = $reflectionType->getName();
+
+                    $propertyMetadata->setType($this->typeParser->parse($type));
+                } elseif ($this->shouldTypeHintUnion($reflectionType)) {
+                    $propertyMetadata->setType([
+                        'name' => 'union',
+                        'params' => [$this->reorderTypes(array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()))],
+                    ]);
                 }
+            } catch (ReflectionException $e) {
+                continue;
             }
         }
 

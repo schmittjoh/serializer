@@ -31,24 +31,27 @@ final class UnionTypedPropertiesDriverTest extends TestCase
         self::assertEquals(
             [
                 'name' => 'union',
-                'params' => [
+                'params' =>
                     [
-                        'name' => 'string',
-                        'params' => [],
+                        [
+                            [
+                                'name' => 'string',
+                                'params' => [],
+                            ],
+                            [
+                                'name' => 'int',
+                                'params' => [],
+                            ],
+                            [
+                                'name' => 'float',
+                                'params' => [],
+                            ],
+                            [
+                                'name' => 'bool',
+                                'params' => [],
+                            ],
+                        ],
                     ],
-                    [
-                        'name' => 'int',
-                        'params' => [],
-                    ],
-                    [
-                        'name' => 'float',
-                        'params' => [],
-                    ],
-                    [
-                        'name' => 'bool',
-                        'params' => [],
-                    ],
-                ],
             ],
             $m->propertyMetadata['data']->type,
         );

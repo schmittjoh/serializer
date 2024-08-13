@@ -67,44 +67,29 @@ final class UnionHandler implements SubscribingHandlerInterface
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
 
-        $finalType = null;
-        if (2 === count($type['params'])) {
-            if (!is_array($type['params'][0]) || !array_key_exists('name', $type['params'][0])) {
-                $lookupField = $type['params'][0];
-                $unionMap = $type['params'][1];
-
-                if (!array_key_exists($lookupField, $data)) {
-                    throw new NonVisitableTypeException('Union Discriminator Field \'' . $lookupField . '\' not found in data');
-                }
-
-                $lkup = $data[$lookupField];
-                if (!empty($unionMap)) {
-                    if (array_key_exists($lkup, $unionMap)) {
-                        $finalType = [
-                            'name' => $unionMap[$lkup],
-                            'params' => [],
-                        ];
-                    } else {
-                        throw new NonVisitableTypeException('Union Discriminator Map does not contain key \'' . $lkup . '\'');
-                    }
-                } else {
-                    $finalType = [
-                        'name' => $lkup,
-                        'params' => [],
-                    ];
-                }
+        if (3 === count($type['params'])) {
+            $lookupField = $type['params'][1];
+            if (empty($data[$lookupField])) {
+                throw new NonVisitableTypeException(sprintf('Union Discriminator Field "%s" not found in data', $lookupField));
             }
+
+            $unionMap = $type['params'][2];
+            $lookupValue = $data[$lookupField];
+            if (empty($unionMap[$lookupValue])) {
+                throw new NonVisitableTypeException(sprintf('Union Discriminator Map does not contain key "%s"', $lookupValue));
+            }
+
+            $finalType = [
+                'name' => $unionMap[$lookupValue],
+                'params' => [],
+            ];
+
+            return $context->getNavigator()->accept($data, $finalType);
         }
 
-        if (null !== $finalType && null !== $finalType['name']) {
-            return $context->getNavigator()->accept($data, $finalType);
-        } else {
-            foreach ($type['params'] as $possibleType) {
-                $finalType = null;
-
-                if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
-                    return $context->getNavigator()->accept($data, $possibleType);
-                }
+        foreach ($type['params'][0] as $possibleType) {
+            if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                return $context->getNavigator()->accept($data, $possibleType);
             }
         }
 
@@ -113,7 +98,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
     private function matchSimpleType(mixed $data, array $type, Context $context): mixed
     {
-        foreach ($type['params'] as $possibleType) {
+        foreach ($type['params'][0] as $possibleType) {
             if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
                 continue;
             }
@@ -130,7 +115,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
     private function isPrimitiveType(string $type): bool
     {
-        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string']);
+        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string'], true);
     }
 
     private function testPrimitive(mixed $data, string $type, string $format): bool
