@@ -1,0 +1,3 @@
+parameters:
+    excludePaths:
+        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ComplexDiscriminatedUnion.php

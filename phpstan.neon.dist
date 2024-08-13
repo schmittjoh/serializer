@@ -6,7 +6,6 @@ parameters:
         - '~Class Doctrine\\Common\\Persistence\\Proxy not found~'
         - '~Class Doctrine\\ODM\\MongoDB\\PersistentCollection not found~'
         - '~Class Symfony\\(Contracts|Component)\\Translation\\TranslatorInterface not found~'
-        - '#Constructor of class JMS\\Serializer\\Annotation\\.*? has an unused parameter#'
         - '#Class JMS\\Serializer\\Annotation\\DeprecatedReadOnly extends @final class JMS\\Serializer\\Annotation\\ReadOnlyProperty.#'
         - '#^Call to an undefined method Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\:\:getFieldValue\(\)\.$#'
         - '#^Call to an undefined method JMS\\Serializer\\Visitor\\DeserializationVisitorInterface\:\:getCurrentObject\(\)\.$#'
