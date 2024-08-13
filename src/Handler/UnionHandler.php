@@ -6,6 +6,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
@@ -47,44 +48,89 @@ final class UnionHandler implements SubscribingHandlerInterface
         mixed $data,
         array $type,
         SerializationContext $context
-    ) {
-        return $this->matchSimpleType($data, $type, $context);
+    ): mixed {
+        if ($this->isPrimitiveType(gettype($data))) {
+            return $this->matchSimpleType($data, $type, $context);
+        } else {
+            $resolvedType = [
+                'name' => get_class($data),
+                'params' => [],
+            ];
+
+            return $context->getNavigator()->accept($data, $resolvedType);
+        }
     }
 
-    public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context)
+    public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context): mixed
     {
         if ($data instanceof \SimpleXMLElement) {
             throw new RuntimeException('XML deserialisation into union types is not supported yet.');
         }
 
-        return $this->matchSimpleType($data, $type, $context);
-    }
+        $finalType = null;
+        if (2 === count($type['params'])) {
+            if (!is_array($type['params'][0]) || !array_key_exists('name', $type['params'][0])) {
+                $lookupField = $type['params'][0];
+                $unionMap = $type['params'][1];
 
-    private function matchSimpleType(mixed $data, array $type, Context $context)
-    {
-        $dataType = $this->determineType($data, $type, $context->getFormat());
-        $alternativeName = null;
+                if (!array_key_exists($lookupField, $data)) {
+                    throw new NonVisitableTypeException('Union Discriminator Field \'' . $lookupField . '\' not found in data');
+                }
 
-        if (isset(static::$aliases[$dataType])) {
-            $alternativeName = static::$aliases[$dataType];
-        }
-
-        foreach ($type['params'] as $possibleType) {
-            if ($possibleType['name'] === $dataType || $possibleType['name'] === $alternativeName) {
-                return $context->getNavigator()->accept($data, $possibleType);
+                $lkup = $data[$lookupField];
+                if (!empty($unionMap)) {
+                    if (array_key_exists($lkup, $unionMap)) {
+                        $finalType = [
+                            'name' => $unionMap[$lkup],
+                            'params' => [],
+                        ];
+                    } else {
+                        throw new NonVisitableTypeException('Union Discriminator Map does not contain key \'' . $lkup . '\'');
+                    }
+                } else {
+                    $finalType = [
+                        'name' => $lkup,
+                        'params' => [],
+                    ];
+                }
             }
         }
-    }
 
-    private function determineType(mixed $data, array $type, string $format): ?string
-    {
-        foreach ($type['params'] as $possibleType) {
-            if ($this->testPrimitive($data, $possibleType['name'], $format)) {
-                return $possibleType['name'];
+        if (null !== $finalType && null !== $finalType['name']) {
+            return $context->getNavigator()->accept($data, $finalType);
+        } else {
+            foreach ($type['params'] as $possibleType) {
+                $finalType = null;
+
+                if ($this->isPrimitiveType($possibleType['name']) && $this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                    return $context->getNavigator()->accept($data, $possibleType);
+                }
             }
         }
 
         return null;
+    }
+
+    private function matchSimpleType(mixed $data, array $type, Context $context): mixed
+    {
+        foreach ($type['params'] as $possibleType) {
+            if ($this->isPrimitiveType($possibleType['name']) && !$this->testPrimitive($data, $possibleType['name'], $context->getFormat())) {
+                continue;
+            }
+
+            try {
+                return $context->getNavigator()->accept($data, $possibleType);
+            } catch (NonVisitableTypeException $e) {
+                continue;
+            }
+        }
+
+        return null;
+    }
+
+    private function isPrimitiveType(string $type): bool
+    {
+        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string']);
     }
 
     private function testPrimitive(mixed $data, string $type, string $format): bool

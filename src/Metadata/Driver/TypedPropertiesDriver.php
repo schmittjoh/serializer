@@ -102,24 +102,30 @@ class TypedPropertiesDriver implements DriverInterface
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             // If the inner driver provides a type, don't guess anymore.
             if ($propertyMetadata->type) {
-                continue;
-            }
-
-            try {
-                $reflectionType = $this->getReflectionType($propertyMetadata);
-
-                if ($this->shouldTypeHint($reflectionType)) {
-                    $type = $reflectionType->getName();
-
-                    $propertyMetadata->setType($this->typeParser->parse($type));
-                } elseif ($this->shouldTypeHintUnion($reflectionType)) {
-                    $propertyMetadata->setType($this->reorderTypes([
-                        'name' => 'union',
-                        'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
-                    ]));
+                if ('union' === $propertyMetadata->type['name']) {
+                    // If this union is discriminated, the params will not contain types.
+                    // If the union isn't discriminated, the params will contain types, and we should reorder them
+                    if (is_array($propertyMetadata->type['params'][0]) && $propertyMetadata->type['params'][0]['name']) {
+                        $propertyMetadata->setType($this->reorderTypes($propertyMetadata->type));
+                    }
                 }
-            } catch (ReflectionException $e) {
-                continue;
+            } else {
+                try {
+                    $reflectionType = $this->getReflectionType($propertyMetadata);
+
+                    if ($this->shouldTypeHint($reflectionType)) {
+                        $type = $reflectionType->getName();
+
+                        $propertyMetadata->setType($this->typeParser->parse($type));
+                    } elseif ($this->shouldTypeHintUnion($reflectionType)) {
+                        $propertyMetadata->setType($this->reorderTypes([
+                            'name' => 'union',
+                            'params' => array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()),
+                        ]));
+                    }
+                } catch (ReflectionException $e) {
+                    continue;
+                }
             }
         }
 
