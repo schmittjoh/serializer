@@ -72,6 +72,12 @@ YAML Reference
                     cdata: false
                     namespace: http://www.w3.org/2005/Atom
                 max_depth: 2
+                union_discriminator:
+                    filed: foo
+                    map:
+                     a: SomeClassFQCN1
+                     b: SomeClassFQCN2
+                     c: SomeClassFQCN3
 
         callback_methods:
             pre_serialize: [foo, bar]

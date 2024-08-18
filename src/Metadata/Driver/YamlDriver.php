@@ -300,6 +300,14 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['max_depth'])) {
                         $pMetadata->maxDepth = (int) $pConfig['max_depth'];
                     }
+
+                    if (isset($pConfig['union_discriminator'])) {
+                        $pMetadata->setUnionDiscriminator($pConfig['union_discriminator']['field'], $pConfig['union_discriminator']['map']);
+                        $pMetadata->setType([
+                            'name' => 'union',
+                            'params' => [null, $pConfig['union_discriminator']['field'], $pConfig['union_discriminator']['map']],
+                        ]);
+                    }
                 }
 
                 if (!$pMetadata->serializedName) {
