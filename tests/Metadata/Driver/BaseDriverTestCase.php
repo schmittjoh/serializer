@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\UnionDiscriminator;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -136,6 +137,12 @@ abstract class BaseDriverTestCase extends TestCase
 
     public function testUnionDiscriminator()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', UnionDiscriminator::class));
+
+            return;
+        }
+
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ComplexDiscriminatedUnion::class));
         \assert($m instanceof ClassMetadata);
 
