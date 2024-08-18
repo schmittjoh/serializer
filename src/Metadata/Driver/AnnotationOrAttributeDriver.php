@@ -24,6 +24,7 @@ use JMS\Serializer\Annotation\SerializerAttribute;
 use JMS\Serializer\Annotation\Since;
 use JMS\Serializer\Annotation\SkipWhenEmpty;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\UnionDiscriminator;
 use JMS\Serializer\Annotation\Until;
 use JMS\Serializer\Annotation\VirtualProperty;
 use JMS\Serializer\Annotation\XmlAttribute;
@@ -258,6 +259,12 @@ class AnnotationOrAttributeDriver implements DriverInterface
                         $propertyMetadata->xmlAttributeMap = true;
                     } elseif ($annot instanceof MaxDepth) {
                         $propertyMetadata->maxDepth = $annot->depth;
+                    } elseif ($annot instanceof UnionDiscriminator) {
+                        $propertyMetadata->setUnionDiscriminator($annot->field, $annot->map);
+                        $propertyMetadata->setType([
+                            'name' => 'union',
+                            'params' => [null, $annot->field, $annot->map],
+                        ]);
                     }
                 }
 

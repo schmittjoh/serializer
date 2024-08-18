@@ -6,6 +6,7 @@ use Symfony\Component\Uid\UuidV7;
 $includes = [];
 if (PHP_VERSION_ID < 80000) {
     $includes[] = __DIR__ . '/no-typed-prop.neon';
+    $includes[] = __DIR__ . '/no-unions.neon';
     $includes[] = __DIR__ . '/no-attributes.neon';
     $includes[] = __DIR__ . '/no-promoted-properties.neon';
 }

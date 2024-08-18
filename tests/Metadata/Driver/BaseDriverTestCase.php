@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Annotation\UnionDiscriminator;
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -29,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndDuplicatePropNam
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualPropertiesAndExcludeAll;
 use JMS\Serializer\Tests\Fixtures\ParentSkipWithEmptyChild;
 use JMS\Serializer\Tests\Fixtures\Person;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
 use Metadata\Driver\DriverInterface;
 use Metadata\MethodMetadata;
 use PHPUnit\Framework\TestCase;
@@ -131,6 +133,23 @@ abstract class BaseDriverTestCase extends TestCase
         self::assertTrue($m->propertyMetadata['absent']->xmlCollectionSkipWhenEmpty);
         self::assertTrue($m->propertyMetadata['skipDefault']->xmlCollectionSkipWhenEmpty);
         self::assertFalse($m->propertyMetadata['present']->xmlCollectionSkipWhenEmpty);
+    }
+
+    public function testUnionDiscriminator()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', UnionDiscriminator::class));
+
+            return;
+        }
+
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass(ComplexDiscriminatedUnion::class));
+        \assert($m instanceof ClassMetadata);
+
+        $p = $m->propertyMetadata['data'];
+        assert($p instanceof PropertyMetadata);
+        self::assertEquals('objectType', $p->unionDiscriminatorField);
+        self::assertEquals(['author' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor', 'comment' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment'], $p->unionDiscriminatorMap);
     }
 
     public function testVirtualProperty()

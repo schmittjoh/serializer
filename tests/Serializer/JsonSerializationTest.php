@@ -8,17 +8,21 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
+use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
 use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -147,6 +151,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
+            $outputs['data_author'] = '{"data":{"full_name":"foo"}}';
+            $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
+            $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","objectType":"author"}}';
+            $outputs['data_discriminated_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","objectType":"comment"}}';
+            $outputs['data_discriminated_comment_wrong_discriminator'] = '{"data":{"author":{"full_name":"foo"},"text":"bar","objectType":"comment_wrong"}}';
+            $outputs['data_discriminated_comment_missing_discriminator'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['uid'] = '"66b3177c-e03b-4a22-9dee-ddd7d37a04d5"';
             $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed_value":"C","backed_without_param":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"backed_array_without_param":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
             $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
@@ -449,7 +459,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertEquals($object, $this->deserialize(static::getContent('data_string'), UnionTypedProperties::class));
     }
 
-    public function testSerializeUnionProperties()
+    public function testSerializingUnionProperties()
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
@@ -459,6 +469,72 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $serialized = $this->serialize(new UnionTypedProperties(10000));
         self::assertEquals(static::getContent('data_integer'), $serialized);
+
+        $serialized = $this->serialize(new UnionTypedProperties(1.236));
+        self::assertEquals(static::getContent('data_float'), $serialized);
+
+        $serialized = $this->serialize(new UnionTypedProperties(false));
+        self::assertEquals(static::getContent('data_bool'), $serialized);
+
+        $serialized = $this->serialize(new UnionTypedProperties('foo'));
+        self::assertEquals(static::getContent('data_string'), $serialized);
+    }
+
+    public function testDeserializingComplexDiscriminatedUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $authorUnion = new ComplexDiscriminatedUnion(new DiscriminatedAuthor('foo'));
+        self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_discriminated_author'), ComplexDiscriminatedUnion::class));
+
+        $commentUnion = new ComplexDiscriminatedUnion(new DiscriminatedComment(new Author('foo'), 'bar'));
+
+        self::assertEquals($commentUnion, $this->deserialize(static::getContent('data_discriminated_comment'), ComplexDiscriminatedUnion::class));
+    }
+
+    public function testDeserializingComplexDiscriminatedUnionPropertiesFailsWhenDiscriminatorNotInMap()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $this->expectException(NonVisitableTypeException::class);
+        $this->expectExceptionMessage('Union Discriminator Map does not contain key "comment_wrong"');
+        $this->deserialize(static::getContent('data_discriminated_comment_wrong_discriminator'), ComplexDiscriminatedUnion::class);
+    }
+
+    public function testDeserializingComplexDiscriminatedUnionPropertiesFailsWhenDiscriminatorIsMissing()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $this->expectException(NonVisitableTypeException::class);
+        $this->expectExceptionMessage('Union Discriminator Field "objectType" not found in data');
+        $this->deserialize(static::getContent('data_discriminated_comment_missing_discriminator'), ComplexDiscriminatedUnion::class);
+    }
+
+    public function testSerializeingComplexDiscriminatedUnionProperties()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $serialized = $this->serialize(new ComplexDiscriminatedUnion(new DiscriminatedAuthor('foo')));
+        self::assertEquals(static::getContent('data_discriminated_author'), $serialized);
+
+        $serialized = $this->serialize(new ComplexDiscriminatedUnion(new DiscriminatedComment(new Author('foo'), 'bar')));
+        self::assertEquals(static::getContent('data_discriminated_comment'), $serialized);
     }
 
     /**

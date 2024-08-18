@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion">
+        <property name="data">
+            <union-discriminator field="objectType">
+                <map>
+                    <class key="author">JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor</class>
+                    <class key="comment">JMS\Serializer\Tests\Fixtures\DiscriminatedComment</class>
+                </map>
+            </union-discriminator>
+        </property>
+    </class>
+</serializer>

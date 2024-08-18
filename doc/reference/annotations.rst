@@ -9,6 +9,8 @@ JMS serializer now supports PHP 8 attributes, with a few caveats:
 - There is an edge case when setting this exact serialization group ``#[Groups(['value' => 'any value here'])]``.
 (when there is only one item in th serialization groups array and has as key ``value`` the attribute will not work as expected,
 please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here'])]`` that works with no issues),
+- Some support for unions exists.  For unions of primitive types, the system will try to resolve them automatically.  For
+classes that contain union attributes, the ``#[UnionDiscriminator]`` attribute must be used to specify the type of the union.
 
 Converting your annotations to attributes
 -----------------------------------------
@@ -383,6 +385,22 @@ to the least super type:
 .. note ::
 
     `groups` is optional and is used as exclusion policy.
+
+#[UnionDiscriminator]
+~~~~~~~~~~~~~~~~~~~~~
+
+This attribute allows deserialization of unions.  The ``#[UnionDiscriminator]`` attribute has to be applied
+to an attribute that can be one of many types.
+
+.. code-block :: php
+
+    class Vehicle {
+        #[UnionDiscriminator(field: 'typeField', map: ['manual' => 'FullyQualified/Path/Manual', 'automatic' => 'FullyQualified/Path/Automatic'])]
+        private Manual|Automatic $transmission;
+    }
+
+In the case of this example, both Manual and Automatic should contain a string attribute named `typeField`.  The value of that field will be passed
+to the `map` option to determine which class to instantiate.
 
 #[Type]
 ~~~~~~~

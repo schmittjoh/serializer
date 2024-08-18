@@ -46,6 +46,13 @@ XML Reference
                     <value>foo</value>
                     <value>bar</value>
                 </groups>
+                <union-discriminator field="foo">
+                    <map>
+                       <class key="a">SomeClassFQCN1</class>
+                       <class key="b">SomeClassFQCN2</class>
+                       <class key="c">SomeClassFQCN3</class>
+                    </map>
+                </union-discriminator>
             </property>
             <callback-method name="foo" type="pre-serialize" />
             <callback-method name="bar" type="post-serialize" />
