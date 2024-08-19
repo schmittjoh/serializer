@@ -148,8 +148,8 @@ abstract class BaseDriverTestCase extends TestCase
 
         $p = $m->propertyMetadata['data'];
         assert($p instanceof PropertyMetadata);
-        self::assertEquals('objectType', $p->unionDiscriminatorField);
-        self::assertEquals(['author' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor', 'comment' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment'], $p->unionDiscriminatorMap);
+        self::assertEquals('objectType', $p->type['params'][1]);
+        self::assertEquals(['author' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor', 'comment' => 'JMS\Serializer\Tests\Fixtures\DiscriminatedComment'], $p->type['params'][2]);
     }
 
     public function testVirtualProperty()

@@ -329,7 +329,6 @@ class XmlDriver extends AbstractFileDriver
                             $map[(string) $entry->attributes()->key] = (string) $entry;
                         }
 
-                        $pMetadata->setUnionDiscriminator((string) $colConfig->attributes()->field, $map);
                         $pMetadata->setType([
                             'name' => 'union',
                             'params' => [null, (string) $colConfig->attributes()->field, $map],
