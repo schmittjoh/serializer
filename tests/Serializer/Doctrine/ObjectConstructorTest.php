@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\UnitOfWork;
@@ -51,7 +50,6 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App;
 use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\SmartPhone;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use LogicException;
 use Metadata\Driver\AdvancedDriverInterface;
 use Metadata\MetadataFactoryInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -536,6 +534,7 @@ class ObjectConstructorTest extends TestCase
                     __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
                 ]));
             } else {
+                assert(class_exists(AnnotationDriver::class));
                 $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
                     __DIR__ . '/../../Fixtures/Doctrine/Entity',
                     __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
@@ -597,10 +596,10 @@ Type::addType('some_custom_type', 'Doctrine\DBAL\Types\StringType');
 
 class SimpleBaseManagerRegistry extends AbstractManagerRegistry
 {
-    private $services = [];
-    private $serviceCreator;
+    private array $services = [];
+    private \Closure $serviceCreator;
 
-    public function __construct($serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = Proxy::class)
+    public function __construct(\Closure $serviceCreator, $name = 'anonymous', array $connections = ['default' => 'default_connection'], array $managers = ['default' => 'default_manager'], $defaultConnection = null, $defaultManager = null, $proxyInterface = Proxy::class)
     {
         if (null === $defaultConnection) {
             $defaultConnection = key($connections);
@@ -612,20 +611,12 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
 
         parent::__construct($name, $connections, $managers, $defaultConnection, $defaultManager, $proxyInterface);
 
-        if (!is_callable($serviceCreator)) {
-            throw new \InvalidArgumentException('$serviceCreator must be a valid callable.');
-        }
-
         $this->serviceCreator = $serviceCreator;
     }
 
     public function getService($name)
     {
-        if (isset($this->services[$name])) {
-            return $this->services[$name];
-        }
-
-        return $this->services[$name] = call_user_func($this->serviceCreator, $name);
+        return $this->services[$name] ??=  call_user_func($this->serviceCreator, $name);
     }
 
     public function resetService($name)
@@ -635,20 +626,6 @@ class SimpleBaseManagerRegistry extends AbstractManagerRegistry
 
     public function getAliasNamespace($alias)
     {
-        foreach (array_keys($this->getManagers()) as $name) {
-            $manager = $this->getManager($name);
-
-            if ($manager instanceof EntityManager) {
-                try {
-                    return $manager->getConfiguration()->getEntityNamespace($alias);
-                } catch (ORMException $ex) {
-                    // Probably mapped by another entity manager, or invalid, just ignore this here.
-                }
-            } else {
-                throw new LogicException(sprintf('Unsupported manager type "%s".', get_class($manager)));
-            }
-        }
-
-        throw new RuntimeException(sprintf('The namespace alias "%s" is not known to any manager.', $alias));
+        return $alias;
     }
 }
