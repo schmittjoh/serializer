@@ -101,6 +101,7 @@ class DoctrinePHPCRDriverTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
+        assert(class_exists(DoctrinePHPCRDriver::class));
         $config->setMetadataDriverImpl(
             new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR'),
         );

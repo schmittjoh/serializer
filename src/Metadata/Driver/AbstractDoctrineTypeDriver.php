@@ -89,7 +89,6 @@ abstract class AbstractDoctrineTypeDriver implements DriverInterface
         }
 
         \assert($classMetadata instanceof ClassMetadata);
-
         // Abort if the given class is not a mapped entity
         if (!$doctrineMetadata = $this->tryLoadingDoctrineMetadata($class->name)) {
             return $classMetadata;

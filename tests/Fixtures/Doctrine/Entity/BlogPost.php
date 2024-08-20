@@ -7,6 +7,9 @@ namespace JMS\Serializer\Tests\Fixtures\Doctrine\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\InheritanceType;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -18,10 +21,16 @@ use JMS\Serializer\Annotation\XmlRoot;
 /**
  * @ORM\Entity
  *
+ * @InheritanceType("SINGLE_TABLE")
+ * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorMap({"simple" = "BlogPost", "extended" = "ExtendedPost"})
  * @XmlRoot("blog-post")
  */
 #[ORM\Entity]
+#[InheritanceType('SINGLE_TABLE')]
 #[XmlRoot(name: 'blog-post')]
+#[DiscriminatorColumn(name: 'discr', type: 'string')]
+#[DiscriminatorMap(['simple' => BlogPost::class, 'extended' => ExtendedPost::class])]
 class BlogPost
 {
     /**
