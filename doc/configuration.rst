@@ -104,3 +104,16 @@ a serialization context from your callable and use it.
     You can also set a default DeserializationContextFactory with
     ``->setDeserializationContextFactory(function () { /* ... */ })``
     to be used with methods ``deserialize()`` and ``fromArray()``.
+
+Fail Deserialization When Required Properties Are Missing
+---------------------------------------------------------
+By default, the deserializer will ignore missing required properties -
+deserialization will succeed and the properties will be left unset.
+
+You may want, instead, for deserialization to fail in this case.  You can
+configure the deserializer to fail in this way by using the `DeserializationContext`
+
+For example:
+    $object = $serializer->deserialize($json, 'MyObject`, 'json', DeserializationContext::create()->setRequireAllRequiredProperties(true));
+
+If you would like this behaviour to be the default, you can set the `DeserializationContextFactory` as described above.
