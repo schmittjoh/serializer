@@ -25,6 +25,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\ConstructorPromotion\Vase;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -136,6 +137,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['inline_map'] = '{"a":"1","b":"2","c":"3"}';
             $outputs['inline_empty_map'] = '{}';
             $outputs['empty_object'] = '{}';
+            $outputs['vase_with_plant'] = '{"color":"blue","size":"big","plant":"flower","typeOfSoil":"potting mix","daysSincePotting":-1,"weight":10}';
             $outputs['inline_deserialization_map'] = '{"a":"b","c":"d","e":"5"}';
             $outputs['iterable'] = '{"iterable":{"foo":"bar","bar":"foo"}}';
             $outputs['iterator'] = '{"iterator":{"foo":"bar","bar":"foo"}}';
@@ -440,10 +442,35 @@ class JsonSerializationTest extends BaseSerializationTestCase
         ];
     }
 
-    public function testDeserializationFailureOnPropertyMissing()
+    public function testDeserializationFailureOnPropertyMissingRequiredMissing()
     {
         self::expectException(PropertyMissingException::class);
         $this->deserialize(static::getContent('empty_object'), Author::class, DeserializationContext::create()->setRequireAllRequiredProperties(true));
+    }
+
+    public function testDeserializationFailureOnPropertyMissingUnionRequiredMissing()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        self::expectException(PropertyMissingException::class);
+        $this->deserialize(static::getContent('empty_object'), UnionTypedProperties::class, DeserializationContext::create()->setRequireAllRequiredProperties(true));
+    }
+
+    public function testDeserializationSuccessPropertyMissingNullablePresent()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        // Vase setters on size and weight modify the inputs from big -> huge and 10 -> 40.
+        $object = new Vase('blue', 'huge', 'flower', 'potting mix', -1, 40);
+        self::assertEquals($object, $this->deserialize(static::getContent('vase_with_plant'), Vase::class, DeserializationContext::create()->setRequireAllRequiredProperties(true)));
     }
 
     public function testDeserializingUnionProperties()
