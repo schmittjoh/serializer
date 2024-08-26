@@ -10,7 +10,7 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
-use \JMS\Serializer\Exception\PropertyMissingException;
+use JMS\Serializer\Exception\PropertyMissingException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\DeserializationContext;
