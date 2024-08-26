@@ -268,10 +268,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         }
     }
 
-    private function allowsNull(array $type)
+    private function allowsNull(array $type): bool
     {
         $allowsNull = false;
-        if ('union' === $type['name']) {
+        if ('union' === $type['name'] && isset($type['params'][0])) {
             foreach ($type['params'] as $param) {
                 if ('NULL' === $param['name']) {
                     $allowsNull = true;
