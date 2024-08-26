@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\NonVisitableTypeException;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\PropertyMissingException;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
