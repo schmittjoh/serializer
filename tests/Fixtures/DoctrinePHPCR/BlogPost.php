@@ -6,6 +6,11 @@ namespace JMS\Serializer\Tests\Fixtures\DoctrinePHPCR;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\PHPCR\Mapping\Annotations as PHPCRODM;
+use Doctrine\ODM\PHPCR\Mapping\Attributes\Document;
+use Doctrine\ODM\PHPCR\Mapping\Attributes\Field;
+use Doctrine\ODM\PHPCR\Mapping\Attributes\Id;
+use Doctrine\ODM\PHPCR\Mapping\Attributes\ReferenceMany;
+use Doctrine\ODM\PHPCR\Mapping\Attributes\ReferenceOne;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
@@ -18,11 +23,13 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @XmlRoot("blog-post")
  */
 #[XmlRoot(name: 'blog-post')]
+#[Document]
 class BlogPost
 {
     /**
      * @PHPCRODM\Id()
      */
+    #[Id]
     protected $id;
 
     /**
@@ -30,11 +37,13 @@ class BlogPost
      * @Groups({"comments","post"})
      */
     #[Groups(groups: ['comments', 'post'])]
+    #[Field(type: 'string')]
     private $title;
 
     /**
      * @PHPCRODM\Field(type="string")
      */
+    #[Field(type: 'string')]
     protected $slug;
 
     /**
@@ -42,6 +51,7 @@ class BlogPost
      * @XmlAttribute
      */
     #[XmlAttribute]
+    #[Field(type: 'date')]
     private $createdAt;
 
     /**
@@ -54,6 +64,7 @@ class BlogPost
      * @Groups({"post"})
      * @XmlAttribute
      */
+    #[Field(type: 'boolean')]
     #[Type(name: 'integer')]
     #[SerializedName(name: 'is_published')]
     #[Groups(groups: ['post'])]
@@ -67,6 +78,7 @@ class BlogPost
      */
     #[XmlList(entry: 'comment', inline: true)]
     #[Groups(groups: ['comments'])]
+    #[ReferenceMany(targetDocument:'Comment', property:'blogPost')]
     private $comments;
 
     /**
@@ -74,6 +86,7 @@ class BlogPost
      * @Groups({"post"})
      */
     #[Groups(groups: ['post'])]
+    #[ReferenceOne(targetDocument:'Author')]
     private $author;
 
     public function __construct($title, Author $author, \DateTime $createdAt)

@@ -8,8 +8,10 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\PHPCR\Configuration;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
+use Doctrine\ODM\PHPCR\Mapping\Driver\AttributeDriver as AttributeDoctrinePHPCRDriver;
 use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
@@ -101,10 +103,15 @@ class DoctrinePHPCRDriverTest extends TestCase
         $config = new Configuration();
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
-        assert(class_exists(DoctrinePHPCRDriver::class));
-        $config->setMetadataDriverImpl(
-            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR'),
-        );
+        if (class_exists(DoctrinePHPCRDriver::class)) {
+            $config->setMetadataDriverImpl(
+                new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR'),
+            );
+        } else {
+            $config->setMetadataDriverImpl(
+                new AttributeDoctrinePHPCRDriver([__DIR__ . '/../../Fixtures/DoctrinePHPCR']),
+            );
+        }
 
         $session = $this->getMockBuilder(SessionInterface::class)->getMock();
 
@@ -113,7 +120,11 @@ class DoctrinePHPCRDriverTest extends TestCase
 
     public function getAnnotationDriver()
     {
-        return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+        if (class_exists(DoctrinePHPCRDriver::class)) {
+            return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
+        } else {
+            return new AnnotationOrAttributeDriver(new IdenticalPropertyNamingStrategy());
+        }
     }
 
     protected function getDoctrinePHPCRDriver()

@@ -1,3 +1,4 @@
 parameters:
     ignoreErrors:
         - '~Call to an undefined method Reflection.*::getAttributes\(\)~'
+        - '~Instantiated class Doctrine\\ODM\\PHPCR\\Mapping\\Driver\\AttributeDriver not found~'
