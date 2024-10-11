@@ -64,6 +64,12 @@ final class EnumHandler implements SubscribingHandlerInterface
     public function deserializeEnum(DeserializationVisitorInterface $visitor, $data, array $type): ?\UnitEnum
     {
         $enumType = $type['params'][0];
+        if (isset($enumType['name'])) {
+            $enumType = $enumType['name'];
+        } else {
+            trigger_deprecation('jms/serializer', '3.31', "Using enum<'Type'> or similar is deprecated, use enum<Type> instead.");
+        }
+
         $caseValue = (string) $data;
 
         $ref = new \ReflectionEnum($enumType);

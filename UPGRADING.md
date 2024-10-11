@@ -104,6 +104,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - `JsonSerializationVisitor::hasData` will be removed 
 - `VisitorInterface` is internal, use `SerializationVisitorInterface` and `DeserializationVisitorInterface` instead
 - `GraphNavigator` is internal, use `GraphNavigatorInterface` instead
+- `enum<'Type'>` and similar are deprecated, use `enum<Type>` instead
 
 **Other**
 - Elements (as classes, interfaces, methods, properties...)
