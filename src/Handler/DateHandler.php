@@ -81,10 +81,10 @@ final class DateHandler implements SubscribingHandlerInterface
         string $defaultFormat = \DateTime::ATOM,
         string $defaultTimezone = 'UTC',
         bool $xmlCData = true,
-        array $defaultDeserializationFormats = [\DateTime::ATOM]
+        array $defaultDeserializationFormats = []
     ) {
         $this->defaultFormat = $defaultFormat;
-        $this->defaultDeserializationFormats = $defaultDeserializationFormats;
+        $this->defaultDeserializationFormats = [] === $defaultDeserializationFormats ? [$defaultFormat] : $defaultDeserializationFormats;
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
         $this->xmlCData = $xmlCData;
     }
@@ -299,7 +299,7 @@ final class DateHandler implements SubscribingHandlerInterface
         }
 
         if (isset($type['params'][0])) {
-            return is_array($type['params'][0]) ? $type['params'][0] : [$type['params'][0]];
+            return [$type['params'][0]];
         }
 
         return $this->defaultDeserializationFormats;
