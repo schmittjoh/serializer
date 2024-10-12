@@ -16,7 +16,7 @@ final class DateHandler implements SubscribingHandlerInterface
     /**
      * @var string
      */
-    private $defaultFormat;
+    private $defaultSerializationFormat;
 
     /**
      * @var array<string>
@@ -83,7 +83,7 @@ final class DateHandler implements SubscribingHandlerInterface
         bool $xmlCData = true,
         array $defaultDeserializationFormats = []
     ) {
-        $this->defaultFormat = $defaultFormat;
+        $this->defaultSerializationFormat = $defaultFormat;
         $this->defaultDeserializationFormats = [] === $defaultDeserializationFormats ? [$defaultFormat] : $defaultDeserializationFormats;
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
         $this->xmlCData = $xmlCData;
@@ -307,7 +307,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     private function getSerializationFormat(array $type): string
     {
-        return $type['params'][0] ?? $this->defaultFormat;
+        return $type['params'][0] ?? $this->defaultSerializationFormat;
     }
 
     public function format(\DateInterval $dateInterval): string
