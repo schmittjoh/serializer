@@ -454,19 +454,19 @@ Available Types:
 |                                                            | Examples: array<string, string>,                 |
 |                                                            | array<string, MyNamespace\MyObject>, etc.        |
 +------------------------------------------------------------+--------------------------------------------------+
-| enum<'Color'>                                              | Enum of type Color, use its case values          |
+| enum<T>                                                    | Enum of type Color, use its case values          |
 |                                                            | for serialization and deserialization            |
 |                                                            | if the enum is a backed enum,                    |
 |                                                            | use its case names if it is not a backed enum.   |
 +------------------------------------------------------------+--------------------------------------------------+
-| enum<'Color', 'name'>                                      | Enum of type Color, use its case names           |
+| enum<T, 'name'>                                            | Enum of type Color, use its case names           |
 |                                                            | (as string) for serialization                    |
 |                                                            | and deserialization.                             |
 +------------------------------------------------------------+--------------------------------------------------+
-| enum<'Color', 'value'>                                     | Backed Enum of type Color, use its case value    |
+| enum<T, 'value'>                                           | Backed Enum of type Color, use its case value    |
 |                                                            | for serialization and deserialization.           |
 +------------------------------------------------------------+--------------------------------------------------+
-| enum<'Color', 'value', 'integer'>                          | Backed Enum of type Color, use its case value    |
+| enum<T, 'value', 'integer'>                                | Backed Enum of type Color, use its case value    |
 |                                                            | (forced as integer) for serialization            |
 |                                                            | and deserialization.                             |
 +------------------------------------------------------------+--------------------------------------------------+

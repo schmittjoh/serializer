@@ -48,7 +48,13 @@ class EnumPropertiesDriver implements DriverInterface
             try {
                 $propertyReflection = $this->getReflection($propertyMetadata);
                 if ($enum = $this->getEnumReflection($propertyReflection)) {
-                    $serializerType = ['name' => 'enum', 'params' => [$enum->getName(), $enum->isBacked() ? 'value' : 'name']];
+                    $serializerType = [
+                        'name' => 'enum',
+                        'params' => [
+                            ['name' => $enum->getName(), 'params' => []],
+                            $enum->isBacked() ? 'value' : 'name',
+                        ],
+                    ];
                     $propertyMetadata->setType($serializerType);
                 }
             } catch (ReflectionException $e) {

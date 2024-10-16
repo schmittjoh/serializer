@@ -12,32 +12,34 @@ use JMS\Serializer\Tests\Fixtures\Enum\Suit;
 class ObjectWithEnums
 {
     /**
-     * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\Suit', 'name'>")
+     * @Serializer\Type("enum<JMS\Serializer\Tests\Fixtures\Enum\Suit, 'name'>")
      */
     public Suit $ordinary;
 
     /**
-     * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit', 'value'>")
+     * @Serializer\Type("enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit, 'value'>")
      */
     public BackedSuit $backedValue;
 
     /**
+     * Deprecated, remove single quote around type with 4.0.
+     *
      * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit'>")
      */
     public BackedSuit $backedWithoutParam;
 
     /**
-     * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\Suit'>>")
+     * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\Suit>>")
      */
     public array $ordinaryArray;
 
     /**
-     * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit', 'value'>>")
+     * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit, 'value'>>")
      */
     public array $backedArray;
 
     /**
-     * @Serializer\Type("array<enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit'>>")
+     * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit>>")
      */
     public array $backedArrayWithoutParam;
 
