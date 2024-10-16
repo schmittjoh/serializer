@@ -169,4 +169,15 @@ class DateHandlerTest extends TestCase
             $actualDateTime->format(\DateTime::RFC3339),
         );
     }
+
+    public function testDefaultFormat()
+    {
+        $visitor = new JsonDeserializationVisitor();
+
+        $type = ['name' => 'DateTime'];
+        self::assertEquals(
+            \DateTime::createFromFormat('Y/m/d H:i:s', '2017/06/18 17:32:11', $this->timezone),
+            $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18T17:32:11Z', $type),
+        );
+    }
 }
