@@ -113,7 +113,14 @@ class TypedPropertiesDriver implements DriverInterface
                 } elseif ($this->shouldTypeHintUnion($reflectionType)) {
                     $propertyMetadata->setType([
                         'name' => 'union',
-                        'params' => [$this->reorderTypes(array_map(fn (string $type) => $this->typeParser->parse($type), $reflectionType->getTypes()))],
+                        'params' => [
+                            $this->reorderTypes(
+                                array_map(
+                                    fn (string $type) => $this->typeParser->parse($type),
+                                    array_filter($reflectionType->getTypes(), [$this, 'shouldTypeHint']),
+                                ),
+                            ),
+                        ],
                     ]);
                 }
             } catch (ReflectionException $e) {
