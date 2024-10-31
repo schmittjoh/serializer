@@ -8,6 +8,8 @@ class UnionTypedProperties
 {
     private int|bool|float|string $data;
 
+    private int|bool|float|string|null $nullableData;
+
     public function __construct($data)
     {
         $this->data = $data;
