@@ -19,11 +19,12 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
         dependencies:
           - "lowest"
           - "highest"
         include:
-          - php-version: '8.3'
+          - php-version: '8.4'
             dependencies: 'highest'
             composer-stability: 'dev'
 
@@ -32,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -43,8 +44,8 @@ jobs:
         if: ${{ matrix.composer-stability }}
         run: composer config minimum-stability ${{ matrix.composer-stability }}
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ matrix.composer-options }}"
