@@ -75,6 +75,8 @@ class TypedPropertiesDriver implements DriverInterface
             'float',
             'bool',
             'boolean',
+            'true',
+            'false',
             'string',
             'double',
             'iterable',

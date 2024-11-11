@@ -57,6 +57,31 @@ final class UnionTypedPropertiesDriverTest extends TestCase
         );
     }
 
+    public function testInferUnionTypesShouldIncludeValueTypes()
+    {
+        $m = $this->resolve(UnionTypedProperties::class);
+
+        self::assertEquals(
+            [
+                'name' => 'union',
+                'params' =>
+                    [
+                        [
+                            [
+                                'name' => 'string',
+                                'params' => [],
+                            ],
+                            [
+                                'name' => 'false',
+                                'params' => [],
+                            ],
+                        ],
+                    ],
+            ],
+            $m->propertyMetadata['valueTypedUnion']->type,
+        );
+    }
+
     private function resolve(string $classToResolve): ClassMetadata
     {
         $namingStrategy = new IdenticalPropertyNamingStrategy();
