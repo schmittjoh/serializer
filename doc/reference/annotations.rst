@@ -1,10 +1,10 @@
 Attributes and annotations
 ==========================
 
-.. warning::
-Starting from release 3.30.0 [doctrine/annotations](https://github.com/doctrine/annotations) is an optional package. 
-If you still want to use them, please make sure that you require in `composer.json` file.
+.. warning ::
 
+    Starting from release 3.30.0 [doctrine/annotations](https://github.com/doctrine/annotations) is an optional package. 
+    If you still want to use them, please make sure that you require in `composer.json` file.
 
 PHP 8 support
 ~~~~~~~~~~~~~~~
