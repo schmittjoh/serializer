@@ -6,7 +6,7 @@ namespace JMS\Serializer\Tests\Fixtures\TypedProperties;
 
 class UnionTypedProperties
 {
-    private int|bool|float|string $data;
+    private int|bool|float|string|array $data;
 
     private int|bool|float|string|null $nullableData;
 

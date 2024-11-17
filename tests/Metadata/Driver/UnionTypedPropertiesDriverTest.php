@@ -35,6 +35,10 @@ final class UnionTypedPropertiesDriverTest extends TestCase
                     [
                         [
                             [
+                                'name' => 'array',
+                                'params' => [],
+                            ],
+                            [
                                 'name' => 'string',
                                 'params' => [],
                             ],

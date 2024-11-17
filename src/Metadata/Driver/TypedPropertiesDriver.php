@@ -60,9 +60,9 @@ class TypedPropertiesDriver implements DriverInterface
     private function reorderTypes(array $types): array
     {
         uasort($types, static function ($a, $b) {
-            $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
+            $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'array' => 6, 'string' => 7];
 
-            return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
+            return ($order[$a['name']] ?? 8) <=> ($order[$b['name']] ?? 8);
         });
 
         return $types;
@@ -117,7 +117,7 @@ class TypedPropertiesDriver implements DriverInterface
                             $this->reorderTypes(
                                 array_map(
                                     fn (string $type) => $this->typeParser->parse($type),
-                                    array_filter($reflectionType->getTypes(), [$this, 'shouldTypeHint']),
+                                    array_filter($reflectionType->getTypes(), [$this, 'shouldTypeHintInsideUnion']),
                                 ),
                             ),
                         ],
@@ -179,11 +179,16 @@ class TypedPropertiesDriver implements DriverInterface
         }
 
         foreach ($reflectionType->getTypes() as $type) {
-            if ($this->shouldTypeHint($type)) {
+            if ($this->shouldTypeHintInsideUnion($type)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function shouldTypeHintInsideUnion(ReflectionNamedType $reflectionType)
+    {
+        return $this->shouldTypeHint($reflectionType) || 'array' === $reflectionType->getName();
     }
 }
