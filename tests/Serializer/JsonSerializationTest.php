@@ -15,6 +15,7 @@ use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\DataFalse;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
@@ -151,6 +152,8 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
+            $outputs['data_true'] = '{"data":true}';
+            $outputs['data_false'] = '{"data":false}';
             $outputs['data_author'] = '{"data":{"full_name":"foo"}}';
             $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","objectType":"author"}}';
@@ -478,6 +481,30 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $serialized = $this->serialize(new UnionTypedProperties('foo'));
         self::assertEquals(static::getContent('data_string'), $serialized);
+    }
+
+    public function testFalseDataType()
+    {
+        if (PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('False type requires PHP 8.2');
+            return;
+        }
+
+        self::assertEquals(
+            static::getContent('data_false'),
+            $this->serialize(new DataFalse(false)),
+        );
+
+        self::assertEquals(
+            new DataFalse(false),
+            $this->deserialize(static::getContent('data_false'), DataFalse::class),
+        );
+
+        //What should we expect here?
+        self::assertEquals(
+            null,
+            $this->deserialize(static::getContent('data_true'), DataFalse::class),
+        );
     }
 
     public function testDeserializingComplexDiscriminatedUnionProperties()
