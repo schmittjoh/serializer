@@ -6,8 +6,11 @@ namespace JMS\Serializer\Tests\Fixtures;
 
 class DataFalse
 {
+    public false $data;
+
     public function __construct(
-        public false $data
+        false $data
     ) {
+        $this->data = $data;
     }
 }
