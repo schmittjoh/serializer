@@ -156,6 +156,8 @@ final class SerializationGraphNavigator extends GraphNavigator
 
             case 'bool':
             case 'boolean':
+            case 'true':
+            case 'false':
                 return $this->visitor->visitBoolean((bool) $data, $type);
 
             case 'double':
