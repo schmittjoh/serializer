@@ -14,14 +14,13 @@ parameters:
         - '#^Property JMS\\Serializer\\Handler\\FormErrorHandler\:\:\$translator has unknown class Symfony\\Component\\Translation\\TranslatorInterface as its type\.$#'
         - '#^Cannot call method appendChild\(\) on null\.$#'
         - '#^Call to an undefined method JMS\\Serializer\\VisitorInterface\:\:setData\(\)\.$#'
-        - '#^Property JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\CollectionOfNotExistingClasses\:\:\$productIds has unknown class JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\NotExistingClass as its type\.$#'
         - '#^Call to method expects\(\) on an unknown class Symfony\\Component\\Translation\\TranslatorInterface\.$#'
         - '#^Call to an undefined method JMS\\Serializer\\VisitorInterface\:\:hasData\(\)\.$#'
-        - '#^Property JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\CollectionOfClassesWithFullNamespacePath\:\:\$productIds has unknown class JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\Product as its type\.$#'
-        - '#^Property JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\CollectionOfInterfacesWithFullNamespacePath\:\:\$productColors has unknown class JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\Details\\ProductColor as its type\.$#'
         - '#^Method JMS\\Serializer\\GraphNavigator\\DeserializationGraphNavigator\:\:resolveMetadata\(\) should return JMS\\Serializer\\Metadata\\ClassMetadata\|null#'
         - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept list<string\|null>\.#'
         - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept array<string, ArrayObject>\.#'
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
+    excludePaths:
+        - tests/Fixtures/*
