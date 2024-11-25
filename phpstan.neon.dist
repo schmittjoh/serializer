@@ -24,3 +24,4 @@ parameters:
         - %currentWorkingDirectory%/tests
     excludePaths:
         - tests/Fixtures/*
+    reportUnmatchedIgnoredErrors: false
