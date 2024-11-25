@@ -20,6 +20,8 @@ parameters:
         - '#^Property JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\CollectionOfClassesWithFullNamespacePath\:\:\$productIds has unknown class JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\Product as its type\.$#'
         - '#^Property JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\CollectionOfInterfacesWithFullNamespacePath\:\:\$productColors has unknown class JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\JMS\\Serializer\\Tests\\Fixtures\\DocBlockType\\Collection\\Details\\ProductColor as its type\.$#'
         - '#^Method JMS\\Serializer\\GraphNavigator\\DeserializationGraphNavigator\:\:resolveMetadata\(\) should return JMS\\Serializer\\Metadata\\ClassMetadata\|null#'
+        - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept list<string\|null>\.#'
+        - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept array<string, ArrayObject>\.#'
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests

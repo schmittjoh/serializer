@@ -129,7 +129,6 @@ final class FormErrorHandler implements SubscribingHandlerInterface
 
     private function convertFormToArray(SerializationVisitorInterface $visitor, FormInterface $data): \ArrayObject
     {
-        /** @var \ArrayObject{errors?:array<string>,children?:array<string,\ArrayObject>} $form */
         $form = new \ArrayObject();
         $errors = [];
         foreach ($data->getErrors() as $error) {
