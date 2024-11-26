@@ -8,4 +8,3 @@ parameters:
         - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotion.php
         - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotionWithoutDocblock.php
         - %currentWorkingDirectory%/tests/Fixtures/DocBlockType/Collection/ConstructorPropertyPromotionWithScalar.php
-        - %currentWorkingDirectory%/tests/Serializer/BaseSerializationTest.php

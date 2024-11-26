@@ -20,6 +20,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 
 /**
  * @internal
@@ -47,11 +48,25 @@ final class DocBlockTypeResolver
 
     public function __construct()
     {
-        $constExprParser = new ConstExprParser();
-        $typeParser = new TypeParser($constExprParser);
+        // PHPStan PHPDoc Parser 2
+        if (class_exists(ParserConfig::class)) {
+            $config = new ParserConfig(['lines' => true, 'indexes' => true]);
 
-        $this->phpDocParser = new PhpDocParser($typeParser, $constExprParser);
-        $this->lexer = new Lexer();
+            $constExprParser = new ConstExprParser($config);
+            $typeParser = new TypeParser($config, $constExprParser);
+
+            $this->phpDocParser = new PhpDocParser($config, $typeParser, $constExprParser);
+            $this->lexer = new Lexer($config);
+        } else {
+            // @phpstan-ignore arguments.count
+            $constExprParser = new ConstExprParser();
+            // @phpstan-ignore arguments.count
+            $typeParser = new TypeParser($constExprParser);
+            // @phpstan-ignore arguments.count
+            $this->phpDocParser = new PhpDocParser($typeParser, $constExprParser);
+            // @phpstan-ignore arguments.count
+            $this->lexer = new Lexer();
+        }
     }
 
     /**
