@@ -128,6 +128,8 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
             case 'bool':
             case 'boolean':
+            case 'false':
+            case 'true':
                 return $this->visitor->visitBoolean($data, $type);
 
             case 'double':

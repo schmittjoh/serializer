@@ -15,6 +15,8 @@ use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\Tests\Fixtures\DataFalse;
+use JMS\Serializer\Tests\Fixtures\DataTrue;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedAuthor;
 use JMS\Serializer\Tests\Fixtures\DiscriminatedComment;
 use JMS\Serializer\Tests\Fixtures\FirstClassMapCollection;
@@ -27,6 +29,7 @@ use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+use TypeError;
 
 class JsonSerializationTest extends BaseSerializationTestCase
 {
@@ -152,6 +155,8 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
             $outputs['data_array'] = '{"data":[1,2,3]}';
+            $outputs['data_true'] = '{"data":true}';
+            $outputs['data_false'] = '{"data":false}';
             $outputs['data_author'] = '{"data":{"full_name":"foo"}}';
             $outputs['data_comment'] = '{"data":{"author":{"full_name":"foo"},"text":"bar"}}';
             $outputs['data_discriminated_author'] = '{"data":{"full_name":"foo","objectType":"author"}}';
@@ -463,6 +468,50 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $object = new UnionTypedProperties($data);
         self::assertEquals($object, $this->deserialize(static::getContent($expected), UnionTypedProperties::class));
         self::assertEquals($this->serialize($object), static::getContent($expected));
+    }
+
+    public function testTrueDataType()
+    {
+        if (PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('True type requires PHP 8.2');
+
+            return;
+        }
+
+        self::assertEquals(
+            static::getContent('data_true'),
+            $this->serialize(new DataTrue(true)),
+        );
+
+        self::assertEquals(
+            new DataTrue(true),
+            $this->deserialize(static::getContent('data_true'), DataTrue::class),
+        );
+
+        $this->expectException(TypeError::class);
+        $this->deserialize(static::getContent('data_false'), DataTrue::class);
+    }
+
+    public function testFalseDataType()
+    {
+        if (PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('False type requires PHP 8.2');
+
+            return;
+        }
+
+        self::assertEquals(
+            static::getContent('data_false'),
+            $this->serialize(new DataFalse(false)),
+        );
+
+        self::assertEquals(
+            new DataFalse(false),
+            $this->deserialize(static::getContent('data_false'), DataFalse::class),
+        );
+
+        $this->expectException(TypeError::class);
+        $this->deserialize(static::getContent('data_true'), DataFalse::class);
     }
 
     public function testDeserializingComplexDiscriminatedUnionProperties()
