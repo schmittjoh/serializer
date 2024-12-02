@@ -151,6 +151,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['uninitialized_typed_props'] = '{"virtual_role":{},"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
+            $outputs['data_integer_one'] = '{"data":1}';
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
@@ -454,6 +455,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $object = new UnionTypedProperties(10000);
         self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
 
+        $object = new UnionTypedProperties(1);
+        self::assertEquals($object, $this->deserialize(static::getContent('data_integer_one'), UnionTypedProperties::class));
+
         $object = new UnionTypedProperties(1.236);
         self::assertEquals($object, $this->deserialize(static::getContent('data_float'), UnionTypedProperties::class));
 
@@ -474,6 +478,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
         $serialized = $this->serialize(new UnionTypedProperties(10000));
         self::assertEquals(static::getContent('data_integer'), $serialized);
+
+        $serialized = $this->serialize(new UnionTypedProperties(1));
+        self::assertEquals(static::getContent('data_integer_one'), $serialized);
 
         $serialized = $this->serialize(new UnionTypedProperties(1.236));
         self::assertEquals(static::getContent('data_float'), $serialized);
