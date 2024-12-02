@@ -28,16 +28,12 @@ final class UnionTypedPropertiesDriverTest extends TestCase
     {
         $m = $this->resolve(UnionTypedProperties::class);
 
-        self::assertEquals(
+        self::assertSame(
             [
                 'name' => 'union',
                 'params' =>
                     [
                         [
-                            [
-                                'name' => 'string',
-                                'params' => [],
-                            ],
                             [
                                 'name' => 'int',
                                 'params' => [],
@@ -48,6 +44,10 @@ final class UnionTypedPropertiesDriverTest extends TestCase
                             ],
                             [
                                 'name' => 'bool',
+                                'params' => [],
+                            ],
+                            [
+                                'name' => 'string',
                                 'params' => [],
                             ],
                         ],
@@ -61,18 +61,18 @@ final class UnionTypedPropertiesDriverTest extends TestCase
     {
         $m = $this->resolve(UnionTypedProperties::class);
 
-        self::assertEquals(
+        self::assertSame(
             [
                 'name' => 'union',
                 'params' =>
                     [
                         [
                             [
-                                'name' => 'string',
+                                'name' => 'false',
                                 'params' => [],
                             ],
                             [
-                                'name' => 'false',
+                                'name' => 'string',
                                 'params' => [],
                             ],
                         ],

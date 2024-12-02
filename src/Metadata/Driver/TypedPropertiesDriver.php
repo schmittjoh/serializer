@@ -60,12 +60,12 @@ class TypedPropertiesDriver implements DriverInterface
     private function reorderTypes(array $types): array
     {
         uasort($types, static function ($a, $b) {
-            $order = ['null' => 0, 'true' => 1, 'false' => 2, 'bool' => 3, 'int' => 4, 'float' => 5, 'string' => 6];
+            $order = ['null' => 0, 'true' => 1, 'false' => 2, 'int' => 3, 'float' => 4, 'bool' => 5, 'string' => 6];
 
             return ($order[$a['name']] ?? 7) <=> ($order[$b['name']] ?? 7);
         });
 
-        return $types;
+        return \array_values($types);
     }
 
     private function getDefaultWhiteList(): array

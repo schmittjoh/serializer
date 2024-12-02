@@ -131,7 +131,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
             case 'bool':
             case 'boolean':
-                return (string) (bool) $data === (string) $data;
+                return (string) (bool) $data === (string) $data && 1 !== $data; // prevent false positive for 1/true
 
             case 'string':
                 return (string) $data === (string) $data;
