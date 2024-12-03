@@ -154,6 +154,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
+            $outputs['data_array'] = '{"data":[1,2,3]}';
             $outputs['data_true'] = '{"data":true}';
             $outputs['data_false'] = '{"data":false}';
             $outputs['data_author'] = '{"data":{"full_name":"foo"}}';
@@ -443,28 +444,20 @@ class JsonSerializationTest extends BaseSerializationTestCase
         ];
     }
 
-    public function testDeserializingUnionProperties()
+    public static function getSimpleUnionProperties(): iterable
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
-        $object = new UnionTypedProperties(10000);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
-
-        $object = new UnionTypedProperties(1.236);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_float'), UnionTypedProperties::class));
-
-        $object = new UnionTypedProperties(false);
-        self::assertEquals($object, $this->deserialize(static::getContent('data_bool'), UnionTypedProperties::class));
-
-        $object = new UnionTypedProperties('foo');
-        self::assertEquals($object, $this->deserialize(static::getContent('data_string'), UnionTypedProperties::class));
+        yield 'int' => [10000, 'data_integer'];
+        yield [1.236, 'data_float'];
+        yield [false, 'data_bool'];
+        yield ['foo', 'data_string'];
+        yield [[1, 2, 3], 'data_array'];
     }
 
-    public function testSerializingUnionProperties()
+    /**
+     * @dataProvider getSimpleUnionProperties
+     */
+    #[DataProvider('getSimpleUnionProperties')]
+    public function testUnionProperties($data, string $expected): void
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
@@ -472,17 +465,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
             return;
         }
 
-        $serialized = $this->serialize(new UnionTypedProperties(10000));
-        self::assertEquals(static::getContent('data_integer'), $serialized);
-
-        $serialized = $this->serialize(new UnionTypedProperties(1.236));
-        self::assertEquals(static::getContent('data_float'), $serialized);
-
-        $serialized = $this->serialize(new UnionTypedProperties(false));
-        self::assertEquals(static::getContent('data_bool'), $serialized);
-
-        $serialized = $this->serialize(new UnionTypedProperties('foo'));
-        self::assertEquals(static::getContent('data_string'), $serialized);
+        $object = new UnionTypedProperties($data);
+        self::assertEquals($object, $this->deserialize(static::getContent($expected), UnionTypedProperties::class));
+        self::assertEquals($this->serialize($object), static::getContent($expected));
     }
 
     public function testTrueDataType()
