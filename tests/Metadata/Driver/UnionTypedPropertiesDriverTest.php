@@ -95,7 +95,7 @@ final class UnionTypedPropertiesDriverTest extends TestCase
             new NullDriver($namingStrategy),
         ]);
 
-        $driver = new TypedPropertiesDriver($driver);
+        $driver = new TypedPropertiesDriver($driver, null, [], true);
 
         $m = $driver->loadMetadataForClass(new ReflectionClass($classToResolve));
         self::assertNotNull($m);
