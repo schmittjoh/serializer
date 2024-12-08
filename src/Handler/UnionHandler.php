@@ -50,15 +50,18 @@ final class UnionHandler implements SubscribingHandlerInterface
         SerializationContext $context
     ): mixed {
         if ($this->isPrimitiveType(gettype($data))) {
-            return $this->matchSimpleType($data, $type, $context);
+            $resolvedType = [
+                'name' => gettype($data),
+                'params' => [],
+            ];
         } else {
             $resolvedType = [
                 'name' => get_class($data),
                 'params' => [],
             ];
-
-            return $context->getNavigator()->accept($data, $resolvedType);
         }
+
+        return $context->getNavigator()->accept($data, $resolvedType);
     }
 
     public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context): mixed

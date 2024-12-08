@@ -151,9 +151,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['uninitialized_typed_props'] = '{"virtual_role":{},"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
+            $outputs['data_integer_one'] = '{"data":1}';
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
+            $outputs['data_string_empty'] = '{"data":""}';
+            $outputs['data_string_zero'] = '{"data":"0"}';
             $outputs['data_array'] = '{"data":[1,2,3]}';
             $outputs['data_true'] = '{"data":true}';
             $outputs['data_false'] = '{"data":false}';
@@ -451,6 +454,9 @@ class JsonSerializationTest extends BaseSerializationTestCase
         yield [false, 'data_bool'];
         yield ['foo', 'data_string'];
         yield [[1, 2, 3], 'data_array'];
+        yield [1, 'data_integer_one'];
+        yield ['0', 'data_string_zero'];
+        yield ['', 'data_string_empty'];
     }
 
     /**
@@ -482,7 +488,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
             static::getContent('data_true'),
             $this->serialize(new DataTrue(true)),
         );
-
         self::assertEquals(
             new DataTrue(true),
             $this->deserialize(static::getContent('data_true'), DataTrue::class),
