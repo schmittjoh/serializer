@@ -17,6 +17,39 @@ please use the alternative syntax ``#[Groups(groups: ['value' => 'any value here
 - Some support for unions exists.  For unions of primitive types, the system will try to resolve them automatically.  For
 classes that contain union attributes, the ``#[UnionDiscriminator]`` attribute must be used to specify the type of the union.
 
+Enum support
+~~~~~~~~~~~~~~
+
+Enum support is disabled by default, to enable it run:
+
+.. code-block :: php
+
+    $builder = SerializerBuilder::create();
+    $builder->enableEnumSupport();
+
+    $serializer = $builder->build();
+
+
+With the enum support enabled, enums are automatically detected using typed properties typehints.
+When typed properties are no available (virtual properties as example), it is necessary to explicitly typehint
+the underlying type using the ``#[Type]`` attribute.
+
+- If the enum is a ``BackedEnum``, the case value will be used for serialization and deserialization by default;
+- If the enum is not a ``BackedEnum``, the case name will be used for serialization and deserialization by default;
+
+Union support
+~~~~~~~~~~~~~~
+
+Union support is disabled by default, to enable it run:
+
+.. code-block :: php
+
+    $builder = SerializerBuilder::create();
+    $builder->enableUnionSupport();
+
+    $serializer = $builder->build();
+
+
 Converting your annotations to attributes
 -----------------------------------------
 
@@ -958,22 +991,3 @@ Resulting XML:
     </blog>
 
 
-Enum support
-~~~~~~~~~~~~~~
-
-Enum support is disabled by default, to enable it run:
-
-.. code-block :: php
-
-    $builder = SerializerBuilder::create();
-    $builder->enableEnumSupport();
-
-    $serializer = $builder->build();
-
-
-With the enum support enabled, enums are automatically detected using typed properties typehints.
-When typed properties are no available (virtual properties as example), it is necessary to explicitly typehint
-the underlying type using the ``#[Type]`` attribute.
-
-- If the enum is a ``BackedEnum``, the case value will be used for serialization and deserialization by default;
-- If the enum is not a ``BackedEnum``, the case name will be used for serialization and deserialization by default;

@@ -22,29 +22,24 @@ use ReflectionType;
 
 class TypedPropertiesDriver implements DriverInterface
 {
-    /**
-     * @var DriverInterface
-     */
-    protected $delegate;
-
-    /**
-     * @var ParserInterface
-     */
-    protected $typeParser;
+    protected DriverInterface $delegate;
+    protected ParserInterface $typeParser;
 
     /**
      * @var string[]
      */
-    private $allowList;
+    private array $allowList;
+    private bool $allowUnionProperties;
 
     /**
      * @param string[] $allowList
      */
-    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $allowList = [])
+    public function __construct(DriverInterface $delegate, ?ParserInterface $typeParser = null, array $allowList = [], bool $allowUnionProperties = false)
     {
         $this->delegate = $delegate;
         $this->typeParser = $typeParser ?: new Parser();
         $this->allowList = array_merge($allowList, $this->getDefaultWhiteList());
+        $this->allowUnionProperties = $allowUnionProperties;
     }
 
     /**
@@ -176,6 +171,10 @@ class TypedPropertiesDriver implements DriverInterface
      */
     private function shouldTypeHintUnion(?ReflectionType $reflectionType)
     {
+        if (!$this->allowUnionProperties) {
+            return false;
+        }
+
         if (!$reflectionType instanceof \ReflectionUnionType) {
             return false;
         }

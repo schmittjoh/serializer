@@ -24,25 +24,15 @@ use Symfony\Component\Yaml\Yaml;
 
 final class DefaultDriverFactory implements DriverFactoryInterface
 {
-    /**
-     * @var ParserInterface
-     */
-    private $typeParser;
+    private ParserInterface $typeParser;
 
-    /**
-     * @var bool
-     */
-    private $enableEnumSupport = false;
+    private bool $enableEnumSupport = false;
 
-    /**
-     * @var PropertyNamingStrategyInterface
-     */
-    private $propertyNamingStrategy;
+    private bool $enableUnionSupport = false;
 
-    /**
-     * @var CompilableExpressionEvaluatorInterface
-     */
-    private $expressionEvaluator;
+    private PropertyNamingStrategyInterface $propertyNamingStrategy;
+
+    private ?CompilableExpressionEvaluatorInterface $expressionEvaluator;
 
     public function __construct(PropertyNamingStrategyInterface $propertyNamingStrategy, ?ParserInterface $typeParser = null, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
@@ -54,6 +44,11 @@ final class DefaultDriverFactory implements DriverFactoryInterface
     public function enableEnumSupport(bool $enableEnumSupport = true): void
     {
         $this->enableEnumSupport = $enableEnumSupport;
+    }
+
+    public function enableUnionSupport(bool $enableUnionSupport = true): void
+    {
+        $this->enableUnionSupport = $enableUnionSupport;
     }
 
     public function createDriver(array $metadataDirs, ?Reader $annotationReader = null): DriverInterface
@@ -93,7 +88,7 @@ final class DefaultDriverFactory implements DriverFactoryInterface
             $driver = new EnumPropertiesDriver($driver);
         }
 
-        $driver = new TypedPropertiesDriver($driver, $this->typeParser);
+        $driver = new TypedPropertiesDriver($driver, $this->typeParser, [], $this->enableUnionSupport);
 
         if (PHP_VERSION_ID >= 80000) {
             $driver = new DefaultValuePropertyDriver($driver);
