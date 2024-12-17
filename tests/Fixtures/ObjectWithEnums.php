@@ -14,11 +14,13 @@ class ObjectWithEnums
     /**
      * @Serializer\Type("enum<JMS\Serializer\Tests\Fixtures\Enum\Suit, 'name'>")
      */
+    #[Serializer\Type(name: 'enum<' . Suit::class . ", 'name'>")]
     public Suit $ordinary;
 
     /**
      * @Serializer\Type("enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit, 'value'>")
      */
+    #[Serializer\Type(name: 'enum<' . BackedSuit::class . ", 'value'>")]
     public BackedSuit $backedValue;
 
     /**
@@ -26,21 +28,25 @@ class ObjectWithEnums
      *
      * @Serializer\Type("enum<'JMS\Serializer\Tests\Fixtures\Enum\BackedSuit'>")
      */
+    #[Serializer\Type(name: "enum<'" . BackedSuit::class . "'>")]
     public BackedSuit $backedWithoutParam;
 
     /**
      * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\Suit>>")
      */
+    #[Serializer\Type(name: 'array<enum<' . Suit::class . '>>')]
     public array $ordinaryArray;
 
     /**
      * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit, 'value'>>")
      */
+    #[Serializer\Type(name: 'array<enum<' . BackedSuit::class . ", 'value'>>")]
     public array $backedArray;
 
     /**
      * @Serializer\Type("array<enum<JMS\Serializer\Tests\Fixtures\Enum\BackedSuit>>")
      */
+    #[Serializer\Type(name: 'array<enum<' . BackedSuit::class . '>>')]
     public array $backedArrayWithoutParam;
 
     public Suit $ordinaryAutoDetect;
