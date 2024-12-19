@@ -115,7 +115,7 @@ final class UnionHandler implements SubscribingHandlerInterface
 
     private function isPrimitiveType(string $type): bool
     {
-        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'string', 'array'], true);
+        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'true', 'false', 'string', 'array'], true);
     }
 
     private function testPrimitive(mixed $data, string $type, string $format): bool
@@ -135,6 +135,12 @@ final class UnionHandler implements SubscribingHandlerInterface
             case 'bool':
             case 'boolean':
                 return (string) (bool) $data === (string) $data;
+
+            case 'true':
+                return true === $data;
+
+            case 'false':
+                return false === $data;
 
             case 'string':
                 return is_string($data);

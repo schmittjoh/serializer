@@ -616,7 +616,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         $this->expectException(RuntimeException::class);
 
-        $object = new UnionTypedProperties(10000);
+        $object = new UnionTypedProperties(10000, null, false);
         self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
     }
 

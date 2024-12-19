@@ -1973,9 +1973,9 @@ abstract class BaseSerializationTestCase extends TestCase
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
         }
 
-        $object = new TypedProperties\UnionTypedProperties(10000);
+        $object = new TypedProperties\UnionTypedProperties(10000, null, false);
 
-        self::assertEquals(static::getContent('data_integer'), $this->serialize($object));
+        self::assertEquals(static::getContent('union_typed_properties_integer'), $this->serialize($object));
     }
 
     public function testSerializingUnionDocBlockTypesProperties()
