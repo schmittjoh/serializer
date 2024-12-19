@@ -167,6 +167,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['object_with_enums'] = '{"ordinary":"Clubs","backed_value":"C","backed_without_param":"C","ordinary_array":["Clubs","Spades"],"backed_array":["C","H"],"backed_array_without_param":["C","H"],"ordinary_auto_detect":"Clubs","backed_auto_detect":"C","backed_int_auto_detect":3,"backed_int":3,"backed_name":"C","backed_int_forced_str":3}';
             $outputs['object_with_autodetect_enums'] = '{"ordinary_array_auto_detect":["Clubs","Spades"],"backed_array_auto_detect":["C","H"],"mixed_array_auto_detect":["Clubs","H"]}';
             $outputs['object_with_enums_disabled'] = '{"ordinary_array_auto_detect":[{"name":"Clubs"},{"name":"Spades"}],"backed_array_auto_detect":[{"name":"Clubs","value":"C"},{"name":"Hearts","value":"H"}],"mixed_array_auto_detect":[{"name":"Clubs"},{"name":"Hearts","value":"H"}]}';
+            $outputs['union_typed_properties_integer'] = '{"data":10000,"value_typed_union":false}';
+            $outputs['union_typed_properties_float'] = '{"data":1.236,"value_typed_union":false}';
+            $outputs['union_typed_properties_bool'] = '{"data":false,"value_typed_union":false}';
+            $outputs['union_typed_properties_string'] = '{"data":"foo","value_typed_union":false}';
+            $outputs['union_typed_properties_array'] = '{"data":[1,2,3],"value_typed_union":false}';
+            $outputs['union_typed_properties_false_string'] = '{"data":false,"value_typed_union":"foo"}';
         }
 
         if (!isset($outputs[$key])) {
@@ -446,11 +452,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public static function getSimpleUnionProperties(): iterable
     {
-        yield 'int' => [10000, 'data_integer'];
-        yield [1.236, 'data_float'];
-        yield [false, 'data_bool'];
-        yield ['foo', 'data_string'];
-        yield [[1, 2, 3], 'data_array'];
+        yield 'int' => [[10000, null, false], 'union_typed_properties_integer'];
+        yield 'float' => [[1.236, null, false], 'union_typed_properties_float'];
+        yield 'bool' => [[false, null, false], 'union_typed_properties_bool'];
+        yield 'string' => [['foo', null, false], 'union_typed_properties_string'];
+        yield 'array' => [[[1, 2, 3], null, false], 'union_typed_properties_array'];
+        yield 'false_array' => [[false, null, 'foo'], 'union_typed_properties_false_string'];
     }
 
     /**
@@ -465,7 +472,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             return;
         }
 
-        $object = new UnionTypedProperties($data);
+        $object = new UnionTypedProperties(...$data);
         self::assertEquals($object, $this->deserialize(static::getContent($expected), UnionTypedProperties::class));
         self::assertEquals($this->serialize($object), static::getContent($expected));
     }
