@@ -180,7 +180,15 @@ class TypedPropertiesDriver implements DriverInterface
             return false;
         }
 
-        foreach ($reflectionType->getTypes() as $type) {
+        $types = $reflectionType->getTypes();
+
+        foreach ($types as $type) {
+            if ($type instanceof \ReflectionIntersectionType) {
+                return false;
+            }
+        }
+
+        foreach ($types as $type) {
             if ($this->shouldTypeHintInsideUnion($type)) {
                 return true;
             }
