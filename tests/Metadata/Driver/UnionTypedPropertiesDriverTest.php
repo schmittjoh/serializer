@@ -10,6 +10,7 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\NullDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\NotSupportedDNFTypes;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use Metadata\Driver\DriverChain;
 use PHPUnit\Framework\TestCase;
@@ -84,6 +85,20 @@ final class UnionTypedPropertiesDriverTest extends TestCase
             ],
             $m->propertyMetadata['valueTypedUnion']->type,
         );
+    }
+
+    public function testDNFTypes()
+    {
+        if (PHP_VERSION_ID < 80200) {
+            self::markTestSkipped();
+        }
+
+        $m = $this->resolve(NotSupportedDNFTypes::class);
+
+        self::assertCount(10, $m->propertyMetadata);
+        foreach ($m->propertyMetadata as $propertyMetadata) {
+            self::assertNull($propertyMetadata->type, 'Breaking Change: TypeResolved for: ' . $propertyMetadata->name);
+        }
     }
 
     private function resolve(string $classToResolve): ClassMetadata
