@@ -154,7 +154,15 @@ final class DocBlockTypeResolver
 
             if ($type->genericTypes[$valuesIndex] instanceof UnionTypeNode) {
                 $valueTypes = array_map(
-                    fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector),
+                    function (TypeNode $node) use ($reflector) {
+                        if ($node instanceof ArrayTypeNode) {
+                            $resolvedType = $this->resolveTypeFromTypeNode($node->type, $reflector);
+
+                            return 'array<' . $resolvedType . '>';
+                        }
+
+                        return $this->resolveTypeFromTypeNode($node, $reflector);
+                    },
                     $type->genericTypes[$valuesIndex]->types,
                 );
             } else {

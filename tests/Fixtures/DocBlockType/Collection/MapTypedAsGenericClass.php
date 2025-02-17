@@ -20,4 +20,9 @@ class MapTypedAsGenericClass
      * @var array<int, Product|Vehicle>
      */
     public array $productOrVehicleIdsWithKey;
+
+    /**
+     * @var array<Product|Vehicle[]>
+     */
+    public array $productOrVehicles;
 }

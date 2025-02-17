@@ -152,6 +152,16 @@ class DocBlockDriverTest extends TestCase
             ],
             $m->propertyMetadata['productOrVehicleIdsWithKey']->type,
         );
+        self::assertEquals(
+            [
+                'name' => 'array',
+                'params' => [
+                    ['name' => Product::class, 'params' => []],
+                    ['name' => 'array', 'params' => [['name' => Vehicle::class, 'params' => []]]],
+                ],
+            ],
+            $m->propertyMetadata['productOrVehicles']->type,
+        );
     }
 
     public function testInferDocBlockCollectionOfClassesIgnoringNullTypeHint()
