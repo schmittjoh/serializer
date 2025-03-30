@@ -12,6 +12,9 @@ if (PHP_VERSION_ID < 80000) {
 }
 if (PHP_VERSION_ID < 80100) {
     $includes[] = __DIR__ . '/no-enum.neon';
+    $includes[] = __DIR__ . '/doctrine30.neon';
+} else {
+    $includes[] = __DIR__ . '/doctrine31.neon';
 }
 if (PHP_VERSION_ID >= 80000) {
     $includes[] = __DIR__ . '/ignore-missing-attribute.neon';
