@@ -50,7 +50,6 @@ use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 use JMS\Serializer\XmlSerializationVisitor;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
-use PHPUnit\Framework\Attributes\Group;
 
 class XmlSerializationTest extends BaseSerializationTestCase
 {

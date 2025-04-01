@@ -26,6 +26,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\BoolOrString;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\FalseOrString;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -570,6 +571,16 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertEquals(
             new DataFalse(false),
             $this->deserialize(static::getContent('data_false'), DataFalse::class),
+        );
+
+        self::assertEquals(
+            static::getContent('data_false'),
+            $this->serialize(new FalseOrString(false)),
+        );
+
+        self::assertEquals(
+            new FalseOrString(false),
+            $this->deserialize(static::getContent('data_false'), FalseOrString::class),
         );
 
         $this->expectException(TypeError::class);
