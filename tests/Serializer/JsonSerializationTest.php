@@ -24,7 +24,9 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithEmptyArrayAndHash;
 use JMS\Serializer\Tests\Fixtures\ObjectWithInlineArray;
 use JMS\Serializer\Tests\Fixtures\ObjectWithObjectProperty;
 use JMS\Serializer\Tests\Fixtures\Tag;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\BoolOrString;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\ComplexDiscriminatedUnion;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\FalseOrString;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -151,9 +153,12 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['uninitialized_typed_props'] = '{"virtual_role":{},"id":1,"role":{},"tags":[]}';
             $outputs['custom_datetimeinterface'] = '{"custom":"2021-09-07"}';
             $outputs['data_integer'] = '{"data":10000}';
+            $outputs['data_integer_one'] = '{"data":1}';
             $outputs['data_float'] = '{"data":1.236}';
             $outputs['data_bool'] = '{"data":false}';
             $outputs['data_string'] = '{"data":"foo"}';
+            $outputs['data_string_empty'] = '{"data":""}';
+            $outputs['data_string_zero'] = '{"data":"0"}';
             $outputs['data_array'] = '{"data":[1,2,3]}';
             $outputs['data_true'] = '{"data":true}';
             $outputs['data_false'] = '{"data":false}';
@@ -452,12 +457,16 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public static function getSimpleUnionProperties(): iterable
     {
-        yield 'int' => [[10000, null, false], 'union_typed_properties_integer'];
-        yield 'float' => [[1.236, null, false], 'union_typed_properties_float'];
-        yield 'bool' => [[false, null, false], 'union_typed_properties_bool'];
-        yield 'string' => [['foo', null, false], 'union_typed_properties_string'];
-        yield 'array' => [[[1, 2, 3], null, false], 'union_typed_properties_array'];
-        yield 'false_array' => [[false, null, 'foo'], 'union_typed_properties_false_string'];
+        yield [10000, 'data_integer'];
+        yield [1.236, 'data_float'];
+        yield [false, 'data_bool'];
+        yield ['foo', 'data_string'];
+        yield [[1, 2, 3], 'data_array'];
+        yield [1, 'data_integer_one'];
+        yield ['0', 'data_string_zero'];
+        yield ['', 'data_string_empty'];
+        yield [true, 'data_true'];
+        yield [false, 'data_false'];
     }
 
     /**
@@ -472,9 +481,57 @@ class JsonSerializationTest extends BaseSerializationTestCase
             return;
         }
 
-        $object = new UnionTypedProperties(...$data);
-        self::assertEquals($object, $this->deserialize(static::getContent($expected), UnionTypedProperties::class));
-        self::assertEquals($this->serialize($object), static::getContent($expected));
+        $deserialized = $this->deserialize(static::getContent($expected), UnionTypedProperties::class);
+
+        self::assertSame($data, $deserialized->data);
+        self::assertSame($this->serialize($deserialized), static::getContent($expected));
+    }
+
+    public static function getUnionCastableTypes(): iterable
+    {
+        yield ['10000', 'data_integer'];
+        yield ['1.236', 'data_float'];
+        yield [true, 'data_integer_one'];
+    }
+
+    /**
+     * @dataProvider getUnionCastableTypes
+     */
+    #[DataProvider('getUnionCastableTypes')]
+    public function testUnionPropertiesWithCastableType($data, string $expected)
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $deserialized = $this->deserialize(static::getContent($expected), BoolOrString::class);
+
+        self::assertSame($data, $deserialized->data);
+    }
+
+    public static function getUnionNotCastableTypes(): iterable
+    {
+        yield ['data_array'];
+    }
+
+    /**
+     * @dataProvider getUnionNotCastableTypes
+     */
+    #[DataProvider('getUnionNotCastableTypes')]
+    public function testUnionPropertiesWithNotCastableType(string $expected)
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+
+            return;
+        }
+
+        $deserialized = $this->deserialize(static::getContent($expected), BoolOrString::class);
+
+        $this->expectException(\Error::class);
+        $deserialized->data;
     }
 
     public function testTrueDataType()
@@ -489,7 +546,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
             static::getContent('data_true'),
             $this->serialize(new DataTrue(true)),
         );
-
         self::assertEquals(
             new DataTrue(true),
             $this->deserialize(static::getContent('data_true'), DataTrue::class),
@@ -515,6 +571,16 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertEquals(
             new DataFalse(false),
             $this->deserialize(static::getContent('data_false'), DataFalse::class),
+        );
+
+        self::assertEquals(
+            static::getContent('data_false'),
+            $this->serialize(new FalseOrString(false)),
+        );
+
+        self::assertEquals(
+            new FalseOrString(false),
+            $this->deserialize(static::getContent('data_false'), FalseOrString::class),
         );
 
         $this->expectException(TypeError::class);
