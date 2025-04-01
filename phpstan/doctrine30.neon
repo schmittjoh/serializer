@@ -1,0 +1,3 @@
+parameters:
+    ignoreErrors:
+        - '~Class Doctrine\\ORM\\Mapping\\DiscriminatorColumnMapping not found~'

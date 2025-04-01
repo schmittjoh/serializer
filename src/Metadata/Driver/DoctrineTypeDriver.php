@@ -6,6 +6,7 @@ namespace JMS\Serializer\Metadata\Driver;
 
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata as ORMClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as ODMClassMetadata;
+use Doctrine\ORM\Mapping\DiscriminatorColumnMapping;
 use Doctrine\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -23,10 +24,19 @@ class DoctrineTypeDriver extends AbstractDoctrineTypeDriver
             empty($classMetadata->discriminatorMap) && !$classMetadata->discriminatorDisabled
             && !empty($doctrineMetadata->discriminatorMap) && $doctrineMetadata->isRootEntity()
         ) {
-            $classMetadata->setDiscriminator(
-                $doctrineMetadata->discriminatorColumn['name'],
-                $doctrineMetadata->discriminatorMap,
-            );
+            if ($doctrineMetadata->discriminatorColumn instanceof DiscriminatorColumnMapping) {
+                // Doctrine 3.1+
+                $classMetadata->setDiscriminator(
+                    $doctrineMetadata->discriminatorColumn->name,
+                    $doctrineMetadata->discriminatorMap,
+                );
+            } else {
+                // Doctrine up to 3.1
+                $classMetadata->setDiscriminator(
+                    $doctrineMetadata->discriminatorColumn['name'],
+                    $doctrineMetadata->discriminatorMap,
+                );
+            }
         }
     }
 

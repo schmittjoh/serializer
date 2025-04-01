@@ -1,0 +1,3 @@
+parameters:
+    ignoreErrors:
+        - ~Offset 'name' does not exist on null~
