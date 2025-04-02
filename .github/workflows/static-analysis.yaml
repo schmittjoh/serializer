@@ -19,6 +19,8 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
+          - "8.4"
 
     steps:
       - name: "Checkout code"
@@ -42,4 +44,4 @@ jobs:
 
       - name: "Run a static analysis with rector/rector"
         run: "vendor/bin/rector --dry-run"
-        if: ${{ matrix.php-version == 8.2 }}
+        if: ${{ matrix.php-version == 8.4 }}
