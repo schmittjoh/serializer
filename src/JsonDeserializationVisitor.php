@@ -204,7 +204,7 @@ final class JsonDeserializationVisitor extends AbstractVisitor implements Deseri
      */
     public function getResult($data)
     {
-        unset($this->navigator);
+        $this->navigator = null;
 
         return $data;
     }

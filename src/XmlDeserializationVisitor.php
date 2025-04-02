@@ -449,7 +449,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      */
     public function getResult($data)
     {
-        unset($this->navigator);
+        $this->navigator = null;
 
         return $data;
     }
