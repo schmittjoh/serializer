@@ -14,7 +14,7 @@ use JMS\Serializer\Exception\NonStringCastableTypeException;
 abstract class AbstractVisitor implements VisitorInterface
 {
     /**
-     * @var GraphNavigatorInterface
+     * @var GraphNavigatorInterface|null
      */
     protected $navigator;
 
