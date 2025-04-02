@@ -20,11 +20,12 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         dependencies:
           - "lowest"
           - "highest"
         include:
-          - php-version: '8.4'
+          - php-version: '8.5'
             dependencies: 'highest'
             composer-stability: 'dev'
 
