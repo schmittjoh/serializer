@@ -35,7 +35,7 @@ class ContextTest extends TestCase
         $self = $this;
 
         $exclusionStrategy = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
-        $exclusionStrategy->expects($this->any())
+        $exclusionStrategy
             ->method('shouldSkipClass')
             ->with($this->anything(), $this->callback(static function (SerializationContext $context) use ($self, $objects) {
                 $expectedDepth = $expectedPath = null;
@@ -61,7 +61,7 @@ class ContextTest extends TestCase
             }))
             ->willReturn(false);
 
-        $exclusionStrategy->expects($this->any())
+        $exclusionStrategy
             ->method('shouldSkipProperty')
             ->with($this->anything(), $this->callback(static function (SerializationContext $context) use ($self, $objects) {
                 $expectedDepth = $expectedPath = null;

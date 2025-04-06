@@ -975,7 +975,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $builder->setObjectConstructor($objectConstructor);
         $this->serializer = $builder->build();
 
-        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
+        $post = new BlogPost('This is a nice title.', new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')), new Publisher('Bar Foo'));
 
         $this->setField($post, 'author', null);
         $this->setField($post, 'publisher', null);
@@ -1309,11 +1309,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $context = SerializationContext::create();
         $context->setInitialType($type);
 
-        try {
-            $this->serialize($form, $context);
-        } catch (\Throwable $e) {
-            self::assertTrue(false, 'Serialization should not throw an exception');
-        }
+        $this->serialize($form, $context);
     }
 
     public static function initialFormTypeProvider()
@@ -1998,9 +1994,7 @@ abstract class BaseSerializationTestCase extends TestCase
         }
 
         $this->expectException(RuntimeException::class);
-
-        $object = new UnionTypedDocBlockProperty(10000);
-        $deserialized = $this->deserialize(static::getContent('data_integer'), UnionTypedDocBlockProperty::class);
+        $this->deserialize(static::getContent('data_integer'), UnionTypedDocBlockProperty::class);
     }
 
     public function testIterable(): void

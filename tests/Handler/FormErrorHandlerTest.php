@@ -282,12 +282,12 @@ class FormErrorHandlerTest extends TestCase
         $form = $this->getMockBuilder('Symfony\Component\Form\Test\FormInterface')->getMock();
         $config = $this->getMockBuilder('Symfony\Component\Form\FormConfigInterface')->getMock();
 
-        $form->expects($this->any())
+        $form
             ->method('getName')
-            ->will($this->returnValue($name));
-        $form->expects($this->any())
+            ->willReturn($name);
+        $form
             ->method('getConfig')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
 
         return $form;
     }

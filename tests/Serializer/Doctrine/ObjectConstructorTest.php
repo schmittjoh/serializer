@@ -364,7 +364,7 @@ class ObjectConstructorTest extends TestCase
         $connection = $this->createConnection();
         $entityManager = $this->createXmlEntityManager($connection);
 
-        $this->registry = $registry = new SimpleBaseManagerRegistry(
+        $this->registry = new SimpleBaseManagerRegistry(
             static function ($id) use ($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
@@ -394,7 +394,7 @@ class ObjectConstructorTest extends TestCase
         $connection = $this->createConnection();
         $entityManager = $this->createXmlEntityManager($connection);
 
-        $this->registry = $registry = new SimpleBaseManagerRegistry(
+        $this->registry = new SimpleBaseManagerRegistry(
             static function ($id) use ($connection, $entityManager) {
                 switch ($id) {
                     case 'default_connection':
@@ -426,17 +426,17 @@ class ObjectConstructorTest extends TestCase
 
         $ormClassMetadata = $this->createMock(DoctrineClassMetadata::class);
         $ormClassMetadata
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getIdentifierFieldNames')
             ->willReturn(['id']);
 
         $om = $this->createMock(ObjectManager::class);
         $om
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getMetadataFactory')
             ->willReturn($metadataFactory);
         $om
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getClassMetadata')
             ->willReturnMap([
                 [BlogPostSeo::class, $ormClassMetadata],
@@ -444,7 +444,7 @@ class ObjectConstructorTest extends TestCase
 
         $registry = $this->createMock(ManagerRegistry::class);
         $registry
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getManagerForClass')
             ->willReturnMap([
                 [BlogPostSeo::class, $om],
@@ -452,7 +452,7 @@ class ObjectConstructorTest extends TestCase
 
         $fallback = $this->createMock(ObjectConstructorInterface::class);
         $fallback
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('construct');
 
         $type = ['name' => BlogPostSeo::class, 'params' => []];

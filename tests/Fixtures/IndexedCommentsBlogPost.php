@@ -59,6 +59,6 @@ class IndexedCommentsList
     public function addComment(Comment $comment)
     {
         $this->comments[] = $comment;
-        $this->count += 1;
+        ++$this->count;
     }
 }

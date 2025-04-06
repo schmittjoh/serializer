@@ -28,7 +28,7 @@ class ObjectWithEmptyArrayAndHash
      * @Serializer\SkipWhenEmpty()
      */
     #[Serializer\SkipWhenEmpty]
-    private $object = [];
+    private $object;
 
     public function __construct()
     {

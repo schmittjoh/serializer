@@ -162,7 +162,11 @@ abstract class BaseDriverTestCase extends TestCase
         self::assertArrayHasKey('virtualSerializedValue', $m->propertyMetadata);
         self::assertArrayHasKey('typedVirtualProperty', $m->propertyMetadata);
 
-        self::assertEquals($m->propertyMetadata['virtualSerializedValue']->serializedName, 'test', 'Serialized name is missing');
+        self::assertEquals(
+            'test',
+            $m->propertyMetadata['virtualSerializedValue']->serializedName,
+            'Serialized name is missing',
+        );
 
         $p = new VirtualPropertyMetadata($m->name, 'virtualValue');
         $p->getter = 'getVirtualValue';
