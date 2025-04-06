@@ -30,7 +30,7 @@ class DeprecationLogger
         } else {
             sort($this->errors);
             array_map(static function (array $m) {
-                [$errno, $errstr, $errfile, $errline] = $m;
+                [, $errstr, $errfile, $errline] = $m;
                 echo '- ' . sprintf('%s in %s:%s', $errstr, $errfile, $errline) . PHP_EOL;
             }, $this->errors);
         }

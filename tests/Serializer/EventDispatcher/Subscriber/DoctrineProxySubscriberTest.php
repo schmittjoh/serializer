@@ -116,7 +116,6 @@ class DoctrineProxySubscriberTest extends TestCase
     {
         $proxy = new SimpleObjectProxy('foo', 'bar');
 
-        $realClassEventTriggered1 = false;
         $this->dispatcher->addListener('serializer.pre_serialize', static function (PreSerializeEvent $event) {
             $event->setType('foo', ['bar']);
         }, get_parent_class($proxy));

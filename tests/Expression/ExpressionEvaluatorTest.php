@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Expression;
 
-use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -29,8 +28,6 @@ class ExpressionEvaluatorTest extends TestCase
     public function testParse()
     {
         $parsed = $this->evaluator->parse('a + b', ['a', 'b']);
-        self::assertInstanceOf(Expression::class, $parsed);
-
         $evaluated = $this->evaluator->evaluateParsed($parsed, ['a' => 1, 'b' => 2]);
         self::assertSame(3, $evaluated);
     }

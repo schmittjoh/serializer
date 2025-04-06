@@ -209,7 +209,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
     {
         $xml = '<result></result>';
         $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
-        self::assertEquals($object->absentAndNs, []);
+        self::assertEquals([], $object->absentAndNs);
 
         $xml = '<result xmlns:x="http://www.example.com">
                     <absent_and_ns>
@@ -217,7 +217,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
                     </absent_and_ns>
                   </result>';
         $object = $this->serializer->deserialize($xml, 'JMS\Serializer\Tests\Fixtures\ObjectWithAbsentXmlListNode', 'xml');
-        self::assertEquals($object->absentAndNs, ['foo']);
+        self::assertEquals(['foo'], $object->absentAndNs);
     }
 
     public function testObjectWithNamespacesAndList()

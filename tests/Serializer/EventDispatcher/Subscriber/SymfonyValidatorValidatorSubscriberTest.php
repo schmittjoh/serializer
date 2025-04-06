@@ -28,7 +28,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
     {
         $obj = new stdClass();
 
-        $this->validator->expects(self::once())
+        $this->validator->expects($this->once())
             ->method('validate')
             ->with($obj, null, ['foo'])
             ->willReturn(new ConstraintViolationList());
@@ -42,7 +42,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
     {
         $obj = new stdClass();
 
-        $this->validator->expects(self::once())
+        $this->validator->expects($this->once())
             ->method('validate')
             ->with($obj, null, ['foo'])
             ->willReturn(new ConstraintViolationList([new ConstraintViolation('foo', 'foo', [], 'a', 'b', 'c')]));
@@ -57,7 +57,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
 
     public function testValidatorIsNotCalledWhenNoGroupsAreSet(): void
     {
-        $this->validator->expects(self::never())
+        $this->validator->expects($this->never())
             ->method('validate');
 
         $this->subscriber->onPostDeserialize(new ObjectEvent(DeserializationContext::create(), new stdClass(), []));
@@ -65,7 +65,7 @@ class SymfonyValidatorValidatorSubscriberTest extends TestCase
 
     public function testValidationIsOnlyPerformedOnRootObject(): void
     {
-        $this->validator->expects(self::once())
+        $this->validator->expects($this->once())
             ->method('validate')
             ->with(self::isInstanceOf(AuthorList::class), null, ['Foo'])
             ->willReturn(new ConstraintViolationList());

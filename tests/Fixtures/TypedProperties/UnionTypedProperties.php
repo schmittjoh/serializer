@@ -8,7 +8,7 @@ class UnionTypedProperties
 {
     public bool|float|string|array|int $data;
 
-    private int|bool|float|string|null $nullableData = null;
+    private int|bool|float|string|null $nullableData;
 
     private string|false $valueTypedUnion;
 

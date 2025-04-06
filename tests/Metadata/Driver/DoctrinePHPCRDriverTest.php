@@ -122,9 +122,9 @@ class DoctrinePHPCRDriverTest extends TestCase
     {
         if (class_exists(DoctrinePHPCRDriver::class)) {
             return new AnnotationDriver(new AnnotationReader(), new IdenticalPropertyNamingStrategy());
-        } else {
-            return new AnnotationOrAttributeDriver(new IdenticalPropertyNamingStrategy());
         }
+
+        return new AnnotationOrAttributeDriver(new IdenticalPropertyNamingStrategy());
     }
 
     protected function getDoctrinePHPCRDriver()
