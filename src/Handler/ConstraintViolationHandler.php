@@ -16,7 +16,7 @@ final class ConstraintViolationHandler implements SubscribingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): iterable
     {
         $methods = [];
         $formats = ['xml', 'json'];
