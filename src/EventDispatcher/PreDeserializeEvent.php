@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Type\Type;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 class PreDeserializeEvent extends Event
 {
     /**
@@ -15,7 +19,7 @@ class PreDeserializeEvent extends Event
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function __construct(DeserializationContext $context, $data, array $type)
     {

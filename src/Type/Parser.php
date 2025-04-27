@@ -8,6 +8,8 @@ use JMS\Serializer\Type\Exception\SyntaxError;
 
 /**
  * @internal
+ *
+ * @phpstan-import-type TypeArray from Type
  */
 final class Parser implements ParserInterface
 {
@@ -71,15 +73,18 @@ final class Parser implements ParserInterface
     }
 
     /**
-     * @return string|mixed[]
+     * @return TypeArray
      */
-    private function visitSimpleType()
+    private function visitSimpleType(): array
     {
         $value = $this->lexer->token->value;
 
         return ['name' => $value, 'params' => []];
     }
 
+    /**
+     * @return TypeArray
+     */
     private function visitCompoundType(): array
     {
         $this->root = false;

@@ -81,12 +81,6 @@ final class JsonSerializationVisitor extends AbstractVisitor implements Serializ
         return round($data, $precision, $roundMode);
     }
 
-    /**
-     * @param array $data
-     * @param array $type
-     *
-     * @return array|\ArrayObject
-     */
     public function visitArray(array $data, array $type)
     {
         \array_push($this->dataStack, $data);

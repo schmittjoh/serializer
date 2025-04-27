@@ -7,10 +7,14 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class DateHandler implements SubscribingHandlerInterface
 {
     /**
@@ -90,6 +94,8 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param TypeArray $type
+     *
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateTimeInterface(
@@ -111,7 +117,7 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array $type
+     * @param TypeArray $type
      *
      * @return \DOMCdataSection|\DOMText|mixed
      */
@@ -121,7 +127,7 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array $type
+     * @param TypeArray $type
      *
      * @return \DOMCdataSection|\DOMText|mixed
      */
@@ -135,7 +141,7 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array $type
+     * @param TypeArray $type
      *
      * @return \DOMCdataSection|\DOMText|mixed
      */
@@ -162,7 +168,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateTimeFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
@@ -175,7 +181,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateTimeImmutableFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
@@ -188,7 +194,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateIntervalFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
@@ -201,7 +207,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateTimeFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
@@ -214,7 +220,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateTimeImmutableFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
@@ -227,7 +233,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeDateIntervalFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
@@ -240,7 +246,7 @@ final class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
@@ -292,6 +298,9 @@ final class DateHandler implements SubscribingHandlerInterface
         return $dateInterval;
     }
 
+    /**
+     * @param TypeArray $type
+     */
     private function getDeserializationFormats(array $type): array
     {
         if (isset($type['params'][2])) {
@@ -305,6 +314,9 @@ final class DateHandler implements SubscribingHandlerInterface
         return $this->defaultDeserializationFormats;
     }
 
+    /**
+     * @param TypeArray $type
+     */
     private function getSerializationFormat(array $type): string
     {
         return $type['params'][0] ?? $this->defaultSerializationFormat;

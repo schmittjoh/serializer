@@ -71,7 +71,7 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         $this->translationDomain = $translationDomain;
     }
 
-    public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form, array $type): \DOMElement
+    public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form): \DOMElement
     {
         $formNode = $visitor->getDocument()->createElement('form');
 
@@ -80,13 +80,13 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         $formNode->appendChild($errorsNode = $visitor->getDocument()->createElement('errors'));
         foreach ($form->getErrors() as $error) {
             $errorNode = $visitor->getDocument()->createElement('entry');
-            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, []));
+            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error));
             $errorsNode->appendChild($errorNode);
         }
 
         foreach ($form->all() as $child) {
             if ($child instanceof Form) {
-                if (null !== $node = $this->serializeFormToXml($visitor, $child, [])) {
+                if (null !== $node = $this->serializeFormToXml($visitor, $child)) {
                     $formNode->appendChild($node);
                 }
             }
@@ -95,17 +95,17 @@ final class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
-    public function serializeFormToJson(SerializationVisitorInterface $visitor, FormInterface $form, array $type): \ArrayObject
+    public function serializeFormToJson(SerializationVisitorInterface $visitor, FormInterface $form): \ArrayObject
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type): \DOMCdataSection
+    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError): \DOMCdataSection
     {
         return $visitor->getDocument()->createCDATASection($this->getErrorMessage($formError));
     }
 
-    public function serializeFormErrorToJson(SerializationVisitorInterface $visitor, FormError $formError, array $type): string
+    public function serializeFormErrorToJson(SerializationVisitorInterface $visitor, FormError $formError): string
     {
         return $this->getErrorMessage($formError);
     }
