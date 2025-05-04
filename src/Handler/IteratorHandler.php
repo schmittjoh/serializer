@@ -11,9 +11,13 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class IteratorHandler implements SubscribingHandlerInterface
 {
     private const SUPPORTED_FORMATS = ['json', 'xml'];
@@ -77,6 +81,8 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param TypeArray $type
+     *
      * @return array|\ArrayObject|null
      */
     public function serializeIterable(
@@ -95,6 +101,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param TypeArray $type
      * @param mixed $data
      */
     public function deserializeIterator(
@@ -110,6 +117,7 @@ final class IteratorHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
+     * @param TypeArray $type
      */
     public function deserializeGenerator(
         DeserializationVisitorInterface $visitor,

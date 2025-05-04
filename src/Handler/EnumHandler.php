@@ -8,9 +8,13 @@ use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class EnumHandler implements SubscribingHandlerInterface
 {
     /**
@@ -38,6 +42,9 @@ final class EnumHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+    /**
+     * @param TypeArray $type
+     */
     public function serializeEnum(
         SerializationVisitorInterface $visitor,
         \UnitEnum $enum,
@@ -59,7 +66,7 @@ final class EnumHandler implements SubscribingHandlerInterface
 
     /**
      * @param int|string|\SimpleXMLElement $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function deserializeEnum(DeserializationVisitorInterface $visitor, $data, array $type): ?\UnitEnum
     {

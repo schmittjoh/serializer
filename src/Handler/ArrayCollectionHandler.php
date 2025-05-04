@@ -14,9 +14,13 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class ArrayCollectionHandler implements SubscribingHandlerInterface
 {
     public const COLLECTION_TYPES = [
@@ -75,6 +79,8 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param TypeArray $type
+     *
      * @return array|\ArrayObject
      */
     public function serializeCollection(SerializationVisitorInterface $visitor, Collection $collection, array $type, SerializationContext $context)
@@ -102,6 +108,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
 
     /**
      * @param mixed $data
+     * @param TypeArray $type
      */
     public function deserializeCollection(
         DeserializationVisitorInterface $visitor,

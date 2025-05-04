@@ -10,9 +10,13 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class UnionHandler implements SubscribingHandlerInterface
 {
     private static $aliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
@@ -43,6 +47,9 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
+    /**
+     * @param TypeArray $type
+     */
     public function serializeUnion(
         SerializationVisitorInterface $visitor,
         mixed $data,
@@ -64,6 +71,9 @@ final class UnionHandler implements SubscribingHandlerInterface
         return $context->getNavigator()->accept($data, $resolvedType);
     }
 
+    /**
+     * @param TypeArray $type
+     */
     public function deserializeUnion(DeserializationVisitorInterface $visitor, mixed $data, array $type, DeserializationContext $context): mixed
     {
         if ($data instanceof \SimpleXMLElement) {

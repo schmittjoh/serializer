@@ -6,8 +6,12 @@ namespace JMS\Serializer\Metadata;
 
 use JMS\Serializer\Exception\InvalidMetadataException;
 use JMS\Serializer\Expression\Expression;
+use JMS\Serializer\Type\Type;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 class PropertyMetadata extends BasePropertyMetadata
 {
     public const ACCESS_TYPE_PROPERTY = 'property';
@@ -34,7 +38,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $serializedName;
 
     /**
-     * @var array|null
+     * @var TypeArray|null
      */
     public $type;
 
@@ -196,11 +200,17 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->setter = $setter;
     }
 
+    /**
+     * @param TypeArray $type
+     */
     public function setType(array $type): void
     {
         $this->type = $type;
     }
 
+    /**
+     * @param TypeArray|null $type
+     */
     public static function isCollectionList(?array $type = null): bool
     {
         return is_array($type)
@@ -209,6 +219,9 @@ class PropertyMetadata extends BasePropertyMetadata
             && !isset($type['params'][1]);
     }
 
+    /**
+     * @param TypeArray|null $type
+     */
     public static function isCollectionMap(?array $type = null): bool
     {
         return is_array($type)

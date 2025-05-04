@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Exception;
 
+use JMS\Serializer\Type\Type;
+
 use function get_debug_type;
 
+/**
+ * @phpstan-import-type TypeArray from Type
+ */
 final class NonVisitableTypeException extends RuntimeException
 {
     /**
      * @param mixed $data
-     * @param array{name: string} $type
+     * @param TypeArray $type
      * @param RuntimeException|null $previous
      *
      * @return NonVisitableTypeException

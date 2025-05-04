@@ -23,6 +23,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\NullAwareVisitorInterface;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
@@ -33,6 +34,8 @@ use Metadata\MetadataFactoryInterface;
  * on visitors, or custom handlers to process its nodes.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * @phpstan-import-type TypeArray from Type
  */
 final class DeserializationGraphNavigator extends GraphNavigator implements GraphNavigatorInterface
 {
@@ -97,7 +100,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param array|null $type array has the format ["name" => string, "params" => array]
+     * @param TypeArray|null $type array has the format ["name" => string, "params" => array]
      *
      * @return mixed the return value depends on the direction, and type of visitor
      */
@@ -252,6 +255,9 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
+    /**
+     * @param TypeArray $type
+     */
     private function afterVisitingObject(ClassMetadata $metadata, object $object, array $type): void
     {
         $this->context->decreaseDepth();

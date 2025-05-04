@@ -8,12 +8,13 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
- * XmlSerializationVisitor.
- *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * @phpstan-import-type TypeArray from Type
  */
 final class XmlSerializationVisitor extends AbstractVisitor implements SerializationVisitorInterface
 {
@@ -151,7 +152,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeArray $type
      */
     public function visitSimpleString($data, array $type): \DOMText
     {

@@ -59,7 +59,7 @@ class FormErrorHandlerTest extends TestCase
     public function testSerializeEmptyFormError()
     {
         $form = $this->createForm();
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form));
 
         self::assertSame('{}', $json);
     }
@@ -69,7 +69,7 @@ class FormErrorHandlerTest extends TestCase
         $this->handler = new FormErrorHandler();
         $form = $this->createForm();
         $form->addError(new FormError('error!'));
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form));
 
         self::assertSame(json_encode([
             'errors' => ['error!'],
@@ -80,7 +80,7 @@ class FormErrorHandlerTest extends TestCase
     {
         $form = $this->createForm();
         $form->addError(new FormError('error!'));
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form));
 
         self::assertSame(json_encode([
             'errors' => ['error!'],
@@ -109,7 +109,7 @@ class FormErrorHandlerTest extends TestCase
             'txt' => 'hello',
         ]);
 
-        $data = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
+        $data = json_encode($this->handler->serializeFormToJson($this->visitor, $form));
         self::assertSame('{"children":{"url":{},"txt":{"errors":["This value is too short. It should have 10 characters or more."]}}}', $data);
     }
 
@@ -124,7 +124,7 @@ class FormErrorHandlerTest extends TestCase
         $form->addError(new FormError('error!'));
         $form->get('date')->addError(new FormError('child-error'));
 
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, []));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form));
 
         self::assertSame(json_encode([
             'errors' => ['error!'],
