@@ -100,6 +100,12 @@ final class Parser implements ParserInterface
                     break;
                 }
 
+                if ($this->lexer->isNextToken(Lexer::T_UNION_SEPARATOR)) {
+                    $this->match(Lexer::T_UNION_SEPARATOR);
+
+                    continue;
+                }
+
                 $this->match(Lexer::T_COMMA);
             }
         }

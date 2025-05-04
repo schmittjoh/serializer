@@ -23,6 +23,7 @@ final class Lexer extends AbstractLexer
     public const T_TYPE_END = 8;
     public const T_IDENTIFIER = 9;
     public const T_NULL = 10;
+    public const T_UNION_SEPARATOR = 11;
 
     public function parse(string $type)
     {
@@ -102,6 +103,9 @@ final class Lexer extends AbstractLexer
 
             case '[' === $value:
                 return self::T_ARRAY_START;
+
+            case '|' === $value:
+                return self::T_UNION_SEPARATOR;
 
             // Default
             default:
