@@ -83,3 +83,50 @@ Skippable Subscribing Handlers
 
 In case you need to be able to fall back to the default deserialization behavior instead of using your custom
 handler, you can simply throw a `SkipHandlerException` from you custom handler method to do so.
+
+Global Subscribing Handlers
+----------------
+You can register global handler, if type is '*'::
+
+    use JMS\Serializer\Handler\SubscribingHandlerInterface;
+    use JMS\Serializer\GraphNavigator;
+    use JMS\Serializer\JsonSerializationVisitor;
+    use JMS\Serializer\JsonDeserializationVisitor;
+    use JMS\Serializer\Context;
+
+    class MyHandler implements SubscribingHandlerInterface
+    {
+        public static function getSubscribingMethods()
+        {
+            return [
+                [
+                    'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                    'format' => 'json',
+                    'type' => '*',
+                    'method' => 'handleCustomSerialization',
+                ],
+                [
+                    'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
+                    'format' => 'json',
+                    'type' => '*',
+                    'method' => 'handleCustomDeserialization',
+                ],
+            ];
+        }
+
+        public function handleCustomSerialization(JsonSerializationVisitor $visitor, mixed $data, array $type, Context $context)
+        {
+            // preform custom logic
+        }
+
+        public function handleCustomDeserialization(JsonDeserializationVisitor $visitor, mixed $data, array $type, Context $context)
+        {
+          // preform custom logic
+        }
+    }
+..
+
+        Be aware that when you register a global handler,
+        it will be triggered for every serialization/deserialization process,
+        unless another custom handler specified.
+        Be sure to properly handle data processing.
