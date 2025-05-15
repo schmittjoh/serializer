@@ -4,6 +4,7 @@ Unreleased
 - Use symfony/cache for FileSystem cache implementation instead of doctrine/cache
 - Deprecated the `@ReadOnly` annotation due to `readonly` becoming a keyword in PHP 8.1, use the `@ReadOnlyProperty` annotation instead
 - Doctrine type `decimal` is now correctly mapped to `string` instead of `float`
+- `@var/param list<T>` is now mapped to `list<T>` type instead of `array<int, T>`
 
 From 3.x to 3.30.0
 ==================

@@ -88,7 +88,7 @@ class DocBlockDriverTest extends TestCase
         $m = $this->resolve(CollectionAsList::class);
 
         self::assertEquals(
-            ['name' => 'array', 'params' => [['name' => 'int', 'params' => []], ['name' => 'string', 'params' => []]]],
+            ['name' => 'list', 'params' => [['name' => 'string', 'params' => []]]],
             $m->propertyMetadata['productIds']->type,
         );
     }

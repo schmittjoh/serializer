@@ -140,7 +140,7 @@ final class DocBlockTypeResolver
             if ($this->isSimpleType($type->type, 'list')) {
                 $resolvedTypes = array_map(fn (TypeNode $node) => $this->resolveTypeFromTypeNode($node, $reflector), $type->genericTypes);
 
-                return 'array<int, ' . implode(',', $resolvedTypes) . '>';
+                return 'list<' . implode(',', $resolvedTypes) . '>';
             }
 
             throw new \InvalidArgumentException(sprintf("Can't use non-array generic type %s for collection in %s:%s", (string) $type->type, $reflector->getDeclaringClass()->getName(), $reflector->getName()));
