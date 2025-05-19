@@ -318,6 +318,10 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             return;
         }
 
+        if (false !== strpos($metadata->serializedName, '/@') && $this->trySerializePropertyAsAttributeOnSiblingElement($metadata, $v)) {
+            return;
+        }
+
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
             $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
 
@@ -352,6 +356,61 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         $this->hasValue = false;
+    }
+
+    private function trySerializePropertyAsAttributeOnSiblingElement(PropertyMetadata $metadata, $v): bool
+    {
+        [$elementName, $attributeName] = explode('/@', $metadata->serializedName, 2);
+        $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+        $targetElement = null;
+
+        if ($this->currentNode instanceof \DOMElement) {
+            foreach ($this->currentNode->childNodes as $childNode) {
+                if ($childNode instanceof \DOMElement && $childNode->localName === $elementName) {
+                    $isNamespaceMatch = false;
+                    // Case 1: Expected a specific namespace, and child node has it.
+                    // Case 2 (else): Expected no namespace
+                    if (null !== $namespace && $childNode->namespaceURI === $namespace) {
+                        $isNamespaceMatch = true;
+                    } elseif ((null === $namespace || '' === $namespace) && (null === $childNode->namespaceURI || '' === $childNode->namespaceURI)) {
+                        $isNamespaceMatch = true;
+                    }
+
+                    if ($isNamespaceMatch) {
+                        $targetElement = $childNode;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!$targetElement) {
+            return false;
+        }
+
+        if (null === $v) {
+            return true;
+        }
+
+        $this->setCurrentMetadata($metadata);
+        $attributeValueNode = $this->navigator->accept($v, $metadata->type);
+        $this->revertCurrentMetadata();
+
+        $attributeStringValue = '';
+        if ($attributeValueNode instanceof \DOMCharacterData) {
+            $attributeStringValue = $attributeValueNode->nodeValue;
+        } elseif (is_scalar($v) && null === $attributeValueNode) {
+            $attributeStringValue = (string) $v;
+        } elseif (null !== $attributeValueNode) {
+            throw new RuntimeException(sprintf('Cannot serialize value of type %s as XML attribute "%s" on element "%s". Expected scalar or DOMCharacterData.', get_debug_type($attributeValueNode), $attributeName, $elementName));
+        }
+
+        // Only set attribute if non-null scalar or a DOM node
+        if (null !== $attributeValueNode || (is_scalar($v) && null !== $v)) {
+            $this->setAttributeOnNode($targetElement, $attributeName, $attributeStringValue, $metadata->xmlNamespace);
+        }
+
+        return true;
     }
 
     private function isInLineCollection(PropertyMetadata $metadata): bool

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/default" xmlns:ns1="http://example.com/ns1">
+  <Identifier scheme="IDScheme">IDValue</Identifier>
+  <Description lang="en">A description</Description>
+  <ns1:CustomElement ns1:type="SpecialType">CustomValue</ns1:CustomElement>
+  <DataPoint unit="kg">123</DataPoint>
+  <NullableIdentifier scheme="NullableScheme">NullableValue</NullableIdentifier>
+</test-object>

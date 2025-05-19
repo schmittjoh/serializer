@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
+use JMS\Serializer\Tests\Fixtures\ObjectWithElementAttributeSyntax;
 use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
@@ -617,6 +618,50 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         $object = new UnionTypedProperties(10000, null, false);
         self::assertEquals($object, $this->deserialize(static::getContent('data_integer'), UnionTypedProperties::class));
+    }
+
+    public function testSerializeElementAttributeSyntax()
+    {
+        $object = new ObjectWithElementAttributeSyntax(
+            'IDValue',
+            'IDScheme',
+            'CustomValue',
+            'SpecialType',
+            '123',
+        );
+        $object->descriptionValue = 'A description';
+        $object->descriptionLang = 'en';
+        $object->dataPointUnit = 'kg';
+        $object->nullableIdentifierValue = 'NullableValue';
+        $object->nullableIdentifierScheme = 'NullableScheme';
+
+        $expectedXml = self::getContent('object_with_element_attribute_syntax');
+        $actualXml = $this->serialize($object);
+
+        $object->customElementType = null;
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeElementAttributeSyntaxWithNulls()
+    {
+        $object = new ObjectWithElementAttributeSyntax(
+            'IDValueOnly',
+            'IDSchemeOnly',
+            'CustomValueOnly',
+            'SpecialTypeOnly',
+            '123NoUnit',
+        );
+        $object->nullableIdentifierValue = 'ValueWithoutScheme';
+
+        $expectedXml = self::getContent('object_with_element_attribute_syntax_nulls');
+        $actualXml = $this->serialize($object);
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+
+        $object->customElementType = null;
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
     }
 
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
