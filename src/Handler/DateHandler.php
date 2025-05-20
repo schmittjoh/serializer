@@ -211,7 +211,7 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateTimeFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
-        if (null === $data) {
+        if (empty($data)) {
             return null;
         }
 
@@ -224,7 +224,7 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateTimeImmutableFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
-        if (null === $data) {
+        if (empty($data)) {
             return null;
         }
 
@@ -237,7 +237,7 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateIntervalFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
-        if (null === $data) {
+        if (empty($data)) {
             return null;
         }
 
