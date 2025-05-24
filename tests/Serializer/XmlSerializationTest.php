@@ -30,6 +30,7 @@ use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
 use JMS\Serializer\Tests\Fixtures\ObjectWithAttributeSyntax;
 use JMS\Serializer\Tests\Fixtures\ObjectWithAttributeSyntaxWithoutNs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithElementAttributeSyntax;
+use JMS\Serializer\Tests\Fixtures\ObjectWithElementAttributeSyntaxWithoutNs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndNestedList;
@@ -640,7 +641,6 @@ class XmlSerializationTest extends BaseSerializationTestCase
         $expectedXml = self::getContent('object_with_element_attribute_syntax');
         $actualXml = $this->serialize($object);
 
-        $object->customElementType = null;
         self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
         $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntax::class);
         self::assertEquals($object, $deserializedObject);
@@ -661,8 +661,60 @@ class XmlSerializationTest extends BaseSerializationTestCase
         $actualXml = $this->serialize($object);
         self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
 
-        $object->customElementType = null;
         $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeElementAttributeSyntaxWithoutNs()
+    {
+        $object = new ObjectWithElementAttributeSyntaxWithoutNs(
+            'IDValue',
+            'IDScheme',
+            'CustomValue',
+        );
+        $object->descriptionValue = 'A description';
+        $object->descriptionLang = 'en';
+        $object->dataPointUnit = 'kg';
+        $object->nullableIdentifierValue = 'NullableValue';
+        $object->nullableIdentifierScheme = 'NullableScheme';
+
+        $actualXml = $this->serialize($object);
+        static::assertXmlStringEqualsXmlString(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <test-object>
+              <Identifier scheme="IDScheme">IDValue</Identifier>
+              <Description lang="en">A description</Description>
+              <DataPoint unit="kg">CustomValue</DataPoint>
+              <NullableIdentifier scheme="NullableScheme">NullableValue</NullableIdentifier>
+            </test-object>',
+            $actualXml,
+        );
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntaxWithoutNs::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeElementAttributeSyntaxWithoutNsWithNulls()
+    {
+        $object = new ObjectWithElementAttributeSyntaxWithoutNs(
+            'IDValueOnly',
+            'IDSchemeOnly',
+            'CustomValueOnly',
+        );
+        $object->nullableIdentifierValue = 'ValueWithoutScheme';
+
+        $actualXml = $this->serialize($object);
+        static::assertXmlStringEqualsXmlString(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <test-object>
+              <Identifier scheme="IDSchemeOnly">IDValueOnly</Identifier>
+              <DataPoint>CustomValueOnly</DataPoint>
+              <NullableIdentifier>ValueWithoutScheme</NullableIdentifier>
+            </test-object>',
+            $actualXml,
+        );
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntaxWithoutNs::class);
         self::assertEquals($object, $deserializedObject);
     }
 
