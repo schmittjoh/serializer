@@ -141,6 +141,94 @@ will need to wrap your custom strategy with the ``SerializedNameattributeStrateg
         )
         ->build();
 
+XML Specific Usage
+------------------
+
+When serializing to or deserializing from XML, ``#[SerializedName]`` supports special
+syntax to map PHP properties to XML attributes. This can be useful for more complex
+XML structures where ``#[XmlAttribute]`` might not suffice. These syntaxes work for
+both serialization and deserialization.
+
+1.  **Attribute on the current element:**
+    To map a property as an attribute of the XML element that represents the current
+    class instance, prefix the attribute name with ``@``.
+
+    .. code-block:: php
+
+        <?php
+        use JMS\Serializer\Annotation as Serializer;
+
+        #[Serializer\XmlRoot("user")]
+        class User
+        {
+            #[Serializer\SerializedName("@id")]
+            #[Serializer\Type("integer")]
+            private $id; // Becomes an attribute "id" on the <user> element
+
+            #[Serializer\SerializedName("name")]
+            #[Serializer\Type("string")]
+            private $name; // Becomes a child element <name>
+
+            public function __construct(int $id, string $name)
+            {
+                $this->id = $id;
+                $this->name = $name;
+            }
+        }
+
+        // Example: $user = new User(1, 'John Doe');
+        // Serializes to: <user id="1"><name>John Doe</name></user>
+
+2.  **Attribute on a sibling element:**
+    To map a property as an attribute on a *sibling* XML element, use the
+    syntax ``"ElementName/@AttributeName"``. The property's value will
+    become an attribute named ``AttributeName`` on a sibling XML element named
+    ``ElementName``. Your PHP class should typically have one property that defines
+    the sibling element's value (e.g., ``ElementName``) and another property that
+    defines its attribute (e.g., ``ElementName/@AttributeName``).
+
+    .. code-block:: php
+
+        <?php
+        use JMS\Serializer\Annotation as Serializer;
+
+        #[Serializer\XmlRoot("item")]
+        class Item
+        {
+            /**
+             * This property defines the <identifier> XML element.
+             */
+            #[Serializer\SerializedName("identifier")]
+            #[Serializer\Type("string")]
+            #[Serializer\XmlElement(cdata: false)]
+            private $identifierValue;
+
+            /**
+             * This property becomes the "scheme" attribute on the <identifier> element.
+             */
+            #[Serializer\SerializedName("identifier/@scheme")]
+            #[Serializer\Type("string")]
+            #[Serializer\XmlElement(cdata: false)] // Namespace can be specified here if needed via namespace: "http://..."
+            private $identifierScheme;
+
+            public function __construct(string $identifierValue, string $identifierScheme)
+            {
+                $this->identifierValue = $identifierValue;
+                $this->identifierScheme = $identifierScheme;
+            }
+        }
+
+        // Example: $item = new Item('ABC', 'product_sku');
+        // Serializes to: <item><identifier scheme="product_sku">ABC</identifier></item>
+
+    During serialization, if a property mapped to an attribute has a ``null`` value,
+    the attribute will not be rendered on the XML element.
+    The ``#[XmlElement]`` annotation can be used on properties mapped with these
+    syntaxes, for instance, to control the XML namespace of the attribute if it
+    differs from the element's namespace (though typically attributes inherit the
+    namespace of their element or have no namespace).
+
+
 #[Since]
 ~~~~~~~~
 This attribute can be defined on a property to specify starting from which
