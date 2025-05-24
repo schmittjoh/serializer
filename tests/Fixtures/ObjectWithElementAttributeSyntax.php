@@ -83,19 +83,12 @@ class ObjectWithElementAttributeSyntax
      */
     public $nullableIdentifierScheme = null;
 
-    /**
-     * @param string $identifierValue
-     * @param string $identifierScheme
-     * @param string $customElementValue
-     * @param string $customElementType
-     * @param string $dataPointValue
-     */
     public function __construct(
-        $identifierValue,
-        $identifierScheme,
-        $customElementValue,
-        $customElementType,
-        $dataPointValue
+        string $identifierValue,
+        string $identifierScheme,
+        string $customElementValue,
+        string $customElementType,
+        string $dataPointValue
     ) {
         $this->identifierValue = $identifierValue;
         $this->identifierScheme = $identifierScheme;
