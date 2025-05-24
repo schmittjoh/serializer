@@ -27,6 +27,8 @@ use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminat
 use JMS\Serializer\Tests\Fixtures\Discriminator\ObjectWithXmlNotCDataDiscriminatorParent;
 use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
+use JMS\Serializer\Tests\Fixtures\ObjectWithAttributeSyntax;
+use JMS\Serializer\Tests\Fixtures\ObjectWithAttributeSyntaxWithoutNs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithElementAttributeSyntax;
 use JMS\Serializer\Tests\Fixtures\ObjectWithFloatProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
@@ -661,6 +663,80 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
         $object->customElementType = null;
         $deserializedObject = $this->deserialize($actualXml, ObjectWithElementAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeAttributeSyntax()
+    {
+        $object = new ObjectWithAttributeSyntax(
+            'CustomValueOnly',
+            'TestIdentifierValue',
+            'NamespacedTestIdentifierValue',
+        );
+
+        $object->nullableIdentifierValue = 'NullableIdentifierValue';
+        $object->nullableIdentifierScheme = 'NullableIdentifierScheme';
+
+        $expectedXml = self::getContent('object_with_attribute_syntax');
+        $actualXml = $this->serialize($object);
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeAttributeSyntaxWithNulls()
+    {
+        $object = new ObjectWithAttributeSyntax(
+            'CustomValueOnly',
+            'TestIdentifierValue',
+            'NamespacedTestIdentifierValue',
+        );
+
+        $object->nullableIdentifierValue = 'NullableIdentifierValue';
+        $object->nullableIdentifierScheme = null;
+
+        $expectedXml = self::getContent('object_with_attribute_syntax_nulls');
+        $actualXml = $this->serialize($object);
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithAttributeSyntax::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeAttributeSyntaxWithoutNs()
+    {
+        $object = new ObjectWithAttributeSyntaxWithoutNs(
+            'CustomValueOnly',
+            'TestIdentifierValue',
+        );
+
+        $object->nullableIdentifierValue = 'NullableIdentifierValue';
+        $object->nullableIdentifierScheme = 'NonNullableIdentifierScheme';
+
+        $expectedXml = self::getContent('object_with_attribute_syntax_without_ns');
+        $actualXml = $this->serialize($object);
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithAttributeSyntaxWithoutNs::class);
+        self::assertEquals($object, $deserializedObject);
+    }
+
+    public function testSerializeAttributeSyntaxWithoutNsNulls()
+    {
+        $object = new ObjectWithAttributeSyntaxWithoutNs(
+            'CustomValueOnly',
+            'TestIdentifierValue',
+        );
+
+        $object->nullableIdentifierValue = 'NullableIdentifierValue';
+        $object->nullableIdentifierScheme = null;
+
+        $expectedXml = self::getContent('object_with_attribute_syntax_without_ns_nulls');
+        $actualXml = $this->serialize($object);
+        self::assertXmlStringEqualsXmlString($expectedXml, $actualXml);
+
+        $deserializedObject = $this->deserialize($actualXml, ObjectWithAttributeSyntaxWithoutNs::class);
         self::assertEquals($object, $deserializedObject);
     }
 

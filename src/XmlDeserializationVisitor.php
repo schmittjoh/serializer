@@ -327,6 +327,21 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
             throw new NotAcceptableException();
         }
 
+        if (0 === strpos($name, '@')) {
+            $attributeName = substr($name, 1);
+            $attributes = $data->attributes($metadata->xmlNamespace);
+
+            if (isset($attributes[$attributeName])) {
+                if (!$metadata->type) {
+                    throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
+                }
+
+                return $this->navigator->accept($attributes[$attributeName], $metadata->type);
+            }
+
+            throw new NotAcceptableException(sprintf('Attribute "%s" (derived from serializedName "%s") in namespace "%s" not found for property %s::$%s. XML: %s', $attributeName, $name, $metadata->xmlNamespace ?? '[none]', $metadata->class, $metadata->name, $data->asXML()));
+        }
+
         if ($metadata->xmlValue) {
             if (!$metadata->type) {
                 throw RuntimeException::noMetadataForProperty($metadata->class, $metadata->name);
