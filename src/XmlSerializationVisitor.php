@@ -318,6 +318,28 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
             return;
         }
 
+        if (false !== strpos($metadata->serializedName, '/@') && $this->trySerializePropertyAsAttributeOnSiblingElement($metadata, $v)) {
+            return;
+        }
+
+        if (0 === strpos($metadata->serializedName, '@')) {
+            [$attributeValue, $processedNode] = $this->processValueForXmlAttribute($v, $metadata->type, $metadata);
+
+            if (null === $v && null === $processedNode) {
+                return;
+            }
+
+            $attributeName = substr($metadata->serializedName, 1);
+
+            if ($this->currentNode instanceof \DOMElement) {
+                $this->setAttributeOnNode($this->currentNode, $attributeName, $attributeValue, $metadata->xmlNamespace);
+            } else {
+                throw new RuntimeException('Cannot set attribute on a non-element node.');
+            }
+
+            return;
+        }
+
         if ($addEnclosingElement = !$this->isInLineCollection($metadata) && !$metadata->inline) {
             $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
 
@@ -352,6 +374,75 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         $this->hasValue = false;
+    }
+
+    private function trySerializePropertyAsAttributeOnSiblingElement(PropertyMetadata $metadata, $v): bool
+    {
+        [$elementName, $attributeName] = explode('/@', $metadata->serializedName, 2);
+        $namespace = $metadata->xmlNamespace ?? $this->getClassDefaultNamespace($this->objectMetadataStack->top());
+        $targetElement = null;
+
+        if ($this->currentNode instanceof \DOMElement) {
+            foreach ($this->currentNode->childNodes as $childNode) {
+                if ($childNode instanceof \DOMElement && $childNode->localName === $elementName) {
+                    $isNamespaceMatch = false;
+                    // Case 1: Expected a specific namespace, and child node has it.
+                    // Case 2 (else): Expected no namespace
+                    if (null !== $namespace && $childNode->namespaceURI === $namespace) {
+                        $isNamespaceMatch = true;
+                    } elseif ((null === $namespace || '' === $namespace) && (null === $childNode->namespaceURI || '' === $childNode->namespaceURI)) {
+                        $isNamespaceMatch = true;
+                    }
+
+                    if ($isNamespaceMatch) {
+                        $targetElement = $childNode;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!$targetElement) {
+            return false;
+        }
+
+        if (null === $v) {
+            return true;
+        }
+
+        [$attributeStringValue, $attributeValueNode] = $this->processValueForXmlAttribute($v, $metadata->type, $metadata);
+
+        if (null !== $attributeValueNode || is_scalar($v)) {
+            $this->setAttributeOnNode($targetElement, $attributeName, $attributeStringValue, $metadata->xmlNamespace);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return array{0:string, 1:\DOMNode|null} string value for attribute, and the processed DOMNode/null.
+     *
+     * @throws RuntimeException If the value is unsuitable for an XML attribute.
+     */
+    private function processValueForXmlAttribute($inputValue, ?array $valueType, PropertyMetadata $metadataForNavigatorContext): array
+    {
+        $this->setCurrentMetadata($metadataForNavigatorContext);
+        $processedNode = $this->navigator->accept($inputValue, $valueType);
+        $this->revertCurrentMetadata();
+
+        if ($processedNode instanceof \DOMCharacterData) {
+            $stringValue = $processedNode->nodeValue;
+        } elseif (null === $processedNode) {
+            $stringValue = is_scalar($inputValue) ? (string) $inputValue : '';
+        } else {
+            throw new RuntimeException(sprintf(
+                'Unsupported value for XML attribute for property "%s". Expected character data or scalar, but got %s.',
+                $metadataForNavigatorContext->name,
+                \is_object($processedNode) ? \get_class($processedNode) : \gettype($processedNode),
+            ));
+        }
+
+        return [$stringValue, $processedNode];
     }
 
     private function isInLineCollection(PropertyMetadata $metadata): bool

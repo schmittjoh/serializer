@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/default" xmlns:ns1="http://example.com/ns1">
+  <Identifier scheme="IDSchemeOnly">IDValueOnly</Identifier>
+  <ns1:CustomElement ns1:type="SpecialTypeOnly">CustomValueOnly</ns1:CustomElement>
+  <DataPoint>123NoUnit</DataPoint>
+  <NullableIdentifier>ValueWithoutScheme</NullableIdentifier>
+</test-object>

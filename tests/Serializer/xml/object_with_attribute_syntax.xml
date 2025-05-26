@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-object xmlns="http://example.com/default" xmlns:ns1="http://example.com/ns1" Identifier="TestIdentifierValue" ns1:NamespacedIdentifier="NamespacedTestIdentifierValue" NullableIdentifier="NullableIdentifierValue" ns1:NamespacedNullableIdentifier="NullableIdentifierScheme">
+    <Value>CustomValueOnly</Value>
+</test-object>
