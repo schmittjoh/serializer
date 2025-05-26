@@ -424,7 +424,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      *
      * @throws RuntimeException If the value is unsuitable for an XML attribute.
      */
-    private function processValueForXmlAttribute(mixed $inputValue, ?array $valueType, PropertyMetadata $metadataForNavigatorContext): array
+    private function processValueForXmlAttribute($inputValue, ?array $valueType, PropertyMetadata $metadataForNavigatorContext): array
     {
         $this->setCurrentMetadata($metadataForNavigatorContext);
         $processedNode = $this->navigator->accept($inputValue, $valueType);
