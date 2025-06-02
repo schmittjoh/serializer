@@ -83,6 +83,14 @@ class DateHandlerTest extends TestCase
         ];
     }
 
+    public function testGetEmptyDateStringReturnsNull()
+    {
+        $visitor = new JsonDeserializationVisitor();
+
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
+        self::assertNull($this->handler->deserializeDateTimeFromJson($visitor, '', $type));
+    }
+
     public function testTimePartGetsRemoved()
     {
         $visitor = new JsonDeserializationVisitor();
