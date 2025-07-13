@@ -1,0 +1,38 @@
+# block-delimiters file...
+# - Empty lines are ignored -- you can use them as section delimiters
+# - Lines beginning with a `#` are ignored
+# - Lines beginning with `\#` let you match blocks where the first character is a `#`
+#   -- i.e. the `\` is ignored and the line isn't treated as a comment
+#   `\` is not otherwise special
+
+# Public Keys
+-----BEGIN PUBLIC KEY-----
+-----END PUBLIC KEY-----
+
+# Private Keys
+-----BEGIN PRIVATE KEY-----
+-----END PRIVATE KEY-----
+
+# EC Private Key
+-----BEGIN EC PRIVATE KEY-----
+-----END EC PRIVATE KEY-----
+
+# RSA Private Key
+-----BEGIN RSA PRIVATE KEY-----
+-----END RSA PRIVATE KEY-----
+
+# GPG Public Key
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PUBLIC KEY BLOCK-----
+
+# GPG Signature
+-----BEGIN PGP SIGNATURE-----
+-----END PGP SIGNATURE-----
+
+# Certificates
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+
+# All Contributors
+<!-- ALL-CONTRIBUTORS-LIST:START
+<!-- ALL-CONTRIBUTORS-LIST:END
