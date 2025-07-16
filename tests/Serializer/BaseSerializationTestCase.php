@@ -1654,7 +1654,7 @@ abstract class BaseSerializationTestCase extends TestCase
     public static function getDiscriminatorObjectsSamples(): array
     {
         $u1 = new User(5, 'userName', 'userDesc');
-        $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extednedContent');
+        $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extendedContent');
         $arr = new ArrayCollection([$u1, $u2]);
 
         return [
