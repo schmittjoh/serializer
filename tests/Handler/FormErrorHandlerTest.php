@@ -93,16 +93,16 @@ class FormErrorHandlerTest extends TestCase
         $formFactoryBuilder->addExtension(new ValidatorExtension(Validation::createValidator()));
 
         $formFactory = $formFactoryBuilder->getFormFactory();
-        $builer = $formFactory->createNamedBuilder('foo', FormType::class);
+        $builder = $formFactory->createNamedBuilder('foo', FormType::class);
 
-        $builer->add('url', TextType::class);
-        $builer->add('txt', TextType::class, [
+        $builder->add('url', TextType::class);
+        $builder->add('txt', TextType::class, [
             'constraints' => [
                 new Length(['min' => 10]),
             ],
         ]);
 
-        $form = $builer->getForm();
+        $form = $builder->getForm();
 
         $form->submit([
             'url' => 'hi',
