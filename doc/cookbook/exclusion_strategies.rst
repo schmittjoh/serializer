@@ -318,7 +318,7 @@ Dynamic exclusion strategy
 If the previous exclusion strategies are not enough, is possible to use the ``ExpressionLanguageExclusionStrategy``
 that uses the `symfony expression language`_ to
 allow a more sophisticated exclusion strategies using ``@Exclude(if="expression")`` and ``@Expose(if="expression")`` methods.
-This also works on class level, but is only evaluated during ``serialze`` and does not have any effect during ``deserialze``.
+This also works on class level, but is only evaluated during ``serialze`` and does not have any effect during ``deserialize``.
 
 
 .. code-block :: php
