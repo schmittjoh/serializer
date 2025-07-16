@@ -174,7 +174,7 @@ New versions can be found on the [realeases page](https://github.com/schmittjoh/
 **Merged pull requests:**
 
 - Remove conflicts to hoa packages [\#1216](https://github.com/schmittjoh/serializer/pull/1216) ([alexander-schranz](https://github.com/alexander-schranz))
-- Test also agains twig 3 [\#1215](https://github.com/schmittjoh/serializer/pull/1215) ([alexander-schranz](https://github.com/alexander-schranz))
+- Test also against twig 3 [\#1215](https://github.com/schmittjoh/serializer/pull/1215) ([alexander-schranz](https://github.com/alexander-schranz))
 - Allow doctrine/persistence v2/v3 [\#1210](https://github.com/schmittjoh/serializer/pull/1210) ([goetas](https://github.com/goetas))
 - Fix deprecated assertFileNotExist [\#1197](https://github.com/schmittjoh/serializer/pull/1197) ([mpoiriert](https://github.com/mpoiriert))
 
