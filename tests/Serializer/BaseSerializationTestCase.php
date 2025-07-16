@@ -1945,13 +1945,13 @@ abstract class BaseSerializationTestCase extends TestCase
      * @dataProvider getFirstClassListCollectionsValues
      */
     #[DataProvider('getFirstClassListCollectionsValues')]
-    public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserializatrion = null)
+    public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserialization = null)
     {
         $collection = new FirstClassListCollection($items);
 
         self::assertSame($expected, $this->serialize($collection));
         self::assertEquals(
-            $expectedDeserializatrion ?: $collection,
+            $expectedDeserialization ?: $collection,
             $this->deserialize($expected, get_class($collection)),
         );
     }
