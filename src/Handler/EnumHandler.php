@@ -53,7 +53,7 @@ final class EnumHandler implements SubscribingHandlerInterface
     ) {
         if ((isset($type['params'][1]) && 'value' === $type['params'][1]) || (!isset($type['params'][1]) && $enum instanceof \BackedEnum)) {
             if (!$enum instanceof \BackedEnum) {
-                throw new InvalidMetadataException(sprintf('The type "%s" is not a backed enum, thus you can not use "value" as serialization mode for its value.', get_class($enum)));
+                throw new InvalidMetadataException(sprintf('The type "%s" is not a backed enum, thus you cannot use "value" as serialization mode for its value.', get_class($enum)));
             }
 
             $valueType = isset($type['params'][2]) ? ['name' => $type['params'][2]] : null;
@@ -82,7 +82,7 @@ final class EnumHandler implements SubscribingHandlerInterface
         $ref = new \ReflectionEnum($enumType);
         if (isset($type['params'][1]) && 'value' === $type['params'][1] || (!isset($type['params'][1]) && is_a($enumType, \BackedEnum::class, true))) {
             if (!is_a($enumType, \BackedEnum::class, true)) {
-                throw new InvalidMetadataException(sprintf('The type "%s" is not a backed enum, thus you can not use "value" as serialization mode for its value.', $enumType));
+                throw new InvalidMetadataException(sprintf('The type "%s" is not a backed enum, thus you cannot use "value" as serialization mode for its value.', $enumType));
             }
 
             if ('int' === $ref->getBackingType()->getName()) {

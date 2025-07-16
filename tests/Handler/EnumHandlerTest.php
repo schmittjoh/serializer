@@ -30,10 +30,10 @@ final class EnumHandlerTest extends TestCase
         $this->hander = new EnumHandler();
     }
 
-    public function testOrdinaryEnumCanNotBeUsedAsBackedEnumWhenSerializing()
+    public function testOrdinaryEnumCannotBeUsedAsBackedEnumWhenSerializing()
     {
         $this->expectException(InvalidMetadataException::class);
-        $this->expectExceptionMessage(sprintf('The type "%s" is not a backed enum, thus you can not use "value" as serialization mode for its value.', Suit::class));
+        $this->expectExceptionMessage(sprintf('The type "%s" is not a backed enum, thus you cannot use "value" as serialization mode for its value.', Suit::class));
 
         $visitor = $this->createMock(SerializationVisitorInterface::class);
         $context = $this->createMock(SerializationContext::class);
@@ -44,10 +44,10 @@ final class EnumHandlerTest extends TestCase
         $this->hander->serializeEnum($visitor, Suit::Clubs, $type, $context);
     }
 
-    public function testOrdinaryEnumCanNotBeUsedAsBackedEnumWhenDeserializing()
+    public function testOrdinaryEnumCannotBeUsedAsBackedEnumWhenDeserializing()
     {
         $this->expectException(InvalidMetadataException::class);
-        $this->expectExceptionMessage(sprintf('The type "%s" is not a backed enum, thus you can not use "value" as serialization mode for its value.', Suit::class));
+        $this->expectExceptionMessage(sprintf('The type "%s" is not a backed enum, thus you cannot use "value" as serialization mode for its value.', Suit::class));
 
         $visitor = $this->createMock(DeserializationVisitorInterface::class);
         $type = [

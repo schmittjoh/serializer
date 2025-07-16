@@ -118,7 +118,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
         if (!isset($this->graphNavigators[$direction])) {
             throw new RuntimeException(
                 sprintf(
-                    'Can not find a graph navigator for the direction "%s".',
+                    'Cannot find a graph navigator for the direction "%s".',
                     GraphNavigatorInterface::DIRECTION_SERIALIZATION === $direction ? 'serialization' : 'deserialization',
                 ),
             );

@@ -134,7 +134,7 @@ final class DoctrineObjectConstructor implements ObjectConstructorInterface
                     return null;
 
                 case self::ON_MISSING_EXCEPTION:
-                    throw new ObjectConstructionException(sprintf('Entity %s can not be found', $metadata->name));
+                    throw new ObjectConstructionException(sprintf('Entity %s cannot be found', $metadata->name));
 
                 case self::ON_MISSING_FALLBACK:
                     return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);

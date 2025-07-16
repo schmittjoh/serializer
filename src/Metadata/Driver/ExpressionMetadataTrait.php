@@ -29,7 +29,7 @@ trait ExpressionMetadataTrait
         try {
             return $this->expressionEvaluator->parse($expression, array_merge(['context', 'property_metadata', 'object'], $names));
         } catch (\LogicException $e) {
-            throw new InvalidMetadataException(sprintf('Can not parse the expression "%s"', $expression), 0, $e);
+            throw new InvalidMetadataException(sprintf('Cannot parse the expression "%s"', $expression), 0, $e);
         }
     }
 }

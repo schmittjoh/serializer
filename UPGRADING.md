@@ -44,7 +44,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - The minimum PHP version is 7.2, type hints are used almost everywhere, most of the method signatures changed
 - `JsonSerializationVisitor::getRoot` and `JsonSerializationVisitor::setRoot` have been removed, their
   use is not necessary anymore
-- Removed `AdvancedNamingStrategyInterface`, the serialized name is now compiled and can not be changed at runtime
+- Removed `AdvancedNamingStrategyInterface`, the serialized name is now compiled and cannot be changed at runtime
 - "deeper branch group exclusion strategy" has a different behaviour, the latest group is used instead of falling back 
   to "Default" 
 - Most of the classes are marked as `final`, inheritance is discouraged for all the cases, use composition instead

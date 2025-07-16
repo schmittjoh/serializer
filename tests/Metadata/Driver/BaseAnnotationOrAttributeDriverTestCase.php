@@ -23,7 +23,7 @@ abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCas
 
     public function testCanDefineMetadataForInternalClass(): void
     {
-        $this->markTestSkipped('Can not define annotation or attribute metadata for internal classes');
+        $this->markTestSkipped('Cannot define annotation or attribute metadata for internal classes');
     }
 
     public function testShortExposeSyntax(): void

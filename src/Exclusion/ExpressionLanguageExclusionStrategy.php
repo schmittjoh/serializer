@@ -14,7 +14,7 @@ use JMS\Serializer\SerializationContext;
 
 /**
  * Exposes an exclusion strategy based on the Symfony's expression language.
- * This is not a standard exclusion strategy and can not be used in user applications.
+ * This is not a standard exclusion strategy and cannot be used in user applications.
  *
  * @internal
  *
