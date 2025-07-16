@@ -127,15 +127,15 @@ to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
 Note that this attribute is not used when you're using any other naming
 strategy than the default configuration (which includes the
-``SerializedNameattributeStrategy``). In order to re-enable the attribute, you
-will need to wrap your custom strategy with the ``SerializedNameattributeStrategy``.
+``SerializedNameAnnotationStrategy``). In order to re-enable the attribute, you
+will need to wrap your custom strategy with the ``SerializedNameAnnotationStrategy``.
 
 .. code-block :: php
 
     <?php
     $serializer = \JMS\Serializer\SerializerBuilder::create()
         ->setPropertyNamingStrategy(
-            new \JMS\Serializer\Naming\SerializedNameattributeStrategy(
+            new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
                 new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy()
             )
         )
