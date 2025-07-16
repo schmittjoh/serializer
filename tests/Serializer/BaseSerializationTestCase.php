@@ -1870,16 +1870,16 @@ abstract class BaseSerializationTestCase extends TestCase
         $context = new DeserializationContext();
         $context->setAttribute('target', $order);
 
-        $deseralizedOrder = $serializer->deserialize(
+        $deserializedOrder = $serializer->deserialize(
             static::getContent('order'),
             get_class($order),
             $this->getFormat(),
             $context,
         );
 
-        self::assertSame($order, $deseralizedOrder);
-        self::assertEquals(new Order(new Price(12.34)), $deseralizedOrder);
-        self::assertInstanceOf(Price::class, $this->getField($deseralizedOrder, 'cost'));
+        self::assertSame($order, $deserializedOrder);
+        self::assertEquals(new Order(new Price(12.34)), $deserializedOrder);
+        self::assertInstanceOf(Price::class, $this->getField($deserializedOrder, 'cost'));
     }
 
     public function testObjectWithNullableArrays()
