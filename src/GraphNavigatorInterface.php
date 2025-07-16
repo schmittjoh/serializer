@@ -16,7 +16,7 @@ interface GraphNavigatorInterface
     public const DIRECTION_DESERIALIZATION = 2;
 
     /**
-     * Called at the beginning of the serialization process. The navigator should use the traverse the object graph
+     * Called at the beginning of the serialization process. The navigator should use it to traverse the object graph
      * and pass to the $visitor the value of found nodes (following the rules obtained from $context).
      */
     public function initialize(VisitorInterface $visitor, Context $context): void;
