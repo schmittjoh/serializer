@@ -69,7 +69,7 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - As default now JSON preserves trailing zeros when serializing a float
 - When using a discriminator map, parent class should either be declared abstract, or included into the discriminator
   map
-- For the `Context` class (and its childs `SerializationContext` and `DeserializationContext`), `$attributes` property has become `private`, so it's no longer accessible; use `getAttribute()` instead
+- For the `Context` class (and its child's `SerializationContext` and `DeserializationContext`), `$attributes` property has become `private`, so it's no longer accessible; use `getAttribute()` instead
 - When implementing custom type handlers and `$context->shouldSerializeNull()` is `false` (it is `false` by default),
   handlers should throw `NotAcceptableException` exception when `null` is visited.
   
