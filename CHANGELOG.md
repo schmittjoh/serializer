@@ -236,7 +236,7 @@ New versions can be found on the [releases page](https://github.com/schmittjoh/s
 
 **Fixed bugs:**
 
-- Make sure serialzation context is immutable [\#1159](https://github.com/schmittjoh/serializer/pull/1159) ([goetas](https://github.com/goetas))
+- Make sure serialization context is immutable [\#1159](https://github.com/schmittjoh/serializer/pull/1159) ([goetas](https://github.com/goetas))
 
 **Merged pull requests:**
 
