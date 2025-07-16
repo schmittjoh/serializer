@@ -302,7 +302,7 @@ annotation to.
 
 In this example, serializing a user, because the max depth of the ``$friends``
 property is 1, the user friends would be serialized, but not their friends;
-and because the the max depth of the ``$posts`` property is 2, the posts would
+and because the max depth of the ``$posts`` property is 2, the posts would
 be serialized, and their author would also be serialized.
 
 You need to tell the serializer to take into account MaxDepth checks::
