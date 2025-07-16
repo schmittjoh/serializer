@@ -1032,7 +1032,7 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertEquals(static::getContent('author_expression_context'), $serializer->serialize($author, $this->getFormat()));
     }
 
-    public function testExpressionAccessorStrategNotEnabled()
+    public function testExpressionAccessorStrategyNotEnabled()
     {
         $author = new AuthorExpressionAccess(123, 'Ruud', 'Kamphuis');
 
