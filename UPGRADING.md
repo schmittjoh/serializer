@@ -111,4 +111,4 @@ If you are on version `1.x`, it is suggested to migrate directly to `3.0.0` (sin
 - Elements (as classes, interfaces, methods, properties...)
   marked as `@internal` shall not be used in user-land code. BC is not guaranteed on this elements.
 - PSR-4 is used  
-- [Here](https://github.com/schmittjoh/serializer/milestone/3) a list of issues and pull requests landed in 2.0
+- [schmittjoh/serializer milestone #3](https://github.com/schmittjoh/serializer/milestone/3) has a list of issues and pull requests landed in 2.0
