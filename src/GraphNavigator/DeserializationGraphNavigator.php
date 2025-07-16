@@ -168,7 +168,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                         return $rs;
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     }
                 }
 

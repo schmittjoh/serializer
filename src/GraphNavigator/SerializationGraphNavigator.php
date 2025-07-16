@@ -187,7 +187,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                     try {
                         return \call_user_func($handler, $this->visitor, $data, $type, $this->context);
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     }
                 }
 
@@ -226,7 +226,7 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                         return $rs;
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     } catch (NotAcceptableException $e) {
                         $this->context->stopVisiting($data);
 
