@@ -1,6 +1,6 @@
 # Changelog
 
-New versions can be found on the [realeases page](https://github.com/schmittjoh/serializer/releases)
+New versions can be found on the [releases page](https://github.com/schmittjoh/serializer/releases)
 
 ## [3.15.0](https://github.com/schmittjoh/serializer/tree/3.15.0) (2021-10-14)
 
