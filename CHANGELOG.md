@@ -451,7 +451,7 @@ New versions can be found on the [releases page](https://github.com/schmittjoh/s
 
 **Fixed bugs:**
 
-- jms serialzier 2.0 Error in debug mode [\#1018](https://github.com/schmittjoh/serializer/issues/1018)
+- jms serializer 2.0 Error in debug mode [\#1018](https://github.com/schmittjoh/serializer/issues/1018)
 - AbstractDoctrineTypeDriver::normalizeFieldType\(\) must be of the type string, null given [\#1015](https://github.com/schmittjoh/serializer/issues/1015)
 - allow empty strings and numbers as metadata type parameters [\#1019](https://github.com/schmittjoh/serializer/pull/1019) ([goetas](https://github.com/goetas))
 - internal classes have false in reflection::getFilename\(\) [\#1013](https://github.com/schmittjoh/serializer/pull/1013) ([chregu](https://github.com/chregu))
