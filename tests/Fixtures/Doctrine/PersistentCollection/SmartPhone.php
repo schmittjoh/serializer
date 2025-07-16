@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection;
+namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,14 +40,14 @@ class SmartPhone
     private $name;
 
     /**
-     * @Serializer\Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App>")
+     * @Serializer\Type("ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\App>")
      * @Serializer\SerializedName("applications")
      * @ORM\OneToMany (targetEntity="App", mappedBy="smartPhone", cascade={"persist"}, orphanRemoval=true)
      *
      * @var ArrayCollection<int, App>
      */
     #[Serializer\SerializedName(name: 'applications')]
-    #[Serializer\Type(name: 'ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App>')]
+    #[Serializer\Type(name: 'ArrayCollection<JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\App>')]
     #[ORM\OneToMany(targetEntity: App::class, mappedBy: 'smartPhone', cascade: ['persist'], orphanRemoval: true)]
     private $apps;
 

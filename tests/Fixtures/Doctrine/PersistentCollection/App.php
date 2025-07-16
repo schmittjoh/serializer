@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection;
+namespace JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,7 +38,7 @@ class App
 
     /**
      * @ORM\ManyToOne(targetEntity="SmartPhone")
-     * @Serializer\Type("JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\SmartPhone")
+     * @Serializer\Type("JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\SmartPhone")
      *
      * @var SmartPhone
      */
