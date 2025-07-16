@@ -127,7 +127,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
             $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
             $outputs['author_expression_context'] = '{"first_name":"Ruud","direction":1,"name":"name"}';
-            $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
+            $outputs['maxdepth_skippable_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['maxdepth_0'] = '{"a":{}}';
             $outputs['maxdepth_1'] = '{"a":{"b":12345}}';
             $outputs['array_objects_nullable'] = '[]';

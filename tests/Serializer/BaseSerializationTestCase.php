@@ -1830,7 +1830,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $context = SerializationContext::create()->enableMaxDepthChecks();
         $serialized = $this->serialize($data, $context);
 
-        self::assertEquals(static::getContent('maxdepth_skippabe_object'), $serialized);
+        self::assertEquals(static::getContent('maxdepth_skippable_object'), $serialized);
     }
 
     public function testMaxDepthWithZeroDepthObject()
