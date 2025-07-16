@@ -32,7 +32,7 @@ Please follow the upgrade **"From 1.13.0 to 2.0.0"**, skipping the section:
 
 > "deeper branch group exclusion strategy" has a different behaviour, the latest group is used instead of falling back to "Default"
 
-The deprecations introduced in 2.x are still present in 3.0.0, said features are most likley to be removed in an next major.
+The deprecations introduced in 2.x are still present in 3.0.0, said features are most likely to be removed in an next major.
 
 From 1.13.0 to 2.0.0
 ====================
