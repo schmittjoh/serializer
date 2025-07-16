@@ -629,7 +629,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $this->deserialize(static::getContent('data_discriminated_comment_missing_discriminator'), ComplexDiscriminatedUnion::class);
     }
 
-    public function testSerializeingComplexDiscriminatedUnionProperties()
+    public function testSerializingComplexDiscriminatedUnionProperties()
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
