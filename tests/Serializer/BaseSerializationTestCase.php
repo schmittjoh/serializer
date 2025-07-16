@@ -1651,7 +1651,7 @@ abstract class BaseSerializationTestCase extends TestCase
         );
     }
 
-    public static function getDiscrimatorObjectsSamples(): array
+    public static function getDiscriminatorObjectsSamples(): array
     {
         $u1 = new User(5, 'userName', 'userDesc');
         $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extednedContent');
@@ -1667,10 +1667,10 @@ abstract class BaseSerializationTestCase extends TestCase
     /**
      * Test serializing entity that uses Discriminator and extends some base model class
      *
-     * @dataProvider getDiscrimatorObjectsSamples
+     * @dataProvider getDiscriminatorObjectsSamples
      */
-    #[DataProvider('getDiscrimatorObjectsSamples')]
-    public function testDiscrimatorObjects($data, $contentId)
+    #[DataProvider('getDiscriminatorObjectsSamples')]
+    public function testDiscriminatorObjects($data, $contentId)
     {
         $context = SerializationContext::create()->setGroups(['entity.identification']);
         self::assertEquals(
