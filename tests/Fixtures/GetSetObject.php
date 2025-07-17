@@ -32,7 +32,7 @@ class GetSetObject
     private $readOnlyProperty = 42;
 
     /**
-     * This property should be exlcluded
+     * This property should be excluded
      *
      * @Exclude()
      */

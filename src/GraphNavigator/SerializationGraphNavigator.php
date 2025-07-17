@@ -187,7 +187,7 @@ final class SerializationGraphNavigator extends GraphNavigator
                     try {
                         return \call_user_func($handler, $this->visitor, $data, $type, $this->context);
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     }
                 }
 
@@ -218,7 +218,7 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
-                // could also simply be an artifical type.
+                // could also simply be an artificial type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
                     try {
                         $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
@@ -226,7 +226,7 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                         return $rs;
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     } catch (NotAcceptableException $e) {
                         $this->context->stopVisiting($data);
 

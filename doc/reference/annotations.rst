@@ -127,15 +127,15 @@ to a lower-cased underscored name, e.g. camelCase -> camel_case.
 
 Note that this attribute is not used when you're using any other naming
 strategy than the default configuration (which includes the
-``SerializedNameattributeStrategy``). In order to re-enable the attribute, you
-will need to wrap your custom strategy with the ``SerializedNameattributeStrategy``.
+``SerializedNameAnnotationStrategy``). In order to re-enable the attribute, you
+will need to wrap your custom strategy with the ``SerializedNameAnnotationStrategy``.
 
 .. code-block :: php
 
     <?php
     $serializer = \JMS\Serializer\SerializerBuilder::create()
         ->setPropertyNamingStrategy(
-            new \JMS\Serializer\Naming\SerializedNameattributeStrategy(
+            new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
                 new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy()
             )
         )
@@ -666,8 +666,8 @@ Available Types:
 
 (*) If the standalone jms/serializer is used then default format is `\DateTime::ISO8601` (which is not compatible with ISO-8601 despite the name). For jms/serializer-bundle the default format is `\DateTime::ATOM` (the real ISO-8601 format) but it can be changed in `configuration`_.
 
-(**) The key type K for array-linke formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization,
-for serializaiton is treated as ``string``.
+(**) The key type K for array-like formats as ``array``. ``ArrayCollection``, ``iterable``, etc., is only used for deserialization,
+for serialization is treated as ``string``.
 
 Examples:
 

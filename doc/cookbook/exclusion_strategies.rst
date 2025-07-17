@@ -302,7 +302,7 @@ annotation to.
 
 In this example, serializing a user, because the max depth of the ``$friends``
 property is 1, the user friends would be serialized, but not their friends;
-and because the the max depth of the ``$posts`` property is 2, the posts would
+and because the max depth of the ``$posts`` property is 2, the posts would
 be serialized, and their author would also be serialized.
 
 You need to tell the serializer to take into account MaxDepth checks::
@@ -318,7 +318,7 @@ Dynamic exclusion strategy
 If the previous exclusion strategies are not enough, is possible to use the ``ExpressionLanguageExclusionStrategy``
 that uses the `symfony expression language`_ to
 allow a more sophisticated exclusion strategies using ``@Exclude(if="expression")`` and ``@Expose(if="expression")`` methods.
-This also works on class level, but is only evaluated during ``serialze`` and does not have any effect during ``deserialze``.
+This also works on class level, but is only evaluated during ``serialize`` and does not have any effect during ``deserialize``.
 
 
 .. code-block :: php

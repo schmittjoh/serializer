@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Benchmark\Memory;
 
-class XmlMutlipleRunBench extends XmlSingleRunBench
+class XmlMultipleRunBench extends XmlSingleRunBench
 {
     public function __construct()
     {

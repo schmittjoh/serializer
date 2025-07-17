@@ -272,7 +272,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                     $classMetadata->isMap = $classMetadata->isMap || PropertyMetadata::isCollectionMap($propertyMetadata->type);
 
                     if ($classMetadata->isMap && $classMetadata->isList) {
-                        throw new InvalidMetadataException('Can not have an inline map and and inline map on the same class');
+                        throw new InvalidMetadataException('Cannot have an inline map and inline map on the same class');
                     }
                 }
 
@@ -298,7 +298,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
 
         // if (!$configured) {
             // return null;
-            // uncomment the above line afetr a couple of months
+            // uncomment the above line after a couple of months
         // }
 
         return $classMetadata;

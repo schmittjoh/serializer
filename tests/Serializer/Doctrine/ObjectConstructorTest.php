@@ -46,8 +46,8 @@ use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
-use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\App;
-use JMS\Serializer\Tests\Fixtures\Doctrine\PersistendCollection\SmartPhone;
+use JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\App;
+use JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\SmartPhone;
 use JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author as DoctrinePHPCRAuthor;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use Metadata\Driver\AdvancedDriverInterface;
@@ -275,7 +275,7 @@ class ObjectConstructorTest extends TestCase
         );
     }
 
-    public static function dataProviderPersistendCollectionIsNotReplaced(): array
+    public static function dataProviderPersistentCollectionIsNotReplaced(): array
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <result>
@@ -302,10 +302,10 @@ class ObjectConstructorTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderPersistendCollectionIsNotReplaced
+     * @dataProvider dataProviderPersistentCollectionIsNotReplaced
      */
-    #[DataProvider('dataProviderPersistendCollectionIsNotReplaced')]
-    public function testPersistendCollectionIsNotReplaced(string $serializedData, string $type): void
+    #[DataProvider('dataProviderPersistentCollectionIsNotReplaced')]
+    public function testPersistentCollectionIsNotReplaced(string $serializedData, string $type): void
     {
         $serializer = $this->createSerializerWithDoctrineObjectConstructor();
 
@@ -531,14 +531,14 @@ class ObjectConstructorTest extends TestCase
                 $cfg->setMetadataDriverImpl(new AttributeDriver([
                     __DIR__ . '/../../Fixtures/Doctrine/Entity',
                     __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
-                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistentCollection',
                 ]));
             } else {
                 assert(class_exists(AnnotationDriver::class));
                 $cfg->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), [
                     __DIR__ . '/../../Fixtures/Doctrine/Entity',
                     __DIR__ . '/../../Fixtures/Doctrine/IdentityFields',
-                    __DIR__ . '/../../Fixtures/Doctrine/PersistendCollection',
+                    __DIR__ . '/../../Fixtures/Doctrine/PersistentCollection',
                 ]));
             }
         }

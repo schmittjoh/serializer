@@ -83,7 +83,7 @@ class ArrayTest extends TestCase
         self::assertSame([], $result);
     }
 
-    public function testToArrayConversNestedArrayObjects()
+    public function testToArrayConvertsNestedArrayObjects()
     {
         $list = new AuthorList();
         $list->add(new Author(null));

@@ -160,7 +160,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
-                // could also simply be an artifical type.
+                // could also simply be an artificial type.
                 if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $type['name'], $this->format)) {
                     try {
                         $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
@@ -168,7 +168,7 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
 
                         return $rs;
                     } catch (SkipHandlerException $e) {
-                        // Skip handler, fallback to default behavior
+                        // Skip handler, fall back to default behavior
                     }
                 }
 

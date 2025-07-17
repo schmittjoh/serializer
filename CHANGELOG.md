@@ -1,6 +1,6 @@
 # Changelog
 
-New versions can be found on the [realeases page](https://github.com/schmittjoh/serializer/releases)
+New versions can be found on the [releases page](https://github.com/schmittjoh/serializer/releases)
 
 ## [3.15.0](https://github.com/schmittjoh/serializer/tree/3.15.0) (2021-10-14)
 
@@ -174,7 +174,7 @@ New versions can be found on the [realeases page](https://github.com/schmittjoh/
 **Merged pull requests:**
 
 - Remove conflicts to hoa packages [\#1216](https://github.com/schmittjoh/serializer/pull/1216) ([alexander-schranz](https://github.com/alexander-schranz))
-- Test also agains twig 3 [\#1215](https://github.com/schmittjoh/serializer/pull/1215) ([alexander-schranz](https://github.com/alexander-schranz))
+- Test also against twig 3 [\#1215](https://github.com/schmittjoh/serializer/pull/1215) ([alexander-schranz](https://github.com/alexander-schranz))
 - Allow doctrine/persistence v2/v3 [\#1210](https://github.com/schmittjoh/serializer/pull/1210) ([goetas](https://github.com/goetas))
 - Fix deprecated assertFileNotExist [\#1197](https://github.com/schmittjoh/serializer/pull/1197) ([mpoiriert](https://github.com/mpoiriert))
 
@@ -236,7 +236,7 @@ New versions can be found on the [realeases page](https://github.com/schmittjoh/
 
 **Fixed bugs:**
 
-- Make sure serialzation context is immutable [\#1159](https://github.com/schmittjoh/serializer/pull/1159) ([goetas](https://github.com/goetas))
+- Make sure serialization context is immutable [\#1159](https://github.com/schmittjoh/serializer/pull/1159) ([goetas](https://github.com/goetas))
 
 **Merged pull requests:**
 
@@ -451,7 +451,7 @@ New versions can be found on the [realeases page](https://github.com/schmittjoh/
 
 **Fixed bugs:**
 
-- jms serialzier 2.0 Error in debug mode [\#1018](https://github.com/schmittjoh/serializer/issues/1018)
+- jms serializer 2.0 Error in debug mode [\#1018](https://github.com/schmittjoh/serializer/issues/1018)
 - AbstractDoctrineTypeDriver::normalizeFieldType\(\) must be of the type string, null given [\#1015](https://github.com/schmittjoh/serializer/issues/1015)
 - allow empty strings and numbers as metadata type parameters [\#1019](https://github.com/schmittjoh/serializer/pull/1019) ([goetas](https://github.com/goetas))
 - internal classes have false in reflection::getFilename\(\) [\#1013](https://github.com/schmittjoh/serializer/pull/1013) ([chregu](https://github.com/chregu))

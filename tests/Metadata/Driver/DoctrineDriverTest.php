@@ -79,7 +79,7 @@ class DoctrineDriverTest extends TestCase
     {
         $metadata = $this->getMetadata();
 
-        // This would be guessed as boolean but we've overriden it to integer
+        // This would be guessed as boolean but we've overridden it to integer
         self::assertEquals(
             ['name' => 'integer', 'params' => []],
             $metadata->propertyMetadata['published']->type,

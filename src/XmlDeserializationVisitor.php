@@ -551,7 +551,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         if ($value instanceof \SimpleXMLElement) {
             // Workaround for https://bugs.php.net/bug.php?id=75168 and https://github.com/schmittjoh/serializer/issues/817
-            // If the "name" is empty means that we are on an not-existent node and subsequent operations on the object will trigger the warning:
+            // If the "name" is empty means that we are on a nonexistent node and subsequent operations on the object will trigger the warning:
             // "Node no longer exists"
             if ('' === $value->getName()) {
                 // @todo should be "true", but for collections needs a default collection value. maybe something for the 2.0

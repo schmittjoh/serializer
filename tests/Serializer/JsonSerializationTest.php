@@ -127,7 +127,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['object_with_object_property'] = '{"foo": "bar", "author": {"full_name": "baz"}}';
             $outputs['author_expression'] = '{"my_first_name":"Ruud","last_name":"Kamphuis","id":123}';
             $outputs['author_expression_context'] = '{"first_name":"Ruud","direction":1,"name":"name"}';
-            $outputs['maxdepth_skippabe_object'] = '{"a":{"xxx":"yyy"}}';
+            $outputs['maxdepth_skippable_object'] = '{"a":{"xxx":"yyy"}}';
             $outputs['maxdepth_0'] = '{"a":{}}';
             $outputs['maxdepth_1'] = '{"a":{"b":12345}}';
             $outputs['array_objects_nullable'] = '[]';
@@ -629,7 +629,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
         $this->deserialize(static::getContent('data_discriminated_comment_missing_discriminator'), ComplexDiscriminatedUnion::class);
     }
 
-    public function testSerializeingComplexDiscriminatedUnionProperties()
+    public function testSerializingComplexDiscriminatedUnionProperties()
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
@@ -648,7 +648,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
      * @dataProvider getTypeHintedArraysAndStdClass
      */
     #[DataProvider('getTypeHintedArraysAndStdClass')]
-    public function testTypeHintedArrayAncdtdClassSerialization(array $array, string $expected, ?SerializationContext $context = null)
+    public function testTypeHintedArrayAndStdClassSerialization(array $array, string $expected, ?SerializationContext $context = null)
     {
         self::assertEquals($expected, $this->serialize($array, $context));
     }

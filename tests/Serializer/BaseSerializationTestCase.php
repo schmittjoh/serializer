@@ -1032,7 +1032,7 @@ abstract class BaseSerializationTestCase extends TestCase
         self::assertEquals(static::getContent('author_expression_context'), $serializer->serialize($author, $this->getFormat()));
     }
 
-    public function testExpressionAccessorStrategNotEnabled()
+    public function testExpressionAccessorStrategyNotEnabled()
     {
         $author = new AuthorExpressionAccess(123, 'Ruud', 'Kamphuis');
 
@@ -1651,10 +1651,10 @@ abstract class BaseSerializationTestCase extends TestCase
         );
     }
 
-    public static function getDiscrimatorObjectsSamples(): array
+    public static function getDiscriminatorObjectsSamples(): array
     {
         $u1 = new User(5, 'userName', 'userDesc');
-        $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extednedContent');
+        $u2 = new ExtendedUser(5, 'userName', 'userDesc', 'extendedContent');
         $arr = new ArrayCollection([$u1, $u2]);
 
         return [
@@ -1667,10 +1667,10 @@ abstract class BaseSerializationTestCase extends TestCase
     /**
      * Test serializing entity that uses Discriminator and extends some base model class
      *
-     * @dataProvider getDiscrimatorObjectsSamples
+     * @dataProvider getDiscriminatorObjectsSamples
      */
-    #[DataProvider('getDiscrimatorObjectsSamples')]
-    public function testDiscrimatorObjects($data, $contentId)
+    #[DataProvider('getDiscriminatorObjectsSamples')]
+    public function testDiscriminatorObjects($data, $contentId)
     {
         $context = SerializationContext::create()->setGroups(['entity.identification']);
         self::assertEquals(
@@ -1830,7 +1830,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $context = SerializationContext::create()->enableMaxDepthChecks();
         $serialized = $this->serialize($data, $context);
 
-        self::assertEquals(static::getContent('maxdepth_skippabe_object'), $serialized);
+        self::assertEquals(static::getContent('maxdepth_skippable_object'), $serialized);
     }
 
     public function testMaxDepthWithZeroDepthObject()
@@ -1870,16 +1870,16 @@ abstract class BaseSerializationTestCase extends TestCase
         $context = new DeserializationContext();
         $context->setAttribute('target', $order);
 
-        $deseralizedOrder = $serializer->deserialize(
+        $deserializedOrder = $serializer->deserialize(
             static::getContent('order'),
             get_class($order),
             $this->getFormat(),
             $context,
         );
 
-        self::assertSame($order, $deseralizedOrder);
-        self::assertEquals(new Order(new Price(12.34)), $deseralizedOrder);
-        self::assertInstanceOf(Price::class, $this->getField($deseralizedOrder, 'cost'));
+        self::assertSame($order, $deserializedOrder);
+        self::assertEquals(new Order(new Price(12.34)), $deserializedOrder);
+        self::assertInstanceOf(Price::class, $this->getField($deserializedOrder, 'cost'));
     }
 
     public function testObjectWithNullableArrays()
@@ -1945,13 +1945,13 @@ abstract class BaseSerializationTestCase extends TestCase
      * @dataProvider getFirstClassListCollectionsValues
      */
     #[DataProvider('getFirstClassListCollectionsValues')]
-    public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserializatrion = null)
+    public function testFirstClassListCollections($items, $expected, ?FirstClassListCollection $expectedDeserialization = null)
     {
         $collection = new FirstClassListCollection($items);
 
         self::assertSame($expected, $this->serialize($collection));
         self::assertEquals(
-            $expectedDeserializatrion ?: $collection,
+            $expectedDeserialization ?: $collection,
             $this->deserialize($expected, get_class($collection)),
         );
     }

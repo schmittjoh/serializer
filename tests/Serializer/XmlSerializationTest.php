@@ -562,7 +562,7 @@ class XmlSerializationTest extends BaseSerializationTestCase
         $visitor = (new XmlSerializationVisitorFactory())->getVisitor();
 
         // Setting locale with comma fractional separator
-        $locale = setlocale(LC_ALL, 0);
+        $locale = setlocale(LC_ALL, '0');
         if (!setlocale(LC_ALL, 'ru_RU.UTF-8')) {
             $this->markTestIncomplete('Required locale not available');
         }
