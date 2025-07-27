@@ -1,0 +1,127 @@
+name: Check Spelling
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  pull_request_target:
+    branches:
+      - '**'
+    types:
+      - 'opened'
+      - 'reopened'
+      - 'synchronize'
+
+permissions: {}
+
+jobs:
+  spelling:
+    name: Check Spelling
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+      security-events: write
+    outputs:
+      followup: ${{ steps.spelling.outputs.followup }}
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event_name, 'pull_request') || github.event_name == 'push' }}
+    concurrency:
+      group: spelling-${{ github.event.pull_request.number || github.ref }}
+      # note: If you use only_check_changed_files, you do not want cancel-in-progress
+      cancel-in-progress: true
+    steps:
+      - name: check-spelling
+        id: spelling
+        uses: check-spelling/check-spelling@v0.0.25
+        with:
+          suppress_push_for_open_pull_request: ${{ github.actor != 'dependabot[bot]' && 1 }}
+          checkout: true
+          check_file_names: 1
+          post_comment: 0
+          use_magic_file: 1
+          report-timing: 1
+          warnings: bad-regex,binary-file,deprecated-feature,ignored-expect-variant,large-file,limited-references,no-newline-at-eof,noisy-file,non-alpha-in-dictionary,token-is-substring,unexpected-line-ending,whitespace-in-dictionary,minified-file,unsupported-configuration,no-files-to-check,unclosed-block-ignore-begin,unclosed-block-ignore-end
+          use_sarif: 1
+          extra_dictionary_limit: 20
+          dictionary_source_prefixes: >
+            {
+            "cspell": "https://raw.githubusercontent.com/check-spelling/cspell-dicts/v20230509/dictionaries/",
+            "cspell1": "https://raw.githubusercontent.com/check-spelling/cspell-dicts/v20241114/dictionaries/"
+            }
+          check_extra_dictionaries: |
+            cspell1:ada/ada.txt
+            cspell1:aws/aws.txt
+            cspell1:clojure/clojure.txt
+            cspell1:companies/companies.txt
+            cspell1:cpp/compiler-clang-attributes.txt
+            cspell1:cpp/compiler-gcc.txt
+            cspell1:cpp/compiler-msvc.txt
+            cspell1:cpp/ecosystem.txt
+            cspell1:cpp/lang-jargon.txt
+            cspell1:cpp/lang-keywords.txt
+            cspell1:cpp/people.txt
+            cspell1:cpp/stdlib-c.txt
+            cspell1:cpp/stdlib-cerrno.txt
+            cspell1:cpp/stdlib-cmath.txt
+            cspell1:cpp/stdlib-cpp.txt
+            cspell1:cpp/template-strings.txt
+            cspell1:cryptocurrencies/cryptocurrencies.txt
+            cspell1:csharp/csharp.txt
+            cspell1:css/css.txt
+            cspell1:dart/dart.txt
+            cspell1:django/django.txt
+            cspell1:django/requirements.txt
+            cspell1:docker/docker-words.txt
+            cspell1:dotnet/dotnet.txt
+            cspell1:elixir/elixir.txt
+            cspell1:filetypes/filetypes.txt
+            cspell1:fonts/fonts.txt
+            cspell1:fullstack/fullstack.txt
+            cspell1:gaming-terms/gaming-terms.txt
+            cspell1:golang/go.txt
+            cspell1:haskell/haskell.txt
+            cspell1:html/html.txt
+            cspell1:java/java-terms.txt
+            cspell1:java/java.txt
+            cspell1:k8s/k8s.txt
+            cspell1:latex/latex.txt
+            cspell1:latex/samples/sample-words.txt
+            cspell1:lisp/lisp.txt
+            cspell1:lorem-ipsum/dictionary.txt
+            cspell1:lua/lua.txt
+            cspell1:mnemonics/mnemonics.txt
+            cspell1:monkeyc/monkeyc_keywords.txt
+            cspell1:node/node.txt
+            cspell1:npm/npm.txt
+            cspell1:php/php.txt
+            cspell1:powershell/powershell.txt
+            cspell1:public-licenses/generated/public-licenses.txt
+            cspell1:python/additional_words.txt
+            cspell1:python/common/extra.txt
+            cspell1:python/python/python-lib.txt
+            cspell1:python/python/python.txt
+            cspell1:r/r.txt
+            cspell1:redis/redis.txt
+            cspell1:ruby/ruby.txt
+            cspell1:rust/rust.txt
+            cspell1:scala/scala.txt
+            cspell1:shell/shell-all-words.txt
+            cspell1:software-terms/software-terms.txt
+            cspell1:software-terms/webServices.txt
+            cspell1:sql/sql.txt
+            cspell1:sql/tsql.txt
+            cspell1:svelte/svelte.txt
+            cspell1:swift/swift.txt
+            cspell1:typescript/typescript.txt
+          extra_dictionaries: |
+            cspell1:software-terms/softwareTerms.txt
+            cspell1:php/php.txt
+            cspell1:python/common/extra.txt
+            cspell1:node/node.txt
+            cspell1:dart/dart.txt
+            cspell1:python/python/python-lib.txt
+            cspell1:aws/aws.txt
+            cspell1:filetypes/filetypes.txt
