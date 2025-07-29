@@ -120,7 +120,7 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['post'] = '{"type":"post","title":"Post Title"}';
             $outputs['image_post'] = '{"type":"image_post","title":"Image Post Title"}';
             $outputs['image_post_without_type'] = '{"title":"Image Post Title"}';
-            $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"},{"km":1,"type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\Discriminator\\\Other"}]';
+            $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"},{"km":1,"type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\Discriminator\\\Other"}]}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
             $outputs['nullable_arrays'] = '{"empty_inline":[],"not_empty_inline":["not_empty_inline"],"empty_not_inline":[],"not_empty_not_inline":["not_empty_not_inline"],"empty_not_inline_skip":[],"not_empty_not_inline_skip":["not_empty_not_inline_skip"]}';
             $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
