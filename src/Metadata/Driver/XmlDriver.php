@@ -124,7 +124,7 @@ class XmlDriver extends AbstractFileDriver
                 $discriminatorFieldName,
                 $discriminatorMap,
                 $discriminatorGroups,
-                !empty($discriminatorDefaultClass) ? $discriminatorDefaultClass : null,
+                $discriminatorDefaultClass ?? null,
             );
         }
 
