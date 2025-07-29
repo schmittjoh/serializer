@@ -308,7 +308,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->customOrder,
             $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
-            $this->discriminatorDefaultClass,
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
@@ -323,6 +322,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->isList,
             $this->isMap,
             parent::serializeToArray(),
+            $this->discriminatorDefaultClass,
         ];
     }
 
@@ -339,7 +339,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->customOrder,
             $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
-            $this->discriminatorDefaultClass,
             $this->discriminatorFieldName,
             $this->discriminatorValue,
             $this->discriminatorMap,
@@ -354,6 +353,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->isList,
             $this->isMap,
             $parentData,
+            $this->discriminatorDefaultClass,
         ] = $data;
 
         parent::unserializeFromArray($parentData);
