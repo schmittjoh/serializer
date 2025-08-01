@@ -300,7 +300,9 @@ class FormErrorHandlerTest extends TestCase
     protected function invokeMethod($object, $method, array $args = [])
     {
         $reflectionMethod = new \ReflectionMethod($object, $method);
-        $reflectionMethod->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $reflectionMethod->setAccessible(true);
+        }
 
         return $reflectionMethod->invokeArgs($object, $args);
     }

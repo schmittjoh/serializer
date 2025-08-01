@@ -305,7 +305,9 @@ class SerializerBuilderTest extends TestCase
     private function getField($obj, $name)
     {
         $ref = new \ReflectionProperty($obj, $name);
-        $ref->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
 
         return $ref->getValue($obj);
     }
