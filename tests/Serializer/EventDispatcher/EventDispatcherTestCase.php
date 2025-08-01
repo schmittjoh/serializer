@@ -179,7 +179,9 @@ class EventDispatcherTestCase extends TestCase
         $this->dispatcher->addSubscriber($subscriber);
 
         $listenersReflection = new \ReflectionProperty(EventDispatcher::class, 'listeners');
-        $listenersReflection->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $listenersReflection->setAccessible(true);
+        }
 
         self::assertSame([
             'foo.bar_baz' => [

@@ -18,7 +18,9 @@ class XmlDriverTest extends BaseDriverTestCase
         $driver = $this->getDriver();
 
         $ref = new \ReflectionMethod($driver, 'loadMetadataFromFile');
-        $ref->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
 
         $this->expectException(InvalidMetadataException::class);
         $this->expectExceptionMessage('Invalid XML content for metadata');
