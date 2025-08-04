@@ -77,7 +77,10 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             $ref = $this->propertyReflectionCache[$metadata->class][$metadata->name] ?? null;
             if (null === $ref) {
                 $ref = new \ReflectionProperty($metadata->class, $metadata->name);
-                $ref->setAccessible(true);
+                if (\PHP_VERSION_ID < 80100) {
+                    $ref->setAccessible(true);
+                }
+
                 $this->propertyReflectionCache[$metadata->class][$metadata->name] = $ref;
             }
 
@@ -121,7 +124,10 @@ final class DefaultAccessorStrategy implements AccessorStrategyInterface
             $ref = $this->propertyReflectionCache[$metadata->class][$metadata->name] ?? null;
             if (null === $ref) {
                 $ref = new \ReflectionProperty($metadata->class, $metadata->name);
-                $ref->setAccessible(true);
+                if (\PHP_VERSION_ID < 80100) {
+                    $ref->setAccessible(true);
+                }
+
                 $this->propertyReflectionCache[$metadata->class][$metadata->name] = $ref;
             }
 
