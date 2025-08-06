@@ -123,7 +123,7 @@ class AnnotationOrAttributeDriver implements DriverInterface
                 if ($annot->disabled) {
                     $classMetadata->discriminatorDisabled = true;
                 } else {
-                    $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups, $annot->default);
+                    $classMetadata->setDiscriminator($annot->field, $annot->map, $annot->groups, $annot->default, $annot->virtual);
                 }
             } elseif ($annot instanceof XmlDiscriminator) {
                 $classMetadata->xmlDiscriminatorAttribute = (bool) $annot->attribute;
