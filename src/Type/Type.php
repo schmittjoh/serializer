@@ -7,7 +7,7 @@ namespace JMS\Serializer\Type;
 /**
  * @internal
  *
- * @phpstan-type TypeArray array{name: string, params: array}
+ * @phpstan-type TypeArray array{name: string, params?: array}
  */
 final class Type
 {
