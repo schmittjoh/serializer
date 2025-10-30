@@ -543,9 +543,13 @@ class ObjectConstructorTest extends TestCase
             }
         }
 
-        $cfg->setAutoGenerateProxyClasses(true);
-        $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
-        $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
+        if (PHP_VERSION_ID >= 80400 && method_exists($cfg, 'enableNativeLazyObjects')) {
+            $cfg->enableNativeLazyObjects(true);
+        } else {
+            $cfg->setAutoGenerateProxyClasses(true);
+            $cfg->setProxyNamespace('JMS\Serializer\DoctrineProxy');
+            $cfg->setProxyDir(sys_get_temp_dir() . '/serializer-test-proxies');
+        }
 
         return new EntityManager($con, $cfg);
     }
