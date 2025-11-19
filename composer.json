@@ -37,7 +37,6 @@
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "doctrine/annotations": "^1.14 || ^2.0",
-        "slevomat/coding-standard": "dev-master#f2cc4c553eae68772624ffd7dd99022343b69c31 as 8.11.9999",
         "doctrine/coding-standard": "^12.0",
         "doctrine/orm": "^2.14 || ^3.0",
         "doctrine/persistence": "^2.5.2 || ^3.0",
@@ -48,7 +47,7 @@
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^9.0 || ^10.0 || ^11.0",
         "psr/container": "^1.0 || ^2.0",
-        "rector/rector": "^1.0.0 || ^2.0@dev",
+        "rector/rector": "^1.0.0 || ^2.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/expression-language": "^5.4 || ^6.0 || ^7.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",

@@ -137,8 +137,12 @@ class DoctrineDriverTest extends TestCase
     protected function getEntityManager(): EntityManager
     {
         $config = new Configuration();
-        $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
-        $config->setProxyNamespace('JMS\Tests\Proxies');
+        if (PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
+            $config->setProxyNamespace('JMS\Tests\Proxies');
+        }
 
         if (PHP_VERSION_ID >= 80000 && class_exists(DoctrineAttributeDriver::class)) {
             $config->setMetadataDriverImpl(
