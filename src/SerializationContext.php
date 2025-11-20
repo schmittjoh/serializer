@@ -68,7 +68,7 @@ class SerializationContext extends Context
             return;
         }
 
-        $this->visitingSet->attach($object);
+        $this->visitingSet->offsetSet($object);
         $this->visitingStack->push($object);
     }
 
@@ -81,7 +81,7 @@ class SerializationContext extends Context
             return;
         }
 
-        $this->visitingSet->detach($object);
+        $this->visitingSet->offsetUnset($object);
         $poppedObject = $this->visitingStack->pop();
 
         if ($object !== $poppedObject) {
@@ -98,7 +98,7 @@ class SerializationContext extends Context
             return false;
         }
 
-        return $this->visitingSet->contains($object);
+        return $this->visitingSet->offsetExists($object);
     }
 
     public function getPath(): ?string
