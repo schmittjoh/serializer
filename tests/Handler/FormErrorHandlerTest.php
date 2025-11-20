@@ -98,7 +98,7 @@ class FormErrorHandlerTest extends TestCase
         $builder->add('url', TextType::class);
         $builder->add('txt', TextType::class, [
             'constraints' => [
-                new Length(['min' => 10]),
+                new Length(null, 10),
             ],
         ]);
 
