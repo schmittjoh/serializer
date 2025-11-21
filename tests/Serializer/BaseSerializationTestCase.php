@@ -851,7 +851,7 @@ abstract class BaseSerializationTestCase extends TestCase
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getNamedArrayWithFormattedDate() as $dateTime) {
-                $dateTime->setTimezone(new \DateTimeZone('UTC'));
+                $dateTime = $dateTime->setTimezone(new \DateTimeZone('UTC'));
             }
 
             self::assertEquals($object, $deserializedObject);
