@@ -120,7 +120,8 @@ class JsonSerializationTest extends BaseSerializationTestCase
             $outputs['post'] = '{"type":"post","title":"Post Title"}';
             $outputs['image_post'] = '{"type":"image_post","title":"Image Post Title"}';
             $outputs['image_post_without_type'] = '{"title":"Image Post Title"}';
-            $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"}]}';
+            $outputs['garage'] = '{"vehicles":[{"km":3,"type":"car"},{"km":1,"type":"moped"},{"km":1,"type":"JMS\\\Serializer\\\Tests\\\Fixtures\\\Discriminator\\\Other"}]}';
+            $outputs['shop_cart'] = '{"items":[{"type":"eat","name":"Milk","price":2.0},{"type":"phone","name":"Galaxy S22","price":500.0,"os":"Android"},{"type":"phone","name":"iPhone 15","price":900.0,"os":"iOS"},{"type":"cloth","name":"T-Shot","price":20.0,"size":"XL"},{"type":"cloth","name":"T-Shot","price":21.0,"size":"L"}]}';
             $outputs['tree'] = '{"tree":{"children":[{"children":[{"children":[],"foo":"bar"}],"foo":"bar"}],"foo":"bar"}}';
             $outputs['nullable_arrays'] = '{"empty_inline":[],"not_empty_inline":["not_empty_inline"],"empty_not_inline":[],"not_empty_not_inline":["not_empty_not_inline"],"empty_not_inline_skip":[],"not_empty_not_inline_skip":["not_empty_not_inline_skip"]}';
             $outputs['object_with_object_property_no_array_to_author'] = '{"foo": "bar", "author": "baz"}';
