@@ -51,7 +51,7 @@
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/expression-language": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0 || ^8.0",
-        "symfony/form": "^5.4 || ^6.0 || ^7.0 || ^8.0",
+        "symfony/form": "^5.4.45 || ^6.4.27 || ^7.0 || ^8.0",
         "symfony/translation": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/uid": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/validator": "^5.4 || ^6.0 || ^7.0 || ^8.0",
