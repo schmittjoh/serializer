@@ -469,15 +469,17 @@ to the least super type:
 
 .. code-block :: php
 
-    #[Serializer\Discriminator(field: 'type', disabled: false, map: ['car' => 'Car', 'moped' => 'Moped'], groups=["foo", "bar"])]
+    #[Serializer\Discriminator(field: 'type', disabled: false, map: ['car' => 'Car', 'moped' => 'Moped'], groups=["foo", "bar"]), default: 'Other']
     abstract class Vehicle { }
     class Car extends Vehicle { }
     class Moped extends Vehicle { }
+    class Other extends Vehicle { }
     ...
 
 .. note ::
 
     `groups` is optional and is used as exclusion policy.
+    `default` is optional.
 
 #[UnionDiscriminator]
 ~~~~~~~~~~~~~~~~~~~~~
@@ -488,9 +490,13 @@ to an attribute that can be one of many types.
 .. code-block :: php
 
     class Vehicle {
-        #[UnionDiscriminator(field: 'typeField', map: ['manual' => 'FullyQualified/Path/Manual', 'automatic' => 'FullyQualified/Path/Automatic'])]
-        private Manual|Automatic $transmission;
+        #[UnionDiscriminator(field: 'typeField', map: ['manual' => 'FullyQualified/Path/Manual', 'automatic' => 'FullyQualified/Path/Automatic'], default: 'FullyQualified/Path/Other')]
+        private Manual|Automatic|Other $transmission;
     }
+
+.. note ::
+
+    `default` is optional.
 
 In the case of this example, both Manual and Automatic should contain a string attribute named `typeField`.  The value of that field will be passed
 to the `map` option to determine which class to instantiate.
