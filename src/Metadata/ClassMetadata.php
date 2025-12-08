@@ -92,9 +92,18 @@ class ClassMetadata extends MergeableClassMetadata
     public $discriminatorDisabled = false;
 
     /**
+     * @var bool
+     */
+    public $discriminatorVirtual = true;
+
+    /**
      * @var string
      */
     public $discriminatorBaseClass;
+    /**
+     * @var string
+     */
+    public $discriminatorDefaultClass = null;
     /**
      * @var string
      */
@@ -134,7 +143,7 @@ class ClassMetadata extends MergeableClassMetadata
      */
     public $excludeIf;
 
-    public function setDiscriminator(string $fieldName, array $map, array $groups = []): void
+    public function setDiscriminator(string $fieldName, array $map, array $groups = [], $defaultClass = null, $virtual = true): void
     {
         if (empty($fieldName)) {
             throw new InvalidMetadataException('The $fieldName cannot be empty.');
@@ -145,9 +154,11 @@ class ClassMetadata extends MergeableClassMetadata
         }
 
         $this->discriminatorBaseClass = $this->name;
+        $this->discriminatorDefaultClass = $defaultClass;
         $this->discriminatorFieldName = $fieldName;
         $this->discriminatorMap = $map;
         $this->discriminatorGroups = $groups;
+        $this->discriminatorVirtual = $virtual;
 
         $this->handleDiscriminatorProperty();
     }
@@ -251,6 +262,10 @@ class ClassMetadata extends MergeableClassMetadata
             $this->discriminatorDisabled = $object->discriminatorDisabled;
         }
 
+        if (null !== $object->discriminatorDefaultClass) {
+            $this->discriminatorDefaultClass = $object->discriminatorDefaultClass;
+        }
+
         if ($object->discriminatorMap) {
             $this->discriminatorFieldName = $object->discriminatorFieldName;
             $this->discriminatorMap = $object->discriminatorMap;
@@ -313,6 +328,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->isList,
             $this->isMap,
             parent::serializeToArray(),
+            $this->discriminatorDefaultClass,
+            $this->discriminatorVirtual,
         ];
     }
 
@@ -343,6 +360,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->isList,
             $this->isMap,
             $parentData,
+            $this->discriminatorDefaultClass,
+            $this->discriminatorVirtual,
         ] = $data;
 
         parent::unserializeFromArray($parentData);
@@ -356,11 +375,19 @@ class ClassMetadata extends MergeableClassMetadata
             && !$this->getReflection()->isInterface()
         ) {
             if (false === $typeValue = array_search($this->name, $this->discriminatorMap, true)) {
-                throw new InvalidMetadataException(sprintf(
-                    'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
-                    $this->name,
-                    $this->discriminatorBaseClass,
-                ));
+                if (! empty($this->discriminatorDefaultClass)) {
+                    $typeValue = $this->discriminatorDefaultClass;
+                } else {
+                    throw new InvalidMetadataException(sprintf(
+                        'The sub-class "%s" is not listed in the discriminator of the base class "%s".',
+                        $this->name,
+                        $this->discriminatorBaseClass,
+                    ));
+                }
+            }
+
+            if (!$this->discriminatorVirtual) {
+                return;
             }
 
             $this->discriminatorValue = $typeValue;
