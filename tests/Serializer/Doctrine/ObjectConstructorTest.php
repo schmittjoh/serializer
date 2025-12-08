@@ -45,6 +45,9 @@ use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Embeddable\BlogPostSeo;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\Author;
 use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\AuthorExcludedId;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\UserWithPropertyDefault;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\UserInterface;
+use JMS\Serializer\Tests\Fixtures\Doctrine\Entity\UserWithConstructorDefault;
 use JMS\Serializer\Tests\Fixtures\Doctrine\IdentityFields\Server;
 use JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\App;
 use JMS\Serializer\Tests\Fixtures\Doctrine\PersistentCollection\SmartPhone;
@@ -466,6 +469,43 @@ class ObjectConstructorTest extends TestCase
         $data = new SimpleXMLElement('<metaTitle>test</metaTitle>');
         $constructor = new DoctrineObjectConstructor($registry, $fallback, DoctrineObjectConstructor::ON_MISSING_FALLBACK);
         $constructor->construct($this->visitor, $classMetadata, $data, $type, $this->context);
+    }
+
+    /**
+     * Test for issue #1610: default values should not overwrite existing entity properties
+     * when deserializing partial payloads with DoctrineObjectConstructor
+     */
+    #[DataProvider('partialDeserializationDoesNotOverwriteExistingEntityPropertiesWithDefaults')]
+    public function testPartialDeserializationDoesNotOverwriteExistingEntityPropertiesWithDefaults(UserInterface $user): void
+    {
+        $serializer = $this->createSerializerWithDoctrineObjectConstructor();
+
+        $em = $this->registry->getManager();
+        assert($em instanceof EntityManager);
+
+        // Create and persist a user with admin=true
+        $em->persist($user);
+        $em->flush();
+        $em->clear();
+
+        // Deserialize a partial payload containing only the id
+        // This simulates receiving a nested object reference like {"author": {"id": 1}}
+        $jsonData = json_encode(['id' => $user->getId()]);
+        $userDeserialized = $serializer->deserialize($jsonData, get_class($user), 'json');
+        assert($userDeserialized instanceof UserWithPropertyDefault);
+
+        // The user should be fetched from the database and its properties should remain unchanged
+        // The admin property should still be true, not reset to the default value of false
+        self::assertEquals($user->getUsername(), $userDeserialized->getUsername(), 'Username should be preserved from database');
+        self::assertTrue($userDeserialized->isAdmin(), 'Admin property should not be reset to default value when deserializing partial payload');
+    }
+
+    public static function partialDeserializationDoesNotOverwriteExistingEntityPropertiesWithDefaults(): array
+    {
+        return [
+            [new UserWithConstructorDefault(1, 'john', true)],
+            [(new UserWithPropertyDefault(2, 'jane'))->setAdmin(true)],
+        ];
     }
 
     protected function setUp(): void
