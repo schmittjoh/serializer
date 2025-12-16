@@ -20,9 +20,7 @@ interface SubscribingHandlerInterface
      *
      * The direction and method keys can be omitted.
      *
-     * @return array
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint
+     * @return iterable<string, int|string>
      */
-    public static function getSubscribingMethods();
+    public static function getSubscribingMethods(): iterable;
 }

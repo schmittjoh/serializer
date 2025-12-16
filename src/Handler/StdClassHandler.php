@@ -20,7 +20,7 @@ final class StdClassHandler implements SubscribingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): iterable
     {
         $methods = [];
         $formats = ['json', 'xml'];
