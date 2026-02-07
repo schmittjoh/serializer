@@ -192,6 +192,10 @@ class DateHandlerTest extends TestCase
 
     public function testDatePointSerializationJson()
     {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
         $context = $this->getMockBuilder(SerializationContext::class)->getMock();
 
         $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
@@ -204,6 +208,10 @@ class DateHandlerTest extends TestCase
 
     public function testDatePointDeserializationJson()
     {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
         $visitor = new JsonDeserializationVisitor();
 
         $type = ['name' => DatePoint::class, 'params' => ['Y-m-d', '', 'Y-m-d|']];
@@ -215,6 +223,10 @@ class DateHandlerTest extends TestCase
 
     public function testDatePointDeserializationReturnsNullForEmptyString()
     {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
         $visitor = new JsonDeserializationVisitor();
 
         $type = ['name' => DatePoint::class, 'params' => ['Y-m-d']];
@@ -223,6 +235,10 @@ class DateHandlerTest extends TestCase
 
     public function testDatePointWithTimezone()
     {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
         $visitor = new JsonDeserializationVisitor();
 
         $timestamp = (string) time();

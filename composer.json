@@ -48,7 +48,6 @@
         "phpunit/phpunit": "^9.0 || ^10.0 || ^11.0",
         "psr/container": "^1.0 || ^2.0",
         "rector/rector": "^1.0.0 || ^2.0",
-        "symfony/clock": "^6.4 || ^7.0 || ^8.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/expression-language": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0 || ^8.0",
