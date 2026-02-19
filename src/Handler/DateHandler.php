@@ -47,7 +47,7 @@ final class DateHandler implements SubscribingHandlerInterface
         $types = [\DateTime::class, \DateTimeImmutable::class, \DateInterval::class];
 
         // Add Symfony's DatePoint if available (introduced in Symfony 6.4)
-        if (class_exists('Symfony\Component\Clock\DatePoint')) {
+        if (class_exists(\Symfony\Component\Clock\DatePoint::class)) {
             $types[] = \Symfony\Component\Clock\DatePoint::class;
         }
 
