@@ -142,7 +142,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
     {
         $this->assertValueCanBeCastToString($data);
 
-        $data = (string) $data;
+        $data = strtolower((string) $data);
 
         if ('true' === $data || '1' === $data) {
             return true;

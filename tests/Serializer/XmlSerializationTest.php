@@ -79,7 +79,16 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
     public static function getXMLBooleans()
     {
-        return [['true', true], ['false', false], ['1', true], ['0', false]];
+        return [
+            ['true', true],
+            ['false', false],
+            ['1', true],
+            ['0', false],
+            ['True', true],
+            ['False', false],
+            ['TRUE', true],
+            ['FALSE', false],
+        ];
     }
 
     public function testAccessorSetterDeserialization()
