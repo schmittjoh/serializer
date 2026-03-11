@@ -123,9 +123,22 @@ final class UnionHandler implements SubscribingHandlerInterface
         throw new NotAcceptableException();
     }
 
+    private static $primitiveTypes = [
+        'int' => true,
+        'integer' => true,
+        'float' => true,
+        'double' => true,
+        'bool' => true,
+        'boolean' => true,
+        'true' => true,
+        'false' => true,
+        'string' => true,
+        'array' => true,
+    ];
+
     private function isPrimitiveType(string $type): bool
     {
-        return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'true', 'false', 'string', 'array'], true);
+        return isset(self::$primitiveTypes[$type]);
     }
 
     private function testPrimitive(mixed $data, string $type): bool
