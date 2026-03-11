@@ -53,6 +53,10 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
      * @var int
      */
     private $options;
+    /**
+     * @var int
+     */
+    private $xpathPrefixCounter = 0;
 
     public function __construct(
         bool $disableExternalEntities = true,
@@ -212,7 +216,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         }
 
         if (null !== $namespace) {
-            $prefix = uniqid('ns-');
+            $prefix = 'ns-' . $this->xpathPrefixCounter++;
             $data->registerXPathNamespace($prefix, $namespace);
             $nodes = $data->xpath(sprintf('%s:%s', $prefix, $entryName));
         } else {
@@ -433,7 +437,7 @@ final class XmlDeserializationVisitor extends AbstractVisitor implements NullAwa
         } else {
             $namespaces = $data->getDocNamespaces();
             if (isset($namespaces[''])) {
-                $prefix = uniqid('ns-');
+                $prefix = 'ns-' . $this->xpathPrefixCounter++;
                 $data->registerXPathNamespace($prefix, $namespaces['']);
                 $nodes = $data->xpath('./' . $prefix . ':' . $name);
             } else {
