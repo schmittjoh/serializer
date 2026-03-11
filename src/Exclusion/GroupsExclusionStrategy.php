@@ -54,11 +54,29 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
         if ($this->nestedGroups) {
             $groups = $this->getGroupsFor($navigatorContext);
 
-            if (!$property->groups) {
-                return !in_array(self::DEFAULT_GROUP, $groups);
+            $groupsMap = [];
+            foreach ($groups as $k => $v) {
+                if (is_string($k)) {
+                    // nested group entry (key = property name, value = sub-groups)
+                    continue;
+                }
+
+                if (is_string($v)) {
+                    $groupsMap[$v] = true;
+                }
             }
 
-            return $this->shouldSkipUsingGroups($property, $groups);
+            if (!$property->groups) {
+                return !isset($groupsMap[self::DEFAULT_GROUP]);
+            }
+
+            foreach ($property->groups as $group) {
+                if (isset($groupsMap[$group])) {
+                    return false;
+                }
+            }
+
+            return true;
         } else {
             if (!$property->groups) {
                 return !isset($this->groups[self::DEFAULT_GROUP]);
@@ -72,17 +90,6 @@ final class GroupsExclusionStrategy implements ExclusionStrategyInterface
 
             return true;
         }
-    }
-
-    private function shouldSkipUsingGroups(PropertyMetadata $property, array $groups): bool
-    {
-        foreach ($property->groups as $group) {
-            if (in_array($group, $groups)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function getGroupsFor(Context $navigatorContext): array
