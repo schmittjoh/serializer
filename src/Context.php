@@ -250,11 +250,11 @@ abstract class Context
         $paths = [];
         foreach ($this->metadataStack as $metadata) {
             if ($metadata instanceof PropertyMetadata) {
-                array_unshift($paths, $metadata->name);
+                $paths[] = $metadata->name;
             }
         }
 
-        return $paths;
+        return array_reverse($paths);
     }
 
     abstract public function getDepth(): int;
