@@ -47,37 +47,37 @@ final class DateHandler implements SubscribingHandlerInterface
         $types = [\DateTime::class, \DateTimeImmutable::class, \DateInterval::class];
 
         // Add Symfony's DatePoint if available (introduced in Symfony 6.4)
-        if (class_exists(\Symfony\Component\Clock\DatePoint::class)) {
-            $types[] = \Symfony\Component\Clock\DatePoint::class;
+        if (class_exists(DatePoint::class)) {
+            $types[] = DatePoint::class;
         }
 
         foreach (['json', 'xml'] as $format) {
             foreach ($types as $type) {
                 $methods[] = [
-                    'type' => $type,
-                    'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                    'format' => $format,
+                        'type' => $type,
+                        'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                        'format' => $format,
                 ];
                 $methods[] = [
-                    'type' => $type,
-                    'format' => $format,
-                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                    'method' => 'serialize' . $type,
+                        'type' => $type,
+                        'format' => $format,
+                        'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                        'method' => 'serialize' . $type,
                 ];
             }
 
             $methods[] = [
-                'type' => \DateTimeInterface::class,
-                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'format' => $format,
-                'method' => 'deserializeDateTimeFrom' . ucfirst($format),
+                    'type' => \DateTimeInterface::class,
+                    'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                    'format' => $format,
+                    'method' => 'deserializeDateTimeFrom' . ucfirst($format),
             ];
 
             $methods[] = [
-                'type' => \DateTimeInterface::class,
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'format' => $format,
-                'method' => 'serializeDateTimeInterface',
+                    'type' => \DateTimeInterface::class,
+                    'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                    'format' => $format,
+                    'method' => 'serializeDateTimeInterface',
             ];
         }
 
@@ -88,10 +88,10 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param array<string> $defaultDeserializationFormats
      */
     public function __construct(
-        string $defaultFormat = \DateTime::ATOM,
-        string $defaultTimezone = 'UTC',
-        bool $xmlCData = true,
-        array $defaultDeserializationFormats = []
+            string $defaultFormat = \DateTime::ATOM,
+            string $defaultTimezone = 'UTC',
+            bool $xmlCData = true,
+            array $defaultDeserializationFormats = []
     ) {
         $this->defaultSerializationFormat = $defaultFormat;
         $this->defaultDeserializationFormats = [] === $defaultDeserializationFormats ? [$defaultFormat] : $defaultDeserializationFormats;
@@ -105,10 +105,10 @@ final class DateHandler implements SubscribingHandlerInterface
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateTimeInterface(
-        SerializationVisitorInterface $visitor,
-        \DateTimeInterface $date,
-        array $type,
-        SerializationContext $context
+            SerializationVisitorInterface $visitor,
+            \DateTimeInterface $date,
+            array $type,
+            SerializationContext $context
     ) {
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getSerializationFormat($type)), $type);
@@ -138,10 +138,10 @@ final class DateHandler implements SubscribingHandlerInterface
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeDateTimeImmutable(
-        SerializationVisitorInterface $visitor,
-        \DateTimeImmutable $date,
-        array $type,
-        SerializationContext $context
+            SerializationVisitorInterface $visitor,
+            \DateTimeImmutable $date,
+            array $type,
+            SerializationContext $context
     ) {
         return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
     }
@@ -168,10 +168,10 @@ final class DateHandler implements SubscribingHandlerInterface
      * @return \DOMCdataSection|\DOMText|mixed
      */
     public function serializeSymfonyComponentClockDatePoint(
-        SerializationVisitorInterface $visitor,
-        \DateTimeImmutable $date,
-        array $type,
-        SerializationContext $context
+            SerializationVisitorInterface $visitor,
+            \DateTimeImmutable $date,
+            array $type,
+            SerializationContext $context
     ) {
         return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
     }
@@ -319,9 +319,9 @@ final class DateHandler implements SubscribingHandlerInterface
         }
 
         throw new RuntimeException(sprintf(
-            'Invalid datetime "%s", expected one of the format %s.',
-            $data,
-            '"' . implode('", "', $formatTried) . '"',
+                'Invalid datetime "%s", expected one of the format %s.',
+                $data,
+                '"' . implode('", "', $formatTried) . '"',
         ));
     }
 
