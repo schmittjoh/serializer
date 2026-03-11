@@ -564,11 +564,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      */
     private function isElementNameValid(string $name): bool
     {
-        if (isset($this->elementNameValidCache[$name])) {
-            return $this->elementNameValidCache[$name];
-        }
-
-        return $this->elementNameValidCache[$name] = $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+        return $this->elementNameValidCache[$name] ?? $this->elementNameValidCache[$name] = $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
     }
 
     private function resolveNamespacePrefix(string $namespace): string
