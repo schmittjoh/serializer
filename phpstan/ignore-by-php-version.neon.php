@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\UuidV7;
 
 $includes = [];
@@ -28,7 +29,9 @@ if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80200) {
 if(!class_exists(UuidV7::class)) {
     $includes[] = __DIR__ . '/no-uuid-7.neon';
 }
-
+if (!class_exists(DatePoint::class)) {
+    $includes[] = __DIR__ . '/no-datepoint.neon';
+}
 
 $config = [];
 $config['includes'] = $includes;

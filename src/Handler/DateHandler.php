@@ -11,6 +11,7 @@ use JMS\Serializer\Type\Type;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
+use Symfony\Component\Clock\DatePoint;
 
 /**
  * @phpstan-import-type TypeArray from Type
@@ -44,6 +45,11 @@ final class DateHandler implements SubscribingHandlerInterface
     {
         $methods = [];
         $types = [\DateTime::class, \DateTimeImmutable::class, \DateInterval::class];
+
+        // Add Symfony's DatePoint if available (introduced in Symfony 6.4)
+        if (class_exists(DatePoint::class)) {
+            $types[] = DatePoint::class;
+        }
 
         foreach (['json', 'xml'] as $format) {
             foreach ($types as $type) {
@@ -157,6 +163,20 @@ final class DateHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param TypeArray $type
+     *
+     * @return \DOMCdataSection|\DOMText|mixed
+     */
+    public function serializeSymfonyComponentClockDatePoint(
+        SerializationVisitorInterface $visitor,
+        \DateTimeImmutable $date,
+        array $type,
+        SerializationContext $context
+    ) {
+        return $this->serializeDateTimeInterface($visitor, $date, $type, $context);
+    }
+
+    /**
      * @param mixed $data
      */
     private function isDataXmlNull($data): bool
@@ -248,6 +268,32 @@ final class DateHandler implements SubscribingHandlerInterface
      * @param mixed $data
      * @param TypeArray $type
      */
+    public function deserializeSymfonyComponentClockDatePointFromXml(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
+    {
+        if ($this->isDataXmlNull($data)) {
+            return null;
+        }
+
+        return $this->parseDateTimeAsDatePoint($data, $type);
+    }
+
+    /**
+     * @param mixed $data
+     * @param TypeArray $type
+     */
+    public function deserializeSymfonyComponentClockDatePointFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        return $this->parseDateTimeAsDatePoint($data, $type);
+    }
+
+    /**
+     * @param mixed $data
+     * @param TypeArray $type
+     */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
         $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
@@ -277,6 +323,15 @@ final class DateHandler implements SubscribingHandlerInterface
             $data,
             '"' . implode('", "', $formatTried) . '"',
         ));
+    }
+
+    /**
+     * @param mixed $data
+     * @param TypeArray $type
+     */
+    private function parseDateTimeAsDatePoint($data, array $type): \DateTimeInterface
+    {
+        return DatePoint::createFromInterface($this->parseDateTime($data, $type));
     }
 
     private function parseDateInterval(string $data): \DateInterval

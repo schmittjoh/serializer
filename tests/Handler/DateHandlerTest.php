@@ -12,6 +12,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Clock\DatePoint;
 
 class DateHandlerTest extends TestCase
 {
@@ -187,5 +188,66 @@ class DateHandlerTest extends TestCase
             \DateTime::createFromFormat('Y/m/d H:i:s', '2017/06/18 17:32:11', $this->timezone),
             $this->handler->deserializeDateTimeFromJson($visitor, '2017-06-18T17:32:11Z', $type),
         );
+    }
+
+    public function testDatePointSerializationJson()
+    {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
+        $context = $this->getMockBuilder(SerializationContext::class)->getMock();
+
+        $visitor = $this->getMockBuilder(SerializationVisitorInterface::class)->getMock();
+        $visitor->method('visitString')->with('2017-06-18');
+
+        $datePoint = new DatePoint('2017-06-18 14:30:59', $this->timezone);
+        $type = ['name' => DatePoint::class, 'params' => ['Y-m-d']];
+        $this->handler->serializeSymfonyComponentClockDatePoint($visitor, $datePoint, $type, $context);
+    }
+
+    public function testDatePointDeserializationJson()
+    {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
+        $visitor = new JsonDeserializationVisitor();
+
+        $type = ['name' => DatePoint::class, 'params' => ['Y-m-d', '', 'Y-m-d|']];
+        $result = $this->handler->deserializeSymfonyComponentClockDatePointFromJson($visitor, '2017-06-18', $type);
+
+        self::assertInstanceOf(DatePoint::class, $result);
+        self::assertEquals('2017-06-18', $result->format('Y-m-d'));
+    }
+
+    public function testDatePointDeserializationReturnsNullForEmptyString()
+    {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
+        $visitor = new JsonDeserializationVisitor();
+
+        $type = ['name' => DatePoint::class, 'params' => ['Y-m-d']];
+        self::assertNull($this->handler->deserializeSymfonyComponentClockDatePointFromJson($visitor, '', $type));
+    }
+
+    public function testDatePointWithTimezone()
+    {
+        if (!class_exists(DatePoint::class)) {
+            self::markTestSkipped('Symfony Clock component is not available');
+        }
+
+        $visitor = new JsonDeserializationVisitor();
+
+        $timestamp = (string) time();
+        $timezone = 'Europe/Brussels';
+        $type = ['name' => DatePoint::class, 'params' => ['U', $timezone]];
+
+        $result = $this->handler->deserializeSymfonyComponentClockDatePointFromJson($visitor, $timestamp, $type);
+
+        self::assertInstanceOf(DatePoint::class, $result);
+        self::assertEquals($timezone, $result->getTimezone()->getName());
     }
 }

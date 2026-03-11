@@ -1,0 +1,3 @@
+parameters:
+    ignoreErrors:
+        - '~Call to static method createFromInterface\(\) on an unknown class Symfony\\Component\\Clock\\DatePoint.~'
