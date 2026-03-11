@@ -72,6 +72,14 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      * @var \SplStack
      */
     private $objectMetadataStack;
+    /**
+     * @var array<string, string>
+     */
+    private $namespacePrefixCache = [];
+    /**
+     * @var array<string, bool>
+     */
+    private $elementNameValidCache = [];
 
     public function __construct(
         bool $formatOutput = true,
@@ -556,7 +564,20 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
      */
     private function isElementNameValid(string $name): bool
     {
-        return $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+        if (isset($this->elementNameValidCache[$name])) {
+            return $this->elementNameValidCache[$name];
+        }
+
+        return $this->elementNameValidCache[$name] = $name && false === strpos($name, ' ') && preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
+    }
+
+    private function resolveNamespacePrefix(string $namespace): string
+    {
+        if (!isset($this->namespacePrefixCache[$namespace])) {
+            $this->namespacePrefixCache[$namespace] = 'ns-' . substr(sha1($namespace), 0, 8);
+        }
+
+        return $this->namespacePrefixCache[$namespace];
     }
 
     /**
@@ -598,7 +619,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
         }
 
         if (!($prefix = $this->currentNode->lookupPrefix($namespace)) && !($prefix = $this->document->lookupPrefix($namespace))) {
-            $prefix = 'ns-' . substr(sha1($namespace), 0, 8);
+            $prefix = $this->resolveNamespacePrefix($namespace);
         }
 
         return $this->document->createElementNS($namespace, $prefix . ':' . $tagName);
@@ -608,7 +629,7 @@ final class XmlSerializationVisitor extends AbstractVisitor implements Serializa
     {
         if (null !== $namespace) {
             if (!$prefix = $node->lookupPrefix($namespace)) {
-                $prefix = 'ns-' . substr(sha1($namespace), 0, 8);
+                $prefix = $this->resolveNamespacePrefix($namespace);
             }
 
             $node->setAttributeNS($namespace, $prefix . ':' . $name, $value);
