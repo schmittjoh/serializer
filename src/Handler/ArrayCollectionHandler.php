@@ -125,7 +125,7 @@ final class ArrayCollectionHandler implements SubscribingHandlerInterface
             return $elements;
         }
 
-        $propertyMetadata = $context->getMetadataStack()->top();
+        $propertyMetadata = $context->getMetadataStackTop();
         if (!$propertyMetadata instanceof PropertyMetadata) {
             return $elements;
         }
