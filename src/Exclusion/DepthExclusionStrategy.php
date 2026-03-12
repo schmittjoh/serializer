@@ -13,6 +13,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  */
 final class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
+    private bool $cachedResult = false;
+    private int $cachedStackCount = -1;
+    private bool $hasMaxDepthOnStack = false;
+
     public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         return $this->isTooDeep($context);
@@ -25,23 +29,74 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
     private function isTooDeep(Context $context): bool
     {
-        $relativeDepth = 0;
+        $stack = $context->getMetadataStack();
+        $currentCount = $stack->count();
 
-        foreach ($context->getMetadataStack() as $metadata) {
+        if ($currentCount === $this->cachedStackCount) {
+            return $this->cachedResult;
+        }
+
+        if ($currentCount < $this->cachedStackCount && !$this->cachedResult) {
+            $this->cachedStackCount = $currentCount;
+
+            return false;
+        }
+
+        if (!$this->hasMaxDepthOnStack && !$this->cachedResult && $currentCount > $this->cachedStackCount) {
+            $delta = $currentCount - $this->cachedStackCount;
+            $found = false;
+            $i = 0;
+            foreach ($stack as $metadata) {
+                if ($i >= $delta) {
+                    break;
+                }
+
+                if ($metadata instanceof PropertyMetadata && null !== $metadata->maxDepth) {
+                    $found = true;
+                    break;
+                }
+
+                $i++;
+            }
+
+            if (!$found) {
+                $this->cachedStackCount = $currentCount;
+
+                return false;
+            }
+        }
+
+        // Full scan
+        $relativeDepth = 0;
+        $top = $currentCount > 0 ? $stack->top() : null;
+        $foundMaxDepth = false;
+
+        foreach ($stack as $metadata) {
             if (!$metadata instanceof PropertyMetadata) {
                 continue;
             }
 
             $relativeDepth++;
 
-            if (0 === $metadata->maxDepth && $context->getMetadataStack()->top() === $metadata) {
+            if (null !== $metadata->maxDepth) {
+                $foundMaxDepth = true;
+            }
+
+            if (0 === $metadata->maxDepth && $top === $metadata) {
                 continue;
             }
 
             if (null !== $metadata->maxDepth && $relativeDepth > $metadata->maxDepth) {
+                $this->cachedResult = true;
+                $this->cachedStackCount = $currentCount;
+
                 return true;
             }
         }
+
+        $this->hasMaxDepthOnStack = $foundMaxDepth;
+        $this->cachedResult = false;
+        $this->cachedStackCount = $currentCount;
 
         return false;
     }
