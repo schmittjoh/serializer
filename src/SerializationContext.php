@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\RuntimeException;
 use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context
@@ -12,8 +11,8 @@ class SerializationContext extends Context
     /** @var \SplObjectStorage */
     private $visitingSet;
 
-    /** @var \SplStack */
-    private $visitingStack;
+    /** @var object[] */
+    private array $visitingStack = [];
 
     /**
      * @var string
@@ -35,7 +34,7 @@ class SerializationContext extends Context
         parent::initialize($format, $visitor, $navigator, $factory);
 
         $this->visitingSet = new \SplObjectStorage();
-        $this->visitingStack = new \SplStack();
+        $this->visitingStack = [];
     }
 
     /**
@@ -69,7 +68,7 @@ class SerializationContext extends Context
         }
 
         $this->visitingSet->offsetSet($object);
-        $this->visitingStack->push($object);
+        $this->visitingStack[] = $object;
     }
 
     /**
@@ -82,11 +81,7 @@ class SerializationContext extends Context
         }
 
         $this->visitingSet->offsetUnset($object);
-        $poppedObject = $this->visitingStack->pop();
-
-        if ($object !== $poppedObject) {
-            throw new RuntimeException('Context visitingStack not working well');
-        }
+        array_pop($this->visitingStack);
     }
 
     /**
@@ -103,13 +98,13 @@ class SerializationContext extends Context
 
     public function getPath(): ?string
     {
+        if (!$this->visitingStack) {
+            return null;
+        }
+
         $path = [];
         foreach ($this->visitingStack as $obj) {
             $path[] = \get_class($obj);
-        }
-
-        if (!$path) {
-            return null;
         }
 
         return implode(' -> ', $path);
@@ -122,15 +117,20 @@ class SerializationContext extends Context
 
     public function getDepth(): int
     {
-        return $this->visitingStack->count();
+        return \count($this->visitingStack);
     }
 
     public function getObject(): ?object
     {
-        return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
+        $n = \count($this->visitingStack);
+
+        return $n > 0 ? $this->visitingStack[$n - 1] : null;
     }
 
-    public function getVisitingStack(): \SplStack
+    /**
+     * @return object[]
+     */
+    public function getVisitingStack(): array
     {
         return $this->visitingStack;
     }

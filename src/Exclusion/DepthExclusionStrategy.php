@@ -29,8 +29,7 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
     private function isTooDeep(Context $context): bool
     {
-        $stack = $context->getMetadataStack();
-        $currentCount = $stack->count();
+        $currentCount = $context->getMetadataStackSize();
 
         if ($currentCount === $this->cachedStackCount) {
             return $this->cachedResult;
@@ -41,6 +40,8 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
             return false;
         }
+
+        $stack = $context->getMetadataStack();
 
         if (!$this->hasMaxDepthOnStack && !$this->cachedResult && $currentCount > $this->cachedStackCount) {
             $delta = $currentCount - $this->cachedStackCount;
@@ -68,7 +69,7 @@ final class DepthExclusionStrategy implements ExclusionStrategyInterface
 
         // Full scan
         $relativeDepth = 0;
-        $top = $currentCount > 0 ? $stack->top() : null;
+        $top = $currentCount > 0 ? $stack[0] : null;
         $foundMaxDepth = false;
 
         foreach ($stack as $metadata) {
