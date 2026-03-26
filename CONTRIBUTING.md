@@ -7,7 +7,7 @@ These guidelines exist not to annoy you, but to keep the code base clean, unifie
 
 ## Coding Standard
 
-This project uses [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) to enforce coding standards.
+This project uses [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) to enforce coding standards.
 The coding standard rules are defined in the **phpcs.xml.dist** file (part of this repository).
 The project follows a relaxed version of the Doctrine Coding standards v4.
 
