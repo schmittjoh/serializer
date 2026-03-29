@@ -31,7 +31,7 @@ class DefaultDriverFactoryTest extends TestCase
         ];
 
         foreach ($expectedPropertyTypes as $property => $type) {
-            self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type);
+            self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type, 'for ' . $property);
         }
     }
 }
