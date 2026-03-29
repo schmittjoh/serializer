@@ -37,6 +37,26 @@ class HandlerRegistryTest extends TestCase
         self::assertSame($xmlDeserializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '\stdClass', 'xml'));
     }
 
+    public function testRegisteredGlobalHandlersCanBeRetrieved()
+    {
+        $jsonSerializationHandler = new DummyHandler();
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '*', 'json', $jsonSerializationHandler);
+
+        $jsonDeserializationHandler = new DummyHandler();
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '*', 'json', $jsonDeserializationHandler);
+
+        $xmlSerializationHandler = new DummyHandler();
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '*', 'xml', $xmlSerializationHandler);
+
+        $xmlDeserializationHandler = new DummyHandler();
+        $this->handlerRegistry->registerHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '*', 'xml', $xmlDeserializationHandler);
+
+        self::assertSame($jsonSerializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '*', 'json'));
+        self::assertSame($jsonDeserializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '*', 'json'));
+        self::assertSame($xmlSerializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, '*', 'xml'));
+        self::assertSame($xmlDeserializationHandler, $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, '*', 'xml'));
+    }
+
     protected function createHandlerRegistry()
     {
         return new HandlerRegistry();
