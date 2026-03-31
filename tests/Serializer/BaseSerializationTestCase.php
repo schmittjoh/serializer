@@ -87,6 +87,8 @@ use JMS\Serializer\Tests\Fixtures\Log;
 use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Baz;
 use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh1382Foo;
 use JMS\Serializer\Tests\Fixtures\MaxDepth\Gh236Foo;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\SiblingMaxDepthChild;
+use JMS\Serializer\Tests\Fixtures\MaxDepth\SiblingMaxDepthParent;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeImmutableArraysObject;
 use JMS\Serializer\Tests\Fixtures\Node;
@@ -1851,6 +1853,20 @@ abstract class BaseSerializationTestCase extends TestCase
         $serialized = $this->serialize($data, $context);
 
         self::assertEquals(static::getContent('maxdepth_1'), $serialized);
+    }
+
+    public function testMaxDepthWithSiblingDifferentDepths()
+    {
+        $data = new SiblingMaxDepthParent();
+        $data->deep->child = new SiblingMaxDepthChild('deep_1');
+        $data->deep->child->child = new SiblingMaxDepthChild('deep_2');
+        $data->shallow->child = new SiblingMaxDepthChild('shallow_1');
+        $data->shallow->child->child = new SiblingMaxDepthChild('shallow_2');
+
+        $context = SerializationContext::create()->enableMaxDepthChecks();
+        $serialized = $this->serialize($data, $context);
+
+        self::assertEquals(static::getContent('maxdepth_sibling'), $serialized);
     }
 
     public function testDeserializingIntoExistingObject()
