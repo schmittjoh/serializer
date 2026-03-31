@@ -15,7 +15,7 @@ jobs:
       matrix:
         php-version:
           - "7.4"
-          - "8.2"
+          - "8.5"
 
     steps:
       - name: Checkout code
