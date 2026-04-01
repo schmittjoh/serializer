@@ -36,7 +36,7 @@ final class Lexer extends AbstractLexer
     protected function getCatchablePatterns(): array
     {
         return [
-            '[a-z][a-z_\\\\0-9]*', // identifier or qualified name
+            '[a-z][a-z_\\\\0-9\\x{0400}-\\x{04FF}]*', // identifier or qualified name
             "'(?:[^']|'')*'", // single quoted strings
             '(?:[0-9]+(?:[\.][0-9]+)*)(?:e[+-]?[0-9]+)?', // numbers
             '"(?:[^"]|"")*"', // double quoted strings
