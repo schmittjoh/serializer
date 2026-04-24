@@ -19,15 +19,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Remove symfony/clock for PHP < 8.1
+        if: ${{ matrix.php-version < '8.1' }}
+        run: composer remove --dev symfony/clock --no-update
+
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v4
 
       - name: Run performance benchmarks
         run: |

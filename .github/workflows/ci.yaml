@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -46,12 +46,12 @@ jobs:
         if: ${{ matrix.composer-stability }}
         run: composer config minimum-stability ${{ matrix.composer-stability }}
 
-      - name: Install symfony/clock for PHP >= 8.1
-        if: ${{ matrix.php-version >= '8.1' }}
-        run: composer require --dev symfony/clock:"^6.4 || ^7.0 || ^8.0" --no-update
+      - name: Remove symfony/clock for PHP < 8.1
+        if: ${{ matrix.php-version < '8.1' }}
+        run: composer remove --dev symfony/clock --no-update
 
       - name: Install dependencies with Composer
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ matrix.composer-options }}"
