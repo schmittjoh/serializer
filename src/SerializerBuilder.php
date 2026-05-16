@@ -94,6 +94,11 @@ final class SerializerBuilder
     /**
      * @var bool
      */
+    private $enableUnionSupport = false;
+
+    /**
+     * @var bool
+     */
     private $listenersConfigured = false;
 
     /**
@@ -284,7 +289,7 @@ final class SerializerBuilder
             $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
         }
 
-        if (PHP_VERSION_ID >= 80000) {
+        if ($this->enableUnionSupport) {
             $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
         }
 
@@ -540,6 +545,17 @@ final class SerializerBuilder
         return $this;
     }
 
+    public function enableUnionSupport(bool $enableUnionSupport = true): self
+    {
+        if ($enableUnionSupport && PHP_VERSION_ID < 80000) {
+            throw new InvalidArgumentException('Enum support can be enabled only on PHP 8.1 or higher.');
+        }
+
+        $this->enableUnionSupport = $enableUnionSupport;
+
+        return $this;
+    }
+
     public function setMetadataCache(CacheInterface $cache): self
     {
         $this->metadataCache = $cache;
@@ -569,6 +585,7 @@ final class SerializerBuilder
                 $this->expressionEvaluator instanceof CompilableExpressionEvaluatorInterface ? $this->expressionEvaluator : null,
             );
             $this->driverFactory->enableEnumSupport($this->enableEnumSupport);
+            $this->driverFactory->enableUnionSupport($this->enableUnionSupport);
         }
 
         if ($this->docBlockTyperResolver) {
