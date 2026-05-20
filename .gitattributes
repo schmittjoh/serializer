@@ -1,8 +1,14 @@
 /tests export-ignore
 /phpcs.xml.dist export-ignore
-/phpstan.xml.dist export-ignore
 /phpunit.xml.dist export-ignore
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/.run export-ignore
 /phpstan export-ignore
+/doc/ export-ignore
+/phpstan.neon.dist export-ignore
+/phpbench.json export-ignore
+/rector.php export-ignore
+/CONTRIBUTING.md export-ignore
+/META.md export-ignore
