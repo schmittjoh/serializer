@@ -54,11 +54,20 @@ final class LazyHandlerRegistry extends HandlerRegistry
             return $this->initializedHandlers[$direction][$typeName][$format];
         }
 
-        if (!isset($this->handlers[$direction][$typeName][$format])) {
-            return null;
+        $handler = $this->handlers[$direction][$typeName][$format] ?? null;
+
+        if (null === $handler) {
+            if (isset($this->initializedHandlers[$direction][self::GLOBAL_HANDLER_TYPE][$format])) {
+                return $this->initializedHandlers[$direction][self::GLOBAL_HANDLER_TYPE][$format];
+            }
+
+            if (null === $handler = $this->handlers[$direction][self::GLOBAL_HANDLER_TYPE][$format]) {
+                return null;
+            }
+
+            $typeName = self::GLOBAL_HANDLER_TYPE;
         }
 
-        $handler = $this->handlers[$direction][$typeName][$format];
         if (\is_array($handler) && \is_string($handler[0]) && $this->container->has($handler[0])) {
             $handler[0] = $this->container->get($handler[0]);
         }

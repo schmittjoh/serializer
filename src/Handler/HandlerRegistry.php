@@ -10,6 +10,8 @@ use JMS\Serializer\GraphNavigatorInterface;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
+    protected const GLOBAL_HANDLER_TYPE = '*';
+
     /**
      * @var callable[]
      */
@@ -70,11 +72,15 @@ class HandlerRegistry implements HandlerRegistryInterface
      */
     public function getHandler(int $direction, string $typeName, string $format)
     {
-        if (!isset($this->handlers[$direction][$typeName][$format])) {
-            return null;
+        if (isset($this->handlers[$direction][$typeName][$format])) {
+            return $this->handlers[$direction][$typeName][$format];
         }
 
-        return $this->handlers[$direction][$typeName][$format];
+        if (isset($this->handlers[$direction][self::GLOBAL_HANDLER_TYPE][$format])) {
+            return $this->handlers[$direction][self::GLOBAL_HANDLER_TYPE][$format];
+        }
+
+        return null;
     }
 
     /**
