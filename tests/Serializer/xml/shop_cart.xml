@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <items>
+    <entry>
+      <type><![CDATA[eat]]></type>
+      <name><![CDATA[Milk]]></name>
+      <price>2.0</price>
+    </entry>
+    <entry>
+      <type><![CDATA[phone]]></type>
+      <name><![CDATA[Galaxy S22]]></name>
+      <price>500.0</price>
+      <os><![CDATA[Android]]></os>
+    </entry>
+    <entry>
+      <type><![CDATA[phone]]></type>
+      <name><![CDATA[iPhone 15]]></name>
+      <price>900.0</price>
+      <os><![CDATA[iOS]]></os>
+    </entry>
+    <entry>
+      <type><![CDATA[cloth]]></type>
+      <name><![CDATA[T-Shot]]></name>
+      <price>20.0</price>
+      <size><![CDATA[XL]]></size>
+    </entry>
+    <entry>
+      <type><![CDATA[cloth]]></type>
+      <name><![CDATA[T-Shot]]></name>
+      <price>21.0</price>
+      <size><![CDATA[L]]></size>
+    </entry>
+  </items>
+</result>
