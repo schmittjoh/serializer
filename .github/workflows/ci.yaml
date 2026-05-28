@@ -48,7 +48,9 @@ jobs:
 
       - name: Remove symfony/clock for PHP < 8.1
         if: ${{ matrix.php-version < '8.1' }}
-        run: composer remove --dev symfony/clock --no-update
+        run: |
+          composer remove --dev symfony/clock --no-update
+          composer remove --dev twig/twig --no-update
 
       - name: Install dependencies with Composer
         uses: ramsey/composer-install@v4
