@@ -8,11 +8,19 @@ use JMS\Serializer\Twig\SerializerExtension;
 use JMS\Serializer\Twig\SerializerRuntimeExtension;
 use JMS\Serializer\Twig\SerializerRuntimeHelper;
 use PHPUnit\Framework\TestCase;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class SerializerExtensionTest extends TestCase
 {
+	protected function setUp(): void
+	{
+		if (!class_exists(Twig\Extension\AbstractExtension::class)) {
+			$this->markTestSkipped('Twig is not available');
+		}
+	}
+
     public function testSerialize()
     {
         $mockSerializer = $this->getMockBuilder('JMS\Serializer\SerializerInterface')->getMock();
