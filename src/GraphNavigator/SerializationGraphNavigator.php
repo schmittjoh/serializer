@@ -203,9 +203,14 @@ final class SerializationGraphNavigator extends GraphNavigator
 
                 // If we're serializing a polymorphic type, then we'll be interested in the
                 // metadata for the actual type of the object, not the base class.
+                $typeNameBeforeEvents = $type['name'];
+                $cachedHandler = false; // false = not looked up yet
                 if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
-                    if (is_subclass_of($data, $type['name'], false) && null === $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
-                        $type = ['name' => \get_class($data), 'params' => $type['params'] ?? []];
+                    if (is_subclass_of($data, $type['name'], false)) {
+                        $cachedHandler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format);
+                        if (null === $cachedHandler) {
+                            $type = ['name' => \get_class($data), 'params' => $type['params'] ?? []];
+                        }
                     }
                 }
 
@@ -219,7 +224,14 @@ final class SerializationGraphNavigator extends GraphNavigator
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artificial type.
-                if (null !== $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format)) {
+                // Reuse handler lookup if type hasn't changed since the polymorphic check
+                if (false !== $cachedHandler && $type['name'] === $typeNameBeforeEvents) {
+                    $handler = $cachedHandler;
+                } else {
+                    $handler = $this->handlerRegistry->getHandler(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $type['name'], $this->format);
+                }
+
+                if (null !== $handler) {
                     try {
                         $rs = \call_user_func($handler, $this->visitor, $data, $type, $this->context);
                         $this->context->stopVisiting($data);

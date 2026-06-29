@@ -106,11 +106,11 @@ class ContextTest extends TestCase
                 $stack = $context->getMetadataStack();
 
                 if ($object === $context->getObject()) {
-                    $self->assertEquals(0, $stack->count());
+                    $self->assertEquals(0, count($stack));
                 }
 
                 if ($child === $context->getObject()) {
-                    $self->assertEquals(2, $stack->count());
+                    $self->assertEquals(2, count($stack));
                     $self->assertEquals(Node::class, $stack[1]->name);
                     $self->assertEquals('children', $stack[0]->name);
                 }
@@ -124,12 +124,12 @@ class ContextTest extends TestCase
                 $stack = $context->getMetadataStack();
 
                 if ('JMS\Serializer\Tests\Fixtures\Node' === $propertyMetadata->class && 'children' === $propertyMetadata->name) {
-                    $self->assertEquals(1, $stack->count());
+                    $self->assertEquals(1, count($stack));
                     $self->assertEquals(Node::class, $stack[0]->name);
                 }
 
                 if ('JMS\Serializer\Tests\Fixtures\InlineChild' === $propertyMetadata->class) {
-                    $self->assertEquals(3, $stack->count());
+                    $self->assertEquals(3, count($stack));
                     $self->assertEquals(Node::class, $stack[2]->name);
                     $self->assertEquals('children', $stack[1]->name);
                     $self->assertEquals(InlineChild::class, $stack[0]->name);

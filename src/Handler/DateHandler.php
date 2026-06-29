@@ -39,6 +39,11 @@ final class DateHandler implements SubscribingHandlerInterface
     private $xmlCData;
 
     /**
+     * @var array<string, \DateTimeZone>
+     */
+    private $timezoneCache = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribingMethods()
@@ -296,7 +301,7 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
-        $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
+        $timezone = !empty($type['params'][1]) ? $this->resolveTimezone($type['params'][1]) : $this->defaultTimezone;
         $formats = $this->getDeserializationFormats($type);
 
         $formatTried = [];
@@ -351,6 +356,15 @@ final class DateHandler implements SubscribingHandlerInterface
         }
 
         return $dateInterval;
+    }
+
+    private function resolveTimezone(string $timezone): \DateTimeZone
+    {
+        if (!isset($this->timezoneCache[$timezone])) {
+            $this->timezoneCache[$timezone] = new \DateTimeZone($timezone);
+        }
+
+        return $this->timezoneCache[$timezone];
     }
 
     /**
