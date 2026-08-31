@@ -250,4 +250,20 @@ class DateHandlerTest extends TestCase
         self::assertInstanceOf(DatePoint::class, $result);
         self::assertEquals($timezone, $result->getTimezone()->getName());
     }
+
+    public function testSubscribingMethodsExistOnClass(): void
+    {
+        $methods = DateHandler::getSubscribingMethods();
+
+        foreach ($methods as $method) {
+            if (!isset($method['method'])) {
+                continue;
+            }
+
+            $this->assertTrue(
+                method_exists(DateHandler::class, $method['method']),
+                sprintf('Method %s referenced in getSubscribingMethods() does not exist on DateHandler', $method['method']),
+            );
+        }
+    }
 }

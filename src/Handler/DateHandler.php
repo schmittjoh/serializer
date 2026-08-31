@@ -62,7 +62,7 @@ final class DateHandler implements SubscribingHandlerInterface
                     'type' => $type,
                     'format' => $format,
                     'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                    'method' => 'serialize' . $type,
+                    'method' => 'serialize' . str_replace('\\', '', $type),
                 ];
             }
 
