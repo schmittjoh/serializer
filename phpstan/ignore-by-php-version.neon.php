@@ -13,6 +13,7 @@ if (PHP_VERSION_ID < 80000) {
 }
 if (PHP_VERSION_ID < 80100) {
     $includes[] = __DIR__ . '/no-enum.neon';
+    $includes[] = __DIR__ . '/no-twig.neon';
     $includes[] = __DIR__ . '/doctrine30.neon';
 } else {
     $includes[] = __DIR__ . '/doctrine31.neon';

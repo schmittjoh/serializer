@@ -13,6 +13,13 @@ use Twig\TwigFunction;
 
 class SerializerExtensionTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        if (!class_exists(Twig\Extension\AbstractExtension::class)) {
+            $this->markTestSkipped('Twig is not available');
+        }
+    }
+
     public function testSerialize()
     {
         $mockSerializer = $this->getMockBuilder('JMS\Serializer\SerializerInterface')->getMock();
