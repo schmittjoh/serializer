@@ -53,7 +53,7 @@ jobs:
           composer remove --dev twig/twig --no-update
 
       - name: Fix lowest deps
-        if: ${{ matrix.php-version > '8.4' && matrix.dependencies == 'lowest' }}
+        if: ${{ matrix.php-version > '8.3' && matrix.dependencies == 'lowest' }}
         run: |
           composer require --dev symfony/form:^8.0.0 --no-update
 
