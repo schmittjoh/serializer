@@ -1,3 +1,5 @@
 parameters:
     ignoreErrors:
-        - '~.*Twig.*~'
+        - '#Twig#'
+    excludePaths:
+        - %currentWorkingDirectory%/src/Twig/SerializerBaseExtension.php
