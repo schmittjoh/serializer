@@ -31,4 +31,21 @@ class DateIntervalFormatTest extends TestCase
 
         self::assertEquals('P2Y4DT6H8M16S', $ATOMDateIntervalString);
     }
+
+    public function testFormatKeepsFractionalSeconds()
+    {
+        $dtf = new DateHandler();
+
+        $interval = new \DateInterval('PT10S');
+        $interval->f = 0.5;
+        self::assertEquals('PT10.5S', $dtf->format($interval));
+
+        $interval = new \DateInterval('PT0S');
+        $interval->f = 0.25;
+        self::assertEquals('PT0.25S', $dtf->format($interval));
+
+        $start = new \DateTimeImmutable('2021-01-01 00:00:00.000000');
+        $end = new \DateTimeImmutable('2021-01-01 00:00:10.500000');
+        self::assertEquals('PT10.5S', $dtf->format($start->diff($end)));
+    }
 }

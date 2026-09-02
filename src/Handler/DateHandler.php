@@ -393,7 +393,7 @@ final class DateHandler implements SubscribingHandlerInterface
             $format .= $dateInterval->d . 'D';
         }
 
-        if (0 < $dateInterval->h || 0 < $dateInterval->i || 0 < $dateInterval->s) {
+        if (0 < $dateInterval->h || 0 < $dateInterval->i || 0 < $dateInterval->s || 0 < $dateInterval->f) {
             $format .= 'T';
         }
 
@@ -405,7 +405,9 @@ final class DateHandler implements SubscribingHandlerInterface
             $format .= $dateInterval->i . 'M';
         }
 
-        if (0 < $dateInterval->s) {
+        if (0 < $dateInterval->f) {
+            $format .= rtrim(rtrim(sprintf('%.6F', $dateInterval->s + $dateInterval->f), '0'), '.') . 'S';
+        } elseif (0 < $dateInterval->s) {
             $format .= $dateInterval->s . 'S';
         }
 
