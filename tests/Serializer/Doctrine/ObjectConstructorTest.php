@@ -97,6 +97,21 @@ class ObjectConstructorTest extends TestCase
         self::assertEquals($author, $authorFetched);
     }
 
+    public function testFindEntityNullIdentifierUsesFallback()
+    {
+        $author = new Author('John');
+        $fallback = $this->getMockBuilder(ObjectConstructorInterface::class)->getMock();
+        $fallback->expects($this->once())->method('construct')->willReturn($author);
+
+        $type = ['name' => Author::class, 'params' => []];
+        $class = $this->driver->loadMetadataForClass(new \ReflectionClass(Author::class));
+
+        $constructor = new DoctrineObjectConstructor($this->registry, $fallback);
+        $authorFetched = $constructor->construct($this->visitor, $class, ['id' => null], $type, $this->context);
+
+        self::assertEquals($author, $authorFetched);
+    }
+
     public function testFindEntityExcludedByGroupsUsesFallback()
     {
         $graph = $this->createMock(GraphNavigatorInterface::class);
