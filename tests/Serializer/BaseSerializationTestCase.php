@@ -6,6 +6,9 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Version;
+use JMS\Serializer\Tests\Fixtures\Discriminator\CartItem;
+use JMS\Serializer\Tests\Fixtures\Discriminator\CartItemCloth;
+use JMS\Serializer\Tests\Fixtures\Discriminator\CartItemPhone;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
@@ -61,6 +64,7 @@ use JMS\Serializer\Tests\Fixtures\DateTimeCustomObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Other;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
@@ -119,6 +123,7 @@ use JMS\Serializer\Tests\Fixtures\PersonSecretMoreVirtual;
 use JMS\Serializer\Tests\Fixtures\PersonSecretVirtual;
 use JMS\Serializer\Tests\Fixtures\Price;
 use JMS\Serializer\Tests\Fixtures\Publisher;
+use JMS\Serializer\Tests\Fixtures\ShoppingCart;
 use JMS\Serializer\Tests\Fixtures\SimpleInternalObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObject;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
@@ -1753,7 +1758,7 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testNestedPolymorphicObjects()
     {
-        $garage = new Garage([new Car(3), new Moped(1)]);
+        $garage = new Garage([new Car(3), new Moped(1), new Other(1)]);
         self::assertEquals(
             static::getContent('garage'),
             $this->serialize($garage),
@@ -1772,7 +1777,7 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testNestedPolymorphicInterfaces()
     {
-        $garage = new VehicleInterfaceGarage([new Car(3), new Moped(1)]);
+        $garage = new VehicleInterfaceGarage([new Car(3), new Moped(1), new Other(1)]);
         self::assertEquals(
             static::getContent('garage'),
             $this->serialize($garage),
@@ -1801,6 +1806,31 @@ abstract class BaseSerializationTestCase extends TestCase
             static::getContent('car_without_type'),
             Vehicle::class,
         );
+    }
+
+    public function testPolymorphicObjectsWithRealField()
+    {
+        $cart = new ShoppingCart([
+            new CartItem(CartItem::TYPE_EAT, 'Milk', 2),
+            new CartItemPhone(CartItem::TYPE_PHONE, 'Galaxy S22', 500, 'Android'),
+            new CartItemPhone(CartItem::TYPE_PHONE, 'iPhone 15', 900, 'iOS'),
+            new CartItemCloth(CartItem::TYPE_CLOTH, 'T-Shot', 20, 'XL'),
+            new CartItemCloth(CartItem::TYPE_CLOTH, 'T-Shot', 21, 'L'),
+        ]);
+        self::assertEquals(
+            static::getContent('shop_cart'),
+            $this->serialize($cart),
+        );
+
+        if ($this->hasDeserializer()) {
+            self::assertEquals(
+                $cart,
+                $this->deserialize(
+                    static::getContent('shop_cart'),
+                    ShoppingCart::class,
+                ),
+            );
+        }
     }
 
     public function testDepthExclusionStrategy()

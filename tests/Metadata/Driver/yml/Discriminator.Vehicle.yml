@@ -1,6 +1,7 @@
 JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle:
     discriminator:
         field_name: type
+        default: JMS\Serializer\Tests\Fixtures\Discriminator\Other
         map:
             car: JMS\Serializer\Tests\Fixtures\Discriminator\Car
             moped: JMS\Serializer\Tests\Fixtures\Discriminator\Moped
