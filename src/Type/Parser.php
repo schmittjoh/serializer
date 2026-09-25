@@ -23,6 +23,11 @@ final class Parser implements ParserInterface
      */
     private $root = true;
 
+    /**
+     * @var array<int, string>|null
+     */
+    private static $constantNames;
+
     public function parse(string $string): array
     {
         $this->lexer = new Lexer();
@@ -160,8 +165,10 @@ final class Parser implements ParserInterface
 
     private function getConstant(int $value): string
     {
-        $oClass = new \ReflectionClass(Lexer::class);
+        if (null === self::$constantNames) {
+            self::$constantNames = array_flip((new \ReflectionClass(Lexer::class))->getConstants());
+        }
 
-        return array_search($value, $oClass->getConstants());
+        return self::$constantNames[$value];
     }
 }

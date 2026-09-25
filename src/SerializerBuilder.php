@@ -42,6 +42,7 @@ use JMS\Serializer\Handler\UnionHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Type\CachingParser;
 use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
@@ -198,7 +199,7 @@ final class SerializerBuilder
 
     public function __construct(?HandlerRegistryInterface $handlerRegistry = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
-        $this->typeParser = new Parser();
+        $this->typeParser = new CachingParser(new Parser());
         $this->handlerRegistry = $handlerRegistry ?: new HandlerRegistry();
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         $this->serializationVisitors = [];

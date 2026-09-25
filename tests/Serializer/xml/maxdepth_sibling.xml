@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <deep>
+    <name><![CDATA[deep]]></name>
+    <child>
+      <name><![CDATA[deep_1]]></name>
+      <child>
+        <name><![CDATA[deep_2]]></name>
+      </child>
+    </child>
+  </deep>
+  <shallow>
+    <name><![CDATA[shallow]]></name>
+  </shallow>
+</result>

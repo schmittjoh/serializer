@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\LogicException;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
@@ -50,12 +49,11 @@ abstract class Context
      */
     private $initialized = false;
 
-    /** @var \SplStack */
-    private $metadataStack;
+    /** @var array<ClassMetadata|PropertyMetadata> */
+    private array $metadataStack = [];
 
     public function __construct()
     {
-        $this->metadataStack = new \SplStack();
     }
 
     public function initialize(string $format, VisitorInterface $visitor, GraphNavigatorInterface $navigator, MetadataFactoryInterface $factory): void
@@ -68,7 +66,7 @@ abstract class Context
         $this->visitor = $visitor;
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
-        $this->metadataStack = new \SplStack();
+        $this->metadataStack = [];
 
         if (isset($this->attributes['groups'])) {
             $this->addExclusionStrategy(new GroupsExclusionStrategy($this->attributes['groups']));
@@ -210,35 +208,50 @@ abstract class Context
 
     public function pushClassMetadata(ClassMetadata $metadata): void
     {
-        $this->metadataStack->push($metadata);
+        $this->metadataStack[] = $metadata;
     }
 
     public function pushPropertyMetadata(PropertyMetadata $metadata): void
     {
-        $this->metadataStack->push($metadata);
+        $this->metadataStack[] = $metadata;
     }
 
     public function popPropertyMetadata(): void
     {
-        $metadata = $this->metadataStack->pop();
-
-        if (!$metadata instanceof PropertyMetadata) {
-            throw new RuntimeException('Context metadataStack not working well');
-        }
+        array_pop($this->metadataStack);
     }
 
     public function popClassMetadata(): void
     {
-        $metadata = $this->metadataStack->pop();
-
-        if (!$metadata instanceof ClassMetadata) {
-            throw new RuntimeException('Context metadataStack not working well');
-        }
+        array_pop($this->metadataStack);
     }
 
-    public function getMetadataStack(): \SplStack
+    /**
+     * Returns the metadata stack count without creating a copy.
+     */
+    public function getMetadataStackSize(): int
     {
-        return $this->metadataStack;
+        return \count($this->metadataStack);
+    }
+
+    /**
+     * Returns the top element of the metadata stack.
+     *
+     * @return ClassMetadata|PropertyMetadata
+     */
+    public function getMetadataStackTop()
+    {
+        return $this->metadataStack[\count($this->metadataStack) - 1];
+    }
+
+    /**
+     * Returns the metadata stack as an array with LIFO index order (0 = top/most recent).
+     *
+     * @return array<ClassMetadata|PropertyMetadata>
+     */
+    public function getMetadataStack(): array
+    {
+        return array_reverse($this->metadataStack);
     }
 
     public function getCurrentPath(): array
@@ -250,7 +263,7 @@ abstract class Context
         $paths = [];
         foreach ($this->metadataStack as $metadata) {
             if ($metadata instanceof PropertyMetadata) {
-                array_unshift($paths, $metadata->name);
+                $paths[] = $metadata->name;
             }
         }
 
