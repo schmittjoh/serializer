@@ -45,6 +45,40 @@ class BaseDeserializationTest extends TestCase
             ['km' => (object) ['bla' => 'bla']],
             Car::class,
         ];
+
+        yield 'float above int range to int' => [
+            ['km' => 9223372036854775808.0],
+            Car::class,
+        ];
+
+        yield 'float below int range to int' => [
+            ['km' => -1.0e20],
+            Car::class,
+        ];
+
+        yield 'infinite float to int' => [
+            ['km' => INF],
+            Car::class,
+        ];
+    }
+
+    /**
+     * @dataProvider dataFloatCanBeCastedToInt
+     */
+    #[DataProvider('dataFloatCanBeCastedToInt')]
+    public function testDeserializationFloatInIntRange(float $data, int $expected): void
+    {
+        $serializer = SerializerBuilder::create()->build();
+
+        $car = $serializer->fromArray(['km' => $data], Car::class);
+
+        self::assertSame($expected, $car->km);
+    }
+
+    public static function dataFloatCanBeCastedToInt(): iterable
+    {
+        yield 'fraction' => [1.5, 1];
+        yield 'lower bound' => [(float) PHP_INT_MIN, PHP_INT_MIN];
     }
 
     /**
