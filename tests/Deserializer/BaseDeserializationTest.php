@@ -78,7 +78,7 @@ class BaseDeserializationTest extends TestCase
     public static function dataFloatCanBeCastedToInt(): iterable
     {
         yield 'fraction' => [1.5, 1];
-        yield 'lower bound' => [(float) PHP_INT_MIN, PHP_INT_MIN];
+        yield 'lower bound' => [(float) PHP_INT_MIN, (float)PHP_INT_MIN];
     }
 
     /**
