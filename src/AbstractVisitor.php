@@ -71,11 +71,20 @@ abstract class AbstractVisitor implements VisitorInterface
      * logic according to intval https://www.php.net/manual/en/function.intval.php
      * "intval() should not be used on objects, as doing so will emit an E_NOTICE level error and return 1."
      *
+     * Floats outside the int range, NAN and INF are rejected as well: casting them gives an undefined result
+     * and emits an E_WARNING as of PHP 8.5.
+     *
      * @param mixed $value
      */
     protected function assertValueCanBeCastToInt($value): void
     {
         if (is_object($value) && !$value instanceof \SimpleXMLElement) {
+            throw new NonIntCastableTypeException($value);
+        }
+
+        // PHP_INT_MAX has no exact float representation, -(float) PHP_INT_MIN is the exclusive upper bound.
+        // NAN fails both comparisons.
+        if (is_float($value) && !($value >= (float) PHP_INT_MIN && $value < -(float) PHP_INT_MIN)) {
             throw new NonIntCastableTypeException($value);
         }
     }
