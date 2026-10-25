@@ -23,7 +23,7 @@ on the other hand, can be simple callables and do not require a dedicated class.
                     'method' => 'onPreSerialize',
                     'class' => 'AppBundle\\Entity\\SpecificClass', // if no class, subscribe to every serialization
                     'format' => 'json', // optional format
-                    'priority' => 0, // optional priority
+                    'priority' => 0, // optional priority, listeners with a higher priority run first (default 0)
                 ),
             );
         }
