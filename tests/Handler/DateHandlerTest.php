@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace JMS\Serializer\Tests\Handler;
 
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use JMS\Serializer\XmlDeserializationVisitor;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
@@ -90,6 +92,48 @@ class DateHandlerTest extends TestCase
 
         $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
         self::assertNull($this->handler->deserializeDateTimeFromJson($visitor, '', $type));
+    }
+
+    public static function getNonScalarJsonDeserializationMethods()
+    {
+        return [
+            ['deserializeDateTimeFromJson', 'datetime', ['x']],
+            ['deserializeDateTimeFromJson', 'datetime', []],
+            ['deserializeDateTimeImmutableFromJson', 'datetime', ['x']],
+            ['deserializeDateTimeImmutableFromJson', 'datetime', []],
+            ['deserializeDateIntervalFromJson', 'dateinterval', ['x']],
+            ['deserializeDateIntervalFromJson', 'dateinterval', []],
+            ['deserializeSymfonyComponentClockDatePointFromJson', 'datetime', ['x']],
+            ['deserializeSymfonyComponentClockDatePointFromJson', 'datetime', []],
+        ];
+    }
+
+    /**
+     * @dataProvider getNonScalarJsonDeserializationMethods
+     */
+    #[DataProvider('getNonScalarJsonDeserializationMethods')]
+    public function testNonScalarJsonDataIsRejected(string $method, string $kind, array $data)
+    {
+        $visitor = new JsonDeserializationVisitor();
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d']];
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Invalid %s, expected a string or an integer, "array" given.', $kind));
+
+        $this->handler->{$method}($visitor, $data, $type);
+    }
+
+    public function testXmlElementIsStillAccepted()
+    {
+        $visitor = new XmlDeserializationVisitor();
+        $type = ['name' => 'DateTime', 'params' => ['Y-m-d', '', 'Y-m-d|']];
+
+        $element = new \SimpleXMLElement('<date>2017-06-18</date>');
+
+        self::assertEquals(
+            new \DateTime('2017-06-18', $this->timezone),
+            $this->handler->deserializeDateTimeFromXml($visitor, $element, $type),
+        );
     }
 
     public function testTimePartGetsRemoved()
