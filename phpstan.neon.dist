@@ -17,8 +17,6 @@ parameters:
         - '#^Call to method expects\(\) on an unknown class Symfony\\Component\\Translation\\TranslatorInterface\.$#'
         - '#^Call to an undefined method JMS\\Serializer\\VisitorInterface\:\:hasData\(\)\.$#'
         - '#^Method JMS\\Serializer\\GraphNavigator\\DeserializationGraphNavigator\:\:resolveMetadata\(\) should return JMS\\Serializer\\Metadata\\ClassMetadata\|null#'
-        - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept list<string\|null>\.#'
-        - '#^ArrayObject<\*NEVER\*, \*NEVER\*> does not accept array<string, ArrayObject>\.#'
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
