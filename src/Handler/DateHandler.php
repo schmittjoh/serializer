@@ -231,6 +231,8 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateTimeFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
+        $this->assertValidInput($data, 'datetime');
+
         if (empty($data)) {
             return null;
         }
@@ -244,6 +246,8 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateTimeImmutableFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
+        $this->assertValidInput($data, 'datetime');
+
         if (empty($data)) {
             return null;
         }
@@ -257,6 +261,8 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeDateIntervalFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateInterval
     {
+        $this->assertValidInput($data, 'dateinterval');
+
         if (empty($data)) {
             return null;
         }
@@ -283,6 +289,8 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     public function deserializeSymfonyComponentClockDatePointFromJson(DeserializationVisitorInterface $visitor, $data, array $type): ?\DateTimeInterface
     {
+        $this->assertValidInput($data, 'datetime');
+
         if (empty($data)) {
             return null;
         }
@@ -296,6 +304,8 @@ final class DateHandler implements SubscribingHandlerInterface
      */
     private function parseDateTime($data, array $type, bool $immutable = false): \DateTimeInterface
     {
+        $this->assertValidInput($data, 'datetime');
+
         $timezone = !empty($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
         $formats = $this->getDeserializationFormats($type);
 
@@ -332,6 +342,18 @@ final class DateHandler implements SubscribingHandlerInterface
     private function parseDateTimeAsDatePoint($data, array $type): \DateTimeInterface
     {
         return DatePoint::createFromInterface($this->parseDateTime($data, $type));
+    }
+
+    /**
+     * @param mixed $data
+     */
+    private function assertValidInput($data, string $kind): void
+    {
+        if (null === $data || is_scalar($data) || $data instanceof \SimpleXMLElement) {
+            return;
+        }
+
+        throw new RuntimeException(sprintf('Invalid %s, expected a string or an integer, "%s" given.', $kind, get_debug_type($data)));
     }
 
     private function parseDateInterval(string $data): \DateInterval
