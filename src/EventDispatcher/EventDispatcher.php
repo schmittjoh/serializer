@@ -55,9 +55,9 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null): void
+    public function addListener(string $eventName, $callable, ?string $class = null, ?string $format = null, ?string $interface = null, int $priority = 0): void
     {
-        $this->listeners[$eventName][] = [$callable, $class, $format, $interface];
+        $this->listeners[$eventName][] = [$callable, $class, $format, $interface, $priority];
         unset($this->classListeners[$eventName]);
     }
 
@@ -72,7 +72,8 @@ class EventDispatcher implements EventDispatcherInterface
             $class = $eventData['class'] ?? null;
             $format = $eventData['format'] ?? null;
             $interface = $eventData['interface'] ?? null;
-            $this->listeners[$eventData['event']][] = [[$subscriber, $method], $class, $format, $interface];
+            $priority = (int) ($eventData['priority'] ?? 0);
+            $this->listeners[$eventData['event']][] = [[$subscriber, $method], $class, $format, $interface, $priority];
             unset($this->classListeners[$eventData['event']]);
         }
     }
@@ -133,6 +134,17 @@ class EventDispatcher implements EventDispatcherInterface
             }
 
             $listeners[] = $listener;
+        }
+
+        // Listeners with a higher priority run first. The sort is skipped when no priority is used,
+        // to keep the registration order untouched.
+        foreach ($listeners as $listener) {
+            if (0 !== ($listener[4] ?? 0)) {
+                usort($listeners, static function (array $a, array $b): int {
+                    return ($b[4] ?? 0) <=> ($a[4] ?? 0);
+                });
+                break;
+            }
         }
 
         return $listeners;

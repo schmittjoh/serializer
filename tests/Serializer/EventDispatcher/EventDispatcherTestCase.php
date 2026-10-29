@@ -51,6 +51,101 @@ class EventDispatcherTestCase extends TestCase
         //self::assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
     }
 
+    public function testListenersAreOrderedByPriority()
+    {
+        $calls = [];
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'default';
+        });
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'low';
+        }, null, null, null, -10);
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'high';
+        }, null, null, null, 10);
+
+        $this->dispatch('foo');
+
+        self::assertSame(['high', 'default', 'low'], $calls);
+    }
+
+    public function testSubscriberPriority()
+    {
+        $calls = [];
+        $this->dispatcher->addSubscriber(new class ($calls) implements EventSubscriberInterface {
+            private $calls;
+
+            public function __construct(array &$calls)
+            {
+                $this->calls = &$calls;
+            }
+
+            public static function getSubscribedEvents(): array
+            {
+                return [
+                    ['event' => 'foo', 'method' => 'first'],
+                    ['event' => 'foo', 'method' => 'second', 'priority' => 5],
+                ];
+            }
+
+            public function first()
+            {
+                $this->calls[] = 'first';
+            }
+
+            public function second()
+            {
+                $this->calls[] = 'second';
+            }
+        });
+
+        $this->dispatch('foo');
+
+        self::assertSame(['second', 'first'], $calls);
+    }
+
+    public function testPriorityRespectsClassAndFormatFilters()
+    {
+        $calls = [];
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'any';
+        });
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'xml';
+        }, null, 'xml', null, 10);
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'json';
+        }, null, 'json', null, 1);
+
+        $this->dispatch('foo');
+
+        self::assertSame(['json', 'any'], $calls);
+    }
+
+    public function testListenersWithoutPriorityElementAreSupported()
+    {
+        $calls = [];
+        $this->dispatcher->setListeners([
+            'foo' => [
+                [
+                    static function () use (&$calls) {
+                        $calls[] = 'legacy';
+                    },
+                    null,
+                    null,
+                    null,
+                ],
+            ],
+        ]);
+        $this->dispatcher->addListener('foo', static function () use (&$calls) {
+            $calls[] = 'prioritized';
+        }, null, null, null, 1);
+
+        $this->dispatch('foo');
+
+        self::assertSame(['prioritized', 'legacy'], $calls);
+    }
+
     public function testDispatch()
     {
         $a = new MockListener();
@@ -185,10 +280,10 @@ class EventDispatcherTestCase extends TestCase
 
         self::assertSame([
             'foo.bar_baz' => [
-                [[$subscriber, 'onfoobarbaz'], null, 'foo', null],
+                [[$subscriber, 'onfoobarbaz'], null, 'foo', null, 0],
             ],
             'bar' => [
-                [[$subscriber, 'bar'], 'foo', null, null],
+                [[$subscriber, 'bar'], 'foo', null, null, 0],
             ],
         ], $listenersReflection->getValue($this->dispatcher));
     }
