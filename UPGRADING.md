@@ -1,6 +1,7 @@
 Unreleased
 ==========
 
+- The minimum supported PHP version is now 8.0
 - Use symfony/cache for FileSystem cache implementation instead of doctrine/cache
 - Deprecated the `@ReadOnly` annotation due to `readonly` becoming a keyword in PHP 8.1, use the `@ReadOnlyProperty` annotation instead
 - Doctrine type `decimal` is now correctly mapped to `string` instead of `float`

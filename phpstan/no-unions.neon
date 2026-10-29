@@ -1,4 +1,0 @@
-parameters:
-    excludePaths:
-        - %currentWorkingDirectory%/src/Handler/UnionHandler.php
-        - %currentWorkingDirectory%/tests/Fixtures/TypedProperties/ComplexDiscriminatedUnion.php

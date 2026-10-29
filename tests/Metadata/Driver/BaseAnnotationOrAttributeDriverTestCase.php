@@ -8,8 +8,6 @@ use JMS\Serializer\Tests\Fixtures\AllExcludedObject;
 use JMS\Serializer\Tests\Fixtures\MissingAttributeObject;
 use ReflectionClass;
 
-use const PHP_VERSION_ID;
-
 abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCase
 {
     public function testAllExcluded(): void
@@ -36,8 +34,6 @@ abstract class BaseAnnotationOrAttributeDriverTestCase extends BaseDriverTestCas
         $metadata = $this->getDriver()->loadMetadataForClass(new ReflectionClass(MissingAttributeObject::class));
         self::assertArrayHasKey('property', $metadata->propertyMetadata);
 
-        if (PHP_VERSION_ID >= 80000) {
-            self::assertArrayHasKey('propertyFromMethod', $metadata->propertyMetadata);
-        }
+        self::assertArrayHasKey('propertyFromMethod', $metadata->propertyMetadata);
     }
 }

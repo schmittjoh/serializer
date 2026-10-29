@@ -284,9 +284,7 @@ final class SerializerBuilder
             $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
         }
 
-        if (PHP_VERSION_ID >= 80000) {
-            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
-        }
+        $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
 
         return $this;
     }

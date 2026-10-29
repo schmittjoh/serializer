@@ -11,7 +11,6 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\NonVisitableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -475,12 +474,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
     #[DataProvider('getSimpleUnionProperties')]
     public function testUnionProperties($data, string $expected): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $deserialized = $this->deserialize(static::getContent($expected), UnionTypedProperties::class);
 
         self::assertSame($data, $deserialized->data);
@@ -500,12 +493,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
     #[DataProvider('getUnionCastableTypes')]
     public function testUnionPropertiesWithCastableType($data, string $expected)
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $deserialized = $this->deserialize(static::getContent($expected), BoolOrString::class);
 
         self::assertSame($data, $deserialized->data);
@@ -522,12 +509,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
     #[DataProvider('getUnionNotCastableTypes')]
     public function testUnionPropertiesWithNotCastableType(string $expected)
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $deserialized = $this->deserialize(static::getContent($expected), BoolOrString::class);
 
         $this->expectException(\Error::class);
@@ -589,12 +570,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public function testDeserializingComplexDiscriminatedUnionProperties()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $authorUnion = new ComplexDiscriminatedUnion(new DiscriminatedAuthor('foo'));
         self::assertEquals($authorUnion, $this->deserialize(static::getContent('data_discriminated_author'), ComplexDiscriminatedUnion::class));
 
@@ -605,12 +580,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public function testDeserializingComplexDiscriminatedUnionPropertiesFailsWhenDiscriminatorNotInMap()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $this->expectException(NonVisitableTypeException::class);
         $this->expectExceptionMessage('Union Discriminator Map does not contain key "comment_wrong"');
         $this->deserialize(static::getContent('data_discriminated_comment_wrong_discriminator'), ComplexDiscriminatedUnion::class);
@@ -618,12 +587,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public function testDeserializingComplexDiscriminatedUnionPropertiesFailsWhenDiscriminatorIsMissing()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $this->expectException(NonVisitableTypeException::class);
         $this->expectExceptionMessage('Union Discriminator Field "objectType" not found in data');
         $this->deserialize(static::getContent('data_discriminated_comment_missing_discriminator'), ComplexDiscriminatedUnion::class);
@@ -631,12 +594,6 @@ class JsonSerializationTest extends BaseSerializationTestCase
 
     public function testSerializingComplexDiscriminatedUnionProperties()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $serialized = $this->serialize(new ComplexDiscriminatedUnion(new DiscriminatedAuthor('foo')));
         self::assertEquals(static::getContent('data_discriminated_author'), $serialized);
 

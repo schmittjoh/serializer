@@ -18,13 +18,6 @@ use ReflectionClass;
 
 final class UnionTypedPropertiesDriverTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-        }
-    }
-
     public function testInferUnionTypesShouldResultInManyTypes()
     {
         $m = $this->resolve(UnionTypedProperties::class);

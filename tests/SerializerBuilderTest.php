@@ -19,19 +19,14 @@ use JMS\Serializer\Tests\Fixtures\PersonSecretWithVariables;
 use JMS\Serializer\Type\ParserInterface;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Constraint\FileExists;
-use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\Filesystem\Filesystem;
 
 class SerializerBuilderTest extends TestCase
 {
     /** @var SerializerBuilder */
     private $builder;
-    private $fs;
-    private $tmpDir;
 
     public function testBuildWithoutAnythingElse()
     {
@@ -44,27 +39,6 @@ class SerializerBuilderTest extends TestCase
 
         self::assertEquals('foo', $serializer->deserialize('"foo"', 'string', 'json'));
         self::assertEquals('foo', $serializer->deserialize('<?xml version="1.0" encoding="UTF-8"?><result><![CDATA[foo]]></result>', 'string', 'xml'));
-    }
-
-    public function testWithCache()
-    {
-        if (PHP_VERSION_ID >= 80000) {
-            $this->markTestSkipped('Not caching attributes');
-        }
-
-        // @todo change to static::assertFileNotExists when support for PHPUnit 8 and PHP 7.2 is dropped
-        static::assertThat($this->tmpDir, new LogicalNot(new FileExists()));
-
-        self::assertSame($this->builder, $this->builder->setCacheDir($this->tmpDir));
-        $serializer = $this->builder->build();
-
-        self::assertFileExists($this->tmpDir);
-        self::assertFileExists($this->tmpDir . '/annotations');
-        self::assertFileExists($this->tmpDir . '/metadata');
-
-        $factory = $this->getField($serializer, 'factory');
-        self::assertFalse($this->getField($factory, 'debug'));
-        self::assertNotNull($this->getField($factory, 'cache'));
     }
 
     public function testDoesAddDefaultHandlers()
@@ -290,16 +264,6 @@ class SerializerBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->builder = SerializerBuilder::create();
-        $this->fs = new Filesystem();
-
-        $this->tmpDir = sys_get_temp_dir() . '/serializer';
-        $this->fs->remove($this->tmpDir);
-        clearstatcache();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->fs->remove($this->tmpDir);
     }
 
     private function getField($obj, $name)
