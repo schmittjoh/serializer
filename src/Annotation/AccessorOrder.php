@@ -28,7 +28,7 @@ final class AccessorOrder implements SerializerAttribute
      */
     public $custom = [];
 
-    public function __construct(array $values = [], ?string $order = null, array $custom = [])
+    public function __construct($values = [], ?string $order = null, array $custom = [])
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }
