@@ -376,7 +376,7 @@ final class DocBlockTypeResolver
     private function resolveTypeFromDocblock($reflector): array
     {
         $docComment = $reflector->getDocComment();
-        if (!$docComment && PHP_VERSION_ID >= 80000 && $reflector instanceof \ReflectionProperty && $reflector->isPromoted()) {
+        if (!$docComment && $reflector instanceof \ReflectionProperty && $reflector->isPromoted()) {
             $constructor = $reflector->getDeclaringClass()->getConstructor();
             if (!$constructor) {
                 return [];

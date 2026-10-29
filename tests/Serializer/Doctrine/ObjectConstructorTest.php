@@ -418,7 +418,7 @@ class ObjectConstructorTest extends TestCase
     }
 
     /**
-     * php7.4 Using array_key_exists() on objects is deprecated.
+     * Using array_key_exists() on objects is deprecated.
      */
     public function testArrayKeyExistsOnObject(): void
     {
@@ -526,7 +526,7 @@ class ObjectConstructorTest extends TestCase
         if (!$cfg) {
             $cfg = new Configuration();
 
-            if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            if (class_exists(AttributeDriver::class)) {
                 AnnotationReader::addGlobalIgnoredNamespace('Doctrine\ORM\Mapping');
                 $cfg->setMetadataDriverImpl(new AttributeDriver([
                     __DIR__ . '/../../Fixtures/Doctrine/Entity',

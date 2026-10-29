@@ -12,7 +12,6 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -620,12 +619,6 @@ class XmlSerializationTest extends BaseSerializationTestCase
 
     public function testThrowingExceptionWhenDeserializingUnionProperties()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $this->expectException(RuntimeException::class);
 
         $object = new UnionTypedProperties(10000, null, false);

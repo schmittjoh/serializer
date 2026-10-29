@@ -13,8 +13,6 @@ final class DocBlockTypeResolverTest extends TestCase
 {
     public function testGetPropertyDocblockTypeHintDoesNotCrash(): void
     {
-        // It crashed on PHP 7.3 and less because of array_merge(...[])
-
         $resolver = new DocBlockTypeResolver();
         self::assertNull(
             $resolver->getPropertyDocblockTypeHint(

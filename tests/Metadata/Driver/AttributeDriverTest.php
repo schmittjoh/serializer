@@ -14,10 +14,6 @@ class AttributeDriverTest extends BaseAnnotationOrAttributeDriverTestCase
 {
     protected function setUp(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Attributes are available only on php 8 or higher');
-        }
-
         parent::setUp();
     }
 
