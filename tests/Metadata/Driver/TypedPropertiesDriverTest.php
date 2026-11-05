@@ -9,6 +9,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Tests\Fixtures\TypedProperties\UnionTypedProperties;
 use JMS\Serializer\Tests\Fixtures\TypedProperties\User;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -31,6 +32,17 @@ class TypedPropertiesDriverTest extends TestCase
         foreach ($expectedPropertyTypes as $property => $type) {
             self::assertEquals(['name' => $type, 'params' => []], $m->propertyMetadata[$property]->type);
         }
+    }
+
+    public function testUnionTypesAreNotResolved()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
+        }
+
+        $m = $this->resolve(UnionTypedProperties::class);
+
+        self::assertNull($m->propertyMetadata['data']->type);
     }
 
     private function resolve(string $classToResolve): ClassMetadata

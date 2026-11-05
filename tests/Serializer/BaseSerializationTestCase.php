@@ -2156,6 +2156,10 @@ abstract class BaseSerializationTestCase extends TestCase
             $builder->enableEnumSupport();
         }
 
+        if (PHP_VERSION_ID >= 80000) {
+            $builder->enableUnionSupport();
+        }
+
         $this->extendBuilder($builder);
         $this->serializer = $builder->build();
     }
