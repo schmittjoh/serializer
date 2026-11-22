@@ -83,9 +83,7 @@ class EventDispatcher implements EventDispatcherInterface
             return false;
         }
 
-        if (!isset($this->classListeners[$eventName][$class][$format])) {
-            $this->classListeners[$eventName][$class][$format] = $this->initializeListeners($eventName, $class, $format);
-        }
+        $this->classListeners[$eventName][$class][$format] ??= $this->initializeListeners($eventName, $class, $format);
 
         return !!$this->classListeners[$eventName][$class][$format];
     }
@@ -100,9 +98,7 @@ class EventDispatcher implements EventDispatcherInterface
         $realClass = is_object($object) ? get_class($object) : '';
         $objectClass = $realClass !== $class ? $realClass . $class : $class;
 
-        if (!isset($this->classListeners[$eventName][$objectClass][$format])) {
-            $this->classListeners[$eventName][$objectClass][$format] = $this->initializeListeners($eventName, $class, $format);
-        }
+        $this->classListeners[$eventName][$objectClass][$format] ??= $this->initializeListeners($eventName, $class, $format);
 
         foreach ($this->classListeners[$eventName][$objectClass][$format] as $listener) {
             if (!empty($listener[3]) && !($object instanceof $listener[3])) {
