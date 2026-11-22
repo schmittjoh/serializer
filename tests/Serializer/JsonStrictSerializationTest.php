@@ -37,4 +37,17 @@ class JsonStrictSerializationTest extends JsonSerializationTest
 
         parent::testUnionPropertiesWithCastableType($data, $expected);
     }
+
+    public function testUnionUsesDeclaredArrayBranchParameters(): void
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Union types require PHP 8.0');
+
+            return;
+        }
+
+        $this->expectException(NonVisitableTypeException::class);
+
+        $this->deserialize('["1"]', 'union<[array<int>, string]>');
+    }
 }
