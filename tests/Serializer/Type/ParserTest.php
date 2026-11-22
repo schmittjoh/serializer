@@ -32,6 +32,14 @@ class ParserTest extends TestCase
         );
     }
 
+    public function testParserCanBeReusedAfterParsingCompoundType(): void
+    {
+        $this->parser->parse('Foo<int>');
+
+        $this->expectException(SyntaxError::class);
+        $this->parser->parse('[int]');
+    }
+
     /**
      * @return mixed[][]
      */
@@ -47,8 +55,13 @@ class ParserTest extends TestCase
         ];
 
         yield [
-            'array<Foo>',
+            ' array<Foo> ',
             $type('array', [['name' => 'Foo', 'params' => []]]),
+        ];
+
+        yield [
+            'NULL',
+            $type('NULL'),
         ];
 
         yield [
@@ -161,12 +174,18 @@ class ParserTest extends TestCase
     public static function wrongSyntax()
     {
         return [
+            ['array<int> string'],
             ['Foo<\Bar>]'],
             ['Foo<aa,>'],
             ['Foo<bar'],
             [''],
             [','],
             ['[]'],
+            ['[int]'],
+            ['123'],
+            ['1.5'],
+            ['null'],
+            ['"value"'],
             ['<>'],
         ];
     }
