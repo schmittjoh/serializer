@@ -18,24 +18,29 @@ final class Parser implements ParserInterface
      */
     private $lexer;
 
-    /**
-     * @var bool
-     */
-    private $root = true;
-
     public function parse(string $string): array
     {
         $this->lexer = new Lexer();
         $this->lexer->setInput($string);
         $this->lexer->moveNext();
 
-        return $this->visit();
+        $type = $this->visit(true);
+
+        if (null !== $this->lexer->lookahead) {
+            throw new SyntaxError(sprintf(
+                'Syntax error, unexpected "%s" (%s)',
+                $this->lexer->lookahead->value,
+                $this->getConstant($this->lexer->lookahead->type),
+            ));
+        }
+
+        return $type;
     }
 
     /**
      * @return mixed
      */
-    private function visit()
+    private function visit(bool $root = false)
     {
         $this->lexer->moveNext();
 
@@ -45,24 +50,33 @@ final class Parser implements ParserInterface
             );
         }
 
-        if (Lexer::T_FLOAT === $this->lexer->token->type) {
-            return floatval($this->lexer->token->value);
-        } elseif (Lexer::T_INTEGER === $this->lexer->token->type) {
-            return intval($this->lexer->token->value);
-        } elseif (Lexer::T_NULL === $this->lexer->token->type) {
-            return null;
-        } elseif (Lexer::T_STRING === $this->lexer->token->type) {
-            return $this->lexer->token->value;
-        } elseif (Lexer::T_IDENTIFIER === $this->lexer->token->type) {
+        if (Lexer::T_IDENTIFIER === $this->lexer->token->type) {
             if ($this->lexer->isNextToken(Lexer::T_TYPE_START)) {
                 return $this->visitCompoundType();
-            } elseif ($this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
+            } elseif (!$root && $this->lexer->isNextToken(Lexer::T_ARRAY_START)) {
                 return $this->visitArrayType();
             }
 
             return $this->visitSimpleType();
-        } elseif (!$this->root && Lexer::T_ARRAY_START === $this->lexer->token->type) {
-            return $this->visitArrayType();
+        }
+
+        if (!$root) {
+            switch ($this->lexer->token->type) {
+                case Lexer::T_FLOAT:
+                    return floatval($this->lexer->token->value);
+
+                case Lexer::T_INTEGER:
+                    return intval($this->lexer->token->value);
+
+                case Lexer::T_NULL:
+                    return null;
+
+                case Lexer::T_STRING:
+                    return $this->lexer->token->value;
+
+                case Lexer::T_ARRAY_START:
+                    return $this->visitArrayType();
+            }
         }
 
         throw new SyntaxError(sprintf(
@@ -87,7 +101,6 @@ final class Parser implements ParserInterface
      */
     private function visitCompoundType(): array
     {
-        $this->root = false;
         $name = $this->lexer->token->value;
         $this->match(Lexer::T_TYPE_START);
 
