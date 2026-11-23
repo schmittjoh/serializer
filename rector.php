@@ -7,4 +7,4 @@ use Rector\Config\RectorConfig;
 return RectorConfig::configure()->withPaths([
     __DIR__ . '/src',
 ])
-        ->withPhp74Sets();
+        ->withPhpSets();

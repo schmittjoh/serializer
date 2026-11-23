@@ -151,9 +151,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string
     {
-        if (null === $context) {
-            $context = $this->serializationContextFactory->createSerializationContext();
-        }
+        $context ??= $this->serializationContextFactory->createSerializationContext();
 
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
@@ -172,9 +170,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null)
     {
-        if (null === $context) {
-            $context = $this->deserializationContextFactory->createDeserializationContext();
-        }
+        $context ??= $this->deserializationContextFactory->createDeserializationContext();
 
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, $format);
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
@@ -191,9 +187,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     public function toArray($data, ?SerializationContext $context = null, ?string $type = null): array
     {
-        if (null === $context) {
-            $context = $this->serializationContextFactory->createSerializationContext();
-        }
+        $context ??= $this->serializationContextFactory->createSerializationContext();
 
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_SERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_SERIALIZATION);
@@ -218,9 +212,7 @@ final class Serializer implements SerializerInterface, ArrayTransformerInterface
      */
     public function fromArray(array $data, string $type, ?DeserializationContext $context = null)
     {
-        if (null === $context) {
-            $context = $this->deserializationContextFactory->createDeserializationContext();
-        }
+        $context ??= $this->deserializationContextFactory->createDeserializationContext();
 
         $visitor = $this->getVisitor(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, 'json');
         $navigator = $this->getNavigator(GraphNavigatorInterface::DIRECTION_DESERIALIZATION);
