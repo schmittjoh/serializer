@@ -413,6 +413,7 @@ class YamlDriver extends AbstractFileDriver
                     $config['discriminator']['field_name'],
                     $config['discriminator']['map'],
                     $groups,
+                    $config['discriminator']['default'] ?? null,
                 );
 
                 if (isset($config['discriminator']['xml_attribute'])) {

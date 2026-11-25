@@ -61,6 +61,7 @@ use JMS\Serializer\Tests\Fixtures\DateTimeCustomObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\ImagePost;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Other;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Post;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\ExtendedUser;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Serialization\User;
@@ -1753,7 +1754,7 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testNestedPolymorphicObjects()
     {
-        $garage = new Garage([new Car(3), new Moped(1)]);
+        $garage = new Garage([new Car(3), new Moped(1), new Other(1)]);
         self::assertEquals(
             static::getContent('garage'),
             $this->serialize($garage),
@@ -1772,7 +1773,7 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testNestedPolymorphicInterfaces()
     {
-        $garage = new VehicleInterfaceGarage([new Car(3), new Moped(1)]);
+        $garage = new VehicleInterfaceGarage([new Car(3), new Moped(1), new Other(1)]);
         self::assertEquals(
             static::getContent('garage'),
             $this->serialize($garage),
