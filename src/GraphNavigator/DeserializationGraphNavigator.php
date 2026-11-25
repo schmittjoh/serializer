@@ -244,6 +244,10 @@ final class DeserializationGraphNavigator extends GraphNavigator implements Grap
         $typeValue = $this->visitor->visitDiscriminatorMapProperty($data, $metadata);
 
         if (!isset($metadata->discriminatorMap[$typeValue])) {
+            if (!empty($metadata->discriminatorDefaultClass)) {
+                return $this->metadataFactory->getMetadataForClass($metadata->discriminatorDefaultClass);
+            }
+
             throw new LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,
