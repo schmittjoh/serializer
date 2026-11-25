@@ -21,7 +21,7 @@ final class AccessType implements SerializerAttribute
      */
     public $type;
 
-    public function __construct(array $values = [], ?string $type = null)
+    public function __construct($values = [], ?string $type = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }

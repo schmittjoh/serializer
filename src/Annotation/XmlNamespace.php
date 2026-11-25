@@ -24,7 +24,7 @@ final class XmlNamespace implements SerializerAttribute
      */
     public $prefix = '';
 
-    public function __construct(array $values = [], ?string $uri = null, string $prefix = '')
+    public function __construct($values = [], ?string $uri = null, string $prefix = '')
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }
