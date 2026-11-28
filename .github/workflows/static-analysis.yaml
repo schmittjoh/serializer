@@ -22,6 +22,7 @@ jobs:
           - "8.3"
           - "8.4"
           - "8.5"
+          - "8.6"
 
     steps:
       - name: Checkout code
@@ -50,5 +51,5 @@ jobs:
         run: "vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr"
 
       - name: "Run a static analysis with rector/rector"
-        if: ${{ matrix.php-version == 8.5 }}
+        if: ${{ matrix.php-version == 8.6 }}
         run: "vendor/bin/rector --dry-run"
