@@ -300,10 +300,6 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferTypeForConstructorPropertyPromotion()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
-        }
-
         $m = $this->resolve(ConstructorPropertyPromotion::class);
 
         self::assertEquals(
@@ -314,10 +310,6 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferTypeForConstructorPropertyPromotionWithoutDocblock()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
-        }
-
         $m = $this->resolve(ConstructorPropertyPromotionWithoutDocblock::class);
 
         self::assertEquals(
@@ -328,10 +320,6 @@ class DocBlockDriverTest extends TestCase
 
     public function testInferTypeForConstructorPropertyPromotionWithScalar()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Constructor property promotion requires PHP 8.0');
-        }
-
         $m = $this->resolve(ConstructorPropertyPromotionWithScalar::class);
 
         self::assertEquals(

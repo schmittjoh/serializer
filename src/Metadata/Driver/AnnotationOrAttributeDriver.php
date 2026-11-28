@@ -309,14 +309,10 @@ class AnnotationOrAttributeDriver implements DriverInterface
      */
     protected function getClassAnnotations(\ReflectionClass $class): array
     {
-        $annotations = [];
-
-        if (PHP_VERSION_ID >= 80000) {
-            $annotations = array_map(
-                static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
-                $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
-            );
-        }
+        $annotations = array_map(
+            static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
+            $class->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
+        );
 
         if (null !== $this->reader) {
             $annotations = array_merge($annotations, $this->reader->getClassAnnotations($class));
@@ -330,14 +326,10 @@ class AnnotationOrAttributeDriver implements DriverInterface
      */
     protected function getMethodAnnotations(\ReflectionMethod $method): array
     {
-        $annotations = [];
-
-        if (PHP_VERSION_ID >= 80000) {
-            $annotations = array_map(
-                static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
-                $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
-            );
-        }
+        $annotations = array_map(
+            static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
+            $method->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
+        );
 
         if (null !== $this->reader) {
             $annotations = array_merge($annotations, $this->reader->getMethodAnnotations($method));
@@ -351,14 +343,10 @@ class AnnotationOrAttributeDriver implements DriverInterface
      */
     protected function getPropertyAnnotations(\ReflectionProperty $property): array
     {
-        $annotations = [];
-
-        if (PHP_VERSION_ID >= 80000) {
-            $annotations = array_map(
-                static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
-                $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
-            );
-        }
+        $annotations = array_map(
+            static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
+            $property->getAttributes(SerializerAttribute::class, \ReflectionAttribute::IS_INSTANCEOF),
+        );
 
         if (null !== $this->reader) {
             $annotations = array_merge($annotations, $this->reader->getPropertyAnnotations($property));

@@ -32,7 +32,6 @@ use JMS\Serializer\Handler\IteratorHandler;
 use JMS\Serializer\Handler\StdClassHandler;
 use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Handler\UnionHandler;
-use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -1558,10 +1557,6 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testConstructorPromotionWithDefaultValues()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
-        }
-
         $builder = SerializerBuilder::create($this->handlerRegistry, $this->dispatcher);
         $builder->includeInterfaceMetadata(true);
         $this->serializer = $builder->build();
@@ -1965,10 +1960,6 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testSerializingUnionTypedProperties()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-        }
-
         $object = new TypedProperties\UnionTypedProperties(10000, null, false);
 
         self::assertEquals(static::getContent('union_typed_properties_integer'), $this->serialize($object));
@@ -1987,12 +1978,6 @@ abstract class BaseSerializationTestCase extends TestCase
 
     public function testThrowingExceptionWhenDeserializingUnionDocBlockTypes()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', TypedPropertiesDriver::class));
-
-            return;
-        }
-
         $this->expectException(RuntimeException::class);
         $this->deserialize(static::getContent('data_integer'), UnionTypedDocBlockProperty::class);
     }
@@ -2111,9 +2096,7 @@ abstract class BaseSerializationTestCase extends TestCase
         $this->handlerRegistry->registerSubscribingHandler(new IteratorHandler());
         $this->handlerRegistry->registerSubscribingHandler(new SymfonyUidHandler());
         $this->handlerRegistry->registerSubscribingHandler(new EnumHandler());
-        if (PHP_VERSION_ID >= 80000) {
-            $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
-        }
+        $this->handlerRegistry->registerSubscribingHandler(new UnionHandler());
 
         $this->handlerRegistry->registerHandler(
             GraphNavigatorInterface::DIRECTION_SERIALIZATION,

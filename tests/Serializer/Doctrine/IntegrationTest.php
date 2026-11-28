@@ -136,7 +136,7 @@ class IntegrationTest extends TestCase
     {
         $cfg = new Configuration();
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+        if (class_exists(AttributeDriver::class)) {
             $cfg->setMetadataDriverImpl(new AttributeDriver([
                 __DIR__ . '/../../Fixtures/Doctrine/SingleTableInheritance',
             ]));

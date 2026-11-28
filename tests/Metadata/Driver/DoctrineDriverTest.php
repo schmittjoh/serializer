@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineAnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver as DoctrineAttributeDriver;
 use Doctrine\Persistence\ManagerRegistry;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver;
 use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\Metadata\Driver\NullDriver;
@@ -144,7 +143,7 @@ class DoctrineDriverTest extends TestCase
             $config->setProxyNamespace('JMS\Tests\Proxies');
         }
 
-        if (PHP_VERSION_ID >= 80000 && class_exists(DoctrineAttributeDriver::class)) {
+        if (class_exists(DoctrineAttributeDriver::class)) {
             $config->setMetadataDriverImpl(
                 new DoctrineAttributeDriver([__DIR__ . '/../../Fixtures/Doctrine'], true),
             );
@@ -168,11 +167,7 @@ class DoctrineDriverTest extends TestCase
         $driver = new DriverChain();
         $namingStrategy = new IdenticalPropertyNamingStrategy();
 
-        if (PHP_VERSION_ID >= 80000) {
-            $driver->addDriver(new AnnotationOrAttributeDriver($namingStrategy));
-        } else {
-            $driver->addDriver(new AnnotationDriver(new AnnotationReader(), $namingStrategy));
-        }
+        $driver->addDriver(new AnnotationOrAttributeDriver($namingStrategy));
 
         $driver->addDriver(new NullDriver($namingStrategy));
 

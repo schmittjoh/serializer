@@ -94,10 +94,6 @@ class ArrayTest extends TestCase
 
     public function testConstructorPromotionWithDefaultValuesOnly()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
-        }
-
         $deserialized = $this->serializer->fromArray([], DefaultValuesAndAccessors::class);
 
         $expected = [
