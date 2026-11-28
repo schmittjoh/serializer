@@ -487,6 +487,24 @@ class JsonSerializationTest extends BaseSerializationTestCase
         self::assertSame($this->serialize($deserialized), static::getContent($expected));
     }
 
+    public function testUnionUsesDeclaredArrayBranchParameters(): void
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Union types require PHP 8.0');
+
+            return;
+        }
+
+        self::assertSame(
+            [1],
+            $this->deserialize('["1"]', 'union<[array<int>, string]>'),
+        );
+        self::assertSame(
+            '[1]',
+            $this->serialize(['1'], SerializationContext::create()->setInitialType('union<[array<int>, string]>')),
+        );
+    }
+
     public static function getUnionCastableTypes(): iterable
     {
         yield ['10000', 'data_integer'];

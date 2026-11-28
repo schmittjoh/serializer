@@ -56,17 +56,21 @@ final class UnionHandler implements SubscribingHandlerInterface
         array $type,
         SerializationContext $context
     ): mixed {
-        if ($this->isPrimitiveType(gettype($data))) {
-            $resolvedType = [
-                'name' => gettype($data),
-                'params' => [],
-            ];
-        } else {
-            $resolvedType = [
-                'name' => get_class($data),
-                'params' => [],
-            ];
+        $dataType = gettype($data);
+        if (!$this->isPrimitiveType($dataType)) {
+            $dataType = get_class($data);
         }
+
+        foreach ($type['params'][0] ?? [] as $possibleType) {
+            if ($this->matchesType($possibleType['name'], $dataType)) {
+                return $context->getNavigator()->accept($data, $possibleType);
+            }
+        }
+
+        $resolvedType = [
+            'name' => $dataType,
+            'params' => [],
+        ];
 
         return $context->getNavigator()->accept($data, $resolvedType);
     }
@@ -102,16 +106,10 @@ final class UnionHandler implements SubscribingHandlerInterface
 
         $dataType = gettype($data);
 
-        if (
-            array_filter(
-                $type['params'][0],
-                static fn (array $type): bool => $type['name'] === $dataType || (isset(self::$aliases[$dataType]) && $type['name'] === self::$aliases[$dataType]),
-            )
-        ) {
-            return $context->getNavigator()->accept($data, [
-                'name' => $dataType,
-                'params' => [],
-            ]);
+        foreach ($type['params'][0] as $possibleType) {
+            if ($this->matchesType($possibleType['name'], $dataType)) {
+                return $context->getNavigator()->accept($data, $possibleType);
+            }
         }
 
         foreach ($type['params'][0] as $possibleType) {
@@ -126,6 +124,12 @@ final class UnionHandler implements SubscribingHandlerInterface
     private function isPrimitiveType(string $type): bool
     {
         return in_array($type, ['int', 'integer', 'float', 'double', 'bool', 'boolean', 'true', 'false', 'string', 'array'], true);
+    }
+
+    private function matchesType(string $declaredType, string $dataType): bool
+    {
+        return $declaredType === $dataType
+            || (isset(self::$aliases[$dataType]) && $declaredType === self::$aliases[$dataType]);
     }
 
     private function testPrimitive(mixed $data, string $type): bool
